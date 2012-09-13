@@ -133,7 +133,7 @@ void QgsMssqlTableModel::addTableEntry( QgsMssqlLayerProperty layerProperty )
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    foreach( QStandardItem *item, childItemList )
+    foreach ( QStandardItem *item, childItemList )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -251,7 +251,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         row[ dbtmSrid ]->setText( tr( "Enter..." ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -272,7 +272,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | flags );
         }

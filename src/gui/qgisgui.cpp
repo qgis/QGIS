@@ -87,7 +87,7 @@ namespace QgisGui
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    foreach( QByteArray format, QImageWriter::supportedImageFormats() )
+    foreach ( QByteArray format, QImageWriter::supportedImageFormats() )
     {
       //svg doesnt work so skip it
       if ( format ==  "svg" )
@@ -124,7 +124,7 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
-    //create a file dialog using the the filter list generated above
+    //create a file dialog using the filter list generated above
     std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file

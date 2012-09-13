@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="terrain" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="52.90%" stop-color="rgb(0,0,30)" stop-opacity="1.0000"/>
+        <stop offset="54.91%" stop-color="rgb(0,0,200)" stop-opacity="1.0000"/>
+        <stop offset="55.41%" stop-color="rgb(150,150,255)" stop-opacity="1.0000"/>
+        <stop offset="55.42%" stop-color="rgb(0,120,0)" stop-opacity="1.0000"/>
+        <stop offset="55.92%" stop-color="rgb(0,150,0)" stop-opacity="1.0000"/>
+        <stop offset="56.78%" stop-color="rgb(90,165,90)" stop-opacity="1.0000"/>
+        <stop offset="56.93%" stop-color="rgb(90,175,90)" stop-opacity="1.0000"/>
+        <stop offset="57.93%" stop-color="rgb(50,180,50)" stop-opacity="1.0000"/>
+        <stop offset="57.93%" stop-color="rgb(70,170,70)" stop-opacity="1.0000"/>
+        <stop offset="60.45%" stop-color="rgb(70,145,75)" stop-opacity="1.0000"/>
+        <stop offset="60.45%" stop-color="rgb(70,155,75)" stop-opacity="1.0000"/>
+        <stop offset="65.49%" stop-color="rgb(150,156,100)" stop-opacity="1.0000"/>
+        <stop offset="69.52%" stop-color="rgb(220,220,220)" stop-opacity="1.0000"/>
+        <stop offset="70.53%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#terrain)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:56 2012"/>
+  </metadata>
+</svg>

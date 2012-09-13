@@ -51,6 +51,10 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
   mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
 
+  mAnnotationFormatComboBox->insertItem( 0, tr( "Decimal" ) );
+  mAnnotationFormatComboBox->insertItem( 1, tr( "DegreeMinute" ) );
+  mAnnotationFormatComboBox->insertItem( 2, tr( "DegreeMinuteSecond" ) );
+
   insertAnnotationPositionEntries( mAnnotationPositionLeftComboBox );
   insertAnnotationPositionEntries( mAnnotationPositionRightComboBox );
   insertAnnotationPositionEntries( mAnnotationPositionTopComboBox );
@@ -372,6 +376,10 @@ void QgsComposerMapWidget::updateGuiElements()
       mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "No frame" ) ) );
     }
 
+    //grid annotation format
+    QgsComposerMap::GridAnnotationFormat gf = mComposerMap->gridAnnotationFormat();
+    mAnnotationFormatComboBox->setCurrentIndex(( int )gf );
+
     //grid annotation position
     initAnnotationPositionBox( mAnnotationPositionLeftComboBox, mComposerMap->gridAnnotationPosition( QgsComposerMap::Left ) );
     initAnnotationPositionBox( mAnnotationPositionRightComboBox, mComposerMap->gridAnnotationPosition( QgsComposerMap::Right ) );
@@ -457,6 +465,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mLineColorButton->blockSignals( b );
   mDrawAnnotationCheckBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
+  mAnnotationFormatComboBox->blockSignals( b );
   mAnnotationPositionLeftComboBox->blockSignals( b );
   mAnnotationPositionRightComboBox->blockSignals( b );
   mAnnotationPositionTopComboBox->blockSignals( b );
@@ -762,6 +771,20 @@ void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d 
   }
   mComposerMap->beginCommand( tr( "Annotation distance changed" ), QgsComposerMergeCommand::ComposerMapAnnotationDistance );
   mComposerMap->setAnnotationFrameDistance( d );
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mAnnotationFormatComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Annotation format changed" ) );
+  mComposerMap->setGridAnnotationFormat(( QgsComposerMap::GridAnnotationFormat )index );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();

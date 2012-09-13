@@ -39,7 +39,6 @@
 #include "qgsrenderer.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
-#include "qgslogger.h"
 #include "qgsrequesthandler.h"
 #include <QImage>
 #include <QPainter>
@@ -198,7 +197,7 @@ QDomDocument QgsWFSServer::getCapabilities()
 
   //wfs:FeatureTypeList element
   QDomElement featureTypeListElement = doc.createElement( "FeatureTypeList"/*wfs:FeatureTypeList*/ );
-  capabilityElement.appendChild( featureTypeListElement );
+  wfsCapabilitiesElement.appendChild( featureTypeListElement );
   //wfs:Operations element
   QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
   featureTypeListElement.appendChild( operationsElement );

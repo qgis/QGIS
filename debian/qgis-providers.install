@@ -6,7 +6,9 @@ usr/lib/qgis/plugins/libmemoryprovider.so
 usr/lib/qgis/plugins/libmssqlprovider.so
 usr/lib/qgis/plugins/libogrprovider.so
 usr/lib/qgis/plugins/libosmprovider.so
+usr/lib/qgis/plugins/libowsprovider.so
 usr/lib/qgis/plugins/libpostgresprovider.so
 usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
+usr/lib/qgis/plugins/libwcsprovider.so

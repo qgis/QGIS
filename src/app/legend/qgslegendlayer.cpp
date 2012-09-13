@@ -460,7 +460,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     // save as vector file
-    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsVectorFile() ) );
+    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
     // save selection as vector file
     QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
@@ -479,6 +479,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
     theMenu.addAction( showNFeaturesAction );
     theMenu.addSeparator();
+  }
+  else if ( lyr->type() == QgsMapLayer::RasterLayer )
+  {
+    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
   // properties goes on bottom of menu for consistency with normal ui standards

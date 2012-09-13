@@ -73,7 +73,6 @@ QgsMapRenderer::~QgsMapRenderer()
   delete mCachedTr;
 }
 
-
 QgsRectangle QgsMapRenderer::extent() const
 {
   return mExtent;
@@ -504,7 +503,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
       }
 
-
       if ( !ml->draw( mRenderContext ) )
       {
         emit drawError( ml );
@@ -664,14 +662,14 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
   {
     mProjectionsEnabled = enabled;
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
-    mDistArea->setProjectionsEnabled( enabled );
+    mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
     emit hasCrsTransformEnabled( enabled );
   }
 }
 
-bool QgsMapRenderer::hasCrsTransformEnabled()
+bool QgsMapRenderer::hasCrsTransformEnabled() const
 {
   return mProjectionsEnabled;
 }
@@ -704,7 +702,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   }
 }
 
-const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationCrs()
+const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationCrs() const
 {
   QgsDebugMsgLevel( "* Returning destCRS", 3 );
   QgsDebugMsgLevel( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ), 3 );
@@ -767,7 +765,6 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
   return split;
 }
 
-
 QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
 {
   QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
@@ -778,6 +775,28 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     try
     {
       extent = tr( theLayer )->transformBoundingBox( extent );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
+    }
+  }
+
+  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+
+  return extent;
+}
+
+QgsRectangle QgsMapRenderer::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent )
+{
+  QgsDebugMsg( QString( "layer sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
+  QgsDebugMsg( QString( "layer destCRS = " + tr( theLayer )->destCRS().authid() ) );
+  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      extent = tr( theLayer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {

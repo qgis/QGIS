@@ -24,6 +24,7 @@
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+#include "qgscomposerframe.h"
 
 
 #include <limits>
@@ -41,7 +42,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , QGraphicsRectItem( 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
-    , mFrame( true )
+    , mFrame( false )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -54,7 +55,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
-    , mFrame( true )
+    , mFrame( false )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -380,9 +381,9 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-  beginCommand( tr( "Change item position" ) );
+  beginItemCommand( tr( "Change item position" ) );
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
-  endCommand();
+  endItemCommand();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;
@@ -724,6 +725,8 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   QTransform t;
   t.translate( xTranslation, yTranslation );
   setTransform( t );
+
+  emit sizeChanged();
 }
 
 void QgsComposerItem::drawBackground( QPainter* p )

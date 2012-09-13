@@ -75,14 +75,14 @@ void QgsMarkerCatalogue::refreshList()
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QDir dir( svgPaths[i] );
-    foreach( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       svgPaths.insert( i + 1, dir.path() + "/" + item );
     }
 
     QgsDebugMsg( QString( "Looking for svgs in %1" ).arg( dir.path() ) );
 
-    foreach( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
       // TODO test if it is correct SVG
       mList.append( "svg:" + dir.path() + "/" + item );

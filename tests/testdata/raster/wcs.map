@@ -1,0 +1,209 @@
+
+MAP
+  NAME WCS
+  STATUS ON
+  SHAPEPATH "/path/to/qgis/tests/testdata/raster"
+
+  OUTPUTFORMAT
+    # NAME is used in 1.0.0 as format in capabilities and describe coverage
+    # in 1.1 the MIMETYPE is used instead
+    NAME "GEOTIFFBYTE" 
+    DRIVER "GDAL/GTiff"
+    # MIMETYPE is used as format by 1.1
+    MIMETYPE "image/x-tiff-byte" 
+    # IMAGEMODE: standard modes: PC256, RGB, RGBA
+    #            WCS (GDAL) modes: BYTE, INT16, FLOAT32
+    IMAGEMODE "BYTE"
+    EXTENSION "tif"
+  END
+
+  OUTPUTFORMAT
+    NAME "GEOTIFFINT16" 
+    DRIVER "GDAL/GTiff"
+    MIMETYPE "image/x-tiff-int16"
+    IMAGEMODE "INT16"
+    EXTENSION "tif"
+  END
+
+  OUTPUTFORMAT
+    NAME "GEOTIFFFLOAT32" 
+    DRIVER "GDAL/GTiff"
+    MIMETYPE "image/x-tiff-float32"
+    IMAGEMODE "FLOAT32"
+    EXTENSION "tif"
+  END
+
+  # Color table is not currently supported by UMN Mapserver
+  #OUTPUTFORMAT
+    #NAME "GEOTIFFINT8_COLORTABLE"
+    #DRIVER "GDAL/GTiff"
+    #MIMETYPE "image/tiff"
+    #IMAGEMODE "PC256"
+    #EXTENSION "tif"
+  #END
+
+  WEB
+    METADATA
+      "wcs_label"               "Quantum GIS WCS Test"
+      "wcs_description"         "Test server to be used by Quantum GIS test suite"
+      #"wcs_onlineresource"      "http://127.0.0.1/cgi-bin/mapserv?" ### recommended
+      "wcs_crs"                 "EPSG:4326"
+      "wcs_fees"                "none"
+      "wcs_accessconstraints"   "none"
+      "wcs_keywordlist"         "qgis,wcs,test"
+      "wcs_metadatalink_type"   "TC211"
+      "wcs_metadatalink_format"  "text/plain"
+      "wcs_metadatalink_href"    "http://someurl.com"
+      "wcs_address"              "none"
+      "wcs_city"                 "none"
+      "wcs_stateorprovince"      "none"
+      "wcs_postcode"             "none"
+      "wcs_country"              "none"
+      "wcs_contactelectronicmailaddress" "blah@blah"
+      "wcs_contactperson"            "none"
+      "wcs_contactorganization"      "none"
+      "wcs_contactposition"          "none"
+      "wcs_contactvoicetelephone"    "none"
+      "wcs_contactfacimiletelephone" "613-555-1235"
+      "wcs_enable_request"            "*"
+    END
+  END
+
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  LAYER
+    NAME band3_int16_noct_epsg4326
+    METADATA
+      "wcs_label"           "band3_int16_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "-32768"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFINT16"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band3_int16_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band1_int16_noct_epsg4326
+    METADATA
+      "wcs_label"           "band1_int16_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "-32768"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFINT16"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band1_int16_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band1_float32_noct_epsg4326
+    METADATA
+      "wcs_label"           "band1_float32_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "nan"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFFLOAT32"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band1_float32_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band3_byte_noct_epsg4326
+    METADATA
+      "wcs_label"           "band3_byte_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "255"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFBYTE"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band3_byte_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band1_byte_ct_epsg4326
+    METADATA
+      "wcs_label"           "band1_byte_ct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "255"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFBYTE"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band1_byte_ct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band3_float32_noct_epsg4326
+    METADATA
+      "wcs_label"           "band3_float32_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "nan"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFFLOAT32"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band3_float32_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+
+  LAYER
+    NAME band1_byte_noct_epsg4326
+    METADATA
+      "wcs_label"           "band1_byte_noct_epsg4326"       ### required
+      "wcs_rangeset_name"   "Range1"   ### required to support DescribeCoverage request
+      "wcs_rangeset_label"  "My Label" ### required to support DescribeCoverage request
+      "wcs_rangeset_nullvalue" "255"
+      "wcs_srs"             "EPSG:4326 EPSG:900913" # native must be first!
+      "wcs_formats"         "GEOTIFFBYTE"
+      #"wcs_nativeformat"    "geotiff"
+    END
+    TYPE RASTER ### required
+    STATUS ON
+    DATA band1_byte_noct_epsg4326.tif
+    PROJECTION
+      "init=epsg:4326"
+    END
+  END
+END
+

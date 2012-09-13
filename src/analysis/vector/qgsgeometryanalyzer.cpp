@@ -958,7 +958,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
   QgsGeometry* lrsGeom = 0;
   QgsFeature lineFeature;
-  double measure1, measure2;
+  double measure1, measure2 = 0.0;
 
   int nEventFeatures = eventLayer->pendingFeatureCount();
   int featureCounter = 0;
@@ -1271,7 +1271,7 @@ unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( unsigned char* ptr, 
 {
   int* nPoints = ( int* ) ptr;
   ptr += sizeof( int );
-  double prevx, prevy, prevz;
+  double prevx = 0.0, prevy = 0.0, prevz = 0.0;
   double *x, *y, *z;
   QgsPolyline currentLine;
 
@@ -1323,7 +1323,7 @@ unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( unsigned char* ptr, Qg
 {
   int* nPoints = ( int* ) ptr;
   ptr += sizeof( int );
-  double prevx, prevy, prevz;
+  double prevx = 0.0, prevy = 0.0, prevz = 0.0;
   double *x, *y, *z;
 
   QgsPoint pt1, pt2;

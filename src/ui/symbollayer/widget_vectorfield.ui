@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>291</height>
+    <width>315</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <property name="margin">
+    <number>1</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="mXAttributeLabel">
      <property name="text">
@@ -21,7 +24,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
+   <item row="0" column="1">
     <widget class="QComboBox" name="mXAttributeComboBox"/>
    </item>
    <item row="1" column="0">
@@ -31,7 +34,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2">
+   <item row="1" column="1">
     <widget class="QComboBox" name="mYAttributeComboBox"/>
    </item>
    <item row="2" column="0">
@@ -41,98 +44,102 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
+   <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="mScaleSpinBox"/>
    </item>
-   <item row="4" column="0" rowspan="2" colspan="2">
-    <widget class="QGroupBox" name="mFieldTypeGroupBox">
-     <property name="title">
-      <string>Vector field type</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mCartesianRadioButton">
-        <property name="text">
-         <string>Cartesian</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="mPolarRadioButton">
-        <property name="text">
-         <string>Polar</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QRadioButton" name="mHeightRadioButton">
-        <property name="text">
-         <string>Height only</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="2">
-    <widget class="QGroupBox" name="mAngleUnitsGroupBox">
-     <property name="title">
-      <string>Angle units</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mDegreesRadioButton">
-        <property name="text">
-         <string>Degrees</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="mRadiansRadioButton">
-        <property name="text">
-         <string>Radians</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="5" column="2" colspan="2">
-    <widget class="QGroupBox" name="mAngleOrientationGroupBox">
-     <property name="title">
-      <string>Angle orientation</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0">
+   <item row="3" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QGroupBox" name="mFieldTypeGroupBox">
+         <property name="title">
+          <string>Vector field type</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="mHeightRadioButton">
+            <property name="text">
+             <string>Height only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mPolarRadioButton">
+            <property name="text">
+             <string>Polar</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mCartesianRadioButton">
+            <property name="text">
+             <string>Cartesian</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mAngleUnitsGroupBox">
+         <property name="title">
+          <string>Angle units</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mDegreesRadioButton">
+            <property name="text">
+             <string>Degrees</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mRadiansRadioButton">
+            <property name="text">
+             <string>Radians</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="mAngleOrientationGroupBox">
+       <property name="title">
+        <string>Angle orientation</string>
+       </property>
        <widget class="QRadioButton" name="mCounterclockwiseFromEastRadioButton">
+        <property name="geometry">
+         <rect>
+          <x>17</x>
+          <y>52</y>
+          <width>183</width>
+          <height>21</height>
+         </rect>
+        </property>
         <property name="text">
          <string>Counterclockwise from east</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="0">
        <widget class="QRadioButton" name="mClockwiseFromNorthRadioButton">
+        <property name="geometry">
+         <rect>
+          <x>17</x>
+          <y>25</y>
+          <width>146</width>
+          <height>21</height>
+         </rect>
+        </property>
         <property name="text">
          <string>Clockwise from north</string>
         </property>
        </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mLineStyleLabel">
-     <property name="text">
-      <string>LineStyle</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QPushButton" name="mLineStylePushButton">
-     <property name="text">
-      <string>change</string>
-     </property>
-    </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

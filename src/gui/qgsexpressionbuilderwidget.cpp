@@ -48,7 +48,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
   connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
-  foreach( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
+  foreach ( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -74,7 +74,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
                 .arg( tr( "'Dia' || Diameter" ) ) );
   registerItem( tr( "Operators" ), "LIKE", " LIKE " );
   registerItem( tr( "Operators" ), "ILIKE", " ILIKE " );
-  registerItem( tr( "Operators" ), "IS", " IS NOT " );
+  registerItem( tr( "Operators" ), "IS", " IS " );
   registerItem( tr( "Operators" ), "OR", " OR " );
   registerItem( tr( "Operators" ), "AND", " AND " );
   registerItem( tr( "Operators" ), "NOT", " NOT " );
@@ -166,7 +166,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
     return;
 
   QStringList fieldNames;
-  foreach( QgsField field, fields )
+  foreach ( QgsField field, fields )
   {
     QString fieldName = field.name();
     fieldNames << fieldName;
@@ -189,7 +189,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit
 
   QList<QVariant> values;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
-  foreach( QVariant value, values )
+  foreach ( QVariant value, values )
   {
     if ( value.isNull() )
       mValueListWidget->addItem( "NULL" );

@@ -205,6 +205,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   QgsApplication::registerOgrDrivers();
 
+  QSettings settings;
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() ? "" : 0 );
+
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
   // make connection to the data source
@@ -707,7 +710,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
     }
 
     OGRFeatureDefnH featureDefinition = OGR_F_GetDefnRef( fet );
-    QString featureTypeName = featureDefinition ? QString( OGR_FD_GetName( featureDefinition ) ) : QString( "" );
+    QString featureTypeName = featureDefinition ? FROM8( OGR_FD_GetName( featureDefinition ) ) : QString( "" );
     feature.setFeatureId( OGR_F_GetFID( fet ) );
     feature.clearAttributeMap();
     feature.setTypeName( featureTypeName );
@@ -1146,7 +1149,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
-  foreach( int attr, attrsLst )
+  foreach ( int attr, attrsLst )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
@@ -1308,7 +1311,7 @@ bool QgsOgrProvider::createSpatialIndex()
 {
   QgsCPLErrorHandler handler;
 
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
@@ -1322,7 +1325,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
 bool QgsOgrProvider::createAttributeIndex( int field )
 {
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
   QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
   QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
@@ -1352,7 +1355,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     returnvalue = false;
   }
 
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
@@ -2229,7 +2232,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
   }
   const QgsField& fld = attIt.value();
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
@@ -2269,7 +2272,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )

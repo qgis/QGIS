@@ -133,6 +133,13 @@ class CORE_EXPORT QgsPoint
      */
     QString toDegreesMinutesSeconds( int thePrecision ) const;
 
+    /** Return a string representation as degrees minutes.
+     *  Its up to the calling function to ensure that this point can
+     *  be meaningfully represented in this form.
+     *  @note added in QGIS 1.9
+     */
+    QString toDegreesMinutes( int thePrecision ) const;
+
 
     /*! Return the well known text representation for the point.
      * The wkt is created without an SRID.

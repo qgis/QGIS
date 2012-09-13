@@ -109,6 +109,9 @@ class QgisInterface : QObject
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow()=0;
 
+    /** Return the message bar of the main app */
+    virtual QgsMessageBar * messageBar() = 0;
+
     /** Return pointers to the composer views of the running instance (currently only one)*/
     //virtual QList<QgsComposerView*> composerViews()=0;
 

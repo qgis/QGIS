@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(plugins)
+ADD_SUBDIRECTORY(api)
 
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -38,13 +39,6 @@ INCLUDE_DIRECTORIES(
     ../src/core/symbology-ng
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
-
-
-# In Windef.h there are min() and max() macros that interfere with the usage
-# of std::numeric_limits<T>::min() and :max() in qgsrasterbands.h.
-IF(MSVC)
-  ADD_DEFINITIONS(-DNOMINMAX)
-ENDIF(MSVC)
 
 IF(PYQT4_VERSION_NUM LESS 263680)	# 0x040600
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} PROXY_FACTORY)
@@ -104,13 +98,16 @@ SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
 
+ADD_SUBDIRECTORY(iconConsole)
+ADD_SUBDIRECTORY(helpConsole)
+
 ADD_CUSTOM_COMMAND(TARGET compile_python_files
        POST_BUILD
        COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}
        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-FOREACH(file __init__.py utils.py console.py)
+FOREACH(file __init__.py utils.py console.py console_sci.py help.py)
   ADD_CUSTOM_COMMAND(TARGET compile_python_files
          POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy ${file} ${QGIS_PYTHON_OUTPUT_DIRECTORY}
@@ -122,3 +119,6 @@ ENDFOREACH(file)
 PYTHON_INSTALL(__init__.py ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(utils.py    ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console.py  ${QGIS_PYTHON_DIR})
+PYTHON_INSTALL(console_sci.py  ${QGIS_PYTHON_DIR})
+PYTHON_INSTALL(help.py  ${QGIS_PYTHON_DIR})
+

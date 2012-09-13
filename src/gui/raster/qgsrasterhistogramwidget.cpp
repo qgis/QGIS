@@ -124,7 +124,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     group = new QActionGroup( this );
     group->setExclusive( false );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
-    // action = new QAction( tr( "Load min/max from band" ), group );
+    action = new QAction( tr( "Reset" ), group );
+    action->setData( QVariant( "Load reset" ) );
+    menu->addAction( action );
+
+    // Load min/max needs 3 params (method, extent, accuracy), cannot put it in single item
+#if 0
     action = new QAction( tr( "Load min/max" ), group );
     action->setSeparator( true );
     menu->addAction( action );
@@ -143,14 +148,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action = new QAction( tr( "Use stddev (custom)" ), group );
     action->setData( QVariant( "Load stddev" ) );
     menu->addAction( action );
-    action = new QAction( tr( "Reset" ), group );
-    action->setData( QVariant( "Load reset" ) );
-    menu->addAction( action );
     action = new QAction( tr( "Load for each band" ), group );
     action->setData( QVariant( "Load apply all" ) );
     action->setCheckable( true );
     action->setChecked( mHistoLoadApplyAll );
     menu->addAction( action );
+#endif
 
     //others
     menu->addSeparator( );
@@ -204,8 +207,8 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
   const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
-  bool myIgnoreOutOfRangeFlag = true;
-  bool myThoroughBandScanFlag = false;
+  //bool myIgnoreOutOfRangeFlag = true;
+  //bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
 
   // if forceComputeFlag = false make sure raster has cached histogram, else return false
@@ -215,7 +218,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt )
     {
-      if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
+      //if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
+      int sampleSize = 250000; // number of sample cells
+      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
       {
         QgsDebugMsg( QString( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
         return false;
@@ -232,7 +237,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
-    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    //mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    int sampleSize = 250000; // number of sample cells
+    mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
   }
 
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
@@ -399,8 +406,11 @@ void QgsRasterHistogramWidget::refreshHistogram()
       if ( ! mySelectedBands.contains( myIteratorInt ) )
         continue;
     }
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
+    int sampleSize = 250000; // number of sample cells
+    //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( myIteratorInt );
     // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
     mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
@@ -414,8 +424,10 @@ void QgsRasterHistogramWidget::refreshHistogram()
     // calculate first bin x value and bin step size if not Byte data
     if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QgsRasterDataProvider::Byte )
     {
-      myBinXStep = myRasterBandStats.range / BINCOUNT;
-      myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
+      //myBinXStep = myRasterBandStats.range / BINCOUNT;
+      //myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
+      myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / BINCOUNT;
+      myBinX = myHistogram.minimum + myBinXStep / 2.0;
     }
     else
     {
@@ -425,7 +437,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
-      int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      //int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      int myBinValue = myHistogram.histogramVector.at( myBin );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       data << QPointF( myBinX, myBinValue );
 #else
@@ -440,13 +453,13 @@ void QgsRasterHistogramWidget::refreshHistogram()
     mypCurve->setData( myX2Data, myY2Data );
 #endif
     mypCurve->attach( mpPlot );
-    if ( myFirstIteration || mHistoMin > myRasterBandStats.minimumValue )
+    if ( myFirstIteration || mHistoMin > myHistogram.minimum )
     {
-      mHistoMin = myRasterBandStats.minimumValue;
+      mHistoMin = myHistogram.minimum;
     }
-    if ( myFirstIteration || mHistoMax < myRasterBandStats.maximumValue )
+    if ( myFirstIteration || mHistoMax < myHistogram.maximum )
     {
-      mHistoMax = myRasterBandStats.maximumValue;
+      mHistoMax = myHistogram.maximum;
     }
     QgsDebugMsg( QString( "computed histo min = %1 max = %2" ).arg( mHistoMin ).arg( mHistoMax ) );
     myFirstIteration = false;
@@ -659,11 +672,13 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
     return;
   }
   // Load actions
-  // TODO - seperate calculations from rendererwidget so we can do them without
+  // TODO - separate calculations from rendererwidget so we can do them without
   else if ( actionName.left( 5 ) == "Load " && mRendererWidget )
   {
     QVector<int> myBands;
+#if 0
     double minMaxValues[2];
+#endif
     bool ok = false;
 
     // find which band(s) need updating (all or current)
@@ -680,20 +695,23 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
     myBands << cboHistoBand->currentIndex() + 1;
 
     // get stddev value once if needed
+    /*
     double myStdDev = 1.0;
     if ( actionName == "Load stddev" )
     {
       myStdDev = mRendererWidget->stdDev().toDouble();
     }
+    */
 
     // don't update markers every time
     leHistoMin->blockSignals( true );
     leHistoMax->blockSignals( true );
 
     // process each band
-    foreach( int theBandNo, myBands )
+    foreach ( int theBandNo, myBands )
     {
       ok = false;
+#if 0
       if ( actionName == "Load actual" )
       {
         ok = mRendererWidget->bandMinMax( QgsRasterRendererWidget::Actual,
@@ -714,6 +732,7 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
       {
         ok = mRendererWidget->bandMinMaxFromStdDev( myStdDev, theBandNo, minMaxValues );
       }
+#endif
 
       // apply current item
       cboHistoBand->setCurrentIndex( theBandNo - 1 );
@@ -721,17 +740,19 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
       {
         leHistoMin->clear();
         leHistoMax->clear();
+#if 0
         // TODO - fix gdal provider: changes data type when nodata value is not found
         // this prevents us from getting proper min and max values here
-        // minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
-        //                                                                 mRasterLayer->dataProvider()->dataType( theBandNo ) );
-        // minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
-        //                                                                 mRasterLayer->dataProvider()->dataType( theBandNo ) );
+        minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible(
+                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+        minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible(
+                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
       }
       else
       {
         leHistoMin->setText( QString::number( minMaxValues[0] ) );
         leHistoMax->setText( QString::number( minMaxValues[1] ) );
+#endif
       }
       applyHistoMin( );
       applyHistoMax( );

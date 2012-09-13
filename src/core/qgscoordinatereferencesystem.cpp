@@ -574,7 +574,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     // split on spaces followed by a plus sign (+) to deal
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
-    foreach( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    foreach ( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -694,8 +694,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   QFileInfo myInfo( myDatabaseFileName );
   if ( !myInfo.exists() )
   {
-    QgsDebugMsg( "failed : " + myDatabaseFileName +
-                 " does not exist!" );
+    QgsDebugMsg( "failed : " + myDatabaseFileName + " does not exist!" );
     return myMap;
   }
 
@@ -719,8 +718,18 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
       myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
       myMap[myFieldName] = myFieldValue;
     }
+    if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+    {
+      QgsDebugMsg( "Multiple records found in srs.db" );
+      myMap.clear();
+    }
   }
   else
+  {
+    QgsDebugMsg( "failed :  " + theSql );
+  }
+
+  if ( myMap.empty() )
   {
     QgsDebugMsg( "trying user qgis.db" );
     sqlite3_finalize( myPreparedStatement );
@@ -754,11 +763,16 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
         myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
         myMap[myFieldName] = myFieldValue;
       }
+
+      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+      {
+        QgsDebugMsg( "Multiple records found in srs.db" );
+        myMap.clear();
+      }
     }
     else
     {
       QgsDebugMsg( "failed :  " + theSql );
-
     }
   }
   sqlite3_finalize( myPreparedStatement );
@@ -1563,7 +1577,7 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 
-  foreach( QString csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  foreach ( QString csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 
@@ -1589,6 +1603,14 @@ bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
       bool ok;
       int epsg = line.left( pos ).toInt( &ok );
       if ( !ok )
+        continue;
+
+      // some CRS are known to fail (see http://trac.osgeo.org/gdal/ticket/2900)
+      if ( epsg == 2218 || epsg == 2221 || epsg == 2296 || epsg == 2297 || epsg == 2298 || epsg == 2299 || epsg == 2300 || epsg == 2301 || epsg == 2302 ||
+           epsg == 2303 || epsg == 2304 || epsg == 2305 || epsg == 2306 || epsg == 2307 || epsg == 2963 || epsg == 2985 || epsg == 2986 || epsg == 3052 ||
+           epsg == 3053 || epsg == 3139 || epsg == 3144 || epsg == 3145 || epsg == 3173 || epsg == 3295 || epsg == 3993 || epsg == 4087 || epsg == 4088 ||
+           epsg == 5017 || epsg == 5221 || epsg == 5224 || epsg == 5225 || epsg == 5514 || epsg == 5515 || epsg == 5516 || epsg == 5819 || epsg == 5820 ||
+           epsg == 5821 || epsg == 32600 || epsg == 32663 || epsg == 32700 )
         continue;
 
       if ( OSRImportFromEPSG( crs, epsg ) != OGRERR_NONE )
@@ -1762,7 +1784,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   sql = "DELETE FROM tbl_srs WHERE auth_name='EPSG' AND NOT auth_id IN (";
   QString delim;
-  foreach( int i, wkts.keys() )
+  foreach ( int i, wkts.keys() )
   {
     sql += delim + QString::number( i );
     delim = ",";
@@ -1773,9 +1795,16 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     deleted = sqlite3_changes( database );
   }
+  else
+  {
+    errors++;
+    qCritical( "Could not execute: %s [%s]\n",
+               sql.toLocal8Bit().constData(),
+               sqlite3_errmsg( database ) );
+  }
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
-  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' WHERE NOT deprecated" );
+  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated" );
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
   {
     while ( sqlite3_step( select ) == SQLITE_ROW )
@@ -1806,6 +1835,28 @@ int QgsCoordinateReferenceSystem::syncDb()
             proj4 = proj4.mid( input.size() );
             proj4 = proj4.trimmed();
           }
+
+          if ( proj4 != params )
+          {
+            sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
+                  .arg( quotedValue( proj4 ) )
+                  .arg( quotedValue( auth_name ) )
+                  .arg( quotedValue( auth_id ) );
+
+            if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) == SQLITE_OK )
+            {
+              updated++;
+              QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql ).arg( params ).arg( proj4 ), 3 );
+            }
+            else
+            {
+              qCritical( "Could not execute: %s [%s/%s]\n",
+                         sql.toLocal8Bit().constData(),
+                         sqlite3_errmsg( database ),
+                         errMsg ? errMsg : "(unknown error)" );
+              errors++;
+            }
+          }
         }
         else
         {
@@ -1819,6 +1870,13 @@ int QgsCoordinateReferenceSystem::syncDb()
 
       pj_free( pj );
     }
+  }
+  else
+  {
+    errors++;
+    qCritical( "Could not execute: %s [%s]\n",
+               sql.toLocal8Bit().constData(),
+               sqlite3_errmsg( database ) );
   }
 #endif
 

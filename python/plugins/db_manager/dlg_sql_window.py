@@ -83,7 +83,6 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		self.loadAsLayerGroup.setChecked( checked )
 		self.loadAsLayerWidget.setVisible( checked )
 
-
 	def getSql(self):
 		# If the selection obtained from an editor spans a line break, 
 		# the text will contain a Unicode U+2029 paragraph separator 
@@ -132,7 +131,6 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		self.update()
 		QApplication.restoreOverrideCursor()
 
-
 	def loadSqlLayer(self):
 		uniqueFieldName = self.uniqueCombo.currentText()
 		geomFieldName = self.geomCombo.currentText()
@@ -165,7 +163,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 			newLayerName = u"%s_%d" % (layerName, index)
 
 		# create the layer
-		layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType)
+		layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType, self.avoidSelectById.isChecked())
 		if layer.isValid():
 			QgsMapLayerRegistry.instance().addMapLayer(layer, True)
 

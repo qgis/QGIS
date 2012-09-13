@@ -96,6 +96,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
   mBufferColorButton->setColor( layerSettings.textColor );
   mLabelDistanceSpinBox->setValue( layerSettings.dist );
   mBufferSizeSpinBox->setValue( layerSettings.bufferSize );
+  mMinScaleSpinBox->setValue( layerSettings.scaleMin );
+  mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( "Left" ) );
   mValiComboBox->setCurrentIndex( mValiComboBox->findText( "Bottom" ) );
 
@@ -108,6 +110,18 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
   {
     switch ( propIt.key() )
     {
+      case QgsPalLayerSettings::Show:
+        mShowLabelChkbx->setEnabled( true );
+        mShowLabelChkbx->setChecked( attributeValues[propIt.value()].toInt() != 0 );
+        break;
+      case QgsPalLayerSettings::MinScale:
+        mMinScaleSpinBox->setEnabled( true );
+        mMinScaleSpinBox->setValue( attributeValues[propIt.value()].toInt() );
+        break;
+      case QgsPalLayerSettings::MaxScale:
+        mMaxScaleSpinBox->setEnabled( true );
+        mMaxScaleSpinBox->setValue( attributeValues[propIt.value()].toInt() );
+        break;
       case QgsPalLayerSettings::Size:
         mFontSizeSpinBox->setEnabled( true );
         mLabelFont.setPointSizeF( attributeValues[propIt.value()].toDouble() );
@@ -166,6 +180,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
       case QgsPalLayerSettings::Family:
         mLabelFont.setFamily( attributeValues[propIt.value()].toString() );
         break;
+      default:
+        break;
     }
   }
   mFontPushButton->setEnabled( labelFontEditingPossible() );
@@ -174,6 +190,9 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 
 void QgsLabelPropertyDialog::disableGuiElements()
 {
+  mShowLabelChkbx->setEnabled( false );
+  mMinScaleSpinBox->setEnabled( false );
+  mMaxScaleSpinBox->setEnabled( false );
   mFontSizeSpinBox->setEnabled( false );
   mBufferSizeSpinBox->setEnabled( false );
   mFontPushButton->setEnabled( false );
@@ -189,6 +208,9 @@ void QgsLabelPropertyDialog::disableGuiElements()
 
 void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
+  mShowLabelChkbx->blockSignals( block );
+  mMinScaleSpinBox->blockSignals( block );
+  mMaxScaleSpinBox->blockSignals( block );
   mFontSizeSpinBox->blockSignals( block );
   mBufferSizeSpinBox->blockSignals( block );
   mFontPushButton->blockSignals( block );
@@ -214,6 +236,21 @@ void QgsLabelPropertyDialog::fillValiComboBox()
   mValiComboBox->addItem( "Base" );
   mValiComboBox->addItem( "Half" );
   mValiComboBox->addItem( "Top" );
+}
+
+void QgsLabelPropertyDialog::on_mShowLabelChkbx_toggled( bool chkd )
+{
+  insertChangedValue( QgsPalLayerSettings::Show, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )
+{
+  insertChangedValue( QgsPalLayerSettings::MinScale, i );
+}
+
+void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged( int i )
+{
+  insertChangedValue( QgsPalLayerSettings::MaxScale, i );
 }
 
 void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
@@ -261,6 +298,7 @@ void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
     insertChangedValue( QgsPalLayerSettings::Bold, mLabelFont.bold() );
     insertChangedValue( QgsPalLayerSettings::Italic, mLabelFont.italic() );
     insertChangedValue( QgsPalLayerSettings::Underline, mLabelFont.underline() );
+    insertChangedValue( QgsPalLayerSettings::Strikeout, mLabelFont.strikeOut() );
   }
 }
 

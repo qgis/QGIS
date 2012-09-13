@@ -204,7 +204,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   // load identify radius from settings
   QSettings settings;
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
 
   if ( identifyValue <= 0.0 )
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
@@ -245,7 +245,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   QgsDistanceArea calc;
   if ( !featureList.count() == 0 )
   {
-    calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
+    calc.setEllipsoidalMode( mCanvas->hasCrsTransformEnabled() );
     calc.setEllipsoid( ellipsoid );
     calc.setSourceCrs( layer->crs().srsid() );
   }
@@ -387,43 +387,13 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   // Helper for converting between meters and feet
   // The parameter &u is out only...
 
+  // Get the canvas units
   QGis::UnitType myUnits = mCanvas->mapUnits();
-  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet ) &&
-      calc.ellipsoid() != "NONE" &&
-      calc.hasCrsTransformEnabled() )
-  {
-    // Measuring on an ellipsoid returns meters, and so does using projections???
-    myUnits = QGis::Meters;
-    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
-  }
 
   // Get the units for display
   QSettings settings;
-  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
-  // Only convert between meters and feet
-  if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
-  {
-    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
-    measure /= 0.3048;
-    if ( isArea )
-    {
-      measure /= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Feet;
-  }
-  if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
-  {
-    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
-    measure *= 0.3048;
-    if ( isArea )
-    {
-      measure *= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Meters;
-  }
-
+  calc.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;
 }

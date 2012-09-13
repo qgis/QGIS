@@ -53,10 +53,10 @@ QgsDecorationItem::~QgsDecorationItem()
 
 }
 
-void QgsDecorationItem::update() 
-{ 
+void QgsDecorationItem::update()
+{
   saveToProject();
-  QgisApp::instance()->mapCanvas()->refresh(); 
+  QgisApp::instance()->mapCanvas()->refresh();
 }
 
 void QgsDecorationItem::projectRead()
@@ -70,11 +70,11 @@ void QgsDecorationItem::saveToProject()
   QgsDebugMsg( "Entered" );
   QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
 }
-void QgsDecorationItem::setName( const char *name ) 
-{ 
-  mName = name; 
+void QgsDecorationItem::setName( const char *name )
+{
+  mName = name;
   mNameConfig = name;
   mNameConfig.remove( " " );
   mNameTranslated = tr( name );
-  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3").arg(mName).arg(mNameConfig).arg(mNameTranslated) );
+  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName ).arg( mNameConfig ).arg( mNameTranslated ) );
 }

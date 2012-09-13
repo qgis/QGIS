@@ -77,41 +77,38 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 {
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
+
 void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
     customConfigPath = QDir::homePath() + QString( "/.qgis/" );
   }
+
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+
   // check if QGIS is run from build directory (not the install directory)
-  QDir appDir( applicationDirPath() );
-#ifndef _MSC_VER
-#define SOURCE_PATH "source_path.txt"
-#else
-#define SOURCE_PATH "../source_path.txt"
-#endif
-  if ( appDir.exists( SOURCE_PATH ) )
+  QFile f;
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" )
   {
-    QFile f( applicationDirPath() + "/" + SOURCE_PATH );
-    if ( f.open( QIODevice::ReadOnly ) )
-    {
-      ABISYM( mRunningFromBuildDir ) = true;
-      ABISYM( mBuildSourcePath ) = f.readAll();
-#if _MSC_VER
-      QStringList elems = applicationDirPath().split( "/", QString::SkipEmptyParts );
-      ABISYM( mCfgIntDir ) = elems.last();
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/../..";
-#elif defined(Q_WS_MACX)
-      ABISYM( mBuildOutputPath ) = applicationDirPath();
-#else
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/.."; // on linux
+    f.setFileName( prefixPath + path + "/path.txt" );
+    if ( f.exists() )
+      break;
+  }
+  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
+  {
+    ABISYM( mRunningFromBuildDir ) = true;
+    ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
+    ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
+    qDebug( "Running from build directory!" );
+    qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
+    qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
+#ifdef _MSC_VER
+    ABISYM( mCfgIntDir ) = prefixPath.split( "/", QString::SkipEmptyParts ).last();
+    qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
 #endif
-      qDebug( "Running from build directory!" );
-      qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toAscii().data() );
-      qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toAscii().data() );
-    }
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
@@ -555,12 +552,12 @@ const QString QgsApplication::svgPath()
 
 const QString QgsApplication::userStyleV2Path()
 {
-  return qgisSettingsDirPath() + QString( "symbology-ng-style.xml" );
+  return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
 }
 
 const QString QgsApplication::defaultStyleV2Path()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
 }
 
 const QString QgsApplication::libraryPath()

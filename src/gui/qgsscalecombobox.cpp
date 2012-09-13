@@ -68,6 +68,10 @@ void QgsScaleComboBox::showPopup()
 {
   QComboBox::showPopup();
 
+  if ( !currentText().contains( ':' ) )
+  {
+    return;
+  }
   QStringList parts = currentText().split( ':' );
   bool ok;
   int idx = 0;

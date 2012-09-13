@@ -15,6 +15,7 @@
 #include "qgslabelpreview.h"
 
 #include <QPainter>
+#include <QFontMetrics>
 
 #include "qgspallabeling.h"
 
@@ -29,10 +30,12 @@ void QgsLabelPreview::setTextColor( QColor color )
   update();
 }
 
-void QgsLabelPreview::setBuffer( double size, QColor color )
+void QgsLabelPreview::setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill )
 {
   mBufferSize = size * 88 / 25.4; //assume standard dpi for preview
   mBufferColor = color;
+  mBufferJoinStyle = joinStyle;
+  mBufferNoFill = noFill;
   update();
 }
 
@@ -43,11 +46,27 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
 
   p.setRenderHint( QPainter::Antialiasing );
   p.setFont( font() );
-  p.translate( 10, 20 ); // uhm...
+  QFontMetrics fm( font() );
+
+  // otherwise thin buffers don't look like those on canvas
+  if ( mBufferSize != 0 && mBufferSize < 1 )
+    mBufferSize = 1;
+
+  double xtrans = 0;
+  if ( mBufferSize != 0 )
+    xtrans = mBufferSize / 4;
+
+  p.translate( xtrans, fm.ascent() + 4 );
 
   if ( mBufferSize != 0 )
-    QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor );
+    QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor, mBufferJoinStyle, mBufferNoFill );
 
-  p.setPen( mTextColor );
-  p.drawText( 0, 0, text() );
+  QPainterPath path;
+  path.addText( 0, 0, font(), text() );
+  p.setPen( Qt::NoPen );
+  p.setBrush( mTextColor );
+  p.drawPath( path );
+
+//  p.setPen( mTextColor );
+//  p.drawText( 0, 0, text() );
 }

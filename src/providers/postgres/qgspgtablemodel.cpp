@@ -126,7 +126,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
 
   if ( detailsFromThread )
   {
-    foreach( QStandardItem *item, childItemList )
+    foreach ( QStandardItem *item, childItemList )
     {
       item->setFlags( item->flags() & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled ) );
     }
@@ -244,7 +244,7 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
         row[ dbtmSrid ]->setText( tr( "Enter..." ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -261,7 +261,7 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
 
         row[ dbtmSrid ]->setText( sridList.at( 0 ) );
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
         }

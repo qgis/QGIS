@@ -23,6 +23,7 @@
 #include <QDomDocument>
 
 #include "qgsfield.h"
+#include "qgsvectorlayer.h"
 
 class QgsDistanceArea;
 class QgsFeature;
@@ -121,12 +122,27 @@ class CORE_EXPORT QgsExpression
     //! Return the number used for $rownum special column
     int currentRowNumber() { return mRowNumber; }
 
+    void setScale( double scale ) { mScale = scale; }
+
+    int scale() {return mScale; }
+
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
     QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
+
+    /** This function currently replaces each expression between [% and %]
+       in the string with the result of its evaluation on the feature
+       passed as argument.
+
+       Additional substitutions can be passed through the substitutionMap
+       parameter
+    */
+    static QString replaceExpressionText( QString action, QgsFeature &feat,
+                                          QgsVectorLayer* layer,
+                                          const QMap<QString, QVariant> *substitutionMap = 0 );
 
     //
 
@@ -245,7 +261,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeList() {}
-        virtual ~NodeList() { foreach( Node* n, mList ) delete n; }
+        virtual ~NodeList() { foreach ( Node* n, mList ) delete n; }
         void append( Node* node ) { mList.append( node ); }
         int count() { return mList.count(); }
         QList<Node*> list() { return mList; }
@@ -360,8 +376,8 @@ class CORE_EXPORT QgsExpression
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
 
-        virtual QStringList referencedColumns() const { QStringList lst( mNode->referencedColumns() ); foreach( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = false; foreach( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
+        virtual QStringList referencedColumns() const { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
+        virtual bool needsGeometry() const { bool needs = false; foreach ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
         virtual void accept( Visitor& v ) { v.visit( this ); }
 
       protected:
@@ -387,8 +403,8 @@ class CORE_EXPORT QgsExpression
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
         static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
-        virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach ( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
+        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) { v.visit( this ); }
 
       protected:
@@ -458,7 +474,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
-        ~NodeCondition() { delete mElseExp; foreach( WhenThen* cond, mConditions ) delete cond; }
+        ~NodeCondition() { delete mElseExp; foreach ( WhenThen* cond, mConditions ) delete cond; }
 
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
@@ -503,6 +519,8 @@ class CORE_EXPORT QgsExpression
     // internally used to create an empty expression
     QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ), mCalc( NULL ) {}
 
+    void initGeomCalculator();
+
     QString mExpression;
     Node* mRootNode;
 
@@ -510,8 +528,8 @@ class CORE_EXPORT QgsExpression
     QString mEvalErrorString;
 
     int mRowNumber;
+    double mScale;
 
-    void initGeomCalculator();
     QgsDistanceArea* mCalc;
 };
 

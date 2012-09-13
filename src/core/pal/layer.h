@@ -75,6 +75,7 @@ namespace pal
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
+      bool getDisplayAll() const { return displayAll; }
 
     protected:
       char *name; /* unique */
@@ -92,6 +93,7 @@ namespace pal
       bool obstacle;
       bool active;
       bool toLabel;
+      bool displayAll;
 
       Units label_unit;
 
@@ -126,9 +128,10 @@ namespace pal
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled whether toLablel is true
        * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal );
+      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /**
        * \brief Delete the layer

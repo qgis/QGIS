@@ -24,7 +24,7 @@ QString QgsPluginLayer::pluginLayerType()
   return mPluginLayerType;
 }
 
-void QgsPluginLayer::setExtent( const QgsRectangle & extent )
+void QgsPluginLayer::setExtent( const QgsRectangle &extent )
 {
-  mLayerExtent = extent;
+  mExtent = extent;
 }

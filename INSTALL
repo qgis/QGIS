@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Tuesday June 05, 2012
+Saturday August 04, 2012
 
 
-Last Updated: Tuesday June 05, 2012
-Last Change : Tuesday June 05, 2012
+Last Updated: Saturday August 04, 2012
+Last Change : Saturday July 21, 2012
 
 
   1. Introduction
@@ -32,7 +32,14 @@ Last Change : Tuesday June 05, 2012
     5.6. Configure the build
     5.7. Building
     5.8. Post-Install
-  6. Authors and Acknowledgments
+  6. Setting up the WCS test server on GNU/Linux
+    6.1. Preparation
+    6.2. Setup mapserver
+    6.3. Create a home page
+    6.4. Now deploy it
+    6.5. Debugging
+  7. Setting up a Jenkins Build Server
+  8. Authors and Acknowledgments
 
 
   1. Introduction
@@ -54,8 +61,8 @@ always welcome for indicating possible mistakes.
 
 You can download this document as part of the Quantum GIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
-version is also available at the wiki, see:
-http://www.qgis.org/wiki/Installation_Guide 
+version is also available at:
+http://www.qgis.org/api/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
 of the Quantum GIS project at http://www.qgis.org. More information is 
@@ -672,21 +679,22 @@ directory or add their respective directories to your PATH.
     4.1.4. Packaging
     ================
 
-To create a windows 'all in one' standalone  package under ubuntu (yes you
-read correctly) do the following:
+To create a standalone installer there is a perl script named 'creatensis.pl'
+in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
+and repackages them into an installer using NSIS.
 
-  sudo apt-get install nsis
+The script can either be run on Windows, but also can be run on Linux.
 
-Now 
+On Debian/Ubuntu you can just install the 'nsis' package.
 
-  cd qgis/ms-windows/osgeo4w
+NSIS for Windows can be downloaded at:
 
-And run the nsis creation script:
+  http://nsis.sourceforge.net
 
-  creatensis.pl
+And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
+and 'bzip2') is available at:
 
-When the script completes, it should have created a QGIS installer executable
-in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
+  http://cygwin.com
 
 
     4.1.5. Packaging your own build of QGIS
@@ -840,13 +848,13 @@ to get versions that match your current Qt installed version.
 successfull install, they're not needed anymore.
 
 
-    4.2.5. Subversion
-    =================
+    4.2.5. git
+    ==========
 
-In order to check out QGIS sources from the repository, you need Subversion
-client. This installer should work fine:
+In order to check out QGIS sources from the repository, you need a git client.
+This installer should work fine:
 
-http://www.sliksvn.com/pub/Slik-Subversion-1.6.13-win32.msi
+http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
 
 
     4.2.6. CMake
@@ -866,15 +874,9 @@ directory and move into it
   md c:\dev\cpp 
   cd c:\dev\cpp 
 
-Check out sources from SVN:
+Check out sources from GIT:
 
-For svn trunk:
-
-  svn co https://svn.osgeo.org/qgis/trunk/qgis 
-
-For svn 1.5 branch
-
-  svn co https://svn.osgeo.org/qgis/branches/Release-1_5_0 qgis1.5.0
+  git clone git://github.com/qgis/Quantum-GIS.git
 
 
     4.2.8. Compiling
@@ -1268,6 +1270,42 @@ Double-click the source tarball, then cd to the source folder and:
   sudo make install
 
 
+    5.3.1. Optional Setup: ccache
+    =============================
+
+Setup ccache to significantly speed up compile times after initial build.
+(Switching git branches will again cause longer initial build times unless
+separate build directories are used for each branch.)
+
+Get the latest source release from here:
+
+http://ccache.samba.org/
+
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the
+source folder and:
+
+  ./configure
+  make
+  sudo make install
+
+After install, symbolically link compilers to /usr/local/bin/ccache.
+(Note: this differs from instructions at http://ccache.samba.org/manual.html
+Changing the /usr/bin:/usr/local/bin order in PATH is not recommended on OS X.
+
+  sudo mkdir /usr/local/bin/compilers && cd /usr/local/bin/compilers
+  sudo ln -s ../ccache gcc
+  sudo ln -s ../ccache g++
+  sudo ln -s ../ccache cc
+  sudo ln -s ../ccache c++
+
+Add the following to the end of your ~/.bash_profile (and optionally ~/.bashrc)
+to allow your login shell to discover the symbolically linked compilers before
+/usr/bin compilers and to easily toggle using ccache off, by commenting out the
+line and starting a new login session in Terminal.
+
+  export PATH=/usr/local/bin/compilers:$PATH
+
+
   5.4. Install development frameworks for QGIS dependencies
   =========================================================
 
@@ -1456,7 +1494,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 
   python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 
-Snow Leopard system Python
+Lion system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
@@ -1665,6 +1703,8 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+  -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
+  -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
   -D BISON_EXECUTABLE=/usr/local/bin/bison \
@@ -1687,8 +1727,10 @@ script and add arch flags to the configuration:
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
-  -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
-  -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+  -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
+  -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
+  -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
+  -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
   -D BISON_EXECUTABLE=/usr/local/bin/bison \
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
   ..
@@ -1762,7 +1804,203 @@ for instructions on setting up Apache fastcgi and testing Mapserver, including
 installing the mod-fastcgi that is missing on Lion.
 
 
-  6. Authors and Acknowledgments
+  6. Setting up the WCS test server on GNU/Linux
+  ==============================================
+
+Requires: Ubuntu / Debian derived distro
+
+These notes are for Ubuntu - other versions and Debian derived distros may
+require slight variations in package names.
+
+
+  6.1. Preparation
+  ================
+
+Note the git repo below will change to the default QGIS repo once this work
+is integrated into master.
+
+  git remote add blazek git://github.com/blazek/Quantum-GIS.git
+  git fetch blazek
+  git branch --track wcs2 blazek/wcs2
+  git checkout wcs2
+  cd /var/www/
+  sudo mkdir wcs
+  sudo chown timlinux wcs
+  cd wcs/
+  mkdir cgi-bin
+  cd cgi-bin/
+
+
+  6.2. Setup mapserver
+  ====================
+
+`sudo apt-get install cgi-mapserver`
+
+Set the contents of cgi-bin/wcstest-1.9.0 to:
+
+    #! /bin/sh
+    MS_MAPFILE=/var/www/wcs/testdata/qgis-1.9.0/raster/wcs.map
+    export MS_MAPFILE
+    /usr/lib/cgi-bin/mapserv
+
+Then do:
+
+    chmod +x cgi-bin/wcstest-1.9.0
+    mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
+    cd /var/www/wcs/testdata/qgis-1.9.0/raster/
+    cp -r /home/timlinux/Quantum-GIS/tests/testdata/raster/* .
+
+Edit wcs.map and set the shapepath to this:
+
+    SHAPEPATH "/var/www/wcs/testdata/qgis-1.9.0/raster"
+
+Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
+
+    <VirtualHost *:80>
+    ServerName wcs.qgis.org
+    ServerAdmin tim@linfiniti.com
+  
+    LogLevel warn
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"%{forensic-id}n\"" combined
+    CustomLog /var/log/apache2/wcs_qgis.org/access.log combined
+    ErrorLog /var/log/apache2/wcs_qgis.org/error.log
+  
+    DocumentRoot /var/www/wcs/html
+  
+    ScriptAlias /cgi-bin/ /var/www/wcs/cgi-bin/
+    <Directory "/var/www/wcs/cgi-bin">
+          AllowOverride None
+          Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+          Order allow,deny
+          Allow from all
+    </Directory>
+  
+    RewriteEngine on
+    RewriteRule /1.9.0/wcs /cgi-bin/wcstest-1.9.0 [PT]
+  
+    </VirtualHost>
+
+
+  6.3. Create a home page
+  =======================
+
+    mkdir html
+    vim html/index.html
+
+Set the contents to:
+
+    This is the test platform for QGIS' wcs client. You can use these services
+    from QGIS directly (to try out WCS for example) by pointing your QGIS to:
+    http://wcs.qgis.org/1.9.0/wcs
+
+
+  6.4. Now deploy it
+  ==================
+
+    sudo mkdir /var/log/apache2/wcs_qgis.org
+    sudo chown www-data /var/log/apache2/wcs_qgis.org
+    cd /etc/apache2/sites-available/
+    sudo ln -s /var/www/wcs/7-wcs.qgis.org.conf .
+    cd /var/www/wcs/
+    sudo a2ensite 7-wcs.qgis.org.conf
+    sudo /etc/init.d/apache2 reload
+
+
+  6.5. Debugging
+  ==============
+
+    sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
+
+
+  7. Setting up a Jenkins Build Server
+  ====================================
+
+Assumption: You know how to make a working build environment and want to
+deploy it under Jenkins for continuous integration testing now.
+
+These notes are terse, I will expand on them later as the need arises. The 
+procedure is:
+
+- Install Jenkins and get it configured according to your own preferences
+- Make sure you have the git, github, junit etc plugins installed. A complete
+  list of the plugins I have installed follows (note that you almost certainly
+  don't need evey plugin listed here):
+ - External Monitor Job Type Plugin
+ - LDAP Plugin
+ - pam-auth
+ - javadoc
+ - ant
+ - Jenkins Subversion Plug-in
+ - Git Plugin
+ - Maven 2 Project Plugin
+ - Jenkins SLOCCount Plug-in
+ - Jenkins Sounds plugin
+ - Jenkins Translation Assistance plugin
+ - ruby-runtime
+ - Jenkins CVS Plug-in
+ - Coverage/Complexity Scatter Plot PlugIn
+ - Status Monitor Plugin
+ - Git Parameter Plug-In
+ - github-api
+ - GitHub plugin
+ - Jenkins Violations plugin
+ - git-notes Plugin
+ - Twitter plugin
+ - Jenkins Cobertura Plugin
+ - Jenkins Gravatar plugin
+ - Jenkins SSH Slaves plugin
+- Create a Job called 'QGIS'
+- Use the following options for your job:
+ - Job Name: QGIS
+ - Job Type: Build a free-style software project
+ - Tick enable project based security (you need to elsewhere configure your
+   Jenkins security to per project settings)
+ - Allow Anonymous user Read and Discover access
+ - Set the github project to https://github.com/qgis/Quantum-GIS/
+ - Set source code management to Git
+ - Set repository url to git://github.com/qgis/Quantum-GIS.git
+ - In advanced repository url settings set refspec to : 
+
+  +refs/heads/master:refs/remotes/origin/master
+
+
+ - Set branch to build to master
+ - Repository Browser: Auto
+ - Build triggers: set to Poll SCM and set schedule to * * * * * (polls every minute)
+ - Build - Execute shell and set shell script to:
+
+    cd build
+    cmake ..
+    xvfb-run --auto-servernum --server-num=1 \
+             --server-args="-screen 0 1024x768x24" \
+             make Experimental || true
+    if [ -f Testing/TAG ] ; then
+       xsltproc ../tests/ctest2junix.xsl \
+         Testing/`head -n 1 < Testing/TAG`/Test.xml > \
+         CTestResults.xml
+    fi
+
+
+ - Add Junit post build action and set 'Publish Junit test result report' to:
+   build/CTestResults.xml
+ - Email notification: Send separate e-mails to individuals who broke the build
+ - Jenkins sounds - set up sounds for Failure, Success and Unstable.
+ - Save
+
+Now open the Job dash board and push something to QGIS and wait a minute to
+validate automated builds work.
+
+Note: You will need to log in to the Jenkins user account and go to
+/var/lib/jenkins/jobs/QGIS/workspace, then make a build directory and run
+the initial cmake setup and then do test build. This process is the same as
+described elsewhere in this doc.
+
+I based some of the set up from this nice blog article here:
+
+* http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html
+
+
+  8. Authors and Acknowledgments
   ==============================
 
 The following people have contributed to this document:
@@ -1790,6 +2028,12 @@ The following people have contributed to this document:
 - GNU/Linux Section
  - Tim Sutton 2006
  - Debian package section: Juergen Fischer 2008
+
+- WCS Test Server Section
+ - Tim Sutton, Radim Blazek 2012
+
+- Jenkins CI Configuration
+ - Tim Sutton 2012
 
 - Latex Generator
  - Tim Sutton 2011

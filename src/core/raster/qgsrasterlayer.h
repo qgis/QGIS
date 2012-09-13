@@ -41,15 +41,16 @@
 #include "qgsrastershader.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershaderfunction.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasterresamplefilter.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterpipe.h"
 
 //
 // Forward declarations
 //
 class QgsMapToPixel;
 class QgsRectangle;
-class QgsRasterBandStats;
-class QgsRasterPyramid;
 class QgsRasterRenderer;
 class QImage;
 class QPixmap;
@@ -171,6 +172,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+    /**  \brief Default cumulative cut lower limit */
+    static const double CUMULATIVE_CUT_LOWER;
+
+    /**  \brief Default cumulative cut upper limit */
+    static const double CUMULATIVE_CUT_UPPER;
+
+    /**  \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
+    static const double SAMPLE_SIZE;
+
     /**  \brief Constructor. Provider is not set. */
     QgsRasterLayer();
 
@@ -240,7 +250,16 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       Palette,
       Multiband,
       ColorLayer
-    } ;
+    };
+
+    /** \brief Contrast enhancement limits */
+    enum ContrastEnhancementLimits
+    {
+      ContrastEnhancementNone,
+      ContrastEnhancementMinMax,
+      ContrastEnhancementStdDev,
+      ContrastEnhancementCumulativeCut
+    };
 
     /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
     typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
@@ -252,12 +271,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * to be added to the list. Each time a RasterPyramid is created
      * we will check to see if a pyramid matching these dimensions already exists
      * in the raster layer, and if so mark the exists flag as true */
-    typedef QList<QgsRasterPyramid> RasterPyramidList;
+    /* typedef QList<QgsRasterPyramid> RasterPyramidList; */
 
     /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while every RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QList<QgsRasterBandStats> RasterStatsList;
+    /* typedef QList<QgsRasterBandStats> RasterStatsList; */
 
     //
     // Static methods:
@@ -311,7 +330,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     DrawingStyle drawingStyle() { return mDrawingStyle; }
 
     /** \brief Accessor for mHasPyramids (READ ONLY) */
-    bool hasPyramids() { return mHasPyramids; }
+    /* bool hasPyramids() { return dataProvider() != NULL ? dataProvider()->hasPyramids() : false ; } */
 
     /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
     bool hasUserDefinedGrayMinimumMaximum() const { return mUserDefinedGrayMinimumMaximum; }
@@ -347,9 +366,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
 
     /**Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* renderer );
-    const QgsRasterRenderer* renderer() const { return mRenderer; }
-    QgsRasterRenderer* renderer() { return mRenderer; }
+    void setRenderer( QgsRasterRenderer* theRenderer );
+    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
+
+    /**Set raster resample filter. Takes ownership of the resample filter object*/
+    //void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
+    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+
+    /** Get raster pipe */
+    QgsRasterPipe * pipe() { return &mPipe; }
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
@@ -377,17 +402,17 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int bandNumber( const QString & theBandName ) const;
 
     /** \brief Get RasterBandStats for a band given its number (read only)  */
-    const  QgsRasterBandStats bandStatistics( int );
+    //const  QgsRasterBandStats bandStatistics( int );
 
     /** \brief Get RasterBandStats for a band given its name (read only)  */
-    const  QgsRasterBandStats bandStatistics( const QString & );
+    //const  QgsRasterBandStats bandStatistics( const QString & );
 
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    RasterPyramidList buildPyramidList();
+    // RasterPyramidList buildPyramidList();
 
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
@@ -421,7 +446,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool copySymbologySettings( const QgsMapLayer& theOther );
 
     /** \brief Get a pointer to the color table */
-    QList<QgsColorRampShader::ColorRampItem>* colorTable( int theBandNoInt );
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -452,7 +477,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
 
     /** \brief  Check whether a given band number has stats associated with it */
-    bool hasStatistics( int theBandNoInt );
+    //bool hasStatistics( int theBandNoInt );
 
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
@@ -521,7 +546,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
+    //const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
 
     /** \brief Read color table from GDAL raster band */
     // Keep this for QgsRasterLayerProperties
@@ -539,8 +564,26 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for color shader algorithm */
     Q_DECL_DEPRECATED void setColorShadingAlgorithm( QString theShaderAlgorithm );
 
-    /** \brief Mutator for contrast enhancement algorithm */
+    static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
+    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
+
+    /** \brief Mutator for contrast enhancement algorithm using min/max */
+    // TODO: remove in 2.0, replaced by following
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                          bool theGenerateLookupTableFlag = true );
+
+    /** \brief Mutator for contrast enhancement algorithm
+     *  @param theAlgorithm Contrast enhancement algorithm
+     *  @param theLimits Limits
+     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
+     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  @param theGenerateLookupTableFlag Generate llokup table. */
+
+
+    void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                          ContrastEnhancementLimits theLimits = ContrastEnhancementMinMax,
+                                          QgsRectangle theExtent = QgsRectangle(),
+                                          int theSampleSize = SAMPLE_SIZE,
                                           bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for contrast enhancement algorithm */
@@ -548,6 +591,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Mutator for contrast enhancement function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction );
+
+    /** \brief Set default contrast enhancement */
+    void setDefaultContrastEnhancement();
 
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString );
@@ -629,21 +675,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   public slots:
     /** \brief Create GDAL pyramid overviews */
-    QString buildPyramids( const RasterPyramidList &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
-
-    /** \brief test if the requested histogram is already available */
-
-    bool hasCachedHistogram( int theBandNoInt,
-                             int theBinCountInt = RASTER_HISTOGRAM_BINS );
-
-    /** \brief Populate the histogram vector for a given band */
-
-    void populateHistogram( int theBandNoInt,
-                            int theBinCountInt = RASTER_HISTOGRAM_BINS,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false );
+    // QString buildPyramids( const RasterPyramidList &,
+    //                        const QString &  theResamplingMethod = "NEAREST",
+    //                        bool theTryInternalFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 
@@ -817,9 +851,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
     double mGeoTransform[6];
 
-    /** \brief Whether this raster has overviews / pyramids or not */
-    bool mHasPyramids;
-
     /** \brief  Raster width */
     int mWidth;
 
@@ -844,10 +875,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString mProviderKey;
 
     /** \brief This list holds a series of RasterPyramid structs which store information for each potential pyramid level */
-    RasterPyramidList mPyramidList;
+    /* RasterPyramidList mPyramidList; */
 
     /** \brief A collection of stats - one for each band in the layer */
-    RasterStatsList mRasterStatsList;
+    //RasterStatsList mRasterStatsList;
 
     LayerType mRasterType;
 
@@ -860,7 +891,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
 
-    QgsRasterRenderer* mRenderer;
+    //QgsRasterRenderer* mRenderer;
+    //QgsRasterResampleFilter *mResampleFilter;
+    QgsRasterPipe mPipe;
 };
 
 #endif

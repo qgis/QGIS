@@ -158,7 +158,7 @@ void QgsQtLocationConnection::startGPS()
     if ( locationDataSource )
     {
       locationDataSource->setPreferredPositioningMethods( QGeoPositionInfoSource::SatellitePositioningMethods );  //QGeoPositionInfoSource::AllPositioningMethods
-      locationDataSource->setUpdateInterval(1000);
+      locationDataSource->setUpdateInterval( 1000 );
       // Whenever the location data source signals that the current
       // position is updated, the positionUpdated function is called.
       QObject::connect( locationDataSource,

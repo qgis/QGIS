@@ -85,7 +85,7 @@ void QgsLayerOrder::refreshLayerList()
 {
   clear();
 
-  foreach( QgsLegendLayer *layer, mLegend->legendLayers() )
+  foreach ( QgsLegendLayer *layer, mLegend->legendLayers() )
   {
     QListWidgetItem *item = new QListWidgetItem( layer->layer()->name() );
     item->setData( 1, QString::number( layer->drawingOrder() ) );
@@ -234,7 +234,7 @@ void QgsLayerOrder::mouseReleaseEvent( QMouseEvent * e )
 
   setCursor( QCursor( Qt::ArrowCursor ) );
 
-  foreach( QListWidgetItem *item, mItemsBeingMoved )
+  foreach ( QListWidgetItem *item, mItemsBeingMoved )
   {
     if ( mInsertRow >= count() )
     {

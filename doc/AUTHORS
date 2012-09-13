@@ -1,7 +1,7 @@
 # The following have contributed to QGis:
 # --------------------------------------------------------
-# Please note that this file is parsed by the about box 
-# for the contributors list, so names should be strictly 
+# Please note that this file is parsed by the about box
+# for the contributors list, so names should be strictly
 # in the format:
 # name [tab] <email>
 #
@@ -44,4 +44,7 @@ Alessandro Furieri	<a.furieri at lqt.it>
 Alexander Bruy	<alexander.bruy@gmail.com>
 Marco Bernasocchi	<marco at bernawebdesign dot ch>
 Nathan Woodrow	<woodrow.nathan at gmail.com>
-Etienne Tourigny  <etourigny.dev at gmail.com>
+Sergey Yakushev	<yakushevs at gmail.com >
+René-Luc D'Hont	<rldhont at gmail.com>
+Etienne Tourigny	<etourigny.dev at gmail.com>
+Larry Shaffer	<larrys at dakotacarto.com>

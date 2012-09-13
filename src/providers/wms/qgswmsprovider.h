@@ -459,6 +459,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Destructor
     virtual ~QgsWmsProvider();
 
+    QgsRasterInterface * clone() const;
+
     virtual QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
 
     /**
@@ -640,8 +642,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    int dataType( int bandNo ) const;
-    int srcDataType( int bandNo ) const;
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
 
 
@@ -737,7 +739,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     */
     QString description() const;
 
-    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData();
 

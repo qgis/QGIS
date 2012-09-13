@@ -90,6 +90,35 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mGrassDataType = mInfo["TYPE"].toInt();
   QgsDebugMsg( "mGrassDataType = " + QString::number( mGrassDataType ) );
 
+  // TODO: avoid showing these strange numbers in GUI
+  // TODO: don't save no data values in project file, add a flag if value was defined by user
+  if ( mGrassDataType == CELL_TYPE )
+  {
+    //limit: -2147483647;
+    mNoDataValue = -2000000000;
+  }
+  else if ( mGrassDataType == DCELL_TYPE )
+  {
+    // Don't use numeric limits, raster layer is using
+    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    // if the mNoDataValue would be a limit, the subtraction could overflow.
+    // No data value is shown in GUI, use some nice number.
+    // Choose values with small representation error.
+    // limit: 1.7976931348623157e+308
+    mNoDataValue = -1e+300;
+  }
+  else
+  {
+    if ( mGrassDataType != FCELL_TYPE )
+    {
+      QgsDebugMsg( "unexpected data type" );
+    }
+
+    // limit: 3.40282347e+38
+    mNoDataValue = -1e+30;
+  }
+  QgsDebugMsg( QString( "mNoDataValue = %1" ).arg( mNoDataValue ) );
+
   // TODO: refresh mRows and mCols if raster was rewritten
   // We have to decide some reasonable block size, not to big to occupate too much
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
@@ -106,6 +135,12 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
 QgsGrassRasterProvider::~QgsGrassRasterProvider()
 {
   QgsDebugMsg( "QgsGrassRasterProvider: deconstructing." );
+}
+
+QgsRasterInterface * QgsGrassRasterProvider::clone() const
+{
+  QgsGrassRasterProvider * provider = new QgsGrassRasterProvider( dataSourceUri() );
+  return provider;
 }
 
 QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
@@ -252,31 +287,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
 
 double  QgsGrassRasterProvider::noDataValue() const
 {
-  double nul;
-  // TODO: avoid showing these strange numbers in GUI
-  // TODO: don't save no data values in project file, add a flag if value was defined by user
-  if ( mGrassDataType == CELL_TYPE )
-  {
-    //limit: -2147483647;
-    nul = -2000000000;
-  }
-  else if ( mGrassDataType == DCELL_TYPE )
-  {
-    // Don't use numeric limits, raster layer is using
-    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
-    // if the mNoDataValue would be a limit, the subtraction could overflow.
-    // No data value is shown in GUI, use some nice number.
-    // Choose values with small representation error.
-    // limit: 1.7976931348623157e+308
-    nul = -1e+300;
-  }
-  else if ( mGrassDataType == FCELL_TYPE )
-  {
-    // limit: 3.40282347e+38
-    nul = -1e+30;
-  }
-  QgsDebugMsg( QString( "noDataValue = %1" ).arg( nul ) );
-  return nul;
+  return mNoDataValue;
 }
 
 double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
@@ -288,6 +299,60 @@ double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   return mInfo["MAX_VALUE"].toDouble();
+}
+
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
+{
+  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+  QgsRasterBandStats myRasterBandStats;
+  initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
+
+  foreach ( QgsRasterBandStats stats, mStatistics )
+  {
+    if ( stats.contains( myRasterBandStats ) )
+    {
+      QgsDebugMsg( "Using cached statistics." );
+      return stats;
+    }
+  }
+
+  QgsRectangle extent = myRasterBandStats.extent;
+
+  int sampleRows = myRasterBandStats.height;
+  int sampleCols = myRasterBandStats.width;
+
+  // With stats we have to be careful about timeout, empirical value,
+  // 0.001 / cell should be sufficient using 0.005 to be sure + constant (ms)
+  int timeout = 30000 + 0.005 * xSize() * ySize();
+
+  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, "stats", extent, sampleRows, sampleCols, timeout );
+
+  if ( info.isEmpty() )
+  {
+    return myRasterBandStats;
+  }
+
+  myRasterBandStats.sum = info["SUM"].toDouble();
+  myRasterBandStats.elementCount = info["COUNT"].toInt();
+  myRasterBandStats.minimumValue = info["MIN"].toDouble();
+  myRasterBandStats.maximumValue = info["MAX"].toDouble();
+  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
+  myRasterBandStats.sumOfSquares = info["SQSUM"].toDouble();
+  myRasterBandStats.mean = info["MEAN"].toDouble();
+  myRasterBandStats.stdDev = info["STDEV"].toDouble();
+
+  QgsDebugMsg( QString( "min = %1" ).arg( myRasterBandStats.minimumValue ) );
+  QgsDebugMsg( QString( "max = %1" ).arg( myRasterBandStats.maximumValue ) );
+  QgsDebugMsg( QString( "count = %1" ).arg( myRasterBandStats.elementCount ) );
+  QgsDebugMsg( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ) );
+
+  myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                                    QgsRasterBandStats::Range | QgsRasterBandStats::Mean |
+                                    QgsRasterBandStats::Sum | QgsRasterBandStats::SumOfSquares |
+                                    QgsRasterBandStats::StdDev;
+
+  mStatistics.append( myRasterBandStats );
+  return myRasterBandStats;
 }
 
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
@@ -303,7 +368,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   QList<QgsGrass::Color> colors = QgsGrass::colors( mGisdbase, mLocation, mMapset, mMapName );
   QList<QgsGrass::Color>::iterator i;
 
-  double v, r, g, b;
+  double v = 0.0, r = 0.0, g = 0.0, b = 0.0;
   for ( i = colors.begin(); i != colors.end(); ++i )
   {
     if ( ct.count() == 0 || i->value1 != v || i->red1 != r || i->green1 != g || i->blue1 != b )
@@ -353,25 +418,35 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-bool QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
 {
   QgsDebugMsg( "Entered" );
-  //theResults["Error"] = tr( "Out of extent" );
+  QMap<int, void *> results;
+
+  // TODO: use doubles instead of strings
   //theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
-  QString value = mRasterValue.value( thePoint.x(), thePoint.y() );
-  theResults.clear();
+  QString strValue = mRasterValue.value( thePoint.x(), thePoint.y() );
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
-  if ( value == "out" )
+
+  double value = noDataValue();
+
+  if ( strValue != "out" && strValue != "null" )
   {
-    value = tr( "Out of extent" );
+    bool ok;
+    value = strValue.toDouble( & ok );
+    if ( !ok )
+    {
+      value = 999999999;
+      QgsDebugMsg( "Cannot convert string to double" );
+    }
   }
-  if ( value == "null" )
-  {
-    value = tr( "null (no data)" );
-  }
-  theResults["value"] = value;
-  QgsDebugMsg( "value = " + value );
-  return true;
+  void * data = malloc( dataTypeSize( 1 ) / 8 );
+  writeValue( data, dataType( 1 ), 0, value );
+
+  results.insert( 1, data );
+  QgsDebugMsg( "strValue = " + strValue );
+
+  return results;
 }
 
 int QgsGrassRasterProvider::capabilities() const
@@ -383,12 +458,12 @@ int QgsGrassRasterProvider::capabilities() const
   return capability;
 }
 
-int QgsGrassRasterProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-int QgsGrassRasterProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )
@@ -418,7 +493,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRasterDataProvider::PaletteIndex;
+    return QgsRasterDataProvider::ContinuousPalette;
   }
   return QgsRasterDataProvider::GrayIndex;
 }
@@ -442,33 +517,6 @@ QString QgsGrassRasterProvider::metadata()
 
   return myMetadata;
 }
-
-void QgsGrassRasterProvider::populateHistogram( int theBandNoInt,
-    QgsRasterBandStats & theBandStats,
-    int theBinCount,
-    bool theIgnoreOutOfRangeFlag,
-    bool theHistogramEstimatedFlag )
-{
-  Q_UNUSED( theBandNoInt );
-  // TODO: we could either implement it in QgsRasterDataProvider::populateHistogram
-  // or use r.stats (see d.histogram)
-  if ( theBandStats.histogramVector->size() != theBinCount ||
-       theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
-       theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
-  {
-    theBandStats.histogramVector->clear();
-    theBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
-    theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
-    for ( int myBin = 0; myBin < theBinCount; myBin++ )
-    {
-      theBandStats.histogramVector->push_back( 0 );
-    }
-  }
-  QgsDebugMsg( ">>>>> Histogram vector now contains " +
-               QString::number( theBandStats.histogramVector->size() ) + " elements" );
-
-}
-
 
 bool QgsGrassRasterProvider::isValid()
 {
@@ -513,7 +561,7 @@ QDateTime QgsGrassRasterProvider::dataTimestamp() const
   QString mapset = mGisdbase + "/" + mLocation + "/" + mMapset;
   QStringList dirs;
   dirs << "cell" << "colr";
-  foreach( QString dir, dirs )
+  foreach ( QString dir, dirs )
   {
     QString path = mapset + "/" + dir + "/" + mMapName;
     QFileInfo fi( path );

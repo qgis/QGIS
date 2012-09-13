@@ -203,7 +203,7 @@ bool DL_Dxf::in( std::stringstream& stream,
  * the type of data.  The value is on the next line.\n
  *
  * This function reads a couplet, determines the type of data, and
- * passes the value to the the appropriate handler function of
+ * passes the value to the appropriate handler function of
  * \p creationInterface.\n
  *
  * \p fp is advanced so that the next call to \p readDXFGroups() reads

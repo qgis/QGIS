@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -189,12 +189,6 @@
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
    </widget>
-   <widget class="QMenu" name="mRasterMenu">
-    <property name="title">
-     <string>&amp;Raster</string>
-    </property>
-    <addaction name="mActionShowRasterCalculator"/>
-   </widget>
    <widget class="QMenu" name="mHelpMenu">
     <property name="title">
      <string>&amp;Help</string>
@@ -219,6 +213,12 @@
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
     <addaction name="mActionSnappingOptions"/>
+   </widget>
+   <widget class="QMenu" name="mRasterMenu">
+    <property name="title">
+     <string>&amp;Raster</string>
+    </property>
+    <addaction name="mActionShowRasterCalculator"/>
    </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
@@ -385,8 +385,10 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionLocalCumulativeCutStretch"/>
+   <addaction name="mActionFullCumulativeCutStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
+   <addaction name="mActionFullHistogramStretch"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -399,8 +401,9 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
-   <addaction name="mActionShowFrozenLabels"/>
-   <addaction name="mActionFreezeLabels"/>
+   <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionPinLabels"/>
+   <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1084,6 +1087,9 @@
    <property name="text">
     <string>Labeling</string>
    </property>
+   <property name="toolTip">
+    <string>Layer Labeling Options</string>
+   </property>
   </action>
   <action name="mActionNewVectorLayer">
    <property name="icon">
@@ -1472,6 +1478,9 @@
    <property name="text">
     <string>Move Label</string>
    </property>
+   <property name="toolTip">
+    <string>Move Label</string>
+   </property>
   </action>
   <action name="mActionRotateLabel">
    <property name="checkable">
@@ -1483,6 +1492,10 @@
    </property>
    <property name="text">
     <string>Rotate Label</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Label
+Ctl (Cmd) increments by 15 deg.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1705,35 +1718,37 @@
     <string>Creates a scale bar that is displayed on the map canvas</string>
    </property>
   </action>
-  <action name="mActionFreezeLabels">
+  <action name="mActionPinLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFreezeLabels.png</normaloff>:/images/themes/default/mActionFreezeLabels.png</iconset>
+     <normaloff>:/images/themes/default/mActionPinLabels.svg</normaloff>:/images/themes/default/mActionPinLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Freeze or Thaw Labels</string>
+    <string>Pin/Unpin Labels</string>
    </property>
    <property name="toolTip">
-    <string>Freeze or Thaw Labels
-Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
+    <string>Pin/Unpin Labels
+Click or marquee on label to pin
+Shift unpins, Ctl (Cmd) toggles state
+Acts on all editable layers</string>
    </property>
   </action>
-  <action name="mActionShowFrozenLabels">
+  <action name="mActionShowPinnedLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowFrozenLabels.png</normaloff>:/images/themes/default/mActionShowFrozenLabels.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Show Frozen Labels</string>
+    <string>Highlight Pinned Labels</string>
    </property>
    <property name="toolTip">
-    <string>Show Frozen Labels</string>
+    <string>Highlight Pinned Labels</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -1746,6 +1761,61 @@ Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
    </property>
    <property name="toolTip">
     <string>New Blank Project</string>
+   </property>
+  </action>
+  <action name="mActionLocalCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Local Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Local cumulative cut stretch using current extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionFullCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full Dataset Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Cumulative cut stretch using full dataset extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionShowHideLabels">
+  <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowHideLabels.svg</normaloff>:/images/themes/default/mActionShowHideLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show/Hide Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/Hide Labels
+Click or marquee on feature to show label
+Shift+click or marquee on label to hide it
+Acts on currently active editable layer</string>
+    </property>
+  </action>
+  <action name="mActionHtmlAnnotation">
+  <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png
+     </iconset>
+   </property>
+   <property name="text">
+    <string>Html Annotation</string>
+   </property>
+   <property name="toolTip">
+    <string>Html Annotation</string>
    </property>
   </action>
  </widget>

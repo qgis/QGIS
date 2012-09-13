@@ -64,7 +64,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
   QgsGeomColumnTypeThread *columnTypeThread = 0;
 
-  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
+  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     QgsPGSchemaItem *schemaItem = mSchemaMap.value( layerProperty.schemaName, 0 );
     if ( !schemaItem )
@@ -189,7 +189,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach( const QgsMimeDataUtils::Uri& u, lst )
+  foreach ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -376,7 +376,7 @@ QgsPGRootItem::~QgsPGRootItem()
 QVector<QgsDataItem*> QgsPGRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach( QString connName, QgsPostgresConn::connectionList() )
+  foreach ( QString connName, QgsPostgresConn::connectionList() )
   {
     connections << new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
   }

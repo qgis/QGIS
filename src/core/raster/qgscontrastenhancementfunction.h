@@ -32,6 +32,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 
   public:
     QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
     virtual ~QgsContrastEnhancementFunction() {}
 
     /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */

@@ -24,6 +24,8 @@
 #include <limits>
 
 #include "qgscolorrampshader.h"
+#include "qgsrectangle.h"
+
 /** \ingroup core
  * The RasterBandStats struct is a container for statistics about a single
  * raster band.
@@ -31,12 +33,23 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-    typedef QVector<int> HistogramVector;
+    enum Stats
+    {
+      None         = 0,
+      Min          = 1,
+      Max          = 1 << 1,
+      Range        = 1 << 2,
+      Sum          = 1 << 3,
+      Mean         = 1 << 4,
+      StdDev       = 1 << 5,
+      SumOfSquares = 1 << 6,
+      All          = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares
+    };
 
     QgsRasterBandStats()
     {
       bandName = "";
-      statsGathered = false;
+      statsGathered = None;
       minimumValue = std::numeric_limits<double>::max();
       maximumValue = std::numeric_limits<double>::min();
       range = 0.0;
@@ -45,9 +58,18 @@ class CORE_EXPORT QgsRasterBandStats
       stdDev = 0.0;
       sum = 0.0;
       elementCount = 0;
-      histogramVector = new HistogramVector();
-      isHistogramEstimated = false;
-      isHistogramOutOfRange = false;
+      width = 0;
+      height = 0;
+    }
+
+    /*! Compares region, size etc. not collected statistics */
+    bool contains( const QgsRasterBandStats &s ) const
+    {
+      return ( s.bandNumber == bandNumber &&
+               s.extent == extent &&
+               s.width == width &&
+               s.height == height &&
+               s.statsGathered == ( statsGathered & s.statsGathered ) );
     }
 
     /** \brief The name of the band that these stats belong to. */
@@ -62,15 +84,6 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The number of cells in the band. Equivalent to height x width.
      * TODO: check if NO_DATA are excluded!*/
     int elementCount;
-
-    /** \brief whteher histogram values are estimated or completely calculated */
-    bool isHistogramEstimated;
-
-    /** whehter histogram compuation should include out of range values */
-    bool isHistogramOutOfRange;
-
-    /** \brief Store the histogram for a given layer */
-    HistogramVector * histogramVector;
 
     /** \brief The maximum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMaximmum function. */
@@ -89,14 +102,22 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The standard deviation of the cell values. */
     double stdDev;
 
-    /** \brief A flag to indicate whether this RasterBandStats struct
-     * is completely populated */
-    bool statsGathered;
+    /** \brief Collected statistics */
+    int statsGathered;
 
     /** \brief The sum of all cells in the band. NO_DATA values are excluded. */
     double sum;
 
     /** \brief The sum of the squares. Used to calculate standard deviation. */
     double sumOfSquares;
+
+    /** \brief Number of columns used to calc statistics */
+    int width;
+
+    /** \brief Number of rows used to calc statistics */
+    int height;
+
+    /** \brief Extent used to calc statistics */
+    QgsRectangle extent;
 };
 #endif

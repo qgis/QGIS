@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS qgsrenderchecker.cpp qgscompositionchecker.cpp)
+SET (util_SRCS qgscompositionchecker.cpp)
 
 
 #####################################################
@@ -78,12 +78,14 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
 ADD_QGIS_TEST(regression1141 regression1141.cpp)
 ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
+ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
 ADD_QGIS_TEST(contrastenhancementtest  testcontrastenhancements.cpp)
 ADD_QGIS_TEST(maplayertest testqgsmaplayer.cpp)
 ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
@@ -97,3 +99,7 @@ ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
 ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
 ADD_QGIS_TEST(composermaptest testqgscomposermap.cpp)
+ADD_QGIS_TEST(stylev2test testqgsstylev2.cpp)
+ADD_QGIS_TEST(composerhtmltest testqgscomposerhtml.cpp )
+ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
+ADD_QGIS_TEST(composerscalebartest testqgscomposerscalebar.cpp )

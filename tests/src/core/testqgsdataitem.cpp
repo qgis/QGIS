@@ -111,51 +111,49 @@ void TestQgsDataItem::testDirItemChildren()
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
       QString errStr = QString( "layer #%1 - %2 provider = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( iSetting );
-      const char* err = errStr.toLocal8Bit().constData();
 
       QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ) );
 
       if ( lFile == "landsat.tif" )
       {
-        QVERIFY2( lProvider == "gdal", err );
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points.vrt" )
+      else if ( lFile == "points.vrt", errStr.toLocal8Bit().constData() )
       {
-        QVERIFY2( lProvider == "ogr", err );
+        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "landsat.vrt" )
       {
-        QVERIFY2( lProvider == "gdal", err );
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "landsat_b1.tif.gz" )
       {
-        QVERIFY2( lProvider == "gdal", err );
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "points3.geojson.gz" )
       {
-        QVERIFY2( lProvider == "ogr", err );
+        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
       QString lName = layerItem->layerName();
       errStr = QString( "layer #%1 - %2 lName = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( iSetting );
-      err = errStr.toLocal8Bit().constData();
 
       if ( lFile == "landsat.tif" )
       {
-        QVERIFY2( lName == "landsat", err );
+        QVERIFY2( lName == "landsat", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "points.shp" )
       {
-        QVERIFY2( lName == "points", err );
+        QVERIFY2( lName == "points", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "landsat_b1.tif.gz" )
       {
-        QVERIFY2( lName == "landsat_b1", err );
+        QVERIFY2( lName == "landsat_b1", errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == "points3.geojson.gz" )
       {
-        QVERIFY2( lName == "points3", err );
+        QVERIFY2( lName == "points3", errStr.toLocal8Bit().constData() );
       }
 
     }

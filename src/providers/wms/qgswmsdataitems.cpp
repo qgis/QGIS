@@ -78,7 +78,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   // <element name="Capability">
   //    <element ref="wms:Layer" minOccurs="0"/>  - default maxOccurs=1
   QgsWmsLayerProperty topLayerProperty = capabilityProperty.layer;
-  foreach( QgsWmsLayerProperty layerProperty, topLayerProperty.layer )
+  foreach ( QgsWmsLayerProperty layerProperty, topLayerProperty.layer )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
@@ -153,7 +153,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsWmsLayerProperty layerProperty, mLayerProperty.layer )
+  foreach ( QgsWmsLayerProperty layerProperty, mLayerProperty.layer )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
@@ -187,7 +187,7 @@ QString QgsWMSLayerItem::createUri()
   QString format;
   // get first supported by qt and server
   QVector<QgsWmsSupportedFormat> formats = QgsWmsProvider::supportedFormats();
-  foreach( QgsWmsSupportedFormat f, formats )
+  foreach ( QgsWmsSupportedFormat f, formats )
   {
     if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
     {
@@ -200,7 +200,7 @@ QString QgsWMSLayerItem::createUri()
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  foreach( QString c, mLayerProperty.crs )
+  foreach ( QString c, mLayerProperty.crs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -236,7 +236,7 @@ QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach( QString connName, QgsWMSConnection::connectionList() )
+  foreach ( QString connName, QgsWMSConnection::connectionList() )
   {
     //QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName );
     QgsWMSConnection connection( connName );

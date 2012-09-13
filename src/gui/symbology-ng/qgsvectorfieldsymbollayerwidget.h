@@ -35,13 +35,11 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget,
 
   protected:
     QgsVectorFieldSymbolLayer* mLayer;
-    void updateMarkerIcon();
 
   private slots:
     void on_mScaleSpinBox_valueChanged( double d );
     void on_mXAttributeComboBox_currentIndexChanged( int index );
     void on_mYAttributeComboBox_currentIndexChanged( int index );
-    void on_mLineStylePushButton_clicked();
     void on_mCartesianRadioButton_toggled( bool checked );
     void on_mPolarRadioButton_toggled( bool checked );
     void on_mHeightRadioButton_toggled( bool checked );

@@ -21,6 +21,7 @@ email                : sbr00pwb@users.sourceforge.net
 #ifndef QGSCALEBARPLUGIN
 #define QGSCALEBARPLUGIN
 
+#include "qgis.h"
 #include "qgsdecorationitem.h"
 
 class QPainter;

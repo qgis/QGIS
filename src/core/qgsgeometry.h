@@ -113,8 +113,8 @@ class CORE_EXPORT QgsGeometry
     unsigned char * asWkb();
 
     /**
-       Returns the size of the WKB in asWkb().
-    */
+     * Returns the size of the WKB in asWkb().
+     */
     size_t wkbSize();
 
     /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
@@ -220,15 +220,14 @@ class CORE_EXPORT QgsGeometry
     QgsPoint vertexAt( int atVertex );
 
     /**
-        Returns the squared cartesian distance between the given point
-        to the given vertex index (vertex at the given position number,
-        ring and item (first number is index 0))
-
+     *  Returns the squared cartesian distance between the given point
+     *  to the given vertex index (vertex at the given position number,
+     *  ring and item (first number is index 0))
      */
     double sqrDistToVertexAt( QgsPoint& point, int atVertex );
 
     /**
-     * Searches for the the closest vertex in this geometry to the given point.
+     * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
@@ -343,6 +342,11 @@ class CORE_EXPORT QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
 
+    /* Return interpolated point on line at distance
+     * @note added in 1.9
+     */
+    QgsGeometry* interpolate( double distance );
+
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( QgsGeometry* geometry );
 
@@ -358,12 +362,14 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry* symDifference( QgsGeometry* geometry );
 
     /** Exports the geometry to mWkt
-        @return true in case of success and false else
+     *  @return true in case of success and false else
      */
     QString exportToWkt();
 
     /** Exports the geometry to mGeoJSON
-        @return true in case of success and false else
+     *  @return true in case of success and false else
+     *  @note added in 1.8
+     *  @note python binding added in 1.9
      */
     QString exportToGeoJSON();
 
@@ -439,6 +445,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Validate geometry and produce a list of geometry errors
      * @note added in 1.5
+     * @note python binding added in 1.6
      **/
     void validateGeometry( QList<Error> &errors );
 

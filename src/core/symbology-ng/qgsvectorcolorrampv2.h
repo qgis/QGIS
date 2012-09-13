@@ -19,6 +19,7 @@
 #include <QColor>
 
 #include "qgssymbollayerv2.h" // for QgsStringMap
+#include "qgslogger.h"
 
 class CORE_EXPORT QgsVectorColorRampV2
 {
@@ -157,5 +158,76 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     int mColors;
     QList<QColor> mPalette;
 };
+
+
+#define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
+#define DEFAULT_CPTCITY_VARIANTNAME "05"
+
+class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
+{
+  public:
+    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
+    QgsCptCityColorRampV2( QString schemeName, QStringList variantList, QString variantName = QString() );
+
+
+    enum GradientType
+    {
+      Discrete, //discrete stops, e.g. Color Brewer
+      Continuous, //continuous, e.g. QgsVectorColorRampV2
+      ContinuousMulti //continuous with 2 values in intermediate stops
+    };
+    typedef QList< QPair < double, QColor > > GradientList;
+
+
+    static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    virtual QColor color( double value ) const;
+
+    virtual QString type() const { return "cpt-city"; }
+
+    virtual QgsVectorColorRampV2* clone() const;
+
+    virtual QgsStringMap properties() const;
+
+    int count() const { return mPalette.count(); }
+
+    QString schemeName() const { return mSchemeName; }
+    QString variantName() const { return mVariantName; }
+    QStringList variantList() const { return mVariantList; }
+    /* QgsCptCityCollection* collection() const { return mCollection; } */
+    /* QString collectionName() const { return mCollectionName; } */
+    /* QgsCptCityCollection* collection() const */
+    /* { return QgsCptCityCollection::collectionRegistry().value( mCollectionName ); } */
+
+    /* lazy loading - have to call loadPalette() explicitly */
+    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
+    void setVariantName( QString variantName ) { mVariantName = variantName; mFileLoaded = false; }
+    void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() )
+    { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
+
+    void loadPalette() { loadFile(); }
+    /* bool isContinuous() const { return mContinuous; } */
+    GradientType gradientType() const { return mGradientType; }
+
+    QString fileName() const;
+    bool loadFile();
+
+    QString copyingFileName() const;
+    QString descFileName() const;
+    QMap< QString, QString > copyingInfo() const;
+
+  protected:
+
+    QString mSchemeName;
+    QString mVariantName;
+    /* QString mCollectionName; */
+    /* QgsCptCityCollection* mCollection; */
+    GradientType mGradientType;
+    GradientList mPalette;
+    QStringList mVariantList;
+    bool mFileLoaded;
+};
+
 
 #endif

@@ -41,7 +41,8 @@ bool QgsCompositionChecker::testComposition( int page )
     return false;
   }
 
-#if 0 //fake mode to generate expected image
+#if 0
+  //fake mode to generate expected image
   //assume 300 dpi and size of the control image 3507 * 2480
   QImage outputImage( QSize( 3507, 2480 ), QImage::Format_ARGB32 );
   mComposition->setPlotStyle( QgsComposition::Print );
@@ -49,11 +50,11 @@ bool QgsCompositionChecker::testComposition( int page )
   outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
   outputImage.fill( 0 );
   QPainter p( &outputImage );
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  QRectF targetArea( 0, 0, 3507, 2480 );
-  mComposition->render( &p, targetArea, sourceArea );
+  //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  //QRectF targetArea( 0, 0, 3507, 2480 );
+  mComposition->renderPage( &p, page );
   p.end();
-  outputImage.save( "/tmp/composermap_control.png", "PNG" );
+  outputImage.save( "/tmp/composerhtml_table_control.png", "PNG" );
   return false;
 #endif //0
 

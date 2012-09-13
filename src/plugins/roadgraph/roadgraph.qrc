@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="/roadgraph/" >
-    <file>roadgraph.png</file>
+    <file>road-fast.png</file>
     <file>showdirect.png</file>
     <file>about.png</file>
     <file>coordinate_capture.png</file>

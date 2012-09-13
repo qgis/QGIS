@@ -30,7 +30,9 @@ SET(QGIS_APP_SRCS
   qgsdecorationgriddialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
+  qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
+  qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsgraduatedsymboldialog.cpp
@@ -55,7 +57,9 @@ SET(QGIS_APP_SRCS
   qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
-  qgsmaptoolfreezelabels.cpp
+  qgsmaptoolhtmlannotation.cpp
+  qgsmaptoolpinlabels.cpp
+  qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
@@ -109,6 +113,7 @@ SET(QGIS_APP_SRCS
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
   composer/qgscomposerarrowwidget.cpp
+  composer/qgscomposerhtmlwidget.cpp
   composer/qgscomposeritemwidget.cpp
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
@@ -181,11 +186,13 @@ SET (QGIS_APP_MOC_HDRS
   qgsdecorationgrid.h
   qgsdecorationgriddialog.h
   qgsdelattrdialog.h
+  qgsdiagramproperties.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
+  qgshtmlannotationdialog.h
   qgsgraduatedsymboldialog.h
   qgsidentifyresults.h
   qgslabeldialog.h
@@ -204,7 +211,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooldeletering.h
   qgsmaptooldeletevertex.h
   qgsmaptoolfeatureaction.h
-  qgsmaptoolfreezelabels.h
+  qgsmaptoolpinlabels.h
+  qgsmaptoolshowhidelabels.h
   qgsmaptoolidentify.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
@@ -249,6 +257,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgsattributeselectiondialog.h
   composer/qgscomposer.h
   composer/qgscomposerarrowwidget.h
+  composer/qgscomposerhtmlwidget.h
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h

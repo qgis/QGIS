@@ -139,8 +139,10 @@ class Dialog(QDialog, Ui_Dialog):
                 QMessageBox.information(self, self.tr("Vector grid"), self.tr("Invalid extent coordinates entered"))
             xSpace = self.spnX.value()
             ySpace = self.spnY.value()
-            if self.rdoPolygons.isChecked(): polygon = True
-            else: polygon = False
+            if self.rdoPolygons.isChecked():
+              polygon = True
+            else:
+              polygon = False
             self.outShape.clear()
             QApplication.setOverrideCursor(Qt.WaitCursor)
             self.compute( boundBox, xSpace, ySpace, polygon )
@@ -153,7 +155,13 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk.setEnabled( True )
 
     def compute( self, bound, xOffset, yOffset, polygon ):
-        crs = ftools_utils.getMapLayerByName(unicode(self.inShape.currentText())).crs()
+        crs = None
+        layer = ftools_utils.getMapLayerByName(unicode(self.inShape.currentText()))
+
+        if layer is None:
+          crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+        else:
+          crs = layer.crs()
         if not crs.isValid(): crs = None
         if polygon:
             fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
@@ -173,7 +181,6 @@ class Dialog(QDialog, Ui_Dialog):
         outFeat = QgsFeature()
         outGeom = QgsGeometry()
         idVar = 0
-#        self.progressBar.setRange( 0, 0 )
         self.progressBar.setValue( 0 )
         if not polygon:
             # counters for progressbar - update every 5%

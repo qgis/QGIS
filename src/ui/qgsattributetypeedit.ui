@@ -97,7 +97,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_1">
@@ -613,7 +613,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <widget class="QComboBox" name="valueRelationLayer"/>
        </item>
        <item row="2" column="0">
@@ -626,30 +626,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="2">
         <widget class="QComboBox" name="valueRelationKeyColumn"/>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Value column</string>
-         </property>
-         <property name="buddy">
-          <cstring>valueRelationValueColumn</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="valueRelationValueColumn"/>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Select layer, key column and value column</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0" colspan="2">
+       <item row="10" column="0" colspan="3">
         <spacer name="verticalSpacer_10">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -662,7 +642,17 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1">
+       <item row="3" column="2">
+        <widget class="QComboBox" name="valueRelationValueColumn"/>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Select layer, key column and value column</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
         <widget class="QCheckBox" name="valueRelationAllowNull">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -672,7 +662,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="7" column="2">
         <widget class="QCheckBox" name="valueRelationOrderByValue">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -682,7 +672,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="8" column="2">
         <widget class="QCheckBox" name="valueRelationAllowMulti">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -691,6 +681,42 @@
           <string>Allow multiple selections</string>
          </property>
         </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QComboBox" name="valueRelationFilterColumn"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Value column</string>
+         </property>
+         <property name="buddy">
+          <cstring>valueRelationValueColumn</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Filter column</string>
+         </property>
+         <property name="buddy">
+          <cstring>valueRelationValueColumn</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_20">
+         <property name="text">
+          <string>Filter value</string>
+         </property>
+         <property name="buddy">
+          <cstring>valueRelationValueColumn</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QComboBox" name="valueRelationFilterValue"/>
        </item>
       </layout>
      </widget>

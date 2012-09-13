@@ -111,7 +111,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
 
   mSaveEditsButton->setEnabled( canChangeAttributes && mLayer->isEditable() );
-  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
@@ -263,6 +263,8 @@ void QgsAttributeTableDialog::columnBoxInit()
 {
   QgsFieldMap fieldMap = mLayer->pendingFields();
   QgsFieldMap::Iterator it = fieldMap.begin();
+
+  mColumnBox->clear();
 
   for ( ; it != fieldMap.end(); ++it )
     if ( mLayer->editType( it.key() ) != QgsVectorLayer::Hidden )
@@ -674,7 +676,7 @@ void QgsAttributeTableDialog::editingToggled()
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
-  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
@@ -706,6 +708,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
     }
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
+    columnBoxInit();
   }
 }
 
@@ -747,6 +750,7 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     }
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
+    columnBoxInit();
   }
 }
 
@@ -760,6 +764,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       mModel->reload( mModel->index( 0, col ), mModel->index( mModel->rowCount() - 1, col ) );
+      columnBoxInit();
     }
   }
 }

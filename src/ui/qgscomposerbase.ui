@@ -80,6 +80,7 @@
    <addaction name="mActionAddNewScalebar"/>
    <addaction name="mActionAddArrow"/>
    <addaction name="mActionAddTable"/>
+   <addaction name="mActionAddHtml"/>
    <addaction name="separator"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
@@ -441,6 +442,17 @@
    </property>
    <property name="toolTip">
     <string>Add Ellipse</string>
+   </property>
+  </action>
+  <action name="mActionAddHtml">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add html</string>
+   </property>
+   <property name="toolTip">
+    <string>Add html frame</string>
    </property>
   </action>
  </widget>

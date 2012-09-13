@@ -37,15 +37,14 @@
 #include <QMetaObject>
 
 #ifdef Q_OS_MACX
-QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent )
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* settings )
     : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
-    , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 #else
-QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent )
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* settings )
     : QMainWindow( parent )
-    , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 #endif
 {
+  mSettings = settings;
   setupUi( this );
   init();
   QStringList myHeaders;
@@ -180,8 +179,8 @@ void QgsCustomizationDialog::settingsToTree( QSettings *theSettings )
 
 void QgsCustomizationDialog::reset()
 {
-  mSettings.sync();
-  settingsToTree( &mSettings );
+  mSettings->sync();
+  settingsToTree( mSettings );
 }
 
 void QgsCustomizationDialog::ok()
@@ -192,9 +191,9 @@ void QgsCustomizationDialog::ok()
 void QgsCustomizationDialog::apply()
 {
   QgsDebugMsg( QString( "columnCount = %1" ).arg( treeWidget->columnCount() ) );
-  treeToSettings( &mSettings );
-  mSettings.setValue( QgsCustomization::instance()->statusPath(), QgsCustomization::User );
-  mSettings.sync();
+  treeToSettings( mSettings );
+  mSettings->setValue( QgsCustomization::instance()->statusPath(), QgsCustomization::User );
+  mSettings->sync();
 }
 
 void QgsCustomizationDialog::cancel()
@@ -459,7 +458,7 @@ bool QgsCustomizationDialog::catchOn( )
 
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions )
 {
-  foreach( QAction* action, actions )
+  foreach ( QAction* action, actions )
   {
     if ( action->menu() )
     {
@@ -498,7 +497,7 @@ void QgsCustomization::createTreeItemMenus( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMenuBar* menubar = QgisApp::instance()->menuBar();
-  foreach( QObject* obj, menubar->children() )
+  foreach ( QObject* obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
@@ -518,7 +517,7 @@ void QgsCustomization::createTreeItemToolbars( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMainWindow* mw = QgisApp::instance();
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
@@ -544,7 +543,7 @@ void QgsCustomization::createTreeItemDocks( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMainWindow* mw = QgisApp::instance();
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
@@ -570,7 +569,7 @@ void QgsCustomization::createTreeItemStatus( )
   topItem->setCheckState( 0, Qt::Checked );
 
   QStatusBar* sb = QgisApp::instance()->statusBar();
-  foreach( QObject* obj, sb->children() )
+  foreach ( QObject* obj, sb->children() )
   {
     if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
     {
@@ -601,7 +600,6 @@ QgsCustomization::QgsCustomization()
     : pDialog( 0 )
     , mEnabled( true )
     , mStatusPath( "/Customization/status" )
-    , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 {
   QgsDebugMsg( "Entered" );
 }
@@ -624,16 +622,16 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   QMainWindow* mw = QgisApp::instance();
   QMenuBar* menubar = mw->menuBar();
 
-  mSettings.beginGroup( "Customization/Menus" );
+  mSettings->beginGroup( "Customization/Menus" );
 
   // hide menus and menu actions
 
-  foreach( QObject* obj, menubar->children() )
+  foreach ( QObject* obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
       QMenu* menu = qobject_cast<QMenu*>( obj );
-      bool visible = mSettings.value( menu->objectName(), true ).toBool();
+      bool visible = mSettings->value( menu->objectName(), true ).toBool();
       if ( !visible )
       {
         menubar->removeAction( menu->menuAction() );
@@ -645,17 +643,17 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
     }
   }
 
-  mSettings.endGroup();
+  mSettings->endGroup();
 
   // remove toolbars, toolbar actions
 
-  mSettings.beginGroup( "Customization/Toolbars" );
-  foreach( QObject* obj, mw->children() )
+  mSettings->beginGroup( "Customization/Toolbars" );
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
       QToolBar* tb = qobject_cast<QToolBar*>( obj );
-      bool visible = mSettings.value( tb->objectName(), true ).toBool();
+      bool visible = mSettings->value( tb->objectName(), true ).toBool();
       if ( !visible )
       {
         mw->removeToolBar( tb );
@@ -664,33 +662,33 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       }
       else
       {
-        mSettings.beginGroup( tb->objectName() );
+        mSettings->beginGroup( tb->objectName() );
         // hide individual toolbar actions
-        foreach( QAction* action, tb->actions() )
+        foreach ( QAction* action, tb->actions() )
         {
           if ( action->objectName().isEmpty() )
           {
             continue;
           }
-          visible = mSettings.value( action->objectName(), true ).toBool();
+          visible = mSettings->value( action->objectName(), true ).toBool();
           if ( !visible )
             tb->removeAction( action );
         }
-        mSettings.endGroup();
+        mSettings->endGroup();
       }
     }
   }
 
-  mSettings.endGroup();
+  mSettings->endGroup();
 
   // remove dock widgets
 
-  mSettings.beginGroup( "Customization/Docks" );
-  foreach( QObject* obj, mw->children() )
+  mSettings->beginGroup( "Customization/Docks" );
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
-      bool visible = mSettings.value( obj->objectName(), true ).toBool();
+      bool visible = mSettings->value( obj->objectName(), true ).toBool();
       if ( !visible )
       {
         mw->removeDockWidget( qobject_cast<QDockWidget*>( obj ) );
@@ -698,16 +696,16 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
     }
   }
 
-  mSettings.endGroup();
+  mSettings->endGroup();
 
   // remove status bar widgets
 
-  if ( mSettings.value( "Customization/StatusBar", true ).toBool() )
+  if ( mSettings->value( "Customization/StatusBar", true ).toBool() )
   {
-    mSettings.beginGroup( "Customization/StatusBar" );
+    mSettings->beginGroup( "Customization/StatusBar" );
 
     QStatusBar* sb = mw->statusBar();
-    foreach( QObject* obj, sb->children() )
+    foreach ( QObject* obj, sb->children() )
     {
       if ( obj->inherits( "QWidget" ) )
       {
@@ -716,7 +714,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
         {
           continue;
         }
-        bool visible = mSettings.value( widget->objectName(), true ).toBool();
+        bool visible = mSettings->value( widget->objectName(), true ).toBool();
         if ( !visible )
         {
           sb->removeWidget( widget );
@@ -724,7 +722,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       }
     }
 
-    mSettings.endGroup();
+    mSettings->endGroup();
   }
   else
   {
@@ -733,18 +731,18 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   }
 }
 
-void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
+void QgsCustomization::updateMenu( QMenu* menu, QSettings* settings )
 {
-  settings.beginGroup( menu->objectName() );
+  settings->beginGroup( menu->objectName() );
   // hide individual menu actions and call recursively on visible submenus
-  foreach( QAction* action, menu->actions() )
+  foreach ( QAction* action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
     if ( objName.isEmpty() )
     {
       continue;
     }
-    bool visible = settings.value( objName, true ).toBool();
+    bool visible = settings->value( objName, true ).toBool();
     if ( !visible )
       menu->removeAction( action );
     else if ( action->menu() )
@@ -753,7 +751,7 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
       updateMenu( action->menu(), settings );
     }
   }
-  settings.endGroup();
+  settings->endGroup();
 }
 
 void QgsCustomization::openDialog( QWidget *parent )
@@ -761,14 +759,14 @@ void QgsCustomization::openDialog( QWidget *parent )
   QgsDebugMsg( "Entered" );
   if ( !pDialog )
   {
-    pDialog = new QgsCustomizationDialog( parent );
+    pDialog = new QgsCustomizationDialog( parent, mSettings );
   }
 
   // I am trying too enable switching widget status by clicking in main app, so I need non modal
   pDialog->show();
 }
 
-void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event )
+void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event, QSettings* settings )
 {
   Q_UNUSED( event );
   // Test if the widget is child of QDialog
@@ -780,12 +778,11 @@ void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event )
   QgsDebugMsg( QString( "%1 x %2" ).arg( widget->metaObject()->className() ).arg( QDialog::staticMetaObject.className() ) );
   QString path = "/Customization/Widgets/";
 
-  QgsCustomization::customizeWidget( path, widget );
+  QgsCustomization::customizeWidget( path, widget, settings );
 }
 
-void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget )
+void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget, QSettings* settings )
 {
-  QSettings mySettings( "QuantumGIS", "QGISCUSTOMIZATION" );
   QString name = theWidget->objectName();
   QString myPath = thePath;
 
@@ -808,11 +805,11 @@ void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget )
 
     QString p = myPath + "/" + w->objectName();
 
-    bool on = mySettings.value( p, true ).toBool();
+    bool on = settings->value( p, true ).toBool();
     //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
-      QgsCustomization::customizeWidget( myPath, w );
+      QgsCustomization::customizeWidget( myPath, w, settings );
     }
     else
     {
@@ -862,7 +859,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
 
     if ( mEnabled && widget && event->type() == QEvent::Show )
     {
-      QgsCustomization::customizeWidget( widget, event );
+      QgsCustomization::customizeWidget( widget, event, mSettings );
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
@@ -921,7 +918,7 @@ void QgsCustomization::loadDefault()
 
     bool val = fileSettings.value( p ).toBool();
 
-    mSettings.setValue( p, val );
+    mSettings->setValue( p, val );
   }
   mySettings.setValue( mStatusPath, QgsCustomization::Default );
 }

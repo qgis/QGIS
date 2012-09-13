@@ -79,6 +79,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       BoundaryDirection
     };
 
+    enum GridAnnotationFormat
+    {
+      Decimal = 0,
+      DegreeMinute,
+      DegreeMinuteSecond
+    };
+
     enum GridFrameStyle
     {
       NoGridFrame = 0,
@@ -255,6 +262,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
 
+    void setGridAnnotationFormat( GridAnnotationFormat f ) { mGridAnnotationFormat = f; }
+    GridAnnotationFormat gridAnnotationFormat() const { return mGridAnnotationFormat; }
+
     /**Set grid frame style (NoGridFrame or Zebra)
         @note: this function was added in version 1.9*/
     void setGridFrameStyle( GridFrameStyle style ) { mGridFrameStyle = style; }
@@ -315,6 +325,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void renderModeUpdateCachedImage();
 
   private:
+
+    enum AnnotationCoordinate
+    {
+      Longitude = 0,
+      Latitude
+    };
 
     // Pointer to map renderer of the QGIS main map. Note that QgsComposerMap uses a different map renderer,
     //it just copies some properties from the main map renderer.
@@ -407,6 +423,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Annotation direction on bottom side ( horizontal or vertical )*/
     GridAnnotationDirection mBottomGridAnnotationDirection;
 
+    GridAnnotationFormat mGridAnnotationFormat;
+
     GridFrameStyle mGridFrameStyle;
     double mGridFrameWidth;
 
@@ -433,6 +451,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param rotation text rotation
         @param annotationText the text to draw*/
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
+    QString gridAnnotationString( double value, AnnotationCoordinate coord ) const;
     /**Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
     int xGridLines( QList< QPair< double, QLineF > >& lines ) const;
@@ -467,6 +486,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
+    void initGridAnnotationFormatFromProject();
 };
 
 #endif

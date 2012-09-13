@@ -26,20 +26,17 @@
 #include <QVector>
 #include <QList>
 
-
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsrasterinterface.h"
 
 #include <cmath>
 
-//class QgsRectangle;
 class QgsPoint;
 
-//class CORE_EXPORT QgsRasterProjector
-class QgsRasterProjector
+class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
-//    Q_OBJECT
   public:
     /** \brief QgsRasterProjector implements approximate projection support for
      * it calculates grid of points in source CRS for target CRS + extent
@@ -53,11 +50,61 @@ class QgsRasterProjector
       double theMaxSrcXRes, double theMaxSrcYRes,
       QgsRectangle theExtent
     );
+    QgsRasterProjector(
+      QgsCoordinateReferenceSystem theSrcCRS,
+      QgsCoordinateReferenceSystem theDestCRS,
+      double theMaxSrcXRes, double theMaxSrcYRes,
+      QgsRectangle theExtent
+    );
+    QgsRasterProjector();
+    // * copy constructor to avoid synthesized which fails on copy of QgsCoordinateTransform (QObject child) in Python bindings
+    QgsRasterProjector( const QgsRasterProjector &projector );
 
     /** \brief The destructor */
     ~QgsRasterProjector();
 
+    QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
+    QgsRasterInterface * clone() const;
+
+    int bandCount() const;
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+
+    /** \brief set source and destination CRS */
+    void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS );
+
+    /** \brief Get source CRS */
+    QgsCoordinateReferenceSystem srcCrs() const  { return mSrcCRS; }
+
+    /** \brief Get destination CRS */
+    QgsCoordinateReferenceSystem destCrs() const  { return mDestCRS; }
+
+    /** \brief set maximum source resolution */
+    void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )
+    {
+      mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
+    }
+
+    /** get source extent */
+    QgsRectangle srcExtent() { return mSrcExtent; }
+
+    /** get/set source width/height */
+    int srcRows() { return mSrcRows; }
+    int srcCols() { return mSrcCols; }
+    void setSrcRows( int theRows ) { mSrcRows = theRows; mSrcXRes = mSrcExtent.height() / mSrcRows; }
+    void setSrcCols( int theCols ) { mSrcCols = theCols; mSrcYRes = mSrcExtent.width() / mSrcCols; }
+
+    /** \brief Get source row and column indexes for current source extent and resolution */
+    void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+
+    int dstRows() const { return mDestRows; }
+    int dstCols() const { return mDestCols; }
+
+    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+
+
+  private:
     /** \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
 
@@ -74,8 +121,8 @@ class QgsRasterProjector
     /** \brief Get approximate source row and column indexes for current source extent and resolution */
     inline void approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
 
-    /** \brief Get source row and column indexes for current source extent and resolution */
-    void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+    /** \brief Calculate matrix */
+    void calc();
 
     /** \brief insert rows to matrix */
     void insertRows();
@@ -107,35 +154,21 @@ class QgsRasterProjector
     bool checkRows();
 
     /** Calculate array of src helper points */
-    //void calcHelper ( int theMatrixRow, QList<QgsPoint> *thePoints );
     void calcHelper( int theMatrixRow, QgsPoint *thePoints );
 
     /** Calc / switch helper */
     void nextHelper();
 
-    /** get source extent */
-    QgsRectangle srcExtent() { return mSrcExtent; }
-
-    /** get/set source width/height */
-    int srcRows() { return mSrcRows; }
-    int srcCols() { return mSrcCols; }
-    void setSrcRows( int theRows ) { mSrcRows = theRows; mSrcXRes = mSrcExtent.height() / mSrcRows; }
-    void setSrcCols( int theCols ) { mSrcCols = theCols; mSrcYRes = mSrcExtent.width() / mSrcCols; }
-
     /** get mCPMatrix as string */
     QString cpToString();
 
-    int dstRows() const { return mDestRows; }
-    int dstCols() const { return mDestCols; }
-
-  private:
     /** Source CRS */
     QgsCoordinateReferenceSystem mSrcCRS;
 
     /** Destination CRS */
     QgsCoordinateReferenceSystem mDestCRS;
 
-    /** Coordinate transform */
+    /** Reverse coordinate transform (from destination to source) */
     QgsCoordinateTransform mCoordinateTransform;
 
     /** Destination extent */

@@ -106,6 +106,8 @@ class QgsProjectParser: public QgsConfigParser
     /**Reads service metadata from projectfile or falls back to parent class method if not there*/
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    QString serviceUrl() const;
+
   private:
 
     //forbidden

@@ -1053,7 +1053,7 @@ namespace pal
 
           if (( box->length * box->width ) > ( xmax - xmin ) *( ymax - ymin ) *5 )
           {
-            std::cout << "Very Large BBOX (should never occurs : bug-report please)" << std::endl;
+            std::cout << "Very Large BBOX (should never occur : bug-report please)" << std::endl;
             std::cout << "   Box size:  " << box->length << "/" << box->width << std::endl;
             std::cout << "   Alpha:     " << alpha << "   " << alpha * 180 / M_PI << std::endl;
             std::cout << "   Dx;Dy:     " << dx << "   " << dy  << std::endl;

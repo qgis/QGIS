@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for ASTYLE in $(dirname $0)/astyle $(dirname $0)/RelWithDebInfo/astyle
+for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
 do
 	if type -p $ASTYLE >/dev/null; then
 		break
@@ -9,7 +9,7 @@ do
 done
 
 if [ -z "$ASTYLE" ]; then
-	echo "astyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
+	echo "qgisstyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
 	exit 1	
 fi
 

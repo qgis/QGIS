@@ -46,7 +46,7 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
     SET(EXTRA_LINK_LIBRARIES ${ARGN})
 
     STRING(REPLACE "." "/" _x ${MODULE_NAME})
-    GET_FILENAME_COMPONENT(_parent_module_path ${_x}  PATH)
+    GET_FILENAME_COMPONENT(_parent_module_path ${_x} PATH)
     GET_FILENAME_COMPONENT(_child_module_name ${_x} NAME)
 
     GET_FILENAME_COMPONENT(_module_path ${MODULE_SIP} PATH)
@@ -126,6 +126,16 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
     IF (WIN32)
       SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES SUFFIX ".pyd")
     ENDIF (WIN32)
+
+    IF(WIN32)
+      GET_TARGET_PROPERTY(_target_location ${_logical_name} LOCATION)
+      GET_TARGET_PROPERTY(_runtime_output ${_logical_name} RUNTIME_OUTPUT_DIRECTORY)
+      ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_target_location}" "${_runtime_output}/${_child_module_name}.pyd"
+        DEPENDS ${_logical_name}
+      )
+    ENDIF(WIN32)
 
     INSTALL(TARGETS ${_logical_name} DESTINATION "${PYTHON_SITE_PACKAGES_DIR}/${_parent_module_path}")
 

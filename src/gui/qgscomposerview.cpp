@@ -24,6 +24,8 @@
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
@@ -33,6 +35,7 @@
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
+#include "qgsaddremovemultiframecommand.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -126,6 +129,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case AddRectangle:
     case AddTriangle:
     case AddEllipse:
+    case AddHtml:
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
@@ -317,6 +321,24 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       break;
 
+    case AddHtml:
+      if ( composition() )
+      {
+        QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), true );
+        QgsAddRemoveMultiFrameCommand* command = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added,
+            composerHtml, composition(), tr( "Html item added" ) );
+        composition()->undoStack()->push( command );
+        QgsComposerFrame* frame = new QgsComposerFrame( composition(), composerHtml, mRubberBandItem->transform().dx(),
+            mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(),
+            mRubberBandItem->rect().height() );
+        composition()->beginMultiFrameCommand( composerHtml, tr( "Html frame added" ) );
+        composerHtml->addFrame( frame );
+        composition()->endMultiFrameCommand();
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        mRubberBandItem = 0;
+        emit actionFinished();
+      }
     default:
       break;
   }
@@ -359,6 +381,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddRectangle:
       case AddTriangle:
       case AddEllipse:
+      case AddHtml:
         //adjust rubber band item
       {
         double x = 0;

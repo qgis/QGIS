@@ -20,6 +20,7 @@
 
 #include <QEvent>
 #include <QString>
+#include <QMetaType>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -81,17 +82,30 @@ class CORE_EXPORT QGis
 
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
+     * @note and QGIS >1.8 returns to that
      */
     enum UnitType
     {
       Meters = 0,
       Feet = 1,
       Degrees = 2, //for 1.0 api backwards compatibility
-      DecimalDegrees = 2,
-      DegreesMinutesSeconds = 4,
-      DegreesDecimalMinutes = 5,
-      UnknownUnit = 3
+      UnknownUnit = 3,
+
+      // for [1.4;1.8] api compatibility
+      DecimalDegrees = 2,         // was 2
+      DegreesMinutesSeconds = 2,  // was 4
+      DegreesDecimalMinutes = 2,  // was 5
     };
+
+    //! Provides the canonical name of the type value
+    // Added in version 2.0
+    static QString toLiteral( QGis::UnitType unit );
+    //! Converts from the canonical name to the type value
+    // Added in version 2.0
+    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! Provides translated version of the type value
+    // Added in version 2.0
+    static QString tr( QGis::UnitType unit );
 
     //! User defined event types
     enum UserEvent
@@ -106,6 +120,11 @@ class CORE_EXPORT QGis
     };
 
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+  private:
+    // String representation of unit types (set in qgis.cpp)
+    static const char *qgisUnitTypes[];
+
 };
 
 // hack to workaround warnings when casting void pointers
@@ -151,16 +170,16 @@ const QString GEOWKT =
 /** Wkt string that represents a geographic coord sys
  * @note deprecated in 1.8 due to violation of coding conventions (globals
  *  should be in all caps).
-*/
+ */
+#ifndef _MSC_VER
+Q_DECL_DEPRECATED
+#endif
+const QString GEOWkt = GEOWKT;
 
 const QString PROJECT_SCALES =
   "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
   "1:10000,1:5000,1:2500,1:1000,1:500";
 
-#ifndef _MSC_VER
-Q_DECL_DEPRECATED
-#endif
-const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
 extern CORE_EXPORT const QString GEOPROJ4;
 /** Magic number for a geographic coord sys in POSTGIS SRID */
@@ -180,6 +199,10 @@ const int LAT_PREFIX_LEN = 7;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+// Added in version 2.0
+const QString GEO_NONE = "NONE";
 
 //
 // Constants for point symbols

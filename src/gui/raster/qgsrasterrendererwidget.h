@@ -18,6 +18,8 @@
 #ifndef QGSRASTERRENDERERWIDGET_H
 #define QGSRASTERRENDERERWIDGET_H
 
+#include "qgsrectangle.h"
+
 #include <QWidget>
 
 class QgsRasterLayer;
@@ -26,7 +28,11 @@ class QgsRasterRenderer;
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 {
   public:
-    QgsRasterRendererWidget( QgsRasterLayer* layer ) { mRasterLayer = layer; }
+    QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
+        mRasterLayer( layer )
+        , mExtent( extent )
+    {
+    }
     virtual ~QgsRasterRendererWidget() {}
 
     enum LoadMinMaxAlgo
@@ -50,13 +56,13 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual void setStdDev( QString value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 
-    bool bandMinMax( LoadMinMaxAlgo loadAlgo, int band, double *values );
-    bool bandMinMaxFromStdDev( double stdDev, int band, double *values );
-
   protected:
     QgsRasterLayer* mRasterLayer;
     /**Returns a band name for display. First choice is color name, otherwise band number*/
     QString displayBandName( int band ) const;
+
+    /** Current extent */
+    QgsRectangle mExtent;
 };
 
 #endif // QGSRASTERRENDERERWIDGET_H

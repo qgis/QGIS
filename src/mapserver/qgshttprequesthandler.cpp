@@ -29,7 +29,6 @@
 #include <QStringList>
 #include <QUrl>
 #include <fcgi_stdio.h>
-#include "qgslogger.h"
 
 QgsHttpRequestHandler::QgsHttpRequestHandler(): QgsRequestHandler()
 {
@@ -344,7 +343,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
 
   //insert key and value into the map (parameters are separated by &
-  foreach( QString element, request.split( "&" ) )
+  foreach ( QString element, request.split( "&" ) )
   {
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
     if ( sepidx == -1 )

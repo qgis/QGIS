@@ -39,7 +39,6 @@
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
-#include "qgslogger.h"
 #include "qgspaintenginehack.h"
 
 #include <QImage>
@@ -73,7 +72,7 @@ QgsWMSServer::QgsWMSServer()
 
 void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats )
 {
-  foreach( QString format, formats )
+  foreach ( QString format, formats )
   {
     QDomElement formatElem = doc.createElement( "Format"/*wms:Format*/ );
     formatElem.appendChild( doc.createTextNode( format ) );
@@ -90,10 +89,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   if ( version == "1.1.1" )
   {
     doc = QDomDocument( "WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'" );  //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
+    addXMLDeclaration( doc );
     wmsCapabilitiesElement = doc.createElement( "WMT_MS_Capabilities"/*wms:WMS_Capabilities*/ );
   }
   else // 1.3.0 as default
   {
+    addXMLDeclaration( doc );
     wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
     wmsCapabilitiesElement.setAttribute( "xmlns", "http://www.opengis.net/wms" );
     wmsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
@@ -127,58 +128,11 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   requestElement.appendChild( elem );
 
   //Prepare url
-  //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
-  QString hrefString;
-  QString requestUrl = getenv( "REQUEST_URI" );
-  QUrl mapUrl( requestUrl );
-  mapUrl.setHost( getenv( "SERVER_NAME" ) );
-
-  //Add non-default ports to url
-  QString portString = getenv( "SERVER_PORT" );
-  if ( !portString.isEmpty() )
+  QString hrefString = mConfigParser->serviceUrl();
+  if ( hrefString.isEmpty() )
   {
-    bool portOk;
-    int portNumber = portString.toInt( &portOk );
-    if ( portOk )
-    {
-      if ( portNumber != 80 )
-      {
-        mapUrl.setPort( portNumber );
-      }
-    }
+    hrefString = serviceUrl();
   }
-
-  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
-  {
-    mapUrl.setScheme( "https" );
-  }
-  else
-  {
-    mapUrl.setScheme( "http" );
-  }
-
-  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
-  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
-  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
-  {
-    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-  }
-  hrefString = mapUrl.toString();
 
 
   // SOAP platform
@@ -201,7 +155,6 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   QDomElement olResourceElement = doc.createElement( "OnlineResource"/*wms:OnlineResource*/ );
   olResourceElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
   olResourceElement.setAttribute( "xlink:type", "simple" );
-  requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
   olResourceElement.setAttribute( "xlink:href", hrefString );
   getElement.appendChild( olResourceElement );
 
@@ -1721,7 +1674,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
       //we need to find the maplayer objects matching the layer name
       QList<QgsMapLayer*> layersToFilter;
 
-      foreach( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         if ( layer && layer->name() == eqSplit.at( 0 ) )
         {
@@ -1729,7 +1682,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
         }
       }
 
-      foreach( QgsMapLayer *filter, layersToFilter )
+      foreach ( QgsMapLayer *filter, layersToFilter )
       {
         QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
@@ -1907,7 +1860,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     return layersWithSelections;
   }
 
-  foreach( QString selectionLayer, selectionString.split( ";" ) )
+  foreach ( QString selectionLayer, selectionString.split( ";" ) )
   {
     //separate layer name from id list
     QStringList layerIdSplit = selectionLayer.split( ":" );
@@ -1920,7 +1873,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     QString layerName = layerIdSplit.at( 0 );
     QgsVectorLayer* vLayer = 0;
 
-    foreach( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+    foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( layer && layer->name() == layerName )
       {
@@ -1938,7 +1891,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     QStringList idList = layerIdSplit.at( 1 ).split( "," );
     QgsFeatureIds selectedIds;
 
-    foreach( QString id, idList )
+    foreach ( QString id, idList )
     {
       selectedIds.insert( STRING_TO_FID( id ) );
     }
@@ -1954,7 +1907,7 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
 {
   QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
 
-  foreach( QString id, layerIds )
+  foreach ( QString id, layerIds )
   {
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( layerMap.value( id, 0 ) );
     if ( !layer )
@@ -1992,4 +1945,63 @@ bool QgsWMSServer::checkMaximumWidthHeight() const
     }
   }
   return true;
+}
+
+QString QgsWMSServer::serviceUrl() const
+{
+  QUrl mapUrl( getenv( "REQUEST_URI" ) );
+  mapUrl.setHost( getenv( "SERVER_NAME" ) );
+
+  //Add non-default ports to url
+  QString portString = getenv( "SERVER_PORT" );
+  if ( !portString.isEmpty() )
+  {
+    bool portOk;
+    int portNumber = portString.toInt( &portOk );
+    if ( portOk )
+    {
+      if ( portNumber != 80 )
+      {
+        mapUrl.setPort( portNumber );
+      }
+    }
+  }
+
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
+  return mapUrl.toString();
+}
+
+void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
+{
+  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\"" );
+  doc.appendChild( xmlDeclaration );
 }

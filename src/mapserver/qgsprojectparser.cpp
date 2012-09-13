@@ -98,7 +98,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QgsMapLayer *layer = createLayerFromElement( elem );
     if ( layer )
@@ -150,7 +150,7 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
@@ -252,7 +252,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
-          foreach( const QDomElement &elem, embeddedGroupElements )
+          foreach ( const QDomElement &elem, embeddedGroupElements )
           {
             if ( elem.attribute( "name" ) == embeddedGroupName )
             {
@@ -263,7 +263,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
           QMap<QString, QgsMapLayer *> pLayerMap;
           QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
-          foreach( const QDomElement &elem, embeddedProjectLayerElements )
+          foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
@@ -1169,80 +1169,16 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     return 0;
   }
 
-  //go through all the item elements and add them to the composition (and to the lists)
-  QDomNodeList itemNodes = composerElem.childNodes();
-  for ( int i = 0; i < itemNodes.size(); ++i )
+  composition->addItemsFromXML( compositionElem, *mXMLDoc );
+  composition->composerItems( mapList );
+  composition->composerItems( labelList );
+
+  QList< QgsComposerPicture* > pictureList;
+  composition->composerItems( pictureList );
+  QList< QgsComposerPicture* >::iterator picIt = pictureList.begin();
+  for ( ; picIt != pictureList.end(); ++picIt )
   {
-    QDomElement currentElem = itemNodes.at( i ).toElement();
-    QString elemName = currentElem.tagName();
-    if ( elemName == "ComposerMap" )
-    {
-      QgsComposerMap* map = new QgsComposerMap( composition );
-      map->readXML( currentElem, *mXMLDoc );
-      map->setPreviewMode( QgsComposerMap::Rectangle );
-      composition->addItem( map );
-      mapList.push_back( map );
-    }
-    else if ( elemName == "ComposerLabel" )
-    {
-      QgsComposerLabel* label = new QgsComposerLabel( composition );
-      label->readXML( currentElem, *mXMLDoc );
-      composition->addItem( label );
-      labelList.push_back( label );
-    }
-    else if ( elemName == "ComposerLegend" )
-    {
-      //legend needs to be loaded indirectly to have generic content
-      //and to avoid usage of x-server with pixmap icons
-
-      //read full legend from xml
-      QgsComposerLegend* legend = new QgsComposerLegend( composition );
-      legend->readXML( currentElem, *mXMLDoc );
-
-      //dynamic legend (would be interesting in case of layers dynamically defined in SLD)
-      //legend->_readXML( currentElem.firstChildElement( "ComposerItem" ), *mXMLDoc );
-      //legend->updateLegend();
-      composition->addItem( legend );
-    }
-    else if ( elemName == "ComposerShape" )
-    {
-      QgsComposerShape* shape = new QgsComposerShape( composition );
-      shape->readXML( currentElem, *mXMLDoc );
-      composition->addItem( shape );
-    }
-    else if ( elemName == "ComposerArrow" )
-    {
-      QgsComposerArrow* arrow = new QgsComposerArrow( composition );
-      arrow->readXML( currentElem, *mXMLDoc );
-      composition->addItem( arrow );
-    }
-    else if ( elemName == "ComposerAttributeTable" )
-    {
-      QgsComposerAttributeTable* table = new QgsComposerAttributeTable( composition );
-      table->readXML( currentElem, *mXMLDoc );
-      composition->addItem( table );
-    }
-  }
-
-  //scalebars and pictures need to be loaded after the maps to receive the correct size / rotation
-  for ( int i = 0; i < itemNodes.size(); ++i )
-  {
-    QDomElement currentElem = itemNodes.at( i ).toElement();
-    QString elemName = currentElem.tagName();
-    if ( elemName == "ComposerPicture" )
-    {
-      QgsComposerPicture* picture = new QgsComposerPicture( composition );
-      picture->readXML( currentElem, *mXMLDoc );
-      //qgis mapserver needs an absolute file path
-      picture->setPictureFile( convertToAbsolutePath( picture->pictureFile() ) );
-      composition->addItem( picture );
-    }
-    else if ( elemName == "ComposerScaleBar" )
-    {
-      QgsComposerScaleBar* bar = new QgsComposerScaleBar( composition );
-      bar->readXML( currentElem, *mXMLDoc );
-      composition->addItem( bar );
-    }
+    ( *picIt )->setPictureFile( convertToAbsolutePath(( *picIt )->pictureFile() ) );
   }
 
   return composition;
@@ -1477,6 +1413,27 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   }
 
   parentElement.appendChild( serviceElem );
+}
+
+QString QgsProjectParser::serviceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsUrlElem = propertiesElem.firstChildElement( "WMSUrl" );
+    if ( !wmsUrlElem.isNull() )
+    {
+      url = wmsUrlElem.text();
+    }
+  }
+  return url;
 }
 
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const

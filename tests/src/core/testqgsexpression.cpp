@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QObject>
+#include <qgsapplication.h>
 //header for class being tested
 #include <qgsexpression.h>
 #include <qgsfeature.h>
@@ -30,6 +31,17 @@ class TestQgsExpression: public QObject
 {
     Q_OBJECT;
   private slots:
+
+    void initTestCase()
+    {
+      //
+      // Runs once before any tests are run
+      //
+      // init QGIS's paths - true means that all path will be inited from prefix
+      QgsApplication::init();
+      QgsApplication::initQgis();
+      QgsApplication::showSettings();
+    }
 
     void parsing_data()
     {
@@ -234,6 +246,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
+      QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
+      QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
+      QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
+      QTest::newRow( "round(1234.6) - round down to int" ) << "round(1234.4)" << false << QVariant( 1234 );
 
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
@@ -263,6 +279,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "rpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
       QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
+      QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
 
       // implicit conversions
       QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
@@ -278,6 +295,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
       QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();
       QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
+      QTest::newRow( "coalesce null" ) << "coalesce(NULL)" << false << QVariant( );
+      QTest::newRow( "coalesce mid-null" ) << "coalesce(1, NULL, 3)" << false << QVariant( 1 );
+      QTest::newRow( "coalesce exp" ) << "coalesce(NULL, 1+1)" << false << QVariant( 2 );
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
@@ -393,6 +413,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( v2.toInt(), 101 );
     }
 
+    void eval_scale()
+    {
+      QgsExpression exp( "$scale" );
+      QVariant v1 = exp.evaluate();
+      QCOMPARE( v1.toInt(), 0 );
+
+      exp.setScale( 100.00 );
+      QVariant v2 = exp.evaluate();
+      QCOMPARE( v2.toDouble(), 100.00 );
+    }
+
     void eval_feature_id()
     {
       QgsFeature f( 100 );
@@ -410,8 +441,8 @@ class TestQgsExpression: public QObject
       QStringList refCols = exp.referencedColumns();
       // make sure we have lower case
       QSet<QString> refColsSet;
-      foreach( QString col, refCols )
-      refColsSet.insert( col.toLower() );
+      foreach ( QString col, refCols )
+        refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );
     }

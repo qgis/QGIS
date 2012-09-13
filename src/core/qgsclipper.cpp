@@ -45,9 +45,9 @@ unsigned char* QgsClipper::clippedLineWKB( unsigned char* wkb, const QgsRectangl
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
 
-  double p0x, p0y, p1x, p1y; //original coordinates
+  double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
-  double lastClipX, lastClipY; //last successfully clipped coords
+  double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
   line.reserve( nPoints + 1 );
   line.clear();

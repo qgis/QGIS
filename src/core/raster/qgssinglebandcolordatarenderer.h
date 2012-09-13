@@ -25,12 +25,15 @@ class QDomElement;
 class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
-    QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
+    QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
     ~QgsSingleBandColorDataRenderer();
+    QgsRasterInterface * clone() const;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    bool setInput( QgsRasterInterface* input );
+
+    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

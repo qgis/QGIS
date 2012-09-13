@@ -90,6 +90,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( QString str, double *scaleFactor );
 
+    static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
+
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
@@ -99,7 +102,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static QgsSymbolV2* loadSymbol( QDomElement& element );
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
-    static QDomElement saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols = NULL );
+    static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 
     static bool createSymbolLayerV2ListFromSld( QDomElement& element, QGis::GeometryType geomType, QgsSymbolLayerV2List &layers );
 
@@ -192,6 +195,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element );
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
+
+    /**  parse color definition with format "rgb(0,0,0)" or "0,0,0" */
+    static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
     static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );

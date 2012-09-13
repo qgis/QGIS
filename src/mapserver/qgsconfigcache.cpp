@@ -40,7 +40,7 @@ QgsConfigCache::QgsConfigCache()
 
 QgsConfigCache::~QgsConfigCache()
 {
-  foreach( QgsConfigParser *parser, mCachedConfigurations.values() )
+  foreach ( QgsConfigParser *parser, mCachedConfigurations.values() )
   {
     delete parser;
   }

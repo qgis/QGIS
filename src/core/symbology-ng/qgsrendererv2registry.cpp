@@ -50,7 +50,7 @@ QgsRendererV2Registry::QgsRendererV2Registry()
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
 {
-  foreach( QString name, mRenderers.keys() )
+  foreach ( QString name, mRenderers.keys() )
   {
     delete mRenderers[name];
   }

@@ -13,9 +13,8 @@ class QgsRasterBandStats
     QString bandName;
     /** \brief The gdal band number (starts at 1)*/
     int bandNumber; 
-    /** \brief A flag to indicate whether this RasterBandStats struct 
-     * is completely populated */
-    bool statsGathered; 
+    /** \brief Collected statistics */
+    int statsGathered; 
     /** \brief The minimum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMinimum function. */
     double minimumValue;
@@ -35,13 +34,6 @@ class QgsRasterBandStats
     /** \brief The number of cells in the band. Equivalent to height x width. 
      * TODO: check if NO_DATA are excluded!*/
     int elementCount;    
-    /** \brief Store the histogram for a given layer */
-    typedef QVector<int> HistogramVector;
-    //HistogramVector * histogramVector;
-    /** \brief whteher histogram values are estimated or completely calculated */
-    bool isHistogramEstimated;
-    /** whehter histogram compuation should include out of range values */
-    bool isHistogramOutOfRange;
     /** Color table */
     //QList<QgsColorRampShader::ColorRampItem> colorTable;
 };

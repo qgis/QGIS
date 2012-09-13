@@ -301,7 +301,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // than its name. All fields are assumed to be text
   bool haveFields = false;
 
-  foreach( QString field, fieldList )
+  foreach ( QString field, fieldList )
   {
     if (( field.left( 1 ) == "'" || field.left( 1 ) == "\"" ) &&
         field.left( 1 ) == field.right( 1 ) )

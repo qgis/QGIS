@@ -26,6 +26,7 @@
 #include "qstring.h"
 
 #include <QMenu>
+#include <QSettings>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -89,6 +90,12 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   currentRuleChanged();
+
+  // store/restore header section widths
+  connect( viewRules->header(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( saveSectionWidth( int, int, int ) ) );
+
+  restoreSectionWidths();
+
 }
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
@@ -161,7 +168,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
   QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
-  foreach( QItemSelectionRange range, sel )
+  foreach ( QItemSelectionRange range, sel )
   {
     QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
@@ -204,8 +211,8 @@ void QgsRuleBasedRendererV2Widget::refineRule( int type )
   // TODO: set initial rule's symbol to NULL (?)
 
   // show the newly added rules
-  foreach( QModelIndex index, indexlist )
-  viewRules->expand( index );
+  foreach ( QModelIndex index, indexlist )
+    viewRules->expand( index );
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleCategories()
@@ -241,7 +248,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
 
   // create new rules
   QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->categories().count() );
@@ -271,7 +278,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
   // create new rules
   QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->ranges().count() );
@@ -282,7 +289,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
 {
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
 
@@ -302,7 +309,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
 
   QList<int> scales;
   bool ok;
-  foreach( QString item, txt.split( ',' ) )
+  foreach ( QString item, txt.split( ',' ) )
   {
     int scale = item.toInt( &ok );
     if ( ok )
@@ -311,7 +318,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
       QMessageBox::information( this, tr( "Error" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
   }
 
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, scales.count() + 1 );
@@ -330,7 +337,7 @@ QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
   }
 
   QItemSelection sel = viewRules->selectionModel()->selection();
-  foreach( QItemSelectionRange range, sel )
+  foreach ( QItemSelectionRange range, sel )
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRendererV2::Rule* parentRule = mModel->ruleForIndex( parent );
@@ -367,6 +374,27 @@ void QgsRuleBasedRendererV2Widget::setRenderingOrder()
   dlg.exec();
 }
 
+void QgsRuleBasedRendererV2Widget::saveSectionWidth( int section, int oldSize, int newSize )
+{
+  Q_UNUSED( oldSize );
+  // skip last section, as it stretches
+  if ( section == 3 )
+    return;
+  QSettings settings;
+  QString path = "/Windows/RuleBasedTree/sectionWidth/" + QString::number( section );
+  settings.setValue( path, newSize );
+}
+
+void QgsRuleBasedRendererV2Widget::restoreSectionWidths()
+{
+  QSettings settings;
+  QString path = "/Windows/RuleBasedTree/sectionWidth/";
+  QHeaderView* head = viewRules->header();
+  head->resizeSection( 0, settings.value( path + QString::number( 0 ), 200 ).toInt() );
+  head->resizeSection( 1, settings.value( path + QString::number( 1 ), 200 ).toInt() );
+  head->resizeSection( 2, settings.value( path + QString::number( 2 ), 100 ).toInt() );
+}
+
 
 ///////////
 
@@ -379,8 +407,10 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   editFilter->setText( mRule->filterExpression() );
+  editFilter->setToolTip( mRule->filterExpression() );
   editLabel->setText( mRule->label() );
   editDescription->setText( mRule->description() );
+  editDescription->setToolTip( mRule->description() );
 
   if ( mRule->dependsOnScale() )
   {
@@ -518,7 +548,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
 
   QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index );
 
-  if ( role == Qt::DisplayRole )
+  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
     switch ( index.column() )
     {
@@ -654,7 +684,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach( const QModelIndex &index, indexes )
+  foreach ( const QModelIndex &index, indexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )

@@ -199,7 +199,7 @@ void QgsSpatiaLiteSourceSelect::setLayerType( QString table, QString column, QSt
 void QgsSpatiaLiteSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  foreach( QString name, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( QString name, QgsSpatiaLiteConnection::connectionList() )
   {
     // retrieving the SQLite DB name and full path
     QString text = name + tr( "@" ) + QgsSpatiaLiteConnection::connectionPath( name );
@@ -417,7 +417,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   mTableModel.setSqliteDb( subKey );
 
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
-  foreach( const QgsSpatiaLiteConnection::TableEntry& table, tables )
+  foreach ( const QgsSpatiaLiteConnection::TableEntry& table, tables )
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, "" );
   }

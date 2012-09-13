@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbolv2propertiesdialog.h"
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
@@ -88,7 +87,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   {
     mRadiansRadioButton->setChecked( true );
   }
-  updateMarkerIcon();
+  emit changed();
 }
 
 QgsSymbolLayerV2* QgsVectorFieldSymbolLayerWidget::symbolLayer()
@@ -120,32 +119,6 @@ void QgsVectorFieldSymbolLayerWidget::on_mYAttributeComboBox_currentIndexChanged
   {
     mLayer->setYAttribute( mYAttributeComboBox->itemText( index ) );
     emit changed();
-  }
-}
-
-void QgsVectorFieldSymbolLayerWidget::on_mLineStylePushButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  updateMarkerIcon();
-  emit changed();
-}
-
-void QgsVectorFieldSymbolLayerWidget::updateMarkerIcon()
-{
-  if ( mLayer )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mLineStylePushButton->iconSize() );
-    mLineStylePushButton->setIcon( icon );
   }
 }
 
