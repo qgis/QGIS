@@ -197,8 +197,10 @@ class PythonConsole(QDockWidget):
        self.edit.commandConsole('iface')
 
     def openScriptFile(self):
+        settings = QSettings()
+        lastDirPath = settings.value("/pythonConsole/lastDirPath").toString()
         scriptFile = QFileDialog.getOpenFileName(
-                        self, "Open File", "", "Script file (*.py)")
+                        self, "Open File", lastDirPath, "Script file (*.py)")
         if scriptFile.isEmpty() == False:
             oF = open(scriptFile, 'r')
             listScriptFile = []
@@ -206,6 +208,9 @@ class PythonConsole(QDockWidget):
                 if line != "\n":
                     listScriptFile.append(line)
             self.edit.insertTextFromFile(listScriptFile)
+            
+            lastDirPath = QFileInfo(scriptFile).path()
+            settings.setValue("/pythonConsole/lastDirPath", QVariant(scriptFile))
 
 
     def saveScriptFile(self):
@@ -223,13 +228,10 @@ class PythonConsole(QDockWidget):
             is_first_line = True
             for s in listText:
                 if s[0:3] in (">>>", "..."):
-                    s.replace(">>> ", "")
-                    s.replace("... ", "")
+                    s.replace(">>> ", "").replace("... ", "")
                     if is_first_line:
-                        # see, no write() in this branch
                         is_first_line = False
                     else:
-                        # we've just written a line; add a newline
                         sF.write('\n')
                     sF.write(s)
             sF.close()
