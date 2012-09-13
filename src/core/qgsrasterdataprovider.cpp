@@ -64,7 +64,7 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
     return;
 
   // Allocate memory for not projected source data
-  int mySize = dataTypeSize( bandNo ) / 8;
+  size_t mySize = dataTypeSize( bandNo ) / 8;
   void *mySrcData = malloc( mySize * myProjector.srcRows() * myProjector.srcCols() );
 
   time.restart();
@@ -265,9 +265,9 @@ QString QgsRasterDataProvider::lastErrorFormat()
 QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
 {
   int type = dataType( theBandNo );
-  int size = dataTypeSize( theBandNo ) / 8;
+  size_t size = dataTypeSize( theBandNo ) / 8;
   QByteArray ba;
-  ba.resize( size );
+  ba.resize(( int )size );
   char * data = ba.data();
   double noval = mNoDataValue[theBandNo-1];
   unsigned char uc;
