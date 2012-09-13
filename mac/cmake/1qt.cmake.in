@@ -121,7 +121,7 @@ FOREACH (PU pylupdate4;pyrcc4)
     ENDIF ()
 ENDFOREACH (PU)
 IF (NOT EXISTS "${QBINDIR}/pyuic4")
-    EXECUTE_PROCESS (COMMAND sed -E "s, /.*/PyQt4/uic/pyuic.py, ${QDATADIR}/python/PyQt4/uic/pyuic.py," "@PYQT4_BIN_DIR@/pyuic4"
+    EXECUTE_PROCESS (COMMAND sed -E "s, /.*/PyQt4/uic/pyuic.py, \"\$(/usr/bin/dirname \"\$0\")/../../Resources/python/PyQt4/uic/pyuic.py\"," "@PYQT4_BIN_DIR@/pyuic4"
                      OUTPUT_VARIABLE PYUIC_CONTENTS)
     FILE (WRITE "${QBINDIR}/pyuic4" "${PYUIC_CONTENTS}")
     EXECUTE_PROCESS (COMMAND chmod +x "${QBINDIR}/pyuic4")
