@@ -112,7 +112,16 @@ class PythonConsole(QDockWidget):
 #        self.currentLayerButton.setIcon(QIcon("icon/iconTempConsole.png"))
 #        self.currentLayerButton.setMenuRole(QAction.PreferencesRole)
 #        self.currentLayerButton.setIconVisibleInMenu(True)
-        ##
+        ## Import Sextante class
+        self.loadSextanteButton = QAction(parent)
+        self.loadSextanteButton.setCheckable(False)
+        self.loadSextanteButton.setEnabled(True)
+        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "iconConsole/iconSextanteConsole.png"))
+        self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
+        self.loadSextanteButton.setIconVisibleInMenu(True)
+        self.loadSextanteButton.setToolTip('Import sextante class')
+        self.loadSextanteButton.setText('Import sextante class')
+        ## Import QgisInterface class
         self.loadIfaceButton = QAction(parent)
         self.loadIfaceButton.setCheckable(False)
         self.loadIfaceButton.setEnabled(True)
@@ -161,6 +170,7 @@ class PythonConsole(QDockWidget):
         self.toolBar.addAction(self.clearButton)
         #self.toolBar.addAction(self.currentLayerButton)
         self.toolBar.addAction(self.loadIfaceButton)
+        self.toolBar.addAction(self.loadSextanteButton)
         self.toolBar.addAction(self.openFileButton)
         self.toolBar.addAction(self.saveFileButton)
         self.toolBar.addAction(self.helpButton)
@@ -180,6 +190,7 @@ class PythonConsole(QDockWidget):
         self.clearButton.triggered.connect(self.edit.clearConsole)
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
+        self.loadSextanteButton.activated.connect(self.sextante)
         self.runButton.triggered.connect(self.edit.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
@@ -190,6 +201,9 @@ class PythonConsole(QDockWidget):
 
     def cLayer(self):
         self.edit.commandConsole('cLayer')
+        
+    def sextante(self):
+       self.edit.commandConsole('sextante')
 
     def iface(self):
        self.edit.commandConsole('iface')

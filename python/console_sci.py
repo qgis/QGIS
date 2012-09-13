@@ -132,6 +132,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             """Import QgisInterface class"""
             self.append('from qgis.utils import iface')
             self.move_cursor_to_end()
+        elif command == "sextante":
+            """Import Sextante class"""
+            self.append('from sextante.core.Sextante import Sextante')
+            self.move_cursor_to_end()
         elif command == "cLayer":
             """Retrive current Layer from map camvas"""
             self.append('cLayer = iface.mapCanvas().currentLayer()')
