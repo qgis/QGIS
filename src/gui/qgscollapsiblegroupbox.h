@@ -28,6 +28,7 @@
 #include <QGroupBox>
 
 class QToolButton;
+class QScrollArea;
 
 class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
 {
@@ -37,9 +38,14 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     QgsCollapsibleGroupBox( QWidget *parent = 0 );
     QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0 );
     ~QgsCollapsibleGroupBox();
+
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );
+
+    //! set this to false to not save/restore check and collapse state
     void setSaveState( bool save ) { mSaveState = save; }
+    //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
   signals:
     void collapsedStateChanged( QWidget* );
@@ -47,7 +53,6 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
   public slots:
     void checkToggled( bool ckd );
     void toggleCollapsed();
-    void updateStyle();
 
   protected slots:
     void loadState();
@@ -57,13 +62,16 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void init();
     void showEvent( QShowEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
+    void updateStyle();
     QRect titleRect() const;
     QString saveKey() const;
 
     bool mCollapsed;
     bool mSaveState;
     bool mInitFlat;
+    bool mScrollOnExpand;
     bool mShown;
+    QScrollArea* mParentScrollArea;
     QToolButton* mCollapseButton;
 
     static QIcon mCollapseIcon;

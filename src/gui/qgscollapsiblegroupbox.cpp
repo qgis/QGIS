@@ -24,6 +24,7 @@
 #include <QMouseEvent>
 #include <QStyleOptionGroupBox>
 #include <QSettings>
+#include <QScrollArea>
 
 QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
@@ -52,7 +53,9 @@ void QgsCollapsibleGroupBox::init()
   mCollapsed = false;
   mSaveState = true;
   mInitFlat = false;
+  mScrollOnExpand = true;
   mShown = false;
+  mParentScrollArea = 0;
 
   // init icons
   if ( mCollapseIcon.isNull() )
@@ -86,6 +89,16 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 
   // check if groupbox was set to flat in Designer or in code
   mInitFlat = isFlat();
+
+  // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
+  if ( parent() && parent()->parent() )
+    mParentScrollArea = dynamic_cast<QScrollArea*>( parent()->parent()->parent() );
+  else
+    mParentScrollArea = 0;
+  if ( mParentScrollArea )
+    QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
+  else
+    QgsDebugMsg( "did not find a QScrollArea parent" );
 
   loadState();
 
@@ -278,6 +291,13 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   setMaximumHeight( collapse ? titleRect().bottom() + 6 : 16777215 );
   mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
+  // if expanding and is in a QScrollArea, scroll down to make entire widget visible
+  if ( mScrollOnExpand && !collapse && mParentScrollArea )
+  {
+    // process events so entire widget is shown
+    QApplication::processEvents();
+    mParentScrollArea->ensureWidgetVisible( this );
+  }
   emit collapsedStateChanged( this );
 }
 
