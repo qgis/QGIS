@@ -152,7 +152,6 @@ void QgsCollapsibleGroupBox::saveState()
 {
   if ( ! mSaveState )
     return;
-  QgsDebugMsg( "key = " + saveKey() + " objectName = " + objectName() );
   QSettings settings;
   QString key = saveKey();
   settings.setValue( key + "/checked", isChecked() );
@@ -178,24 +177,66 @@ void QgsCollapsibleGroupBox::updateStyle()
 {
   setUpdatesEnabled( false );
 
-  // customize style sheet
+  // margin/offset defaults
+  int marginLeft = 20;  // title margin for disclosure triangle
+  int marginRight = 5;  // a little bit of space on the right, to match space on the left
+  int offsetLeft = 0;   // offset for oxygen theme
+  int offsetTop = 0;
+  int offsetTop2 = 0;   // offset for triangle
+
+  // calculate offset if frame overlaps triangle (oxygen theme)
+  // using an offset of 6 pixels from frame border
+  if ( QApplication::style()->objectName().toLower() == "oxygen" )
+  {
+    QStyleOptionGroupBox box;
+    initStyleOption( &box );
+    QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                      QStyle::SC_GroupBoxFrame, this );
+    QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                         QStyle::SC_GroupBoxCheckBox, this );
+    if ( rectFrame.left() <= 0 )
+      offsetLeft = 6 + rectFrame.left();
+    if ( rectFrame.top() <= 0 )
+    {
+      if ( isCheckable() )
+      {
+        // if is checkable align with checkbox
+        offsetTop = ( rectCheckBox.height() / 2 ) -
+                    ( mCollapseButton->height() / 2 ) + rectCheckBox.top();
+        offsetTop2 = offsetTop + 1;
+      }
+      else
+      {
+        offsetTop = 6 + rectFrame.top();
+        offsetTop2 = offsetTop;
+      }
+    }
+  }
+
+  QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
+                 objectName() ).arg( QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTop2 ) );
+
+  // customize style sheet for collapse/expand button and force left-aligned title
   // TODO: move to app stylesheet system, when appropriate
   QString ss;
   ss += "QgsCollapsibleGroupBox::title {";
   ss += "  subcontrol-origin: margin;";
   ss += "  subcontrol-position: top left;";
-  ss += "  margin-left: 20px;";  // offset for disclosure triangle
-  ss += "  margin-right: 5px;";  // a little bit of space on the right, to match space on the left
+  ss += QString( "  margin-left: %1px;" ).arg( marginLeft );
+  ss += QString( "  margin-right: %1px;" ).arg( marginRight );
+  ss += QString( "  left: %1px;" ).arg( offsetLeft );
+  ss += QString( "  top: %1px;" ).arg( offsetTop );
   ss += "}";
   setStyleSheet( ss );
 
-  // clear toolbutton default background and border
-  // TODO: move to app stylesheet system, when appropriate
+  // clear toolbutton default background and border and apply offset
   QString ssd;
   ssd = QString( "QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
   ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
   ssd += "}";
   mCollapseButton->setStyleSheet( ssd );
+  if ( offsetLeft != 0 || offsetTop2 != 0 )
+    mCollapseButton->move( offsetLeft, offsetTop2 );
 
   setUpdatesEnabled( true );
 }
