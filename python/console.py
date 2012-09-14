@@ -190,7 +190,7 @@ class PythonConsole(QDockWidget):
         self.clearButton.triggered.connect(self.edit.clearConsole)
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
-        self.loadSextanteButton.activated.connect(self.sextante)
+        self.loadSextanteButton.triggered.connect(self.sextante)
         self.runButton.triggered.connect(self.edit.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
@@ -201,7 +201,7 @@ class PythonConsole(QDockWidget):
 
     def cLayer(self):
         self.edit.commandConsole('cLayer')
-        
+
     def sextante(self):
        self.edit.commandConsole('sextante')
 
@@ -220,7 +220,7 @@ class PythonConsole(QDockWidget):
                 if line != "\n":
                     listScriptFile.append(line)
             self.edit.insertTextFromFile(listScriptFile)
-            
+
             lastDirPath = QFileInfo(scriptFile).path()
             settings.setValue("/pythonConsole/lastDirPath", QVariant(scriptFile))
 
