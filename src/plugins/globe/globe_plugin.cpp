@@ -422,7 +422,7 @@ void GlobePlugin::syncExtent()
   //get mapCanvas->extent().height() in meters
   QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
-  dist.setProjectionsEnabled( true );
+  dist.setEllipsoidalMode( true );
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );

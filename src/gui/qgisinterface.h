@@ -32,6 +32,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsLegendInterface;
 class QgsFeature;
+class QgsMessageBar;
 
 #include <QObject>
 #include <QPair>
@@ -156,6 +157,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow() = 0;
+
+    /** Return the message bar of the main app */
+    virtual QgsMessageBar * messageBar() = 0;
 
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
     virtual QList<QgsComposerView*> activeComposers() = 0;

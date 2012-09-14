@@ -26,6 +26,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 class QgsContrastEnhancementFunction;
 class QDomDocument;
 class QDomElement;
+class QString;
 
 /** \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
@@ -72,6 +73,7 @@ class CORE_EXPORT QgsContrastEnhancement
     };
 
     QgsContrastEnhancement( QgsContrastEnhancement::QgsRasterDataType theDatatype = QGS_Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
 
     /*
@@ -97,6 +99,8 @@ class CORE_EXPORT QgsContrastEnhancement
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
+
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*
      *

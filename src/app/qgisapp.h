@@ -71,6 +71,7 @@ class QgsGPSInformationWidget;
 class QgsDecorationItem;
 
 class QgsMessageLogViewer;
+class QgsMessageBar;
 
 class QgsScaleComboBox;
 
@@ -161,8 +162,14 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void openFile( const QString & fileName );
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( QString, QPixmap * );
+
     /** Get the mapcanvas object from the app */
-    QgsMapCanvas * mapCanvas();
+    QgsMapCanvas *mapCanvas();
+
+    QgsMessageBar* messageBar();
+
+    /** Get the mapcanvas object from the app */
+    QgsPalLabeling *palLabeling();
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -310,7 +317,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
 
-    QAction *actionShowFrozenLabels() { return mActionShowFrozenLabels; }
+    QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
     QMenu *fileMenu() { return mFileMenu; }
@@ -811,6 +818,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //annotations
     void addFormAnnotation();
     void addTextAnnotation();
+    void addHtmlAnnotation();
     void modifyAnnotation();
 
     //! shows label settings dialog (for labeling-ng)
@@ -868,10 +876,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
-    //! Toggles whether to show frozen labels
-    void showFrozenLabels( bool show );
-    //! Activates freeze labels tool
-    void freezeLabels();
+    //! Toggles whether to show pinned labels
+    void showPinnedLabels( bool show );
+    //! Activates pin labels tool
+    void pinLabels();
+    //! Activates show/hide labels tool
+    void showHideLabels();
     //! Activates the move label tool
     void moveLabel();
     //! Activates rotate label tool
@@ -881,6 +891,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     void renderDecorationItems( QPainter *p );
     void projectReadDecorationItems( );
+
+    //! clear out any stuff from project
+    void closeProject();
+
+    //! trust and load project macros
+    void enableProjectMacros();
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -965,7 +981,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
-
 
     void saveAsVectorFileGeneral( bool saveOnlySelection );
 
@@ -1072,8 +1087,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mRotatePointSymbolsTool;
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
+        QgsMapTool* mHtmlAnnotation;
         QgsMapTool* mTextAnnotation;
-        QgsMapTool* mFreezeLabels;
+        QgsMapTool* mPinLabels;
+        QgsMapTool* mShowHideLabels;
         QgsMapTool* mMoveLabel;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;
@@ -1220,6 +1237,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool cmpByText( QAction* a, QAction* b );
 
     QString mOldScale;
+
+    //! the user has trusted the project macros
+    bool mTrustedMacros;
+
+    //! a bar to display warnings in a non-blocker manner
+    QgsMessageBar *mInfoBar;
+    QWidget *mMacrosWarn;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

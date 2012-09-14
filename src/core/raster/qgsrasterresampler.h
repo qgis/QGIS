@@ -29,6 +29,7 @@ class QgsRasterResampler
     virtual ~QgsRasterResampler() {}
     virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
     virtual QString type() const = 0;
+    virtual QgsRasterResampler * clone() const = 0;
 };
 
 #endif // QGSRASTERRESAMPLER_H

@@ -105,6 +105,9 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setSize( double size ) { mSize = size; }
     double size() const { return mSize; }
 
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
+    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
@@ -119,6 +122,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     double mAngle;
     double mSize;
     QPointF mOffset;
+    QgsSymbolV2::ScaleMethod mScaleMethod;
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2

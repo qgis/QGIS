@@ -66,7 +66,13 @@ void QgsAppLegendInterface::updateIndex( QModelIndex oldIndex, QModelIndex newIn
 
 void QgsAppLegendInterface::setGroupExpanded( int groupIndex, bool expand )
 {
-  mLegend->setExpanded( mLegend->model()->index( groupIndex, 0 ), expand );
+	QTreeWidgetItem * item = getItem (groupIndex);
+	if ( !item ) 
+	{
+		return;
+	}
+
+  item->setExpanded(expand);
 }
 
 void QgsAppLegendInterface::setGroupVisible( int groupIndex, bool visible )
@@ -76,8 +82,29 @@ void QgsAppLegendInterface::setGroupVisible( int groupIndex, bool visible )
     return;
   }
 
-  Qt::CheckState state = visible ? Qt::Checked : Qt::Unchecked;
-  mLegend->topLevelItem( groupIndex )->setCheckState( 0, state );
+	Qt::CheckState state = visible ? Qt::Checked : Qt::Unchecked;
+	getItem (groupIndex)->setCheckState( 0, state );
+}
+
+QTreeWidgetItem *QgsAppLegendInterface::getItem(int itemIndex) 
+{
+	int itemCount = 0;
+	for (QTreeWidgetItem* theItem = mLegend->firstItem(); theItem; theItem = mLegend->nextItem( theItem ) )
+	{
+		QgsLegendItem* legendItem = dynamic_cast<QgsLegendItem *>( theItem );
+		if (legendItem->type() == QgsLegendItem::LEGEND_GROUP) {
+			if (itemCount == itemIndex) 
+			{
+				return theItem;
+			}
+			else 
+			{
+				itemCount = itemCount + 1;
+			}
+		}
+	}
+
+	return NULL;
 }
 
 void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
@@ -101,14 +128,26 @@ QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
 
 bool QgsAppLegendInterface::groupExists( int groupIndex )
 {
-  QModelIndex mi = mLegend->model()->index( groupIndex, 0 );
-  return ( mi.isValid() &&
-           mLegend->isLegendGroup( mi ) );
+	QTreeWidgetItem * item = getItem (groupIndex);
+	QgsLegendItem* legendItem = dynamic_cast<QgsLegendItem *>( item );
+
+	if ( !legendItem ) 
+	{
+		return false;
+	}
+
+	return legendItem->type() == QgsLegendItem::LEGEND_GROUP;
 }
 
 bool QgsAppLegendInterface::isGroupExpanded( int groupIndex )
 {
-  return mLegend->isExpanded( mLegend->model()->index( groupIndex, 0 ) );
+	QTreeWidgetItem * item = getItem (groupIndex);
+	if ( !item ) 
+	{
+		return false;
+	}
+
+  return item->isExpanded();
 }
 
 bool QgsAppLegendInterface::isGroupVisible( int groupIndex )
@@ -118,7 +157,7 @@ bool QgsAppLegendInterface::isGroupVisible( int groupIndex )
     return false;
   }
 
-  return ( Qt::Checked == mLegend->topLevelItem( groupIndex )->checkState( 0 ) );
+  return ( Qt::Checked == getItem( groupIndex )->checkState( 0 ) );
 }
 
 bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )

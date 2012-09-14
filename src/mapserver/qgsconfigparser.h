@@ -118,7 +118,7 @@ class QgsConfigParser
     /**Appends service metadata to the capabilities document*/
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
-    /**Returns service Adress (or empty string if not defined in the configuration*/
+    /**Returns service address (or empty string if not defined in the configuration*/
     virtual QString serviceUrl() const { return QString(); }
 
     QColor selectionColor() const { return mSelectionColor; }

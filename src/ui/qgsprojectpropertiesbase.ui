@@ -193,8 +193,11 @@
        </item>
        <item row="1" column="0">
         <widget class="QGroupBox" name="btnGrpMapUnits">
+         <property name="toolTip">
+          <string>Used when CRS transformation is turned off</string>
+         </property>
          <property name="title">
-          <string>Layer units</string>
+          <string>Canvas units</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_27">
           <item row="0" column="0">
@@ -780,8 +783,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>660</width>
-            <height>792</height>
+            <width>670</width>
+            <height>812</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -1106,6 +1109,38 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Macros</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="grpPythonMacros">
+         <property name="title">
+          <string>Python macros</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QPlainTextEdit" name="ptePythonMacros">
+            <property name="documentTitle">
+             <string notr="true"/>
+            </property>
+            <property name="plainText">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -1155,6 +1190,7 @@
   <tabstop>pbnWMSRemoveSRS</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

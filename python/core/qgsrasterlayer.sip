@@ -6,7 +6,7 @@
 class QgsRasterLayer : QgsMapLayer
 {
 %TypeHeaderCode
-#include <qgsrasterpyramid.h>
+// #include <qgsrasterpyramid.h>
 #include <qgsrasterlayer.h>
 #include <qgscontrastenhancement.h>
 #include <qgsrastertransparency.h>
@@ -81,6 +81,15 @@ public:
       Multiband
     } ;
 
+    /** \brief Contrast enhancement limits */
+    enum ContrastEnhancementLimits
+    {
+      ContrastEnhancementNone,
+      ContrastEnhancementMinMax,
+      ContrastEnhancementStdDev,
+      ContrastEnhancementCumulativeCut
+    };
+
     /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
     typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
 
@@ -91,12 +100,12 @@ public:
      * to be added to the list. Each time a RasterPyramid is created
      * we will check to see if a pyramid matching these dimensions already exists
      * in the raster layer, and if so mark the exists flag as true */
-    typedef QList<QgsRasterPyramid> RasterPyramidList;
+    // typedef QList<QgsRasterPyramid> RasterPyramidList;
 
     /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while every RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QList<QgsRasterBandStats> RasterStatsList;
+    // typedef QList<QgsRasterBandStats> RasterStatsList;
 
 
 
@@ -151,7 +160,7 @@ public:
     //QString greenBandName() const; //removed with raster redesign
 
     /** \brief Accessor for mHasPyramids (READ ONLY) */
-    bool hasPyramids();
+    // bool hasPyramids();
 
     /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
     bool hasUserDefinedGrayMinimumMaximum() const;
@@ -208,8 +217,10 @@ public:
     //void setUserDefinedRGBMinimumMaximum( bool theBool ); //removed with raster redesign
 
     /**Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* renderer );
+    void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
     QgsRasterRenderer* renderer();
+
+    QgsRasterPipe * pipe();
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
@@ -217,7 +228,7 @@ public:
     /** \brief  Accessor for transparent band name mapping */
     //QString transparentBandName() const; //removed with raster redesign
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
+    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
      * @deprecated in 2.0
      */
     bool usesProvider() /Deprecated/;
@@ -248,7 +259,7 @@ public:
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    RasterPyramidList buildPyramidList();
+    // RasterPyramidList buildPyramidList();
 
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
@@ -262,14 +273,14 @@ public:
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
     void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
-    
+
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
-    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent 
+    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
     void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
@@ -357,12 +368,12 @@ public:
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBand = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @note added in 2.0
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @deprecated in 2.0
      */
     QString providerKey() const /Deprecated/;
@@ -470,9 +481,9 @@ public:
 
   public slots:
     /** \brief Create GDAL pyramid overviews */
-    QString buildPyramids( const RasterPyramidList &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
+    // QString buildPyramids( const RasterPyramidList &,
+    //                        const QString &  theResamplingMethod = "NEAREST",
+    //                        bool theTryInternalFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 

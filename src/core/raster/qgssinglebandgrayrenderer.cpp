@@ -32,6 +32,16 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
+QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
+{
+  QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
+  if ( mContrastEnhancement )
+  {
+    renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
+  }
+  return renderer;
+}
+
 QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
@@ -80,7 +90,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   void* alphaData = 0;
   double currentAlpha = mOpacity;
-  int grayVal;
+  double grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
@@ -107,6 +117,13 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     for ( int j = 0; j < width; ++j )
     {
       grayVal = readValue( rasterData, rasterType, currentRasterPos );
+
+      if ( mInput->isNoDataValue( mGrayBand, grayVal ) )
+      {
+        imageScanLine[j] = myDefaultColor;
+        ++currentRasterPos;
+        continue;
+      }
 
       //alpha
       currentAlpha = mOpacity;

@@ -110,8 +110,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual void drawLabels( QgsRenderContext& rendererContext );
 
-    /** Return the extent of the layer as a QRect */
-    QgsRectangle extent() const;
+    /** Return the extent of the layer */
+    virtual QgsRectangle extent();
 
     /*! Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    QString const & source() const;
+    QString const &source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @return a QString withe the style file name
+     * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */
@@ -390,6 +390,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void dataChanged();
 
   protected:
+    /** Set the extent */
+    virtual void setExtent( const QgsRectangle &rect );
 
     /** set whether layer is valid or not - should be used in constructor.
         \note added in v1.5 */
@@ -421,7 +423,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     unsigned int mTransparencyLevel;
 
     /** Extent of the layer */
-    QgsRectangle mLayerExtent;
+    QgsRectangle mExtent;
 
     /** Indicates if the layer is valid and can be drawn */
     bool mValid;

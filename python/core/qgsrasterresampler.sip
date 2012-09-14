@@ -19,6 +19,7 @@ class QgsRasterResampler
   public:
     virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
     virtual QString type() const = 0;
+    virtual QgsRasterResampler * clone() const = 0;
 };
 
 class QgsBilinearRasterResampler: QgsRasterResampler
@@ -32,6 +33,7 @@ class QgsBilinearRasterResampler: QgsRasterResampler
 
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const;
+    QgsRasterResampler * clone() const;
 };
 
 class QgsCubicRasterResampler: QgsRasterResampler
@@ -44,4 +46,5 @@ class QgsCubicRasterResampler: QgsRasterResampler
     ~QgsCubicRasterResampler();
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const;
+    QgsRasterResampler * clone() const;
 };

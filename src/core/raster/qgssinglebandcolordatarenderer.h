@@ -27,8 +27,11 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
     ~QgsSingleBandColorDataRenderer();
+    QgsRasterInterface * clone() const;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
+
+    bool setInput( QgsRasterInterface* input );
 
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 

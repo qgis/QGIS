@@ -1,4 +1,4 @@
-class QgsRasterRenderer
+class QgsRasterRenderer : QgsRasterInterface
 {
 %TypeHeaderCode
     #include "qgsrasterrenderer.h"
@@ -7,6 +7,7 @@ class QgsRasterRenderer
     #include "qgssinglebandpseudocolorrenderer.h"
     #include "qgssinglebandgrayrenderer.h"
     #include "qgssinglebandcolordatarenderer.h"
+    #include "qgsrasterinterface.h"
 %End
 
 %ConvertToSubClassCode
@@ -18,8 +19,8 @@ class QgsRasterRenderer
     sipClass = sipClass_QgsSingleBandPseudoColorRenderer;
   else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
     sipClass = sipClass_QgsSingleBandGrayRenderer;
-    else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
-      sipClass = sipClass_QgsSingleBandGrayRenderer;
+  else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsSingleBandGrayRenderer;
   else
     sipClass = 0;
 %End
@@ -27,9 +28,12 @@ class QgsRasterRenderer
   public:
     QgsRasterRenderer( QgsRasterDataProvider* provider, const QString& type );
     virtual ~QgsRasterRenderer();
+    virtual QgsRasterInterface * clone() const = 0;
 
     virtual QString type() const;
     virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
 
     bool usesTransparency() const;
 
@@ -63,6 +67,7 @@ class QgsPalettedRasterRenderer: QgsRasterRenderer
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
+    QgsRasterInterface * clone();
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
@@ -87,6 +92,7 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -121,8 +127,9 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 %End
   public:
     /**Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
+    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
     ~QgsSingleBandPseudoColorRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -145,6 +152,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
   public:
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -169,6 +177,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
     ~QgsSingleBandColorDataRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 

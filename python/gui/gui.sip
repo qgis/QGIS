@@ -26,6 +26,7 @@
 %Include qgsmaptoolzoom.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmessageviewer.sip
+%Include qgsmessagebar.sip
 %Include qgsprojectbadlayerguihandler.sip
 %Include qgsprojectionselector.sip
 %Include qgsquickprint.sip

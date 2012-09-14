@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
+    <width>265</width>
     <height>483</height>
    </rect>
   </property>
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>230</width>
-        <height>395</height>
+        <width>255</width>
+        <height>392</height>
        </rect>
       </property>
       <attribute name="label">
@@ -251,8 +251,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>230</width>
-        <height>395</height>
+        <width>255</width>
+        <height>392</height>
        </rect>
       </property>
       <attribute name="label">
@@ -359,8 +359,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>218</width>
-        <height>716</height>
+        <width>238</width>
+        <height>770</height>
        </rect>
       </property>
       <attribute name="label">
@@ -591,9 +591,9 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="4">
+          <item row="5" column="0" colspan="4">
            <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
+            <item row="1" column="0">
              <widget class="QLabel" name="mAnnotationPositionLabelLeft">
               <property name="text">
                <string>Annotation position left side</string>
@@ -606,10 +606,10 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="1" column="1">
              <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="mAnnotationPositionLabelRight">
               <property name="text">
                <string>Annotation position right side</string>
@@ -622,10 +622,10 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="mAnnotationPositionLabelTop">
               <property name="text">
                <string>Annotation position top side</string>
@@ -638,10 +638,10 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1">
              <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="mAnnotationPositionLabelBottom">
               <property name="text">
                <string>Annotation position bottom side</string>
@@ -654,10 +654,10 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="4" column="1">
              <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="mAnnotationDirectionLabelLeft">
               <property name="frameShape">
                <enum>QFrame::NoFrame</enum>
@@ -673,10 +673,10 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="5" column="1">
              <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
             </item>
-            <item row="5" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="mAnnotationDirectionLabelRight">
               <property name="text">
                <string>Annotation direction right side</string>
@@ -689,10 +689,10 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="6" column="1">
              <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
             </item>
-            <item row="6" column="0">
+            <item row="7" column="0">
              <widget class="QLabel" name="mAnnotationDirectionLabelTop">
               <property name="text">
                <string>Annotation direction top side</string>
@@ -702,10 +702,10 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="7" column="1">
              <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
             </item>
-            <item row="7" column="0">
+            <item row="8" column="0">
              <widget class="QLabel" name="mAnnotationDirectionLabeBottom">
               <property name="text">
                <string>Annotation direction bottom side</string>
@@ -715,19 +715,29 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="8" column="1">
              <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="mAnnotationFormatLabel">
+              <property name="text">
+               <string>Annotation format</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="mAnnotationFormatComboBox"/>
             </item>
            </layout>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QPushButton" name="mAnnotationFontButton">
             <property name="text">
              <string>Font...</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item row="7" column="0" colspan="2">
            <widget class="QLabel" name="mDistanceToFrameLabel">
             <property name="text">
              <string>Distance to map frame</string>
@@ -740,10 +750,10 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="2" colspan="2">
+          <item row="7" column="2" colspan="2">
            <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="8" column="0" colspan="2">
            <widget class="QLabel" name="mCoordinatePrecisionLabel">
             <property name="text">
              <string>Coordinate precision</string>
@@ -756,10 +766,10 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="2" colspan="2">
+          <item row="8" column="2" colspan="2">
            <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
           </item>
-          <item row="8" column="0">
+          <item row="9" column="0">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>

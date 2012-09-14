@@ -35,6 +35,7 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
   public:
     /**
      * Constructor
+     * @param theCanvas map canvas pointer
      * @param theLayer layer pointer
      */
     QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer );

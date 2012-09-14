@@ -21,7 +21,8 @@ public:
 
     struct TransparentSingleValuePixel
     {
-      double pixelValue;
+      double min;
+      double max;
       double percentTransparent;
     };
     

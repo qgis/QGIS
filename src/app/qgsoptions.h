@@ -25,6 +25,7 @@
 
 #include <qgscoordinatereferencesystem.h>
 
+#include <QList>
 
 /**
  * \class QgsOptions
@@ -72,7 +73,9 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void fontSizeChanged( const QString &fontSize );
 
-    void toggleStandardDeviation( int );
+    //! Slot to change backbuffering. This is handled when the user changes
+    // the value of the checkbox
+    void toggleEnableBackbuffer( int );
 
     /**
      * Return the desired state of newly added layers. If a layer
@@ -178,18 +181,35 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void saveGdalDriverList();
 
-  protected:
-    //! Populates combo box with ellipsoids
-    void getEllipsoidList();
-
-    QString getEllipsoidAcronym( QString theEllipsoidName );
-    QString getEllipsoidName( QString theEllipsoidAcronym );
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
 
   private:
     QStringList i18nList();
+    void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
+    void saveContrastEnhancement( QComboBox *cbox, QString name );
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
+
+    static const char * GEO_NONE_DESC;
 };
 
 #endif // #ifndef QGSOPTIONS_H

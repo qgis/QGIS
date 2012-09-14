@@ -74,7 +74,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
                 .arg( tr( "'Dia' || Diameter" ) ) );
   registerItem( tr( "Operators" ), "LIKE", " LIKE " );
   registerItem( tr( "Operators" ), "ILIKE", " ILIKE " );
-  registerItem( tr( "Operators" ), "IS", " IS NOT " );
+  registerItem( tr( "Operators" ), "IS", " IS " );
   registerItem( tr( "Operators" ), "OR", " OR " );
   registerItem( tr( "Operators" ), "AND", " AND " );
   registerItem( tr( "Operators" ), "NOT", " NOT " );

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>526</height>
+    <width>808</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="iconSize">
       <size>
@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>938</height>
+            <width>770</width>
+            <height>1062</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -171,6 +171,60 @@
                    <string>Reset</string>
                   </property>
                  </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_21">
+                <item>
+                 <widget class="QLabel" name="label_33">
+                  <property name="text">
+                   <string>Enable macros</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbEnableMacros">
+                  <property name="currentIndex">
+                   <number>0</number>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QComboBox::AdjustToContents</enum>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Never</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Ask</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>For this session only</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Always (not recommended)</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_17">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
@@ -525,6 +579,13 @@
                <widget class="QCheckBox" name="cbxCopyWKTGeomFromTable">
                 <property name="text">
                  <string>Copy geometry in WKT representation from attribute table</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
+                <property name="text">
+                 <string>Ignore shapefile encoding</string>
                 </property>
                </widget>
               </item>
@@ -941,9 +1002,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-169</y>
-            <width>766</width>
-            <height>621</height>
+            <y>0</y>
+            <width>1010</width>
+            <height>815</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -953,46 +1014,63 @@
               <string>Rendering behavior</string>
              </property>
              <layout class="QGridLayout">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="chkAddedVisibility">
                 <property name="text">
                  <string>By default new la&amp;yers added to the map should be displayed</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
+              <item row="4" column="0" colspan="3">
                <widget class="QLabel" name="textLabel3">
                 <property name="text">
                  <string>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="2">
+              <item row="5" column="0" colspan="3">
                <widget class="QCheckBox" name="chkUseRenderCaching">
                 <property name="text">
                  <string>Use render caching where possible to speed up redraws</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="textLabel1_6">
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="chkEnableBackbuffer">
                 <property name="text">
-                 <string>Number of features to draw before updating the display</string>
+                 <string>Enable back buffer (Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing)</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBoxUpdateThreshold">
-                <property name="toolTip">
-                 <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
-                </property>
-                <property name="maximum">
-                 <number>1000000</number>
-                </property>
-                <property name="value">
-                 <number>1000</number>
-                </property>
-               </widget>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_26">
+                <item>
+                 <widget class="QLabel" name="labelUpdateThreshold">
+                  <property name="text">
+                   <string>Number of features to draw before updating the display</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxUpdateThreshold">
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
+                  </property>
+                  <property name="maximum">
+                   <number>1000000</number>
+                  </property>
+                  <property name="value">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -1039,12 +1117,58 @@
              </layout>
             </widget>
            </item>
+           <item row="4" column="0">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>SVG paths</string>
+             </property>
+             <layout class="QGridLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="mSVGLabel">
+                <property name="text">
+                 <string>Path(s) to search for Scalable Vector Graphic (SVG) symbols</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>31</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="mBtnAddSVGPath">
+                <property name="text">
+                 <string>Add</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QPushButton" name="mBtnRemoveSVGPath">
+                <property name="text">
+                 <string>Remove</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="4">
+               <widget class="QListWidget" name="mListSVGPaths"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item row="3" column="0">
             <widget class="QGroupBox" name="groupBox_14">
              <property name="title">
               <string>Rasters</string>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
                <widget class="QWidget" name="widget" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_19">
@@ -1121,178 +1245,244 @@
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="widget_2" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_20">
-                 <property name="margin">
-                  <number>0</number>
-                 </property>
+               <widget class="QGroupBox" name="groupBox_17">
+                <property name="title">
+                 <string>Contrast enhancement</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
-                  <widget class="QCheckBox" name="chkUseStandardDeviation">
-                   <property name="text">
-                    <string>Use standard deviation</string>
-                   </property>
+                  <widget class="QWidget" name="widget_3" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_37">
+                      <property name="text">
+                       <string>Single band gray</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmSingleBand"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_23">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>208</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="spnThreeBandStdDev">
-                   <property name="maximum">
-                    <double>10.000000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.100000000000000</double>
-                   </property>
+                  <widget class="QWidget" name="widget_4" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_23">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_38">
+                      <property name="text">
+                       <string>Multi band color (byte / band) </string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandSingleByte"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_24">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>208</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_21">
+                  <widget class="QWidget" name="widget_5" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_24">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_39">
+                      <property name="text">
+                       <string>Multi band color (&gt; byte / band) </string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cboxContrastEnhancementAlgorithmMultiBandMultiByte"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_25">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>208</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>258</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_6" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_25">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_40">
+                      <property name="text">
+                       <string>Limits (minimum/maximum)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cboxContrastEnhancementLimits"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_26">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>208</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_7" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_18">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_36">
+                      <property name="text">
+                       <string>Cumulative pixel count cut limits</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="mRasterCumulativeCutLowerDoubleSpinBox">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_34">
+                      <property name="text">
+                       <string>-</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="mRasterCumulativeCutUpperDoubleSpinBox">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_35">
+                      <property name="text">
+                       <string>%</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_18">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>123</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_2" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_20">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_25">
+                      <property name="text">
+                       <string>Standard deviation multiplier</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="spnThreeBandStdDev">
+                      <property name="maximum">
+                       <double>10.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_21">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>258</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
                  </item>
                 </layout>
                </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="widget_3" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_22">
-                 <property name="margin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_37">
-                   <property name="text">
-                    <string>Contrast enhancement</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="cboxContrastEnhancementAlgorithm"/>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_23">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>208</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="widget_4" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <property name="margin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_36">
-                   <property name="text">
-                    <string>Cumulative pixel count cut limits</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QDoubleSpinBox" name="mRasterCumulativeCutLowerDoubleSpinBox">
-                   <property name="decimals">
-                    <number>1</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_34">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QDoubleSpinBox" name="mRasterCumulativeCutUpperDoubleSpinBox">
-                   <property name="decimals">
-                    <number>1</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_35">
-                   <property name="text">
-                    <string>%</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_18">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>123</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>SVG paths</string>
-             </property>
-             <layout class="QGridLayout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="mSVGLabel">
-                <property name="text">
-                 <string>Path(s) to search for Scalable Vector Graphic (SVG) symbols</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>31</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="mBtnAddSVGPath">
-                <property name="text">
-                 <string>Add</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QPushButton" name="mBtnRemoveSVGPath">
-                <property name="text">
-                 <string>Remove</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="4">
-               <widget class="QListWidget" name="mListSVGPaths"/>
               </item>
              </layout>
             </widget>
@@ -1328,8 +1518,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>718</height>
+            <width>770</width>
+            <height>757</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1395,131 +1585,6 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="groupBox_6">
-             <property name="title">
-              <string>Measure tool</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_21">
-              <item row="1" column="0">
-               <widget class="QLabel" name="textLabel1_8">
-                <property name="text">
-                 <string>Ellipsoid for distance calculations</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="cmbEllipsoid"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="textLabel1_10">
-                <property name="text">
-                 <string>Rubberband color</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QgsColorButton" name="pbnMeasureColor">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2" colspan="2">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>191</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="textLabel1_11">
-                <property name="text">
-                 <string>Preferred measurements units</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QRadioButton" name="radMeters">
-                <property name="text">
-                 <string>Meters</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="2">
-               <widget class="QRadioButton" name="radFeet">
-                <property name="text">
-                 <string>Feet</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="mAngleUnitsLabel">
-                <property name="text">
-                 <string>Preferred angle units</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QRadioButton" name="mDegreesRadioButton">
-                <property name="text">
-                 <string>Degrees</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="2">
-               <widget class="QRadioButton" name="mRadiansRadioButton">
-                <property name="text">
-                 <string>Radians</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="3">
-               <widget class="QRadioButton" name="mGonRadioButton">
-                <property name="text">
-                 <string>Gon</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Decimal places</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="mDecimalPlacesSpinBox"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>Keep base unit</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QGroupBox" name="groupBox_10">
              <property name="title">
@@ -1529,30 +1594,6 @@
               <property name="margin">
                <number>11</number>
               </property>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="cmbWheelAction">
-                <item>
-                 <property name="text">
-                  <string>Zoom</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Zoom and recenter</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Zoom to mouse cursor</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Nothing</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="text">
@@ -1578,6 +1619,30 @@
                 <property name="value">
                  <double>2.000000000000000</double>
                 </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="cmbWheelAction">
+                <item>
+                 <property name="text">
+                  <string>Zoom</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zoom and recenter</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zoom to mouse cursor</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Nothing</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
@@ -1667,6 +1732,151 @@
              </layout>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="title">
+              <string>Measure tool</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_21">
+              <item row="2" column="3">
+               <widget class="QLabel" name="label_42">
+                <property name="text">
+                 <string>Semi-minor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="textLabel1_10">
+                <property name="text">
+                 <string>Rubberband color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QgsColorButton" name="pbnMeasureColor">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="textLabel1_11">
+                <property name="text">
+                 <string>Preferred measurements units</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QRadioButton" name="radMeters">
+                <property name="text">
+                 <string>Meters</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QRadioButton" name="radFeet">
+                <property name="text">
+                 <string>Feet</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="mAngleUnitsLabel">
+                <property name="text">
+                 <string>Preferred angle units</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QRadioButton" name="mDegreesRadioButton">
+                <property name="text">
+                 <string>Degrees</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QRadioButton" name="mRadiansRadioButton">
+                <property name="text">
+                 <string>Radians</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Decimal places</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QSpinBox" name="mDecimalPlacesSpinBox"/>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Keep base unit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="leSemiMajor"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_41">
+                <property name="text">
+                 <string>Semi-major</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="3">
+               <widget class="QRadioButton" name="mGonRadioButton">
+                <property name="text">
+                 <string>Gon</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QLineEdit" name="leSemiMinor"/>
+              </item>
+              <item row="1" column="1" colspan="4">
+               <widget class="QComboBox" name="cmbEllipsoid"/>
+              </item>
+              <item row="1" column="0" rowspan="2">
+               <widget class="QLabel" name="textLabel1_8">
+                <property name="text">
+                 <string>Ellipsoid for distance calculations</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2" colspan="3">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>191</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1698,8 +1908,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>786</width>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1779,8 +1989,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>572</height>
+            <width>770</width>
+            <height>606</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -2155,8 +2365,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>786</width>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2342,8 +2552,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>536</height>
+            <width>786</width>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2439,8 +2649,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>491</height>
+            <width>786</width>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2632,7 +2842,7 @@
              </item>
             </layout>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QLabel" name="mNetworkTimeoutLabel">
@@ -2643,6 +2853,24 @@
              </item>
              <item>
               <widget class="QSpinBox" name="mNetworkTimeoutSpinBox">
+               <property name="maximum">
+                <number>100000000</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_17">
+             <item>
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>Default expiration period for WMS-C/WMTS tiles (hours)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="mDefaultTileExpirySpinBox">
                <property name="maximum">
                 <number>100000000</number>
                </property>
@@ -2693,7 +2921,6 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
-  <tabstop>spinBoxUpdateThreshold</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>
@@ -2713,9 +2940,6 @@
   <tabstop>radFeet</tabstop>
   <tabstop>mDegreesRadioButton</tabstop>
   <tabstop>mRadiansRadioButton</tabstop>
-  <tabstop>mGonRadioButton</tabstop>
-  <tabstop>cmbWheelAction</tabstop>
-  <tabstop>spinZoomFactor</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mOverlayAlgorithmComboBox</tabstop>
   <tabstop>scrollArea_5</tabstop>

@@ -280,6 +280,19 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
   return font;
 }
 
+bool QgsMapToolLabel::preserveRotation()
+{
+  bool labelSettingsOk;
+  QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
+
+  if ( labelSettingsOk )
+  {
+    return layerSettings.preserveRotation;
+  }
+
+  return true; // default, so there is no accidental data loss
+}
+
 bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
 {
   QVector<QgsPoint> cornerPoints = mCurrentLabelPos.cornerPoints;
@@ -429,7 +442,7 @@ bool QgsMapToolLabel::layerIsRotatable( const QgsMapLayer* layer, int& rotationC
   return true;
 }
 
-bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess )
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY )
 {
   rotationSuccess = false;
   if ( !vlayer )
@@ -452,15 +465,43 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId
   QgsAttributeMap attributes = f.attributeMap();
 
   //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
-  int xCol, yCol;
-  double x, y;
-  bool xSuccess, ySuccess;
-  if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+  if ( !ignoreXY )
+  {
+    int xCol, yCol;
+    double x, y;
+    bool xSuccess, ySuccess;
+    if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    {
+      return false;
+    }
+  }
+
+  rotation = attributes[rotationCol].toDouble( &rotationSuccess );
+  return true;
+}
+
+bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol )
+{
+  showSuccess = false;
+  if ( !vlayer )
   {
     return false;
   }
 
-  rotation = attributes[rotationCol].toDouble( &rotationSuccess );
+  if ( !layerCanShowHide( vlayer, showCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  {
+    return false;
+  }
+
+  QgsAttributeMap attributes = f.attributeMap();
+
+  show = attributes[showCol].toInt( &showSuccess );
   return true;
 }
 
@@ -515,7 +556,7 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
   return true;
 }
 
-bool QgsMapToolLabel::layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )
@@ -543,6 +584,30 @@ bool QgsMapToolLabel::layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCo
   }
   yCol = yColumn.toInt( &yColOk );
   if ( !yColOk )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsMapToolLabel::layerCanShowHide( const QgsMapLayer* ml, int& showCol ) const
+{
+  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    return false;
+  }
+
+  bool showColOk;
+
+  QVariant showColumn = ml->customProperty( "labeling/dataDefinedProperty15" );
+  if ( !showColumn.isValid() )
+  {
+    return false;
+  }
+  showCol = showColumn.toInt( &showColOk );
+  if ( !showColOk )
   {
     return false;
   }

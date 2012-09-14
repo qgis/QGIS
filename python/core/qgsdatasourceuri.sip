@@ -133,6 +133,7 @@ class QgsDataSourceURI
     QGis::WkbType wkbType() const;
     void setWkbType( QGis::WkbType type );
 
+    // added in 1.9
     QString srid() const;
     void setSrid( QString srid );
 };

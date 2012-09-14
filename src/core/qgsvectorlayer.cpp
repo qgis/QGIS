@@ -105,6 +105,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
+    , mValidExtent( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -732,20 +733,26 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       {
         break;
       }
-
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
-      if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
+#ifdef Q_WS_X11
+      if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
       {
-        emit screenUpdateRequested();
-        // emit drawingProgress( featureCount, totalFeatures );
-        qApp->processEvents();
+#endif // Q_WS_X11
+        if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
+        {
+          emit screenUpdateRequested();
+          // emit drawingProgress( featureCount, totalFeatures );
+          qApp->processEvents();
+        }
+        else if ( featureCount % 1000 == 0 )
+        {
+          // emit drawingProgress( featureCount, totalFeatures );
+          qApp->processEvents();
+        }
+#ifdef Q_WS_X11
       }
-      else if ( featureCount % 1000 == 0 )
-      {
-        // emit drawingProgress( featureCount, totalFeatures );
-        qApp->processEvents();
-      }
-#endif //Q_WS_MAC
+#endif // Q_WS_X11
+#endif // Q_WS_MAC
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -954,6 +961,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+#ifdef Q_WS_X11
+  mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
+#endif
 
   if ( mUsingRendererV2 )
   {
@@ -1461,10 +1471,24 @@ long QgsVectorLayer::updateFeatureCount() const
 
 void QgsVectorLayer::updateExtents()
 {
-  if ( !hasGeometryType() )
-    return;
+  mValidExtent = false;
+}
 
-  mLayerExtent.setMinimal();
+void QgsVectorLayer::setExtent( const QgsRectangle &r )
+{
+  QgsMapLayer::setExtent( r );
+  mValidExtent = true;
+}
+
+QgsRectangle QgsVectorLayer::extent()
+{
+  if ( mValidExtent )
+    return QgsMapLayer::extent();
+
+  QgsRectangle rect;
+
+  if ( !hasGeometryType() )
+    return rect;
 
   if ( !mDataProvider )
   {
@@ -1480,13 +1504,13 @@ void QgsVectorLayer::updateExtents()
     if ( mDataProvider->featureCount() != 0 )
     {
       QgsRectangle r = mDataProvider->extent();
-      mLayerExtent.combineExtentWith( &r );
+      rect.combineExtentWith( &r );
     }
 
     for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
     {
       QgsRectangle r = it->geometry()->boundingBox();
-      mLayerExtent.combineExtentWith( &r );
+      rect.combineExtentWith( &r );
     }
   }
   else
@@ -1499,19 +1523,23 @@ void QgsVectorLayer::updateExtents()
       if ( fet.geometry() )
       {
         QgsRectangle bb = fet.geometry()->boundingBox();
-        mLayerExtent.combineExtentWith( &bb );
+        rect.combineExtentWith( &bb );
       }
     }
   }
 
-  if ( mLayerExtent.xMinimum() > mLayerExtent.xMaximum() && mLayerExtent.yMinimum() > mLayerExtent.yMaximum() )
+  if ( rect.xMinimum() > rect.xMaximum() && rect.yMinimum() > rect.yMaximum() )
   {
     // special case when there are no features in provider nor any added
-    mLayerExtent = QgsRectangle(); // use rectangle with zero coordinates
+    rect = QgsRectangle(); // use rectangle with zero coordinates
   }
+
+  setExtent( rect );
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
+
+  return rect;
 }
 
 QString QgsVectorLayer::subsetString()
@@ -2412,7 +2440,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
         if ( mDataProvider )
         {
-          //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
+          //use default value where possible (primary key issue), otherwise the value from the original (split) feature
           QgsAttributeMap newAttributes = select_it->attributeMap();
           QVariant defaultValue;
           foreach ( int j, newAttributes.keys() )
@@ -2819,10 +2847,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       QString s = mbr.toString();
       QgsDebugMsg( "Extent of layer: " +  s );
       // store the extent
-      mLayerExtent.setXMaximum( mbr.xMaximum() );
-      mLayerExtent.setXMinimum( mbr.xMinimum() );
-      mLayerExtent.setYMaximum( mbr.yMaximum() );
-      mLayerExtent.setYMinimum( mbr.yMinimum() );
+      setExtent( mbr );
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
@@ -3135,7 +3160,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
           bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
-          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti );
+          QString filterAttributeColumn = editTypeElement.attribute( "filterAttributeColumn", QString::null );
+          QString filterAttributeValue = editTypeElement.attribute( "filterAttributeValue", QString::null );
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterAttributeColumn, filterAttributeValue );
         }
         break;
 
@@ -3357,6 +3384,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
             editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
+            if ( !data.mFilterAttributeColumn.isNull() )
+              editTypeElement.setAttribute( "filterAttributeColumn", data.mFilterAttributeColumn );
+            if ( !data.mFilterAttributeValue.isNull() )
+              editTypeElement.setAttribute( "filterAttributeValue", data.mFilterAttributeValue );
           }
           break;
 

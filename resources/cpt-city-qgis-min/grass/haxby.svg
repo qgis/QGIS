@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="haxby" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(37,57,175)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(40,127,251)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(50,190,255)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(106,235,255)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(138,236,174)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(205,255,162)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(240,236,121)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(255,189,87)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(255,161,68)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(255,186,133)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#haxby)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:56 2012"/>
+  </metadata>
+</svg>

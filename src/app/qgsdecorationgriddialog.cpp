@@ -24,7 +24,6 @@
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgssymbolv2propertiesdialog.h"
 #include "qgisapp.h"
 
 #include <QFontDialog>
@@ -212,7 +211,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
     return;
 
   QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( mLineSymbol->clone() );
-  QgsSymbolV2PropertiesDialog dlg( lineSymbol, 0, this );
+  QgsSymbolV2SelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -235,7 +234,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
     return;
 
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
-  QgsSymbolV2PropertiesDialog dlg( markerSymbol, 0, this );
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

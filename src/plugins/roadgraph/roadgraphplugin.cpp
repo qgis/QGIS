@@ -60,6 +60,7 @@ static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
+static const QString sPluginIcon = ":/roadgraph/road-fast.png";
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -286,6 +287,11 @@ QGISEXTERN QString description()
 QGISEXTERN QString category()
 {
   return sCategory;
+}
+
+QGISEXTERN QString icon()
+{
+  return sPluginIcon;
 }
 
 // Return the type (either UI or MapLayer plugin)

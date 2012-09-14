@@ -205,6 +205,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   QgsApplication::registerOgrDrivers();
 
+  QSettings settings;
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() ? "" : 0 );
+
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
   // make connection to the data source

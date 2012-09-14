@@ -19,11 +19,13 @@
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
+#include <QSet>
 #include <QUndoStack>
 
-#include "qgscomposeritemcommand.h"
 #include "qgsaddremoveitemcommand.h"
+#include "qgscomposeritemcommand.h"
 
+class QgsComposerFrame;
 class QgsComposerItem;
 class QgsComposerMap;
 class QgsPaperItem;
@@ -31,6 +33,7 @@ class QGraphicsRectItem;
 class QgsMapRenderer;
 class QDomElement;
 class QgsComposerArrow;
+class QgsComposerHtml;
 class QgsComposerItem;
 class QgsComposerLabel;
 class QgsComposerLegend;
@@ -39,6 +42,8 @@ class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
+class QgsComposerMultiFrame;
+class QgsComposerMultiFrameCommand;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -115,6 +120,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns pointers to all composer maps in the scene*/
     QList<const QgsComposerMap*> composerMapItems() const;
 
+    /**Return composer items of a specific type*/
+    template<class T> void composerItems( QList<T*>& itemList );
+
     /**Returns the composer map with specified id
      @return id or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
@@ -147,6 +155,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+
+    /**Load a template document
+        @param doc template document
+        @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
+        @param addUndoCommands whether or not to add undo commands
+      */
+    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0, bool addUndoCommands = false );
 
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
@@ -198,6 +213,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
+    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text );
+    void endMultiFrameCommand();
+
+    /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
+    void addMultiFrame( QgsComposerMultiFrame* multiFrame );
+    /**Removes multi frame (but does not delete it)*/
+    void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
@@ -214,9 +236,11 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
+    /**Adds composer html frame and advices composer to create a widget for it (through signal)*/
+    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item );
+    void removeComposerItem( QgsComposerItem* item, bool createCommand = true );
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
@@ -252,6 +276,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
 
+    /**List multiframe objects*/
+    QSet<QgsComposerMultiFrame*> mMultiFrames;
+
     /**Dpi for printout*/
     int mPrintResolution;
 
@@ -271,7 +298,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QUndoStack mUndoStack;
 
-    QgsComposerItemCommand* mActiveCommand;
+    QgsComposerItemCommand* mActiveItemCommand;
+    QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
 
     QgsComposition(); //default constructor is forbidden
 
@@ -290,14 +318,18 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void updatePaperItems();
     void addPaperItem();
     void removePaperItems();
+    void deleteAndRemoveMultiFrames();
 
   signals:
     void paperSizeChanged();
+    void nPagesChanged();
 
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
     /**Is emitted when new composer arrow has been added to the view*/
     void composerArrowAdded( QgsComposerArrow* arrow );
+    /**Is emitted when a new composer html has been added to the view*/
+    void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
     /**Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /**Is emitted when new composer map has been added to the view*/
@@ -315,6 +347,21 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
 };
+
+template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
+{
+  itemList.clear();
+  QList<QGraphicsItem *> graphicsItemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
+  for ( ; itemIt != graphicsItemList.end(); ++itemIt )
+  {
+    T* item = dynamic_cast<T*>( *itemIt );
+    if ( item )
+    {
+      itemList.push_back( item );
+    }
+  }
+}
 
 #endif
 

@@ -89,6 +89,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     //! Destructor
     ~QgsGrassRasterProvider();
 
+    QgsRasterInterface * clone() const;
+
     /** \brief   Renders the layer as an image
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight );
@@ -139,7 +141,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     bool isValid();
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    QMap<int, void *> identify( const QgsPoint & thePoint );
 
     /**
      * \brief Identify details from a GRASS layer from the last screen update
@@ -210,6 +213,11 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     double minimumValue( int bandNo )const;
     double maximumValue( int bandNo )const;
 
+    QgsRasterBandStats bandStatistics( int theBandNo,
+                                       int theStats = QgsRasterBandStats::All,
+                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       int theSampleSize = 0 );
+
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
     // void buildSupportedRasterFileFilter( QString & theFileFiltersString );
@@ -254,6 +262,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     QgsGrassRasterValue mRasterValue;
+
+    double mNoDataValue;
 };
 
 #endif

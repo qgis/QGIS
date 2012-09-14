@@ -43,9 +43,9 @@ struct QgsDiagramLayerSettings;
 
 struct CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool frozen = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isFrozen( frozen ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isFrozen( false ) {}
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
+      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
   int featureId;
   double rotation;
   QVector< QgsPoint > cornerPoints;
@@ -55,7 +55,7 @@ struct CORE_EXPORT QgsLabelPosition
   QString layerID;
   bool upsideDown;
   bool isDiagram;
-  bool isFrozen;
+  bool isPinned;
 };
 
 /** Labeling engine interface.
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setProjectionsEnabled( bool enabled );
 
     //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled();
+    bool hasCrsTransformEnabled() const;
 
     /** sets destination coordinate reference system
      * @note deprecated by qgis 1.7
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! returns CRS of destination coordinate reference system
-    const QgsCoordinateReferenceSystem& destinationCrs();
+    const QgsCoordinateReferenceSystem& destinationCrs() const;
 
     void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
 

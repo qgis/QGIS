@@ -159,7 +159,14 @@ void QgsOWSSourceSelect::populateFormats()
 
   // selectedLayersFormats may come in various forms:
   // image/tiff, GTiff, GeoTIFF, TIFF, geotiff_int16, geotiff_rgb,
-  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC,
+  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC
+  // and even any string defined in server configuration, for example the
+  // value used in UMN Mapserver for OUTPUTFORMAT->NAME is used in
+  // WCS 1.0.0 SupportedFormats/Format
+
+  // TODO: It is impossible to cover all possible formats comming from server
+  //       -> enabled all formats, GDAL may be able to open them
+
   QMap<QString, QString> formatsMap;
   formatsMap.insert( "geotiff", "tiff" );
   formatsMap.insert( "gtiff", "tiff" );
@@ -170,7 +177,7 @@ void QgsOWSSourceSelect::populateFormats()
   formatsMap.insert( "jpg", "jpeg" );
   formatsMap.insert( "png", "png" );
 
-  int prefered = -1;
+  int preferred = -1;
   int firstEnabled = -1;
   QStringList layersFormats = selectedLayersFormats();
   for ( int i = 0; i < layersFormats.size(); i++ )
@@ -206,29 +213,40 @@ void QgsOWSSourceSelect::populateFormats()
       if ( firstEnabled < 0 ) { firstEnabled = i; }
       if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
       {
-        if ( prefered < 0 || simpleFormat.startsWith( "g" ) ) // prefere geotiff
+        if ( preferred < 0 || simpleFormat.startsWith( "g" ) ) // prefer geotiff
         {
-          prefered = i;
+          preferred = i;
         }
       }
     }
     else
     {
       QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
-      btn->setEnabled( false );
+      //btn->setEnabled( false );
+      btn->setEnabled( true );
+      if ( firstEnabled < 0 ) { firstEnabled = i; }
       tip += " " + tr( "is not supported by GDAL" );
     }
     btn->setText( label );
     btn->setToolTip( tip );
   }
-  // Set prefered
-  prefered = prefered >= 0 ? prefered : firstEnabled;
-  if ( prefered >= 0 )
+  // Set preferred
+  // TODO: all enabled for now, see above
+  preferred = preferred >= 0 ? preferred : firstEnabled;
+  if ( preferred >= 0 )
   {
-    mImageFormatGroup->button( prefered )->setChecked( true );
+    mImageFormatGroup->button( preferred )->setChecked( true );
   }
 
   mImageFormatsGroupBox->setEnabled( true );
+}
+
+void QgsOWSSourceSelect::populateTimes()
+{
+  QgsDebugMsg( "entered" );
+  mTimeComboBox->clear();
+  mTimeComboBox->insertItems( 0, selectedLayersTimes() );
+  mTimeComboBox->setEnabled( !selectedLayersTimes().isEmpty() );
 }
 
 void QgsOWSSourceSelect::populateConnectionList()
@@ -426,6 +444,7 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsOWSSourceSelect::populateCRS()
 {
+  QgsDebugMsg( "Entered" );
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
   mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) );
 
@@ -463,6 +482,7 @@ void QgsOWSSourceSelect::populateCRS()
     mSelectedCRS = "";
     mSelectedCRSLabel->setText( "" );
   }
+  QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
   mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() );
 }
 
@@ -521,6 +541,11 @@ QString QgsOWSSourceSelect::selectedFormat()
 QString QgsOWSSourceSelect::selectedCRS()
 {
   return mSelectedCRS;
+}
+
+QString QgsOWSSourceSelect::selectedTime()
+{
+  return mTimeComboBox->currentText();
 }
 
 void QgsOWSSourceSelect::setConnectionListPosition()
@@ -789,6 +814,11 @@ QStringList QgsOWSSourceSelect::selectedLayersFormats()
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersCRSs()
+{
+  return QStringList();
+}
+
+QStringList QgsOWSSourceSelect::selectedLayersTimes()
 {
   return QStringList();
 }

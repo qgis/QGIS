@@ -1425,3 +1425,23 @@ void QgsPostgresConn::deleteConnection( QString theConnName )
   settings.remove( key + "/save" );
   settings.remove( key );
 }
+
+bool QgsPostgresConn::cancel()
+{
+  PGcancel *c = ::PQgetCancel( mConn );
+  if ( !c )
+  {
+    QgsMessageLog::logMessage( tr( "Query could not be canceled [%1]" ).arg( tr( "PQgetCancel failed" ) ),
+                               tr( "PostGIS" ) );
+    return false;
+  }
+
+  char errbuf[256];
+  int res = ::PQcancel( c, errbuf, sizeof errbuf );
+  ::PQfreeCancel( c );
+
+  if ( !res )
+    QgsMessageLog::logMessage( tr( "Query could not be canceled [%1]" ).arg( errbuf ), tr( "PostGIS" ) );
+
+  return res == 0;
+}

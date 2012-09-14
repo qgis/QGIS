@@ -444,7 +444,7 @@ double QgsMarkerSymbolV2::angle()
     return 0;
 
   // return angle of the first symbol layer
-  const QgsMarkerSymbolLayerV2 *layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
   return layer->angle();
 }
 
@@ -478,6 +478,28 @@ double QgsMarkerSymbolV2::size()
       maxSize = lsize;
   }
   return maxSize;
+}
+
+
+void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2*>( *it );
+    layer->setScaleMethod( scaleMethod );
+  }
+}
+
+QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
+{
+  QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
+
+  if ( it == mLayers.end() )
+    return DEFAULT_SCALE_METHOD;
+
+  // return scale method of the first symbol layer
+  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+  return layer->scaleMethod();
 }
 
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )

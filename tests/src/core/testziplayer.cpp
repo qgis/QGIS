@@ -262,6 +262,8 @@ void TestZipLayer::initTestCase()
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
 
   // save data dir
+  QFile::remove( QDir::tempPath() + "/testzip.zip" );
+  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
   mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( "QuantumGIS" );
@@ -370,7 +372,7 @@ void TestZipLayer::testZipItemRaster()
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
     QVERIFY( s == settings.value( "/qgis/scanZipInBrowser" ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat_b1.tif" ) );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
   }
 }
 
@@ -395,7 +397,7 @@ void TestZipLayer::testZipItemVector()
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
     QVERIFY( s == settings.value( "/qgis/scanZipInBrowser" ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.shp" ) );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
   }
 }
 
@@ -422,7 +424,7 @@ void TestZipLayer::testZipItemAll()
   QSettings settings;
   settings.setValue( "/qgis/scanZipInBrowser", "full" );
   QVERIFY( "full" == settings.value( "/qgis/scanZipInBrowser" ).toString() );
-  QVERIFY( testZipItem( mDataDir + "testzip.zip", "" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "" ) );
 }
 
 void TestZipLayer::testTarItemAll()
@@ -485,7 +487,7 @@ void TestZipLayer::testZipItemSubfolder()
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
     QVERIFY( s == settings.value( "/qgis/scanZipInBrowser" ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "folder/folder2/landsat_b2.tif" ) );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
   }
 }
 
@@ -514,9 +516,9 @@ void TestZipLayer::testZipItemVRT()
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
     QVERIFY( s == settings.value( "/qgis/scanZipInBrowser" ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat.vrt", "gdal" ) );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat.vrt", "gdal" ) );
     // this file is buggy with gdal svn - skip for now
-    // QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.vrt", "ogr" ) );
+    // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
   }
 }
 

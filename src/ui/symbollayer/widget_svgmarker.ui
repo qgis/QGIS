@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>302</width>
-    <height>337</height>
+    <width>364</width>
+    <height>361</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <property name="margin">
+    <number>1</number>
+   </property>
+   <item row="0" column="0" colspan="2">
     <layout class="QGridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
@@ -163,6 +166,13 @@
     </layout>
    </item>
    <item row="1" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>SVG Groups</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>SVG Image</string>
@@ -170,6 +180,9 @@
     </widget>
    </item>
    <item row="2" column="0">
+    <widget class="QTreeView" name="viewGroups"/>
+   </item>
+   <item row="2" column="1">
     <widget class="QListView" name="viewImages">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -209,7 +222,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLineEdit" name="mFileLineEdit"/>

@@ -598,7 +598,10 @@ INPUT                  = doc \
                          src/core/renderer \
                          src/core/symbology \
                          src/core/symbology-ng \
+                         src/core/gps \
                          src/gui \
+                         src/gui/attributetable \
+                         src/gui/raster \
                          src/analysis/interpolation \
                          src/analysis/raster \
                          src/analysis/vector \

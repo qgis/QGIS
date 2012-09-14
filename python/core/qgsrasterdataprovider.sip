@@ -6,10 +6,11 @@
  *         sense for Raster layers.
  */
 
-class QgsRasterDataProvider : QgsDataProvider
+class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterdataprovider.h>
+#include <qgsrasterinterface.h>
 %End
 
   public:
@@ -17,17 +18,71 @@ class QgsRasterDataProvider : QgsDataProvider
     //! If you add to this, please also add to capabilitiesString()
     enum Capability
     {
-      NoCapabilities =              0,
-      Identify =                    1
-//      Capability2 =           1 <<  1, etc
+      NoCapabilities,
+      Identify,
+      ExactMinimumMaximum,
+      ExactResolution,
+      EstimatedMinimumMaximum,
+      BuildPyramids,
+      Histogram,
+      Size,
+      Create,
+      Remove
     };
 
+    // This is modified copy of GDALColorInterp
+    enum ColorInterpretation
+    {
+      UndefinedColorInterpretation = 0,
+      /*! Greyscale */                                      GrayIndex = 1,
+      /*! Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
+      /*! Red band of RGBA image */                         RedBand = 3,
+      /*! Green band of RGBA image */                       GreenBand = 4,
+      /*! Blue band of RGBA image */                        BlueBand = 5,
+      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
+      /*! Hue band of HLS image */                          HueBand = 7,
+      /*! Saturation band of HLS image */                   SaturationBand = 8,
+      /*! Lightness band of HLS image */                    LightnessBand = 9,
+      /*! Cyan band of CMYK image */                        CyanBand = 10,
+      /*! Magenta band of CMYK image */                     MagentaBand = 11,
+      /*! Yellow band of CMYK image */                      YellowBand = 12,
+      /*! Black band of CMLY image */                       BlackBand = 13,
+      /*! Y Luminance */                                    YCbCr_YBand = 14,
+      /*! Cb Chroma */                                      YCbCr_CbBand = 15,
+      /*! Cr Chroma */                                      YCbCr_CrBand = 16,
+      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
+      /*! Max current value */                              ColorInterpretationMax = 17
+    };
+
+    // Progress types
+    enum RasterProgressType
+    {
+      ProgressHistogram = 0,
+      ProgressPyramids  = 1,
+      ProgressStatistics = 2
+    };
+
+    enum RasterBuildPyramids
+    {
+      PyramidsFlagNo = 0,
+      PyramidsFlagYes = 1,
+      CopyExisting = 2
+    };
+
+    enum RasterPyramidsFormat
+    {
+      PyramidsGTiff = 0,
+      PyramidsInternal = 1,
+      PyramidsErdas = 2
+    };
 
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString & uri );
 
     virtual ~QgsRasterDataProvider();
+
+    virtual QgsRasterInterface * clone() const = 0;
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -76,8 +131,32 @@ class QgsRasterDataProvider : QgsDataProvider
 
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
+    // TODO: add other missing bindings (histo, pyramids and others)
 
-    /**
+     /** If the provider supports it, return band stats for the
+        given band. Default behaviour is to blockwise read the data
+        and generate the stats unless the provider overloads this function. */
+    //virtual QgsRasterBandStats bandStatistics( int theBandNo );
+
+    /** \brief Get band statistics.
+     * @param theBandNo The band (number).
+     * @param theStats Requested statistics
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @return Band statistics.
+     */
+    virtual QgsRasterBandStats bandStatistics( int theBandNo,
+        int theStats = QgsRasterBandStats::All,
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theSampleSize = 0 );
+
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
+    virtual bool hasStatistics( int theBandNo,
+                                int theStats = QgsRasterBandStats::All,
+                                const QgsRectangle & theExtent = QgsRectangle(),
+                                int theSampleSize = 0 );
+
+   /**
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
@@ -151,6 +230,14 @@ class QgsRasterDataProvider : QgsDataProvider
     /**Sets the output device resolution.
       @note: this method was added in version 1.2*/
     void setDpi( int dpi );
+
+    /** Get block size */
+    int xBlockSize() const;
+    int yBlockSize() const;
+
+    /** Get raster size */
+    int xSize() const;
+    int ySize() const;
 
     /** read block of data using give extent and size */
     /*virtual void readBlock( int bandNo,

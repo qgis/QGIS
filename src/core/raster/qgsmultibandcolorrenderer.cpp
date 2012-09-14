@@ -40,6 +40,24 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
   delete mBlueContrastEnhancement;
 }
 
+QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
+{
+  QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( 0, mRedBand, mGreenBand, mBlueBand );
+  if ( mRedContrastEnhancement )
+  {
+    renderer->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
+  }
+  return renderer;
+}
+
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement* ce )
 {
   delete mRedContrastEnhancement; mRedContrastEnhancement = ce;
@@ -177,7 +195,17 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandData[*bandIt] =  mInput->block( *bandIt, extent, width, height );
-    if ( !bandData[*bandIt] ) return 0;
+    if ( !bandData[*bandIt] )
+    {
+      // We should free the alloced mem from block().
+      QgsDebugMsg("No input band" );      
+      bandIt--;
+      for ( ; bandIt != bands.constBegin(); bandIt-- )
+      {
+	VSIFree( bandData[*bandIt] );
+      }
+      return 0;
+    }
   }
 
   if ( mRedBand > 0 )
@@ -198,6 +226,17 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    bandIt = bands.constBegin();
+    for ( ; bandIt != bands.constEnd(); ++bandIt )
+    {
+      VSIFree( bandData[*bandIt] );
+    }
+    return 0;
+  }
+
   QRgb* imageScanLine = 0;
   int currentRasterPos = 0;
   int redVal = 0;
@@ -216,22 +255,42 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
         redVal = readValue( redData, redType, currentRasterPos );
         greenVal = readValue( greenData, greenType, currentRasterPos );
         blueVal = readValue( blueData, blueType, currentRasterPos );
-        imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        if ( mInput->isNoDataValue( mRedBand, redVal ) ||
+             mInput->isNoDataValue( mGreenBand, greenVal ) ||
+             mInput->isNoDataValue( mBlueBand, blueVal ) )
+        {
+          imageScanLine[j] = defaultColor;
+        }
+        else
+        {
+          imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        }
+
         ++currentRasterPos;
         continue;
       }
 
+      bool isNoData = false;
       if ( mRedBand > 0 )
       {
         redVal = readValue( redData, redType, currentRasterPos );
+        if ( mInput->isNoDataValue( mRedBand, redVal ) ) isNoData = true;
       }
       if ( mGreenBand > 0 )
       {
         greenVal = readValue( greenData, greenType, currentRasterPos );
+        if ( mInput->isNoDataValue( mGreenBand, greenVal ) ) isNoData = true;
       }
       if ( mBlueBand > 0 )
       {
         blueVal = readValue( blueData, blueType, currentRasterPos );
+        if ( mInput->isNoDataValue( mBlueBand, blueVal ) ) isNoData = true;
+      }
+      if ( isNoData )
+      {
+        imageScanLine[j] = defaultColor;
+        ++currentRasterPos;
+        continue;
       }
 
       //apply default color if red, green or blue not in displayable range
@@ -296,6 +355,11 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 

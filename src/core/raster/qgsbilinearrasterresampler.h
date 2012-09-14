@@ -29,6 +29,7 @@ class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
 
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const { return "bilinear"; }
+    QgsRasterResampler * clone() const;
 };
 
 #endif // QGSBILINEARRASTERRESAMPLER_H

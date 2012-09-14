@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsvectorcolorrampv2.h"
-#include "qgscolorrampv2data.h"
+#include "qgscolorbrewerpalette.h"
+#include "qgscptcityarchive.h"
 
 #include "qgssymbollayerv2utils.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include <stdlib.h> // for random()
+#include <QTime>
 
 QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2 )
     : mColor1( color1 ), mColor2( color2 )
@@ -60,8 +62,9 @@ static QColor _interpolate( QColor c1, QColor c2, double value )
   int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
   int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
   int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
+  int a = ( int )( c1.alpha() + value * ( c2.alpha() - c1.alpha() ) );
 
-  return QColor::fromRgb( r, g, b );
+  return QColor::fromRgb( r, g, b, a );
 }
 
 QColor QgsVectorGradientColorRampV2::color( double value ) const
@@ -255,24 +258,47 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 
 /*
 TODO
-- return a suitable name (scheme_variant)
-- use model/view for the treewidget
-- fix ocal file parsing
+- return a suitable name (scheme_variant) ??
 - re-organize and rename colorramp classes and widgets
  */
-QString QgsCptCityColorRampV2::mBaseDir;
-QStringList QgsCptCityColorRampV2::mCollections;
-QMap< QString, QStringList > QgsCptCityColorRampV2::mSchemeMap;
-// QMap< QString, int > QgsCptCityColorRampV2::mSchemeNumColors;
-QMap< QString, QStringList > QgsCptCityColorRampV2::mSchemeVariants;
-QMap< QString, QString > QgsCptCityColorRampV2::mCollectionNames;
-QMap< QString, QStringList > QgsCptCityColorRampV2::mCollectionSelections;
+
+/*
+TODO load schemes
+- don't show empty dirs? (e.g. jjg/hatch)
+
+- better grouping:
+  - cl/fs2????
+  - cw
+  - dca
+  - dirs with one scheme ( cl/ es/ ma/ occ/ wkp/
+      jjg/neo10/env/green-crystal jjg/neo10/face/eyes/blue )
+
+- fix rendering:
+  - ibcao
+
+*/
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName )
-    : mSchemeName( schemeName ), mVariantName( variantName ), mContinuous( false )
+    : mSchemeName( schemeName ), mVariantName( variantName ),
+    mGradientType( Continuous ), mFileLoaded( false )
 {
   // TODO replace this with hard-coded data in the default case
-  loadFile();
+  // don't load file if variant is missing
+  if ( variantName != QString() || mVariantList.isEmpty() )
+    loadFile();
+}
+
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
+    QString variantName )
+    : mSchemeName( schemeName ), mVariantName( variantName ),
+    mGradientType( Continuous ), mFileLoaded( false )
+{
+  mVariantList = variantList;
+
+  // TODO replace this with hard-coded data in the default case
+  // don't load file if variant is missing
+  if ( variantName != QString() || mVariantList.isEmpty() )
+    loadFile();
 }
 
 QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
@@ -288,50 +314,39 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
   return new QgsCptCityColorRampV2( schemeName, variantName );
 }
 
-
-
 QColor QgsCptCityColorRampV2::color( double value ) const
 {
-  if ( mPalette.isEmpty() || value < 0 || value > 1 )
+  int numStops = mPalette.count();
+  if ( mPalette.isEmpty() || value < 0 || value > 1 || numStops < 2 )
     return QColor( 255, 0, 0 ); // red color as a warning :)
 
-  if ( ! mContinuous )
+  double lower = 0, upper = 0;
+  QColor c1, c2;
+  c1 = mPalette[0].second;
+  for ( int i = 0; i < numStops; i++ )
   {
-    int paletteEntry = ( int )( value * mPalette.count() );
-    if ( paletteEntry >= mPalette.count() )
-      paletteEntry = mPalette.count() - 1;
-
-    return mPalette.at( paletteEntry );
-  }
-  else
-  {
-    int numStops = mPalette.count();
-    if ( numStops < 2 )
-      return QColor( 255, 0, 0 ); // red color as a warning :)
-
-    StopsMap mStops; // TODO integrate in main class
-    for ( int i = 0; i < numStops; i++ )
-      mStops[ mPaletteStops[i] ] = mPalette[i];
-
-    double lower = 0, upper;
-    QColor c1 = mPalette[1], c2;
-    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    if ( mPalette[i].first > value )
     {
-      if ( it.key() >= value )
-      {
-        upper = it.key();
-        c2 = it.value();
+      if ( mGradientType == Discrete )
+        return c1;
 
-        return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
-      }
-      lower = it.key();
-      c1 = it.value();
+      upper = mPalette[i].first;
+      c2 = mPalette[i].second;
+
+      return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
     }
 
-    upper = 1;
-    c2 = mPalette[ numStops - 1 ];
-    return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+    lower = mPalette[i].first;
+    c1 = mPalette[i].second;
   }
+
+  if ( mGradientType == Discrete )
+    return c1;
+
+  upper = 1;
+  c2 = mPalette[ numStops - 1 ].second;
+
+  return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
 }
 
 QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
@@ -347,442 +362,106 @@ QgsStringMap QgsCptCityColorRampV2::properties() const
   return map;
 }
 
-QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName, bool recursive )
-{
-  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
-  if ( ! dir.exists() )
-    return QStringList();
 
-  QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  if ( collectionName != "" )
-  {
-    for ( int i = 0; i < entries.count(); i++ )
-    {
-      entries[i] = collectionName + "/" + entries[i];
-    }
-  }
-
-  // recurse
-  if ( recursive )
-  {
-    QStringList entries2 = entries;
-    foreach ( QString entry, entries2 )
-    {
-      entries.append( listSchemeCollections( entry, true ) );
-    }
-  }
-
-  return entries;
-}
-
-QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
-{
-  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
-  if ( ! dir.exists() )
-  {
-    QgsDebugMsg( "dir " + dir.dirName() + " does not exist" );
-    return QStringList();
-  }
-
-  QStringList entries = dir.entryList( QStringList( "*.svg" ), QDir::Files, QDir::Name );
-  for ( int i = 0; i < entries.count(); i++ )
-    entries[i] = entries[i].left( entries[i].length() - 4 );
-  return entries;
-}
-
-QList<int> QgsCptCityColorRampV2::listSchemeVariants( QString schemeName )
-{
-  QList<int> variants;
-
-  QString palette( brewerString );
-  QStringList list = palette.split( QChar( '\n' ) );
-  foreach ( QString entry, list )
-  {
-    QStringList items = entry.split( QChar( '-' ) );
-    if ( items.count() != 3 || items[0] != schemeName )
-      continue;
-    variants << items[1].toInt();
-  }
-
-  return variants;
-}
-
-QString QgsCptCityColorRampV2::getBaseDir()
-{
-  // currently hard-coded, but could be also in QGis install path and/or configurable
-  if ( mBaseDir.isNull() )
-    return QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
-  else
-    return mBaseDir;
-}
-
-QString QgsCptCityColorRampV2::getFilename() const
+QString QgsCptCityColorRampV2::fileName() const
 {
   if ( mSchemeName == "" )
     return QString();
   else
-    return QgsCptCityColorRampV2::getBaseDir() + "/" + mSchemeName +  mVariantName + ".svg";
+  {
+    return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + mSchemeName + mVariantName + ".svg";
+  }
 }
 
-bool QgsCptCityColorRampV2::loadFile( QString filename )
+QString QgsCptCityColorRampV2::copyingFileName() const
 {
-  if ( filename == "" )
-  {
-    filename = getFilename();
-    if ( filename.isNull() )
-      return false;
-  }
-
-  // QgsDebugMsg("filename= "+filename);
-
-  mPalette.clear();
-  mPaletteStops.clear();
-
-  QString mErrorString = QString();
-
-  // import xml file
-  QFile f( filename );
-  if ( !f.open( QFile::ReadOnly ) )
-  {
-    mErrorString = "Couldn't open the SVG file: " + filename;
-    QgsDebugMsg( mErrorString );
-    return false;
-  }
-
-  // parse the document
-  QDomDocument doc( "gradient" );
-  if ( !doc.setContent( &f ) )
-  {
-    mErrorString = "Couldn't parse the SVG file: " + filename;
-    f.close();
-    QgsDebugMsg( mErrorString );
-    return false;
-  }
-  f.close();
-
-  QDomElement docElem = doc.documentElement();
-
-  if ( docElem.tagName() != "svg" )
-  {
-    mErrorString = "Incorrect root tag: " + docElem.tagName();
-    QgsDebugMsg( mErrorString );
-    return false;
-  }
-
-  // load color ramp
-  QDomElement rampsElement = docElem.firstChildElement( "linearGradient" );
-  if ( rampsElement.isNull() )
-  {
-    mErrorString = "linearGradient tag missing";
-    QgsDebugMsg( mErrorString );
-    return false;
-  }
-
-  // initialize self
-  mContinuous = true; // we will detect later if there are overlapping stops
-  mPalette.clear();
-  mPaletteStops.clear();
-
-  // loop for all stop tags
-  QDomElement e = rampsElement.firstChildElement();
-  // int i = 0;
-  QMap< double, QColor > map;
-  while ( !e.isNull() )
-  {
-    // QgsDebugMsg("read "+e.tagName());
-    if ( e.tagName() == "stop" )
-    {
-      //todo integrate this into symbollayerutils, keep here for now...
-      double offset;
-      QString offsetStr = e.attribute( "offset" ); // offset="50.00%" | offset="0.5"
-      if ( offsetStr.endsWith( "%" ) )
-        offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;
-      else
-        offset = offsetStr.toDouble();
-
-      QString colorStr = e.attribute( "stop-color", "" ); // stop-color="rgb(222,235,247)"
-      QString opacityStr = e.attribute( "stop-opacity", "1.0" ); // stop-opacity="1.0000"
-      // QColor color( 255, 0, 0 ); // red color as a warning :)
-      QColor color = QgsSymbolLayerV2Utils::parseColor( colorStr );
-      if ( color != QColor() )
-      {
-        int alpha = opacityStr.toDouble() * 255; // test
-        color.setAlpha( alpha );
-        if ( map.contains( offset ) )
-          mContinuous = false; // assume discrete if at least one stop is repeated
-        map[offset] = color;
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "unknown tag: " + e.tagName() );
-    }
-
-    e = e.nextSiblingElement();
-  }
-
-  // if this is a discrete gradient, remove last stop
-  if ( ! mContinuous )
-  {
-    if ( map.contains( 1 ) )
-      map.remove( 1 );
-  }
-  // add colors to palette
-  QMap<double, QColor>::const_iterator it = map.constBegin();
-  while ( it != map.constEnd() )
-  {
-    mPaletteStops << it.key();
-    mPalette << it.value();
-    ++it;
-  }
-
-  return true;
+  return QgsCptCityArchive::findFileName( "COPYING.xml", QFileInfo( fileName() ).dir().path(),
+                                          QgsCptCityArchive::defaultBaseDir() );
 }
 
-bool QgsCptCityColorRampV2::hasBasicSchemes()
+QString QgsCptCityColorRampV2::descFileName() const
 {
-  // Currently returns hasAllSchemes, because we don't have a minimal set yet
-  return hasAllSchemes();
+  return QgsCptCityArchive::findFileName( "DESC.xml", QFileInfo( fileName() ).dir().path(),
+                                          QgsCptCityArchive::defaultBaseDir() );
 }
 
-bool QgsCptCityColorRampV2::hasAllSchemes()
+QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo( ) const
 {
-  // if we have no collections loaded yet, just make sure we have at least one collection
-  // ideally we should test for a few schemes we know should be present
-  if ( mCollections.isEmpty() )
-  {
-    return ( !  QgsCptCityColorRampV2::listSchemeCollections( "", false ).isEmpty() );
-  }
-  return true;
+  return QgsCptCityArchive::copyingInfo( copyingFileName() );
 }
 
-// currently this methos takes some time, so it must be explicitly requested
-bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
+bool QgsCptCityColorRampV2::loadFile()
 {
-  // TODO should keep the name of the previously loaded, or see if the first element is inside rootDir
-  if ( ! reset && ! mCollections.isEmpty() )
+  if ( mFileLoaded )
   {
-    QgsDebugMsg( QString( "not loading schemes, rootDir=%1 reset=%2 empty=%3" ).arg( rootDir ).arg( reset ).arg( mCollections.isEmpty() ) );
+    QgsDebugMsg( "File already loaded for " + mSchemeName + mVariantName );
     return true;
   }
 
-  QString curName, prevName, prevPath, curVariant, curSep, schemeName;
-  QStringList listVariant;
-  QStringList schemeNamesAll, schemeNames;
-  int num;
-  bool ok, prevAdd, curAdd;
-
-  if ( reset )
+  // get filename
+  QString filename = fileName();
+  if ( filename.isNull() )
   {
-    mCollections.clear();
-    mSchemeMap.clear();
-    // mSchemeNumColors.clear();
-    mSchemeVariants.clear();
-    mCollectionNames.clear();
-    mCollectionSelections.clear();
+    QgsDebugMsg( "Couldn't get fileName() for " + mSchemeName + mVariantName );
+    return false;
   }
 
-  mCollections = listSchemeCollections( rootDir, true );
-  qSort( mCollections.begin(), mCollections.end() );
+  QgsDebugMsg( QString( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
 
-  foreach ( QString path, mCollections )
+  // get color ramp from svg file
+  QMap< double, QPair<QColor, QColor> > colorMap =
+    QgsCptCityArchive::gradientColorMap( filename );
+
+  // add colors to palette
+  mFileLoaded = false;
+  mPalette.clear();
+  QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
+  // first detect if file is gradient is continuous or dicrete
+  // discrete: stop contains 2 colors and first color is identical to previous second
+  // multi: stop contains 2 colors and no relation with previous stop
+  mGradientType = Continuous;
+  it = prev = colorMap.constBegin();
+  while ( it != colorMap.constEnd() )
   {
-    // QgsDebugMsg("================================");
-    // QgsDebugMsg("collection = "+path);
-    schemeNamesAll = QgsCptCityColorRampV2::listSchemeNames( path );
-    // TODO detect if there are duplicate names with different variant counts, combine in 1
-    for ( int i = 0; i < schemeNamesAll.count(); i++ )
+    // look for stops that contain multiple values
+    if ( it != colorMap.constBegin() && ( it.value().first != it.value().second ) )
     {
-      // schemeName = QFileInfo( schemeNamesAll[i] ).baseName();
-      schemeName = schemeNamesAll[i];
-      // QgsDebugMsg("=============");
-      // QgsDebugMsg("scheme = "+schemeName);
-      curName = schemeName;
-      curVariant = "";
-
-      // stupid code to find if name ends with 1-3 digit number - should use regexp
-      // TODO need to detect if ends with b/c also
-      if ( schemeName.length() > 1 && schemeName.endsWith( "a" ) && ! listVariant.isEmpty() &&
-           (( prevName + listVariant.last()  + "a" ) == curName ) )
+      if ( it.value().first == prev.value().second )
       {
-        curName = prevName;
-        curVariant = listVariant.last() + "a";
+        mGradientType = Discrete;
+        break;
       }
       else
       {
-        num = schemeName.right( 3 ).toInt( &ok );
-        Q_UNUSED( num );
-        if ( ok )
-        {
-          curName = schemeName.left( schemeName.size() - 3 );
-          curVariant = schemeName.right( 3 );
-        }
-        else
-        {
-          num = schemeName.right( 2 ).toInt( &ok );
-          if ( ok )
-          {
-            curName = schemeName.left( schemeName.size() - 2 );
-            curVariant = schemeName.right( 2 );
-          }
-          else
-          {
-            num = schemeName.right( 1 ).toInt( &ok );
-            if ( ok )
-            {
-              curName = schemeName.left( schemeName.size() - 1 );
-              curVariant = schemeName.right( 1 );
-            }
-          }
-        }
+        mGradientType = ContinuousMulti;
+        break;
       }
-      curSep = curName.right( 1 );
-      if ( curSep == "-" || curSep == "_" )
-      {
-        curName.chop( 1 );
-        curVariant = curSep + curVariant;
-      }
-
-      if ( prevName == "" )
-        prevName = curName;
-
-      // add element, unless it is empty, or a variant of last element
-      prevAdd = false;
-      curAdd = false;
-      if ( curName == "" )
-        curName = "__empty__";
-      // if current is a variant of last, don't add previous and append current variant
-      if ( curName == prevName )
-      {
-        // add current element if it is the last one in the collection
-        if ( i == schemeNamesAll.count() - 1 )
-          prevAdd = true;
-        listVariant << curVariant;
-      }
-      else
-      {
-        if ( prevName != "" )
-        {
-          prevAdd = true;
-        }
-        // add current element if it is the last one in the collection
-        if ( i == schemeNamesAll.count() - 1 )
-          curAdd = true;
-      }
-
-      // QgsDebugMsg(QString("prevAdd=%1 curAdd=%2 prevName=%3 curName=%4 count=%5").arg(prevAdd).arg(curAdd).arg(prevName).arg(curName).arg(listVariant.count()));
-
-      if ( prevAdd )
-      {
-        // depending on number of variants, make one or more items
-        if ( listVariant.count() == 0 )
-        {
-          // set num colors=-1 to parse file on request only
-          // mSchemeNumColors[ prevName ] = -1;
-          schemeNames << prevName;
-        }
-        else if ( listVariant.count() <= 2 )
-        {
-          // for 1-2 items, create independent items
-          for ( int j = 0; j < listVariant.count(); j++ )
-          {
-            // mSchemeNumColors[ prevName + listVariant[j] ] = -1;
-            schemeNames << prevName + listVariant[j];
-          }
-        }
-        else
-        {
-          mSchemeVariants[ path + "/" + prevName ] = listVariant;
-          schemeNames << prevName;
-        }
-        listVariant.clear();
-      }
-      if ( curAdd )
-      {
-        if ( curVariant != "" )
-          curName += curVariant;
-        schemeNames << curName;
-      }
-      // save current to compare next
-      if ( prevAdd || curAdd )
-      {
-        prevName = curName;
-        if ( curVariant != "" )
-          listVariant << curVariant;
-      }
-
     }
-    // add schemes to collection
-    mSchemeMap[ path ] = schemeNames;
-    schemeNames.clear();
-    listVariant.clear();
-    prevName = "";
+    prev = it;
+    ++it;
   }
 
-  // populate mCollectionNames
-  foreach ( QString path, mCollections )
+  it = prev = colorMap.constBegin();
+  while ( it != colorMap.constEnd() )
   {
-    QString filename = QgsCptCityColorRampV2::getBaseDir() + "/" + path + "/" + "DESC.xml";
-    QFile f( filename );
-    if ( ! f.open( QFile::ReadOnly ) )
+    if ( mGradientType == Discrete )
     {
-      QgsDebugMsg( "description file for path " + path + " [ " + filename + " ] does not exist" );
-      continue;
+      mPalette << qMakePair( it.key(), it.value().second );
     }
-
-    // parse the document
-    QString errMsg;
-    QDomDocument doc( "description" );
-    if ( !doc.setContent( &f, &errMsg ) )
+    else
     {
-      f.close();
-      QgsDebugMsg( "Couldn't parse file " + filename + " : " + errMsg );
-      continue;
+      mPalette << qMakePair( it.key(), it.value().first );
+      if (( mGradientType == ContinuousMulti ) &&
+          ( it.key() != 0.0 && it.key() != 1.0 ) )
+      {
+        mPalette << qMakePair( it.key(), it.value().second );
+      }
     }
-    f.close();
-
-    // read description
-    QDomElement docElem = doc.documentElement();
-    if ( docElem.tagName() != "description" )
-    {
-      QgsDebugMsg( "Incorrect root tag: " + docElem.tagName() );
-      continue;
-    }
-    // should we make sure the <dir> tag is ok?
-    QDomElement nameElement = docElem.firstChildElement( "name" );
-    if ( nameElement.isNull() )
-    {
-      QgsDebugMsg( "name tag missing" );
-      continue;
-    }
-
-    // add info to mapping
-    mCollectionNames[ path ] = nameElement.text();
-  }
-  // add any elements that are missing from DESC.xml (views)
-  for ( int i = 0; cptCityNames[i] != NULL; i = i + 2 )
-  {
-    mCollectionNames[ cptCityNames[i] ] = cptCityNames[i+1];
+    prev = it;
+    ++it;
   }
 
-  // populate mCollectionSelections
-  QString viewName;
-  for ( int i = 0; cptCitySelections[i] != NULL; i++ )
-  {
-    curName = QString( cptCitySelections[i] );
-    if ( curName == "" )
-    {
-      viewName = QString( cptCitySelections[i+1] );
-      curName = QString( cptCitySelections[i+2] );
-      i = i + 2;
-    }
-    mCollectionSelections[ viewName ] << curName;
-  }
-
-  return ( ! mCollections.isEmpty() );
+  mFileLoaded = true;
+  return true;
 }
 
-void QgsCptCityColorRampV2::loadPalette()
-{
-  // TODO: IMPLEMENT ME
-}

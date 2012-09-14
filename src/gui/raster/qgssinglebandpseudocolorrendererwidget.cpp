@@ -57,7 +57,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), 0 );
   mColorInterpolationComboBox->addItem( tr( "Linear" ), 1 );
   mColorInterpolationComboBox->addItem( tr( "Exact" ), 2 );
-
+  mColorInterpolationComboBox->setCurrentIndex( 1 );
   mClassificationModeComboBox->addItem( tr( "Equal interval" ) );
   //quantile would be nice as well
 

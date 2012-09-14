@@ -196,36 +196,31 @@ SET(QT_USE_QTXML 1)
 SET(QT_USE_QTNETWORK 1)
 SET(QT_USE_QTSVG 1)
 SET(QT_USE_QTSQL 1)
+SET(QT_USE_QTWEBKIT 1)
 
-IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND)
+IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND)
   MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
-ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND)
-
-IF(WITH_DESKTOP)
-  SET(QT_USE_QTWEBKIT 1)
-
-  IF(NOT QT_QTWEBKIT_FOUND)
-    MESSAGE(SEND_ERROR "Qt Webkit module required for QGIS Desktop!")
-  ENDIF(NOT QT_QTWEBKIT_FOUND)
-ENDIF(WITH_DESKTOP)
+ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND)
 
 IF (ANDROID)
-    SET (DEFAULT_WITH_TOUCH TRUE)
+  SET (DEFAULT_WITH_TOUCH TRUE)
 ELSE (ANDROID)
-    SET (DEFAULT_WITH_TOUCH FALSE)
+  SET (DEFAULT_WITH_TOUCH FALSE)
 ENDIF (ANDROID)
+
 #Add a touch mode if Qt has Qt Gestures (starting from 4.6)
 IF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
-    SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
+  SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
 ELSE ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
-    SET (WITH_TOUCH FALSE)
+  SET (WITH_TOUCH FALSE)
 ENDIF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+
 IF (WITH_TOUCH)
-    # following variable is used in qgsconfig.h
-    SET (HAVE_TOUCH TRUE)
-    MESSAGE (STATUS "Touch support enabled")
+  # following variable is used in qgsconfig.h
+  SET (HAVE_TOUCH TRUE)
+  MESSAGE (STATUS "Touch support enabled")
 ELSE (WITH_TOUCH)
-    MESSAGE (STATUS "Touch support disabled")
+  MESSAGE (STATUS "Touch support disabled")
 ENDIF (WITH_TOUCH)
 
 IF (ENABLE_TESTS)
@@ -290,6 +285,13 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   MESSAGE (STATUS "Debug output enabled")
   ADD_DEFINITIONS(-DQGISDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+
+IF(MSVC)
+  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DQGISDEBUG=1")
+  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DQGISDEBUG=1")
+  # disable macros that offend std::numeric_limits<T>::min()/max()
+  ADD_DEFINITIONS(-DNOMINMAX)
+ENDIF(MSVC)
 
 #############################################################
 # platform specific stuff
@@ -459,13 +461,16 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
-FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/source_path.txt "${CMAKE_SOURCE_DIR}")
+FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/path.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
-# symlink provider plugins dir for Mac unit tests
+# symlink extra provider plugin frameworks for Mac unit tests
 IF (APPLE AND ENABLE_TESTS)
   EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_CURRENT_BINARY_DIR}/Plugins"
-    "${CMAKE_CURRENT_BINARY_DIR}/output/Plugins")
+    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgisgrass.framework"
+    "${CMAKE_BINARY_DIR}/output/lib/qgisgrass.framework")
+  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
+    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgissqlanyconnection.framework"
+    "${CMAKE_BINARY_DIR}/output/lib/qgissqlanyconnection.framework")
 ENDIF (APPLE AND ENABLE_TESTS)
 
 # manual page - makes sense only on unix systems
@@ -554,6 +559,12 @@ ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 #############################################################
 # process subdirs
 
+#create a variable to specify where our test data is
+#so that unit tests can use TEST_DATA_DIR to locate
+#the test data. See CMakeLists in test dirs for more info
+#TEST_DATA_DIR is also used by QgsRenderChecker currently in core
+SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
+
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(images)
@@ -565,10 +576,6 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 IF (ENABLE_TESTS)
-  #create a variable to specify where our test data is
-  #so that unit tests can use TEST_DATA_DIR to locate
-  #the test data. See CMakeLists in test dirs for more info
-  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
   ADD_SUBDIRECTORY(tests)
   SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
   MESSAGE (STATUS "Ctest Binary Directory  set to: ${CTEST_BINARY_DIRECTORY}")

@@ -25,11 +25,8 @@ IF(WIN32)
   IF (MSVC)
     FIND_PATH(GEOS_INCLUDE_DIR geos_c.h $ENV{LIB_DIR}/include $ENV{INCLUDE})
     FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i PATHS 
-      "$ENV{LIB}/lib"
+      "$ENV{LIB_DIR}/lib"
       $ENV{LIB}
-      #mingw
-      c:/msys/local/lib
-      NO_DEFAULT_PATH
       )
     IF (GEOS_LIBRARY)
        SET (

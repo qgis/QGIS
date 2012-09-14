@@ -36,6 +36,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     /**
      * Constructor
+     * @param canvas map canvas pointer
      * @param theLayer layer pointer
      * @param parent parent pointer
      */
@@ -180,7 +181,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Launched when a feature has been added
      * @param fid feature id
-     * @parem inOperation guard insertion with beginInsertRows() / endInsertRows()
+     * @param inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
     virtual void featureAdded( QgsFeatureId fid, bool inOperation = true );
 

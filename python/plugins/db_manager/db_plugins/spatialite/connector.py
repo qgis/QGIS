@@ -593,5 +593,15 @@ class SpatiaLiteDBConnector(DBConnector):
 
 	def getSqlDictionary(self):
 		from .sql_dictionary import getSqlDictionary
-		return getSqlDictionary()
+		sql_dict = getSqlDictionary()
+
+		items = []
+		for tbl in self.getTables():
+			items.append( tbl[1] )	# table name
+
+			for fld in self.getTableFields( tbl[0] ):
+				items.append( fld[1] )	# field name
+
+		sql_dict["identifier"] = items
+		return sql_dict
 

@@ -126,9 +126,9 @@ QString const & QgsMapLayer::source() const
   return mDataSource;
 }
 
-QgsRectangle QgsMapLayer::extent() const
+QgsRectangle QgsMapLayer::extent()
 {
-  return mLayerExtent;
+  return mExtent;
 }
 
 bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
@@ -1246,4 +1246,9 @@ void QgsMapLayer::clearCacheImage()
 QString QgsMapLayer::metadata()
 {
   return QString();
+}
+
+void QgsMapLayer::setExtent( const QgsRectangle &r )
+{
+  mExtent = r;
 }

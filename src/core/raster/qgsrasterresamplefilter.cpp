@@ -45,6 +45,22 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
   delete mZoomedOutResampler;
 }
 
+QgsRasterInterface * QgsRasterResampleFilter::clone() const
+{
+  QgsDebugMsg( "Entered" );
+  QgsRasterResampleFilter * resampler = new QgsRasterResampleFilter( 0 );
+  if ( mZoomedInResampler )
+  {
+    resampler->setZoomedInResampler( mZoomedInResampler->clone() );
+  }
+  if ( mZoomedOutResampler )
+  {
+    resampler->setZoomedOutResampler( mZoomedOutResampler->clone() );
+  }
+  resampler->setMaxOversampling( mMaxOversampling );
+  return resampler;
+}
+
 int QgsRasterResampleFilter::bandCount() const
 {
   if ( mOn ) return 1;
@@ -88,7 +104,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != QgsRasterInterface::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;

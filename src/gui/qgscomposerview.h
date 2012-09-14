@@ -54,6 +54,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     {
       Select = 0,      // Select/Move item
       AddArrow,         //add arrow
+      AddHtml,
       AddMap,          // add new map
       AddLegend, // add vector legend
       AddLabel,        // add label

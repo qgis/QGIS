@@ -76,7 +76,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsCoordinateReferenceSystem srs;
   srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   srs.validate();
-  mCrsId = srs.srsid();
+  bool ok;
+  mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
   leSRID->setText( srs.authid() + " - " + srs.description() );
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );

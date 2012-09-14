@@ -19,6 +19,7 @@
 #define QgsLabelingGUI_H
 
 #include <QDialog>
+#include <QFontDatabase>
 #include <ui_qgslabelingguibase.h>
 
 class QgsVectorLayer;
@@ -26,12 +27,12 @@ class QgsMapCanvas;
 
 #include "qgspallabeling.h"
 
-class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
+class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
+    QgsLabelingGui( QgsPalLabeling *lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
@@ -46,14 +47,34 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
 
     void updateUi();
     void updatePreview();
+    void scrollPreview();
     void updateOptions();
+    void updateQuadrant();
 
+    void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
+    void on_mFontCapitalsComboBox_currentIndexChanged( int index );
+    void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
+    void on_mFontUnderlineBtn_toggled( bool ckd );
+    void on_mFontStrikethroughBtn_toggled( bool ckd );
+    void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
+    void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mBufferUnitComboBox_currentIndexChanged( int index );
+    void on_mPointOffsetUnitsComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
 
+    void on_mPreviewTextEdit_textChanged( const QString & text );
+    void on_mPreviewTextBtn_clicked();
+    void on_mPreviewBackgroundBtn_clicked();
+
   protected:
+    void blockFontChangeSignals( bool blk );
+    void setPreviewBackground( QColor color );
+    void updateFontViaStyle( const QString & fontstyle );
+    void populateFontCapitalsComboBox();
+    void populateFontStyleComboBox();
     void populatePlacementMethods();
     void populateFieldNames();
     void populateDataDefinedCombos( QgsPalLayerSettings& s );
@@ -66,6 +87,14 @@ class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
     QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+    QFontDatabase mFontDB;
+
+    // background reference font
+    QFont mRefFont;
+    int mPreviewSize;
+
+    int mXQuadOffset;
+    int mYQuadOffset;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

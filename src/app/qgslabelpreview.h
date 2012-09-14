@@ -24,7 +24,7 @@ class QgsLabelPreview : public QLabel
 
     void setTextColor( QColor color );
 
-    void setBuffer( double size, QColor color );
+    void setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill = false );
 
     void setFont( QFont f ) { mFont = f; }
     QFont font() { return mFont; }
@@ -32,8 +32,10 @@ class QgsLabelPreview : public QLabel
     void paintEvent( QPaintEvent* e );
 
   private:
-    int mBufferSize;
+    double mBufferSize;
     QColor mBufferColor;
+    Qt::PenJoinStyle mBufferJoinStyle;
+    bool mBufferNoFill;
     QColor mTextColor;
     QFont mFont;
 };

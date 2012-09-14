@@ -16,9 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsdistancearea.h"
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"
@@ -27,6 +30,7 @@
 #include "qgsproject.h"
 
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
 
 #include <QInputDialog>
@@ -46,8 +50,6 @@
 #include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
-#define ELLIPS_FLAT "NONE"
-#define ELLIPS_FLAT_DESC "None / Planimetric"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
@@ -55,6 +57,7 @@
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
+const char * QgsOptions::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -75,7 +78,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
-  connect( chkUseStandardDeviation, SIGNAL( stateChanged( int ) ), this, SLOT( toggleStandardDeviation( int ) ) );
+  connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
+
+#ifdef Q_WS_X11
+  connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
+#endif
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
@@ -133,6 +140,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
+
+  // WMS/WMS-C tile expiry time
+  mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
 
   //Web proxy settings
   grpProxy->setChecked( settings.value( "proxy/proxyEnabled", "0" ).toBool() );
@@ -227,6 +237,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
+  // Set the enable backbuffer state for X11 (linux) systems only
+  // TODO: remove this when threading is implemented
+#ifdef Q_WS_X11
+  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer", 1 ).toBool() );
+  toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
+#elif defined(Q_WS_MAC)
+  chkEnableBackbuffer->setChecked( true );
+  chkEnableBackbuffer->setEnabled( false );
+  labelUpdateThreshold->setEnabled( false );
+  spinBoxUpdateThreshold->setEnabled( false );
+#else // Q_WS_WIN32
+  chkEnableBackbuffer->setChecked( true );
+  chkEnableBackbuffer->setEnabled( false );
+#endif
+
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
   //set the default projection behaviour radio buttongs
@@ -257,13 +282,37 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
   // populate combo box with ellipsoids
-  getEllipsoidList();
-  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  cmbEllipsoid->setItemText( cmbEllipsoid->currentIndex(), getEllipsoidName( myEllipsoidId ) );
+
+  QgsDebugMsg( "Setting upp ellipsoid" );
+
+  mEllipsoidIndex = 0;
+  populateEllipsoidList();
+
+  // Reading ellipsoid from setttings
+  QStringList mySplitEllipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString().split( ':' );
+
+  int myIndex = 0;
+  int i;
+  for ( i = 0; i < mEllipsoidList.length(); i++ )
+  {
+    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    {
+      myIndex = i;
+      break;
+    }
+  }
+  // Update paramaters if present.
+  if ( mySplitEllipsoid.length() >= 3 )
+  {
+    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
+    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
+  }
+
+  updateEllipsoidUI( myIndex );
 
   // Set the units for measuring
-  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  if ( myUnitsTxt == "feet" )
+  QGis::UnitType myDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  if ( myDisplayUnits == QGis::Feet )
   {
     radFeet->setChecked( true );
   }
@@ -356,6 +405,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", true ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
+  cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
@@ -366,33 +416,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spnGreen->setValue( settings.value( "/Raster/defaultGreenBand", 2 ).toInt() );
   spnBlue->setValue( settings.value( "/Raster/defaultBlueBand", 3 ).toInt() );
 
-  //add items to the color enhanceContrast combo box
-  cboxContrastEnhancementAlgorithm->addItem( tr( "No Stretch" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch To MinMax" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch And Clip To MinMax" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Clip To MinMax" ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, "singleBand", "StretchToMinimumMaximum" );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, "multiBandSingleByte", "NoEnhancement" );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, "multiBandMultiByte", "StretchToMinimumMaximum" );
 
-  QString contrastEnchacement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
-  if ( contrastEnchacement == "NoEnhancement" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
-  }
-  if ( contrastEnchacement == "StretchToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch To MinMax" ) ) );
-  }
-  else if ( contrastEnchacement == "StretchAndClipToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch And Clip To MinMax" ) ) );
-  }
-  else if ( contrastEnchacement == "ClipToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
-  }
+  QString cumulativeCutText = tr( "Cumulative pixel count cut" );
+  cboxContrastEnhancementLimits->addItem( tr( "Cumulative pixel count cut" ), "CumulativeCut" );
+  cboxContrastEnhancementLimits->addItem( tr( "Minimum / maximum" ), "MinMax" );
+  cboxContrastEnhancementLimits->addItem( tr( "Mean +/- standard deviation" ), "StdDev" );
 
-  chkUseStandardDeviation->setChecked( settings.value( "/Raster/useStandardDeviation", false ).toBool() );
+  QString contrastEnchacementLimits = settings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
+
+  cboxContrastEnhancementLimits->setCurrentIndex( cboxContrastEnhancementLimits->findData( contrastEnchacementLimits ) );
+
   spnThreeBandStdDev->setValue( settings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
-  toggleStandardDeviation( chkUseStandardDeviation->checkState() );
 
   mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble() );
   mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble() );
@@ -420,6 +457,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
+  cmbEnableMacros->setCurrentIndex( settings.value( "/qgis/enableMacros", 1 ).toInt() );
 
   // templates
   cbxProjectDefaultNew->setChecked( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() );
@@ -708,16 +746,22 @@ void QgsOptions::fontSizeChanged( const QString &fontSize )
   QgisApp::instance()->setFontSize( fontSize.toInt() );
 }
 
-void QgsOptions::toggleStandardDeviation( int state )
+void QgsOptions::toggleEnableBackbuffer( int state )
 {
+#ifdef Q_WS_X11
   if ( Qt::Checked == state )
   {
-    spnThreeBandStdDev->setEnabled( true );
+    labelUpdateThreshold->setEnabled( false );
+    spinBoxUpdateThreshold->setEnabled( false );
   }
   else
   {
-    spnThreeBandStdDev->setEnabled( false );
+    labelUpdateThreshold->setEnabled( true );
+    spinBoxUpdateThreshold->setEnabled( true );
   }
+#else
+  Q_UNUSED( state );
+#endif
 }
 
 QString QgsOptions::theme()
@@ -756,6 +800,9 @@ void QgsOptions::saveOptions()
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
+
+  // WMS/WMS-C tile expiry time
+  settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
 
   //Web proxy settings
   settings.setValue( "proxy/proxyEnabled", grpProxy->isChecked() );
@@ -800,6 +847,7 @@ void QgsOptions::saveOptions()
                      cmbScanItemsInBrowser->itemData( cmbScanItemsInBrowser->currentIndex() ).toString() );
   settings.setValue( "/qgis/scanZipInBrowser",
                      cmbScanZipInBrowser->itemData( cmbScanZipInBrowser->currentIndex() ).toString() );
+  settings.setValue( "/qgis/ignoreShapeEncoding", cbxIgnoreShapeEncoding->isChecked() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
@@ -824,6 +872,7 @@ void QgsOptions::saveOptions()
     settings.setValue( "/qgis/projectTemplateDir", leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
+  settings.setValue( "/qgis/enableMacros", cmbEnableMacros->currentIndex() );
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
@@ -868,29 +917,19 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/defaultGreenBand", spnGreen->value() );
   settings.setValue( "/Raster/defaultBlueBand", spnBlue->value() );
 
-  if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "No Stretch" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchToMinimumMaximum" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch And Clip To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchAndClipToMinimumMaximum" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Clip To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "ClipToMinimumMaximum" );
-  }
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, "singleBand" );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, "multiBandSingleByte" );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, "multiBandMultiByte" );
 
-  settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
+  QString contrastEnhancementLimits = cboxContrastEnhancementLimits->itemData( cboxContrastEnhancementLimits->currentIndex() ).toString();
+  settings.setValue( "/Raster/defaultContrastEnhancementLimits", contrastEnhancementLimits );
+
   settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
 
   settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
+  settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
   //projection defined...
@@ -914,17 +953,34 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
-  settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
-
-  if ( radFeet->isChecked() )
+  if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER" ) )
   {
-    settings.setValue( "/qgis/measure/displayunits", "feet" );
+    double major = mEllipsoidList[ mEllipsoidIndex ].semiMajor;
+    double minor = mEllipsoidList[ mEllipsoidIndex ].semiMinor;
+    // If the user fields have changed, use them instead.
+    if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
+    {
+      QgsDebugMsg( "Using paramteric major/minor" );
+      major = QLocale::system().toDouble( leSemiMajor->text() );
+      minor = QLocale::system().toDouble( leSemiMinor->text() );
+    }
+    settings.setValue( "/qgis/measure/ellipsoid", QString( "PARAMETER:%1:%2" )
+                       .arg( major, 0, 'g', 17 )
+                       .arg( minor, 0, 'g', 17 ) );
   }
   else
   {
-    settings.setValue( "/qgis/measure/displayunits", "meters" );
+    settings.setValue( "/qgis/measure/ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
   }
-  settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
+
+  if ( radFeet->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
+  }
+  else
+  {
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) );
+  }
 
   QString angleUnitString = "degrees";
   if ( mRadiansRadioButton->isChecked() )
@@ -1110,15 +1166,26 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   QLabel *label = new QLabel( title, &dlg );
   label->setAlignment( Qt::AlignHCenter );
   layout->addWidget( label );
-  QgsRasterFormatSaveOptionsWidget* optionsWidget =
-    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
-                                          QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
-  layout->addWidget( optionsWidget );
 
-  if ( dlg.exec() == QDialog::Accepted )
+  if ( driverName == "_pyramids" )
   {
-    optionsWidget->apply();
+    QgsRasterPyramidsOptionsWidget* optionsWidget =
+      new QgsRasterPyramidsOptionsWidget( &dlg, "gdal" );
+    layout->addWidget( optionsWidget );
+    dlg.resize( 400, 400 );
+    if ( dlg.exec() == QDialog::Accepted )
+      optionsWidget->apply();
   }
+  else
+  {
+    QgsRasterFormatSaveOptionsWidget* optionsWidget =
+      new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
+                                            QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
+    layout->addWidget( optionsWidget );
+    if ( dlg.exec() == QDialog::Accepted )
+      optionsWidget->apply();
+  }
+
 }
 
 // Return state of the visibility flag for newly added layers. If
@@ -1127,21 +1194,29 @@ bool QgsOptions::newVisible()
 {
   return chkAddedVisibility->isChecked();
 }
-
-void QgsOptions::getEllipsoidList()
+void QgsOptions::populateEllipsoidList()
 {
-  // (copied from qgscustomprojectiondialog.cpp)
-
   //
-  // Populate the ellipsoid combo
+  // Populate the ellipsoid list
   //
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
+  EllipsoidDefs myItem, i;
 
+  myItem.acronym = GEO_NONE;
+  myItem.description =  tr( GEO_NONE_DESC );
+  myItem.semiMajor = 0.0;
+  myItem.semiMinor = 0.0;
+  mEllipsoidList.append( myItem );
 
-  cmbEllipsoid->addItem( ELLIPS_FLAT_DESC );
+  myItem.acronym = QString( "PARAMETER:6370997:6370997" );
+  myItem.description = tr( "Parameters :" );
+  myItem.semiMajor = 6370997.0;
+  myItem.semiMinor = 6370997.0;
+  mEllipsoidList.append( myItem );
+
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult )
@@ -1153,83 +1228,53 @@ void QgsOptions::getEllipsoidList()
   }
 
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select * from tbl_ellipsoid order by name";
+  QString mySql = "select acronym, name, radius, parameter2 from tbl_ellipsoid order by name";
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      cmbEllipsoid->addItem(( const char * )sqlite3_column_text( myPreparedStatement, 1 ) );
+      QString para1, para2;
+      myItem.acronym = ( const char * )sqlite3_column_text( myPreparedStatement, 0 );
+      myItem.description = ( const char * )sqlite3_column_text( myPreparedStatement, 1 );
+
+      // Copied from QgsDistanecArea. Should perhaps be moved there somehow?
+      // No error checking, this values are for show only, never used in calculations.
+
+      // Fall-back values
+      myItem.semiMajor = 0.0;
+      myItem.semiMinor = 0.0;
+      // Crash if no column?
+      para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
+      para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
+      myItem.semiMajor = para1.mid( 2 ).toDouble();
+      if ( para2.left( 2 ) == "b=" )
+      {
+        myItem.semiMinor = para2.mid( 2 ).toDouble();
+      }
+      else if ( para2.left( 3 ) == "rf=" )
+      {
+        double invFlattening = para2.mid( 3 ).toDouble();
+        if ( invFlattening != 0.0 )
+        {
+          myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
+        }
+      }
+      mEllipsoidList.append( myItem );
     }
   }
+
   // close the sqlite3 statement
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
-}
 
-QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName( ELLIPS_FLAT );
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
+  // Add all items to selector
 
-}
-
-QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName( ELLIPS_FLAT_DESC );
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
+  foreach ( i, mEllipsoidList )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
+    cmbEllipsoid->addItem( i.description );
   }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
 }
 
 QStringList QgsOptions::i18nList()
@@ -1616,5 +1661,77 @@ void QgsOptions::on_pbnExportScales_clicked()
   if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
   {
     QgsDebugMsg( msg );
+  }
+}
+
+void QgsOptions::initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal )
+{
+  QSettings settings;
+
+  //add items to the color enhanceContrast combo box
+  cbox->addItem( tr( "No Stretch" ), "NoEnhancement" );
+  cbox->addItem( tr( "Stretch To MinMax" ), "StretchToMinimumMaximum" );
+  cbox->addItem( tr( "Stretch And Clip To MinMax" ), "StretchAndClipToMinimumMaximum" );
+  cbox->addItem( tr( "Clip To MinMax" ), "ClipToMinimumMaximum" );
+
+  QString contrastEnchacement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
+  cbox->setCurrentIndex( cbox->findData( contrastEnchacement ) );
+}
+
+void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
+{
+  QSettings settings;
+  QString value = cbox->itemData( cbox->currentIndex() ).toString();
+  settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
+}
+
+void QgsOptions::updateEllipsoidUI( int newIndex )
+{
+  // Called whenever settings change, adjusts the UI accordingly
+  // Pre-select current ellipsoid
+
+  // Check if CRS transformation is on, or else turn everything off
+  double myMajor =  mEllipsoidList[ newIndex ].semiMajor;
+  double myMinor =  mEllipsoidList[ newIndex ].semiMinor;
+
+  // If user has modified the radii (only possible if parametric!), before
+  // changing ellipsoid, save the modified coordinates
+  if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
+  {
+    QgsDebugMsg( "Saving major/minor" );
+    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale::system().toDouble( leSemiMajor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale::system().toDouble( leSemiMinor->text() );
+  }
+
+  mEllipsoidIndex = newIndex;
+  leSemiMajor->setEnabled( false );
+  leSemiMinor->setEnabled( false );
+  leSemiMajor->setText( "" );
+  leSemiMinor->setText( "" );
+  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    cmbEllipsoid->setEnabled( true );
+    cmbEllipsoid->setToolTip( "" );
+    if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER:" ) )
+    {
+      leSemiMajor->setEnabled( true );
+      leSemiMinor->setEnabled( true );
+    }
+    else
+    {
+      leSemiMajor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+      leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+    }
+    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
+    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+    {
+      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+    }
+  }
+  else
+  {
+    cmbEllipsoid->setEnabled( false );
+    cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
 }

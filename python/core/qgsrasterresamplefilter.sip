@@ -1,29 +1,37 @@
-class QgsRasterResampleFilter
+
+/**  Raster resample filter */
+
+class QgsRasterResampleFilter : QgsRasterInterface
 {
 %TypeHeaderCode
-    #include "qgsrasterresamplefilter.h"
+#include <qgsrasterresamplefilter.h>
 %End
+    QgsRasterResampleFilter();
+    QgsRasterResampleFilter( const QgsRasterResampleFilter& thePipe );
 
-  public:
-    QgsRasterResampleFilter( QgsRasterFace* input = 0 );
     ~QgsRasterResampleFilter();
+
+    QgsRasterInterface * clone() const;
+
+    int bandCount() const;
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+
+    bool setInput( QgsRasterInterface* input );
 
     void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
-    /**Set resampler for zoomed in scales. Takes ownership of the object*/
     void setZoomedInResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedInResampler();
+    const QgsRasterResampler* zoomedInResampler() const;
 
-    /**Set resampler for zoomed out scales. Takes ownership of the object*/
     void setZoomedOutResampler( QgsRasterResampler* r );
     const QgsRasterResampler* zoomedOutResampler() const;
 
     void setMaxOversampling( double os );
     double maxOversampling() const;
 
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const = 0;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem );
+    void readXML( const QDomElement& resamplefilterElem );
 };
 

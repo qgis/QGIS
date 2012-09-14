@@ -85,7 +85,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
   {
     if ( mResultDisplay == NULL )
     {
-      mResultDisplay = new QgsDisplayAngle( mCanvas->topLevelWidget() );
+      mResultDisplay = new QgsDisplayAngle( this );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
       QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
                         this, SLOT( changeProjectionEnabledState() ) );
@@ -180,10 +180,18 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
   mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setProjectionsEnabled( mResultDisplay->projectionEnabled() );
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    mDa.setEllipsoidalMode( true );
+  }
+  else
+  {
+    mDa.setEllipsoidalMode( false );
+  }
 }
 
 

@@ -17,6 +17,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterpipe.h"
 #include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -34,20 +35,23 @@ class CORE_EXPORT QgsRasterFileWriter
       SourceProviderError = 1,
       DestProviderError = 2,
       CreateDatasourceError = 3,
-      WriteError = 4
+      WriteError = 4,
+      // Internal error if a value used for 'no data' was found in input
+      NoDataConflict = 5
     };
 
     QgsRasterFileWriter( const QString& outputUrl );
     ~QgsRasterFileWriter();
 
     /**Write raster file
-        @param iter raster iterator
+        @param pipe raster pipe
         @param nCols number of output columns
         @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
+    //WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
+    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     void setOutputFormat( const QString& format ) { mOutputFormat = format; }
@@ -62,6 +66,18 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
     int maxTileWidth() const { return mMaxTileWidth; }
 
+    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
+    void setBuildPyramidsFlag( QgsRasterDataProvider::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
+
+    QList< int > pyramidsList() const { return mPyramidsList; }
+    void setPyramidsList( const QList< int > & list ) { mPyramidsList = list; }
+
+    QString pyramidsResampling() const { return mPyramidsResampling; }
+    void setPyramidsResampling( const QString & str ) { mPyramidsResampling = str; }
+
+    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
+    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
+
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
 
@@ -71,10 +87,24 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs );
+    //WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
+    WriterError writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
+                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
+
+    // Helper method used by previous one
+    WriterError writeDataRaster( const QgsRasterPipe* pipe,
+                                 QgsRasterIterator* iter,
+                                 int nCols, int nRows,
+                                 const QgsRectangle& outputExtent,
+                                 const QgsCoordinateReferenceSystem& crs,
+                                 QgsRasterInterface::DataType destDataType,
+                                 QList<bool> destHasNoDataValueList,
+                                 QList<double> destNoDataValueList,
+                                 QgsRasterDataProvider* destProvider,
+                                 QProgressDialog* progressDialog );
+
     WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                  const QgsCoordinateReferenceSystem& crs );
+                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
     //initialize vrt member variables
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );
@@ -109,6 +139,11 @@ class CORE_EXPORT QgsRasterFileWriter
     bool mTiledMode;
     double mMaxTileWidth;
     double mMaxTileHeight;
+
+    QList< int > mPyramidsList;
+    QString mPyramidsResampling;
+    QgsRasterDataProvider::RasterBuildPyramids mBuildPyramidsFlag;
+    QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
 
     QDomDocument mVRTDocument;
     QDomElement mVRTRedBand;

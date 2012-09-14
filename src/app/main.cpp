@@ -264,6 +264,7 @@ int main( int argc, char *argv[] )
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
+  QString optionpath;
 
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
@@ -318,8 +319,7 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
     {
-      QSettings::setDefaultFormat( QSettings::IniFormat );
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
+      optionpath = argv[++i];
     }
     else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
     {
@@ -421,8 +421,7 @@ int main( int argc, char *argv[] )
           break;
 
         case 'o':
-          QSettings::setDefaultFormat( QSettings::IniFormat );
-          QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
+          optionpath = optarg;
           break;
 
         case 'c':
@@ -481,11 +480,11 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
 
-  if ( !configpath.isEmpty() )
+  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
   }
 
   // GUI customization is enabled by default unless --nocustomization argument is used
@@ -505,7 +504,22 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "QGIS" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
+  QSettings* customizationsettings;
+  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
+  {
+    // tell QSettings to use INI format and save the file in custom config path
+    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QString path = optionpath.isEmpty() ? configpath : optionpath;
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION" );
+  }
+  else
+  {
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  }
+
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
+  QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX

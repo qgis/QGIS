@@ -263,12 +263,13 @@ namespace pal
        * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled only if toLablel is true
+       * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        * @throws PalException::LayerExists
        *
        * @todo add symbolUnit
        */
-      Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel );
+      Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief Look for a layer
@@ -302,7 +303,7 @@ namespace pal
        * @param scale map scale is 1:scale
        * @param bbox map extent
        * @param stats A PalStat object (can be NULL)
-       * @param displayAll if true, all feature will be labelled evan though overlaps occurs
+       * @param displayAll if true, all feature will be labelled even though overlaps occur
        *
        * @return A list of label to display on map
        */
@@ -320,7 +321,7 @@ namespace pal
        * @param scale map scale is  '1:scale'
        * @param bbox map extent
        * @param stat will be filled with labelling process statistics, can be NULL
-       * @param displayAll if true, all feature will be labelled evan though overlaps occurs
+       * @param displayAll if true, all feature will be labelled even though overlaps occur
        *
        * @todo UnknownLayer will be ignored ? should throw exception or not ???
        *

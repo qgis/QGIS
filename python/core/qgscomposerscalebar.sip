@@ -17,6 +17,14 @@ class QgsComposerScaleBar: QgsComposerItem
       Right
     };
 
+    /**Added in version 1.9*/
+    enum ScaleBarUnits
+    {
+      MapUnits = 0,
+      Meters,
+      Feet
+    };
+
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/);
     ~QgsComposerScaleBar();
 
@@ -72,6 +80,12 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a );
+
+    /**@note: this method was added in version 1.9*/
+    ScaleBarUnits units() const;
+
+    /**@note: this method was added in version 1.9*/
+    void setUnits( ScaleBarUnits u );
 
     /**Apply default settings*/
     void applyDefaultSettings();

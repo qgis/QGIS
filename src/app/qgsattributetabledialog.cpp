@@ -264,6 +264,8 @@ void QgsAttributeTableDialog::columnBoxInit()
   QgsFieldMap fieldMap = mLayer->pendingFields();
   QgsFieldMap::Iterator it = fieldMap.begin();
 
+  mColumnBox->clear();
+
   for ( ; it != fieldMap.end(); ++it )
     if ( mLayer->editType( it.key() ) != QgsVectorLayer::Hidden )
       mColumnBox->addItem( it.value().name() );
@@ -706,6 +708,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
     }
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
+    columnBoxInit();
   }
 }
 
@@ -747,6 +750,7 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     }
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
+    columnBoxInit();
   }
 }
 
@@ -760,6 +764,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       mModel->reload( mModel->index( 0, col ), mModel->index( mModel->rowCount() - 1, col ) );
+      columnBoxInit();
     }
   }
 }

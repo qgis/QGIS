@@ -11,3 +11,4 @@ usr/lib/qgis/plugins/libpostgresprovider.so
 usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
+usr/lib/qgis/plugins/libwcsprovider.so

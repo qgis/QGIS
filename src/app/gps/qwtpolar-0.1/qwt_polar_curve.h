@@ -117,13 +117,13 @@ class QWT_POLAR_EXPORT QwtPolarCurve: public QwtPolarItem
     PrivateData *d_data;
 };
 
-//! \return the the curve data
+//! \return the curve data
 inline QwtData &QwtPolarCurve::data()
 {
   return *d_points;
 }
 
-//! \return the the curve data
+//! \return the curve data
 inline const QwtData &QwtPolarCurve::data() const
 {
   return *d_points;

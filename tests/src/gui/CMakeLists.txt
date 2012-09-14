@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS ../core/qgsrenderchecker.cpp)
+SET (util_SRCS)
 
 
 #####################################################
@@ -118,4 +118,5 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
 ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
+ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
 

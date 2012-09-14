@@ -63,6 +63,8 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mAnnotationFontButton_clicked();
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
 
+    void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
+
     //annotation position
     void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text );
     void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text );

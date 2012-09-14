@@ -37,10 +37,12 @@ namespace pal
     int n = 0;
     double dist;
     double distlabel = lp->feature->getLabelDistance();
-    /*unit_convert( double( lp->feature->distlabel ),
-                                     pal::PIXEL,
-                                     pal->map_unit,
-                                     pal->dpi, scale, 1 );*/
+#if 0
+    unit_convert( double( lp->feature->distlabel ),
+                  pal::PIXEL,
+                  pal->map_unit,
+                  pal->dpi, scale, 1 );
+#endif
 
     switch ( feat->getGeosType() )
     {
@@ -230,7 +232,7 @@ namespace pal
     */
 
     double alpha = lp->getAlpha();
-    for ( i = 0; i < 8; i++, alpha += M_PI / 4 )
+    for ( i = 0; i < 8; i++, alpha += M_PI_4 )
     {
       dist[i] = DBL_MAX;
       ok[i] = false;
@@ -261,14 +263,12 @@ namespace pal
   {
     double beta = atan2( pset->y[0] - py, pset->x[0] - px ) - lp->getAlpha();
 
-    while ( beta < 0 )
+    while ( beta < 0.0 )
     {
       beta += 2 * M_PI;
     }
 
-    double a45 = M_PI / 4;
-
-    int i = ( int )( beta / a45 );
+    int i = ( int ) floor( beta / M_PI_4 ) % 8;
 
     for ( int j = 0; j < 2; j++, i = ( i + 1 ) % 8 )
     {
@@ -287,7 +287,7 @@ namespace pal
       }
       else
       {
-        std::cout << "this shouldn't occurs !!!" << std::endl;
+        std::cout << "this shouldn't occur!!!" << std::endl;
       }
     }
   }
@@ -334,14 +334,14 @@ namespace pal
 
     for ( i = 0; i < 8; i++ )
     {
-      /*
+#if 0
       if ( i == 0 || i == 4 ) // horizontal directions
         dist[i] -= lp->w / 2;
-      else if (i == 2 || i == 6 ) // vertical directions
+      else if ( i == 2 || i == 6 ) // vertical directions
         dist[i] -= lp->h / 2;
       else // other directions
-        dist[i] -= ( lp->w / 2 ) / cos( M_PI / 4 );
-      */
+        dist[i] -= ( lp->w / 2 ) / cos( M_PI_4 );
+#endif
 
       if ( !ok[i] || dist[i] < EPSILON )
       {
@@ -356,8 +356,10 @@ namespace pal
     c = min( dist[2], dist[6] );
     d = min( dist[3], dist[7] );
 
-    //if (a!=EPSILON || b!=EPSILON || c!=EPSILON || d!=EPSILON)
-    //  std::cout << "res " << (a*b*c*d) << "       " << a << " " << b << " " << c << " " << d << std::endl;
+#if 0
+    if ( a != EPSILON || b != EPSILON || c != EPSILON || d != EPSILON )
+      std::cout << "res " << ( a*b*c*d ) << "       " << a << " " << b << " " << c << " " << d << std::endl;
+#endif
     return ( a*b*c*d );
   }
 

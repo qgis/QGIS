@@ -77,7 +77,6 @@
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
-    <file>themes/default/mActionFreezeLabels.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionFullCumulativeCutStretch.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
@@ -119,6 +118,7 @@
     <file>themes/default/mActionPan.png</file>
     <file>themes/default/mActionPanToSelected.png</file>
     <file>themes/default/mActionPanToSelected.svg</file>
+    <file>themes/default/mActionPinLabels.svg</file>
     <file>themes/default/mActionShowRasterCalculator.png</file>
     <file>themes/default/mAction.png</file>
     <file>themes/default/mActionProjectProperties.png</file>
@@ -149,7 +149,8 @@
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
-    <file>themes/default/mActionShowFrozenLabels.png</file>
+    <file>themes/default/mActionShowHideLabels.svg</file>
+    <file>themes/default/mActionShowPinnedLabels.svg</file>
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
@@ -167,10 +168,13 @@
     <file>themes/default/mActionZoomOut.png</file>
     <file>themes/default/mActionZoomToLayer.png</file>
     <file>themes/default/mActionZoomToSelected.png</file>
+    <file>themes/default/mIconClose.png</file>
+    <file>themes/default/mIconCollapse.png</file>
     <file>themes/default/mIconConnect.png</file>
     <file>themes/default/mIconDbSchema.png</file>
     <file>themes/default/mIconDelete.png</file>
     <file>themes/default/mIconEditable.png</file>
+    <file>themes/default/mIconExpand.png</file>
     <file>themes/default/mIconFavourites.png</file>
     <file>themes/default/mIconFirst.png</file>
     <file>themes/default/mIconGeometryLayer.png</file>
@@ -247,6 +251,7 @@
     <file>themes/default/tracking.png</file>
     <file>themes/default/transformed.png</file>
     <file>themes/default/user.png</file>
+    <file>themes/default/mActionAddHtml.png</file>
     <file>themes/gis/mActionAddArrow.png</file>
     <file>themes/gis/mActionAddBasicShape.png</file>
     <file>themes/gis/mActionAddGPSLayer.png</file>
@@ -324,6 +329,7 @@
     <file>themes/gis/mActionPan.png</file>
     <file>themes/gis/mActionPanToSelected.png</file>
     <file>themes/gis/mActionPanToSelected.svg</file>
+    <file>themes/gis/mActionPinLabels.svg</file>
     <file>themes/gis/mActionShowRasterCalculator.png</file>
     <file>themes/gis/mActionRaiseItems.png</file>
     <file>themes/gis/mActionRedo.png</file>
@@ -346,6 +352,8 @@
     <file>themes/gis/mActionSelectRectangle.png</file>
     <file>themes/gis/mActionShowAllLayers.png</file>
     <file>themes/gis/mActionShowBookmarks.png</file>
+    <file>themes/gis/mActionShowHideLabels.svg</file>
+    <file>themes/gis/mActionShowPinnedLabels.svg</file>
     <file>themes/gis/mActionSimplify.png</file>
     <file>themes/gis/mActionSplitFeatures.png</file>
     <file>themes/gis/mActionSplitFeatures.svg</file>
@@ -362,6 +370,7 @@
     <file>themes/gis/mActionZoomOut.png</file>
     <file>themes/gis/mActionZoomToLayer.png</file>
     <file>themes/gis/mActionZoomToSelected.png</file>
+    <file>themes/gis/mIconClose.png</file>
     <file>themes/gis/mIconEditable.png</file>
     <file>themes/gis/mIconLineLayer.png</file>
     <file>themes/gis/mIconPointLayer.png</file>
@@ -393,6 +402,7 @@
     <file>themes/gis/mIconWcs.png</file>
     <file>themes/gis/mIconWms.png</file>
     <file>themes/gis/mIconWfs.png</file>
+    <file>themes/gis/mIconWarn.png</file>
     <file>themes/gis/mIconSpatialite.png</file>
     <file>themes/gis/mIconRaster.png</file>
     <file>themes/gis/mIconPostgis.png</file>
@@ -452,6 +462,9 @@
     <file>flags/en_US.png</file>
     <file>flags/da_DK.png</file>
     <file>flags/et_EE.png</file>
+    <file>themes/default/text.png</file>
+    <file>themes/default/histogram.png</file>
+    <file>themes/default/pie-chart.png</file>
   </qresource>
   <qresource prefix="/images/tips">
     <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

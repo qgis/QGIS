@@ -31,6 +31,12 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
+QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
+{
+  QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  return renderer;
+}
+
 QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
@@ -56,9 +62,21 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   bool hasTransparency = usesTransparency();
 
   void* rasterData = mInput->block( bandNo, extent, width, height );
+  if ( ! rasterData )
+  {
+    QgsDebugMsg("No raster data!" );
+    return 0;
+  }
 
   currentRasterPos = 0;
   QImage img( width, height, QImage::Format_ARGB32 );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    VSIFree( rasterData );
+    return 0;
+  }
+
   uchar* scanLine = 0;
   for ( int i = 0; i < height; ++i )
   {
@@ -70,24 +88,26 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
     }
     else
     {
+      QRgb pixelColor;
+      double alpha = 255.0;
       for ( int j = 0; j < width; ++j )
       {
-        QRgb pixelColor;
-        double alpha = 255.0;
-        for ( int j = 0; j < width; ++j )
-        {
-          QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
-          alpha = qAlpha( c );
-          pixelColor = qRgba( qRed( c ), qGreen( c ), qBlue( c ), mOpacity * alpha );
-          memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
-          ++currentRasterPos;
-        }
+        QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
+        alpha = qAlpha( c );
+        pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
+        memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
+        ++currentRasterPos;
       }
     }
   }
   VSIFree( rasterData );
 
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 
@@ -112,4 +132,25 @@ QList<int> QgsSingleBandColorDataRenderer::usesBands() const
     bandList << mBand;
   }
   return bandList;
+}
+
+bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
+{
+  // Renderer can only work with numerical values in at least 1 band
+  if ( !input ) return false;
+
+  if ( !mOn )
+  {
+    // In off mode we can connect to anything
+    mInput = input;
+    return true;
+  }
+
+  if ( input->dataType( 1 ) == QgsRasterInterface::ARGB32 ||
+       input->dataType( 1 ) == QgsRasterInterface::ARGB32_Premultiplied )
+  {
+    mInput = input;
+    return true;
+  }
+  return false;
 }

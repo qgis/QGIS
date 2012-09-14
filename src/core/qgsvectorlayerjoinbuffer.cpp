@@ -99,7 +99,9 @@ void QgsVectorLayerJoinBuffer::updateFieldMap( QgsFieldMap& fields, int& maxInde
       //skip the join field to avoid double field names (fields often have the same name)
       if ( fieldIt.key() != joinIt->joinField )
       {
-        fields.insert( maxIndex + 1 + fieldIt.key(), fieldIt.value() );
+        QgsField f = fieldIt.value();
+        f.setName( joinLayer->name() + "_" + f.name() );
+        fields.insert( maxIndex + 1 + fieldIt.key(), f );
       }
     }
 

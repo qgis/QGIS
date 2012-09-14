@@ -22,10 +22,10 @@
 #include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
 
-#include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -34,21 +34,26 @@
 #include <QMessageBox>
 #include <QSettings>
 
+
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
+    : QWidget( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
   if ( !layer ) return;
 
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
+  mRefFont = lblFontPreview->font();
+  mPreviewSize = 24;
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
+  connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferJoinStyleComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferTranspFillChbx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
   connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
 
@@ -79,6 +84,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   lyr.readFromLayer( layer );
   populateFieldNames();
   populateDataDefinedCombos( lyr );
+  populateFontCapitalsComboBox();
 
   chkEnableLabeling->setChecked( lyr.enabled );
   mTabWidget->setEnabled( lyr.enabled );
@@ -91,6 +97,10 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   // placement
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
+  mXQuadOffset = lyr.xQuadOffset;
+  mYQuadOffset = lyr.yQuadOffset;
+  mCentroidRadioWhole->setChecked( lyr.centroidWhole );
+  mCentroidFrame->setVisible( false );
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -98,11 +108,30 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       radAroundCentroid->setChecked( true );
       spinDistPoint->setValue( lyr.dist );
       mPointDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
-      //spinAngle->setValue(lyr.angle);
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
+
+      //spinAngle->setValue( lyr.angle );
       break;
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
+
+      mPointOffsetRadioAboveLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == 1 );
+      mPointOffsetRadioAbove->setChecked( mXQuadOffset == 0 && mYQuadOffset == 1 );
+      mPointOffsetRadioAboveRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == 1 );
+      mPointOffsetRadioLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == 0 );
+      mPointOffsetRadioOver->setChecked( mXQuadOffset == 0 && mYQuadOffset == 0 );
+      mPointOffsetRadioRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == 0 );
+      mPointOffsetRadioBelowLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == -1 );
+      mPointOffsetRadioBelow->setChecked( mXQuadOffset == 0 && mYQuadOffset == -1 );
+      mPointOffsetRadioBelowRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == -1 );
+
+      mPointOffsetXOffsetSpinBox->setValue( lyr.xOffset );
+      mPointOffsetYOffsetSpinBox->setValue( lyr.yOffset );
+      mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
+      mPointOffsetAngleSpinBox->setValue( lyr.angleOffset );
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
+
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -138,10 +167,15 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   sliderPriority->setValue( lyr.priority );
   chkNoObstacle->setChecked( !lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
+  mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
   wrapCharacterEdit->setText( lyr.wrapChar );
+  chkPreserveRotation->setChecked( lyr.preserveRotation );
+
+  mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
+  setPreviewBackground( lyr.previewBkgrdColor );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
@@ -154,10 +188,21 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   bool buffer = ( lyr.bufferSize != 0 );
   chkBuffer->setChecked( buffer );
   if ( buffer )
+  {
     spinBufferSize->setValue( lyr.bufferSize );
-
-  btnTextColor->setColor( lyr.textColor );
-  btnBufferColor->setColor( lyr.bufferColor );
+    if ( lyr.bufferSizeInMapUnits )
+    {
+      mBufferUnitComboBox->setCurrentIndex( 1 );
+    }
+    else
+    {
+      mBufferUnitComboBox->setCurrentIndex( 0 );
+    }
+    btnBufferColor->setColor( lyr.bufferColor );
+    mBufferTranspSpinBox->setValue( lyr.bufferTransp );
+    mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
+    mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
+  }
 
   bool formattedNumbers = lyr.formatNumbers;
   bool plusSign = lyr.plusSign;
@@ -172,7 +217,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkPlusSign->setChecked( plusSign );
   }
 
-
   if ( lyr.fontSizeInMapUnits )
   {
     mFontSizeUnitComboBox->setCurrentIndex( 1 );
@@ -182,9 +226,14 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mFontSizeUnitComboBox->setCurrentIndex( 0 );
   }
 
-  QFont textFont = lyr.textFont;
-  updateFont( textFont );
-  mFontSizeSpinBox->setValue( textFont.pointSizeF() );
+  mRefFont = lyr.textFont;
+  mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
+  btnTextColor->setColor( lyr.textColor );
+  mFontTranspSpinBox->setValue( lyr.textTransp );
+
+  updateFontViaStyle( lyr.textNamedStyle );
+  updateFont( mRefFont );
+
   updateUi();
 
   updateOptions();
@@ -206,13 +255,33 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
   }
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+
+  // setup connections for label quadrant offsets
+  QRadioButton* quadrantRadios[] =
+  {
+    mPointOffsetRadioAboveLeft, mPointOffsetRadioAbove, mPointOffsetRadioAboveRight,
+    mPointOffsetRadioLeft, mPointOffsetRadioOver, mPointOffsetRadioRight,
+    mPointOffsetRadioBelowLeft, mPointOffsetRadioBelow, mPointOffsetRadioBelowRight
+  };
+  for ( unsigned int i = 0; i < sizeof( quadrantRadios ) / sizeof( QRadioButton* ); i++ )
+  {
+    connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
+  }
+
+  // Label tab collapsed groupboxes
+  chkBuffer->setCollapsed( true );
+  mFontMultiLineGroupBox->setCollapsed( true );
+  chkFormattedNumbers->setCollapsed( true );
+  chkScaleBasedVisibility->setCollapsed( true );
+
+  // Data defined tab collapsed groupboxes
+  mBufferAttributesPropertiesGroupBox->setCollapsed( true );
+  mFontAttributePropertiesGroupBox->setCollapsed( true );
+
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/Labeling/geometry", saveGeometry() );
 }
 
 void QgsLabelingGui::apply()
@@ -237,6 +306,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = 0;
   lyr.placementFlags = 0;
 
+  lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
@@ -248,6 +318,13 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
            || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
+
+    lyr.xQuadOffset = mXQuadOffset;
+    lyr.yQuadOffset = mYQuadOffset;
+    lyr.xOffset = mPointOffsetXOffsetSpinBox->value();
+    lyr.yOffset = mPointOffsetYOffsetSpinBox->value();
+    lyr.labelOffsetInMapUnits = ( mPointOffsetUnitsComboBox->currentIndex() == 1 );
+    lyr.angleOffset = mPointOffsetAngleSpinBox->value();
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -281,11 +358,15 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 
   lyr.textColor = btnTextColor->color();
-  lyr.textFont = lblFontPreview->font();
+  lyr.textFont = mRefFont;
+  lyr.textNamedStyle = mFontStyleComboBox->currentText();
+  lyr.textTransp = mFontTranspSpinBox->value();
+  lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
   if ( chkScaleBasedVisibility->isChecked() )
   {
@@ -300,6 +381,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.bufferSize = spinBufferSize->value();
     lyr.bufferColor = btnBufferColor->color();
+    lyr.bufferTransp = mBufferTranspSpinBox->value();
+    lyr.bufferSizeInMapUnits = ( mBufferUnitComboBox->currentIndex() == 1 );
+    lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
+    lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
   }
   else
   {
@@ -328,6 +413,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
   lyr.wrapChar = wrapCharacterEdit->text();
+  if ( chkPreserveRotation->isChecked() )
+  {
+    lyr.preserveRotation = true;
+  }
+  else
+  {
+    lyr.preserveRotation = false;
+  }
 
   //data defined labeling
   setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
@@ -345,6 +438,11 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mVerticalAlignmentComboBox, QgsPalLayerSettings::Vali, lyr );
   setDataDefinedProperty( mLabelDistanceComboBox, QgsPalLayerSettings::LabelDistance, lyr );
   setDataDefinedProperty( mRotationComboBox, QgsPalLayerSettings::Rotation, lyr );
+  setDataDefinedProperty( mShowLabelAttributeComboBox, QgsPalLayerSettings::Show, lyr );
+  setDataDefinedProperty( mMinScaleAttributeComboBox, QgsPalLayerSettings::MinScale, lyr );
+  setDataDefinedProperty( mMaxScaleAttributeComboBox, QgsPalLayerSettings::MaxScale, lyr );
+  setDataDefinedProperty( mTranspAttributeComboBox, QgsPalLayerSettings::FontTransp, lyr );
+  setDataDefinedProperty( mBufferTranspAttributeComboBox, QgsPalLayerSettings::BufferTransp, lyr );
 
   return lyr;
 }
@@ -409,6 +507,11 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mVerticalAlignmentComboBox;
   comboList << mLabelDistanceComboBox;
   comboList << mRotationComboBox;
+  comboList << mShowLabelAttributeComboBox;
+  comboList << mMinScaleAttributeComboBox;
+  comboList << mMaxScaleAttributeComboBox;
+  comboList << mTranspAttributeComboBox;
+  comboList << mBufferTranspAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -416,6 +519,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
     ( *comboIt )->addItem( "", QVariant() );
   }
 
+  // TODO: don't add field that aren't of appropriate type for the data defined property
   const QgsFieldMap& fields = mLayer->dataProvider()->fields();
   for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++ )
   {
@@ -442,6 +546,11 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mVerticalAlignmentComboBox, s, QgsPalLayerSettings::Vali );
   setCurrentComboValue( mLabelDistanceComboBox, s, QgsPalLayerSettings::LabelDistance );
   setCurrentComboValue( mRotationComboBox, s, QgsPalLayerSettings::Rotation );
+  setCurrentComboValue( mShowLabelAttributeComboBox, s, QgsPalLayerSettings::Show );
+  setCurrentComboValue( mMinScaleAttributeComboBox, s, QgsPalLayerSettings::MinScale );
+  setCurrentComboValue( mMaxScaleAttributeComboBox, s, QgsPalLayerSettings::MaxScale );
+  setCurrentComboValue( mTranspAttributeComboBox, s, QgsPalLayerSettings::FontTransp );
+  setCurrentComboValue( mBufferTranspAttributeComboBox, s, QgsPalLayerSettings::BufferTransp );
 }
 
 void QgsLabelingGui::changeTextColor()
@@ -456,39 +565,222 @@ void QgsLabelingGui::changeTextColor()
 
 void QgsLabelingGui::changeTextFont()
 {
+  // store properties of QFont that might be stripped by font dialog
+  QFont::Capitalization captials = mRefFont.capitalization();
+  double wordspacing = mRefFont.wordSpacing();
+  double letterspacing = mRefFont.letterSpacing();
+
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+  QFont font = QFontDialog::getFont( &ok, mRefFont, 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font() );
+  QFont font = QFontDialog::getFont( &ok, mRefFont );
 #endif
   if ( ok )
   {
+    if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+    {
+      // don't override map units size with selected size from font dialog
+      font.setPointSizeF( mFontSizeSpinBox->value() );
+    }
+    else
+    {
+      mFontSizeSpinBox->setValue( font.pointSizeF() );
+    }
+
+    // reassign possibly stripped QFont properties
+    font.setCapitalization( captials );
+    font.setWordSpacing( wordspacing );
+    font.setLetterSpacing( QFont::AbsoluteSpacing, letterspacing );
+
     updateFont( font );
   }
-  mFontSizeSpinBox->setValue( font.pointSizeF() );
+}
+
+void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
+{
+  QFont styledfont;
+  bool foundmatch = false;
+  int fontSize = 12; // QFontDatabase::font() needs an integer for size
+  if ( !fontstyle.isEmpty() )
+  {
+    styledfont = mFontDB.font( mRefFont.family(), fontstyle, fontSize );
+    styledfont.setPointSizeF( mRefFont.pointSizeF() );
+    if ( QApplication::font().toString() != styledfont.toString() )
+    {
+      foundmatch = true;
+    }
+  }
+  if ( !foundmatch )
+  {
+    foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+    {
+      styledfont = mFontDB.font( mRefFont.family(), style, fontSize );
+      styledfont.setPointSizeF( mRefFont.pointSizeF() );
+      styledfont = styledfont.resolve( mRefFont );
+      if ( mRefFont.toString() == styledfont.toString() )
+      {
+        foundmatch = true;
+        break;
+      }
+    }
+  }
+  if ( foundmatch )
+  {
+//    styledfont.setPointSizeF( mRefFont.pointSizeF() );
+    styledfont.setCapitalization( mRefFont.capitalization() );
+    styledfont.setUnderline( mRefFont.underline() );
+    styledfont.setStrikeOut( mRefFont.strikeOut() );
+    styledfont.setWordSpacing( mRefFont.wordSpacing() );
+    styledfont.setLetterSpacing( QFont::AbsoluteSpacing, mRefFont.letterSpacing() );
+    mRefFont = styledfont;
+  }
+  // if no match, style combobox will be left blank, which should not affect engine labeling
 }
 
 void QgsLabelingGui::updateFont( QFont font )
 {
-  QString fontSizeUnitString = tr( "pt" );
-  if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+  // update background reference font
+  if ( font != mRefFont )
   {
-    fontSizeUnitString = tr( "map units" );
+    mRefFont = font;
   }
-  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSizeF() ).arg( fontSizeUnitString ) );
-  lblFontPreview->setFont( font );
+
+  // test if font is actually available
+  QString missingtxt = QString( "" );
+  bool missing = false;
+  if ( QApplication::font().toString() != mRefFont.toString() )
+  {
+    QFont testfont = mFontDB.font( mRefFont.family(), mFontDB.styleString( mRefFont ), 12 );
+    if ( QApplication::font().toString() == testfont.toString() )
+    {
+      missing = true;
+    }
+  }
+  if ( missing )
+  {
+    missingtxt = tr( " (not found!)" );
+    lblFontName->setStyleSheet( "color: #990000;" );
+  }
+  else
+  {
+    lblFontName->setStyleSheet( "color: #000000;" );
+  }
+
+  lblFontName->setText( QString( "%1%2" ).arg( mRefFont.family() ).arg( missingtxt ) );
+
+  blockFontChangeSignals( true );
+  populateFontStyleComboBox();
+  int idx = mFontCapitalsComboBox->findData( QVariant(( unsigned int ) mRefFont.capitalization() ) );
+  mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
+  mFontUnderlineBtn->setChecked( mRefFont.underline() );
+  mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
+  mFontWordSpacingSpinBox->setValue( mRefFont.wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( mRefFont.letterSpacing() );
+  blockFontChangeSignals( false );
+
+  // update font name with font face
+//  font.setPixelSize( 24 );
+//  lblFontName->setFont( QFont( font ) );
+
   updatePreview();
+}
+
+void QgsLabelingGui::blockFontChangeSignals( bool blk )
+{
+  mFontStyleComboBox->blockSignals( blk );
+  mFontCapitalsComboBox->blockSignals( blk );
+  mFontUnderlineBtn->blockSignals( blk );
+  mFontStrikethroughBtn->blockSignals( blk );
+  mFontWordSpacingSpinBox->blockSignals( blk );
+  mFontLetterSpacingSpinBox->blockSignals( blk );
 }
 
 void QgsLabelingGui::updatePreview()
 {
-  lblFontPreview->setTextColor( btnTextColor->color() );
-  if ( chkBuffer->isChecked() )
-    lblFontPreview->setBuffer( spinBufferSize->value(), btnBufferColor->color() );
+  scrollPreview();
+  lblFontPreview->setFont( mRefFont );
+  QFont previewFont = lblFontPreview->font();
+  double fontSize = mFontSizeSpinBox->value();
+  double previewRatio = mPreviewSize / fontSize;
+  double bufferSize = 0.0;
+  QString grpboxtitle;
+
+  if ( mFontSizeUnitComboBox->currentIndex() == 1 ) // map units
+  {
+    // TODO: maybe match current map zoom level instead?
+    previewFont.setPointSize( mPreviewSize );
+    mPreviewSizeSlider->setEnabled( true );
+    grpboxtitle = tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize );
+
+    previewFont.setWordSpacing( previewRatio * mFontWordSpacingSpinBox->value() );
+    previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * mFontLetterSpacingSpinBox->value() );
+
+    if ( chkBuffer->isChecked() )
+    {
+      if ( mBufferUnitComboBox->currentIndex() == 1 ) // map units
+      {
+        bufferSize = previewRatio * spinBufferSize->value() / 3.527;
+      }
+      else // millimeters
+      {
+        grpboxtitle = tr( "Sample @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
+        bufferSize = spinBufferSize->value();
+      }
+    }
+  }
+  else // in points
+  {
+    previewFont.setPointSize( fontSize );
+    mPreviewSizeSlider->setEnabled( false );
+    grpboxtitle = tr( "Sample" );
+
+    if ( chkBuffer->isChecked() )
+    {
+      if ( mBufferUnitComboBox->currentIndex() == 0 ) // millimeters
+      {
+        bufferSize = spinBufferSize->value();
+      }
+      else // map units
+      {
+        grpboxtitle = tr( "Sample (BUFFER NOT SHOWN, in map units)" );
+      }
+    }
+  }
+
+  lblFontPreview->setFont( previewFont );
+  groupBox_mPreview->setTitle( grpboxtitle );
+
+  QColor prevColor = btnTextColor->color();
+  prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
+  lblFontPreview->setTextColor( prevColor );
+
+  bool bufferNoFill = false;
+  if ( chkBuffer->isChecked() && bufferSize != 0.0 )
+  {
+    QColor buffColor = btnBufferColor->color();
+    buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
+
+    bufferNoFill = !mBufferTranspFillChbx->isChecked();
+    lblFontPreview->setBuffer( bufferSize, buffColor, mBufferJoinStyleComboBox->penJoinStyle(), bufferNoFill );
+  }
   else
-    lblFontPreview->setBuffer( 0, Qt::white );
+  {
+    lblFontPreview->setBuffer( 0, Qt::white, Qt::BevelJoin, bufferNoFill );
+  }
+}
+
+void QgsLabelingGui::scrollPreview()
+{
+  scrollArea_mPreview->ensureVisible( 0, 0, 0, 0 );
+}
+
+void QgsLabelingGui::setPreviewBackground( QColor color )
+{
+  scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
+      QString::number( color.green() ),
+      QString::number( color.blue() ) ) );
 }
 
 void QgsLabelingGui::showEngineConfigDialog()
@@ -519,6 +811,9 @@ void QgsLabelingGui::updateUi()
   bool buf = chkBuffer->isChecked();
   spinBufferSize->setEnabled( buf );
   btnBufferColor->setEnabled( buf );
+  mBufferUnitComboBox->setEnabled( buf );
+  mBufferTranspSlider->setEnabled( buf );
+  mBufferTranspSpinBox->setEnabled( buf );
 
   bool scale = chkScaleBasedVisibility->isChecked();
   spinScaleMin->setEnabled( scale );
@@ -542,10 +837,20 @@ void QgsLabelingGui::changeBufferColor()
 
 void QgsLabelingGui::updateOptions()
 {
+  mCentroidFrame->setVisible( false );
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsPoint );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radAroundCentroid->isChecked() );
+  }
+  else if (( stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked() )
+           || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
+  {
+    stackedOptions->setCurrentWidget( pageOptionsPointOffset );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radOverCentroid->isChecked() );
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -559,18 +864,112 @@ void QgsLabelingGui::updateOptions()
   }
 }
 
+void QgsLabelingGui::updateQuadrant()
+{
+  if ( mPointOffsetRadioAboveLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = 1; };
+  if ( mPointOffsetRadioAbove->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = 1; };
+  if ( mPointOffsetRadioAboveRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = 1; };
+
+  if ( mPointOffsetRadioLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = 0; };
+  if ( mPointOffsetRadioOver->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = 0; };
+  if ( mPointOffsetRadioRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = 0; };
+
+  if ( mPointOffsetRadioBelowLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = -1; };
+  if ( mPointOffsetRadioBelow->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = -1; };
+  if ( mPointOffsetRadioBelowRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = -1; };
+}
+
+void QgsLabelingGui::populateFontCapitalsComboBox()
+{
+  mFontCapitalsComboBox->addItem( tr( "Mixed Case" ), QVariant( 0 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QVariant( 1 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QVariant( 2 ) );
+  // Small caps doesn't work right with QPainterPath::addText()
+  // https://bugreports.qt-project.org/browse/QTBUG-13965
+//  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
+  mFontCapitalsComboBox->addItem( tr( "Title Case" ), QVariant( 4 ) );
+}
+
+void QgsLabelingGui::populateFontStyleComboBox()
+{
+  mFontStyleComboBox->clear();
+  foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+  {
+    mFontStyleComboBox->addItem( style );
+  }
+  mFontStyleComboBox->setCurrentIndex( mFontStyleComboBox->findText( mFontDB.styleString( mRefFont ) ) );
+}
+
+void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
+{
+  mPreviewSize = i;
+  updatePreview();
+}
+
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 {
-  QFont font = lblFontPreview->font();
-  font.setPointSizeF( d );
-  lblFontPreview->setFont( font );
-  updateFont( font );
+  mRefFont.setPointSizeF( d );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontCapitalsComboBox_currentIndexChanged( int index )
+{
+  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
+  mRefFont.setCapitalization(( QFont::Capitalization ) capitalsindex );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontStyleComboBox_currentIndexChanged( const QString & text )
+{
+  updateFontViaStyle( text );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontUnderlineBtn_toggled( bool ckd )
+{
+  mRefFont.setUnderline( ckd );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontStrikethroughBtn_toggled( bool ckd )
+{
+  mRefFont.setStrikeOut( ckd );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
+{
+  mRefFont.setWordSpacing( spacing );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
+{
+  mRefFont.setLetterSpacing( QFont::AbsoluteSpacing, spacing );
+  updateFont( mRefFont );
 }
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
-  updateFont( lblFontPreview->font() );
+  double singleStep = ( index == 1 ) ? 10.0 : 1.0 ; //10 for map units, 1 for mm
+  mFontSizeSpinBox->setSingleStep( singleStep );
+  mFontWordSpacingSpinBox->setSingleStep( singleStep );
+  mFontLetterSpacingSpinBox->setSingleStep( singleStep / 10 );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )
+{
+  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
+  spinBufferSize->setSingleStep( singleStep );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mPointOffsetUnitsComboBox_currentIndexChanged( int index )
+{
+  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
+  mPointOffsetXOffsetSpinBox->setSingleStep( singleStep );
+  mPointOffsetYOffsetSpinBox->setSingleStep( singleStep );
 }
 
 void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )
@@ -597,6 +996,28 @@ void QgsLabelingGui::on_mYCoordinateComboBox_currentIndexChanged( const QString 
   }
 }
 
+void QgsLabelingGui::on_mPreviewTextEdit_textChanged( const QString & text )
+{
+  lblFontPreview->setText( text );
+  updatePreview();
+}
+
+void QgsLabelingGui::on_mPreviewTextBtn_clicked()
+{
+  mPreviewTextEdit->setText( QString( "Lorem Ipsum" ) );
+  updatePreview();
+}
+
+void QgsLabelingGui::on_mPreviewBackgroundBtn_clicked()
+{
+  QColor color = QColorDialog::getColor( mPreviewBackgroundBtn->color(), this );
+  if ( !color.isValid() )
+    return;
+
+  mPreviewBackgroundBtn->setColor( color );
+  setPreviewBackground( color );
+}
+
 void QgsLabelingGui::disableDataDefinedAlignment()
 {
   mHorizontalAlignmentComboBox->setCurrentIndex( mHorizontalAlignmentComboBox->findText( "" ) );
@@ -605,6 +1026,7 @@ void QgsLabelingGui::disableDataDefinedAlignment()
   mVerticalAlignmentComboBox->setEnabled( false );
   mRotationComboBox->setCurrentIndex( mRotationComboBox->findText( "" ) );
   mRotationComboBox->setEnabled( false );
+  chkPreserveRotation->setEnabled( false );
 }
 
 void QgsLabelingGui::enableDataDefinedAlignment()
@@ -612,4 +1034,5 @@ void QgsLabelingGui::enableDataDefinedAlignment()
   mHorizontalAlignmentComboBox->setEnabled( true );
   mVerticalAlignmentComboBox->setEnabled( true );
   mRotationComboBox->setEnabled( true );
+  chkPreserveRotation->setEnabled( true );
 }
