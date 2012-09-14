@@ -106,11 +106,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   {
     okButton->setEnabled( false );
   }
-
-  // this should scroll down to make widget visible, but it's not happening
-  // (at least part of it is visible)...
-  connect( mCreateOptionsGroupBox, SIGNAL( collapsedStateChanged( QWidget* ) ),
-           this, SLOT( groupBoxExpanded( QWidget* ) ) );
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -527,12 +522,6 @@ QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
 void QgsRasterLayerSaveAsDialog::on_mRawModeRadioButton_toggled( bool checked )
 {
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );
-}
-
-void QgsRasterLayerSaveAsDialog::groupBoxExpanded( QWidget * widget )
-{
-  if ( !mCreateOptionsGroupBox->isCollapsed() )
-    mScrollArea->ensureWidgetVisible( widget );
 }
 
 void QgsRasterLayerSaveAsDialog::on_mAddNoDataManuallyToolButton_clicked()
