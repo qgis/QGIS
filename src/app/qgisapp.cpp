@@ -4011,7 +4011,10 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),
+                                mMapCanvas->extent(), rasterLayer->crs(),
+                                mMapCanvas->mapRenderer()->destinationCrs(),
+                                this );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
