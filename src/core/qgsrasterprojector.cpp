@@ -67,6 +67,7 @@ QgsRasterProjector::QgsRasterProjector()
 }
 
 QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
+    : QgsRasterInterface( 0 )
 {
   mSrcCRS = projector.mSrcCRS;
   mDestCRS = projector.mDestCRS;
@@ -594,10 +595,21 @@ bool QgsRasterProjector::checkCols()
       QgsPoint mySrcPoint3 = mCPMatrix[r+1][c];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
-      QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-      double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-      if ( mySqrDist > mSqrTolerance )
+      try
+      {
+        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        if ( mySqrDist > mSqrTolerance )
+        {
+          return false;
+        }
+      }
+      catch ( QgsCsException &e )
+      {
+        Q_UNUSED( e );
+        // Caught an error in transform
         return false;
+      }
     }
   }
   return true;
@@ -618,10 +630,21 @@ bool QgsRasterProjector::checkRows()
       QgsPoint mySrcPoint3 = mCPMatrix[r][c+1];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
-      QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-      double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-      if ( mySqrDist > mSqrTolerance )
+      try
+      {
+        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        if ( mySqrDist > mSqrTolerance )
+        {
+          return false;
+        }
+      }
+      catch ( QgsCsException &e )
+      {
+        Q_UNUSED( e );
+        // Caught an error in transform
         return false;
+      }
     }
   }
   return true;
@@ -657,13 +680,20 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
 
   if ( !inputData ) return 0;
 
-  int pixelSize = mInput->typeSize( mInput->dataType( bandNo ) ) / 8;
+  size_t pixelSize = mInput->typeSize( mInput->dataType( bandNo ) ) / 8;
 
-  int inputSize = pixelSize * srcCols() * srcRows();
+  size_t inputSize = pixelSize * srcCols() * srcRows();
 
-  int outputSize = width * height * pixelSize;
+  size_t outputSize = width * height * pixelSize;
   void * outputData = malloc( outputSize );
 
+  // Check for allcoation error
+  if ( ! outputData )
+  {
+    QgsDebugMsg( QString( "Couldn't malloc %1 bytes!" ).arg( outputSize ) );
+    free( inputData );
+    return 0;
+  }
   // TODO: fill by transparent
 
   int srcRow, srcCol;
@@ -672,8 +702,8 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      int srcIndex = pixelSize * ( srcRow * mSrcCols + srcCol );
-      int destIndex = pixelSize * ( i * width + j );
+      size_t srcIndex = pixelSize * ( srcRow * mSrcCols + srcCol );
+      size_t destIndex = pixelSize * ( i * width + j );
 
       if ( srcIndex >= inputSize || destIndex >= outputSize ) continue; // should not happen
 

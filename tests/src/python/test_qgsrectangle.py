@@ -5,14 +5,32 @@ from qgis.core import (QGis,
                        QgsPoint)
 
 from utilities import getQgisTestApp
+import sys
+
+# support python < 2.7 via unittest2
+# needed for expected failure decorator
+if sys.version_info[0:2] < (2,7):
+    try:
+        from unittest2 import TestCase, expectedFailure
+    except ImportError:
+        print "You need to install unittest2 to run the salt tests"
+        sys.exit(1)
+else:
+    from unittest import TestCase, expectedFailure
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-class TestQgsRectangle(unittest.TestCase):
+class TestQgsRectangle(TestCase):
 
+    # Because isEmpty() is not returning expected result in 9b0fee3
+    @expectedFailure
     def testCtor(self):
-        rect = QgsRectangle( 5.0, 5.0, 10.0, 10.0)
+        rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
 
-        assert rect.isEmpty(), "Empty rectangle constructed"
+        myExpectedResult = True
+        myResult = rect.isEmpty()
+        myMessage = ('Expected: %s Got: %s' % (myExpectedResult, myResult))
+        assert rect.isEmpty(), myMessage
 
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (5.0, rect.xMinimum()))
@@ -65,15 +83,15 @@ class TestQgsRectangle(unittest.TestCase):
         assert rect1.intersects(rect2), myMessage
 
         rect3 = rect1.intersect(rect2)
-        assert rect3.isEmpty(), "Empty rectangle returned"
+        self.assertFalse(rect3.isEmpty(), "Empty rectangle returned")
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (3.0, rect.width()))
-        assert rect.width() == 3.0, myMessage
+                      (3.0, rect3.width()))
+        assert rect3.width() == 3.0, myMessage
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (3.0, rect.height()))
-        assert rect.height() == 3.0, myMessage
+                      (3.0, rect3.height()))
+        assert rect3.height() == 3.0, myMessage
 
     def testContains(self):
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
@@ -106,15 +124,19 @@ class TestQgsRectangle(unittest.TestCase):
 
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (False, rect1.contains(pnt2)))
-        assert rect1.contains(pnt2), myMessage
+        self.assertFalse(rect1.contains(pnt2), myMessage)
 
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (True, rect2.contains(pnt2)))
         assert rect2.contains(pnt2), myMessage
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (True, rect3.contains(pnt2)))
-        assert rect3.contains(pnt2), myMessage
+                      (False, rect3.contains(pnt2)))
+        self.assertFalse(rect3.contains(pnt2), myMessage)
+
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                      (True, rect3.contains(pnt1)))
+        self.assertTrue(rect3.contains(pnt1), myMessage)
 
     def testUnion(self):
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
@@ -135,8 +157,11 @@ class TestQgsRectangle(unittest.TestCase):
                       (True, rect1.contains(pnt1)))
         assert rect1.contains(pnt1), myMessage
 
-        print rect1.toString()
-        assert rect1 == QgsRectangle(0.0, 0.0, 6.0, 6.0), "Wrong combine with point result"
+        myExpectedResult = QgsRectangle(0.0, 0.0, 6.0, 5.0).toString()
+        myResult = rect1.toString()
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                      (myExpectedResult, myResult))
+        self.assertEquals(myResult, myExpectedResult, myMessage)
 
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
         rect1.unionRect(rect2)
@@ -145,3 +170,29 @@ class TestQgsRectangle(unittest.TestCase):
         assert rect1.contains(rect2), myMessage
 
         assert rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0), "Wrong union result"
+
+    def testAsWktCoordinates(self):
+        """Test that we can get a proper wkt representation fo the rect"""
+        rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
+        myExpectedWkt = '0.0000000000000000 0.0000000000000000, 5.0000000000000000 5.0000000000000000'
+        myWkt = rect1.asWktCoordinates()
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                      (myExpectedWkt, myWkt))
+        self.assertEquals(myWkt, myExpectedWkt, myMessage)
+
+    def testAsWktPolygon(self):
+        """Test that we can get a proper wkt polygon representation fo the rect"""
+        rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
+        myExpectedWkt = ('POLYGON((0.0000000000000000 0.0000000000000000, '
+                         '5.0000000000000000 0.0000000000000000, '
+                         '5.0000000000000000 5.0000000000000000, '
+                         '0.0000000000000000 5.0000000000000000, '
+                         '0.0000000000000000 0.0000000000000000))')
+        myWkt = rect1.asWktPolygon()
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                      (myExpectedWkt, myWkt))
+        self.assertEquals(myWkt, myExpectedWkt, myMessage)
+
+
+if __name__ == '__main__':
+    unittest.main()

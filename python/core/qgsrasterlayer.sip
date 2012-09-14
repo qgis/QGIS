@@ -217,8 +217,10 @@ public:
     //void setUserDefinedRGBMinimumMaximum( bool theBool ); //removed with raster redesign
 
     /**Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* renderer );
+    void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
     QgsRasterRenderer* renderer();
+
+    QgsRasterPipe * pipe();
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
@@ -226,7 +228,7 @@ public:
     /** \brief  Accessor for transparent band name mapping */
     //QString transparentBandName() const; //removed with raster redesign
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
+    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
      * @deprecated in 2.0
      */
     bool usesProvider() /Deprecated/;
@@ -271,14 +273,14 @@ public:
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
     void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
-    
+
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // (would need MethodCode directive) void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
-    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent 
+    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
     void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
@@ -366,12 +368,12 @@ public:
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBand = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @note added in 2.0
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @deprecated in 2.0
      */
     QString providerKey() const /Deprecated/;

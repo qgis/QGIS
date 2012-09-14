@@ -1,8 +1,20 @@
 import os
 import unittest
 
-from qgis.core import QgsRasterLayer, QgsPoint, QgsMapLayerRegistry, QgsMapRenderer, QgsSingleBandGrayRenderer, QgsContrastEnhancement, QgsRasterTransparency, QgsRenderChecker
 from PyQt4.QtCore import QFileInfo, QString, QStringList
+from PyQt4 import QtGui
+
+from qgis.core import (QgsRasterLayer, 
+                       QgsColorRampShader,
+                       QgsContrastEnhancement,
+                       QgsMapLayerRegistry,
+                       QgsMapRenderer,
+                       QgsPoint,
+                       QgsRasterShader,
+                       QgsRasterTransparency,
+                       QgsRenderChecker,
+                       QgsSingleBandGrayRenderer,
+                       QgsSingleBandPseudoColorRenderer)
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -103,6 +115,49 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         myResultFlag = myChecker.runTest( "raster_transparency_python" );
         assert myResultFlag, "Raster transparency rendering test failed"
+
+    def testShaderCrash(self):
+        """Check if we assign a shader and then reassign it no crash occurs."""
+        myPath = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'testdata', 'raster', 'band1_float32_noct_epsg4326.tif'))
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        myRasterLayer = QgsRasterLayer(myPath, myBaseName)
+        myMessage = 'Raster not loaded: %s' % myPath
+        assert myRasterLayer.isValid(), myMessage
+
+	myRasterShader = QgsRasterShader()
+	myColorRampShader = QgsColorRampShader()
+	myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+	myItems = []
+	myItem = QgsColorRampShader.ColorRampItem(10, QtGui.QColor('#ffff00'), 'foo')
+	myItems.append(myItem)
+	myItem = QgsColorRampShader.ColorRampItem(100, QtGui.QColor('#ff00ff'), 'bar')
+	myItems.append(myItem)
+	myItem = QgsColorRampShader.ColorRampItem(1000, QtGui.QColor('#00ff00'), 'kazam')
+	myItems.append(myItem)
+	myColorRampShader.setColorRampItemList(myItems)
+	myRasterShader.setRasterShaderFunction(myColorRampShader)
+	myPseudoRenderer = QgsSingleBandPseudoColorRenderer(myRasterLayer.dataProvider(), 1,  myRasterShader)
+	myRasterLayer.setRenderer(myPseudoRenderer)
+
+        return
+	######## works first time #############
+
+	myRasterShader = QgsRasterShader()
+	myColorRampShader = QgsColorRampShader()
+	myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+	myItems = []
+	myItem = QgsColorRampShader.ColorRampItem(10, QtGui.QColor('#ffff00'), 'foo')
+	myItems.append(myItem)
+	myItem = QgsColorRampShader.ColorRampItem(100, QtGui.QColor('#ff00ff'), 'bar')
+	myItems.append(myItem)
+	myItem = QgsColorRampShader.ColorRampItem(1000, QtGui.QColor('#00ff00'), 'kazam')
+	myItems.append(myItem)
+	myColorRampShader.setColorRampItemList(myItems)
+	myRasterShader.setRasterShaderFunction(myColorRampShader)
+	######## crash on next line ##################
+	myPseudoRenderer = QgsSingleBandPseudoColorRenderer(myRasterLayer.dataProvider(), 1,  myRasterShader)
+	myRasterLayer.setRenderer(myPseudoRenderer)
 
 if __name__ == '__main__':
     unittest.main()

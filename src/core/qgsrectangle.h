@@ -97,6 +97,9 @@ class CORE_EXPORT QgsRectangle
     bool isEmpty() const;
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
+    //! returns string representation as WKT Polygon
+    //@note added om 2.0
+    QString asWktPolygon() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
     //! overloaded toString that allows precision of numbers to be set

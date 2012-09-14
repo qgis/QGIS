@@ -438,7 +438,7 @@
              <number>20</number>
             </property>
             <item row="5" column="0">
-             <widget class="QGroupBox" name="groupBox_2">
+             <widget class="QgsCollapsibleGroupBox" name="mFontMultiLineGroupBox">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -586,7 +586,7 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QGroupBox" name="groupBox_6">
+             <widget class="QgsCollapsibleGroupBox" name="mFontStyleGroupBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1058,7 +1058,7 @@
              </widget>
             </item>
             <item row="4" column="0">
-             <widget class="QGroupBox" name="chkBuffer">
+             <widget class="QgsCollapsibleGroupBox" name="chkBuffer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1296,7 +1296,7 @@
              </widget>
             </item>
             <item row="7" column="0">
-             <widget class="QGroupBox" name="chkScaleBasedVisibility">
+             <widget class="QgsCollapsibleGroupBox" name="chkScaleBasedVisibility">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1375,7 +1375,7 @@
              </spacer>
             </item>
             <item row="6" column="0">
-             <widget class="QGroupBox" name="chkFormattedNumbers">
+             <widget class="QgsCollapsibleGroupBox" name="chkFormattedNumbers">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1478,7 +1478,7 @@
             <number>6</number>
            </property>
            <item row="2" column="0">
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mOptionsGroupBox">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -1579,7 +1579,7 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QGroupBox" name="groupBox_7">
+            <widget class="QgsCollapsibleGroupBox" name="mPriorityGroupBox">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -1627,7 +1627,7 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox_5">
+            <widget class="QgsCollapsibleGroupBox" name="mPlacementGroupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                <horstretch>0</horstretch>
@@ -2281,7 +2281,7 @@
             <number>6</number>
            </property>
            <item row="3" column="0">
-            <widget class="QGroupBox" name="mBufferAttributesPropertiesGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mBufferAttributesPropertiesGroupBox">
              <property name="title">
               <string>Buffer properties</string>
              </property>
@@ -2327,7 +2327,7 @@
             </widget>
            </item>
            <item row="4" column="0">
-            <widget class="QGroupBox" name="mPositionAttributeGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mPositionAttributeGroupBox">
              <property name="title">
               <string>Position</string>
              </property>
@@ -2425,7 +2425,7 @@
             </spacer>
            </item>
            <item row="1" column="0">
-            <widget class="QGroupBox" name="mDisplayAttributesPropertiesGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mDisplayAttributesPropertiesGroupBox">
              <property name="title">
               <string>Display properties</string>
              </property>
@@ -2479,7 +2479,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QGroupBox" name="mFontAttributePropertiesGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mFontAttributePropertiesGroupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -2707,6 +2707,12 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>

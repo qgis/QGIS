@@ -171,11 +171,14 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // in that case we continue without CRS and user is asked for it
   //if ( mCoverageCrs.isEmpty() ) return;
 
+  // Native size
   mWidth = mCoverageSummary.width;
   mHeight = mCoverageSummary.height;
   mHasSize = mCoverageSummary.hasSize;
 
-  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) ) ;
+  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) );
+
+  // TODO: Consider if/how to recalculate mWidth, mHeight if non native CRS is used
 
   if ( !calculateExtent() )
   {
@@ -534,6 +537,11 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
+      if ( ! tmpData )
+      {
+        QgsDebugMsg( QString( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
+        return;
+      }
       GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType[bandNo-1], 0, 0 );
       for ( int i = 0; i < pixelHeight; i++ )
       {
@@ -1288,7 +1296,8 @@ bool QgsWcsProvider::calculateExtent()
   // Prefer to use extent from capabilities / coverage description because
   // transformation from WGS84 increases the extent
   mCoverageExtent = mCoverageSummary.boundingBoxes.value( mCoverageCrs );
-  if ( !mCoverageExtent.isEmpty() && !mCoverageExtent.isFinite() )
+  QgsDebugMsg( "mCoverageCrs = " + mCoverageCrs + " mCoverageExtent = " + mCoverageExtent.toString() );
+  if ( !mCoverageExtent.isEmpty() && mCoverageExtent.isFinite() )
   {
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
     return true;
@@ -1308,9 +1317,11 @@ bool QgsWcsProvider::calculateExtent()
     //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
+
   }
 
   QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
+
   // Convert to the user's CRS as required
   try
   {

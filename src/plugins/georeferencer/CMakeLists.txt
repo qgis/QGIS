@@ -27,6 +27,8 @@ SET (GEOREF_SRCS
      qgsimagewarper.cpp
      qgsgeoreftransform.cpp
      qgsgcplistwidget.cpp
+
+     qgsrasterchangecoords.cpp
 )
 
 SET (GEOREF_UIS

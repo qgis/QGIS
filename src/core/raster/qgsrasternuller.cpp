@@ -58,7 +58,9 @@ void * QgsRasterNuller::readBlock( int bandNo, QgsRectangle  const & extent, int
 
   QgsRasterInterface::DataType dataType =  mInput->dataType( bandNo );
 
-  double noDataValue = mInput->noDataValue( bandNo );
+  // Input may be without no data value
+  //double noDataValue = mInput->noDataValue( bandNo );
+  double noDataValue = mOutputNoData;
 
   for ( int i = 0; i < height; i++ )
   {

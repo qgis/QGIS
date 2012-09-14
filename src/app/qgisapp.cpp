@@ -4023,6 +4023,9 @@ void QgisApp::saveAsRasterFile()
     }
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
+    // Show the dialo immediately because cloning pipe can take some time (WCS)
+    pd.setLabelText( QObject::tr( "Reading raster" ) );
+    pd.show();
     pd.setWindowModality( Qt::WindowModal );
 
     // TODO: show error dialogs

@@ -53,6 +53,8 @@ int QgsRasterRenderer::bandCount() const
 
 QgsRasterInterface::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
+  QgsDebugMsg( "Entered" );
+
   if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );

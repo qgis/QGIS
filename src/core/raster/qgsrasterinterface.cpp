@@ -24,6 +24,8 @@
 #include "qgslogger.h"
 #include "qgsrasterinterface.h"
 
+#include "cpl_conv.h"
+
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
     , mOn( true )
@@ -247,4 +249,16 @@ QString QgsRasterInterface::printValue( double value )
   // Should not happen
   QgsDebugMsg( "Cannot correctly parse printed value" );
   return s;
+}
+
+void * QgsRasterInterface::convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size )
+{
+  int destDataTypeSize = typeSize( destDataType ) / 8;
+  void *destData = VSIMalloc( destDataTypeSize * size );
+  for ( int i = 0; i < size; i++ )
+  {
+    double value = readValue( srcData, srcDataType, i );
+    writeValue( destData, destDataType, i, value );
+  }
+  return destData;
 }

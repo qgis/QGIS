@@ -103,6 +103,12 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBandNumber );
   void* rasterData = mInput->block( bandNo, extent, width, height );
+  if ( ! rasterData )
+  {
+    QgsDebugMsg("No raster data!" );
+    return 0;
+  }
+
   double currentOpacity = mOpacity;
 
   //rendering is faster without considering user-defined transparency
@@ -120,6 +126,13 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   //create image
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    VSIFree( rasterData );
+    return 0;
+  }
+
   QRgb* imageScanLine = 0;
   int val = 0;
   int currentRasterPos = 0;
@@ -138,7 +151,14 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
       }
       if ( !hasTransparency )
       {
-        imageScanLine[j] = mColors[ val ].rgba();
+        if ( val < 0 || val > mNColors )
+        {
+          imageScanLine[j] = myDefaultColor;
+        }
+        else
+        {
+          imageScanLine[j] = mColors[ val ].rgba();
+        }
       }
       else
       {
@@ -167,7 +187,13 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   VSIFree( rasterData );
+
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 

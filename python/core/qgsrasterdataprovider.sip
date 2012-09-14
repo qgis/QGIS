@@ -6,7 +6,7 @@
  *         sense for Raster layers.
  */
 
-class QgsRasterDataProvider : QgsDataProvider
+class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterdataprovider.h>

@@ -25,6 +25,7 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasternuller.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterprojector.h"
 
@@ -45,7 +46,8 @@ class CORE_EXPORT QgsRasterPipe
       ProviderRole  = 1,
       RendererRole  = 2,
       ResamplerRole = 3,
-      ProjectorRole = 4
+      ProjectorRole = 4,
+      NullerRole = 5,
     };
 
     QgsRasterPipe( );
@@ -91,6 +93,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterRenderer * renderer() const;
     QgsRasterResampleFilter * resampleFilter() const;
     QgsRasterProjector * projector() const;
+    QgsRasterNuller * nuller() const;
 
     /** Set on/off collection of statistics */
     void setStatsOn( bool on ) { if ( last() ) last()->setStatsOn( on ); }
