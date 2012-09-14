@@ -29,14 +29,14 @@ QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-    : QGroupBox( parent ), mCollapsed( false ), mSaveState( true )
+    : QGroupBox( parent )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
     QWidget *parent )
-    : QGroupBox( title, parent ), mCollapsed( false ), mSaveState( true )
+    : QGroupBox( title, parent )
 {
   init();
 }
@@ -48,6 +48,12 @@ QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
 
 void QgsCollapsibleGroupBox::init()
 {
+  // variables
+  mCollapsed = false;
+  mSaveState = true;
+  mInitFlat = false;
+  mShown = false;
+
   // init icons
   if ( mCollapseIcon.isNull() )
   {
@@ -70,11 +76,22 @@ void QgsCollapsibleGroupBox::init()
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
+  // initialise widget on first show event only
+  if ( mShown )
+  {
+    event->accept();
+    return;
+  }
+  mShown = true;
+
+  // check if groupbox was set to flat in Designer or in code
+  mInitFlat = isFlat();
+
   loadState();
 
   updateStyle();
 
-  // expand if needed - any calls to setCollapsed() before only set mCollapsed
+  // expand if needed - any calls to setCollapsed() before only set mCollapsed, but have UI effect
   if ( mCollapsed )
   {
     setCollapsed( mCollapsed );
@@ -85,6 +102,7 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
        still emit signal for connections using expanded state */
     emit collapsedStateChanged( this );
   }
+
   event->accept();
 }
 
@@ -249,9 +267,12 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
     return;
 
   // for consistent look/spacing across platforms when collapsed
-  setFlat( collapse );
+  if ( ! mInitFlat ) // skip if initially set to flat in Designer
+    setFlat( collapse );
+
   // avoid flicker in X11
   QApplication::processEvents();
+
   // set maximum height to hide contents - does this work in all envs?
   // setMaximumHeight( collapse ? 25 : 16777215 );
   setMaximumHeight( collapse ? titleRect().bottom() + 6 : 16777215 );

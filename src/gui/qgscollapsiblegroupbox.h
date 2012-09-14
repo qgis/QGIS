@@ -62,6 +62,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
 
     bool mCollapsed;
     bool mSaveState;
+    bool mInitFlat;
+    bool mShown;
     QToolButton* mCollapseButton;
 
     static QIcon mCollapseIcon;
