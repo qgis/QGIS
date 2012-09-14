@@ -116,7 +116,7 @@ class PythonConsole(QDockWidget):
         self.loadSextanteButton = QAction(parent)
         self.loadSextanteButton.setCheckable(False)
         self.loadSextanteButton.setEnabled(True)
-        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "iconConsole/iconSextanteConsole.png"))
+        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSextanteConsole.png"))
         self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
         self.loadSextanteButton.setIconVisibleInMenu(True)
         self.loadSextanteButton.setToolTip('Import sextante class')
