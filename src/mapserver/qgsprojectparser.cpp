@@ -90,12 +90,6 @@ int QgsProjectParser::numberOfLayers() const
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-
-  if ( mProjectLayerElements.size() < 1 )
-  {
-    return;
-  }
-
   QMap<QString, QgsMapLayer *> layerMap;
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
