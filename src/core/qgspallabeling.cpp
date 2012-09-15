@@ -276,7 +276,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   {
     return;
   }
-  for ( int i = 0; i < 20; ++i )
+  for ( int i = 0; i < QgsPalLayerSettings::PropertyCount; ++i )
   {
     QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
@@ -724,15 +724,24 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   if ( geos_geom == NULL )
     return; // invalid geometry
-  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
 
+  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
   bool labelIsPinned = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
-  bool ddXPos, ddYPos;
+  bool ddXPos = false, ddYPos = false;
+
+  //data defined rotation?
+  QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
+  if ( rotIt != dataDefinedProperties.constEnd() )
+  {
+    dataDefinedRotation = true;
+    angle = f.attributeMap().value( *rotIt ).toDouble() * M_PI / 180.0;
+
+  }
 
   QMap< DataDefinedProperties, int >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );
   if ( dPosXIt != dataDefinedProperties.constEnd() )
@@ -749,8 +758,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         dataDefinedPosition = true;
         labelIsPinned = true;
         //x/y shift in case of alignment
-        double xdiff = 0;
-        double ydiff = 0;
+        double xdiff = 0.0;
+        double ydiff = 0.0;
 
         //horizontal alignment
         QMap< DataDefinedProperties, int >::const_iterator haliIt = dataDefinedProperties.find( QgsPalLayerSettings::Hali );
@@ -796,12 +805,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           }
         }
 
-        //data defined rotation?
-        QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
-        if ( rotIt != dataDefinedProperties.constEnd() )
+        if( dataDefinedRotation )
         {
-          dataDefinedRotation = true;
-          angle = f.attributeMap().value( *rotIt ).toDouble() * M_PI / 180;
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
           double xd = xdiff * cos( angle ) - ydiff * sin( angle );
           double yd = xdiff * sin( angle ) + ydiff * cos( angle );
@@ -816,15 +821,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           ct->transformInPlace( xPos, yPos, z );
         }
 
-        yPos += ydiff;
         xPos += xdiff;
-
+        yPos += ydiff;
       }
     }
   }
 
   // treat rotated labels of PAL layer point/centroid features as data defined
-  // does not flag label as pinned or rotatble
+  // does not flag label as pinned or rotateable
   // always set rotation center as if Center/Half were set for data defined
   bool overPointCentroid = false;
   if ( !dataDefinedPosition
@@ -1722,7 +1726,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
     double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
-    painter->translate( QPointF( 0, - lyr.fontMetrics->descent() - yMultiLineOffset ) );
+    // yMultiLineOffset += lyr.fontMetrics->descent();
+    painter->translate( QPointF( 0, -yMultiLineOffset ) );
 
     if ( drawBuffer )
     {

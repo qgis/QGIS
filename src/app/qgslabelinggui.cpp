@@ -1043,15 +1043,10 @@ void QgsLabelingGui::disableDataDefinedAlignment()
   mHorizontalAlignmentComboBox->setEnabled( false );
   mVerticalAlignmentComboBox->setCurrentIndex( mVerticalAlignmentComboBox->findText( "" ) );
   mVerticalAlignmentComboBox->setEnabled( false );
-  mRotationComboBox->setCurrentIndex( mRotationComboBox->findText( "" ) );
-  mRotationComboBox->setEnabled( false );
-  chkPreserveRotation->setEnabled( false );
 }
 
 void QgsLabelingGui::enableDataDefinedAlignment()
 {
   mHorizontalAlignmentComboBox->setEnabled( true );
   mVerticalAlignmentComboBox->setEnabled( true );
-  mRotationComboBox->setEnabled( true );
-  chkPreserveRotation->setEnabled( true );
 }

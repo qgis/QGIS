@@ -103,7 +103,8 @@ class CORE_EXPORT QgsPalLayerSettings
       MinScale,
       MaxScale,
       FontTransp,
-      BufferTransp
+      BufferTransp,
+      PropertyCount, // keep last entry
     };
 
     QString fieldName;

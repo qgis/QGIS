@@ -158,14 +158,15 @@ namespace pal
        * \param y y coordinates of the point
        * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param angle orientation of the label
        * \return the number of generated cadidates
        */
-      int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+      int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
       /**
        * generate one candidate over specified point
        */
-      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
       /**
        * \brief generate candidates for line feature
