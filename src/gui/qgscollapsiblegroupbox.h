@@ -48,7 +48,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
   signals:
-    void collapsedStateChanged( QWidget* );
+    /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
+    void collapsedStateChanged( QgsCollapsibleGroupBox* );
 
   public slots:
     void checkToggled( bool ckd );

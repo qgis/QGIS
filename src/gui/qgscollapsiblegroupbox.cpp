@@ -85,7 +85,6 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
     event->accept();
     return;
   }
-  mShown = true;
 
   // check if groupbox was set to flat in Designer or in code
   mInitFlat = isFlat();
@@ -111,11 +110,12 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   }
   else
   {
-    /* manually expanding (already default) on show may scroll scroll areas;
-       still emit signal for connections using expanded state */
+    // emit signal for connections using expanded state
     emit collapsedStateChanged( this );
   }
-
+  // set mShown after first setCollapsed call or expanded groupboxes
+  // will scroll scroll areas when first shown
+  mShown = true;
   event->accept();
 }
 
@@ -292,7 +292,7 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
   // if expanding and is in a QScrollArea, scroll down to make entire widget visible
-  if ( mScrollOnExpand && !collapse && mParentScrollArea )
+  if ( mShown && mScrollOnExpand && !collapse && mParentScrollArea )
   {
     // process events so entire widget is shown
     QApplication::processEvents();
