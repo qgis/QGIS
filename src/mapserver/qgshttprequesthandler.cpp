@@ -111,7 +111,9 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
 
     if ( png8Bit )
     {
-      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, Qt::ColorOnly | Qt::ThresholdDither |
+      QVector<QRgb> colorTable;
+      medianCut( colorTable, 256, *img );
+      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither |
                            Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       palettedImg.save( &buffer, "PNG", -1 );
     }
@@ -468,4 +470,37 @@ QString QgsHttpRequestHandler::readPostBody() const
     }
   }
   return inputString;
+}
+
+void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage )
+{
+  QHash<QRgb, int> inputColors;
+  imageColors( inputColors, inputImage );
+  //todo...
+}
+
+void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage& image )
+{
+  colors.clear();
+  int width = image.width();
+  int height = image.height();
+
+  QRgb currentColor;
+  QHash<QRgb, int>::iterator colorIt;
+  for ( int i = 0; i < height; ++i )
+  {
+    for ( int j = 0; j < width; ++j )
+    {
+      currentColor = image.pixel( j, i );
+      colorIt = colors.find( currentColor );
+      if ( colorIt == colors.end() )
+      {
+        colors.insert( currentColor, 1 );
+      }
+      else
+      {
+        colorIt.value()++;
+      }
+    }
+  }
 }

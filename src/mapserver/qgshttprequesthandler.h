@@ -19,6 +19,7 @@
 #define QGSHTTPREQUESTHANDLER_H
 
 #include "qgsrequesthandler.h"
+#include <QColor>
 
 /**Base class for request handler using HTTP.
 It provides a method to send data to the client*/
@@ -47,6 +48,10 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
     /**Read CONTENT_LENGTH characters from stdin*/
     QString readPostBody() const;
+
+  private:
+    static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
+    static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
 };
 
 #endif
