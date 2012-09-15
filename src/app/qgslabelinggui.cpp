@@ -278,10 +278,29 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mBufferAttributesPropertiesGroupBox->setCollapsed( true );
   mFontAttributePropertiesGroupBox->setCollapsed( true );
 
+  connect( groupBox_mPreview,
+           SIGNAL( collapsedStateChanged( QgsCollapsibleGroupBox* ) ),
+           this,
+           SLOT( collapseSample( QgsCollapsibleGroupBox* ) ) );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
+}
+
+void QgsLabelingGui::collapseSample( QgsCollapsibleGroupBox* grpbx )
+{
+  if ( grpbx->isCollapsed() )
+  {
+    QList<int> splitSizes = mFontPreviewSplitter->sizes();
+    if ( splitSizes[0] > grpbx->height() )
+    {
+      int delta = splitSizes[0] - grpbx->height();
+      splitSizes[0] -= delta;
+      splitSizes[1] += delta;
+      mFontPreviewSplitter->setSizes( splitSizes );
+    }
+  }
 }
 
 void QgsLabelingGui::apply()
