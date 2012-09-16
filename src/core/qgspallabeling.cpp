@@ -805,7 +805,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           }
         }
 
-        if( dataDefinedRotation )
+        if ( dataDefinedRotation )
         {
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
           double xd = xdiff * cos( angle ) - ydiff * sin( angle );
@@ -831,7 +831,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   // does not flag label as pinned or rotateable
   // always set rotation center as if Center/Half were set for data defined
   bool overPointCentroid = false;
-  if ( !dataDefinedPosition
+  if ( !labelIsPinned
        && placement == QgsPalLayerSettings::OverPoint
        && geom->type() == QGis::Point )
   {
@@ -854,11 +854,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
     ydiff -= labelY * 0.5 * ( 1 - descentRatio );
 
-    if ( angleOffset != 0 )
+    if ( !dataDefinedRotation && angleOffset != 0 )
     {
-      angle = angleOffset * M_PI / 180; // convert to radians
-
       dataDefinedRotation = true;
+      angle = angleOffset * M_PI / 180; // convert to radians
+    }
+
+    if ( dataDefinedRotation )
+    {
       //adjust xdiff and ydiff for Center/Half
       double xd = xdiff * cos( angle ) - ydiff * sin( angle );
       double yd = xdiff * sin( angle ) + ydiff * cos( angle );
@@ -924,12 +927,11 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     double labelW = labelX;
     double labelH = labelY;
 
-    if ( angleOffset != 0 )
+    if ( dataDefinedRotation )
     {
       // use LabelPosition construction to calculate new rotated label dimensions
       pal::FeaturePart* fpart = new FeaturePart( feat, geom->asGeos() );
-      pal::LabelPosition* lp = new LabelPosition( 1, xPos, yPos, labelX, labelY,
-          ( angleOffset * M_PI / 180 ), 0.0, fpart );
+      pal::LabelPosition* lp = new LabelPosition( 1, xPos, yPos, labelX, labelY, angle, 0.0, fpart );
 
       // lp->getWidth or lp->getHeight doesn't account for rotation, get bbox instead
       double amin[2], amax[2];
@@ -1726,8 +1728,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
     double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
-    // yMultiLineOffset += lyr.fontMetrics->descent();
-    painter->translate( QPointF( 0, -yMultiLineOffset ) );
+    double ascentOffset = 0.0;
+    ascentOffset = lyr.fontMetrics->height() * 0.25 * lyr.fontMetrics->ascent() / lyr.fontMetrics->height();
+    painter->translate( QPointF( 0, - ascentOffset - yMultiLineOffset ) );
 
     if ( drawBuffer )
     {
