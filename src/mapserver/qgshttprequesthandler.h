@@ -20,6 +20,10 @@
 
 #include "qgsrequesthandler.h"
 #include <QColor>
+#include <QPair>
+
+typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
+typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**Base class for request handler using HTTP.
 It provides a method to send data to the client*/
@@ -52,6 +56,8 @@ class QgsHttpRequestHandler: public QgsRequestHandler
   private:
     static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
     static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
+    static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+                               QMap<int, QgsColorBox>::iterator colorBoxMapIt );
 };
 
 #endif

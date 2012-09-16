@@ -476,7 +476,42 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, c
 {
   QHash<QRgb, int> inputColors;
   imageColors( inputColors, inputImage );
-  //todo...
+
+  //create first box
+  QgsColorBox firstBox; //QList< QPair<QRgb, int> >
+  int firstBoxPixelSum = 0;
+  QHash<QRgb, int>::const_iterator inputColorIt = inputColors.constBegin();
+  for ( ; inputColorIt != inputColors.constEnd(); ++inputColorIt )
+  {
+    firstBox.push_back( qMakePair( inputColorIt.key(), inputColorIt.value() ) );
+    firstBoxPixelSum += inputColorIt.value();
+  }
+
+  QgsColorBoxMap colorBoxMap; //QMultiMap< int, ColorBox >
+  QMap<int, QgsColorBox>::iterator colorBoxMapIt;
+
+
+  //split boxes until number of boxes == nColors or all the boxes have color count 1
+  while ( colorBoxMap.size() < nColors )
+  {
+    //start at the end of colorBoxMap and pick the first entry with number of colors < 1
+    colorBoxMapIt = colorBoxMap.end();
+    while ( true )
+    {
+      --colorBoxMapIt;
+      if ( colorBoxMapIt.value().size() > 1 )
+      {
+        splitColorBox( colorBoxMapIt.value(), colorBoxMap, colorBoxMapIt );
+        continue;
+      }
+      if ( colorBoxMapIt == colorBoxMap.begin() )
+      {
+        break;
+      }
+    }
+  }
+
+  //todo: evaluate the colors of the final boxes
 }
 
 void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage& image )
@@ -503,4 +538,13 @@ void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage&
       }
     }
   }
+}
+
+void QgsHttpRequestHandler::splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+    QMap<int, QgsColorBox>::iterator colorBoxMapIt )
+{
+  //todo: a,r,g,b ranges
+  //sort color box for a/r/g/b
+  //get median
+  //do split: replace old color box, insert new one
 }
