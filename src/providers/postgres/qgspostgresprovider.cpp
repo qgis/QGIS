@@ -1029,12 +1029,15 @@ bool QgsPostgresProvider::loadFields()
       QString attnum = tresult.PQgetvalue( 0, 0 );
       formattedFieldType = tresult.PQgetvalue( 0, 1 );
 
-      sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
-            .arg( tableoid ).arg( attnum );
+      if( !attnum.isEmpty() )
+      {
+        sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
+              .arg( tableoid ).arg( attnum );
 
-      tresult = mConnectionRO->PQexec( sql );
-      if ( tresult.PQntuples() > 0 )
-        fieldComment = tresult.PQgetvalue( 0, 0 );
+        tresult = mConnectionRO->PQexec( sql );
+        if ( tresult.PQntuples() > 0 )
+          fieldComment = tresult.PQgetvalue( 0, 0 );
+      }
     }
 
     QVariant::Type fieldType;

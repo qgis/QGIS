@@ -7,7 +7,39 @@ class QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
+#include <qgsrasterresamplefilter.h>
+//#include <qgsrasternuller.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterdataprovider.h>
+
+// QgsRasterRenderer subclass headers must be here because ConvertToSubClassCode 
+// from QgsRasterRenderer is probably included
+#include <qgspalettedrasterrenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsRasterResampleFilter*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterResampleFilter;
+//  if (dynamic_cast<QgsRasterNuller*>(sipCpp) != NULL)
+//    sipClass = sipClass_QgsRasterNuller;
+  if (dynamic_cast<QgsRasterRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterRenderer;
+  if (dynamic_cast<QgsRasterProjector*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterProjector;
+  if (dynamic_cast<QgsRasterDataProvider*>(sipCpp) != NULL)
+  {
+    sipClass = sipClass_QgsRasterDataProvider;
+    *sipCppRet = static_cast<QgsRasterDataProvider*>(sipCpp);
+  }
+  else
+    sipClass = 0;
+%End
+
   public:
 
     enum DataType

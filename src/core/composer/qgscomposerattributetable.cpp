@@ -129,6 +129,20 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = mComposerMap->extent();
+    if ( mVectorLayer && mComposerMap->mapRenderer()
+         && mComposerMap->mapRenderer()->hasCrsTransformEnabled() )
+    {
+      //transform back to layer CRS
+      QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposerMap->mapRenderer()->destinationCrs() );
+      try
+      {
+        selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException &cse )
+      {
+        return false;
+      }
+    }
   }
 
   if ( mDisplayAttributes.size() < 1 )
@@ -221,6 +235,7 @@ bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc 
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTable" );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
+  composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
 
   if ( mComposerMap )
   {
@@ -281,7 +296,6 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
     return false;
   }
 
-  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
 
   //composer map
@@ -364,6 +378,10 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
     }
   }
   bool success = tableReadXML( itemElem, doc );
+
+  //must be done here because tableReadXML->setSceneRect changes mMaximumNumberOfFeatures
+  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
+
   emit itemChanged();
   return success;
 }

@@ -1,0 +1,8 @@
+RigidTransformResample
+otbcli_RigidTransformResample
+Image resampling with a rigid transform
+Geometry
+ParameterRaster|-in|Input image|False
+OutputRaster|-out|Output image
+ParameterNumber|-tx|The X translation (in physical units)|None|None|0.0
+ParameterNumber|-ty|The Y translation (in physical units)|None|None|0.0

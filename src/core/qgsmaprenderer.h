@@ -39,10 +39,11 @@ class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
-struct QgsDiagramLayerSettings;
+class QgsDiagramLayerSettings;
 
-struct CORE_EXPORT QgsLabelPosition
+class CORE_EXPORT QgsLabelPosition
 {
+public:
   QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
       featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
   QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
@@ -61,7 +62,7 @@ struct CORE_EXPORT QgsLabelPosition
 /** Labeling engine interface.
  * \note Added in QGIS v1.4
  */
-class QgsLabelingEngineInterface
+class CORE_EXPORT QgsLabelingEngineInterface
 {
   public:
 

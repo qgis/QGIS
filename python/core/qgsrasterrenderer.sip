@@ -1,4 +1,4 @@
-class QgsRasterRenderer
+class QgsRasterRenderer : QgsRasterInterface
 {
 %TypeHeaderCode
     #include "qgsrasterrenderer.h"
@@ -7,6 +7,7 @@ class QgsRasterRenderer
     #include "qgssinglebandpseudocolorrenderer.h"
     #include "qgssinglebandgrayrenderer.h"
     #include "qgssinglebandcolordatarenderer.h"
+    #include "qgsrasterinterface.h"
 %End
 
 %ConvertToSubClassCode
@@ -18,8 +19,8 @@ class QgsRasterRenderer
     sipClass = sipClass_QgsSingleBandPseudoColorRenderer;
   else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
     sipClass = sipClass_QgsSingleBandGrayRenderer;
-    else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
-      sipClass = sipClass_QgsSingleBandGrayRenderer;
+  else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsSingleBandGrayRenderer;
   else
     sipClass = 0;
 %End
@@ -31,6 +32,8 @@ class QgsRasterRenderer
 
     virtual QString type() const;
     virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
 
     bool usesTransparency() const;
 

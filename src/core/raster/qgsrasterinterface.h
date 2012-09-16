@@ -22,6 +22,7 @@
 
 #include <QImage>
 
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 
 #include "gdal.h"
@@ -116,6 +117,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual DataType dataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
+      QgsDebugMsg( "Entered" );
       return UnknownDataType;
     }
 

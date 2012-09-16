@@ -92,7 +92,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
-    void groupBoxExpanded( QWidget * widget );
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
     void on_mRemoveSelectedNoDataToolButton_clicked();

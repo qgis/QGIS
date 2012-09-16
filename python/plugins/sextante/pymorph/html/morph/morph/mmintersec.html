@@ -1,0 +1,289 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmintersec</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmaddm.html"><tt>mmaddm</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmsubm.html"><tt>mmsubm</tt></a>]
+              </td>
+        <td class="title">Operations</td>
+      </tr>
+    </table>
+    <h1>mmintersec
+      <br>
+      <span class="subtitle">Intersection of images.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmintersec</span>(
+                  
+          <span class="par">f1</span>, 
+          <span class="par">f2</span>, 
+          <span class="par">f3</span> = None, 
+          <span class="par">f4</span> = None, 
+          <span class="par">f5</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>Or constant.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f3</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>Or constant.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f4</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>Or constant.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f5</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>Or constant.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmintersec</span> creates the image 
+          <code>y</code> by taking the pixelwise minimum between the images 
+          <code>f1, f2, f3, f4,</code> and 
+          <code>f5</code>. When 
+          <code>f1, f2, f3, f4,</code> and 
+          <code>f5</code> are binary images, 
+          <code>y</code> is the intersection of them.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=uint8([255,  255,    0,   10,    0,   255,   250])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=uint8([ 0,    40,   80,   140,  250,    10,    30])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmintersec(f, g)</pre>
+              <pre class="computer">[ 0 40  0 10  0 10 30]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmintersec(f, 0)</pre>
+              <pre class="computer">Warning: Converting input image from int32 to uint8.
+[0 0 0 0 0 0 0]</pre>
+            </div>
+          </div>
+          <div class="bridge">Binary image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a = mmreadgray('form-ok.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b = mmreadgray('form-1.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; c = mmintersec(a,b)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(b)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(c)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="320" src="../images/img_mmintersec_001.jpg"></td>
+                  <td><img width="320" src="../images/img_mmintersec_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmintersec_001.jpg">a</a></td>
+                  <td><a href="../images/img_mmintersec_002.jpg">b</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="320" src="../images/img_mmintersec_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmintersec_003.jpg">c</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Gray scale image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; d = mmreadgray('tplayer1.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; e = mmreadgray('tplayer2.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f = mmreadgray('tplayer3.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g = mmintersec(d,e,f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(d)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(e)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="212" src="../images/img_mmintersec_004.jpg"></td>
+                  <td><img width="212" src="../images/img_mmintersec_005.jpg"></td>
+                  <td><img width="212" src="../images/img_mmintersec_006.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmintersec_004.jpg">d</a></td>
+                  <td><a href="../images/img_mmintersec_005.jpg">e</a></td>
+                  <td><a href="../images/img_mmintersec_006.jpg">f</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="212" src="../images/img_mmintersec_007.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmintersec_007.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">intersection:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmintersec001.png">
+          </div>
+          <div class="bridge">generalized intersection:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmintersec002.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmintersec(f1, f2, f3=None, f4=None, f5=None):
+    from Numeric import minimum
+    y = minimum(f1,f2)
+    if f3 != None: y = minimum(y,f3)
+    if f4 != None: y = minimum(y,f4)
+    if f5 != None: y = minimum(y,f5)
+    y = y.astype(f1.typecode())
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmunion.html">mmunion</a></td>
+              <td class="def">Union of images.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmaddm.html"><tt>mmaddm</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmsubm.html"><tt>mmsubm</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>DTM Filter (slope-based)</h1>
+<div class='author'>Volker Wichmann (c) 2010, LASERDATA GmbH</div>
+<div class='description'>The module can be used to filter a digital surface model (DSM), i.e. to classify its cells into bare earth and object cells (ground and nonground cells).<br/>
+<br/>
+The module uses concepts described by VOSSELMAN (2000) and is based on the assumption that a large height difference between two nearby cells is unlikely to be caused by a steep slope in the terrain. The probability that the higher cell could be a ground point decreases if the distance between the two cells decreases. Therefore the filter defines the acceptable height difference between two cells as a function of the distance between the cells. A cell is classified as terrain if there is no other cell within the kernel search radius such that the height difference between these cells is larger than the allowed maximum height difference at the distance between these cells.<br/>
+<br/>
+The approximate terrain slope parameter is used to modify the filter function to match the overall slope in the study area. A confidence interval may be used to reject outliers.<br/>
+<br/>
+Reference:<br/>
+VOSSELMAN, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands. pp. 935-942<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Grid to filter <div class='type'>Input Grid</div></dt><dd>The grid to filter. <div class='constraints'></div></dd>
+	<dt>Search Radius <div class='type'>Integer</div></dt><dd>Search radius of kernel in cells. <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Approx. Terrain Slope <div class='type'>Floating point</div></dt><dd>Approximate Terrain Slope [%] <div class='constraints'></div></dd>
+	<dt>Use Confidence Interval <div class='type'>Boolean</div></dt><dd>Use 5 percent confidence interval <div class='constraints'></div></dd>
+	<dt>Bare Earth <div class='type'>Output Grid</div></dt><dd>Filtered DTM <div class='constraints'></div></dd>
+	<dt>Removed Objects <div class='type'>Output Grid</div></dt><dd>Objects removed from input grid <div class='constraints'></div></dd>
+</dl>
+</body></html>

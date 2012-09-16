@@ -1,0 +1,170 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmpatspec</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmlabelflat.html"><tt>mmlabelflat</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmstats.html"><tt>mmstats</tt></a>]
+              </td>
+        <td class="title">Measurements</td>
+      </tr>
+    </table>
+    <h1>mmpatspec
+      <br>
+      <span class="subtitle">Pattern spectrum (also known as granulometric size density).
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">h = 
+          <span class="fun">mmpatspec</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">type</span> = 'OCTAGON', 
+          <span class="par">n</span> = 65535, 
+          <span class="par">Bc</span> = None, 
+          <span class="par">Buser</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">type</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Disk family: 'OCTAGON', 'CHESSBOARD', 'CITY-BLOCK', 'LINEAR-V', 'LINEAR-H', 'LINEAR-45R', 'LINEAR-45L', 'USER'.</p><p>Default: 
+                      <code>'OCTAGON'</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">n</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Maximum disk radii.</p><p>Default: 
+                      <code>65535</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Connectivity for the reconstructive granulometry. Used if '-REC' suffix is appended in the 'type' string.</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Buser</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>User disk, used if 'type' is 'USER'.</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">h</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>a 
+                      <code>uint16</code> vector.
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Compute the Pattern Spectrum of a binary image. See Mara:89b. The pattern spectrum is the histogram of the open transform, not taking the zero values.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmpatspec001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmpatspec(f, type='OCTAGON', n=65535, Bc=None, Buser=None):
+    if Bc is None: Bc = mmsecross()
+    if Buser is None: Buser = mmsecross()
+    assert mmisbinary(f),'Error: input image is not binary'
+    g=mmopentransf(f,type,n,Bc,Buser)
+    h=mmhistogram(g)
+    h=h[1:]
+    return h
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmopen.html">mmopen</a></td>
+              <td class="def">Morphological opening.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmopentransf.html">mmopentransf</a></td>
+              <td class="def">Open transform.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsedisk.html">mmsedisk</a></td>
+              <td class="def">Create a disk or a semi-sphere structuring element.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmlabelflat.html"><tt>mmlabelflat</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmstats.html"><tt>mmstats</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

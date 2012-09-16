@@ -220,6 +220,8 @@ public:
     void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
     QgsRasterRenderer* renderer();
 
+    QgsRasterPipe * pipe();
+
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
 

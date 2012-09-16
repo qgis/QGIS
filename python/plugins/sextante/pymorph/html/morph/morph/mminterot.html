@@ -1,0 +1,187 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mminterot</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmhomothin.html"><tt>mmhomothin</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmintershow.html"><tt>mmintershow</tt></a>]
+              </td>
+        <td class="title">Intervals (hit-or-miss templates)</td>
+      </tr>
+    </table>
+    <h1>mminterot
+      <br>
+      <span class="subtitle">Rotate an interval
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">Irot = 
+          <span class="fun">mminterot</span>(
+                  
+          <span class="par">Iab</span>, 
+          <span class="par">theta</span> = 45, 
+          <span class="par">DIRECTION</span> = "CLOCKWISE"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">Iab</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmInterval.html">Interval</a></span></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">theta</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Degrees of rotation. Available values are multiple of 45 degrees.</p><p>Default: 
+                      <code>45</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">DIRECTION</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'CLOCKWISE' or ' ANTI-CLOCKWISE'.</p><p>Default: 
+                      <code>"CLOCKWISE"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">Irot</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmInterval.html">Interval</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mminterot</span> rotates the interval 
+          <code>Iab</code> by an angle 
+          <code>theta</code>.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; b1 = mmendpoints()</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b2 = mminterot(b1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmintershow(b1)</pre>
+              <pre class="computer">. . . 
+0 1 0 
+0 0 0</pre>
+              <pre class="user">&gt;&gt;&gt; print mmintershow(b2)</pre>
+              <pre class="computer">0 . . 
+0 1 . 
+0 0 0</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mminterot001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Limitations</H2>
+      <div class="H2">
+        <p>
+                      The rotation angles allowed are multiples of 45 degrees.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mminterot(Iab, theta=45, DIRECTION="CLOCKWISE"):
+    from string import upper
+    DIRECTION = upper(DIRECTION)
+    A,Bc = Iab
+    if DIRECTION != 'CLOCKWISE':
+        theta = 360 - theta
+    Irot = mmse2hmt(mmserot(A, theta),
+                    mmserot(Bc,theta))
+    return Irot
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmintershow.html">mmintershow</a></td>
+              <td class="def">Visualize an interval.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmserot.html">mmserot</a></td>
+              <td class="def">Rotate a structuring element.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmhomothin.html"><tt>mmhomothin</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmintershow.html"><tt>mmintershow</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

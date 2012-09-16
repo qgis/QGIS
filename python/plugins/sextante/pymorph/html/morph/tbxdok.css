@@ -1,0 +1,291 @@
+
+BODY {
+	color: #000000;
+	background: white none;
+	text-decoration: none;
+	font-family: sans-serif;
+	font-style: normal;
+	font-size: 10pt;
+}
+P {
+	margin: 0 0 0 0;		/* top right bottom left */
+}
+
+/*
+ * --------------------------------------------------------
+ *		Navigation
+ * --------------------------------------------------------
+ */
+table.topNav {
+	width: 100% 
+	border: 0 
+	padding: 2mm 0 2mm 1mm;
+	background: silver none;
+	font-style: normal;
+	font-size: small;
+}
+table.topNav tr td.title {
+	text-align: right;
+	font-weight: bold;
+	font-style: italic;
+	font-size: medium;
+	color:   #FFFFFF;
+	padding: 1mm 1mm 1mm 1mm;
+}
+
+table.botNav {
+	border-top: 2 ridge blue;
+	width: 80% 
+	border: 0 
+	padding: 0 0 0 0;
+	margin: 10mm 0 0 0;		/* top right bottom left */
+}
+table.botNav tr td.index {
+	text-align: center;
+}
+table.botNav tr td.xhtml {
+	text-align: right;
+}
+table.botNav tr td.sponsor {
+	text-align: right;
+}
+table.botNav tr td.copyright {
+	text-align: center;
+	font-style: italic;
+	font-size: small;
+}
+
+table.biblio {
+	margin: 0 0 5mm 0;
+}
+table.biblio tr td.key {
+	padding: 0 10px 0 0;
+	text-align: right;
+	font-weight: bold;
+	font-family: monospace;
+	font-size: 9pt;
+	width: 10% 
+}
+
+/*
+ * --------------------------------------------------------
+ *		Headers
+ * --------------------------------------------------------
+ */
+H1 {
+	text-align: center;
+	color:   #993300;
+	padding: 0 0 0 0;
+}
+H1 span.subtitle {
+	color:   #993300;
+	font-style: italic;
+	font-weight: normal;
+	font-size: smaller;
+}
+H2 {
+	color:   #993300;
+	margin: 5px 0 3px 0;		/* top right bottom left */
+	padding: 2mm 0 0 0;
+}
+H2.index, H2.fulllist {
+	border-top: 2 ridge blue;
+	font-size: large;
+	font-style: italic;
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 2mm 0 0 0;
+}
+H3 {
+	color:   #993300;
+	margin: 5px 0 2px 0;		/* top right bottom left */
+	padding: 2mm 0 0 0;
+}
+H4 {
+	color:   #993300;
+	margin: 5px 0 2px 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+
+ol {
+	margin: 5px 0 0 10mm;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+ol li {
+	margin: 5px 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+ul {
+	margin: 5px 0 0 10mm;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+ul li {
+	margin: 5px 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+p {
+	margin: 5px 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+
+/*
+ * --------------------------------------------------------
+ *		Blocks
+ * --------------------------------------------------------
+ */
+
+div.h1 {
+	margin: 0 0 0 0;		/* top right bottom left */
+}
+div.h2 {
+	margin: 0 0 5mm 5mm;		/* top right bottom left */
+}
+div.h3 {
+	margin: 0 0 0 0;		/* top right bottom left */
+}
+div.h4 {
+	margin: 0 0 0 2mm;		/* top right bottom left */
+}
+
+table.deflist {
+	margin: 0 0 0 5mm;
+	padding: 0 0 0 0;
+	width: 100%;
+}
+table.deflist tbody tr {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+table.deflist tbody tr td.term {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 3mm 0 0;
+	width: 15mm;
+}
+table.deflist tbody tr td.def {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+
+table.images {
+	margin:  0 0 0 0;			/* top right bottom left */
+}
+table.images tbody tr td.spare {
+	width: 100%;
+}
+table.images tbody tr.image td {
+	padding: 2mm 2mm 2mm 2mm;
+}
+table.images tbody tr.title {
+	text-align: center;
+	font-family: monospace;
+}
+
+div.prototype {
+	margin: 2mm 0 2mm 0;		/* top right bottom left */
+	font-family: monospace;
+	font-weight: bold;
+	font-size: 10pt;
+}
+div.example {
+	background: #ffff99;
+	padding: 2mm 3mm 2mm 3mm;
+	margin:  0 0 1mm 0;			/* top right bottom left */
+	font-size:  9pt;
+}
+div.example pre.computer {
+	color:   red;
+}
+div.example pre.user {
+	font-weight: bold;
+	color:   black;
+}
+div.example pre {
+	margin:  0 0 0 0;				/* top right bottom left */
+	padding: 0 0 0 0;
+}
+div.input, div.output {
+	font-family: monospace;
+	font-size: 9pt;
+}
+
+div.eqfig {
+	border-top: 1 ridge #ffff99;
+	border-bottom: 1 ridge #ffff99;
+	border-left: 1 ridge #ffff99;
+	border-right: 1 ridge #ffff99;
+	width: 100%;
+	margin: 2mm 0 2mm 0;
+	padding: 2mm 2mm 2mm 2mm;
+}
+div.figure {
+	margin: 2mm 0 2mm 0;
+	padding: 2mm 2mm 2mm 2mm;
+}
+
+div.bridge {
+	font-weight: bold;
+	padding: 0 0 0 0;
+	margin: 2mm 0 1mm 0;
+}
+
+pre.listing {
+	background: #ffff99;
+	padding: 2mm 3mm 2mm 3mm;
+	margin:  2mm 3mm 2mm 0;			/* top right bottom left */
+	font-size:  9pt;
+}
+
+span.par {
+	font-family: monospace;
+	font-size: 10pt;
+	font-weight: bold;
+}
+span.fun {
+	font-family: monospace;
+	font-size: 10pt;
+	font-weight: bold;
+}
+span.type {
+	font-family: monospace;
+	font-weight: normal;
+}
+
+/*
+ * --------------------------------------------------------
+ *		Links
+ * --------------------------------------------------------
+ */
+A:link {
+	color: blue;
+	text-decoration: underline;
+}
+A:visited {
+	color: purple;
+	text-decoration: underline;
+}
+A:active {
+	color: red;
+	text-decoration: underline;
+}
+/*
+ * --------------------------------------------------------
+ *		Without class
+ * --------------------------------------------------------
+ */
+table {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+	width: 100%;
+}
+table tr {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+table tr td {
+	margin: 0 0 0 0;		/* top right bottom left */
+	padding: 0 0 0 0;
+}
+
+dl dd {
+	margin: 0 0 0 5mm;		/* top right bottom left */
+}
+

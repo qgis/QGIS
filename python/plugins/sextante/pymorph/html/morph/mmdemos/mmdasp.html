@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdasp</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdarea.html"><tt>mmdarea</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdlabeltext.html"><tt>mmdlabeltext</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdasp
+      <br>
+      <span class="subtitle">Detect the missing aspirin tablets in a card of aspirin tablets.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      The input image is the gray-scale image of an aspirin card (figure 1.3.a), with one tablet missing. The objective is detecting this missing tablet by exploring the particular gray-scale characteristics of this region of the image. Note that the tablets are circular large white areas of the image. This procedure explores the gray-scale area open operator. This is a very good illustration of image segmentation without the use of thresholding.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The aspirin tablet binary image is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('astablet.tif')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="251" src="../images/img_mmdasp_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdasp_001.jpg">a</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Gray-scale image as topographical surface</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The image can be model as a topographical surface where white regions corresponds to high altitude and dark regions to lower altitute. The regional maxima of the image is normally very noisy as can be seen below.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmsurf(a)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; c = mmregmax(a,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b,c)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="251" src="../images/img_mmdasp_002.jpg"></td>
+                      <td><img width="251" src="../images/img_mmdasp_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdasp_002.jpg">b</a></td>
+                      <td><a href="../images/img_mmdasp_003.jpg">b,c</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Open by disk and regional maximum</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Opening the original image by a disk a little smaller than the tablets removes  all the noisy regional maxima. The only regional maxima in the opened image are the aspirin tablets as they are the only regionally brighter regions of shape larger than the disk of radius 20 pixels.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; d = mmopen(a, mmsedisk(20))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e = mmsurf(d)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; f = mmregmax(d,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e,f)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="251" src="../images/img_mmdasp_004.jpg"></td>
+                      <td><img width="251" src="../images/img_mmdasp_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdasp_004.jpg">e</a></td>
+                      <td><a href="../images/img_mmdasp_005.jpg">e,f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Final result</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Here it is shown the input and output result. Note that the binary image of the aspirin tablets was obtained using just one parameter: the radius of the circular structuring element. The problem was solved as treating the image formed by circular bright regions.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="251" src="../images/img_mmdasp_006.jpg"></td>
+                      <td><img width="251" src="../images/img_mmdasp_007.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdasp_006.jpg">a</a></td>
+                      <td><a href="../images/img_mmdasp_007.jpg">f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdarea.html"><tt>mmdarea</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdlabeltext.html"><tt>mmdlabeltext</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

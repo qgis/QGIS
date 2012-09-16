@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuring external applications &mdash; SEXTANTE for QGIS 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="SEXTANTE for QGIS 1.0 documentation" href="index.html" />
+    <link rel="prev" title="The SEXTANTE history manager" href="history.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="history.html" title="The SEXTANTE history manager"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">SEXTANTE for QGIS 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="configuring-external-applications">
+<h1>Configuring external applications<a class="headerlink" href="#configuring-external-applications" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>SEXTANTE can be extended using additional applications, calling them
+from within SEXTANTE. Currently, SAGA, GRASS, OTB(Orfeo Toolbox) and R are supported, along
+with some other command-line applications that provide spatial data
+analysis functionalities.
+This chapter will show you how to configure SEXTANTE to include these
+additional applications. Once you have correctly configured the system,
+you will be able to execute external algorithms from any SEXTANTE
+component like the toolbox or the graphical modeler, just like you do
+with any other SEXTANTE geoalgorithm.</p>
+<div class="section" id="a-note-on-file-formats">
+<h3>A note on file formats<a class="headerlink" href="#a-note-on-file-formats" title="Permalink to this headline">¶</a></h3>
+<p>When using an external software, opening a file in QGIS does not mean
+that it can be opened and processed as well on that other software. In
+most cases, it can read what you have opened in QGIS, but in some cases,
+that might not be the case. When using databases or uncommon file
+formats, whether for raster of vector layers, problems might arise. If
+that happens, try to use well known file formats that you are sure that
+are understood by both programs, and check to console output (in the
+history and log dialog) for knowing more about what is going wrong.</p>
+<p>Using GRASS raster layers is, for instance, one case in which you might
+have trouble and not be able to complete your work if you call an
+external algorithm using such a layer as input. For this reason, these
+layers will not appear as available to SEXTANTE algorithms (We are
+currently working on solving this, and expect to have it ready soon).</p>
+<p>You should, however, find no problems at all with vector layers, since
+SEXTANTE automatically converts from the original file format to one
+accepted by the external application before passing the layer to it.
+This adds an extra processing time, which might be significant if the
+layer has a large size, so do not be surprised if it takes more to
+process a layer from a DB connection that one of a similar size stored
+in a shapefile.</p>
+<p>Providers not using external applications can process any layer that you
+can open in QGIS, since they open it for analysis trough QGIS.</p>
+<p>Regarding output formats, raster layers can be saved as TIFF (.tif)
+files, while vector layers are saved as shapefiles (.shp). These have
+been chosen as the <em>lingua franca</em> between supported third party
+applications and QGIS. If the output filename that you select is not one
+of the above, it will be modified, adding the corresponding suffix, and
+the default file format will be used.</p>
+<p>In the case of GDAL, the number of supported output formats is larger.
+When you open the file selection dialog, you will see that you have more
+formats (and their corresponding extensions available). For more
+information about which formats are supported, check the GDAL
+documentation.</p>
+</div>
+<div class="section" id="a-note-on-vector-layer-selections">
+<h3>A note on vector layer selections<a class="headerlink" href="#a-note-on-vector-layer-selections" title="Permalink to this headline">¶</a></h3>
+<p>By default, when an external algorithm takes a vector layer, it will use
+all its features, even if a selection exist in QGIS. You can make an
+external algorithm aware of that selection by checking the <em>Use selected
+features in external applications</em> item in the <em>General</em> settings group.
+When you do so, each time you execute an external algorithm that uses a
+vector layer, the selected features of that layer will be exported to a
+new layer, and the algorithm will work with that new layer instead.</p>
+<p>Notice that if you select this option, a layer with no selection will
+behave like a layer with all its features selected, not like an empty
+layer.</p>
+</div>
+</div>
+<div class="section" id="saga">
+<h2>SAGA<a class="headerlink" href="#saga" title="Permalink to this headline">¶</a></h2>
+<p>SAGA algorithms can be run from SEXTANTE if you have SAGA installed in
+your system and you configure SEXTANTE properly so it can find SAGA
+executables. In particular, the SAGA command–line executable is needed
+to run SAGA algorithms. SAGA binaries are not included with SEXTANTE, so
+you have to download and install the software yourself. Please check the
+SAGA website at for more information. SAGA 2.0.8 is needed.</p>
+<p>Once SAGA is installed, and if you are running Windows, open the
+SEXTANTE configuration dialog. In the <em>SAGA</em> block you will find a
+setting named <em>SAGA Folder</em>. Enter the path to the folder where SAGA is
+installed. Close the configuration dialog and now you are ready to run
+SAGA algorithms from SEXTANTE.</p>
+<p>In case you are using Linux, there is no need to configure that, and you
+will not see those folders. Instead, you must make sure that SAGA is
+properly installed and its folder is added to the PATH environment
+variable. Just open a console and type <tt class="docutils literal"><span class="pre">saga_cmd</span></tt> to check that the
+system can found where SAGA binaries are located.</p>
+<p>Notice that, ever before doing that, SAGA algorithms are shown in the
+toolbox and you can open them to fill the corresponding parameters
+dialog. However, if you try to run the algorithm after entering the
+parameter values, SEXTANTE will show an error message. This is because
+the algorithm descriptions (needed to create the parameters dialog and
+give SEXTANTE the information it needs about the algorithm) are not
+included with SAGA, but with SEXTANTE instead. That is, they are part of
+SEXTANTE, so you have them in your installation even if you have not
+installed SEXTANTE. Running the algorithm, however, needs SAGA binaries
+installed in your system.</p>
+<div class="section" id="about-saga-grid-system-limitations">
+<h3>About SAGA grid system limitations<a class="headerlink" href="#about-saga-grid-system-limitations" title="Permalink to this headline">¶</a></h3>
+<p>Most of SAGA algorithms that require several input raster layers,
+require them to have the same grid system. That is, to cover the same
+geographic area and have the same cellsize, so their corresponding grids
+match. When calling SAGA algorithms from SEXTANTE, you can use any
+layer, regardless of its cellsize and extent. When multiple raster layers
+are used as input for a SAGA algorithm, SEXTANTE resamples them to a
+common grid system and then passes them to SAGA (unless the SAGA
+algorithm can operate with layers from different grid systems).</p>
+<p>The definition of that common grid system is controlled by the user, and
+you will find several parameters in the SAGA group of the setting window
+to do so. There are two ways of setting the target grid system:</p>
+<ul>
+<li><p class="first">Setting it manually</p>
+<p>. You define the extent setting the values of the following
+parameters:</p>
+<ul class="simple">
+<li>Resampling min X</li>
+<li>Resampling max X</li>
+<li>Resampling min Y</li>
+<li>Resampling max Y</li>
+<li>Resampling cellsize</li>
+</ul>
+<p>Notice that SEXTANTE will resample input layers to that extent, even
+if they do not overlap with it.</p>
+</li>
+<li><p class="first">Setting it automatically from input layers. To select this option,
+just check the ’’Use min covering grid system for resampling’’
+option. All the other settings will be ignored and the minimum extent
+that covers all the input layers will be used. The cellsize of the
+target layer is the maximum of all cellsizes of the input layers.</p>
+</li>
+</ul>
+<p>For algorithms that do not use multiple raster layers, or for those that
+do not need a unique input grid system, no resampling is performed
+before calling SAGA, and those parameters are not used.</p>
+</div>
+</div>
+<div class="section" id="r-creating-r-scripts">
+<h2>R. Creating R scripts<a class="headerlink" href="#r-creating-r-scripts" title="Permalink to this headline">¶</a></h2>
+<p>R integration in SEXTANTE is different from that of SAGA in that there
+is not a predefined set of algorithms you can run (except for a few
+examples). Instead, you should write your scripts and call R commands,
+much like you would do from R, and in a very similar manner to what we
+saw in the chapter dedicated to SEXTANTE scripts. This chapter shows you
+the syntax to use to call those R commands from SEXTANTE and how to use
+SEXTANTE objects (layers, tables) in them.</p>
+<p>The first thing you have to do, as we saw in the case of SAGA, is to
+tell SEXTANTE where you R binaries are located. You can do so using the
+<em>R folder</em> entry in the SEXTANTE configuration dialog. Once you have set
+that parameter, you can start creating your own R scripts and executing
+them.</p>
+<p>Once again, this is different in Linux, and you just have to make sure
+that the R folder is included in the PATH environment variable. If you
+can start R just typing <tt class="docutils literal"><span class="pre">R</span></tt> in a console, then you are ready to go.</p>
+<p>To add a new algorithm that calls an R function (or a more complex R
+script that you have developed and you would like to have available from
+SEXTANTE), you have to create a script file that tells SEXTANTE how to
+perform that operation and the corresponding R commands to do so.</p>
+<p>Script files have the extension <tt class="docutils literal"><span class="pre">rsx</span></tt> and creating them is pretty easy
+if you just have a basic knowledge of R syntax and R scripting. They
+should be stored in the R scripts folder. You can set this folder in the
+R settings group (available from the SEXTANTE settings dialog), just
+like you do with the folder for regular SEXTANTE scripts.</p>
+<p>Let’s have a look at a very simple file script file, which calls the R
+method <tt class="docutils literal"><span class="pre">spsample</span></tt> to create a random grid within the boundary of the
+polygons in a given polygon layer. This method belong to the
+<tt class="docutils literal"><span class="pre">maptools</span></tt> package. Since almost all the algorithms that you might
+like to incorporate into SEXTANTE will use or generate spatial data,
+knowledge of spatial packages like <tt class="docutils literal"><span class="pre">maptools</span></tt> and, specially, <tt class="docutils literal"><span class="pre">sp</span></tt>,
+is mandatory.</p>
+<div class="highlight-python"><pre>##polyg=vector
+##numpoints=number 10
+##output=output vector
+##sp=group
+pts=spsample(polyg,numpoints,type="random")
+output=SpatialPointsDataFrame(pts, as.data.frame(pts))</pre>
+</div>
+<p>The first lines, which start with a double Python comment sign (##),
+tell SEXTANTE the inputs of the algorithm described in the file and the
+outputs that it will generate. They work exactly with the same syntax as
+the SEXTANTE scripts that we have already seen, so they will not be
+described here again. Check the corresponding section for more
+information.</p>
+<p>When you declare an input parameter, SEXTANTE uses that information for
+two things: creating the user interface to ask the user for the value of
+that parameter and creating a corresponding R variable that can be later
+used as input for R commands</p>
+<p>In the above example, we are declaring an input of type
+<tt class="docutils literal"><span class="pre">vector</span></tt> named <tt class="docutils literal"><span class="pre">polyg</span></tt>. When executing the algorithm,
+SEXTANTE will open in R the layer selected by the user and store it in a
+variable also named <tt class="docutils literal"><span class="pre">polyg</span></tt>. So the name of a parameter is also the
+name of the variable that we can use in R for accesing the value of that
+parameter (thus, you should avoid using reserved R words as parameter
+names).</p>
+<p>Spatial elements such as vector and raster layers are read using the
+<tt class="docutils literal"><span class="pre">readOGR()</span></tt> and <tt class="docutils literal"><span class="pre">readGDAL()</span></tt> commands (you do not have to worry
+about adding those commands to your description file, SEXTANTE will do
+it) and stored as <tt class="docutils literal"><span class="pre">Spatial*DataFrame</span></tt> objects. Table fields are stored
+as strings containing the name of the selected field.</p>
+<p>Tables are opened using the <tt class="docutils literal"><span class="pre">read.csv()</span></tt> command. If a table entered
+by the user is not in CSV format, it will be converted prior to
+importing it in R.</p>
+<p>Knowing that, we can now understand the first line of our example script
+(the first line not starting with a Python comment).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pts</span><span class="o">=</span><span class="n">spsample</span><span class="p">(</span><span class="n">polyg</span><span class="p">,</span><span class="n">numpoints</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="s">&quot;random&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The variable <tt class="docutils literal"><span class="pre">polygon</span></tt> already contains a <tt class="docutils literal"><span class="pre">SpatialPolygonsDataFrame</span></tt>
+object, so it can be used to call the <tt class="docutils literal"><span class="pre">spsample</span></tt> method, just like the
+<tt class="docutils literal"><span class="pre">numpoints</span></tt> one, which indicates the number of points to add to the
+created sample grid.</p>
+<p>Since we have declared an output of type vector named <tt class="docutils literal"><span class="pre">out</span></tt>, we have
+to create a variable named <tt class="docutils literal"><span class="pre">out</span></tt> and store a <tt class="docutils literal"><span class="pre">Spatial*DataFrame</span></tt>
+object in it (in this case, a <tt class="docutils literal"><span class="pre">SpatialPointsDataFrame</span></tt>). You can use
+any name for your intermediate variables. Just make sure that the
+variable storing your final result has the same name that you used to
+declare it, and contains a suitable value.</p>
+<p>In this case, the result obtained from the <tt class="docutils literal"><span class="pre">spsample</span></tt> method has to be
+converted explicitly into a <tt class="docutils literal"><span class="pre">SpatialPointsDataFrame</span></tt> object, since it
+is itself an object of class <tt class="docutils literal"><span class="pre">ppp</span></tt>, which is not a suitable class to
+be retuned to SEXTANTE.</p>
+<p>If you algorithm does not generate any layer, but a text result in the
+console instead, you have to tell SEXTANTE that you want the console to
+be shown once the execution is finished. To do so, just start the
+command lines that produce the results you want to print with the
+“<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mo>&gt;</mo></mrow></math>” sign. The output of all other lines will not be shown. For
+instance, here is the description file of an algorithms that performs a
+normality test on a given field (column) of the attributes of a vector
+layer:</p>
+<div class="highlight-python"><pre>##layer=vector
+##field=field layer
+##nortest=group
+library(nortest)
+&gt;lillie.test(layer[[field]])</pre>
+</div>
+<p>The output ot the last line is printed, but the output of the first is
+not (and neither are the outputs from other command lines added
+automatically by SEXTANTE).</p>
+<p>If your algorithm creates any kind of graphics (using the <tt class="docutils literal"><span class="pre">plot()</span></tt>
+method), add the following line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">##showplots</span>
+</pre></div>
+</div>
+<p>This will cause SEXTANTE to redirect all R graphical outputs to a
+temporary file, which will be later opened once R execution has finished</p>
+<p>Both graphics and console results will be shown in the SEXTANTE results
+manager.</p>
+<p>For more information, please check the script files provided with
+SEXTANTE. Most of them are rather simple and will greatly help you
+understand how to create your own ones.</p>
+<p>A note about libraries: <tt class="docutils literal"><span class="pre">rgdal</span></tt> and <tt class="docutils literal"><span class="pre">maptools</span></tt> libraries are loaded
+by default so you do not have to add the corresponding <em>library()</em>
+commands (you have to make sure, however, that those two packages are
+installed in your R distribution). However, other additional libraries
+that you might need have to be explicitly loaded. Just add the necessary
+commands at the beginning of your script. You also have to make sure
+that the corresponding packages are installed in the R distribution used
+by SEXTANTE.</p>
+</div>
+<div class="section" id="grass">
+<h2>GRASS<a class="headerlink" href="#grass" title="Permalink to this headline">¶</a></h2>
+<p>Configuring GRASS is not much different from configuring SAGA. First,
+the path to the GRASS folder has to be defined, but only if you are
+running Windows. Additionaly, a shell interpreter (usually msys.exe,
+which can be found in most GRASS for Windows distributions) has to be
+defined and its path set up as well.</p>
+<p>By default, SEXTANTE tries to configure its GRASS connector to use the GRASS distribution that ships along with QGIS. This should work without problems in most systems, but if you experience problems, you might have to do it manually. Also, if you want to use a different GRASS version, you can change that setting and point to the folder where that other version is kept. GRASS 6.4 is needed for algorithms to work correctly.</p>
+<p>If you are running Linux, you just
+have to make sure that GRASS is correctly installed, and that it can be
+run without problem from a console.</p>
+<p>GRASS algorithms use a region for calculations. This region can be
+defined manually using values similar to the ones found in the SAGA
+configuration, or automatically, taking the minimum extent that covers
+all the input layers used to execute the algorithm each time. If this is
+the behaviour you prefer, just check the <em>Use min covering region</em>
+option in the GRASS configuration parameters.</p>
+<p>GRASS includes help files describing each algorithm. If you set the
+<em>GRASS help folder</em> parameter, SEXTANTE will open them when you use the
+<em>Show help</em> button from the parameters window of the algorithm.</p>
+<p>The last parameter that has to be configured is related to the mapset. A
+mapset is needed to run GRASS, and SEXTANTE creates a temporary one for
+each execution. You have to tell SEXTANTE if the data you are working
+with uses geographical (lat/lon) coordinates or projected ones.</p>
+</div>
+<div class="section" id="gdal">
+<h2>GDAL<a class="headerlink" href="#gdal" title="Permalink to this headline">¶</a></h2>
+<p>No additional configuration is needed to run GDAL algorithms, since it is already incorporated to QGIS and SEXTANTE can infere its configuration from it.</p>
+</div>
+<div class="section" id="otb">
+<h2>OTB<a class="headerlink" href="#otb" title="Permalink to this headline">¶</a></h2>
+<p>[to be written]</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuring external applications</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="#a-note-on-file-formats">A note on file formats</a></li>
+<li><a class="reference internal" href="#a-note-on-vector-layer-selections">A note on vector layer selections</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#saga">SAGA</a><ul>
+<li><a class="reference internal" href="#about-saga-grid-system-limitations">About SAGA grid system limitations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#r-creating-r-scripts">R. Creating R scripts</a></li>
+<li><a class="reference internal" href="#grass">GRASS</a></li>
+<li><a class="reference internal" href="#gdal">GDAL</a></li>
+<li><a class="reference internal" href="#otb">OTB</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="history.html"
+                        title="previous chapter">The SEXTANTE history manager</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/3rdParty.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="history.html" title="The SEXTANTE history manager"
+             >previous</a> |</li>
+        <li><a href="index.html">SEXTANTE for QGIS 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Victor Olaya.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

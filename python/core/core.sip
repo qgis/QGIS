@@ -102,6 +102,7 @@
 %Include qgsnetworkaccessmanager.sip
 
 %Include symbology-ng-core.sip
+%Include qgspallabeling.sip
 
 %Include qgsgpsconnection.sip
 %Include qgsgpsconnectionregistry.sip

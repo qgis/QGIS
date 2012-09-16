@@ -1,0 +1,313 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmblob</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmlabel.html"><tt>mmlabel</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmgrain.html"><tt>mmgrain</tt></a>]
+              </td>
+        <td class="title">Measurements</td>
+      </tr>
+    </table>
+    <h1>mmblob
+      <br>
+      <span class="subtitle">Blob measurements from a labeled image.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmblob</span>(
+                  
+          <span class="par">fr</span>, 
+          <span class="par">measurement</span>, 
+          <span class="par">option</span> = "image"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">fr</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                          <p>Labeled image.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">measurement</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Choice from 'AREA', 'CENTROID', or 'BOUNDINGBOX'.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">option</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Output format: 'image': results as a binary image; 'data': results a column vector of measurements (double).</p><p>Default: 
+                      <code>"image"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Take measurements from the labeled image 
+          <code>fr</code>. The measurements are: area, centroid, or bounding rectangle. The parameter 
+          <code>option</code> controls the output format: 'IMAGE': the result is an image; 'DATA': the result is a double column vector with the measurement for each blob. The region with label zero is not measured as it is normally the background. The measurement of region with label 1 appears at the first row of the output.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; fr=uint8([
+   [1,1,1,0,0,0],
+   [1,1,1,0,0,2],
+   [1,1,1,0,2,2]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f_area=mmblob(fr,'area')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f_area</pre>
+              <pre class="computer">[[9 9 9 0 0 0]
+ [9 9 9 0 0 3]
+ [9 9 9 0 3 3]]</pre>
+              <pre class="user">&gt;&gt;&gt; f_cent=mmblob(fr,'centroid')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f_cent</pre>
+              <pre class="computer">[[0 0 0 0 0 0]
+ [0 1 0 0 1 0]
+ [0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; f_bb=mmblob(fr,'boundingbox')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f_bb</pre>
+              <pre class="computer">[[1 1 1 0 0 0]
+ [1 0 1 0 1 1]
+ [1 1 1 0 1 1]]</pre>
+              <pre class="user">&gt;&gt;&gt; d_area=mmblob(fr,'area','data')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print d_area</pre>
+              <pre class="computer">[[9]
+ [3]]</pre>
+              <pre class="user">&gt;&gt;&gt; d_cent=mmblob(fr,'centroid','data')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print d_cent</pre>
+              <pre class="computer">[[1 1]
+ [4 1]]</pre>
+              <pre class="user">&gt;&gt;&gt; d_bb=mmblob(fr,'boundingbox','data')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print d_bb</pre>
+              <pre class="computer">[[0 0 2 2]
+ [4 1 5 2]]</pre>
+            </div>
+          </div>
+          <div class="bridge">Area Transform</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('blob3.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fr=mmlabel(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmblob(fr,'area')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="128" src="../images/img_mmblob_001.jpg"></td>
+                  <td><img width="128" src="../images/img_mmblob_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmblob_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmblob_002.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Centroids</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('blob3.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fr=mmlabel(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; centr=mmblob(fr,'centroid')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f,mmdil(centr))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="128" src="../images/img_mmblob_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmblob_003.jpg">f,mmdil(centr)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Bounding Box</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('blob3.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fr=mmlabel(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; box=mmblob(fr,'boundingbox')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f,box)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="128" src="../images/img_mmblob_004.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmblob_004.jpg">f,box</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmblob(fr, measurement, option="image"):
+    from Numeric import NewAxis, ravel, zeros, sum, nonzero, sometrue, array
+    from string import upper
+    measurement = upper(measurement)
+    option      = upper(option)
+    if len(fr.shape) == 1: fr = fr[NewAxis,:]
+    n = max(ravel(fr))
+    if option == 'DATA': y = []
+    else               : y = zeros(fr.shape)
+    if measurement == 'AREA':
+        for i in range(1,n+1):
+            aux  = fr==i
+            area = sum(ravel(aux))
+            if option == 'DATA': y.append(area)
+            else               : y = y + area*aux
+    elif measurement == 'CENTROID':
+        for i in range(1,n+1):
+            aux  = fr==i
+            ind  = nonzero(ravel(aux))
+            indx = ind / fr.shape[1]
+            indy = ind % fr.shape[1]
+            centroid = [sum(indx)/len(ind), sum(indy)/len(ind)]
+            if option == 'DATA': y.append([centroid[1],centroid[0]])
+            else               : y[centroid] = 1
+    elif measurement == 'BOUNDINGBOX':
+        for i in range(1,n+1):
+            aux = fr==i
+            aux1, aux2 = sometrue(aux,0), sometrue(aux,1)
+            col , row  = nonzero(aux1)  , nonzero(aux2)
+            if option == 'DATA': y.append([col[0],row[0],col[-1],row[-1]])
+            else:
+                y[row[0]:row[-1],col[0] ] = 1
+                y[row[0]:row[-1],col[-1]] = 1
+                y[row[0], col[0]:col[-1]] = 1
+                y[row[-1],col[0]:col[-1]] = 1
+    else:
+        print "Measurement option should be 'AREA','CENTROID', or 'BOUNDINGBOX'."
+    if option == 'DATA':
+        y = array(y)
+        if len(y.shape) == 1: y = y[:,NewAxis]
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmlabel.html">mmlabel</a></td>
+              <td class="def">Label a binary image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmgrain.html">mmgrain</a></td>
+              <td class="def">Gray-scale statistics for each labeled region.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmlabelflat.html">mmlabelflat</a></td>
+              <td class="def">Label the flat zones of gray-scale images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmstats.html">mmstats</a></td>
+              <td class="def">Find global image statistics.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmdrawv.html">mmdrawv</a></td>
+              <td class="def">Superpose points, rectangles and lines on an image.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmlabel.html"><tt>mmlabel</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmgrain.html"><tt>mmgrain</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

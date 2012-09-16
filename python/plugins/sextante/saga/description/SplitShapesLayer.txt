@@ -1,0 +1,8 @@
+Split Shapes Layer
+shapes_tools
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterNumber|NX|Number of horizontal tiles|None|None|10
+ParameterNumber|NY|Number of vertical tiles|None|None|10
+ParameterSelection|METHOD|Method|[0] completely contained;[1] intersects;[2] center
+OutputVector|CUTS|Tiles
+OutputVector|EXTENT|Extent

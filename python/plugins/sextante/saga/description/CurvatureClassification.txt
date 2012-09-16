@@ -1,0 +1,6 @@
+Curvature Classification
+ta_morphometry
+ParameterRaster|CPLAN|Plan Curvature|False
+ParameterRaster|CPROF|Profile Curvature|False
+ParameterNumber|THRESHOLD|Threshold for plane|None|None|0.001
+OutputRaster|CLASS|Curvature Classification

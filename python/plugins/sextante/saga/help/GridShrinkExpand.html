@@ -1,0 +1,19 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Grid Shrink/Expand</h1>
+<div class='author'>V.Wichmann & O.Conrad (c) 2011</div>
+<div class='description'>Regions with valid data in the input grid can be shrinked or expanded by a certain amount (radius). Shrinking just sets the border of regions with valid data to NoData, expanding sets NoData cells along the border of regions with valid data to a new valid value, computed by the method selected (min, max, mean, majority).<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Grid <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Result Grid <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Operation <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Shrink, Expand</div></dd>
+	<dt>Search Mode <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Square, Circle</div></dd>
+	<dt>Radius <div class='type'>Integer</div></dt><dd> <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: min, max, mean, majority</div></dd>
+</dl>
+</body></html>

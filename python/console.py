@@ -100,18 +100,11 @@ class PythonConsole(QDockWidget):
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QIcon("icon/iconClearConsole.png"))
-        self.clearButton.setMenuRole(QAction.PreferencesRole)
-        self.clearButton.setIconVisibleInMenu(True)
-        self.clearButton.setToolTip('Clear console')
-        ## Action for paste snippets code
-        self.clearButton = QAction(parent)
-        self.clearButton.setCheckable(False)
-        self.clearButton.setEnabled(True)
         self.clearButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconClearConsole.png"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip('Clear console')
+        self.clearButton.setText('Clear console')
         ## Action for paste snippets code
 #        self.currentLayerButton = QAction(parent)
 #        self.currentLayerButton.setCheckable(False)
@@ -119,7 +112,16 @@ class PythonConsole(QDockWidget):
 #        self.currentLayerButton.setIcon(QIcon("icon/iconTempConsole.png"))
 #        self.currentLayerButton.setMenuRole(QAction.PreferencesRole)
 #        self.currentLayerButton.setIconVisibleInMenu(True)
-        ##
+        ## Import Sextante class
+        self.loadSextanteButton = QAction(parent)
+        self.loadSextanteButton.setCheckable(False)
+        self.loadSextanteButton.setEnabled(True)
+        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSextanteConsole.png"))
+        self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
+        self.loadSextanteButton.setIconVisibleInMenu(True)
+        self.loadSextanteButton.setToolTip('Import sextante class')
+        self.loadSextanteButton.setText('Import sextante class')
+        ## Import QgisInterface class
         self.loadIfaceButton = QAction(parent)
         self.loadIfaceButton.setCheckable(False)
         self.loadIfaceButton.setEnabled(True)
@@ -127,6 +129,7 @@ class PythonConsole(QDockWidget):
         self.loadIfaceButton.setMenuRole(QAction.PreferencesRole)
         self.loadIfaceButton.setIconVisibleInMenu(True)
         self.loadIfaceButton.setToolTip('Import iface class')
+        self.loadIfaceButton.setText('Import iface class')
         ## Action for Open File
         self.openFileButton = QAction(parent)
         self.openFileButton.setCheckable(False)
@@ -135,6 +138,7 @@ class PythonConsole(QDockWidget):
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip('Open script file')
+        self.openFileButton.setText('Open script file')
         ## Action for Save File
         self.saveFileButton = QAction(parent)
         self.saveFileButton.setCheckable(False)
@@ -142,7 +146,8 @@ class PythonConsole(QDockWidget):
         self.saveFileButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
-        self.saveFileButton.setToolTip('Save to file')
+        self.saveFileButton.setToolTip('Save to script file')
+        self.saveFileButton.setText('Save to script file')
         ## Action for Run script
         self.runButton = QAction(parent)
         self.runButton.setCheckable(False)
@@ -151,6 +156,7 @@ class PythonConsole(QDockWidget):
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip('Run command')
+        self.runButton.setText('Run')
         ## Help action
         self.helpButton = QAction(parent)
         self.helpButton.setCheckable(False)
@@ -159,10 +165,12 @@ class PythonConsole(QDockWidget):
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
         self.helpButton.setToolTip('Help')
+        self.helpButton.setText('Help')
 
         self.toolBar.addAction(self.clearButton)
         #self.toolBar.addAction(self.currentLayerButton)
         self.toolBar.addAction(self.loadIfaceButton)
+        self.toolBar.addAction(self.loadSextanteButton)
         self.toolBar.addAction(self.openFileButton)
         self.toolBar.addAction(self.saveFileButton)
         self.toolBar.addAction(self.helpButton)
@@ -182,6 +190,7 @@ class PythonConsole(QDockWidget):
         self.clearButton.triggered.connect(self.edit.clearConsole)
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
+        self.loadSextanteButton.triggered.connect(self.sextante)
         self.runButton.triggered.connect(self.edit.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
@@ -193,12 +202,17 @@ class PythonConsole(QDockWidget):
     def cLayer(self):
         self.edit.commandConsole('cLayer')
 
+    def sextante(self):
+       self.edit.commandConsole('sextante')
+
     def iface(self):
        self.edit.commandConsole('iface')
 
     def openScriptFile(self):
+        settings = QSettings()
+        lastDirPath = settings.value("/pythonConsole/lastDirPath").toString()
         scriptFile = QFileDialog.getOpenFileName(
-                        self, "Open File", "", "Script file (*.py)")
+                        self, "Open File", lastDirPath, "Script file (*.py)")
         if scriptFile.isEmpty() == False:
             oF = open(scriptFile, 'r')
             listScriptFile = []
@@ -206,6 +220,9 @@ class PythonConsole(QDockWidget):
                 if line != "\n":
                     listScriptFile.append(line)
             self.edit.insertTextFromFile(listScriptFile)
+
+            lastDirPath = QFileInfo(scriptFile).path()
+            settings.setValue("/pythonConsole/lastDirPath", QVariant(scriptFile))
 
 
     def saveScriptFile(self):
@@ -223,13 +240,10 @@ class PythonConsole(QDockWidget):
             is_first_line = True
             for s in listText:
                 if s[0:3] in (">>>", "..."):
-                    s.replace(">>> ", "")
-                    s.replace("... ", "")
+                    s.replace(">>> ", "").replace("... ", "")
                     if is_first_line:
-                        # see, no write() in this branch
                         is_first_line = False
                     else:
-                        # we've just written a line; add a newline
                         sF.write('\n')
                     sF.write(s)
             sF.close()

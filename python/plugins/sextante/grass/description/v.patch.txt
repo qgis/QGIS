@@ -1,0 +1,8 @@
+v.patch
+v.patch - Create a new vector map layer by combining other vector map layers.
+Vector (v.*)
+ParameterMultipleInput|input|Name of input vector maps|-1.0|False
+ParameterBoolean|-e|Copy also attribute table|True
+OutputVector|output|Name for output vector map
+OutputVector|bbox|Name for output vector map where bounding boxes of input vector maps are written to
+

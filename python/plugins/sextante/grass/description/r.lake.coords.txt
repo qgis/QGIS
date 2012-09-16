@@ -1,0 +1,8 @@
+r.lake
+r.lake.coords - Fills lake at given point to given level.
+Raster (r.*)
+ParameterRaster|dem|Name of terrain raster map (DEM)|False
+ParameterString|wl|Water level|
+ParameterString|xy|Seed point coordinates|
+ParameterBoolean|-n|Use negative depth values for lake raster map|False
+OutputRaster|lake|Name for output raster map with lake

@@ -89,6 +89,11 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 
   void* rasterData = mInput->block( mBand, extent, width, height );
+  if ( ! rasterData )
+  {
+    QgsDebugMsg("No raster data!" );
+    return 0;
+  }
 
   int red, green, blue;
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
@@ -107,6 +112,13 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
 
   //create image
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    VSIFree( rasterData );
+    return 0;
+  }
+
   QRgb* imageScanLine = 0;
   double val = 0;
 
@@ -156,6 +168,11 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   VSIFree( rasterData );
 
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 

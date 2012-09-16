@@ -1,0 +1,6 @@
+r.out.ppm
+r.out.ppm - Converts a GRASS raster map to a PPM image file at the pixel resolution of the currently defined region.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterBoolean|-G|Output greyscale instead of color|True
+OutputFile|output|Name for new PPM file (use '-' for stdout)
