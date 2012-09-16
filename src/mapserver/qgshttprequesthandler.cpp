@@ -488,10 +488,11 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, c
   }
 
   QgsColorBoxMap colorBoxMap; //QMultiMap< int, ColorBox >
-  QMap<int, QgsColorBox>::iterator colorBoxMapIt;
-
+  colorBoxMap.insert( firstBoxPixelSum, firstBox );
+  QMap<int, QgsColorBox>::iterator colorBoxMapIt = colorBoxMap.end();
 
   //split boxes until number of boxes == nColors or all the boxes have color count 1
+  bool allColorsMapped = false;
   while ( colorBoxMap.size() < nColors )
   {
     //start at the end of colorBoxMap and pick the first entry with number of colors < 1
@@ -502,14 +503,26 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, c
       if ( colorBoxMapIt.value().size() > 1 )
       {
         splitColorBox( colorBoxMapIt.value(), colorBoxMap, colorBoxMapIt );
-        continue;
+        break;
       }
       if ( colorBoxMapIt == colorBoxMap.begin() )
       {
+        allColorsMapped = true;
         break;
       }
     }
+
+    if ( allColorsMapped )
+    {
+      break;
+    }
+    else
+    {
+      continue;
+    }
   }
+
+  bool debug = true; //only for breakpoint
 
   //todo: evaluate the colors of the final boxes
 }
@@ -543,8 +556,161 @@ void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage&
 void QgsHttpRequestHandler::splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
     QMap<int, QgsColorBox>::iterator colorBoxMapIt )
 {
-  //todo: a,r,g,b ranges
+
+  if ( colorBox.size() < 2 )
+  {
+    return; //need at least two colors for a split
+  }
+
+  //a,r,g,b ranges
+  int redRange = 0;
+  int greenRange = 0;
+  int blueRange = 0;
+  int alphaRange = 0;
+
+  if ( !minMaxRange( colorBox, redRange, greenRange, blueRange, alphaRange ) )
+  {
+    return;
+  }
+
   //sort color box for a/r/g/b
+  if ( redRange >= greenRange && redRange >= blueRange && redRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), redCompare );
+  }
+  else if ( greenRange >= redRange && greenRange >= blueRange && greenRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), greenCompare );
+  }
+  else if ( blueRange >= redRange && blueRange >= greenRange && blueRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), blueCompare );
+  }
+  else
+  {
+    qSort( colorBox.begin(), colorBox.end(), alphaCompare );
+  }
+
   //get median
+  double halfSum = colorBoxMapIt.key() / 2.0;
+  int currentSum = 0;
+  int currentListIndex = 0;
+
+  QgsColorBox::iterator colorBoxIt = colorBox.begin();
+  for ( ; colorBoxIt != colorBox.end(); ++colorBoxIt )
+  {
+    currentSum += colorBoxIt->second;
+    if ( currentSum >= halfSum )
+    {
+      break;
+    }
+    ++currentListIndex;
+  }
+
+  if ( currentListIndex > ( colorBox.size() - 2 ) ) //if the median is contained in the last color, split one item before that
+  {
+    --currentListIndex;
+  }
+  else
+  {
+    ++colorBoxIt; //the iterator needs to point behind the last item to remove
+  }
+
   //do split: replace old color box, insert new one
+  QgsColorBox newColorBox1 = colorBox.mid( 0, currentListIndex + 1 );
+  colorBoxMap.insert( currentSum, newColorBox1 );
+
+  colorBox.erase( colorBox.begin(), colorBoxIt );
+  QgsColorBox newColorBox2 = colorBox;
+  colorBoxMap.erase( colorBoxMapIt );
+  colorBoxMap.insert( halfSum * 2.0 - currentSum, newColorBox2 );
+}
+
+bool QgsHttpRequestHandler::minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange )
+{
+  if ( colorBox.size() < 1 )
+  {
+    return false;
+  }
+
+  int rMin = INT_MAX;
+  int gMin = INT_MAX;
+  int bMin = INT_MAX;
+  int aMin = INT_MAX;
+  int rMax = INT_MIN;
+  int gMax = INT_MIN;
+  int bMax = INT_MIN;
+  int aMax = INT_MIN;
+
+  int currentRed = 0; int currentGreen = 0; int currentBlue = 0; int currentAlpha = 0;
+
+  QgsColorBox::const_iterator colorBoxIt = colorBox.constBegin();
+  for ( ; colorBoxIt != colorBox.constEnd(); ++colorBoxIt )
+  {
+    currentRed = qRed( colorBoxIt->first );
+    if ( currentRed > rMax )
+    {
+      rMax = currentRed;
+    }
+    if ( currentRed < rMin )
+    {
+      rMin = currentRed;
+    }
+
+    currentGreen = qGreen( colorBoxIt->first );
+    if ( currentGreen > gMax )
+    {
+      gMax = currentGreen;
+    }
+    if ( currentGreen < gMin )
+    {
+      gMin = currentGreen;
+    }
+
+    currentBlue = qBlue( colorBoxIt->first );
+    if ( currentBlue > bMax )
+    {
+      bMax = currentBlue;
+    }
+    if ( currentBlue < bMin )
+    {
+      bMin = currentBlue;
+    }
+
+    currentAlpha = qAlpha( colorBoxIt->first );
+    if ( currentAlpha > aMax )
+    {
+      aMax = currentAlpha;
+    }
+    if ( currentAlpha < aMin )
+    {
+      aMin = currentAlpha;
+    }
+  }
+
+  redRange = rMax - rMin;
+  greenRange = gMax - gMin;
+  blueRange = bMax - bMin;
+  alphaRange = aMax - aMin;
+  return true;
+}
+
+bool QgsHttpRequestHandler::redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qRed( c1.first ) < qRed( c2.first );
+}
+
+bool QgsHttpRequestHandler::greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qGreen( c1.first ) < qGreen( c2.first );
+}
+
+bool QgsHttpRequestHandler::blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qBlue( c1.first ) < qBlue( c2.first );
+}
+
+bool QgsHttpRequestHandler::alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qAlpha( c1.first ) < qAlpha( c2.first );
 }

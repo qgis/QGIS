@@ -58,6 +58,11 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
     static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
                                QMap<int, QgsColorBox>::iterator colorBoxMapIt );
+    static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
+    static bool redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
 };
 
 #endif
