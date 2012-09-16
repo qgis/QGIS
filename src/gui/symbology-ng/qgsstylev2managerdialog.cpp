@@ -41,7 +41,6 @@
 #include "qgslogger.h"
 
 
-
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
@@ -49,6 +48,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
+  mSplitter->setSizes( QList<int>() << 170 << 540 );
+  mSplitter->restoreState( settings.value( "/Windows/StyleV2Manager/splitter" ).toByteArray() );
 
 #if QT_VERSION >= 0x40500
   tabItemType->setDocumentMode( true );
@@ -63,6 +64,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnShare->setIcon( QIcon( QgsApplication::iconPath( "user.png" ) ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
@@ -111,12 +113,10 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
   connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
 
-  connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
-  populateList();
+  on_tabItemType_currentChanged( 0 );
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
-
 
   // Context menu for groupTree
   groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -139,6 +139,7 @@ void QgsStyleV2ManagerDialog::onFinished()
 
   QSettings settings;
   settings.setValue( "/Windows/StyleV2Manager/geometry", saveGeometry() );
+  settings.setValue( "/Windows/StyleV2Manager/splitter", mSplitter->saveState() );
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()
@@ -179,6 +180,48 @@ void QgsStyleV2ManagerDialog::populateTypes()
   // update current index to previous selection
   cboItemType->setCurrentIndex( current );
 #endif
+}
+
+void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
+{
+  // when in Color Ramp tab, add menu to add item button
+  if ( currentItemType() == 3 )
+  {
+    QStringList rampTypes;
+    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+    QMenu* menu = new QMenu( btnAddItem );
+    foreach ( QString rampType, rampTypes )
+    {
+      menu->addAction( rampType );
+    }
+    btnAddItem->setMenu( menu );
+    connect( menu, SIGNAL( triggered( QAction* ) ),
+             this, SLOT( addColorRamp( QAction* ) ) );
+  }
+  else
+  {
+    if ( btnAddItem->menu() )
+    {
+      disconnect( btnAddItem->menu(), SIGNAL( triggered( QAction* ) ),
+                  this, SLOT( addColorRamp( QAction* ) ) );
+      btnAddItem->setMenu( 0 );
+    }
+  }
+
+  // set icon and grid size, depending on type
+  if ( currentItemType() == 1 || currentItemType() == 3 )
+  {
+    listItems->setIconSize( QSize( 75, 50 ) );
+    listItems->setGridSize( QSize( 100, 80 ) );
+  }
+  else
+  {
+    listItems->setIconSize( QSize( 50, 50 ) );
+    listItems->setGridSize( QSize( 75, 80 ) );
+  }
+
+  populateList();
 }
 
 void QgsStyleV2ManagerDialog::populateList()
@@ -360,15 +403,18 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 }
 
 
-QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2* style )
+QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2* style, QString rampType )
 {
-  // let the user choose the color ramp type
-  QStringList rampTypes;
-  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
-  rampTypes << tr( "cpt-city" ); // todo, only for rasters?
-  bool ok;
-  QString rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
-                     tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+  // let the user choose the color ramp type if rampType is not given
+  bool ok = true;
+  if ( rampType.isEmpty() )
+  {
+    QStringList rampTypes;
+    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+    rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
+                                      tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+  }
   if ( !ok || rampType.isEmpty() )
     return QString();
 
@@ -479,16 +525,23 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
 
 bool QgsStyleV2ManagerDialog::addColorRamp()
 {
-  QString rampName = addColorRampStatic( this , mStyle );
+  return addColorRamp( 0 );
+}
+
+bool QgsStyleV2ManagerDialog::addColorRamp( QAction* action )
+{
+  // pass the action text, which is the color ramp type
+  QString rampName = addColorRampStatic( this , mStyle,
+                                         action ? action->text() : QString() );
   if ( !rampName.isEmpty() )
   {
     mModified = true;
+    populateList();
     return true;
   }
 
   return false;
 }
-
 
 void QgsStyleV2ManagerDialog::editItem()
 {
