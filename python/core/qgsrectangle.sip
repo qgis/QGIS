@@ -84,7 +84,7 @@ class QgsRectangle
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
     //@note added in 2.0
-    QRectF QgsRectangle::toRectF() const;
+    QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString(bool automaticPrecision = false) const;
     //! overloaded toString that allows precision of numbers to be set
