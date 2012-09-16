@@ -526,6 +526,10 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   // pixmap.fill( Qt::white ); // this makes the background white instead of transparent
   QPainter painter;
   painter.begin( &pixmap );
+
+  //draw stippled background, for transparent images
+  drawStippledBackround( &painter, QRect( 0, 0, size.width(), size.height() ) );
+
   // antialising makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
@@ -538,6 +542,24 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   return pixmap;
 }
 
+void QgsSymbolLayerV2Utils::drawStippledBackround( QPainter* painter, QRect rect )
+{
+  // create a 2x2 checker-board image
+  uchar pixDataRGB[] = { 255, 255, 255, 255,
+                         127, 127, 127, 255,
+                         127, 127, 127, 255,
+                         255, 255, 255, 255
+                       };
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  // scale it to rect so at least 5 patterns are shown
+  int width = ( rect.width() < rect.height() ) ?
+              rect.width() / 2.5 : rect.height() / 2.5;
+  QPixmap pix = QPixmap::fromImage( img.scaled( width, width ) );
+  // fill rect with texture
+  QBrush brush;
+  brush.setTexture( pix );
+  painter->fillRect( rect, brush );
+}
 
 #include <QPolygonF>
 

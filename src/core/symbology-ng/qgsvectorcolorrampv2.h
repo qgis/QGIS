@@ -167,8 +167,10 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 {
   public:
     QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
-    QgsCptCityColorRampV2( QString schemeName, QStringList variantList, QString variantName = QString() );
+                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+                           bool doLoadFile = true );
+    QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
+                           QString variantName = QString(), bool doLoadFile = true );
 
 
     enum GradientType
@@ -187,6 +189,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     virtual QString type() const { return "cpt-city"; }
 
     virtual QgsVectorColorRampV2* clone() const;
+    void copy( const QgsCptCityColorRampV2* other );
 
     virtual QgsStringMap properties() const;
 
@@ -203,6 +206,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     /* lazy loading - have to call loadPalette() explicitly */
     void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
     void setVariantName( QString variantName ) { mVariantName = variantName; mFileLoaded = false; }
+    void setVariantList( QStringList variantList ) { mVariantList = variantList; }
     void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
@@ -212,6 +216,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 
     QString fileName() const;
     bool loadFile();
+    bool fileLoaded() const { return mFileLoaded; }
 
     QString copyingFileName() const;
     QString descFileName() const;
@@ -221,12 +226,10 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 
     QString mSchemeName;
     QString mVariantName;
-    /* QString mCollectionName; */
-    /* QgsCptCityCollection* mCollection; */
-    GradientType mGradientType;
-    GradientList mPalette;
     QStringList mVariantList;
     bool mFileLoaded;
+    GradientType mGradientType;
+    GradientList mPalette;
 };
 
 

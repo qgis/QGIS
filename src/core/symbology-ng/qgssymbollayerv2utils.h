@@ -97,6 +97,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
+    static void drawStippledBackround( QPainter* painter, QRect rect );
+
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
