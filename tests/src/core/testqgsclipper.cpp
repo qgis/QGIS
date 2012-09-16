@@ -34,36 +34,56 @@ class TestQgsClipper: public QObject
     void init() {};// will be called before each testfunction is executed.
     void cleanup() {};// will be called after every testfunction.
     void basic();
+  private:
+    bool TestQgsClipper::checkBoundingBox( QPolygonF polygon, QgsRectangle clipRect );
 };
 
 void TestQgsClipper::initTestCase()
 {
-  //
-  // Runs once before any tests are run
-  //
-  // init QGIS's paths - true means that all path will be inited from prefix
-  // QgsApplication::init();
-  // QgsApplication::initQgis();
-  // QgsApplication::showSettings();
+
 }
 
 void TestQgsClipper::basic()
 {
-  // CQgsClipper is static only
-  //QgsClipper snipsnip;
+  // QgsClipper is static only
 
   QPolygonF polygon;
-  polygon << QPointF(10.4, 20.5) << QPointF(20.2, 30.2);
-  
-  QgsRectangle clipRect(10, 10, 25, 30 );
-  
-  QgsClipper::trimPolygon( polygon, clipRect );
-  
-  QRectF bBox( polygon.boundingRect() );
-  QgsRectangle boundingRect( bBox.bottomLeft().x(), bBox.bottomLeft().y(), bBox.topRight().x(), bBox.topRight().y() );
+  polygon << QPointF( 10.4, 20.5 ) << QPointF( 20.2, 30.2 );
 
-  QVERIFY( clipRect.contains( boundingRect ) );
+  QgsRectangle clipRect( 10, 10, 25, 30 );
+
+  QgsClipper::trimPolygon( polygon, clipRect );
+
+  // Check nothing sticks out.
+  QVERIFY( checkBoundingBox( polygon , clipRect ) );
+  // Check that it didn't clip too much
+  QgsRectangle clipRectInner( clipRect );
+  clipRectInner.scale( 0.999 );
+  QVERIFY( ! checkBoundingBox( polygon , clipRectInner ) );
+
+  // A more complex example
+  polygon.clear();
+  polygon << QPointF( 1.0, 9.0 ) << QPointF( 11.0, 11.0 ) << QPointF( 9.0, 1.0 );
+  clipRect.set( 0.0, 0.0, 10.0, 10.0 );
+
+  QgsClipper::trimPolygon( polygon, clipRect );
+
+  // We should have 5 vertices now?
+  QCOMPARE( polygon.size(), 5 );
+  // Check nothing sticks out.
+  QVERIFY( checkBoundingBox( polygon , clipRect ) );
+  // Check that it didn't clip too much
+  clipRectInner = clipRect;
+  clipRectInner.scale( 0.999 );
+  QVERIFY( ! checkBoundingBox( polygon , clipRectInner ) );
 };
+
+bool TestQgsClipper::checkBoundingBox( QPolygonF polygon, QgsRectangle clipRect )
+{
+  QgsRectangle bBox( polygon.boundingRect() );
+
+  return clipRect.contains( bBox );
+}
 
 QTEST_MAIN( TestQgsClipper )
 #include "moc_testqgsclipper.cxx"

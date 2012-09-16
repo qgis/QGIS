@@ -196,7 +196,7 @@ QString QgsRectangle::asWktCoordinates() const
 QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
-    QString("POLYGON((") +
+    QString( "POLYGON((" ) +
     QString::number( xmin, 'f', 16 ) + " " +
     QString::number( ymin, 'f', 16 ) + ", " +
     QString::number( xmax, 'f', 16 ) + " " +
@@ -207,7 +207,7 @@ QString QgsRectangle::asWktPolygon() const
     QString::number( ymax, 'f', 16 ) + ", " +
     QString::number( xmin, 'f', 16 ) + " " +
     QString::number( ymin, 'f', 16 ) +
-    QString("))");
+    QString( "))" );
 
   return rep;
 }
@@ -216,7 +216,7 @@ QString QgsRectangle::asWktPolygon() const
 //@note added in 2.0
 QRectF QgsRectangle::toRectF() const
 {
-  return QRectF( (qreal)xmin, (qreal)ymin, (qreal)xmax - xmin, (qreal)ymax - ymin );
+  return QRectF(( qreal )xmin, ( qreal )ymin, ( qreal )xmax - xmin, ( qreal )ymax - ymin );
 }
 
 // Return a string representation of the rectangle with automatic or high precision

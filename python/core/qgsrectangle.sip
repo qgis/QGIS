@@ -10,7 +10,7 @@ class QgsRectangle
 %TypeHeaderCode
 #include <qgsrectangle.h>
 %End
-
+ 
  public:
     //! Constructor
     QgsRectangle(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
