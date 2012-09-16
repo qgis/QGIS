@@ -48,7 +48,7 @@ class QgsRectangle;
 class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
-struct QgsDiagramLayerSettings;
+class QgsDiagramLayerSettings;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;

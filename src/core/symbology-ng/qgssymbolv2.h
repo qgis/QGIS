@@ -97,7 +97,6 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
 
-
     void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
     void stopRender( QgsRenderContext& context );
 
