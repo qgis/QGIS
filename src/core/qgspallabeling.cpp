@@ -1726,8 +1726,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
     double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
-    // yMultiLineOffset += lyr.fontMetrics->descent();
-    painter->translate( QPointF( 0, -yMultiLineOffset ) );
+    double ascentOffset = 0.0;
+    ascentOffset = lyr.fontMetrics->height() * 0.25 * lyr.fontMetrics->ascent() / lyr.fontMetrics->height();
+    painter->translate( QPointF( 0, - ascentOffset - yMultiLineOffset ) );
 
     if ( drawBuffer )
     {
