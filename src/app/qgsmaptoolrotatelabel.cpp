@@ -64,7 +64,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
 
 
     bool hasRotationValue;
-    if ( dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, mCurrentRotation, hasRotationValue ) )
+    if ( dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, mCurrentRotation, hasRotationValue, true ) )
     {
       if ( !hasRotationValue )
       {
