@@ -58,6 +58,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
 
 void QgsMeasureDialog::updateSettings()
 {
+  if ( !isVisible() )
+    return;
+
   QSettings settings;
 
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();

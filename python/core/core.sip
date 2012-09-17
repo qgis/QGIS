@@ -98,6 +98,7 @@
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectoroverlay.sip
+%Include qgscredentials.sip
 
 %Include qgsnetworkaccessmanager.sip
 
