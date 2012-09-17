@@ -63,6 +63,8 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static bool greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    /**Calculates a representative color for a box (pixel weighted average)*/
+    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
 };
 
 #endif

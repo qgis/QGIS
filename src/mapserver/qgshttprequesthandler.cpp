@@ -522,9 +522,15 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, c
     }
   }
 
-  bool debug = true; //only for breakpoint
-
-  //todo: evaluate the colors of the final boxes
+  //get representative colors for the boxes
+  int index = 0;
+  colorTable.resize( colorBoxMap.size() );
+  QgsColorBoxMap::const_iterator colorBoxIt = colorBoxMap.constBegin();
+  for ( ; colorBoxIt != colorBoxMap.constEnd(); ++colorBoxIt )
+  {
+    colorTable[index] = boxColor( colorBoxIt.value(), colorBoxIt.key() );
+    ++index;
+  }
 }
 
 void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage& image )
@@ -714,4 +720,30 @@ bool QgsHttpRequestHandler::blueCompare( const QPair<QRgb, int>& c1, const QPair
 bool QgsHttpRequestHandler::alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
 {
   return qAlpha( c1.first ) < qAlpha( c2.first );
+}
+
+QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels )
+{
+  double avRed = 0;
+  double avGreen = 0;
+  double avBlue = 0;
+  double avAlpha = 0;
+  QRgb currentColor;
+  int currentPixel;
+
+  double weight;
+
+  QgsColorBox::const_iterator colorBoxIt = box.constBegin();
+  for ( ; colorBoxIt != box.constEnd(); ++colorBoxIt )
+  {
+    currentColor = colorBoxIt->first;
+    currentPixel = colorBoxIt->second;
+    weight = currentPixel / boxPixels;
+    avRed += ( qRed( currentColor ) * weight );
+    avGreen += ( qGreen( currentColor ) * weight );
+    avBlue += ( qBlue( currentColor ) * weight );
+    avAlpha += ( qAlpha( currentColor ) * weight );
+  }
+
+  return qRgba( avRed, avGreen, avBlue, avAlpha );
 }
