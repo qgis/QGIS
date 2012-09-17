@@ -477,6 +477,19 @@ void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, c
   QHash<QRgb, int> inputColors;
   imageColors( inputColors, inputImage );
 
+  if ( inputColors.size() <= nColors ) //all the colors in the image can be mapped to one palette color
+  {
+    colorTable.resize( inputColors.size() );
+    int index = 0;
+    QHash<QRgb, int>::const_iterator inputColorIt = inputColors.constBegin();
+    for ( ; inputColorIt != inputColors.constEnd(); ++inputColorIt )
+    {
+      colorTable[index] = inputColorIt.key();
+      ++index;
+    }
+    return;
+  }
+
   //create first box
   QgsColorBox firstBox; //QList< QPair<QRgb, int> >
   int firstBoxPixelSum = 0;
