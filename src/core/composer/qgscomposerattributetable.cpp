@@ -140,6 +140,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
       }
       catch ( QgsCsException &cse )
       {
+        Q_UNUSED( cse );
         return false;
       }
     }
