@@ -296,9 +296,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     QgsCptCityBrowserModel( QObject* parent = 0,
                             QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
                             ViewType Type = Authors );
-    QgsCptCityBrowserModel( QObject* parent = 0,
-                            QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
-                            QVector< QgsCptCityDataItem* > rootItems = 0 );
     ~QgsCptCityBrowserModel();
 
     // implemented methods from QAbstractItemModel for read-only access

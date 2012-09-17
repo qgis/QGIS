@@ -1251,18 +1251,9 @@ QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
 {
   Q_ASSERT( mArchive != NULL );
   QgsDebugMsg( "archiveName = " + archive->archiveName() + " viewType=" + ( int ) viewType );
+  // keep iconsize for now, but not effectively used
   mIconSize = QSize( 100, 15 );
   addRootItems();
-}
-
-QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
-    QgsCptCityArchive* archive, QVector< QgsCptCityDataItem* > rootItems )
-    : QAbstractItemModel( parent ), mArchive( archive ), mViewType( List )
-{
-  Q_ASSERT( mArchive != NULL );
-  QgsDebugMsg( QString( "archiveName = %1 / %2 rootItems" ).arg( archive->archiveName() ).arg( rootItems.count() ) );
-  mIconSize = QSize( 75, 50 ); // TODO pass this as an argument
-  mRootItems = rootItems;
 }
 
 QgsCptCityBrowserModel::~QgsCptCityBrowserModel()
@@ -1334,6 +1325,7 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
   else if ( role == Qt::DecorationRole && index.column() == 1 &&
             item->type() == QgsCptCityDataItem::ColorRamp )
   {
+    // keep iconsize for now, but not effectively used
     return item->icon( mIconSize );
   }
   else if ( role == Qt::FontRole &&
