@@ -80,6 +80,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
+ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
 ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
