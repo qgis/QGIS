@@ -36,11 +36,27 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
 QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
 {
   QgsRasterShader *shader = 0;
+
   if ( mShader )
   {
     shader = new QgsRasterShader( mShader->minimumValue(), mShader->maximumValue() );
+
+    // Shader function
+    const QgsColorRampShader* origColorRampShader = dynamic_cast<const QgsColorRampShader*>( mShader->rasterShaderFunction() );
+
+    if ( origColorRampShader )
+    {
+      QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
+
+      colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
+
+      colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
+      shader->setRasterShaderFunction( colorRampShader );
+    }
   }
   QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( 0, mBand, shader );
+
+
   return renderer;
 }
 
@@ -91,7 +107,7 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   void* rasterData = mInput->block( mBand, extent, width, height );
   if ( ! rasterData )
   {
-    QgsDebugMsg("No raster data!" );
+    QgsDebugMsg( "No raster data!" );
     return 0;
   }
 
