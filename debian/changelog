@@ -6,10 +6,10 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * symbology-ng-style now in sqlite3
   * include cpt-city files
   * support DEB_BUILD_OPTIONS' parallel=n
-  * add python-unittest2 build dependency for lucid, maverick and squeeze
+  * add python-unittest2 build dependency for maverick and squeeze
   * add python-qscintilla2 dependency to python-qgis
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 15 Sep 2012 22:51:38 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 17 Sep 2012 18:08:47 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
