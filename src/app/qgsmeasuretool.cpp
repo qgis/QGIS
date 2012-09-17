@@ -46,6 +46,9 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 
   mDialog = new QgsMeasureDialog( this );
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
@@ -120,7 +123,7 @@ void QgsMeasureTool::updateSettings()
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
   int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
-
+  mDialog->updateSettings();
 }
 
 //////////////////////////

@@ -5671,6 +5671,10 @@ void QgisApp::options()
     {
       mScaleEdit->updateScales();
     }
+
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+    qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
   }
 
   delete optionsDialog;
@@ -6823,6 +6827,10 @@ void QgisApp::projectProperties()
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
+
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+  qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
 
   // Set the window title.
   setTitleBarText_( *this );

@@ -48,19 +48,11 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   item->setTextAlignment( 0, Qt::AlignRight );
   mTable->addTopLevelItem( item );
 
-  // Update whenever the canvas has refreshed. Maybe more often than needed,
-  // but at least every time any canvas related settings changes
-  connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
-           this, SLOT( updateSettings() ) );
-
   updateSettings();
 }
 
 void QgsMeasureDialog::updateSettings()
 {
-  if ( !isVisible() )
-    return;
-
   QSettings settings;
 
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();

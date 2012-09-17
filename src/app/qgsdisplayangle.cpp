@@ -24,21 +24,11 @@ QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );
-  QSettings settings;
-
-  // Update whenever the canvas has refreshed. Maybe more often than needed,
-  // but at least every time any canvas related settings changes
-  connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
-           this, SLOT( updateSettings() ) );
-
-  updateSettings();
 }
 
 QgsDisplayAngle::~QgsDisplayAngle()
 {
-
 }
-
 
 void QgsDisplayAngle::setValueInRadians( double value )
 {
@@ -46,14 +36,8 @@ void QgsDisplayAngle::setValueInRadians( double value )
   updateUi();
 }
 
-void QgsDisplayAngle::updateSettings()
-{
-  emit changeProjectionEnabledState();
-}
-
 void QgsDisplayAngle::updateUi()
 {
-
   QSettings settings;
   QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
   int decimals = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
