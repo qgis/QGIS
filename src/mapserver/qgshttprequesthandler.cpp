@@ -751,7 +751,7 @@ QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels )
   {
     currentColor = colorBoxIt->first;
     currentPixel = colorBoxIt->second;
-    weight = currentPixel / boxPixels;
+    weight = ( double )currentPixel / boxPixels;
     avRed += ( qRed( currentColor ) * weight );
     avGreen += ( qGreen( currentColor ) * weight );
     avBlue += ( qBlue( currentColor ) * weight );
