@@ -610,6 +610,7 @@ void QgsHttpRequestHandler::splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap
   if ( currentListIndex > ( colorBox.size() - 2 ) ) //if the median is contained in the last color, split one item before that
   {
     --currentListIndex;
+    currentSum -= colorBoxIt->second;
   }
   else
   {
