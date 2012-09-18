@@ -1,6 +1,5 @@
 import os, sys
 import inspect
-import subprocess
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -122,14 +121,8 @@ class SextantePlugin:
         dlg.exec_()
 
     def openAbout(self):
-        dlg = AboutDialog(self)
+        dlg = AboutDialog()
         dlg.exec_()
 
     def openHelp(self):
-        filename = os.path.dirname(__file__) + "/help/index.html"
-        if os.name == "nt":
-            os.startfile(filename)
-        elif sys.platform == "darwin":
-            subprocess.Popen(('open', filename))
-        else:
-            subprocess.call(('xdg-open', filename))
+        QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
