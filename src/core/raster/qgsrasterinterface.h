@@ -60,6 +60,16 @@ class CORE_EXPORT QgsRasterInterface
       TypeCount = 14          /* maximum type # + 1 */
     };
 
+    struct Range
+    {
+      double min;
+      double max;
+      inline bool operator==( const Range &o ) const
+      {
+        return min == o.min && max == o.max;
+      }
+    };
+
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
@@ -220,6 +230,12 @@ class CORE_EXPORT QgsRasterInterface
     inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
     inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
 
+    /** \brief Test if value is within the list of ranges
+     *  @param value value
+     *  @param rangeList list of ranges
+     *  @return true if value is in at least one of ranges */
+    inline static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
+
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
     QVector<double> mTime;
@@ -306,6 +322,20 @@ inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::Data
       //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
       break;
   }
+}
+
+inline bool QgsRasterInterface::valueInRange( double value, QList<QgsRasterInterface::Range> rangeList )
+{
+  foreach ( QgsRasterInterface::Range range, rangeList )
+  {
+    if (( value >= range.min && value <= range.max ) ||
+        doubleNear( value, range.min ) ||
+        doubleNear( value, range.max ) )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif

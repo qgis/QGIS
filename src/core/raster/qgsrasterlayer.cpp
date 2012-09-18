@@ -1687,6 +1687,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
  */
 void QgsRasterLayer::setDataProvider( QString const & provider )
 {
+  QgsDebugMsg( "Entered" );
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
@@ -2500,6 +2501,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 */
 bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 {
+  QgsDebugMsg( "Entered" );
   //! @note Make sure to read the file first so stats etc are initialised properly!
 
   //process provider key
@@ -2564,6 +2566,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 
   setDataProvider( mProviderKey );
 
+
   QString theError;
   bool res = readSymbology( layer_node, theError );
 
@@ -2587,6 +2590,36 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
+    }
+  }
+
+  // Load user no data value
+  QDomElement noDataElement = layer_node.firstChildElement( "noData" );
+
+  QDomNodeList noDataBandList = noDataElement.elementsByTagName( "noDataRangeList" );
+
+  for ( int i = 0; i < noDataBandList.size(); ++i )
+  {
+    QDomElement bandElement = noDataBandList.at( i ).toElement();
+    bool ok;
+    int bandNo = bandElement.attribute( "bandNo" ).toInt( &ok );
+    QgsDebugMsg( QString( "bandNo = %1" ).arg( bandNo ) );
+    if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
+    {
+      QList<QgsRasterInterface::Range> myNoDataRangeList;
+
+      QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
+
+      for ( int j = 0; j < rangeList.size(); ++j )
+      {
+        QDomElement rangeElement = rangeList.at( j ).toElement();
+        QgsRasterInterface::Range myNoDataRange;
+        myNoDataRange.min = rangeElement.attribute( "min" ).toDouble();
+        myNoDataRange.max = rangeElement.attribute( "max" ).toDouble();
+        QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min ) );
+        myNoDataRangeList << myNoDataRange;
+      }
+      mDataProvider->setUserNoDataValue( bandNo, myNoDataRangeList );
     }
   }
 
@@ -2645,6 +2678,33 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
   QDomText providerText = document.createTextNode( mProviderKey );
   provider.appendChild( providerText );
   layer_node.appendChild( provider );
+
+  // User no data
+  QDomElement noData  = document.createElement( "noData" );
+
+  for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
+  {
+    if ( mDataProvider->userNoDataValue( bandNo ).isEmpty() ) continue;
+
+    QDomElement noDataRangeList = document.createElement( "noDataRangeList" );
+    noDataRangeList.setAttribute( "bandNo", bandNo );
+
+    foreach ( QgsRasterInterface::Range range, mDataProvider->userNoDataValue( bandNo ) )
+    {
+      QDomElement noDataRange =  document.createElement( "noDataRange" );
+
+      noDataRange.setAttribute( "min", range.min );
+      noDataRange.setAttribute( "max", range.max );
+      noDataRangeList.appendChild( noDataRange );
+    }
+
+    noData.appendChild( noDataRangeList );
+
+  }
+  if ( noData.hasChildNodes() )
+  {
+    layer_node.appendChild( noData );
+  }
 
   //write out the symbology
   QString errorMsg;

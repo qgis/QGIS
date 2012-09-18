@@ -542,9 +542,22 @@ void QgsRasterLayerProperties::sync()
   }
 
   //add current NoDataValue to NoDataValue line edit
-  if ( mRasterLayer->isNoDataValueValid() )
+  // TODO: should be per band
+  // TODO: no data ranges
+  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
   {
-    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'g' ) );
+    lblSrcNoDataValue->setText( QgsRasterInterface::printValue( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
+  }
+  else
+  {
+    lblSrcNoDataValue->setText( tr( "not defined" ) );
+  }
+
+  QList<QgsRasterInterface::Range> noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
+  QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+  if ( noDataRangeList.size() > 0 )
+  {
+    leNoDataValue->insert( QgsRasterInterface::printValue( noDataRangeList.value( 0 ).min ) );
   }
   else
   {
@@ -650,11 +663,18 @@ void QgsRasterLayerProperties::apply()
   bool myDoubleOk = false;
   if ( "" != leNoDataValue->text() )
   {
+    QList<QgsRasterInterface::Range> myNoDataRangeList;
     double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
     if ( myDoubleOk )
     {
       mRasterLayer->setNoDataValue( myNoDataValue );
+      QgsRasterInterface::Range myNoDataRange;
+      myNoDataRange.min = myNoDataValue;
+      myNoDataRange.max = myNoDataValue;
+
+      myNoDataRangeList << myNoDataRange;
     }
+    mRasterLayer->dataProvider()->setUserNoDataValue( 1, myNoDataRangeList );
   }
 
   //set renderer from widget
@@ -1551,6 +1571,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
 
+#if 0
 void QgsRasterLayerProperties::on_btnResetNull_clicked( )
 {
   //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
@@ -1564,6 +1585,7 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
     leNoDataValue->clear();
   }
 }
+#endif
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {
