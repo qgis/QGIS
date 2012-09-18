@@ -63,6 +63,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void init();
     void showEvent( QShowEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
+    void changeEvent( QEvent *event );
+
     void updateStyle();
     QRect titleRect() const;
     QString saveKey() const;

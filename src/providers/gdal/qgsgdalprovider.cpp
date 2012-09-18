@@ -2285,7 +2285,6 @@ void QgsGdalProvider::initBaseDataset()
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
       mGdalDataType.append( myGdalDataType );
-
     }
     else
     {
@@ -2322,6 +2321,7 @@ void QgsGdalProvider::initBaseDataset()
           mGdalDataType.append( myGdalDataType );
       }
     }
+    //mSrcNoDataValue.append( myNoDataValue );
     mNoDataValue.append( myNoDataValue );
     QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
   }

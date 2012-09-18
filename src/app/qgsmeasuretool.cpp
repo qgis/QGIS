@@ -40,12 +40,15 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
-  mDone = false;
+  mDone = true;
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
 
   mDialog = new QgsMeasureDialog( this );
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
@@ -100,14 +103,14 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
   // Append point we will move
-  mPoints.append( QgsPoint( 0, 0 ) );
+  // mPoints.append( QgsPoint( 0, 0 ) );
 
   mRubberBand->reset( mMeasureArea );
 
   // re-read settings
   updateSettings();
 
-  mDone = false;
+  mDone = true;
   mWrongProjectProjection = false;
 
 }
@@ -120,7 +123,7 @@ void QgsMeasureTool::updateSettings()
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
   int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
-
+  mDialog->updateSettings();
 }
 
 //////////////////////////
@@ -132,9 +135,10 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
     if ( mDone )
     {
       mDialog->restart();
+      QgsPoint point = snapPoint( e->pos() );
+      addPoint( point );
+      mDone = false;
     }
-    QgsPoint idPoint = snapPoint( e->pos() );
-    // mDialog->mousePress( idPoint );
   }
 }
 

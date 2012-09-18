@@ -300,6 +300,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** value representing null data */
     virtual double noDataValue() const { return 0; }
 
+    /** Value representing original source no data. This value my differ from
+     *  if it was overwritten by user */
+    virtual double noDataValue( int bandNo ) const { return mNoDataValue.value( bandNo -1 ); }
+
+    /** Value representing no data value. */
+    //virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value(bandNo-1); }
+
+    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData );
+
+    /** Get list of user no data value ranges */
+    virtual  QList<QgsRasterInterface::Range> userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
+
     virtual double minimumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
     virtual double maximumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
 
@@ -590,11 +602,24 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     @note: this member has been added in version 1.2*/
     int mDpi;
 
-    /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
+    /** \brief Cell value representing original source no data. e.g. -9999, indexed from 0  */
+    //QList<double> mSrcNoDataValue;
+
+    /** \brief Cell value representing no data. e.g. -9999, indexed from 0.
+     *  Currently the values is the same as in mSrcNoDataValue, but a possibility
+     *  to overwrite/disable original no data value could be added (?), in that
+     *  case this value would be different. But original source no data value
+     *  cannot be disabled without add additional user nodata (there would not be
+     *  any guaranteed free nodata value available (to represent nodata in
+     *  reprojection for example) */
     QList<double> mNoDataValue;
 
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
+
+    /** \brief List of lists of user defined additional no data values
+     *  for each band, indexed from 0 */
+    QList< QList<QgsRasterInterface::Range> > mUserNoDataValue;
 
     QgsRectangle mExtent;
 

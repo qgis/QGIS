@@ -56,7 +56,8 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
   protected:
 
     void updatePreview( bool clear = false );
-    void updateCopyingInfo( const QMap< QString, QString >& copyingMap = QMap< QString, QString >() );
+    void clearCopyingInfo();
+    void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
     void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
     void updateListWidget( QgsCptCityDataItem *item );
     bool eventFilter( QObject *obj, QEvent *event );

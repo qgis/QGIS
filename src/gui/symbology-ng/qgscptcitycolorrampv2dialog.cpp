@@ -290,7 +290,7 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
     lblSchemePath->setText( "" );
     // lblCollectionName->setText( item->path() );
     lblCollectionInfo->setText( item->info() );
-    updateCopyingInfo( );
+    clearCopyingInfo( );
     updateListWidget( item );
   }
   else
@@ -434,6 +434,11 @@ void QgsCptCityColorRampV2Dialog::updatePreview( bool clear )
   updateCopyingInfo( mRamp->copyingInfo() );
 }
 
+void QgsCptCityColorRampV2Dialog::clearCopyingInfo()
+{
+  updateCopyingInfo( QMap< QString, QString >() );
+}
+
 void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
 {
   QString authorStr = copyingMap.value( "authors" );
@@ -544,7 +549,7 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   mListRamps.clear();
   cboVariantName->clear();
   updatePreview( true );
-  updateCopyingInfo( );
+  clearCopyingInfo( );
 
   QgsDebugMsg( "schemeName= " + mRamp->schemeName() );
   if ( mRamp->schemeName() == "" )

@@ -60,6 +60,16 @@ class CORE_EXPORT QgsRasterInterface
       TypeCount = 14          /* maximum type # + 1 */
     };
 
+    struct Range
+    {
+      double min;
+      double max;
+      inline bool operator==( const Range &o ) const
+      {
+        return min == o.min && max == o.max;
+      }
+    };
+
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
@@ -168,6 +178,9 @@ class CORE_EXPORT QgsRasterInterface
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
+    /** Current input */
+    virtual QgsRasterInterface * input() const { return mInput; }
+
     /** Is on/off */
     virtual bool on( ) { return mOn; }
 
@@ -178,8 +191,16 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface * srcInput() const { return mInput ? mInput->srcInput() : this; }
-    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : this; }
+    virtual const QgsRasterInterface * srcInput() const
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
+    virtual QgsRasterInterface * srcInput()
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
 
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
@@ -219,6 +240,12 @@ class CORE_EXPORT QgsRasterInterface
 
     inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
     inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+
+    /** \brief Test if value is within the list of ranges
+     *  @param value value
+     *  @param rangeList list of ranges
+     *  @return true if value is in at least one of ranges */
+    inline static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
 
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
@@ -306,6 +333,20 @@ inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::Data
       //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
       break;
   }
+}
+
+inline bool QgsRasterInterface::valueInRange( double value, QList<QgsRasterInterface::Range> rangeList )
+{
+  foreach ( QgsRasterInterface::Range range, rangeList )
+  {
+    if (( value >= range.min && value <= range.max ) ||
+        doubleNear( value, range.min ) ||
+        doubleNear( value, range.max ) )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif

@@ -76,7 +76,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnRemoveSelectedRow_clicked();
     /** \brief slot executed when the single band radio button is pressed. */
     /** \brief slot executed when the reset null value to file default icon is selected */
-    void on_btnResetNull_clicked( );
+    //void on_btnResetNull_clicked( );
 
     void pixelSelected( const QgsPoint& );
     /** \brief slot executed when the transparency level changes. */

@@ -106,7 +106,27 @@ void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & exten
     QgsDebugMsg( QString( "Couldn't allocate data memory of % bytes" ).arg( dataTypeSize( bandNo ) * width * height ) );
     return 0;
   }
+
   readBlock( bandNo, extent, width, height, data );
+
+  // apply user no data values
+  // TODO: there are other readBlock methods where no data are not applied
+  QList<QgsRasterInterface::Range> myNoDataRangeList = userNoDataValue( bandNo );
+  if ( !myNoDataRangeList.isEmpty() )
+  {
+    QgsRasterInterface::DataType type = dataType( bandNo );
+    double myNoDataValue = noDataValue( bandNo );
+    size_t size = width * height;
+    for ( size_t i = 0; i < size; i++ )
+    {
+      double value = readValue( data, type, i );
+
+      if ( QgsRasterInterface::valueInRange( value, myNoDataRangeList ) )
+      {
+        writeValue( data, type, i, myNoDataValue );
+      }
+    }
+  }
 
   return data;
 }
@@ -1044,6 +1064,38 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
   }
 
   return mValidNoDataValue ? noDataValue() : 0.0;
+}
+
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData )
+{
+  //if ( bandNo > bandCount() ) return;
+  if ( bandNo >= mUserNoDataValue.size() )
+  {
+    for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
+    {
+      mUserNoDataValue.append( QList<QgsRasterInterface::Range>() );
+    }
+  }
+  QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );
+
+  if ( mUserNoDataValue[bandNo-1] != noData )
+  {
+    // Clear statistics
+    int i = 0;
+    while ( i < mStatistics.size() )
+    {
+      if ( mStatistics.value( i ).bandNumber == bandNo )
+      {
+        mStatistics.removeAt( i );
+        mHistograms.removeAt( i );
+      }
+      else
+      {
+        i++;
+      }
+    }
+    mUserNoDataValue[bandNo-1] = noData;
+  }
 }
 
 // ENDS
