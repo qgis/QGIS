@@ -6,6 +6,8 @@ from PyQt4.QtGui import *
 from sextante.__init__ import version
 from ui_aboutdialogbase import Ui_DlgAbout
 
+import sextante.resources_rc
+
 class AboutDialog(QDialog, Ui_DlgAbout):
 
     def __init__(self, parent):
@@ -15,9 +17,8 @@ class AboutDialog(QDialog, Ui_DlgAbout):
         self.setAboutText()
 
     def setAboutText(self):
-        imgPath = QDir(os.path.join(os.path.dirname(__file__), "sextante_logo.png")).absolutePath()
         strAbout = self.tr("""
-<img src="%1" />
+<img src="qrc:/sextante/images/sextante_logo.png" />
 <h2>SEXTANTE for QGIS</h2>
 <p>SEXTANTE, a geoprocessing platform for QGIS</p>
 <p>A development by Victor Olaya (volayaf@gmail.com).</p>
@@ -31,8 +32,8 @@ class AboutDialog(QDialog, Ui_DlgAbout):
 <li>Camilo Polymeris (Threading). Developed as part of Google Summer of Code 2012</li>
 </ul>
 </p>
-<p>You are currently using SEXTANTE v%2</p>
+<p>You are currently using SEXTANTE v%1</p>
 <p>This software is distributed under the terms of the GNU GPL License v2.
 <p>For more information, please visit our website at <a href="http://sextantegis.com">http://sextantegis.com</a></p>
-        """).arg(imgPath).arg(version())
-        self.webView.setHtml(strAbout, QUrl.fromLocalFile(QDir(os.path.join(os.path.dirname(__file__), "sextante_logo.png")).absolutePath()))
+        """).arg(version())
+        self.webView.setHtml(strAbout)
