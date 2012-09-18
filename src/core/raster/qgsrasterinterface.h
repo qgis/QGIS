@@ -178,6 +178,9 @@ class CORE_EXPORT QgsRasterInterface
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
+    /** Current input */
+    virtual QgsRasterInterface * input() const { return mInput; }
+
     /** Is on/off */
     virtual bool on( ) { return mOn; }
 
@@ -188,8 +191,16 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface * srcInput() const { return mInput ? mInput->srcInput() : this; }
-    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : this; }
+    virtual const QgsRasterInterface * srcInput() const
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
+    virtual QgsRasterInterface * srcInput()
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
 
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.

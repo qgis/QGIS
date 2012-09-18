@@ -84,22 +84,31 @@ class QgsRasterInterface
 
     virtual double noDataValue() const;
 
-    //void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    virtual void * block( int bandNo, const QgsRectangle  & extent, int width, int height );
 
-    //virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     virtual bool setInput( QgsRasterInterface* input );
+
+    virtual QgsRasterInterface * input () const;
 
     virtual bool on( );
 
     virtual void setOn( bool on );
 
-    virtual QgsRasterInterface * srcInput();
+    QgsRasterInterface * srcInput();
 
     QImage * createImage( int width, int height, QImage::Format format );
 
     void setStatsOn( bool on );
 
     double time( bool cumulative = false );
+
+    static QString printValue( double value );
+
+  protected:
+    static double readValue( void *data, QgsRasterInterface::DataType type, int index );
+
+    static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
 };
 

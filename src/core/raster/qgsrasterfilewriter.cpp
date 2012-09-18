@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <typeinfo>
+
 #include "qgsrasterfilewriter.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterinterface.h"
@@ -65,11 +67,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     return SourceProviderError;
   }
 
+  QgsDebugMsg( QString( "reading from %1" ).arg( typeid( *iface ).name() ) );
+
   if ( !iface->srcInput() )
   {
     QgsDebugMsg( "iface->srcInput() == 0" );
     return SourceProviderError;
   }
+  QgsDebugMsg( QString( "srcInput = %1" ).arg( typeid( *( iface->srcInput() ) ).name() ) );
 
   mProgressDialog = progressDialog;
 
