@@ -1,37 +1,38 @@
-from PyQt4 import QtCore, QtGui, QtWebKit
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 import os
 
-class AboutDialog(QtGui.QDialog):
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-    def __init__(self):
-        QtGui.QDialog.__init__(self)
-        self.setModal(True)
-        self.setupUi()
+from sextante.__init__ import version
+from ui_aboutdialogbase import Ui_DlgAbout
 
-    def setupUi(self):
-        self.resize(600, 500)
-        self.webView = QtWebKit.QWebView()
-        self.setWindowTitle("About SEXTANTE")
-        self.verticalLayout= QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.addWidget(self.webView)
-        self.closeButton = QtGui.QPushButton()
-        self.closeButton.setText("Close")
-        self.closeButton.setMaximumWidth(150)
-        self.horizontalLayout= QtGui.QHBoxLayout()
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.addStretch(1000)
-        self.horizontalLayout.addWidget(self.closeButton)
-        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.setLayout(self.verticalLayout)
-        filename = os.path.dirname(__file__) + "/about.htm"
-        url = QtCore.QUrl(filename)
-        self.webView.load(url)
+class AboutDialog(QDialog, Ui_DlgAbout):
 
-    def closeWindow(self):
-        self.close()
+    def __init__(self, parent):
+        QDialog.__init__(self)
+        self.setupUi(self)
+
+        self.setAboutText()
+
+    def setAboutText(self):
+        imgPath = QDir(os.path.join(os.path.dirname(__file__), "sextante_logo.png")).absolutePath()
+        strAbout = self.tr("""
+<img src="%1" />
+<h2>SEXTANTE for QGIS</h2>
+<p>SEXTANTE, a geoprocessing platform for QGIS</p>
+<p>A development by Victor Olaya (volayaf@gmail.com).</p>
+<p>Portions of this software contributed by:
+<ul>
+<li>Alexander Bruy</li>
+<li>Carson Farmer (fTools algorithms)</li>
+<li>Julien Malik (Orfeo Toolbox connectors)</li>
+<li>Evgeniy Nikulin (Original Field Pyculator code)</li>
+<li>Michael Nimm (mmqgis algorithms)</li>
+<li>Camilo Polymeris (Threading). Developed as part of Google Summer of Code 2012</li>
+</ul>
+</p>
+<p>You are currently using SEXTANTE v%2</p>
+<p>This software is distributed under the terms of the GNU GPL License v2.
+<p>For more information, please visit our website at <a href="http://sextantegis.com">http://sextantegis.com</a></p>
+        """).arg(imgPath).arg(version())
+        self.webView.setHtml(strAbout, QUrl.fromLocalFile(QDir(os.path.join(os.path.dirname(__file__), "sextante_logo.png")).absolutePath()))

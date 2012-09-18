@@ -1,18 +1,24 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
 import os, sys
 import inspect
-from sextante.core.Sextante import Sextante
-from sextante.gui.SextanteToolbox import SextanteToolbox
-from sextante.core.QGisLayers import QGisLayers
-from sextante.gui.HistoryDialog import HistoryDialog
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.gui.ConfigDialog import ConfigDialog
-from sextante.modeler.ModelerDialog import ModelerDialog
-from sextante.gui.ResultsDialog import ResultsDialog
-from sextante.about.AboutDialog import AboutDialog
 import subprocess
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+from qgis.core import *
+
+from sextante.core.Sextante import Sextante
+from sextante.core.QGisLayers import QGisLayers
+from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.gui.SextanteToolbox import SextanteToolbox
+from sextante.gui.HistoryDialog import HistoryDialog
+from sextante.gui.ConfigDialog import ConfigDialog
+from sextante.gui.ResultsDialog import ResultsDialog
+
+from sextante.modeler.ModelerDialog import ModelerDialog
+
+from sextante.about.AboutDialog import AboutDialog
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -32,47 +38,54 @@ class SextantePlugin:
         Sextante.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow())
-        self.menu.setTitle("Analysis")
+        self.menu.setTitle(QCoreApplication.translate("SEXTANTE", "Analysis"))
 
         icon = QIcon(os.path.dirname(__file__) + "/images/toolbox.png")
         self.toolboxAction = QAction(icon, \
-            "&SEXTANTE Toolbox", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Toolbox"),
+            self.iface.mainWindow())
         QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
         self.menu.addAction(self.toolboxAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/model.png")
         self.modelerAction = QAction(icon, \
-            "&SEXTANTE Modeler", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Modeler"),
+            self.iface.mainWindow())
         QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
         self.menu.addAction(self.modelerAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/history.gif")
         self.historyAction = QAction(icon, \
-            "&SEXTANTE History and log", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE History and log"),
+            self.iface.mainWindow())
         QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
         self.menu.addAction(self.historyAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/config.png")
         self.configAction = QAction(icon, \
-            "&SEXTANTE options and configuration", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE options and configuration"),
+            self.iface.mainWindow())
         QObject.connect(self.configAction, SIGNAL("triggered()"), self.openConfig)
         self.menu.addAction(self.configAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/results.png")
         self.resultsAction = QAction(icon, \
-            "&SEXTANTE results viewer", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE results viewer"),
+            self.iface.mainWindow())
         QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
         self.menu.addAction(self.resultsAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/help.png")
         self.helpAction = QAction(icon, \
-            "&SEXTANTE help", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
+            self.iface.mainWindow())
         QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
         self.menu.addAction(self.helpAction)
 
         icon = QIcon(os.path.dirname(__file__) + "/images/info.png")
         self.aboutAction = QAction(icon, \
-            "&About SEXTANTE", self.iface.mainWindow())
+            QCoreApplication.translate("SEXTANTE", "&About SEXTANTE"),
+            self.iface.mainWindow())
         QObject.connect(self.aboutAction, SIGNAL("triggered()"), self.openAbout)
         self.menu.addAction(self.aboutAction)
 
@@ -91,7 +104,6 @@ class SextantePlugin:
             except:
                 #leave files that could not be deleted
                 pass
-
 
     def openToolbox(self):
         self.toolbox.setVisible(True)
@@ -115,7 +127,7 @@ class SextantePlugin:
         dlg.exec_()
 
     def openAbout(self):
-        dlg = AboutDialog()
+        dlg = AboutDialog(self)
         dlg.exec_()
 
     def openHelp(self):
@@ -126,5 +138,3 @@ class SextantePlugin:
             subprocess.Popen(('open', filename))
         else:
             subprocess.call(('xdg-open', filename))
-
-
