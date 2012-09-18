@@ -98,7 +98,6 @@ void QgsMeasureDialog::restart()
 
 void QgsMeasureDialog::mousePress( QgsPoint &point )
 {
-
   show();
   raise();
   if ( ! mTool->done() )
@@ -144,7 +143,6 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
 {
   Q_UNUSED( p );
 
-  QgsDebugMsg( "Entering" );
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
