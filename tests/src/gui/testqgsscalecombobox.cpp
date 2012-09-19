@@ -79,6 +79,13 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "42:1" ) );
   QCOMPARE( s->scale(), ( double ) 42 );
 
+  // Testing conversion from illegal
+  l->setText( "" );
+  QTest::keyClicks( l, "1:x:2" );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "42:1" ) );
+  QCOMPARE( s->scale(), ( double ) 42 );
+
 };
 
 void TestQgsScaleComboBox::slot_test()

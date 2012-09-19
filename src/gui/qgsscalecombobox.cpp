@@ -119,38 +119,13 @@ void QgsScaleComboBox::fixupScale()
   bool ok;
   QStringList txtList;
 
-  newScale = QLocale::system().toDouble( currentText(), &ok );
+  newScale = toDouble( currentText(), &ok );
   if ( ok )
   {
-    // Create a text version and set that text and rescan again
-    // Idea is to get the same rounding.
-    setEditText( toString( newScale ) );
+    mScale = newScale;
   }
-  ok = false;
-  // Is now either X:Y or not valid
-  txtList = currentText().split( ':' );
-  if ( 2 == txtList.size() )
-  {
-    bool okX = false;
-    bool okY = false;
-    int x = QLocale::system().toInt( txtList[ 0 ], &okX );
-    int y = QLocale::system().toInt( txtList[ 1 ], &okY );
-    if ( okX && okY )
-    {
-      // New scale is fraction of x and y
-      // Text should be OK now.
-      // Just update the scale.
-      mScale = ( double )x / ( double )y;
-      // And emit a signal that something has changed.
-      emit scaleChanged();
-      ok = true;
-    }
-  }
-  if ( ! ok )
-  {
-    // Set to what it whas before
-    setEditText( toString( mScale ) );
-  }
+  // We set to the new string representation.
+  setEditText( toString( mScale ) );
 }
 
 QString QgsScaleComboBox::toString( double scale )
@@ -168,26 +143,33 @@ QString QgsScaleComboBox::toString( double scale )
 double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
 {
   bool ok = false;
-  double scale = QLocale::system().toDouble( scaleString, &ok );
-  if ( ! ok )
+  QString scaleTxt( scaleString );
+
+  double scale = QLocale::system().toDouble( scaleTxt, &ok );
+  if ( ok )
   {
-    // It wasn't a decimal scale
-    // It is now either X:Y or not valid
-    QStringList txtList = scaleString.split( ':' );
-    if ( 2 == txtList.size() )
+    // Create a text version and set that text and rescan
+    // Idea is to get the same rounding.
+    scaleTxt = toString( scale );
+  }
+  // It is now either X:Y or not valid
+  ok = false;
+  QStringList txtList = scaleTxt.split( ':' );
+  if ( 2 == txtList.size() )
+  {
+    bool okX = false;
+    bool okY = false;
+    int x = QLocale::system().toInt( txtList[ 0 ], &okX );
+    int y = QLocale::system().toInt( txtList[ 1 ], &okY );
+    if ( okX && okY )
     {
-      bool okX = false;
-      bool okY = false;
-      int x = QLocale::system().toInt( txtList[ 0 ], &okX );
-      int y = QLocale::system().toInt( txtList[ 1 ], &okY );
-      if ( okX && okY )
-      {
-        // Scale is fraction of x and y
-        scale = ( double )x / ( double )y;
-        ok = true;
-      }
+      // Scale is fraction of x and y
+      scale = ( double )x / ( double )y;
+      ok = true;
     }
   }
+
+  // Set up optional return flag
   if ( returnOk )
   {
     *returnOk = ok;
