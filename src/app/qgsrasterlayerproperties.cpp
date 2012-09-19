@@ -660,21 +660,24 @@ void QgsRasterLayerProperties::apply()
    */
 
   //set NoDataValue
-  bool myDoubleOk = false;
+  QList<QgsRasterInterface::Range> myNoDataRangeList;
   if ( "" != leNoDataValue->text() )
   {
-    QList<QgsRasterInterface::Range> myNoDataRangeList;
+    bool myDoubleOk = false;
     double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
     if ( myDoubleOk )
     {
-      mRasterLayer->setNoDataValue( myNoDataValue );
+      //mRasterLayer->setNoDataValue( myNoDataValue );
       QgsRasterInterface::Range myNoDataRange;
       myNoDataRange.min = myNoDataValue;
       myNoDataRange.max = myNoDataValue;
 
       myNoDataRangeList << myNoDataRange;
     }
-    mRasterLayer->dataProvider()->setUserNoDataValue( 1, myNoDataRangeList );
+  }
+  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
+  {
+    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
   }
 
   //set renderer from widget
