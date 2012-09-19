@@ -19,7 +19,9 @@
 #include "qgsscalecombobox.h"
 
 #include <QAbstractItemView>
+#include <QLocale>
 #include <QSettings>
+#include <QLineEdit>
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
 {
@@ -28,6 +30,8 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( 0 );
+  connect( this, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( fixupScale() ) );
+  connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
 }
 
 QgsScaleComboBox::~QgsScaleComboBox()
@@ -93,4 +97,100 @@ void QgsScaleComboBox::showPopup()
   blockSignals( true );
   view()->setCurrentIndex( model()->index( idx, 0 ) );
   blockSignals( false );
+}
+
+//! Function to read the selected scale as text
+// @note added in 2.0
+QString QgsScaleComboBox::scaleString()
+{
+  return toString( mScale );
+}
+//! Function to read the selected scale as double
+// @note added in 2.0
+double QgsScaleComboBox::scale()
+{
+  return mScale;
+}
+
+//! Slot called when QComboBox has changed
+void QgsScaleComboBox::fixupScale()
+{
+  double newScale;
+  bool ok;
+  QStringList txtList;
+
+  newScale = QLocale::system().toDouble( currentText(), &ok );
+  if ( ok )
+  {
+    // Create a text version and set that text and rescan again
+    // Idea is to get the same rounding.
+    setEditText( toString( newScale ) );
+  }
+  ok = false;
+  // Is now either X:Y or not valid
+  txtList = currentText().split( ':' );
+  if ( 2 == txtList.size() )
+  {
+    bool okX = false;
+    bool okY = false;
+    int x = QLocale::system().toInt( txtList[ 0 ], &okX );
+    int y = QLocale::system().toInt( txtList[ 1 ], &okY );
+    if ( okX && okY )
+    {
+      // New scale is fraction of x and y
+      // Text should be OK now.
+      // Just update the scale.
+      mScale = ( double )x / ( double )y;
+      // And emit a signal that something has changed.
+      emit scaleChanged();
+      ok = true;
+    }
+  }
+  if ( ! ok )
+  {
+    // Set to what it whas before
+    setEditText( toString( mScale ) );
+  }
+}
+
+QString QgsScaleComboBox::toString( double scale )
+{
+  if ( scale > 1 )
+  {
+    return QString( "%1:1" ).arg( qRound( scale ) );
+  }
+  else
+  {
+    return QString( "1:%1" ).arg( qRound( 1.0 / scale ) );
+  }
+}
+
+double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
+{
+  bool ok = false;
+  double scale = QLocale::system().toDouble( scaleString, &ok );
+  if ( ! ok )
+  {
+    // It wasn't a decimal scale
+    // It is now either X:Y or not valid
+    QStringList txtList = scaleString.split( ':' );
+    if ( 2 == txtList.size() )
+    {
+      bool okX = false;
+      bool okY = false;
+      int x = QLocale::system().toInt( txtList[ 0 ], &okX );
+      int y = QLocale::system().toInt( txtList[ 1 ], &okY );
+      if ( okX && okY )
+      {
+        // Scale is fraction of x and y
+        scale = ( double )x / ( double )y;
+        ok = true;
+      }
+    }
+  }
+  if ( returnOk )
+  {
+    *returnOk = ok;
+  }
+  return scale;
 }

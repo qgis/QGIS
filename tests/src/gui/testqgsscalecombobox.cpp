@@ -31,8 +31,9 @@ class TestQgsScaleComboBox: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void basic();
+    void slot_test();
   private:
-    QgsScaleComboBox *mScaleEdit;
+    QgsScaleComboBox *s;
 };
 
 void TestQgsScaleComboBox::initTestCase()
@@ -41,12 +42,12 @@ void TestQgsScaleComboBox::initTestCase()
   QgsApplication::initQgis();
 
   // Create a combobox, and init with predefined scales.
-  mScaleEdit = new QgsScaleComboBox();
+  s = new QgsScaleComboBox();
 };
 
 void TestQgsScaleComboBox::cleanupTestCase()
 {
-  delete mScaleEdit;
+  delete s;
 };
 
 void TestQgsScaleComboBox::init()
@@ -55,11 +56,34 @@ void TestQgsScaleComboBox::init()
 
 void TestQgsScaleComboBox::basic()
 {
-  mScaleEdit->lineEdit()->setText( "" );
-  QTest::keyClicks( mScaleEdit->lineEdit(), "1:2345");
-  QCOMPARE( mScaleEdit->lineEdit()->text(), QString("1:2345"));
+  QLineEdit *l = s->lineEdit();
+
+  // Testing conversion from "1:nnn".
+  l->setText( "" );
+  QTest::keyClicks( l, "1:2345" );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:2345" ) );
+  QCOMPARE( s->scale(), (( double ) 1.0 / ( double ) 2345.0 ) );
+
+  // Testing conversion from number to "1:x"
+  l->setText( "" );
+  QTest::keyClicks( l, QLocale::system().toString( 0.02 ) );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:50" ) );
+  QCOMPARE( s->scale(), ( double ) 0.02 );
+
+  // Testing conversion from number to "x:1"
+  l->setText( "" );
+  QTest::keyClicks( l, QLocale::system().toString( 42 ) );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "42:1" ) );
+  QCOMPARE( s->scale(), ( double ) 42 );
+
 };
- 
+
+void TestQgsScaleComboBox::slot_test()
+{
+}
 void TestQgsScaleComboBox::cleanup()
 {
 };
