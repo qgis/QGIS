@@ -102,8 +102,6 @@ void QgsMeasureTool::deactivate()
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
-  // Append point we will move
-  // mPoints.append( QgsPoint( 0, 0 ) );
 
   mRubberBand->reset( mMeasureArea );
 
@@ -179,6 +177,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::LeftButton )
   {
+    // Append point we will move
     addPoint( point );
     mDialog->show();
   }
