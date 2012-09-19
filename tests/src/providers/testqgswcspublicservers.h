@@ -38,6 +38,7 @@ class TestQgsWcsPublicServers: public QObject
       QStringList versions; // version regex
       QStringList coverages; // coverage regex
       QString description; // problem description
+      Issue( const QString & d ) : description( d ) {}
     };
     struct Server
     {
@@ -48,7 +49,7 @@ class TestQgsWcsPublicServers: public QObject
     };
 
 
-    TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), bool force = false );
+    TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );
 
     void init();
     void test();
@@ -60,6 +61,8 @@ class TestQgsWcsPublicServers: public QObject
 
     QMap<QString, QString> readLog( QString theFileName );
 
+    QStringList issueDescriptions( const QString & url, const QString & coverage, const QString &version );
+
     QString mCacheDirPath;
     QDir mCacheDir;
 
@@ -68,6 +71,7 @@ class TestQgsWcsPublicServers: public QObject
 
     QString mServer;
     QString mCoverage;
+    QString mVersion;
 
     // Force cached
     bool mForce;
