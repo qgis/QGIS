@@ -566,6 +566,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     /////
 
+		Rule* rootRule();
 
     //////
 
@@ -641,71 +642,6 @@ protected:
   QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false);
 
 };
-
-///////////////
-
-class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
-{
-%TypeHeaderCode
-#include <qgssymbollayerv2.h>
-%End
-
-public:
-  virtual void renderPoint(const QPointF& point, QgsSymbolV2RenderContext& context) = 0;
-
-  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
-
-  void setAngle(double angle);
-  double angle() const;
-
-  void setSize(double size);
-  double size() const;
-
-protected:
-  QgsMarkerSymbolLayerV2(bool locked = false);
-
-};
-
-class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
-{
-%TypeHeaderCode
-#include <qgssymbollayerv2.h>
-%End
-
-public:
-  virtual void renderPolyline(const QPolygonF& points, QgsSymbolV2RenderContext& context) = 0;
-
-  //! @note added in v1.7
-  virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
-
-  void setWidth(double width);
-  double width() const;
-  	
-  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
-
-protected:
-  QgsLineSymbolLayerV2(bool locked = false);
-
-};
-
-class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
-{
-%TypeHeaderCode
-#include <qgssymbollayerv2.h>
-%End
-
-public:
-  virtual void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context) = 0;
-
-  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
-
-  void setAngle( double angle );
-  double angle() const;
-
-protected:
-  QgsFillSymbolLayerV2(bool locked = false);
-};
-
 
 ///////////////
 
@@ -905,7 +841,6 @@ public:
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
-
 
 
 class QgsFillSymbolV2 : QgsSymbolV2

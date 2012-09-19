@@ -96,6 +96,9 @@
 %Include qgsnetworkaccessmanager.sip
 
 %Include symbology-ng-core.sip
+%Include qgsmarkersymbollayer.sip
+%Include qgslinesymbollayer.sip
+%Include qgsfillsymbollayer.sip
 
 %Include qgsgpsconnection.sip
 %Include qgsgpsconnectionregistry.sip
