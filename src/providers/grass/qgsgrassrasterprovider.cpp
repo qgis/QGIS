@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <limits>
 
 #include "qgslogger.h"
 #include "qgsgrass.h"
@@ -76,7 +76,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mTimestamp = dataTimestamp();
 
   mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
-  mValidNoDataValue = true;
+  //mValidNoDataValue = true;
 
   mCrs = QgsGrass::crs( mGisdbase, mLocation );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
@@ -92,10 +92,11 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
 
   // TODO: avoid showing these strange numbers in GUI
   // TODO: don't save no data values in project file, add a flag if value was defined by user
+
+  double myInternalNoDataValue;
   if ( mGrassDataType == CELL_TYPE )
   {
-    //limit: -2147483647;
-    mNoDataValue = -2000000000;
+    myInternalNoDataValue = -2147483648;
   }
   else if ( mGrassDataType == DCELL_TYPE )
   {
@@ -105,7 +106,8 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     // No data value is shown in GUI, use some nice number.
     // Choose values with small representation error.
     // limit: 1.7976931348623157e+308
-    mNoDataValue = -1e+300;
+    //myInternalNoDataValue = -1e+300;
+    myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
   }
   else
   {
@@ -115,9 +117,11 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     }
 
     // limit: 3.40282347e+38
-    mNoDataValue = -1e+30;
+    //myInternalNoDataValue = -1e+30;
+    myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
-  QgsDebugMsg( QString( "mNoDataValue = %1" ).arg( mNoDataValue ) );
+  mInternalNoDataValue.append( myInternalNoDataValue );
+  QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
   // We have to decide some reasonable block size, not to big to occupate too much
@@ -285,11 +289,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-double  QgsGrassRasterProvider::noDataValue() const
-{
-  return mNoDataValue;
-}
-
 double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
 {
   Q_UNUSED( bandNo );
@@ -428,7 +427,7 @@ QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
   QString strValue = mRasterValue.value( thePoint.x(), thePoint.y() );
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
 
-  double value = noDataValue();
+  double value = noDataValue( 1 );
 
   if ( strValue != "out" && strValue != "null" )
   {

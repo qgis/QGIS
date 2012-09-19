@@ -166,7 +166,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   // All OK, we can delete the file
   tmpFile.setAutoRemove( ok );
 
-  return true;
+  return ok;
 }
 
 void TestQgsRasterFileWriter::log( QString msg )

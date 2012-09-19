@@ -198,8 +198,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
-    bool srcHasNoDataValue( int bandNo ) const;
-    double noDataValue() const;
+    //bool srcHasNoDataValue( int bandNo ) const;
+    //double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;

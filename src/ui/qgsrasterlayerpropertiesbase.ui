@@ -439,9 +439,12 @@
              <number>1</number>
             </property>
             <item>
-             <widget class="QLabel" name="lblSrcNoDataValueLabel">
+             <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
+              <property name="toolTip">
+               <string>Use original source no data value.</string>
+              </property>
               <property name="text">
-               <string>Source no data value:</string>
+               <string>No data value:</string>
               </property>
              </widget>
             </item>
