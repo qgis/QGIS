@@ -124,8 +124,24 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     template<class T> void composerItems( QList<T*>& itemList );
 
     /**Returns the composer map with specified id
-     @return id or 0 pointer if the composer map item does not exist*/
+     @return QgsComposerMap or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
+
+    /*Returns the composer html with specified id (a string as named in the
+      composer user interface item properties).
+      @note Added in QGIS 2.0
+      @param id - A QString representing the id of the item.
+      @return QgsComposerHtml pointer or 0 pointer if no such item exists.
+    */
+    const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
+
+    /**Returns a composer item given its text identifier.
+      @note added in 2.0
+      @param theId - A QString representing the identifier of the item to
+        retrieve.
+      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      **/
+    const QgsComposerItem* getComposerItemById( QString theId ) const;
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}

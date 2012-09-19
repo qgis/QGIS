@@ -185,8 +185,6 @@ QList<const QgsComposerMap*> QgsComposition::composerMapItems() const
 
 const QgsComposerMap* QgsComposition::getComposerMapById( int id ) const
 {
-  QList<const QgsComposerMap*> resultList;
-
   QList<QGraphicsItem *> itemList = items();
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -200,7 +198,47 @@ const QgsComposerMap* QgsComposition::getComposerMapById( int id ) const
       }
     }
   }
+  return 0;
+}
 
+const QgsComposerHtml* QgsComposition::getComposerHtmlByItem( QgsComposerItem *item ) const
+{
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerHtml* composerHtml = dynamic_cast<const QgsComposerHtml *>( *itemIt );
+    if ( composerHtml )
+    {
+      //Now cycle through the items associated with this html composer
+      //and return the composer if the item matches any of them
+      for ( int i=0; i<composerHtml->frameCount(); i++ )
+      {
+        if ( composerHtml->frame(i)->id() == item->id() )
+        {
+            return composerHtml;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+const QgsComposerItem* QgsComposition::getComposerItemById( QString theId ) const
+{
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      if ( mypItem->id() == theId )
+      {
+        return mypItem;
+      }
+    }
+  }
   return 0;
 }
 
@@ -1282,7 +1320,7 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
       //check if there are frames left. If not, remove the multi frame
       if ( frameItem && multiFrame )
       {
-        if ( multiFrame->nFrames() < 1 )
+        if ( multiFrame->frameCount() < 1 )
         {
           removeMultiFrame( multiFrame );
           if ( createCommand )

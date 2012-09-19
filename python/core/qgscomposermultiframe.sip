@@ -42,6 +42,10 @@ public:
     /**Removes and deletes all frames from mComposition*/
     void deleteFrames();
 
-    int nFrames() const;
+    int nFrames() const /Deprecated/;
+    /** Return the number of frames associated with this multiframeset.
+       @note added in 2.0, replaces nFrames
+    **/
+    int frameCount() const;
     QgsComposerFrame* frame( int i );
 };

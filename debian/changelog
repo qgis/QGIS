@@ -7,9 +7,10 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * include cpt-city files
   * support DEB_BUILD_OPTIONS' parallel=n
   * add python-unittest2 build dependency for maverick and squeeze
+  * disable PyQgsRectangle test on lucid (depends on unittest2)
   * add python-qscintilla2 dependency to python-qgis
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 17 Sep 2012 18:08:47 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 18 Sep 2012 22:18:25 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
