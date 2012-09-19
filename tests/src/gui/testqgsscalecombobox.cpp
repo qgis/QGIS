@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsscalecombobox.h"
 #include <QObject>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QSignalSpy>
 #include <QtTest>
 
 class TestQgsScaleComboBox: public QObject
@@ -43,6 +45,7 @@ void TestQgsScaleComboBox::initTestCase()
 
   // Create a combobox, and init with predefined scales.
   s = new QgsScaleComboBox();
+  QgsDebugMsg( QString( "Initial scale is %1" ).arg( s->scaleString() ) );
 };
 
 void TestQgsScaleComboBox::cleanupTestCase()
@@ -90,7 +93,18 @@ void TestQgsScaleComboBox::basic()
 
 void TestQgsScaleComboBox::slot_test()
 {
+  QLineEdit *l = s->lineEdit();
+  l->setText( "" );
+
+  QSignalSpy spyScaleChanged( s, SIGNAL( scaleChanged() ) );
+  QSignalSpy spyFixup( l, SIGNAL( editingFinished() ) );
+
+  QTest::keyClicks( l, QLocale::system().toString( 0.02 ) );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( spyFixup.count(), 2 ); // Qt emits twice!?
+  QCOMPARE( spyScaleChanged.count(), 2 );  // Qt emits twice!?
 }
+
 void TestQgsScaleComboBox::cleanup()
 {
 };

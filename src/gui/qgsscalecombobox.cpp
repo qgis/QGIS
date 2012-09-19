@@ -32,6 +32,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
   setCompleter( 0 );
   connect( this, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( fixupScale() ) );
   connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
+  fixupScale();
 }
 
 QgsScaleComboBox::~QgsScaleComboBox()
@@ -124,8 +125,14 @@ void QgsScaleComboBox::fixupScale()
   {
     mScale = newScale;
   }
-  // We set to the new string representation.
+  // We set to the new string representation
+  // or reset to the old
   setEditText( toString( mScale ) );
+
+  if ( ok )
+  {
+    emit scaleChanged();
+  }
 }
 
 QString QgsScaleComboBox::toString( double scale )
