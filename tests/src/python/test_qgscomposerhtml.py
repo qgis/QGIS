@@ -101,6 +101,7 @@ class TestQgsComposerMap(unittest.TestCase):
         checker2 = QgsCompositionChecker()
         myControlImage = self.controlImagePath(
             "composerhtml_table_multiframe2.png")
+        print "Checking page 2"
         myResult, myMessage = checker2.testComposition("Composer html table",
                                         self.mComposition,
                                         myControlImage,
@@ -115,6 +116,7 @@ class TestQgsComposerMap(unittest.TestCase):
                                         self.mComposition,
                                         myControlImage,
                                         myPage)
+        print "Checking page 3"
         assert myResult, myMessage
 
 if __name__ == '__main__':
