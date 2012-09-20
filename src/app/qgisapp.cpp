@@ -1468,15 +1468,16 @@ void QgisApp::createStatusBar()
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
   // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
-  QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
-  mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
-  mScaleEdit->setValidator( mScaleEditValidator );
+  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
+  // mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
+  // mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
-  connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
+  //connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
+  //connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
@@ -5266,31 +5267,8 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  if ( mOldScale == mScaleEdit->currentText() )
-  {
-    return;
-  }
-
-  QStringList parts = mScaleEdit->currentText().split( ':' );
-  if ( parts.size() == 2 )
-  {
-    bool leftOk, rightOk;
-    double leftSide = parts.at( 0 ).toDouble( &leftOk );
-    double rightSide = parts.at( 1 ).toDouble( &rightOk );
-    if ( leftSide > 0.0 && leftOk && rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide / leftSide );
-    }
-  }
-  else
-  {
-    bool rightOk;
-    double rightSide = parts.at( 0 ).toDouble( &rightOk );
-    if ( rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide );
-    }
-  }
+  // Why has MapCanvas the scale inversed?
+  mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
 void QgisApp::userCenter()

@@ -102,7 +102,7 @@ void TestQgsScaleComboBox::slot_test()
   QTest::keyClicks( l, QLocale::system().toString( 0.02 ) );
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( spyFixup.count(), 2 ); // Qt emits twice!?
-  QCOMPARE( spyScaleChanged.count(), 2 );  // Qt emits twice!?
+  QCOMPARE( spyScaleChanged.count(), 1 );
 }
 
 void TestQgsScaleComboBox::cleanup()

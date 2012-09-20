@@ -117,6 +117,7 @@ double QgsScaleComboBox::scale()
 void QgsScaleComboBox::fixupScale()
 {
   double newScale;
+  double oldScale = mScale;
   bool ok;
   QStringList txtList;
 
@@ -129,7 +130,7 @@ void QgsScaleComboBox::fixupScale()
   // or reset to the old
   setEditText( toString( mScale ) );
 
-  if ( ok )
+  if ( oldScale != mScale )
   {
     emit scaleChanged();
   }
