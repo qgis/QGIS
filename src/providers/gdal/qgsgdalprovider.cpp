@@ -731,6 +731,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 }
 #endif
 
+#if 0
 bool QgsGdalProvider::srcHasNoDataValue( int bandNo ) const
 {
   if ( mGdalDataset )
@@ -754,6 +755,7 @@ double  QgsGdalProvider::noDataValue() const
   }
   return std::numeric_limits<int>::max(); // should not happen or be used
 }
+#endif
 
 void QgsGdalProvider::computeMinMax( int theBandNo )
 {
@@ -834,7 +836,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
       void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      writeValue( data, dataType( i ), 0, noDataValue() );
+      writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
   }
@@ -2127,7 +2129,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
 #ifdef QGISDEBUG
     QgsDebugMsg( "************ STATS **************" );
-    QgsDebugMsg( QString( "VALID NODATA %1" ).arg( mValidNoDataValue ) );
     QgsDebugMsg( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ) );
     QgsDebugMsg( QString( "MAX %1" ).arg( myRasterBandStats.maximumValue ) );
     QgsDebugMsg( QString( "RANGE %1" ).arg( myRasterBandStats.range ) );
@@ -2273,57 +2274,64 @@ void QgsGdalProvider::initBaseDataset()
   //
   // Determine the nodata value and data type
   //
-  mValidNoDataValue = true;
+  //mValidNoDataValue = true;
   for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
     computeMinMax( i );
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
+
     int isValid = false;
-    double myNoDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( mGdalDataset, i ), &isValid );
+    double myNoDataValue = GDALGetRasterNoDataValue( myGdalBand, &isValid );
     if ( isValid )
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
-      mGdalDataType.append( myGdalDataType );
+      mSrcNoDataValue.append( myNoDataValue );
+      mSrcHasNoDataValue.append( true );
+      mUseSrcNoDataValue.append( true );
     }
     else
     {
-      // But we need a null value in case of reprojection and BTW also for
-      // aligned margines
-
-      switch ( srcDataType( i ) )
-      {
-        case QgsRasterDataProvider::Byte:
-          // Use longer data type to avoid conflict with real data
-          myNoDataValue = -32768.0;
-          mGdalDataType.append( GDT_Int16 );
-          break;
-        case QgsRasterDataProvider::Int16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::UInt16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::Int32:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        case QgsRasterDataProvider::UInt32:
-          myNoDataValue = 4294967295.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        default:
-          myNoDataValue = std::numeric_limits<int>::max();
-          // Would NaN work well?
-          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
-          mGdalDataType.append( myGdalDataType );
-      }
+      mSrcNoDataValue.append( std::numeric_limits<double>::quiet_NaN() );
+      mSrcHasNoDataValue.append( false );
+      mUseSrcNoDataValue.append( false );
     }
-    //mSrcNoDataValue.append( myNoDataValue );
-    mNoDataValue.append( myNoDataValue );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+    // It may happen that nodata value given by GDAL is wrong and it has to be
+    // disabled by user, in that case we need another value to be used for nodata
+    // (for reprojection for example) -> always internaly represent as wider type
+    // with mInternalNoDataValue in reserve.
+    int myInternalGdalDataType = myGdalDataType;
+    double myInternalNoDataValue = 123;
+    switch ( srcDataType( i ) )
+    {
+      case QgsRasterDataProvider::Byte:
+        myInternalNoDataValue = -32768.0;
+        myInternalGdalDataType = GDT_Int16;
+        break;
+      case QgsRasterDataProvider::Int16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::UInt16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::Int32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = -2147483648.0;
+        break;
+      case QgsRasterDataProvider::UInt32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = 4294967295.0;
+        break;
+      default: // Float32, Float64
+        //myNoDataValue = std::numeric_limits<int>::max();
+        // NaN should work well
+        myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
+    }
+    mGdalDataType.append( myInternalGdalDataType );
+    mInternalNoDataValue.append( myInternalNoDataValue );
+    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
   }
 
   mValid = true;

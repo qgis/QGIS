@@ -75,7 +75,6 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
   if ( verifiedProvider->extent() != expectedProvider->extent() ) ok = false;
 
-  compare( "No data (NULL) value", verifiedProvider->noDataValue(), expectedProvider->noDataValue(), mReport, ok );
 
   mReport += "</table>\n";
 
@@ -93,6 +92,8 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
     bool typesOk = true;
     compare( "Source data type", verifiedProvider->srcDataType( band ), expectedProvider->srcDataType( band ), mReport, typesOk );
     compare( "Data type", verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk ) ;
+
+    compare( "No data (NULL) value", verifiedProvider->noDataValue( band ), expectedProvider->noDataValue( band ), mReport, typesOk );
 
     bool statsOk = true;
     QgsRasterBandStats verifiedStats =  verifiedProvider->bandStatistics( band );

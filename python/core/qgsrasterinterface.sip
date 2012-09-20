@@ -82,7 +82,7 @@ class QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual double noDataValue() const;
+    virtual double noDataValue( int bandNo ) const;
 
     virtual void * block( int bandNo, const QgsRectangle  & extent, int width, int height );
 

@@ -21,6 +21,9 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QScriptEngine>
+#include <QScriptValue>
+#include <QScriptValueIterator>
 
 #include <qgsapplication.h>
 #include <qgsdatasourceuri.h>
@@ -46,11 +49,12 @@ int _fmode = _O_BINARY;
 #include <getopt.h>
 #endif
 
-TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server, const QString & coverage, bool force ):
+TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server, const QString & coverage, const QString &version, bool force ):
     mCacheDirPath( cacheDirPath )
     , mMaxCoverages( maxCoverages )
     , mServer( server )
     , mCoverage( coverage )
+    , mVersion( version )
     , mForce( force )
 {
 
@@ -83,56 +87,123 @@ void TestQgsWcsPublicServers::init()
   mHead << "Values";
   mHead << "Colors";
   mHead << "Has size";
+
+  // read servers + issues list
+  QString path = QgsApplication::pkgDataPath() +  "/resources/wcs-servers.json";
+  QFile file( path );
+  if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QString data = file.readAll();
+    //QgsDebugMsg("servers: \n"  + str );
+    file.close();
+    QScriptEngine engine;
+    QScriptValue result = engine.evaluate( data );
+
+    QScriptValueIterator serverIt( result );
+    while ( serverIt.hasNext() )
+    {
+      serverIt.next();
+      QScriptValue serverValue = serverIt.value();
+
+      QString serverUrl = serverValue.property( "url" ).toString();
+      QgsDebugMsg( "serverUrl: " + serverUrl );
+
+      Server server( serverUrl );
+
+      QScriptValue issuesValue = serverValue.property( "issues" );
+
+      QScriptValueIterator issuesIt( issuesValue );
+      while ( issuesIt.hasNext() )
+      {
+        issuesIt.next();
+        QScriptValue issueValue = issuesIt.value();
+
+        QString description = issueValue.property( "description" ).toString();
+        QgsDebugMsg( "description: " + description );
+        Issue issue( description );
+
+        QScriptValue coveragesValue = issueValue.property( "coverages" );
+        QScriptValueIterator coveragesIt( coveragesValue );
+        while ( coveragesIt.hasNext() )
+        {
+          coveragesIt.next();
+          issue.coverages << coveragesIt.value().toString();
+        }
+
+        QScriptValue versionsValue = issueValue.property( "versions" );
+        QScriptValueIterator versionsIt( versionsValue );
+        while ( versionsIt.hasNext() )
+        {
+          versionsIt.next();
+          issue.versions << versionsIt.value().toString();
+        }
+
+        server.issues << issue;
+      }
+
+      mServers << server;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "Cannot open " + path );
+  }
+}
+
+QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, const QString & coverage, const QString &version )
+{
+  QStringList descriptions;
+  foreach ( Server server, mServers )
+  {
+    if ( server.url == url )
+    {
+      foreach ( Issue issue, server.issues )
+      {
+        if (( issue.coverages.size() == 0 || issue.coverages.contains( coverage ) ) &&
+            ( issue.versions.size() == 0 || issue.versions.contains( version ) ) )
+        {
+          descriptions << issue.description;
+        }
+      }
+    }
+  }
+  return descriptions;
 }
 
 void TestQgsWcsPublicServers::test( )
 {
   QStringList versions;
-  // It may happen that server supports 1.1.1, but does not accept 1.1 (http://zeus.pin.unifi.it/gi-wcs/http)
-  versions << "" << "1.0.0" << "1.1.0"; // empty for default
+  QStringList serverUrls;
 
-  if ( !mServer.isEmpty() )
+  // It may happen that server supports 1.1.1, but does not accept 1.1 (http://zeus.pin.unifi.it/gi-wcs/http)
+
+  if ( !mVersion.isEmpty() )
   {
-    Server server( mServer );
-    mServers << server;
+    versions << mVersion;
   }
   else
   {
-    // Some (first) coverages do not advertize any supportedCRS and sever gives
-    // error both with native CRS (EPSG::561005) and EPSG:4326
-    // MOD* coverages work OK
-    mServers << Server( "http://argon.geogr.uni-jena.de:8080/geoserver/ows" );
-    mServers << Server( "http://demo.geonode.org/geoserver/wcs" );
-    mServers << Server( "http://demo.mapserver.org/cgi-bin/wcs" );
-    mServers << Server( "http://demo.opengeo.org/geoserver/wcs" );
-    // geobrain.laits.gmu.edu servers are quite slow
-    mServers << Server( "http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem" );
-    //mServers << Server ( "http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo" );
-    //mServers << Server ( "http://geobrain.laits.gmu.edu/cgi-bin/wcs110" );
-    //mServers << Server ( "http://geobrain.laits.gmu.edu/cgi-bin/wcs-all" );
-    //mServers << Server ( "http://ws.csiss.gmu.edu/cgi-bin/wcs-t" );
-    // Big and slow
-    //mServers << Server ( "http://ws.laits.gmu.edu/cgi-bin/wcs-all" );
-    // Slow
-    //mServers << Server ( "http://iceds.ge.ucl.ac.uk/cgi-bin/icedswcs" );
-    mServers << Server( "http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd" );
-    mServers << Server( "http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer" );
-    mServers << Server( "http://nsidc.org/cgi-bin/atlas_north" );
-    // Slow
-    //mServers << Server ( "http://sedac.ciesin.columbia.edu/geoserver/wcs" );
-    // Big and slow
-    //mServers << Server ( "http://webmap.ornl.gov/ogcbroker/wcs" );
-    // Currently very slow or down
-    //mServers << Server ( "http://www.sogeo.ch/geoserver/wcs" );
-    // Slow and erroneous
-    //mServers << Server ( "http://zeus.pin.unifi.it/gi-wcs/http" );
+    versions << "" << "1.0.0" << "1.1.0"; // empty for default
   }
 
-  foreach ( Server server, mServers )
+
+  if ( !mServer.isEmpty() )
+  {
+    serverUrls << mServer;
+  }
+  else
+  {
+    foreach ( Server server, mServers )
+    {
+      serverUrls << server.url;
+    }
+  }
+
+  foreach ( QString serverUrl, serverUrls )
   {
     QStringList myServerLog;
-    myServerLog << "server:" + server.url;
-    QString myServerDirName = server.url;
+    myServerLog << "server:" + serverUrl;
+    QString myServerDirName = serverUrl;
     myServerDirName.replace( QRegExp( "[:/]+" ), "." );
     myServerDirName.replace( QRegExp( "\\.$" ), "" );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
@@ -148,7 +219,7 @@ void TestQgsWcsPublicServers::test( )
 
     foreach ( QString version, versions )
     {
-      QgsDebugMsg( "server: " + server.url + " version: " + version );
+      QgsDebugMsg( "server: " + serverUrl + " version: " + version );
       QStringList myVersionLog;
       myVersionLog << "version:" + version;
 
@@ -165,7 +236,7 @@ void TestQgsWcsPublicServers::test( )
 
       QgsDataSourceURI myServerUri;
 
-      myServerUri.setParam( "url", server.url );
+      myServerUri.setParam( "url", serverUrl );
       if ( !version.isEmpty() )
       {
         myServerUri.setParam( "version", version );
@@ -174,12 +245,15 @@ void TestQgsWcsPublicServers::test( )
       QgsWcsCapabilities myCapabilities;
       myCapabilities.setUri( myServerUri );
 
+
       if ( !myCapabilities.lastError().isEmpty() )
       {
         QgsDebugMsg( myCapabilities.lastError() );
         myVersionLog << "error:" +  myCapabilities.lastError().replace( "\n", " " );
         continue;
       }
+
+      myVersionLog << "getCapabilitiesUrl:" + myCapabilities.getCapabilitiesUrl();
 
       QVector<QgsWcsCoverageSummary> myCoverages;
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
@@ -238,7 +312,7 @@ void TestQgsWcsPublicServers::test( )
           myUri.setParam( "time", myCoverage.times.value( 0 ) );
         }
         myLog << "version:" + version;
-        myLog << "uri:" + myUri.encodedUri();
+        myLog << "describeCoverageUrl:" + myCapabilities.getDescribeCoverageUrl( myCoverage.identifier );
         // Test time
         //myLog << "date:" + QString( "%1").arg( QDateTime::currentDateTime().toTime_t() );
         myLog << "date:" + QString( "%1" ).arg( QDateTime::currentDateTime().toString() );
@@ -405,7 +479,7 @@ void TestQgsWcsPublicServers::report()
       QDir myVersionDir( myVersionDirPath );
 
       QString myVersion = myVersionLog.value( "version" );
-      myServerReport += QString( "<h3>Version: %1</h3>" ).arg( myVersion.isEmpty() ? "(empty)" : myVersion );
+      myServerReport += QString( "<h3><a href='%1'>Version: %2</a></h3>" ).arg( myVersionLog.value( "getCapabilitiesUrl" ) ).arg( myVersion.isEmpty() ? "(empty)" : myVersion );
 
       if ( !myVersionLog.value( "error" ).isEmpty() )
       {
@@ -433,13 +507,15 @@ void TestQgsWcsPublicServers::report()
           QString myLogPath = myVersionDir.absolutePath() + QDir::separator() + myLogFileName;
           QMap<QString, QString>myLog = readLog( myLogPath );
           QStringList myValues;
-          myValues << myLog.value( "identifier" );
+          myValues << QString( "<a href='%1'>%2</a>" ).arg( myLog.value( "describeCoverageUrl" ) ).arg( myLog.value( "identifier" ) );
           myValues << myLog.value( "version" );
           QString imgPath = myVersionDir.absolutePath() + QDir::separator() + QFileInfo( myLogPath ).completeBaseName() + ".png";
 
           if ( !myLog.value( "error" ).isEmpty() )
           {
             myValues << myLog.value( "error" );
+            QStringList issues = issueDescriptions( myServerLog.value( "server" ), myLog.value( "identifier" ), myLog.value( "version" ) );
+            myValues << issues.join( "<br>" );
             myVersionReport += row( myValues, "cellerr" );
             myVersionErrCount++;
           }
@@ -473,10 +549,10 @@ void TestQgsWcsPublicServers::report()
             myVersionReport += row( myValues, cls );
           }
         } // coverages
-        myVersionReport += "</table>";
+        myVersionReport += "</table>\n";
         // prepend counts
-        myVersionReport.prepend( QString( "<b>Coverages: %1</b><br>" ).arg( myVersionCoverageCount ) +
-                                 QString( "<b>Errors: %1</b><br>" ).arg( myVersionErrCount ) +
+        myVersionReport.prepend( QString( "<b>Coverages: %1</b><br>\n" ).arg( myVersionCoverageCount ) +
+                                 QString( "<b>Errors: %1</b><br>\n" ).arg( myVersionErrCount ) +
                                  QString( "<b>Warnings: %1</b><br><br>" ).arg( myVersionWarnCount ) );
         myServerReport += myVersionReport;
       }
@@ -504,12 +580,12 @@ void TestQgsWcsPublicServers::report()
   myRep += "</style>";
 
   myRep += QString( "<p>Tested first %1 coverages for each server/version</p>" ).arg( mMaxCoverages );
-  myRep += QString( "<b>Servers: %1</b><br>" ).arg( myServerCount );
-  myRep += QString( "<b>Servers with error: %1</b><br>" ).arg( myServerErrCount );
-  myRep += QString( "<b>Servers with warning: %1</b><br>" ).arg( myServerWarnCount );
-  myRep += QString( "<b>Coverages: %1</b><br>" ).arg( myCoverageCount );
-  myRep += QString( "<b>Coverage errors: %1</b><br>" ).arg( myCoverageErrCount );
-  myRep += QString( "<b>Coverage warnings: %1</b><br>" ).arg( myCoverageWarnCount );
+  myRep += QString( "<b>Servers: %1</b><br>\n" ).arg( myServerCount );
+  myRep += QString( "<b>Servers with error: %1</b><br>\n" ).arg( myServerErrCount );
+  myRep += QString( "<b>Servers with warning: %1</b><br>\n" ).arg( myServerWarnCount );
+  myRep += QString( "<b>Coverages: %1</b><br>\n" ).arg( myCoverageCount );
+  myRep += QString( "<b>Coverage errors: %1</b><br>\n" ).arg( myCoverageErrCount );
+  myRep += QString( "<b>Coverage warnings: %1</b><br>\n" ).arg( myCoverageWarnCount );
 
   myRep += myReport;
 
@@ -555,7 +631,7 @@ QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
     }
     myRow += QString( "<td class='cell %1' %2>%3</td>" ).arg( theClass ).arg( colspan ).arg( val );
   }
-  myRow += "</tr>";
+  myRow += "</tr>\n";
   return myRow;
 }
 
@@ -566,9 +642,11 @@ void usage( std::string const & appName )
             << "Console application for QGIS WCS provider (WCS client) testing.\n"
             << "Usage: " << appName <<  " [options] CACHE_DIR\n"
             << "  options: \n"
-            << "\t[--server URL]\tWCS server URL to be tested\n"
-            << "\t[--coverage coverage]\tCoverage name to be tested\n"
+            << "\t[--server URL]\tWCS server URL to be tested.\n"
+            << "\t[--coverage coverage]\tCoverage name to be tested.\n"
             << "\t[--num count]\tMaximum number of coverages to test per server. Default 2.\n"
+            << "\t[--version version]\tWCS version to be tested.\n"
+            << "\t[--force]\tForce retrieve, overwrite cache.\n"
             << "  FILES:\n"
             << "    Path to directory where cached results are stored.\n"
             << "    Coverage once retrieved (success or fail) is not requested again until the cache is deleted.\n";
@@ -586,6 +664,7 @@ int main( int argc, char *argv[] )
 
   QString myServer;
   QString myCoverage;
+  QString myVersion;
   int myMaxCoverages = 2;
   bool myForce;
 
@@ -597,6 +676,7 @@ int main( int argc, char *argv[] )
     {"server",   required_argument, 0, 's'},
     {"coverage", required_argument, 0, 'c'},
     {"num",      required_argument, 0, 'n'},
+    {"version",  required_argument, 0, 'v'},
     {"force",    no_argument,       0, 'f'},
     {0, 0, 0, 0}
   };
@@ -606,7 +686,7 @@ int main( int argc, char *argv[] )
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    optionChar = getopt_long( argc, argv, "hscnf",
+    optionChar = getopt_long( argc, argv, "hscnvf",
                               long_options, &option_index );
 
     /* Detect the end of the options. */
@@ -637,6 +717,10 @@ int main( int argc, char *argv[] )
         myMaxCoverages = QString( optarg ).toInt();
         break;
 
+      case 'v':
+        myVersion = QString( optarg );
+        break;
+
       case 'f':
         myForce = true;
         break;
@@ -656,6 +740,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "myServer = %1" ).arg( myServer ) );
   QgsDebugMsg( QString( "myCoverage = %1" ).arg( myCoverage ) );
   QgsDebugMsg( QString( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
+  QgsDebugMsg( QString( "myVersion = %1" ).arg( myVersion ) );
 
   if ( !myCoverage.isEmpty() && myServer.isEmpty() )
   {
@@ -691,7 +776,7 @@ int main( int argc, char *argv[] )
   QgsApplication::init( QString() );
   QgsApplication::initQgis();
 
-  TestQgsWcsPublicServers myTest( myCacheDirPath, myMaxCoverages, myServer, myCoverage, myForce );
+  TestQgsWcsPublicServers myTest( myCacheDirPath, myMaxCoverages, myServer, myCoverage, myVersion, myForce );
   myTest.init();
   myTest.test();
   myTest.report();

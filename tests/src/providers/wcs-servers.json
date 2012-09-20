@@ -1,0 +1,59 @@
+[
+  {
+    url: 'http://demo.opengeo.org/geoserver/wcs',
+    issues: [
+      {
+        coverages: [ 'og:0' ],
+        versions: [ ],
+        description: 'Server fails on DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      }
+    ]
+  }, {
+    url: 'http://demo.geonode.org/geoserver/wcs'
+  }, {
+    url: 'http://demo.mapserver.org/cgi-bin/wcs'
+  }, {
+    // Some (first) coverages do not advertise any supportedCRS and sever gives
+    // error both with native CRS (EPSG::561005) and EPSG:4326
+    // MOD* coverages work OK
+    url: 'http://argon.geogr.uni-jena.de:8080/geoserver/ows'
+  }, {
+    // geobrain.laits.gmu.edu servers are quite slow
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem'
+/*
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs110'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    url: 'http://ws.csiss.gmu.edu/cgi-bin/wcs-t'
+  }, {
+    // Big and slow
+    url: 'http://ws.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    // Slow
+    url: 'http://iceds.ge.ucl.ac.uk/cgi-bin/icedswcs'
+*/
+  }, {
+    url: 'http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd'
+  }, {
+    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer'
+  }, {
+    url: 'http://nsidc.org/cgi-bin/atlas_north'
+/*
+  }, {
+    // Slow
+    url: 'http://sedac.ciesin.columbia.edu/geoserver/wcs'
+  }, {
+    // Big and slow
+    url: 'http://webmap.ornl.gov/ogcbroker/wcs'
+  }, {
+    // Currently very slow or down
+    url: 'http://www.sogeo.ch/geoserver/wcs'
+  }, {
+    url: 'http://zeus.pin.unifi.it/gi-wcs/http'
+*/
+  }
+]
