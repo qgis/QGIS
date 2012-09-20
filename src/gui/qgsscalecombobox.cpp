@@ -106,11 +106,38 @@ QString QgsScaleComboBox::scaleString()
 {
   return toString( mScale );
 }
+
+//! Function to set the selected scale from text
+// @note added in 2.0
+bool QgsScaleComboBox::setScaleString( QString scaleTxt )
+{
+  bool ok;
+  double newScale = toDouble( scaleTxt, &ok );
+  if ( ! ok )
+  {
+    return false;
+  }
+  else
+  {
+    mScale = newScale;
+    setEditText( toString( mScale ) );
+    clearFocus();
+    return true;
+  }
+}
+
 //! Function to read the selected scale as double
 // @note added in 2.0
 double QgsScaleComboBox::scale()
 {
   return mScale;
+}
+
+//! Function to set the selected scale from double
+// @note added in 2.0
+void QgsScaleComboBox::setScale( double scale )
+{
+  setScaleString( toString( scale ) );
 }
 
 //! Slot called when QComboBox has changed
@@ -128,7 +155,7 @@ void QgsScaleComboBox::fixupScale()
   }
   // We set to the new string representation
   // or reset to the old
-  setEditText( toString( mScale ) );
+  setScale( mScale );
 
   if ( oldScale != mScale )
   {

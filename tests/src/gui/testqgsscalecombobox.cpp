@@ -94,6 +94,21 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "1:4" ) );
   QCOMPARE( s->scale(), ( double ) 0.25 );
 
+  // Test setting programatically
+  s->setScale(( double ) 0.19 );
+  QCOMPARE( s->scaleString(), QString( "1:5" ) );
+  QCOMPARE( s->scale(), ( double ) 0.2 );
+
+  // Test setting programatically
+  s->setScaleString( QString( "1:240" ) );
+  QCOMPARE( s->scaleString(), QString( "1:240" ) );
+  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
+
+  // Test setting programatically illegal string
+  s->setScaleString( QString( "1:2.4" ) );
+  QCOMPARE( s->scaleString(), QString( "1:240" ) );
+  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
+
 };
 
 void TestQgsScaleComboBox::slot_test()
