@@ -35,6 +35,7 @@ class TestQgsWcsPublicServers: public QObject
     // Known problem
     struct Issue
     {
+      QString offender; // server or empty == qgis
       QStringList versions; // version regex
       QStringList coverages; // coverage regex
       QString description; // problem description
@@ -45,9 +46,16 @@ class TestQgsWcsPublicServers: public QObject
       Server( ) {}
       Server( const QString & u ) : url( u ) {}
       QString url; // URL
+      QString description; // notes
       QList<TestQgsWcsPublicServers::Issue> issues;
     };
 
+    enum OffenderType
+    {
+      NoOffender      = 0,
+      ServerOffender  = 1,
+      QGisOffender    = 1 << 1
+    };
 
     TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );
 
@@ -55,13 +63,19 @@ class TestQgsWcsPublicServers: public QObject
     void test();
     void report();
   private:
+    QString cells( QStringList theValues, QString theClass = QString(), int colspan = 1 );
     QString row( QStringList theValues, QString theClass = QString() );
     QString error( QString theMessage );
     void writeReport( QString theReport );
 
     QMap<QString, QString> readLog( QString theFileName );
 
+    Server getServer( const QString & url );
+
+    QList<Issue> issues( const QString & url, const QString & coverage, const QString &version );
     QStringList issueDescriptions( const QString & url, const QString & coverage, const QString &version );
+
+    int issueOffender( const QString & url, const QString & coverage, const QString &version );
 
     QString mCacheDirPath;
     QDir mCacheDir;
