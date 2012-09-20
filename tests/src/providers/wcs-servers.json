@@ -1,11 +1,33 @@
 [
   {
     url: 'http://demo.opengeo.org/geoserver/wcs',
+    description: 'Does not work at all with gvSIG-1_11-1305-final.',  
     issues: [
       {
+        offender: 'server',
         coverages: [ 'og:0' ],
-        versions: [ ],
-        description: 'Server fails on DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+        versions: [ '1.0.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'bm' ],
+        versions: [ '1.1.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'usgs:nlcd', 'nlcd' ],
+        versions: [ '1.0.0', '1.1.0' ],
+        description: 'The server does no offer any CRS in DescribeCoverage supportedCRSs / supportedCRS. QGIS tries to get coverage using EPSG:5070, in which the coverage spatialDomain.Envelope is defined, but server fails reporting error: Could not recognize crs ...'
+      },{
+        offender: 'server',
+        coverages: [ '0', 'naturalearth' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: xScale:the parameter value is not valid. xScale:the parameter value is not valid.' It fails with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=-2,3 but works with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=2,-3 (GRIDOFFSETS signs switched) other coverages (Arc_Sample e.g.) work OK with the first"
+      },{
+        offender: 'server',
+        coverages: [ 'Img_Sample' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: The specified dimensional parameter is non-positive. The specified dimensional parameter is non-positive'." 
       }
     ]
   }, {

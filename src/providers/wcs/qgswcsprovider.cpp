@@ -804,11 +804,17 @@ void QgsWcsProvider::cacheReplyFinished()
     QgsDebugMsg( "contentType: " + contentType );
 
     // Exception
+    // Content type examples: text/xml
+    //                        application/vnd.ogc.se_xml;charset=UTF-8
+    //                        application/xml
     if ( contentType.startsWith( "text/", Qt::CaseInsensitive ) ||
-         contentType.toLower() == "application/vnd.ogc.se_xml" )
+         contentType.toLower() == "application/xml" ||
+         contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
     {
       QByteArray text = mCacheReply->readAll();
-      if (( contentType.toLower() == "text/xml" || contentType.toLower() == "application/vnd.ogc.se_xml" )
+      if (( contentType.toLower() == "text/xml" ||
+            contentType.toLower() == "application/xml" ||
+            contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
           && parseServiceExceptionReportDom( text ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
