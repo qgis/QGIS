@@ -1,0 +1,81 @@
+[
+  {
+    url: 'http://demo.opengeo.org/geoserver/wcs',
+    description: 'Does not work at all with gvSIG-1_11-1305-final.',  
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'og:0' ],
+        versions: [ '1.0.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'bm' ],
+        versions: [ '1.1.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'usgs:nlcd', 'nlcd' ],
+        versions: [ '1.0.0', '1.1.0' ],
+        description: 'The server does no offer any CRS in DescribeCoverage supportedCRSs / supportedCRS. QGIS tries to get coverage using EPSG:5070, in which the coverage spatialDomain.Envelope is defined, but server fails reporting error: Could not recognize crs ...'
+      },{
+        offender: 'server',
+        coverages: [ '0', 'naturalearth' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: xScale:the parameter value is not valid. xScale:the parameter value is not valid.' It fails with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=-2,3 but works with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=2,-3 (GRIDOFFSETS signs switched) other coverages (Arc_Sample e.g.) work OK with the first"
+      },{
+        offender: 'server',
+        coverages: [ 'Img_Sample' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: The specified dimensional parameter is non-positive. The specified dimensional parameter is non-positive'." 
+      }
+    ]
+  }, {
+    url: 'http://demo.geonode.org/geoserver/wcs'
+  }, {
+    url: 'http://demo.mapserver.org/cgi-bin/wcs'
+  }, {
+    // Some (first) coverages do not advertise any supportedCRS and sever gives
+    // error both with native CRS (EPSG::561005) and EPSG:4326
+    // MOD* coverages work OK
+    url: 'http://argon.geogr.uni-jena.de:8080/geoserver/ows'
+  }, {
+    // geobrain.laits.gmu.edu servers are quite slow
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem'
+/*
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs110'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    url: 'http://ws.csiss.gmu.edu/cgi-bin/wcs-t'
+  }, {
+    // Big and slow
+    url: 'http://ws.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    // Slow
+    url: 'http://iceds.ge.ucl.ac.uk/cgi-bin/icedswcs'
+*/
+  }, {
+    url: 'http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd'
+  }, {
+    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer'
+  }, {
+    url: 'http://nsidc.org/cgi-bin/atlas_north'
+/*
+  }, {
+    // Slow
+    url: 'http://sedac.ciesin.columbia.edu/geoserver/wcs'
+  }, {
+    // Big and slow
+    url: 'http://webmap.ornl.gov/ogcbroker/wcs'
+  }, {
+    // Currently very slow or down
+    url: 'http://www.sogeo.ch/geoserver/wcs'
+  }, {
+    url: 'http://zeus.pin.unifi.it/gi-wcs/http'
+*/
+  }
+]

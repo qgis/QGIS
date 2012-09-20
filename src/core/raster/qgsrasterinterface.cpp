@@ -259,6 +259,8 @@ void * QgsRasterInterface::convert( void *srcData, QgsRasterInterface::DataType 
   {
     double value = readValue( srcData, srcDataType, i );
     writeValue( destData, destDataType, i, value );
+    //double newValue = readValue( destData, destDataType, i );
+    //QgsDebugMsg( QString("convert type %1 to %2: %3 -> %4").arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
   }
   return destData;
 }

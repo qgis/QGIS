@@ -18,11 +18,8 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgslogger.h"
 #include "qgsdialog.h"
-
-#include "gdal.h"
-#include "cpl_string.h"
-#include "cpl_conv.h"
-#include "cpl_minixml.h"
+#include "qgsrasterlayer.h"
+#include "qgsproviderregistry.h"
 
 #include <QSettings>
 #include <QInputDialog>
@@ -31,27 +28,15 @@
 #include <QMouseEvent>
 #include <QMenu>
 
-// todo put this somewhere else - how can we access gdal provider?
-char** papszFromStringList( const QStringList& list )
-{
-  char **papszRetList = NULL;
-  foreach ( QString elem, list )
-  {
-    papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
-  }
-  return papszRetList;
-}
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format,
-    QgsRasterFormatSaveOptionsWidget::Type type,
-    QString provider )
-    : QWidget( parent ), mFormat( format ), mProvider( provider )
+    QgsRasterFormatSaveOptionsWidget::Type type, QString provider )
+    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 )
 
 {
   setupUi( this );
-
 
   setType( type );
 
@@ -104,6 +89,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
   mOptionsLineEdit->installEventFilter( this );
   mOptionsStackedWidget->installEventFilter( this );
 
+  updateControls();
   updateProfiles();
 }
 
@@ -114,12 +100,14 @@ QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
 void QgsRasterFormatSaveOptionsWidget::setFormat( QString format )
 {
   mFormat = format;
+  updateControls();
   updateProfiles();
 }
 
 void QgsRasterFormatSaveOptionsWidget::setProvider( QString provider )
 {
   mProvider = provider;
+  updateControls();
 }
 
 // show/hide widgets - we need this function if widget is used in creator
@@ -236,6 +224,9 @@ void QgsRasterFormatSaveOptionsWidget::apply()
   setCreateOptions();
 }
 
+// typedefs for gdal provider function pointers
+typedef QString validateCreationOptionsFormat_t( const QStringList& createOptions, QString format );
+typedef QString helpCreationOptionsFormat_t( QString format );
 
 void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
@@ -243,20 +234,25 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
 
   if ( mProvider == "gdal" && mFormat != "" && mFormat != "_pyramids" )
   {
-    GDALDriverH myGdalDriver = GDALGetDriverByName( mFormat.toLocal8Bit().constData() );
-    if ( myGdalDriver )
+    // get helpCreationOptionsFormat() function ptr for provider
+    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+    if ( library )
     {
-      // need to serialize xml to get newlines
-      CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
-                                             GDAL_DMD_CREATIONOPTIONLIST, "" ) );
-      char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
-      if ( pszFormattedXML )
-        message = tr( "Create Options:\n\n%1" ).arg( pszFormattedXML );
-      if ( psCOL )
-        CPLDestroyXMLNode( psCOL );
-      if ( pszFormattedXML )
-        CPLFree( pszFormattedXML );
+      helpCreationOptionsFormat_t * helpCreationOptionsFormat =
+        ( helpCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
+      if ( helpCreationOptionsFormat )
+      {
+        message = helpCreationOptionsFormat( mFormat );
+      }
+      else
+      {
+        message = library->fileName() + " does not have helpCreationOptionsFormat";
+      }
     }
+    else
+      message = QString( "cannot load provider library %1" ).arg( mProvider );
+
+
     if ( message.isEmpty() )
       message = tr( "Cannot get create options for driver %1" ).arg( mFormat );
   }
@@ -267,36 +263,65 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   QgsDialog *dlg = new QgsDialog( this );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
+  message = tr( "Create Options:\n\n%1" ).arg( message );
   textEdit->setText( message );
   dlg->layout()->addWidget( textEdit );
-  dlg->resize( 600, 600 );
+  dlg->resize( 600, 400 );
   dlg->show(); //non modal
 }
 
-bool QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui )
+QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool reportOK )
 {
   QStringList createOptions = options();
-  bool ok = false;
+  QString message;
 
   if ( !createOptions.isEmpty() && mProvider == "gdal" && mFormat != "" && mFormat != "_pyramids" )
   {
-    GDALDriverH myGdalDriver = GDALGetDriverByName( mFormat.toLocal8Bit().constData() );
-    if ( myGdalDriver )
+    if ( mRasterLayer )
     {
-      // print error string?
-      char** papszOptions = papszFromStringList( createOptions );
-      ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
-      CSLDestroy( papszOptions );
-      if ( gui )
+      QgsDebugMsg( "calling validate on layer's data provider" );
+      message = mRasterLayer->dataProvider()->validateCreationOptions( createOptions, mFormat );
+    }
+    else
+    {
+      // get validateCreationOptionsFormat() function ptr for provider
+      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+      if ( library )
       {
-        if ( ok )
-          QMessageBox::information( this, "", tr( "Valid" ), QMessageBox::Close );
+        validateCreationOptionsFormat_t * validateCreationOptionsFormat =
+          ( validateCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
+        if ( validateCreationOptionsFormat )
+        {
+          message = validateCreationOptionsFormat( createOptions, mFormat );
+        }
         else
-          QMessageBox::warning( this, "", tr( "Invalid" ), QMessageBox::Close );
+        {
+          message = library->fileName() + " does not have validateCreationOptionsFormat";
+        }
+      }
+      else
+        message = QString( "cannot load provider library %1" ).arg( mProvider );
+    }
+
+    if ( gui )
+    {
+      if ( message.isNull() )
+      {
+        if ( reportOK )
+          QMessageBox::information( this, "", tr( "Valid" ), QMessageBox::Close );
+      }
+      else
+      {
+        QMessageBox::warning( this, "", tr( "Invalid creation option :\n\n%1\n\nClick on help button to get valid creation options for this format" ).arg( message ), QMessageBox::Close );
       }
     }
   }
-  return ok;
+  else
+  {
+    QMessageBox::information( this, "", tr( "Cannot validate" ), QMessageBox::Close );
+  }
+
+  return message;
 }
 
 void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
@@ -479,6 +504,13 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
   layout()->activate();
 
   updateOptions();
+}
+
+void QgsRasterFormatSaveOptionsWidget::updateControls()
+{
+  bool enabled = ( mProvider == "gdal" && mFormat != "" && mFormat != "_pyramids" );
+  mOptionsValidateButton->setEnabled( enabled );
+  mOptionsHelpButton->setEnabled( enabled );
 }
 
 // map options label left mouse click to optionsToggle()

@@ -80,7 +80,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual QList<int> usesBands() const { return QList<int>(); }
 
   protected:
-    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
 
     /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
@@ -100,48 +99,5 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
     double mMaxOversampling;
 };
-
-inline double QgsRasterRenderer::readValue( void *data, QgsRasterInterface::DataType type, int index )
-{
-  if ( !mInput )
-  {
-    return 0;
-  }
-
-  if ( !data )
-  {
-    return mInput->noDataValue();
-  }
-
-  switch ( type )
-  {
-    case QgsRasterInterface::Byte:
-      return ( double )(( GByte * )data )[index];
-      break;
-    case QgsRasterInterface::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::Int16:
-      return ( double )(( GInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Int32:
-      return ( double )(( GInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Float32:
-      return ( double )(( float * )data )[index];
-      break;
-    case QgsRasterInterface::Float64:
-      return ( double )(( double * )data )[index];
-      break;
-    default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
-      break;
-  }
-
-  return mInput->noDataValue();
-}
 
 #endif // QGSRASTERRENDERER_H

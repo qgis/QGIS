@@ -187,6 +187,32 @@ void QgsWcsCapabilities::clear()
   mCapabilities = c;
 }
 
+QString QgsWcsCapabilities::getCapabilitiesUrl( const QString version ) const
+{
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
+
+  if ( !version.isEmpty() )
+  {
+    // 1.0.0 - VERSION
+    // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
+    if ( version.startsWith( "1.0" ) )
+    {
+      url += "&VERSION=" + version;
+    }
+    else if ( version.startsWith( "1.1" ) )
+    {
+      // Ignored by UMN Mapserver 6.0.3, see below
+      url += "&AcceptVersions=" + version;
+    }
+  }
+  return url;
+}
+
+QString QgsWcsCapabilities::getCapabilitiesUrl( ) const
+{
+  return getCapabilitiesUrl( mVersion );
+}
+
 bool QgsWcsCapabilities::retrieveServerCapabilities( )
 {
   clear();
@@ -196,21 +222,10 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( )
 
   if ( !preferredVersion.isEmpty() )
   {
-    // This is not
-    if ( preferredVersion.startsWith( "1.0" ) )
-    {
-      versions << "VERSION=" + preferredVersion;
-    }
-    else if ( preferredVersion.startsWith( "1.1" ) )
-    {
-      // Ignored by UMN Mapserver 6.0.3, see below
-      versions << "AcceptVersions=" + preferredVersion;
-    }
+    versions << preferredVersion;
   }
   else
   {
-    // 1.0.0 - VERSION
-    // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
     // We prefer 1.0 because 1.1 has many issues, each server implements it in defferent
     // way with various particularities
     // It may happen that server supports 1.1.0 but gives error for 1.1
@@ -232,12 +247,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
 {
   clear();
 
-  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
-
-  if ( !preferredVersion.isEmpty() )
-  {
-    url += "&" + preferredVersion;
-  }
+  QString url = getCapabilitiesUrl( preferredVersion );
 
   if ( ! sendRequest( url ) ) { return false; }
 
@@ -261,6 +271,23 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
   return true;
 }
 
+QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const &identifier ) const
+{
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
+
+  if ( mVersion.startsWith( "1.0" ) )
+  {
+    url += "&COVERAGE=" + identifier;
+  }
+  else if ( mVersion.startsWith( "1.1" ) )
+  {
+    // in 1.1.0, 1.1.1, 1.1.2 the name of param is 'identifier'
+    // but in KVP 'identifiers'
+    url += "&IDENTIFIERS=" + identifier;
+  }
+  return url;
+}
+
 bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool forceRefresh )
 {
   QgsDebugMsg( " identifier = " + identifier );
@@ -274,18 +301,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
   if ( coverage->described && ! forceRefresh ) return true;
 
-  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
-
-  if ( mVersion.startsWith( "1.0" ) )
-  {
-    url += "&COVERAGE=" + coverage->identifier;
-  }
-  else if ( mVersion.startsWith( "1.1" ) )
-  {
-    // in 1.1.0, 1.1.1, 1.1.2 the name of param is 'identifier'
-    // but in KVP 'identifiers'
-    url += "&IDENTIFIERS=" + coverage->identifier;
-  }
+  QString url = getDescribeCoverageUrl( coverage->identifier );
 
   if ( ! sendRequest( url ) ) { return false; }
 
@@ -738,7 +754,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // may be GTiff, GeoTIFF, TIFF, GIF, ....
   coverage->supportedFormat = domElementsTexts( coverageOfferingElement, "supportedFormats.formats" );
-  //QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
+  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
   // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
   // If missing, we cannot get native resolution and size.

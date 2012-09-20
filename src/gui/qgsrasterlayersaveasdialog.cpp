@@ -76,6 +76,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     {
       mCreateOptionsWidget->setFormat( myFormats[0] );
     }
+    mCreateOptionsWidget->setRasterLayer( mRasterLayer );
     mCreateOptionsWidget->update();
   }
 
@@ -751,5 +752,16 @@ QgsRasterDataProvider::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyra
     return QgsRasterDataProvider::CopyExisting;
   else
     return QgsRasterDataProvider::PyramidsFlagYes;
+}
+
+bool QgsRasterLayerSaveAsDialog::validate() const
+{
+  if ( mCreateOptionsGroupBox->isChecked() )
+  {
+    QString message = mCreateOptionsWidget->validateOptions( true, false );
+    if ( !message.isNull() )
+      return false;
+  }
+  return true;
 }
 

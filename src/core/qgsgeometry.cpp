@@ -4226,10 +4226,10 @@ QString QgsGeometry::exportToGeoJSON()
     {
       mWkt += "{ \"type\": \"Point\", \"coordinates\": [";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 6 );
+      mWkt += QString::number( *x, 'f' );
       mWkt += ", ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 6 );
+      mWkt += QString::number( *y, 'f' );
       mWkt += "] }";
       return mWkt;
     }
@@ -4256,11 +4256,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += QString::number( *x, 'f' );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 6 );
+        mWkt += QString::number( *y, 'f' );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4313,11 +4313,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 );
+          mWkt += QString::number( *x, 'f' );
           mWkt += ", ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 );
+          mWkt += QString::number( *y, 'f' );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4353,11 +4353,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += QString::number( *x, 'f' );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 6 );
+        mWkt += QString::number( *y, 'f' );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4399,11 +4399,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 );
+          mWkt += QString::number( *x, 'f' );
           ptr += sizeof( double );
           mWkt += ", ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 );
+          mWkt += QString::number( *y, 'f' );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4457,11 +4457,11 @@ QString QgsGeometry::exportToGeoJSON()
             }
             mWkt += "[";
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 6 );
+            mWkt += QString::number( *x, 'f' );
             ptr += sizeof( double );
             mWkt += ", ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 6 );
+            mWkt += QString::number( *y, 'f' );
             ptr += sizeof( double );
             if ( hasZValue )
             {
