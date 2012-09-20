@@ -754,7 +754,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // may be GTiff, GeoTIFF, TIFF, GIF, ....
   coverage->supportedFormat = domElementsTexts( coverageOfferingElement, "supportedFormats.formats" );
-  //QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
+  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
   // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
   // If missing, we cannot get native resolution and size.
