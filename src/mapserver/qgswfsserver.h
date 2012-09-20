@@ -36,7 +36,6 @@ class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 class QgsField;
 class QgsFeature;
-class QgsRectangle;
 class QgsGeometry;
 class QgsSymbol;
 class QgsRequestHandler;
@@ -81,7 +80,7 @@ class QgsWFSServer
 
   protected:
 
-    void startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
+    void startGetFeature( QgsRequestHandler& request, const QString& format );
     void sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
@@ -91,7 +90,6 @@ class QgsWFSServer
     //methods to write GML2
     QDomElement createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
 
-    QDomElement createBoxElem( QgsRectangle* box, QDomDocument& doc ) /* const */;
     QDomElement createGeometryElem( QgsGeometry* g, QDomDocument& doc ) /*const*/;
     QDomElement createLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
     QDomElement createMultiLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
