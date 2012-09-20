@@ -29,7 +29,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 
     void apply();
     void helpOptions();
-    bool validateOptions( bool gui = true );
+    QString validateOptions( bool gui = true, bool reportOk = true );
 
   private slots:
 
