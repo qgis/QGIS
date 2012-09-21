@@ -25,6 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -200,6 +201,151 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         layerElem.appendChild( bBoxElement );
 
         parentElement.appendChild( layerElem );
+      }
+    }
+  }
+  return;
+}
+
+void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QStringList wfsLayersId = wfsLayers();
+  QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
+  QMap< QString, QSet<QString> > hiddenAttrs = hiddenAttributes();
+
+  foreach( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      QgsMapLayer *mLayer = createLayerFromElement( elem );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || layer->name() == aTypeName ) )
+      {
+        //do a select with searchRect and go through all the features
+        QgsVectorDataProvider* provider = layer->dataProvider();
+        if ( !provider )
+        {
+          continue;
+        }
+
+        //is there alias info for this vector layer?
+        QMap< int, QString > layerAliasInfo;
+        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( mLayer->id() );
+        if ( aliasIt != aliasInfo.constEnd() )
+        {
+          layerAliasInfo = aliasIt.value();
+        }
+
+        //hidden attributes for this layer
+        QSet<QString> layerHiddenAttributes;
+        QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttrs.find( mLayer->id() );
+        if ( hiddenIt != hiddenAttrs.constEnd() )
+        {
+          layerHiddenAttributes = hiddenIt.value();
+        }
+
+        QString typeName = layer->name();
+        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+
+        //xsd:element
+        QDomElement elementElem = doc.createElement( "element"/*xsd:element*/ );
+        elementElem.setAttribute( "name", typeName );
+        elementElem.setAttribute( "type", "qgs:" + typeName + "Type" );
+        elementElem.setAttribute( "substitutionGroup", "gml:_Feature" );
+        parentElement.appendChild( elementElem );
+
+        //xsd:complexType
+        QDomElement complexTypeElem = doc.createElement( "complexType"/*xsd:complexType*/ );
+        complexTypeElem.setAttribute( "name", typeName + "Type" );
+        parentElement.appendChild( complexTypeElem );
+
+        //xsd:complexType
+        QDomElement complexContentElem = doc.createElement( "complexContent"/*xsd:complexContent*/ );
+        complexTypeElem.appendChild( complexContentElem );
+
+        //xsd:extension
+        QDomElement extensionElem = doc.createElement( "extension"/*xsd:extension*/ );
+        extensionElem.setAttribute( "base", "gml:AbstractFeatureType" );
+        complexContentElem.appendChild( extensionElem );
+
+        //xsd:sequence
+        QDomElement sequenceElem = doc.createElement( "sequence"/*xsd:sequence*/ );
+        extensionElem.appendChild( sequenceElem );
+
+        //xsd:element
+        QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+        geomElem.setAttribute( "name", "geometry" );
+        QGis::WkbType wkbType = layer->wkbType();
+        switch ( wkbType )
+        {
+          case QGis::WKBPoint25D:
+          case QGis::WKBPoint:
+            geomElem.setAttribute( "type", "gml:PointPropertyType" );
+            break;
+          case QGis::WKBLineString25D:
+          case QGis::WKBLineString:
+            geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+            break;
+          case QGis::WKBPolygon25D:
+          case QGis::WKBPolygon:
+            geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+            break;
+          case QGis::WKBMultiPoint25D:
+          case QGis::WKBMultiPoint:
+            geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+            break;
+          case QGis::WKBMultiLineString25D:
+          case QGis::WKBMultiLineString:
+            geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+            break;
+          case QGis::WKBMultiPolygon25D:
+          case QGis::WKBMultiPolygon:
+            geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+            break;
+          default:
+            geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+            break;
+        }
+        geomElem.setAttribute( "minOccurs", "0" );
+        geomElem.setAttribute( "maxOccurs", "1" );
+        sequenceElem.appendChild( geomElem );
+
+        const QgsFieldMap& fields = provider->fields();
+        for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+        {
+
+          QString attributeName = it.value().name();
+          //skip attribute if it has edit type 'hidden'
+          if ( layerHiddenAttributes.contains( attributeName ) )
+          {
+            continue;
+          }
+
+          //xsd:element
+          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+          geomElem.setAttribute( "name", attributeName );
+          if ( it.value().type() == 2 )
+            geomElem.setAttribute( "type", "integer" );
+          else if ( it.value().type() == 6 )
+            geomElem.setAttribute( "type", "double" );
+          else
+            geomElem.setAttribute( "type", "string" );
+
+          sequenceElem.appendChild( geomElem );
+
+          //check if the attribute name should be replaced with an alias
+          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
+          if ( aliasIt != layerAliasInfo.constEnd() )
+          {
+            geomElem.setAttribute( "alias", aliasIt.value() );
+          }
+        }
       }
     }
   }
