@@ -1,0 +1,229 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmhmax</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmvmax.html"><tt>mmvmax</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mminfrec.html"><tt>mminfrec</tt></a>]
+              </td>
+        <td class="title">Connected Operators</td>
+      </tr>
+    </table>
+    <h1>mmhmax
+      <br>
+      <span class="subtitle">Remove peaks with contrast less than h.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmhmax</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">h</span> = 1, 
+          <span class="par">Bc</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">h</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Contrast parameter.</p><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Structuring element ( connectivity).</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmhmax</span> inf-reconstructs the gray-scale image 
+          <code>f</code> from the marker created by the subtraction of  the positive integer value 
+          <code>h</code> from 
+          <code>f</code>,  using  connectivity 
+          <code>Bc</code>. This operator removes connected peaks with contrast less than 
+          <code>h</code>.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a = uint8([
+    [4,   3,   6,  1,  3,  5,  2],
+    [2,   9,   6,  1,  6,  7,  3],
+    [8,   9,   3,  2,  4,  9,  4],
+    [3,   1,   2,  1,  2,  4,  2]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmhmax(a,2,mmsebox())</pre>
+              <pre class="computer">[[4 3 6 1 3 5 2]
+ [2 7 6 1 6 7 3]
+ [7 7 3 2 4 7 4]
+ [3 1 2 1 2 4 2]]</pre>
+            </div>
+          </div>
+          <div class="bridge">Signal example:</div>
+          <div class="bridge">Image example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f = mmreadgray('r4x2_256.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fb = mmhmax(f,50)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(fb)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmregmax(fb))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="254" src="../images/img_mmhmax_001.jpg"></td>
+                  <td><img width="254" src="../images/img_mmhmax_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmhmax_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmhmax_002.jpg">fb</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="254" src="../images/img_mmhmax_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmhmax_003.jpg">mmregmax(fb)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmhmax001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmhmax(f, h=1, Bc=None):
+    if Bc is None: Bc = mmsecross()
+    g = mmsubm(f,h)
+    y = mminfrec(g,f,Bc);
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhmin.html">mmhmin</a></td>
+              <td class="def">Remove basins with contrast less than h.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmareaopen.html">mmareaopen</a></td>
+              <td class="def">Area opening</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmvmax.html"><tt>mmvmax</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mminfrec.html"><tt>mminfrec</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

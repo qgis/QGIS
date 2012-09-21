@@ -93,7 +93,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     };
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
-                        QString name, QString path, QString info );
+                        QString name, QString path );
     virtual ~QgsCptCityDataItem();
 
     bool hasChildren();
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
-    static QgsCptCityDataItem* dataItem( QString path );
+    /* static QgsCptCityDataItem* dataItem( QString path ); */
 
     // members
 
@@ -147,10 +147,12 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     QgsCptCityDataItem* parent() const { return mParent; }
     void setParent( QgsCptCityDataItem* parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem*> children() const { return mChildren; }
-    QIcon icon() const { return mIcon; }
+    virtual QIcon icon() { return mIcon; }
+    virtual QIcon icon( const QSize& size ) { Q_UNUSED( size ) ; return icon(); }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }
+    QString shortInfo() const { return mShortInfo; }
 
     void setIcon( QIcon icon ) { mIcon = icon; }
 
@@ -168,6 +170,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     QString mName;
     QString mPath; // it is also used to identify item in tree
     QString mInfo;
+    QString mShortInfo;
     QString mToolTip;
     QIcon mIcon;
     bool mValid;
@@ -192,12 +195,12 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
   public:
 
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-                             QString name, QString path, QString info = QString(),
+                             QString name, QString path,
                              QString variantName = QString() );
-
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-                             QString name, QString path, QString info,
+                             QString name, QString path,
                              QStringList variantList );
+    ~QgsCptCityColorRampItem() {}
 
     // --- reimplemented from QgsCptCityDataItem ---
 
@@ -205,12 +208,15 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
     // --- New virtual methods for layer item derived classes ---
     const QgsCptCityColorRampV2& ramp() const { return mRamp; }
+    QIcon icon();
+    QIcon icon( const QSize& size );
+    void init();
 
   protected:
 
-    void init();
+    bool mInitialised;
     QgsCptCityColorRampV2 mRamp;
-    QIcon mIcon;
+    QList< QIcon > mIcons;
 };
 
 
@@ -220,12 +226,15 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     Q_OBJECT
   public:
     QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
-                              QString name, QString path, QString info );
+                              QString name, QString path );
     ~QgsCptCityCollectionItem();
 
     void setPopulated() { mPopulated = true; }
     void addChild( QgsCptCityDataItem *item ) { mChildren.append( item ); }
+    QVector<QgsCptCityDataItem*> childrenRamps( bool recursive );
 
+  protected:
+    bool mPopulatedRamps;
 };
 
 /** A directory: contains subdirectories and color ramps */
@@ -234,15 +243,20 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
     Q_OBJECT
   public:
     QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
-                             QString name, QString path, QString info = QString() );
+                             QString name, QString path );
     ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
+    static QgsCptCityDataItem* dataItem( QgsCptCityDataItem* parent,
+                                         QString name, QString path );
+
   protected:
-    QMap< QString, QStringList > gradientsMap();
+    QMap< QString, QStringList > rampsMap();
+    QStringList dirEntries() const;
+    QMap< QString, QStringList > mRampsMap;
 };
 
 /** A selection: contains subdirectories and color ramps */
@@ -250,7 +264,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path, QString info );
+    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path );
     ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -271,9 +285,17 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    explicit QgsCptCityBrowserModel( QObject *parent = 0,
-                                     QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
-                                     QString viewName = "authors" );
+
+    enum ViewType
+    {
+      Authors = 0,
+      Selections = 1,
+      List = 2
+    };
+
+    QgsCptCityBrowserModel( QObject* parent = 0,
+                            QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
+                            ViewType Type = Authors );
     ~QgsCptCityBrowserModel();
 
     // implemented methods from QAbstractItemModel for read-only access
@@ -359,7 +381,8 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
     QVector<QgsCptCityDataItem*> mRootItems;
     QgsCptCityArchive* mArchive;
-    QString mViewName;
+    ViewType mViewType;
+    QSize mIconSize;
 };
 
 #endif

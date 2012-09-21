@@ -1,0 +1,14 @@
+Destriping 2
+contrib_a_perego
+ParameterRaster|INPUT|Input|False
+ParameterRaster|MASK|Mask Grid|False
+ParameterNumber|ANG|Angle (in degrees)|None|None|0.0
+ParameterNumber|R|Radius|None|None|20.0
+ParameterNumber|D|Stripes distance|None|None|1.0
+ParameterNumber|MIN|Min|None|None|-10.0
+ParameterNumber|MAX|Max|None|None|10.0
+ParameterNumber|MMIN|Mask Min|None|None|-10000.0
+ParameterNumber|MMAX|Mask Max|None|None|10000.0
+OutputRaster|RESULT3|Destriped Grid
+OutputRaster|RESULT1|Low-pass 1
+OutputRaster|RESULT2|Low-pass 2

@@ -192,6 +192,7 @@
 // GDAL/OGR includes
 //
 #include <ogr_api.h>
+#include <proj_api.h>
 
 //
 // Other includes
@@ -2320,8 +2321,11 @@ void QgisApp::about()
 #endif
     versionString += "</td>";
 
-
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
 
 #ifdef QGISDEBUG
     versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
@@ -4011,7 +4015,10 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),
+                                mMapCanvas->extent(), rasterLayer->crs(),
+                                mMapCanvas->mapRenderer()->destinationCrs(),
+                                this );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
@@ -5664,6 +5671,10 @@ void QgisApp::options()
     {
       mScaleEdit->updateScales();
     }
+
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+    qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
   }
 
   delete optionsDialog;
@@ -6816,6 +6827,10 @@ void QgisApp::projectProperties()
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
+
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+  qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
 
   // Set the window title.
   setTitleBarText_( *this );

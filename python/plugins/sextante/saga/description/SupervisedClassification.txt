@@ -1,0 +1,14 @@
+Supervised Classification
+imagery_classification
+ParameterMultipleInput|GRIDS|Grids|3.0|False
+ParameterVector|ROI|Training Areas|2|False
+ParameterTableField|ROI_ID|Class Identifier|ROI
+ParameterSelection|METHOD|Method|[0] parallelepiped;[1] minimum distance;[2] mahalanobis distance;[3] maximum likelihood;[4] spectral angle mapping;[5] binary encoding
+ParameterBoolean|NORMALISE            |Normalise|True
+ParameterNumber|THRESHOLD_DIST|Distance Threshold|None|None|0.0
+ParameterNumber|THRESHOLD_PROB|Probability Threshold (Percent)|None|None|0.0
+ParameterSelection|RELATIVE_PROB|Probability Reference|[0] absolute;[1] relative
+ParameterNumber|THRESHOLD_ANGLE|Spectral Angle Threshold (Degree)|None|None|0.0
+OutputTable|CLASS_INFO|Class Information
+OutputRaster|CLASSES|Classification
+OutputRaster|QUALITY|Quality

@@ -23,11 +23,16 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
         myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
                             '150.1964384662953194,-35.6971885216629090')
+        myExpectedValues = [150.1509239873580270,-35.7176936443908772,
+                            150.1964384662953194,-35.6971885216629090]
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                       ( myExpectedExtent,
                         myProjectedExtent.toString()))
-                      
-        self.assertEquals(myExpectedExtent, myProjectedExtent.toString(), myMessage)
+
+        self.assertAlmostEqual(myExpectedValues[0], myProjectedExtent.xMinimum(), msg=myMessage)
+        self.assertAlmostEqual(myExpectedValues[1], myProjectedExtent.yMinimum(), msg=myMessage)
+        self.assertAlmostEqual(myExpectedValues[2], myProjectedExtent.xMaximum(), msg=myMessage)
+        self.assertAlmostEqual(myExpectedValues[3], myProjectedExtent.yMaximum(), msg=myMessage)
 
 if __name__ == '__main__':
     unittest.main()

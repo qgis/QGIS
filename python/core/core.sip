@@ -98,10 +98,12 @@
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectoroverlay.sip
+%Include qgscredentials.sip
 
 %Include qgsnetworkaccessmanager.sip
 
 %Include symbology-ng-core.sip
+%Include qgspallabeling.sip
 
 %Include qgsgpsconnection.sip
 %Include qgsgpsconnectionregistry.sip

@@ -1,0 +1,7 @@
+Directional Average 1
+contrib_a_perego
+ParameterRaster|INPUT|Input|False
+ParameterNumber|ANG|Angle (in degrees)|None|None|0.0
+ParameterNumber|R1|Main Radius|None|None|1
+ParameterNumber|R2|Transversal radius|None|None|0.5
+OutputRaster|RESULT|Output Grid

@@ -1,0 +1,8 @@
+Grid Shrink/Expand
+grid_tools
+ParameterRaster|INPUT|Grid|False
+ParameterSelection|OPERATION|Operation|[0] Shrink;[1] Expand
+ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
+ParameterNumber|RADIUS|Radius|0.0|None|1
+ParameterSelection|METHOD_EXPAND|Method|[0] min;[1] max;[2] mean;[3] majority
+OutputRaster|RESULT|Result Grid

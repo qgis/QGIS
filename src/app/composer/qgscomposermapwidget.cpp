@@ -430,6 +430,8 @@ void QgsComposerMapWidget::updateGuiElements()
       
       mAtlasMarginSpinBox->setValue( static_cast<int>(mComposerMap->atlasMargin() * 100) );
       mAtlasFilenamePatternEdit->setText( mComposerMap->atlasFilenamePattern() );
+      mAtlasFixedScaleCheckBox->setCheckState( mComposerMap->atlasFixedScale() ? Qt::Checked : Qt::Unchecked );
+      mAtlasHideCoverageCheckBox->setCheckState( mComposerMap->atlasHideCoverage() ? Qt::Checked : Qt::Unchecked );
     }
     else
     {
@@ -934,7 +936,7 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
   QgsComposition* composition = mComposerMap->composition();
   if ( state == Qt::Checked )
   {
-    if ( composition->atlasMap() != 0 )
+    if ( composition->atlasMap() != 0 && composition->atlasMap() != mComposerMap )
     {
       QMessageBox msgBox;
       msgBox.setText(tr("An atlas map already exists."));

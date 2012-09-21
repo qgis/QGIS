@@ -1,0 +1,182 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmisequal</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmisbinary.html"><tt>mmisbinary</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmislesseq.html"><tt>mmislesseq</tt></a>]
+              </td>
+        <td class="title">Relations</td>
+      </tr>
+    </table>
+    <h1>mmisequal
+      <br>
+      <span class="subtitle">Verify if two images are equal
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">bool = 
+          <span class="fun">mmisequal</span>(
+                  
+          <span class="par">f1</span>, 
+          <span class="par">f2</span>
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Unsigned gray-scale (uint8 or uint16), signed (int32) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Unsigned gray-scale (uint8 or uint16), signed (int32) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">bool</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmBoolean.html">Boolean</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmisequal</span> compares the images 
+          <code>f1</code> and 
+          <code>f2</code> and returns true (1), if 
+          <code>f1(x)=f2(x)</code> , for all pixel 
+          <code>x</code>, and false (0), otherwise.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f1 = uint8(arrayrange(4))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f1</pre>
+              <pre class="computer">[0 1 2 3]</pre>
+              <pre class="user">&gt;&gt;&gt; f2 = uint8([9, 5, 3, 3])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f2</pre>
+              <pre class="computer">[9 5 3 3]</pre>
+              <pre class="user">&gt;&gt;&gt; f3 = f1</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmisequal(f1,f2)</pre>
+              <pre class="computer">0.0</pre>
+              <pre class="user">&gt;&gt;&gt; mmisequal(f1,f3)</pre>
+              <pre class="computer">1.0</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmisequal001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmisequal(f1, f2, MSG=None):
+    from Numeric import ravel, alltrue, array
+    bool = alltrue(ravel(f1==f2))
+    bool1 = 1
+    if type(f1) is type(array([1])):
+        bool1 = type(f1) is type(f2)
+        bool1 = bool1 and ((f1.typecode() == f2.typecode()))
+    if MSG != None:
+        if bool:
+            if bool1:
+                print 'OK: ', MSG
+            else:
+                print 'WARNING:', MSG
+        else:
+            print 'ERROR: ', MSG
+    return bool
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmis.html">mmis</a></td>
+              <td class="def">Verify if a relationship among images is true or false.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmcmp.html">mmcmp</a></td>
+              <td class="def">Compare two images pixelwisely.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmisbinary.html"><tt>mmisbinary</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmislesseq.html"><tt>mmislesseq</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

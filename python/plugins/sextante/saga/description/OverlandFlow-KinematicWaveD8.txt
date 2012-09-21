@@ -1,0 +1,13 @@
+Overland Flow - Kinematic Wave D8
+sim_hydrology
+ParameterRaster|DEM|Elevation|False
+ParameterVector|GAUGES|Gauges|-1|True
+ParameterNumber|TIME_SPAN|Simulation Time [h]|None|None|24
+ParameterNumber|TIME_STEP|Simulation Time Step [h]|None|None|0.1
+ParameterNumber|ROUGHNESS|Manning's Roughness|None|None|0.03
+ParameterNumber|NEWTON_MAXITER|Max. Iterations|None|None|100
+ParameterNumber|NEWTON_EPSILON|Epsilon|None|None|0.0001
+ParameterSelection|PRECIP|Precipitation|[0] Homogenous;[1] Above Elevation;[2] Left Half
+ParameterNumber|THRESHOLD|Threshold Elevation|None|None|0.0
+OutputRaster|FLOW|Runoff
+OutputTable|GAUGES_FLOW|Flow at Gauges

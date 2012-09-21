@@ -1,0 +1,31 @@
+OrthoRectification
+otbcli_OrthoRectification
+Ortho-rectification
+Geometry
+ParameterRaster|-io.in|Input Image|False
+OutputRaster|-io.out|Output Image
+ParameterSelection|-map|Output Cartographic Map Projection|utm;lambert2;lambert93;transmercator;wgs;epsg|5
+ParameterNumber|-map.utm.zone|Zone number|None|None|0
+ParameterBoolean|-map.utm.northhem|Northern Hemisphere|
+ParameterNumber|-map.transmercator.falseeasting|False easting|None|None|0.0
+ParameterNumber|-map.transmercator.falsenorthing|False northing|None|None|0.0
+ParameterNumber|-map.transmercator.scale|Scale factor|None|None|1.0
+ParameterNumber|-map.epsg.code|EPSG Code|None|None|32631
+ParameterSelection|-outputs.mode|Parameters estimation modes|auto;autosize;autospacing|0
+ParameterNumber|-outputs.ulx|Upper Left X|None|None|0.0
+ParameterNumber|-outputs.uly|Upper Left Y|None|None|0.0
+ParameterNumber|-outputs.sizex|Size X|None|None|0
+ParameterNumber|-outputs.sizey|Size Y|None|None|0
+ParameterNumber|-outputs.spacingx|Pixel Size X|None|None|0.0
+ParameterNumber|-outputs.spacingy|Pixel Size Y|None|None|0.0
+ParameterBoolean|-outputs.isotropic|Force isotropic spacing by default|True
+ParameterNumber|-outputs.default|Default pixel value|None|None|0.0
+ParameterSelection|-elev|Elevation management|dem;average|1
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File||
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterSelection|-interpolator|Interpolation|nn;linear;bco|0
+ParameterNumber|-interpolator.bco.radius|Radius for bicubic interpolation|None|None|2
+ParameterNumber|-opt.rpc|RPC modeling (points per axis)|None|None|10
+ParameterNumber|-opt.ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-opt.gridspacing|Resampling grid spacing|None|None|4.0

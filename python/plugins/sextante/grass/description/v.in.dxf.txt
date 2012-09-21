@@ -1,0 +1,13 @@
+v.in.dxf
+v.in.dxf - Converts files in DXF format to GRASS vector map format.
+Vector (v.*)
+ParameterFile|input|Name of input DXF file|False
+ParameterString|layers|List of layers to import|
+ParameterBoolean|-e|Ignore the map extent of DXF file|True
+ParameterBoolean|-t|Do not create attribute tables|False
+ParameterBoolean|-f|Import polyface meshes as 3D wire frame|True
+ParameterBoolean|-l|List available layers and exit|False
+ParameterBoolean|-i|Invert selection by layers (don't import layers in list)|False
+ParameterBoolean|-1|Import all objects into one layer|True
+OutputVector|output|Name for output vector map
+

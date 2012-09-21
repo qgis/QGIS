@@ -38,6 +38,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsPalLayerSettings layerSettings();
 
   public slots:
+    void collapseSample( QgsCollapsibleGroupBox* grpbx );
     void apply();
     void changeTextColor();
     void changeTextFont();

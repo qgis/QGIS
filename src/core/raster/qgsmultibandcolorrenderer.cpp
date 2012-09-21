@@ -195,7 +195,17 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandData[*bandIt] =  mInput->block( *bandIt, extent, width, height );
-    if ( !bandData[*bandIt] ) return 0;
+    if ( !bandData[*bandIt] )
+    {
+      // We should free the alloced mem from block().
+      QgsDebugMsg("No input band" );      
+      bandIt--;
+      for ( ; bandIt != bands.constBegin(); bandIt-- )
+      {
+	VSIFree( bandData[*bandIt] );
+      }
+      return 0;
+    }
   }
 
   if ( mRedBand > 0 )
@@ -216,6 +226,17 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    bandIt = bands.constBegin();
+    for ( ; bandIt != bands.constEnd(); ++bandIt )
+    {
+      VSIFree( bandData[*bandIt] );
+    }
+    return 0;
+  }
+
   QRgb* imageScanLine = 0;
   int currentRasterPos = 0;
   int redVal = 0;
@@ -334,6 +355,11 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 

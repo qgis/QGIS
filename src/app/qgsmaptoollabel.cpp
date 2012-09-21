@@ -322,6 +322,12 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
   QString haliString, valiString;
   currentAlignment( haliString, valiString );
 
+  if ( !mCurrentLabelPos.isPinned )
+  {
+    haliString = "Center";
+    valiString = "Half";
+  }
+
   QFont labelFont = labelFontCurrentFeature();
   QFontMetricsF labelFontMetrics( labelFont );
 

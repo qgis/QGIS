@@ -1,0 +1,44 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Upslope Area</h1>
+<div class='author'>(c) 2001 by O.Conrad</div>
+<div class='description'>This module allows you to specify target cells, for which the upslope contributing area shall be identified. The result will give for each cell the percentage of its flow that reaches the target cell(s).<br/>
+<br/>
+References:<br/>
+<br/>
+Deterministic 8<br/>
+- O'Callaghan, J.F. / Mark, D.M. (1984):<br/>
+    'The extraction of drainage networks from digital elevation data',<br/>
+    Computer Vision, Graphics and Image Processing, 28:323-344<br/>
+<br/>
+Deterministic Infinity:<br/>
+- Tarboton, D.G. (1997):<br/>
+    'A new method for the determination of flow directions and upslope areas in grid digital elevation models',<br/>
+    Water Ressources Research, Vol.33, No.2, p.309-319<br/>
+<br/>
+Multiple Flow Direction:<br/>
+- Freeman, G.T. (1991):<br/>
+    'Calculating catchment area with divergent flow based on a regular grid',<br/>
+    Computers and Geosciences, 17:413-22<br/>
+<br/>
+- Quinn, P.F. / Beven, K.J. / Chevallier, P. / Planchon, O. (1991):<br/>
+    'The prediction of hillslope flow paths for distributed hydrological modelling using digital terrain models',<br/>
+    Hydrological Processes, 5:59-79<br/>
+<br/>
+_______<br/>
+<br/>
+This version uses all valid cells (not 'no data' values) of a given target grid to determine the contributing area. In case no target grid is provided as input, the specified x/y coordinates are used as target point.</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Target Area <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Target X coordinate <div class='type'>Floating point</div></dt><dd>The x-coordinate of the target point in world coordinates [map units] <div class='constraints'></div></dd>
+	<dt>Target Y coordinate <div class='type'>Floating point</div></dt><dd>The y-coordinate of the target point in world coordinates [map units] <div class='constraints'></div></dd>
+	<dt>Elevation <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Sink Routes <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Upslope Area <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Deterministic 8, Deterministic Infinity, Multiple Flow Direction</div></dd>
+	<dt>Convergence <div class='type'>Floating point</div></dt><dd>Convergence factor for Multiple Flow Direction algorithm <div class='constraints'>Minimum: 0.001</div></dd>
+</dl>
+</body></html>

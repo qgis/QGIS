@@ -30,8 +30,9 @@ class QgsRenderContext;
 class QDomElement;
 namespace pal { class Layer; }
 
-struct CORE_EXPORT QgsDiagramLayerSettings
+class CORE_EXPORT QgsDiagramLayerSettings
 {
+public:
   //avoid inclusion of QgsPalLabeling
   enum Placement
   {
@@ -88,8 +89,9 @@ struct CORE_EXPORT QgsDiagramLayerSettings
 };
 
 //diagram settings for rendering
-struct CORE_EXPORT QgsDiagramSettings
+class CORE_EXPORT QgsDiagramSettings
 {
+public:
   enum SizeType
   {
     MM,
@@ -139,8 +141,9 @@ struct CORE_EXPORT QgsDiagramSettings
 };
 
 //additional diagram settings for interpolated size rendering
-struct CORE_EXPORT QgsDiagramInterpolationSettings
+class CORE_EXPORT QgsDiagramInterpolationSettings
 {
+public:
   QSizeF lowerSize;
   QSizeF upperSize;
   double lowerValue;

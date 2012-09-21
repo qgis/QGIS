@@ -1,7 +1,7 @@
 
 /**  Raster projector */
 
-class QgsRasterProjector
+class QgsRasterProjector : QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterprojector.h>

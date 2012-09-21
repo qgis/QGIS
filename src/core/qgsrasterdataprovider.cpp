@@ -25,6 +25,27 @@
 
 #include <qmath.h>
 
+void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
+{
+  if ( mUseSrcNoDataValue.size() < bandNo )
+  {
+    for ( int i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
+    {
+      mUseSrcNoDataValue.append( false );
+    }
+  }
+  mUseSrcNoDataValue[bandNo-1] = use;
+}
+
+double QgsRasterDataProvider::noDataValue( int bandNo ) const
+{
+  if ( mSrcHasNoDataValue.value( bandNo - 1 ) && mUseSrcNoDataValue.value( bandNo - 1 ) )
+  {
+    return mSrcNoDataValue.value( bandNo -1 );
+  }
+  return mInternalNoDataValue.value( bandNo -1 );
+}
+
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
                                        const & viewExtent, int width,
                                        int height,
@@ -64,7 +85,7 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
     return;
 
   // Allocate memory for not projected source data
-  int mySize = dataTypeSize( bandNo ) / 8;
+  size_t mySize = dataTypeSize( bandNo ) / 8;
   void *mySrcData = malloc( mySize * myProjector.srcRows() * myProjector.srcCols() );
 
   time.restart();
@@ -101,7 +122,32 @@ void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & exten
 
   // TODO: replace VSIMalloc, it is GDAL function
   void * data = VSIMalloc( dataTypeSize( bandNo ) * width * height );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate data memory of % bytes" ).arg( dataTypeSize( bandNo ) * width * height ) );
+    return 0;
+  }
+
   readBlock( bandNo, extent, width, height, data );
+
+  // apply user no data values
+  // TODO: there are other readBlock methods where no data are not applied
+  QList<QgsRasterInterface::Range> myNoDataRangeList = userNoDataValue( bandNo );
+  if ( !myNoDataRangeList.isEmpty() )
+  {
+    QgsRasterInterface::DataType type = dataType( bandNo );
+    double myNoDataValue = noDataValue( bandNo );
+    size_t size = width * height;
+    for ( size_t i = 0; i < size; i++ )
+    {
+      double value = readValue( data, type, i );
+
+      if ( QgsRasterInterface::valueInRange( value, myNoDataRangeList ) )
+      {
+        writeValue( data, type, i, myNoDataValue );
+      }
+    }
+  }
 
   return data;
 }
@@ -260,11 +306,11 @@ QString QgsRasterDataProvider::lastErrorFormat()
 QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
 {
   int type = dataType( theBandNo );
-  int size = dataTypeSize( theBandNo ) / 8;
+  size_t size = dataTypeSize( theBandNo ) / 8;
   QByteArray ba;
-  ba.resize( size );
+  ba.resize(( int )size );
   char * data = ba.data();
-  double noval = mNoDataValue[theBandNo-1];
+  double noval = noDataValue( theBandNo - 1 );
   unsigned char uc;
   unsigned short us;
   short s;
@@ -591,7 +637,6 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
   int myWidth = myRasterBandStats.width;
   int myHeight = myRasterBandStats.height;
 
-  double myNoDataValue = noDataValue();
   int myDataType = dataType( theBandNo );
 
   int myXBlockSize = xBlockSize();
@@ -644,7 +689,8 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
           double myValue = readValue( myData, myDataType, myX + ( myY * myBlockWidth ) );
           //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
 
-          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          // TODO: user nodata
+          if ( isNoDataValue( theBandNo, myValue ) )
           {
             continue; // NULL
           }
@@ -693,7 +739,6 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
   myRasterBandStats.stdDev = sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
 
   QgsDebugMsg( "************ STATS **************" );
-  QgsDebugMsg( QString( "VALID NODATA %1" ).arg( mValidNoDataValue ) );
   QgsDebugMsg( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ) );
   QgsDebugMsg( QString( "MAX %1" ).arg( myRasterBandStats.maximumValue ) );
   QgsDebugMsg( QString( "RANGE %1" ).arg( myRasterBandStats.range ) );
@@ -868,7 +913,6 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
   QgsRectangle myExtent = myHistogram.extent;
   myHistogram.histogramVector.resize( myBinCount );
 
-  double myNoDataValue = noDataValue();
   int myDataType = dataType( theBandNo );
 
   int myXBlockSize = xBlockSize();
@@ -928,7 +972,8 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
           double myValue = readValue( myData, myDataType, myX + ( myY * myBlockWidth ) );
           //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
 
-          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          // TODO: user defined nodata values
+          if ( isNoDataValue( theBandNo, myValue ) )
           {
             continue; // NULL
           }
@@ -1009,7 +1054,7 @@ void QgsRasterDataProvider::cumulativeCut( int theBandNo,
 double QgsRasterDataProvider::readValue( void *data, int type, int index )
 {
   if ( !data )
-    return mValidNoDataValue ? noDataValue() : 0.0;
+    return std::numeric_limits<double>::quiet_NaN();
 
   switch ( type )
   {
@@ -1038,7 +1083,39 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
       QgsLogger::warning( "GDAL data type is not supported" );
   }
 
-  return mValidNoDataValue ? noDataValue() : 0.0;
+  return std::numeric_limits<double>::quiet_NaN();
+}
+
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData )
+{
+  //if ( bandNo > bandCount() ) return;
+  if ( bandNo >= mUserNoDataValue.size() )
+  {
+    for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
+    {
+      mUserNoDataValue.append( QList<QgsRasterInterface::Range>() );
+    }
+  }
+  QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );
+
+  if ( mUserNoDataValue[bandNo-1] != noData )
+  {
+    // Clear statistics
+    int i = 0;
+    while ( i < mStatistics.size() )
+    {
+      if ( mStatistics.value( i ).bandNumber == bandNo )
+      {
+        mStatistics.removeAt( i );
+        mHistograms.removeAt( i );
+      }
+      else
+      {
+        i++;
+      }
+    }
+    mUserNoDataValue[bandNo-1] = noData;
+  }
 }
 
 // ENDS

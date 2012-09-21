@@ -67,6 +67,9 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideFormat();
     void hideOutput();
 
+  public slots:
+    virtual void accept() { if ( validate() ) return QDialog::accept(); }
+
   private slots:
     void on_mRawModeRadioButton_toggled( bool );
     void on_mBrowseButton_clicked();
@@ -92,7 +95,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
-    void groupBoxExpanded( QWidget * widget );
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
     void on_mRemoveSelectedNoDataToolButton_clicked();
@@ -133,6 +135,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void setNoDataToEdited( int row );
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
+    bool validate() const;
 };
 
 

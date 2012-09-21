@@ -177,6 +177,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   return theGlobalTransparency;
 }
 
+// TODO: nodata per band
 bool QgsRasterTransparency::isEmpty( double nodataValue ) const
 {
   return (

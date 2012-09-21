@@ -1,0 +1,142 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmlimits</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmconcat.html"><tt>mmconcat</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmmaxleveltype.html"><tt>mmmaxleveltype</tt></a>]
+              </td>
+        <td class="title">Image Information and Manipulation</td>
+      </tr>
+    </table>
+    <h1>mmlimits
+      <br>
+      <span class="subtitle">Get the possible minimum and maximum of an image.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmlimits</span>(
+                  
+          <span class="par">f</span>
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Unsigned gray-scale (uint8 or uint16), signed (int32) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span><p>Vector, the first element is the infimum, the second, the supremum.</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      The possible minimum and the possible maximum of an image depend on its data type. These values are important to compute many morphological operators (for instance, negate of an image). The output is a vector, where the first element is the possible minimum and the second, the possible maximum.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; print mmlimits(mmbinary([0, 1, 0]))</pre>
+              <pre class="computer">[0 1]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmlimits(uint8([0, 1, 2]))</pre>
+              <pre class="computer">[  0 255]</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmlimits(f):
+    from Numeric import array
+    code = f.typecode()
+    if   code == '1': y=array([0,1])
+    elif code == 'b': y=array([0,255])
+    elif code == 'w': y=array([0,65535])
+    elif code == 'i': y=array([-2147483647,2147483647])
+    else:
+        assert 0,'Does not accept this typecode:'+code
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmneg.html">mmneg</a></td>
+              <td class="def">Negate an image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmdatatype.html">mmdatatype</a></td>
+              <td class="def">Return the image datatype string</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmconcat.html"><tt>mmconcat</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmmaxleveltype.html"><tt>mmmaxleveltype</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

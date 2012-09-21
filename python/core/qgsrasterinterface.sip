@@ -7,7 +7,39 @@ class QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
+#include <qgsrasterresamplefilter.h>
+//#include <qgsrasternuller.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterdataprovider.h>
+
+// QgsRasterRenderer subclass headers must be here because ConvertToSubClassCode 
+// from QgsRasterRenderer is probably included
+#include <qgspalettedrasterrenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsRasterResampleFilter*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterResampleFilter;
+//  if (dynamic_cast<QgsRasterNuller*>(sipCpp) != NULL)
+//    sipClass = sipClass_QgsRasterNuller;
+  if (dynamic_cast<QgsRasterRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterRenderer;
+  if (dynamic_cast<QgsRasterProjector*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsRasterProjector;
+  if (dynamic_cast<QgsRasterDataProvider*>(sipCpp) != NULL)
+  {
+    sipClass = sipClass_QgsRasterDataProvider;
+    *sipCppRet = static_cast<QgsRasterDataProvider*>(sipCpp);
+  }
+  else
+    sipClass = 0;
+%End
+
   public:
 
     enum DataType
@@ -50,24 +82,33 @@ class QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual double noDataValue() const;
+    virtual double noDataValue( int bandNo ) const;
 
-    //void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    virtual void * block( int bandNo, const QgsRectangle  & extent, int width, int height );
 
-    //virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     virtual bool setInput( QgsRasterInterface* input );
+
+    virtual QgsRasterInterface * input () const;
 
     virtual bool on( );
 
     virtual void setOn( bool on );
 
-    virtual QgsRasterInterface * srcInput();
+    QgsRasterInterface * srcInput();
 
     QImage * createImage( int width, int height, QImage::Format format );
 
     void setStatsOn( bool on );
 
     double time( bool cumulative = false );
+
+    static QString printValue( double value );
+
+  protected:
+    static double readValue( void *data, QgsRasterInterface::DataType type, int index );
+
+    static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
 };
 

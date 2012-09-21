@@ -1,0 +1,457 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmplot</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmbshow.html"><tt>mmbshow</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmvdome.html"><tt>mmvdome</tt></a>]
+              </td>
+        <td class="title">Visualization</td>
+      </tr>
+    </table>
+    <h1>mmplot
+      <br>
+      <span class="subtitle">Plot a function.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">fig = 
+          <span class="fun">mmplot</span>(
+                  
+          <span class="par">plotitems</span> = [], 
+          <span class="par">options</span> = [], 
+          <span class="par">outfig</span> = -1, 
+          <span class="par">filename</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">plotitems</span></td>
+                  <td class="def"><span class="type"></span><p>List of plotitems.</p><p>Default: 
+                      <code>[]</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">options</span></td>
+                  <td class="def"><span class="type"></span><p>List of options.</p><p>Default: 
+                      <code>[]</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">outfig</span></td>
+                  <td class="def"><span class="type"></span><p>Integer. Figure number. 0 creates a new figure.</p><p>Default: 
+                      <code>-1</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">filename</span></td>
+                  <td class="def"><span class="type"></span><p>String. Name of the PNG output file.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">fig</span></td>
+                  <td class="def"><span class="type"></span><p>Figure number.</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="docbook">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmplot</span>
+           plots a 2D function 
+          <code>y=f(x)</code>
+           with the help of the Gnuplot package.
+              
+          <span class="fun">mmplot</span>
+           may take four arguments.
+
+        </p>
+        <ul>
+          <li>
+            <b><code>plotitems</code></b>
+             argument is a list of plotitems: 
+            <code>[plotitem_1, plotitem_2, ...]</code>
+            , where each
+                    plotitem is a list containing the 
+            <code>x</code>
+             axis, the 
+            <code>y</code>
+             axis, the plot 
+            <code>style</code>
+                    (Gnuplot styles) and the function 
+            <code>title</code>
+            . A plotitem looks like 
+            <code>"[x, y, style, title]"</code>
+            ,
+                    where 
+            <code>x</code>
+             and 
+            <code>y</code>
+             are Numeric arrays, 
+            <code>style</code>
+             and 
+            <code>title</code>
+             are strings.
+                    Parameters 
+            <code>y</code>
+            , 
+            <code>style</code>
+             and 
+            <code>title</code>
+             are optionals. If 
+            <code>y</code>
+             is not specified,
+                    
+            <code>"Numeric.range(x) vs. x"</code>
+             will be plotted. If 
+            <code>style</code>
+             is not defined or is 
+            <code>None</code>
+            ,
+                    
+            <span class="fun">mmplot</span>
+             uses the global style, if it has been defined in 
+            <code>options</code>
+            , or 'lines' style, when there
+                    is no global style. 
+            <code>plotitems</code>
+             argument finally looks like
+                    
+            <code>"[[x1, y1, 'a style', 'a title'], [x2], [x3, y3], [x4, y4, None, 'a title']"</code>
+            .
+                
+          </li>
+          <li>
+            <b><code>options</code></b>
+             argument is a list of option tuples: 
+            <code>[[option1, value1], [option2, value2], ...]</code>
+                    Available options are:
+                    
+            <ul>
+              <li>
+                <code>'grid'</code>
+                , adds a grid.
+              </li>
+              <li>
+                <code>'title'</code>
+                , adds a global title to the graph.
+              </li>
+              <li>
+                <code>'xlabel'</code>
+                , adds a label for X axis.
+              </li>
+              <li>
+                <code>'ylabel'</code>
+                , adds a label for Y axis.
+              </li>
+              <li>
+                <code>'style'</code>
+                , selects a global plot style. Accepts any Gnuplot style requiring no additional information. Gnuplot styles are: `lines`, `points`, `linespoints`, `impulses`, `dots`, `steps`, `fsteps`,
+                                `histeps`, `errorbars`, `xerrorbars`, `yerrorbars`, `xyerrorbars`, `errorlines`,
+                                `xerrorlines`, `yerrorlines`, `xyerrorlines`, `boxes`, `boxerrorbars`,
+                                `boxxyerrorbars`, `financebars`, `candlesticks` or `vector`. See Gnuplot help
+                                for these styles.
+              </li>
+              <li>
+                <code>'replot'</code>
+                , treat plotitems as additional plotitems to be plotted alongside the existing graph.
+                                      If replot is not specified, the graph will be cleared before the plot.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b><code>outfig</code></b>
+             argument is the figure number to be plot. A list of figures is kept in global variable
+                    
+            <code>__figs__</code>
+             which is not supposed to be modified by the user. 
+            <code>__figs__[0]</code>
+             stores the
+                    number of the current figure (last figure accessed by 
+            <span class="fun">mmplot</span>
+            ). Each 
+            <code>__figs__[i]</code>
+             is a Gnuplot
+                    pointer for figure 
+            <code>i</code>
+            , 
+            <code>i&gt;0</code>
+            . If figure 
+            <code>outfig</code>
+             already exists, data will be
+                    plotted in figure 
+            <code>outfig</code>
+             and 
+            <code>outfig</code>
+             is returned. If figure 
+            <code>outfig</code>
+             does not
+                    exist, nothing is done and 
+            <code>0</code>
+             is returned. If 
+            <code>outfig == 0</code>
+            , data will be plotted in a
+                    new figure and the new figure number is returned. If 
+            <code>outfig</code>
+             is not specified, data will be
+                    plotted in the current figure, if it already exists, or in a new figure, otherwise. The new figure
+                    number is then returned.
+                
+          </li>
+          <li>
+            <b><code>filename</code></b>
+             argument is the name of the PNG output file.
+                
+          </li>
+        </ul>
+        <p>    There are also two special uses of 
+          <span class="fun">mmplot</span>
+          . When 
+          <span class="fun">mmplot</span>
+           is called with no args, the current figure is
+              replotted and its number is returned. If there is no current figure, nothing is done and 0 is returned.
+              
+          <span class="fun">mmplot</span>
+          ('reset') clears the figures table.
+
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; import Numeric</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; #</pre>
+              <pre class="user">&gt;&gt;&gt; x = Numeric.arange(0, 2*Numeric.pi, 0.1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmplot([[x]])</pre>
+              <pre class="user">&gt;&gt;&gt; y1 = Numeric.sin(x)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; y2 = Numeric.cos(x)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; opts = [['title', 'Example Plot'],\
+        ['grid'],\
+        ['style', 'linespoints'],\
+        ['xlabel', '"X values"'],\
+        ['ylabel', '"Y Values"']]</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; y1_plt = [x, y1, None,    'sin(X)']</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; y2_plt = [x, y2, 'lines', 'cos(X)']</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; #</pre>
+              <pre class="user">&gt;&gt;&gt; # plotting two graphs using one step</pre>
+              <pre class="user">&gt;&gt;&gt; fig1 = mmplot([y1_plt, y2_plt], opts, 0)</pre>
+              <pre class="user">&gt;&gt;&gt; #</pre>
+              <pre class="user">&gt;&gt;&gt; # plotting the same graphs using two steps</pre>
+              <pre class="user">&gt;&gt;&gt; fig2 = mmplot([y1_plt], opts, 0)</pre>
+              <pre class="user">&gt;&gt;&gt; fig2 = mmplot([y2_plt], opts, fig2)</pre>
+              <pre class="user">&gt;&gt;&gt; #</pre>
+              <pre class="user">&gt;&gt;&gt; # first function has been lost, lets recover it</pre>
+              <pre class="user">&gt;&gt;&gt; opts.append(['replot'])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fig2 = mmplot([y1_plt], opts, fig2)</pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="320" src="../images/plt_mmplot_001.png"></td>
+                  <td><img width="320" src="../images/plt_mmplot_002.png"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/plt_mmplot_001.png">[[x]]</a></td>
+                  <td><a href="../images/plt_mmplot_002.png">[y1_plt, y2_plt], opts, 0</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="320" src="../images/plt_mmplot_003.png"></td>
+                  <td><img width="320" src="../images/plt_mmplot_004.png"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/plt_mmplot_003.png">[y1_plt], opts, 0</a></td>
+                  <td><a href="../images/plt_mmplot_004.png">[y2_plt], opts, fig2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="320" src="../images/plt_mmplot_005.png"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/plt_mmplot_005.png">[y1_plt], opts, fig2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmplot(plotitems=[], options=[], outfig=-1, filename=None):
+    import Gnuplot
+    import Numeric
+    newfig = 0
+    if (plotitems == 'reset'):
+        __figs__[0] = None
+        __figs__[1:] = []
+        return 0
+    if len(plotitems) == 0:
+        # no plotitems specified: replot current figure
+        if __figs__[0]:
+            outfig = __figs__[0]
+            g = __figs__[outfig]
+            g.replot()
+            return outfig
+        else:
+            #assert 0, "mmplot error: There is no current figure\n"
+            print "mmplot error: There is no current figure\n"
+            return 0
+    # figure to be plotted
+    if ((outfig &lt; 0) and __figs__[0]):
+        # current figure
+        outfig = __figs__[0]
+    elif ( (outfig == 0) or ( (outfig == -1) and not __figs__[0] )  ):
+        # new figure
+        newfig = 1
+        outfig = len(__figs__)
+    elif outfig &gt;= len(__figs__):
+        #assert 0, 'mmplot error: Figure ' + str(outfig) + 'does not exist\n'
+        print 'mmplot error: Figure ' + str(outfig) + 'does not exist\n'
+        return 0
+    #current figure
+    __figs__[0] = outfig
+    # Gnuplot pointer
+    if newfig:
+        if len(__figs__) &gt; 20:
+            print '''mmplot error: could not create figure. Too many PlotItems in memory (20). Use
+                     mmplot('reset') to clear table'''
+            return 0
+        g = Gnuplot.Gnuplot()
+        __figs__.append(g)
+    else:
+        g = __figs__[outfig]
+    # options
+    try:
+        options.remove(['replot'])
+    except:
+        g.reset()
+    try:
+        #default style
+        g('set data style lines')
+        for option in options:
+            if option[0] == 'grid':
+                g('set grid')
+            elif option[0] == 'title':
+                g('set title "' + option[1] + '"')
+            elif option[0] == 'xlabel':
+                g('set xlabel ' + option[1])
+            elif option[0] == 'ylabel':
+                g('set ylabel ' + option[1])
+            elif option[0] == 'style':
+                g('set data style ' + option[1])
+            else:
+                print "mmplot warning: Unknown option: " + option[0]
+    except:
+        print "mmplot warning: Bad usage in options! Using default values. Please, use help.\n"
+    # Plot items: item[0]=x, item[1]=y, item[2]=style
+    for item in plotitems:
+        try:
+            title = None
+            style = None
+            x = Numeric.ravel(item[0])
+            if len(item) &gt; 1:
+                # y axis specified
+                y = Numeric.ravel(item[1])
+                if len(item) &gt; 2:
+                    # style specified
+                    style = item[2]
+                    if len(item) &gt; 3:
+                        title = item[3]
+            else:
+                # no y axis specified
+                y = x
+                x = Numeric.arange(len(y))
+            g.replot(Gnuplot.Data(x, y, title=title, with=style))
+        except:
+            g.reset()
+            if newfig:
+                __figs__.pop()
+            #assert 0, "mmplot error: Bad usage in plotitems! Impossible to plot graph. Please, use help.\n"
+            print "mmplot error: Bad usage in plotitems! Impossible to plot graph. Please, use help.\n"
+            return 0
+    # PNG file
+    if filename:
+        g.hardcopy(filename, terminal='png', color=1)
+    fig = outfig
+    return fig
+    </pre>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmbshow.html"><tt>mmbshow</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmvdome.html"><tt>mmvdome</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

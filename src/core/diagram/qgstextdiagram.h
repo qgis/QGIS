@@ -24,8 +24,8 @@
 
 class QPainter;
 class QPointF;
-struct QgsDiagramSettings;
-struct QgsDiagramInterpolationSettings;
+class QgsDiagramSettings;
+class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 

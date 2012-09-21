@@ -1,0 +1,7 @@
+v.to.rast
+v.to.rast.value - Converts (rasterize) a vector map into a raster map.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterSelection|use|Source of raster values|val
+ParameterNumber|value|Raster value|None|None|1.0
+OutputRaster|output|Name for output raster map

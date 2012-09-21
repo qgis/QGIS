@@ -172,7 +172,7 @@ public:
     int height();
 
     /** \brief Is the NoDataValue Valid */
-    bool isNoDataValueValid() const;
+    //bool isNoDataValueValid() const;
 
     /** \brief Accessor for mGrayMinimumMaximumEstimated */
     //bool isGrayMinimumMaximumEstimated() const; //removed with raster redesign
@@ -181,7 +181,7 @@ public:
     //bool isRGBMinimumMaximumEstimated() const; //removed with raster redesign
 
     /** \brief Accessor that returns the NO_DATA entry for this raster */
-    double noDataValue( bool* isValid = 0 );
+    //double noDataValue( bool* isValid = 0 );
 
     /** \brief Returns a pointer to the transparency object */
     //QgsRasterTransparency* rasterTransparency(); //removed with raster redesign
@@ -219,6 +219,8 @@ public:
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
     QgsRasterRenderer* renderer();
+
+    QgsRasterPipe * pipe();
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
@@ -383,7 +385,7 @@ public:
 //bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
 
     /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
-    void resetNoDataValue();
+    //void resetNoDataValue();
 
     /** \brief Mutator for blue band name mapping */
     void setBlueBandName( const QString & theBandName );
@@ -429,7 +431,7 @@ public:
     void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
-    void setNoDataValue( double theNoData );
+    //void setNoDataValue( double theNoData );
 
     /** \brief Set the raster shader function to a user defined function
       \note ownership of the shader function is transfered to raster shader */

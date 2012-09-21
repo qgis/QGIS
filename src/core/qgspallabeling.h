@@ -28,7 +28,7 @@ class QgsMapRenderer;
 class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
-struct QgsDiagramLayerSettings;
+class QgsDiagramLayerSettings;
 
 #include <QString>
 #include <QFont>
@@ -103,7 +103,8 @@ class CORE_EXPORT QgsPalLayerSettings
       MinScale,
       MaxScale,
       FontTransp,
-      BufferTransp
+      BufferTransp,
+      PropertyCount, // keep last entry
     };
 
     QString fieldName;
@@ -120,8 +121,12 @@ class CORE_EXPORT QgsPalLayerSettings
     unsigned int placementFlags;
     // offset labels of point/centroid features default to center
     // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
-    int xQuadOffset, yQuadOffset;
-    double xOffset, yOffset; // offset from point in mm or map units
+    int xQuadOffset;
+    int yQuadOffset;
+
+    // offset from point in mm or map units
+    double xOffset;
+    double yOffset;
     double angleOffset; // rotation applied to offset labels
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
     QFont textFont;
@@ -135,7 +140,10 @@ class CORE_EXPORT QgsPalLayerSettings
     double dist; // distance from the feature (in mm)
     double vectorScaleFactor; //scale factor painter units->pixels
     double rasterCompressFactor; //pixel resolution scale factor
-    int scaleMin, scaleMax; // disabled if both are zero
+
+    // disabled if both are zero
+    int scaleMin;
+    int scaleMax;
     double bufferSize; //buffer size (in mm)
     QColor bufferColor;
     int bufferTransp;
@@ -170,16 +178,6 @@ class CORE_EXPORT QgsPalLayerSettings
     /**Set a property to static instead data defined*/
     void removeDataDefinedProperty( DataDefinedProperties p );
 
-    // temporary stuff: set when layer gets prepared
-    pal::Layer* palLayer;
-    int fieldIndex;
-    QFontMetricsF* fontMetrics;
-    const QgsMapToPixel* xform;
-    const QgsCoordinateTransform* ct;
-    QgsPoint ptZero, ptOne;
-    QList<QgsPalGeometry*> geometries;
-    QgsGeometry* extentGeom;
-
     /**Stores field indices for data defined layer properties*/
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
@@ -191,6 +189,16 @@ class CORE_EXPORT QgsPalLayerSettings
      @param buffer whether it buffer size being calculated
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+
+    // temporary stuff: set when layer gets prepared
+    pal::Layer* palLayer;
+    int fieldIndex;
+    QFontMetricsF* fontMetrics;
+    const QgsMapToPixel* xform;
+    const QgsCoordinateTransform* ct;
+    QgsPoint ptZero, ptOne;
+    QList<QgsPalGeometry*> geometries;
+    QgsGeometry* extentGeom;
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)

@@ -1,0 +1,11 @@
+LineSegmentDetection
+otbcli_LineSegmentDetection
+Line segment detection
+Feature Extraction
+ParameterRaster|-in|Input Image|False
+OutputVector|-out|Output Detected lines
+ParameterSelection|-elev|Elevation management|dem;average|1
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File||
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterBoolean|-norescale|No rescaling in [0, 255]|

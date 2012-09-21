@@ -1,0 +1,12 @@
+Watershed Segmentation
+imagery_segmentation
+ParameterRaster|GRID|Grid|False
+ParameterSelection|OUTPUT|Output|[0] Seed Value;[1] Segment ID
+ParameterSelection|DOWN|Method|[0] Minima;[1] Maxima
+ParameterSelection|JOIN|Join Segments based on Threshold Value|[0] do not join;[1] seed to saddle difference;[2] seeds difference
+ParameterNumber|THRESHOLD|Threshold|None|None|0
+ParameterBoolean|EDGE           |Allow Edge Pixels to be Seeds|True
+ParameterBoolean|BBORDERS       |Borders|True
+OutputRaster|SEGMENTS|Segments
+OutputVector|SEEDS|Seed Points
+OutputRaster|BORDERS|Borders

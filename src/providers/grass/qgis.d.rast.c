@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -140,6 +141,15 @@ static int cell_draw( char *name,
   long one = 1;
   FILE *fo;
   int raster_size;
+#ifdef NAN
+  double dnul = NAN;
+  float fnul = NAN;
+#else
+  double dnul = strtod( "NAN", 0 );
+  float fnul = strtof( "NAN", 0 );
+  // another possibility would be nan()/nanf() - C99
+  // and 0./0. if all fails
+#endif
 
   big_endian = !( *(( char * )( &one ) ) );
 
@@ -213,18 +223,19 @@ static int cell_draw( char *name,
           // see comments in QgsGrassRasterProvider::noDataValue()
           if ( data_type == CELL_TYPE )
           {
-            int nul = -2000000000;
+            //int nul = -2000000000;
+            int nul = -2147483648;
             fwrite( &nul , 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )
           {
-            double nul = -1e+300;
-            fwrite( &nul , 8, 1, fo );
+            //double nul = -1e+300;
+            fwrite( &dnul , 8, 1, fo );
           }
           else if ( data_type == FCELL_TYPE )
           {
-            double nul = -1e+30;
-            fwrite( &nul , 4, 1, fo );
+            //double nul = -1e+30;
+            fwrite( &fnul , 4, 1, fo );
           }
         }
         else

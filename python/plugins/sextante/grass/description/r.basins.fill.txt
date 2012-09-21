@@ -1,0 +1,7 @@
+r.basins.fill
+r.basins.fill - Generates watershed subbasins raster map.
+Raster (r.*)
+ParameterRaster|c_map|Name of input coded stream network raster map|False
+ParameterRaster|t_map|Name of input thinned ridge network raster map|False
+ParameterNumber|number|Number of passes through the dataset|None|None|0.0
+OutputRaster|result|Name for output raster map

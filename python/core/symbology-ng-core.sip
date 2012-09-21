@@ -609,6 +609,7 @@ class QgsSymbolLayerV2
 
 public:
 
+  // not necessarily supported by all symbol layers...
   virtual void setColor(const QColor& color);
   virtual QColor color() const;
 
@@ -620,6 +621,8 @@ public:
   virtual void stopRender(QgsSymbolV2RenderContext& context) = 0;
 
   virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
+
+  virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
   virtual QgsStringMap properties() const = 0;
 
@@ -636,6 +639,8 @@ public:
   // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
   void setRenderingPass(int renderingPass);
   int renderingPass() const;
+
+  virtual QSet<QString> usedAttributes() const;
 
 protected:
   QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false);
@@ -660,6 +665,16 @@ public:
 
   void setSize(double size);
   double size() const;
+
+  void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+  QgsSymbolV2::ScaleMethod scaleMethod() const;
+
+  void setOffset( QPointF offset );
+  QPointF offset();
+
+  void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+  virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
 protected:
   QgsMarkerSymbolLayerV2(bool locked = false);
@@ -706,6 +721,225 @@ protected:
   QgsFillSymbolLayerV2(bool locked = false);
 };
 
+class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsSimpleFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
+                                QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                                Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH );
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    Qt::BrushStyle brushStyle() const;
+    void setBrushStyle( Qt::BrushStyle style );
+
+    QColor borderColor() const;
+    void setBorderColor( QColor borderColor );
+
+    Qt::PenStyle borderStyle() const;
+    void setBorderStyle( Qt::PenStyle borderStyle );
+
+    double borderWidth() const;
+    void setBorderWidth( double borderWidth );
+
+    void setOffset( QPointF offset );
+    QPointF offset();
+};
+
+/**Base class for polygon renderers generating texture images*/
+class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsImageFillSymbolLayer();
+    virtual ~QgsImageFillSymbolLayer();
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    virtual QgsSymbolV2* subSymbol();
+    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+};
+
+/**A class for svg fill patterns. The class automatically scales the pattern to
+   the appropriate pixel dimensions of the output device*/
+class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
+    ~QgsSVGFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    //getters and setters
+    void setSvgFilePath( const QString& svgPath );
+    QString svgFilePath() const;
+    void setPatternWidth( double width );
+    double patternWidth() const;
+
+    void setSvgFillColor( const QColor& c );
+    QColor svgFillColor() const;
+    void setSvgOutlineColor( const QColor& c );
+    QColor svgOutlineColor() const;
+    void setSvgOutlineWidth( double w );
+    double svgOutlineWidth() const;
+};
+
+class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsLinePatternFillSymbolLayer();
+    ~QgsLinePatternFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    //getters and setters
+    void setLineAngle( double a );
+    double lineAngle() const;
+    void setDistance( double d );
+    double distance() const;
+    void setLineWidth( double w );
+    double lineWidth() const;
+    void setColor( const QColor& c );
+    QColor color() const;
+    void setOffset( double offset );
+    double offset() const;
+};
+
+class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsPointPatternFillSymbolLayer();
+    ~QgsPointPatternFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    //getters and setters
+    double distanceX() const;
+    void setDistanceX( double d );
+
+    double distanceY() const;
+    void setDistanceY( double d );
+
+    double displacementX() const;
+    void setDisplacementX( double d );
+
+    double displacementY() const;
+    void setDisplacementY( double d );
+
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual QgsSymbolV2* subSymbol();
+};
+
+class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsfillsymbollayerv2.h>
+%End
+  public:
+    QgsCentroidFillSymbolLayerV2();
+    ~QgsCentroidFillSymbolLayerV2();
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    void setColor( const QColor& color );
+
+    QgsSymbolV2* subSymbol();
+    bool setSubSymbol( QgsSymbolV2* symbol );
+};
 
 ///////////////
 
@@ -780,12 +1014,18 @@ public:
       MapUnit
     };
 
-  enum SymbolType
-  {
-  	Marker,
-  	Line,
-  	Fill
-  };
+    enum SymbolType
+    {
+      Marker,
+      Line,
+      Fill
+    };
+
+    enum ScaleMethod
+    {
+      ScaleArea,
+      ScaleDiameter
+    };
 
     //! @note added in 1.5
     enum RenderHint
@@ -794,58 +1034,64 @@ public:
       DataDefinedRotation = 2
     };
 
-  virtual ~QgsSymbolV2();
+    virtual ~QgsSymbolV2();
 
-  //! return new default symbol for specified geometry type
-  static QgsSymbolV2* defaultSymbol(QGis::GeometryType geomType) /Factory/;
+    //! return new default symbol for specified geometry type
+    static QgsSymbolV2* defaultSymbol(QGis::GeometryType geomType) /Factory/;
 
-  SymbolType type() const;
+    SymbolType type() const;
 
-  // symbol layers handling
+    // symbol layers handling
 
-  QgsSymbolLayerV2* symbolLayer(int layer);
+    QgsSymbolLayerV2* symbolLayer(int layer);
 
-  int symbolLayerCount();
+    int symbolLayerCount();
 
-  //! insert symbol layer to specified index
-  bool insertSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
+    //! insert symbol layer to specified index
+    bool insertSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-  //! append symbol layer at the end of the list
-  bool appendSymbolLayer(QgsSymbolLayerV2* layer /Transfer/);
+    //! append symbol layer at the end of the list
+    bool appendSymbolLayer(QgsSymbolLayerV2* layer /Transfer/);
 
-  //! delete symbol layer at specified index
-  bool deleteSymbolLayer(int index);
+    //! delete symbol layer at specified index
+    bool deleteSymbolLayer(int index);
 
-  //! remove symbol layer from the list and return pointer to it
-  QgsSymbolLayerV2* takeSymbolLayer(int index) /TransferBack/;
+    //! remove symbol layer from the list and return pointer to it
+    QgsSymbolLayerV2* takeSymbolLayer(int index) /TransferBack/;
 
-  //! delete layer at specified index and set a new one
-  bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
+    //! delete layer at specified index and set a new one
+    bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
-  void stopRender(QgsRenderContext& context);
+    void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
+    void stopRender(QgsRenderContext& context);
 
-  void setColor(const QColor& color);
-  QColor color();
+    void setColor(const QColor& color);
+    QColor color();
 
-  void drawPreviewIcon(QPainter* painter, QSize size);
+    void drawPreviewIcon(QPainter* painter, QSize size);
 
-  QImage bigSymbolPreviewImage();
+    QImage bigSymbolPreviewImage();
 
-  QString dump();
+    QString dump();
 
-  virtual QgsSymbolV2* clone() const = 0 /Factory/;
+    virtual QgsSymbolV2* clone() const = 0 /Factory/;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     OutputUnit outputUnit() const;
     void setOutputUnit( OutputUnit u );
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha );
 
     //! @note added in 1.5
     int renderHints();
     //! @note added in 1.5
     void setRenderHints( int hints );
+
+    QSet<QString> usedAttributes() const;
 
 protected:
   QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers /Transfer/); // can't be instantiated
@@ -861,12 +1107,12 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 #include <qgssymbolv2.h>
 %End
 
-public:
-  /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
-    This is a convenience method for easier creation of marker symbols.
-    \note added in v1.7
-  */
-  static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
+  public:
+    /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
+      This is a convenience method for easier creation of marker symbols.
+      \note added in v1.7
+    */
+    static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
   QgsMarkerSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
@@ -875,6 +1121,9 @@ public:
 
   void setSize(double size);
   double size();
+
+  void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+  ScaleMethod scaleMethod();
 
   void renderPoint(const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
@@ -927,6 +1176,161 @@ public:
   void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
+};
+
+//////////
+
+class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsmarkersymbollayerv2.h>
+%End
+  public:
+    QgsSimpleMarkerSymbolLayerV2( QString name = DEFAULT_SIMPLEMARKER_NAME,
+                                  QColor color = DEFAULT_SIMPLEMARKER_COLOR,
+                                  QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+                                  double size = DEFAULT_SIMPLEMARKER_SIZE,
+                                  double angle = DEFAULT_SIMPLEMARKER_ANGLE,
+                                  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString name() const;
+    void setName( QString name );
+
+    QColor borderColor() const;
+    void setBorderColor( QColor color );
+
+  protected:
+
+    void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
+
+    bool prepareShape();
+    bool preparePath();
+
+    void prepareCache( QgsSymbolV2RenderContext& context );
+};
+
+//////////
+
+class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsmarkersymbollayerv2.h>
+%End
+  public:
+    QgsSvgMarkerSymbolLayerV2( QString name = DEFAULT_SVGMARKER_NAME,
+                               double size = DEFAULT_SVGMARKER_SIZE,
+                               double angle = DEFAULT_SVGMARKER_ANGLE );
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    //! Return a list of all available svg files
+    static QStringList listSvgFiles();
+
+    //! Return a list of svg files at the specified directory
+    static QStringList listSvgFilesAt( QString directory );
+
+    //! Get symbol's path from its name
+    static QString symbolNameToPath( QString name );
+
+    //! Get symbols's name from its path
+    static QString symbolPathToName( QString path );
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString path() const;
+    void setPath( QString path );
+
+    QColor fillColor() const;
+    void setFillColor( const QColor& c );
+
+    QColor outlineColor() const;
+    void setOutlineColor( const QColor& c );
+
+    double outlineWidth() const;
+    void setOutlineWidth( double w );
+};
+
+
+//////////
+
+class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
+{
+%TypeHeaderCode
+#include <qgsmarkersymbollayerv2.h>
+%End
+  public:
+    QgsFontMarkerSymbolLayerV2( QString fontFamily = DEFAULT_FONTMARKER_FONT,
+                                QChar chr = DEFAULT_FONTMARKER_CHR,
+                                double pointSize = DEFAULT_FONTMARKER_SIZE,
+                                QColor color = DEFAULT_FONTMARKER_COLOR,
+                                double angle = DEFAULT_FONTMARKER_ANGLE );
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element ) /Factory/;
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const /Factory/;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    // new methods
+
+    QString fontFamily() const;
+    void setFontFamily( QString family );
+
+    QChar character() const;
+    void setCharacter( QChar ch );
 };
 
 //////////

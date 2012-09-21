@@ -542,9 +542,29 @@ void QgsRasterLayerProperties::sync()
   }
 
   //add current NoDataValue to NoDataValue line edit
-  if ( mRasterLayer->isNoDataValueValid() )
+  // TODO: should be per band
+  // TODO: no data ranges
+  if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
   {
-    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'g' ) );
+    lblSrcNoDataValue->setText( QgsRasterInterface::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
+  }
+  else
+  {
+    lblSrcNoDataValue->setText( tr( "not defined" ) );
+  }
+
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+
+  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+
+  mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
+  lblSrcNoDataValue->setEnabled( enableSrcNoData );
+
+  QList<QgsRasterInterface::Range> noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
+  QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+  if ( noDataRangeList.size() > 0 )
+  {
+    leNoDataValue->insert( QgsRasterInterface::printValue( noDataRangeList.value( 0 ).min ) );
   }
   else
   {
@@ -587,13 +607,14 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    if ( mRasterLayer->isNoDataValueValid() )
+    // TODO: all bands
+    if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->noDataValue() ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
     }
     else
     {
-      lblNoData->setText( tr( "No-Data Value: Not Set" ) );
+      lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
     }
   }
 
@@ -647,14 +668,25 @@ void QgsRasterLayerProperties::apply()
    */
 
   //set NoDataValue
-  bool myDoubleOk = false;
+  QList<QgsRasterInterface::Range> myNoDataRangeList;
   if ( "" != leNoDataValue->text() )
   {
+    bool myDoubleOk = false;
     double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
     if ( myDoubleOk )
     {
-      mRasterLayer->setNoDataValue( myNoDataValue );
+      //mRasterLayer->setNoDataValue( myNoDataValue );
+      QgsRasterInterface::Range myNoDataRange;
+      myNoDataRange.min = myNoDataValue;
+      myNoDataRange.max = myNoDataValue;
+
+      myNoDataRangeList << myNoDataRange;
     }
+  }
+  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
+  {
+    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
+    mRasterLayer->dataProvider()->setUseSrcNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
   }
 
   //set renderer from widget
@@ -969,32 +1001,30 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
   setupTransparencyTable( nBands );
 
+// I don't think that noDataValue should be added to transparency list
+#if 0
   if ( nBands == 3 )
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      // I don't think that noDataValue should be added to transparency list
-#if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 2, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, 100 );
-#endif
     }
   }
   else //1 band
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-#if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, 100 );
-#endif
     }
   }
+#endif
 
   tableTransparency->resizeColumnsToContents(); // works only with values
   tableTransparency->resizeRowsToContents();
@@ -1551,6 +1581,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
 
+#if 0
 void QgsRasterLayerProperties::on_btnResetNull_clicked( )
 {
   //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
@@ -1564,6 +1595,7 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
     leNoDataValue->clear();
   }
 }
+#endif
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {

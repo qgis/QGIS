@@ -27,6 +27,9 @@
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mRubberBand( 0 ), mResultDisplay( 0 )
 {
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
@@ -87,8 +90,6 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
     {
       mResultDisplay = new QgsDisplayAngle( this );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
-      QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
-                        this, SLOT( changeProjectionEnabledState() ) );
     }
     configureDistanceArea();
     createRubberBand();
@@ -147,10 +148,11 @@ QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
   }
 }
 
-void QgsMapToolMeasureAngle::changeProjectionEnabledState()
+void QgsMapToolMeasureAngle::updateSettings()
 {
   if ( mAnglePoints.size() != 3 )
     return;
+
   if ( !mResultDisplay )
     return;
 
@@ -173,8 +175,8 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
       resultAngle = -M_PI + ( resultAngle - M_PI );
     }
   }
-  mResultDisplay->setValueInRadians( resultAngle );
 
+  mResultDisplay->setValueInRadians( resultAngle );
 }
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
@@ -193,6 +195,3 @@ void QgsMapToolMeasureAngle::configureDistanceArea()
     mDa.setEllipsoidalMode( false );
   }
 }
-
-
-

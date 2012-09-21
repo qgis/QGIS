@@ -1,0 +1,15 @@
+Rasterization
+otbcli_Rasterization
+Rasterization
+Vector Data Manipulation
+ParameterVector|-in|InputVectorData|-1|False
+OutputRaster|-out|OutputImage
+ParameterRaster|-im|InputImage|True
+ParameterNumber|-szx|SizeX|None|None|0.0
+ParameterNumber|-szy|SizeY|None|None|0.0
+ParameterNumber|-epsg|RSID|None|None|0
+ParameterNumber|-orx|OriginX|None|None|0.0
+ParameterNumber|-ory|OriginY|None|None|0.0
+ParameterNumber|-spx|SpacingX|None|None|0.0
+ParameterNumber|-spy|SpacingY|None|None|0.0
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

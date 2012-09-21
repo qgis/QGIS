@@ -62,9 +62,21 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   bool hasTransparency = usesTransparency();
 
   void* rasterData = mInput->block( bandNo, extent, width, height );
+  if ( ! rasterData )
+  {
+    QgsDebugMsg("No raster data!" );
+    return 0;
+  }
 
   currentRasterPos = 0;
   QImage img( width, height, QImage::Format_ARGB32 );
+  if ( img.isNull() )
+  {
+    QgsDebugMsg( "Could not create QImage" );
+    VSIFree( rasterData );
+    return 0;
+  }
+
   uchar* scanLine = 0;
   for ( int i = 0; i < height; ++i )
   {
@@ -91,6 +103,11 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   VSIFree( rasterData );
 
   void * data = VSIMalloc( img.byteCount() );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate output data memory of % bytes" ).arg( img.byteCount() ) );
+    return 0;
+  }
   return memcpy( data, img.bits(), img.byteCount() );
 }
 

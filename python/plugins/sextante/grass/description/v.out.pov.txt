@@ -1,0 +1,9 @@
+v.out.pov
+v.out.pov - Converts to POV-Ray format, GRASS x,y,z -> POV-Ray x,z,y
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|type|Feature type|point,line,area,face
+ParameterNumer|size|Radius of sphere for points and tube for lines|0|None|10.0
+ParameterString|zmod|Modifier for z coordinates, this string is appended to each z coordinate|
+ParameterString|objmod|Object modifier (OBJECT_MODIFIER in POV-Ray documentation)|
+OutputFile|output|Output file

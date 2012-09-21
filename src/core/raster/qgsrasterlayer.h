@@ -342,10 +342,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int height() { return mHeight; }
 
     /** \brief Is the NoDataValue Valid */
-    bool isNoDataValueValid() const { return mValidNoDataValue; }
+    //bool isNoDataValueValid() const { return mValidNoDataValue; }
 
     /** \brief Accessor that returns the NO_DATA entry for this raster */
-    double noDataValue( bool* isValid = 0 ) { if ( isValid ) { *isValid = mValidNoDataValue;} return mNoDataValue; }
+    //double noDataValue( bool* isValid = 0 ) { if ( isValid ) { *isValid = mValidNoDataValue;} return mNoDataValue; }
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
@@ -553,7 +553,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
 
     /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
-    void resetNoDataValue();
+    //void resetNoDataValue();
 
     /** \brief Mutator for blue band name mapping */
     void setBlueBandName( const QString & theBandName );
@@ -626,7 +626,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     Q_DECL_DEPRECATED void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
-    void setNoDataValue( double theNoData );
+    //void setNoDataValue( double theNoData );
 
     /** \brief Set the raster shader function to a user defined function
       \note ownership of the shader function is transfered to raster shader */
@@ -795,7 +795,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Read a raster value given position from memory block created by readData() */
     //inline double readValue( void *data, GDALDataType type, int index );
-    inline double readValue( void *data, int type, int index );
+    //inline double readValue( void *data, int type, int index );
 
     /** \brief Update the layer if it is outdated */
     bool update();
@@ -869,7 +869,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool mModified;
 
     /** \brief Cell value representing no data. e.g. -9999  */
-    double mNoDataValue;
+    //double mNoDataValue;
 
     /**  [ data provider interface ] Data provider key */
     QString mProviderKey;
@@ -889,7 +889,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool mUserDefinedRGBMinimumMaximum;
 
     /** \brief Flag indicating if the nodatavalue is valid*/
-    bool mValidNoDataValue;
+    //bool mValidNoDataValue;
 
     //QgsRasterRenderer* mRenderer;
     //QgsRasterResampleFilter *mResampleFilter;

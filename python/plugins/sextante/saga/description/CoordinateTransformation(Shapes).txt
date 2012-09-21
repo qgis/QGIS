@@ -1,0 +1,8 @@
+Coordinate Transformation (Shapes)
+pj_proj4
+ParameterSelection|CRS_METHOD|Get CRS Definition from...|[0] Proj4 Parameters;[1] EPSG Code;[2] Well Known Text File
+ParameterString|CRS_PROJ4|Proj4 Parameters|
+ParameterString|CRS_FILE|Well Known Text File|
+ParameterNumber|CRS_EPSG|EPSG Code|None|None|0
+ParameterVector|SOURCE|Source|-1|False
+OutputVector|TARGET|Target

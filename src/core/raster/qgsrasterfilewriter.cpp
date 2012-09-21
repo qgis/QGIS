@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <typeinfo>
+
 #include "qgsrasterfilewriter.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterinterface.h"
@@ -65,11 +67,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     return SourceProviderError;
   }
 
+  QgsDebugMsg( QString( "reading from %1" ).arg( typeid( *iface ).name() ) );
+
   if ( !iface->srcInput() )
   {
     QgsDebugMsg( "iface->srcInput() == 0" );
     return SourceProviderError;
   }
+  QgsDebugMsg( QString( "srcInput = %1" ).arg( typeid( *( iface->srcInput() ) ).name() ) );
 
   mProgressDialog = progressDialog;
 
@@ -162,14 +167,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue;
-    //QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
-    QgsRasterInterface::DataType destDataType = srcProvider->dataType( bandNo );
+    QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
+    //QgsRasterInterface::DataType destDataType = srcProvider->dataType( bandNo );
+    // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
+    QgsDebugMsg( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ) );
     if ( srcHasNoDataValue )
     {
+
       // If source has no data value, it is used by provider
-      // TODO: this is not realy source no data, we would need srcNoDataValue() but it
-      //       can be safely used I think
-      destNoDataValue = srcProvider->noDataValue();
+      destNoDataValue = srcProvider->srcNoDataValue( bandNo );
       destHasNoDataValue = true;
     }
     else if ( nuller && nuller->noData().size() > 0 )
@@ -250,6 +256,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destDataTypeList.replace( i, destDataType );
       destNoDataValueList.replace( i, destNoDataValue );
     }
+    destDataType =  destDataTypeList.value( 0 );
 
     // Try again
     destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
@@ -362,7 +369,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
       else
       {
         // TODO: this conversion should go to QgsRasterDataProvider::write with additional input data type param
-        void *destData = QgsRasterInterface::convert( dataList[i-1], srcProvider->srcDataType( i ), destDataType, iterCols * iterRows );
+        void *destData = QgsRasterInterface::convert( dataList[i-1], srcProvider->dataType( i ), destDataType, iterCols * iterRows );
         destDataList.push_back( destData );
         CPLFree( dataList[i-1] );
       }

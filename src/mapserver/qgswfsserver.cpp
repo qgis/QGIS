@@ -262,113 +262,9 @@ QDomDocument QgsWFSServer::describeFeatureType()
   }
   else
   {
-    return doc;
+    typeName = "";
   }
-
-  QStringList wfsLayersId = mConfigParser->wfsLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > hiddenAttributes = mConfigParser->hiddenAttributes();
-
-  QList<QgsMapLayer*> layerList;
-  QgsMapLayer* currentLayer = 0;
-
-  layerList = mConfigParser->mapLayerFromStyle( typeName, "" );
-  currentLayer = layerList.at( 0 );
-
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
-  if ( layer && wfsLayersId.contains( layer->id() ) )
-  {
-    //is there alias info for this vector layer?
-    QMap< int, QString > layerAliasInfo;
-    QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
-    if ( aliasIt != aliasInfo.constEnd() )
-    {
-      layerAliasInfo = aliasIt.value();
-    }
-
-    //hidden attributes for this layer
-    QSet<QString> layerHiddenAttributes;
-    QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
-    if ( hiddenIt != hiddenAttributes.constEnd() )
-    {
-      layerHiddenAttributes = hiddenIt.value();
-    }
-
-    //do a select with searchRect and go through all the features
-    QgsVectorDataProvider* provider = layer->dataProvider();
-    if ( !provider )
-    {
-      return doc;
-    }
-
-    typeName = typeName.replace( QString( " " ), QString( "_" ) );
-
-    //xsd:element
-    QDomElement elementElem = doc.createElement( "element"/*xsd:element*/ );
-    elementElem.setAttribute( "name", typeName );
-    elementElem.setAttribute( "type", "qgs:" + typeName + "Type" );
-    elementElem.setAttribute( "substitutionGroup", "gml:_Feature" );
-    schemaElement.appendChild( elementElem );
-
-    //xsd:complexType
-    QDomElement complexTypeElem = doc.createElement( "complexType"/*xsd:complexType*/ );
-    complexTypeElem.setAttribute( "name", typeName + "Type" );
-    schemaElement.appendChild( complexTypeElem );
-
-    //xsd:complexType
-    QDomElement complexContentElem = doc.createElement( "complexContent"/*xsd:complexContent*/ );
-    complexTypeElem.appendChild( complexContentElem );
-
-    //xsd:extension
-    QDomElement extensionElem = doc.createElement( "extension"/*xsd:extension*/ );
-    extensionElem.setAttribute( "base", "gml:AbstractFeatureType" );
-    complexContentElem.appendChild( extensionElem );
-
-    //xsd:sequence
-    QDomElement sequenceElem = doc.createElement( "sequence"/*xsd:sequence*/ );
-    extensionElem.appendChild( sequenceElem );
-
-    //xsd:element
-    QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-    geomElem.setAttribute( "name", "geometry" );
-    geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
-    geomElem.setAttribute( "minOccurs", "0" );
-    geomElem.setAttribute( "maxOccurs", "1" );
-    sequenceElem.appendChild( geomElem );
-
-    const QgsFieldMap& fields = provider->fields();
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
-    {
-
-      QString attributeName = it.value().name();
-      //skip attribute if it has edit type 'hidden'
-      if ( layerHiddenAttributes.contains( attributeName ) )
-      {
-        continue;
-      }
-
-      //xsd:element
-      QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
-      geomElem.setAttribute( "name", attributeName );
-      if ( it.value().type() == 2 )
-        geomElem.setAttribute( "type", "integer" );
-      else if ( it.value().type() == 6 )
-        geomElem.setAttribute( "type", "double" );
-      else
-        geomElem.setAttribute( "type", "string" );
-
-      sequenceElem.appendChild( geomElem );
-
-      //check if the attribute name should be replaced with an alias
-      QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
-      if ( aliasIt != layerAliasInfo.constEnd() )
-      {
-        geomElem.setAttribute( "alias", aliasIt.value() );
-      }
-
-    }
-  }
-
+  mConfigParser->describeFeatureType( typeName, schemaElement, doc);
   return doc;
 }
 
@@ -543,9 +439,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
     }
 
+    if ( bboxOk )
+      searchRect.set( minx, miny, maxx, maxy );
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
-    startGetFeature( request, format );
+    startGetFeature( request, format, layerCrs, &searchRect );
 
     if ( fidOk )
     {
@@ -589,8 +487,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
     else
     {
-      if ( bboxOk )
-        searchRect.set( minx, miny, maxx, maxy );
       provider->select( attrIndexes, searchRect, mWithGeom, true );
       while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
       {
@@ -608,25 +504,102 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   return 0;
 }
 
-void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& format )
+void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect )
 {
   QByteArray result;
   QString fcString;
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
+    fcString += " \"bbox\": [ "+ QString::number( rect->xMinimum(), 'f' ) +", "+ QString::number( rect->yMinimum(), 'f' ) +", "+ QString::number( rect->xMaximum(), 'f' ) +", "+ QString::number( rect->yMaximum(), 'f' ) +"],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
   }
   else
   {
+    //Prepare url
+    //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
+    QString hrefString;
+    QString requestUrl = getenv( "REQUEST_URI" );
+    QUrl mapUrl( requestUrl );
+    mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
+
+    //Add non-default ports to url
+    QString portString = getenv( "SERVER_PORT" );
+    if ( !portString.isEmpty() )
+    {
+      bool portOk;
+      int portNumber = portString.toInt( &portOk );
+      if ( portOk )
+      {
+        if ( portNumber != 80 )
+        {
+          mapUrl.setPort( portNumber );
+        }
+      }
+    }
+
+    if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.setScheme( "https" );
+    }
+    else
+    {
+      mapUrl.setScheme( "http" );
+    }
+
+    QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+    QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+    for ( ; queryIt != queryItems.constEnd(); ++queryIt )
+    {
+      if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+        mapUrl.addQueryItem( queryIt->first, "DescribeFeatureType" );
+      }
+      else if ( queryIt->first.compare( "FORMAT", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "OUTPUTFORMAT", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "BBOX", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "FEATUREID", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "FILTER", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "MAXFEATURES", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "PROPERTYNAME", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+      else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
+    }
+    mapUrl.addQueryItem( "OUTPUTFORMAT", "XMLSCHEMA" );
+    hrefString = mapUrl.toString();
+
     //wfs:FeatureCollection
     fcString = "<wfs:FeatureCollection";
     fcString += " xmlns=\"http://www.opengis.net/wfs\"";
     fcString += " xmlns:wfs=\"http://www.opengis.net/wfs\"";
     fcString += " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd\"";
+    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.opengis.net/gml "+ hrefString.replace( "&", "&amp;" ) +"\"";
     fcString += " xmlns:ogc=\"http://www.opengis.net/ogc\"";
     fcString += " xmlns:gml=\"http://www.opengis.net/gml\"";
     fcString += " xmlns:ows=\"http://www.opengis.net/ows\"";
@@ -635,6 +608,21 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     fcString += ">";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
+
+    QDomDocument doc;
+    QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+    QDomElement boxElem = createBoxElem( rect, doc );
+    if ( !boxElem.isNull() )
+    {
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+      }
+      bbElem.appendChild( boxElem );
+      doc.appendChild( bbElem );
+    }
+    result = doc.toByteArray();
+    request.sendGetFeatureResponse( &result );
   }
   fcString = "";
 }
@@ -701,6 +689,10 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   QgsGeometry* geom = feat->geometry();
   if ( geom && mWithGeom )
   {
+    QgsRectangle box = geom->boundingBox();
+
+    fStr += " \"bbox\": [ "+ QString::number( box.xMinimum(), 'f' ) +", "+ QString::number( box.yMinimum(), 'f' ) +", "+ QString::number( box.xMaximum(), 'f' ) +", "+ QString::number( box.yMaximum(), 'f' ) +"],\n";
+
     fStr += "  \"geometry\": ";
     fStr += geom->exportToGeoJSON();
     fStr += ",\n";
@@ -759,14 +751,25 @@ QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc
   if ( mWithGeom )
   {
     //add geometry column (as gml)
+    QgsGeometry* geom = feat->geometry();
+
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = createGeometryElem( feat->geometry(), doc );
+    QDomElement gmlElem = createGeometryElem( geom, doc );
     if ( !gmlElem.isNull() )
     {
+      QgsRectangle box = geom->boundingBox();
+      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+      QDomElement boxElem = createBoxElem( &box, doc );
+
       if ( crs.isValid() )
       {
+        boxElem.setAttribute( "srsName", crs.authid() );
         gmlElem.setAttribute( "srsName", crs.authid() );
       }
+
+      bbElem.appendChild( boxElem );
+      typeNameElement.appendChild( bbElem );
+
       geomElem.appendChild( gmlElem );
       typeNameElement.appendChild( geomElem );
     }
@@ -791,6 +794,27 @@ QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc
   }
 
   return featureElement;
+}
+
+QDomElement QgsWFSServer::createBoxElem( QgsRectangle* box, QDomDocument& doc ) /*const*/
+{
+  if ( !box )
+  {
+    return QDomElement();
+  }
+
+  QDomElement boxElem = doc.createElement( "gml:Box" );
+  QVector<QgsPoint> v;
+  QgsPoint p1;
+  p1.set( box->xMinimum(), box->yMinimum() );
+  v.append( p1 );
+  QgsPoint p2;
+  p2.set( box->xMaximum(), box->yMaximum() );
+  v.append( p2 );
+  QDomElement coordElem = createCoordinateElem( v, doc );
+  boxElem.appendChild( coordElem );
+
+  return boxElem;
 }
 
 QDomElement QgsWFSServer::createGeometryElem( QgsGeometry* geom, QDomDocument& doc ) /*const*/
@@ -931,13 +955,13 @@ QDomElement QgsWFSServer::createPolygonElem( QgsGeometry* geom, QDomDocument& do
     QString boundaryName;
     if ( i == 0 )
     {
-      boundaryName = "outerBoundaryIs";
+      boundaryName = "gml:outerBoundaryIs";
     }
     else
     {
-      boundaryName = "innerBoundaryIs";
+      boundaryName = "gml:innerBoundaryIs";
     }
-    QDomElement boundaryElem = doc.createElementNS( "http://www.opengis.net/gml", boundaryName );
+    QDomElement boundaryElem = doc.createElement( boundaryName );
     QDomElement ringElem = doc.createElement( "gml:LinearRing" );
     QDomElement coordElem = createCoordinateElem( poly.at( i ), doc );
     ringElem.appendChild( coordElem );
@@ -979,7 +1003,7 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
   coordElem.setAttribute( "ts", " " );
 
   //precision 4 for meters / feet, precision 8 for degrees
-  int precision = 8;
+  int precision = 6;
   /*
   if ( mSourceCRS.mapUnits() == QGis::Meters
        || mSourceCRS.mapUnits() == QGis::Feet )
@@ -996,9 +1020,9 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x(), 'f', precision );
+    coordString += QString::number( pointIt->x(), 'f');
     coordString += ",";
-    coordString += QString::number( pointIt->y(), 'f', precision );
+    coordString += QString::number( pointIt->y(), 'f' );
   }
 
   QDomText coordText = doc.createTextNode( coordString );

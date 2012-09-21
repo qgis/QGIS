@@ -3,6 +3,7 @@ iconClearConsole.png
 iconOpenConsole.png
 iconRunConsole.png
 iconTempConsole.png
+iconSextanteConsole.png
 iconSaveConsole.png 
 iconHelpConsole.png
 imgHelpDialog.png
