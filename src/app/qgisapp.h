@@ -1236,8 +1236,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool cmpByText( QAction* a, QAction* b );
 
-    QString mOldScale;
-
     //! the user has trusted the project macros
     bool mTrustedMacros;
 
