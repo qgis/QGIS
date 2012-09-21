@@ -19,19 +19,21 @@ fixes, bug reports, contributed documentation, advocacy and supporting other
 users on our mailing lists and forums. Financial contributions are also
 welcome.
 
-\section index_APIStability API Stability
+\section index_APIStability Earlier versions of the API
 
-Versions of QGIS prior to 1.0 did not guarantee API stability since the
-application was undergoing rapid development of new features and we did not
-want to commit ourselves to a fixed API. With the release of QGIS 1.0 we 
-guarantee a backwards compatible API  for the 1.x and 1.0.x release series. 1.x
-releases will be our 'unstable' development builds and 1.0.x releases our
-'stable' (bugfixes and very minor tweaks only).
+Earlier version of the documentation are also available on the Quantum GIS
+website:
+
+<ul>
+<li><a href="http://qgis.org/api/1.8">1.8</a>
+<li><a href="http://qgis.org/api/1.7">1.7</a>
+<li><a href="http://qgis.org/api/1.6">1.6</a>
+</ul>
 
 \section index_maillist Mailing Lists
 <ul>
 <li>For support we encourage you to join our <a
-href="http://qgis.osgeo.org/community/mailing-lists.html">mailing lists</a> for
+href="http://qgis.org/en/community/mailing-lists.html">mailing lists</a> for
 developers.</li> </ul>
 
 \section index_bugs Bug Reporting
