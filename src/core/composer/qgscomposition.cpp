@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdexcept>
+
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
@@ -32,16 +34,208 @@
 #include "qgslogger.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
+#include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsexpression.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
 #include <QPainter>
 #include <QPrinter>
 #include <QSettings>
+#include <QDir>
 
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
+struct QgsAtlasRendering::QgsAtlasRenderingImpl
+{
+  QgsComposition* composition;
+  QgsCoordinateTransform transform;
+  QString filenamePattern;
+  QString currentFilename;
+  int nFeatures;
+  std::vector<QgsFeature> features;
+  QgsRectangle origExtent;
+  bool restoreLayer;
+  std::auto_ptr<QgsExpression> filenameExpr;
+};
+
+QgsAtlasRendering::QgsAtlasRendering( QgsComposition* composition )
+{
+  impl = std::auto_ptr<QgsAtlasRendering::QgsAtlasRenderingImpl>( new QgsAtlasRendering::QgsAtlasRenderingImpl() );
+  impl->composition = composition;
+  impl->nFeatures = 0;
+}
+
+void QgsAtlasRendering::begin( const QString& filenamePattern )
+{
+  impl->filenamePattern = filenamePattern;
+
+  QgsVectorLayer* coverage = impl->composition->atlasMap()->atlasCoverageLayer();
+  const QgsCoordinateReferenceSystem& coverage_crs = coverage->crs();
+  const QgsCoordinateReferenceSystem& destination_crs = impl->composition->atlasMap()->mapRenderer()->destinationCrs();
+  // transformation needed for feature geometries
+  impl->transform.setSourceCrs( coverage_crs );
+  impl->transform.setDestCRS( destination_crs );
+
+  QgsVectorDataProvider* provider = coverage->dataProvider();
+  impl->nFeatures = provider->featureCount();
+
+  QgsFieldMap fieldmap = provider->fields();
+
+  if ( filenamePattern.size() > 0 )
+  {
+    impl->filenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( filenamePattern ) );
+    // expression used to evaluate each filename
+    // test for evaluation errors
+    if ( impl->filenameExpr->hasParserError() )
+    {
+      throw std::runtime_error( "Filename parsing error: " + impl->filenameExpr->parserErrorString().toStdString() );
+    }
+
+    // prepare the filename expression
+    impl->filenameExpr->prepare( fieldmap );
+  }
+
+  // select all features with all attributes
+  QgsAttributeList selectedAttributes;
+  for ( QgsFieldMap::const_iterator fit = fieldmap.begin(); fit != fieldmap.end(); ++fit )
+  {
+    selectedAttributes.push_back( fit.key() );
+  }
+  provider->select( selectedAttributes );
+
+  // features must be stored in a list, since modifying the layer's extent rewinds nextFeature()
+  QgsFeature feature;
+  while ( provider->nextFeature( feature ) )
+  {
+    impl->features.push_back( feature );
+  }
+
+  impl->origExtent = impl->composition->atlasMap()->extent();
+
+  impl->restoreLayer = false;
+  QStringList& layerSet = impl->composition->mapRenderer()->layerSet();
+  if ( impl->composition->atlasMap()->atlasHideCoverage() )
+  {
+    // look for the layer in the renderer's set
+    int removeAt = layerSet.indexOf( coverage->id() );
+    if ( removeAt != -1 )
+    {
+      impl->restoreLayer = true;
+      layerSet.removeAt( removeAt );
+    }
+  }
+}
+
+void QgsAtlasRendering::prepareForFeature( size_t featureI )
+{
+    QgsFeature* fit = &impl->features[featureI];
+
+    if ( impl->filenamePattern.size() > 0 )
+    {
+      QVariant filenameRes = impl->filenameExpr->evaluate( &*fit );
+      if ( impl->filenameExpr->hasEvalError() )
+      {
+	throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
+      }
+
+      // FIXME resolve labels
+      impl->currentFilename = filenameRes.toString();
+    }
+
+    //
+    // compute the new extent
+    // keep the original aspect ratio
+    // and apply a margin
+
+    // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
+    // They have to be transformed to the MapRenderer's one
+    QgsRectangle geom_rect = impl->transform.transform( fit->geometry()->boundingBox() );
+    double xa1 = geom_rect.xMinimum();
+    double xa2 = geom_rect.xMaximum();
+    double ya1 = geom_rect.yMinimum();
+    double ya2 = geom_rect.yMaximum();
+    QgsRectangle new_extent = geom_rect;
+
+    // restore the original extent
+    // (successive calls to setNewExtent tend to deform the original rectangle)
+    impl->composition->atlasMap()->setNewExtent( impl->origExtent );
+
+    if ( impl->composition->atlasMap()->atlasFixedScale() )
+    {
+      // only translate, keep the original scale (i.e. width x height)
+      
+      double geom_center_x = (xa1 + xa2) / 2.0;
+      double geom_center_y = (ya1 + ya2) / 2.0;
+      double xx = geom_center_x - impl->origExtent.width() / 2.0;
+      double yy = geom_center_y - impl->origExtent.height() / 2.0;
+      new_extent = QgsRectangle( xx,
+				 yy,
+				 xx + impl->origExtent.width(),
+				 yy + impl->origExtent.height() );
+    }
+    else
+    {
+      // auto scale
+      
+      double geom_ratio = geom_rect.width() / geom_rect.height();
+      //      QRectF map_rect = mAtlasMap->boundingRect();
+      //      double map_ratio = map_rect.width() / map_rect.height();
+      double map_ratio = impl->origExtent.width() / impl->origExtent.height();
+      
+      // geometry height is too big
+      if ( geom_ratio < map_ratio )
+      {
+	new_extent = QgsRectangle( (xa1 + xa2 + map_ratio * (ya1 - ya2)) / 2.0,
+				   ya1,
+				   xa1 + map_ratio * (ya2 - ya1),
+				   ya2);
+      }
+      // geometry width is too big
+      else if ( geom_ratio > map_ratio )
+      {
+	new_extent = QgsRectangle( xa1,
+				   (ya1 + ya2 + (xa1 - xa2) / map_ratio) / 2.0,
+				   xa2,
+				   ya1 + (xa2 - xa1) / map_ratio);
+      }
+      if ( impl->composition->atlasMap()->atlasMargin() > 0.0 )
+      {
+	new_extent.scale( 1 + impl->composition->atlasMap()->atlasMargin() );
+      }
+    }
+    impl->composition->atlasMap()->setNewExtent( new_extent );   
+}
+
+size_t QgsAtlasRendering::numFeatures() const
+{
+  return impl->nFeatures;
+}
+
+QString QgsAtlasRendering::currentFilename() const
+{
+  return impl->currentFilename;
+}
+
+void QgsAtlasRendering::end()
+{
+  // restore the coverage visibility
+  if ( impl->restoreLayer )
+  {
+    QStringList& layerSet = impl->composition->mapRenderer()->layerSet();
+    QgsVectorLayer* coverage = impl->composition->atlasMap()->atlasCoverageLayer();
+
+    layerSet.push_back( coverage->id() );
+    impl->composition->atlasMap()->cache();
+    impl->composition->atlasMap()->update();
+  }
+  impl->composition->atlasMap()->setNewExtent( impl->origExtent );
+}
+
+QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
+  QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+  mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+  mAtlasMap( 0 )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -51,8 +245,9 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
 }
 
 QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
+  QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
+  mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+  mAtlasMap( 0 )
 {
   loadSettings();
 }
@@ -1233,6 +1428,11 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
 void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createCommand )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
+  if ( map && mAtlasMap == map )
+  {
+    mAtlasMap = 0;
+  }
+
   if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
   {
     removeItem( item );
@@ -1445,18 +1645,9 @@ void QgsComposition::exportAsPDF( const QString& file )
   print( printer );
 }
 
-void QgsComposition::print( QPrinter &printer )
+void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
 {
-  //set resolution based on composer setting
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
-
-  //set user-defined resolution
-  printer.setResolution( printResolution() );
-
-  QPainter p( &printer );
-
-  //QgsComposition starts page numbering at 0
+ //QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
@@ -1489,6 +1680,23 @@ void QgsComposition::print( QPrinter &printer )
       renderPage( &p, i );
     }
   }
+}
+
+void QgsComposition::beginPrint( QPrinter &printer )
+{
+  //set resolution based on composer setting
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  //set user-defined resolution
+  printer.setResolution( printResolution() );
+}
+
+void QgsComposition::print( QPrinter &printer )
+{
+  beginPrint( printer );
+  QPainter p( &printer );
+  doPrint( printer, p );
 }
 
 QImage QgsComposition::printPageAsRaster( int page )

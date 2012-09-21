@@ -53,7 +53,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       ComposerTable,
       ComposerAttributeTable,
       ComposerTextTable,
-      ComposerFrame
+      ComposerFrame,
+      ComposerAtlasMap
     };
 
     /**Describes the action (move or resize in different directon) to be done during mouse move*/
@@ -189,6 +190,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void removeItems() {}
 
     const QgsComposition* composition() const {return mComposition;}
+    QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
 

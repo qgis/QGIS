@@ -16,11 +16,15 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include <memory>
+
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
 #include <QSet>
 #include <QUndoStack>
+#include <QPrinter>
+#include <QPainter>
 
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
@@ -44,6 +48,23 @@ class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
+
+class QgsAtlasRendering
+{
+ public:
+  QgsAtlasRendering( QgsComposition* composition );
+
+  void begin( const QString& filenamePattern = "" );
+  void end();
+
+  size_t numFeatures() const;
+  void prepareForFeature( size_t i );
+  QString currentFilename() const;
+
+ private:
+  struct QgsAtlasRenderingImpl;
+  std::auto_ptr<QgsAtlasRenderingImpl> impl;
+};
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -138,6 +159,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+
+    QgsComposerMap* atlasMap() { return mAtlasMap; }
+    void setAtlasMap( QgsComposerMap* map ) { mAtlasMap = map; }
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -250,6 +274,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     void exportAsPDF( const QString& file );
 
+    void exportAtlasAsSinglePagePDF( const QString& directory, const QString& filenamePattern );
+
+    void beginPrint( QPrinter& printer );
+    void doPrint( QPrinter& printer, QPainter& painter );
     void print( QPrinter &printer );
 
     //! print composer page to image
@@ -300,6 +328,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QgsComposerItemCommand* mActiveItemCommand;
     QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
+
+    QgsComposerMap* mAtlasMap;
 
     QgsComposition(); //default constructor is forbidden
 
