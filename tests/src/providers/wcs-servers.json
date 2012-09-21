@@ -1,13 +1,23 @@
 [
   {
     url: 'http://demo.opengeo.org/geoserver/wcs',
-    description: 'Does not work at all with gvSIG-1_11-1305-final.',  
+    description: 'It does not work at all with gvSIG-1_11-1305-final. The Coverage usgs:ned is quite slow and it can fail even with timeout 60s',  
     issues: [
       {
         offender: 'server',
         coverages: [ 'og:0' ],
         versions: [ '1.0.0' ],
         description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'topp:bluemarble', 'topp:bm' ],
+        versions: [ '1.0.0' ],
+        description: "The extent in DescribeCoverage spatialDomain.Envelope is wrong: -187.272,-187.272,187.272,187.272. QGIS does not correct it (we don't know where the limits really are) while GDAL probably cuts longitude for EPSG:4326 to +/-90."
+      },{
+        offender: 'server',
+        coverages: [ 'usgs:ned' ],
+        versions: [ '1.0.0' ],
+        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s, but even with timeout 300s it usually fails to render. It was seen to rendered in QGIS however."
       },{
         offender: 'server',
         coverages: [ 'bm' ],
@@ -17,7 +27,7 @@
         offender: 'server',
         coverages: [ 'usgs:nlcd', 'nlcd' ],
         versions: [ '1.0.0', '1.1.0' ],
-        description: 'The server does no offer any CRS in DescribeCoverage supportedCRSs / supportedCRS. QGIS tries to get coverage using EPSG:5070, in which the coverage spatialDomain.Envelope is defined, but server fails reporting error: Could not recognize crs ...'
+        description: 'The server does not offer any CRS in DescribeCoverage supportedCRSs / supportedCRS. QGIS tries to get coverage using EPSG:5070, in which the coverage spatialDomain.Envelope is defined, but server fails reporting error: Could not recognize crs ...'
       },{
         offender: 'server',
         coverages: [ '0', 'naturalearth' ],
@@ -33,7 +43,15 @@
   }, {
     url: 'http://demo.geonode.org/geoserver/wcs'
   }, {
-    url: 'http://demo.mapserver.org/cgi-bin/wcs'
+    url: 'http://demo.mapserver.org/cgi-bin/wcs',
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'modis-001' ],
+        versions: [ '1.0.0' ],
+        description: "The server DescribeCoverage advertises temporalDomain.timePosition 2002-001, but GetCoverages fails with 'msWCSGetCoverage(): WCS server error. Underlying layer is not tiled, unable to do temporal subsetting.' if TIME=2002-001 is used."
+      }
+    ]
   }, {
     // Some (first) coverages do not advertise any supportedCRS and sever gives
     // error both with native CRS (EPSG::561005) and EPSG:4326

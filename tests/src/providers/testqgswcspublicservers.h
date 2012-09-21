@@ -59,11 +59,13 @@ class TestQgsWcsPublicServers: public QObject
 
     TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );
 
+    ~TestQgsWcsPublicServers();
+
     void init();
     void test();
     void report();
   private:
-    QString cells( QStringList theValues, QString theClass = QString(), int colspan = 1 );
+    QString cells( QStringList theValues, QString theClass = QString(), int colspan = 1, int rowspan = 1 );
     QString row( QStringList theValues, QString theClass = QString() );
     QString error( QString theMessage );
     void writeReport( QString theReport );
@@ -94,4 +96,7 @@ class TestQgsWcsPublicServers: public QObject
     QStringList mHead;
 
     QList<TestQgsWcsPublicServers::Server> mServers;
+
+    int mTimeout;
+    int mOrigTimeout;
 };

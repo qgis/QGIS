@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QPainter>
 #include <QSet>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
@@ -56,8 +57,15 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, 
     , mCoverage( coverage )
     , mVersion( version )
     , mForce( force )
+    , mTimeout( 60000 )
 {
 
+}
+
+TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
+{
+  QSettings settings;
+  settings.setValue( "/qgis/networkAndProxy/networkTimeout", mOrigTimeout );
 }
 
 //runs before all tests
@@ -65,6 +73,12 @@ void TestQgsWcsPublicServers::init()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsDebugMsg( "Entered" );
+
+  // Unfortunately this seems to be the only way to set timeout, we try to reset it
+  // at the end but it can be canceled before ...
+  QSettings settings;
+  mOrigTimeout = settings.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+  settings.setValue( "/qgis/networkAndProxy/networkTimeout", mTimeout );
 
   //mCacheDir = QDir( "./wcstestcache" );
   mCacheDir = QDir( mCacheDirPath );
@@ -79,7 +93,6 @@ void TestQgsWcsPublicServers::init()
   }
 
   mHead << "Coverage";
-  mHead << "Has size";
 
   QStringList providers;
   providers << "wcs" << "gdal";
@@ -87,6 +100,9 @@ void TestQgsWcsPublicServers::init()
   {
     QString prefix = provider == "gdal" ? "GDAL " : "";
     mHead << prefix + "CRS";
+    mHead << prefix + "Width";
+    mHead << prefix + "Height";
+    mHead << prefix + "Extent";
     mHead << prefix + "Snap";
     mHead << prefix + "Bands";
     mHead << prefix + "Type";
@@ -94,6 +110,7 @@ void TestQgsWcsPublicServers::init()
     mHead << prefix + "Max";
     mHead << prefix + "Values";
     mHead << prefix + "Colors";
+    mHead << prefix + "Time (s)";
   }
 
   // read servers + issues list
@@ -379,6 +396,8 @@ void TestQgsWcsPublicServers::test( )
 
         foreach ( QString provider, providers )
         {
+          QTime time;
+          time.start();
           QString uri;
           if ( provider == "wcs" )
           {
@@ -394,7 +413,7 @@ void TestQgsWcsPublicServers::test( )
             myStream << "  <ServiceURL>" + serverUrl + "?" + "</ServiceURL>\n";
             myStream << "  <CoverageName>" + myCoverage.identifier + "</CoverageName>\n";
             myStream << "  <Version>" + version + "</Version>\n";
-            myStream << "  <Timeout>60</Version>\n";
+            myStream << QString( "  <Timeout>%1</Timeout>\n" ).arg( mTimeout / 1000., 0, 'd' ) ;
             myStream << "</WCS_GDAL>\n";
 
             myGdalXmlFile.close();
@@ -404,6 +423,14 @@ void TestQgsWcsPublicServers::test( )
           if ( myLayer->isValid() )
           {
             myLog << provider + "_crs:" + myLayer->dataProvider()->crs().authid();
+            myLog << provider + "_width:" + QString::number( myLayer->dataProvider()->xSize() );
+            myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
+            QgsRectangle extent = myLayer->dataProvider()->extent();
+            myLog << provider + "_extent:"
+            + QgsRasterInterface::printValue( extent.xMinimum() ) + ","
+            + QgsRasterInterface::printValue( extent.yMinimum() ) + ","
+            + QgsRasterInterface::printValue( extent.xMaximum() ) + ","
+            + QgsRasterInterface::printValue( extent.yMaximum() ) + ",";
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -478,6 +505,9 @@ void TestQgsWcsPublicServers::test( )
             QgsDebugMsg( "Layer is not valid" );
             myLog << provider + "_error:Layer is not valid";
           }
+          myLog << provider + QString( "_time:%1" ).arg( time.elapsed() / 1000., 0, 'f', 2 );
+          // Generate report for impatient people
+          report();
         }
 
         QFile myLogFile( myLogPath );
@@ -594,17 +624,21 @@ void TestQgsWcsPublicServers::report()
 
           QStringList myValues;
           myValues << QString( "<a href='%1'>%2</a>" ).arg( myLog.value( "describeCoverageUrl" ) ).arg( myLog.value( "identifier" ) );
-          myValues << myLog.value( "hasSize" );
-          myVersionReport += cells( myValues );
+          //myValues << myLog.value( "hasSize" );
+          myVersionReport += cells( myValues, "", 1, 2 );
           myValues.clear();
+
+          QStringList issues = issueDescriptions( myServerLog.value( "server" ), myLog.value( "identifier" ), myLog.value( "version" ) );
+          QString issuesString = issues.join( "<br>" );
 
           QStringList providers;
           providers << "wcs" << "gdal";
 
+          bool hasErr = false;
           foreach ( QString provider, providers )
           {
-
             QString imgPath = myVersionDir.absolutePath() + QDir::separator() + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
+
 
             if ( !myLog.value( provider + "_error" ).isEmpty() )
             {
@@ -612,11 +646,11 @@ void TestQgsWcsPublicServers::report()
               int offender = NoOffender;
               if ( provider == "wcs" )
               {
-                QStringList issues = issueDescriptions( myServerLog.value( "server" ), myLog.value( "identifier" ), myLog.value( "version" ) );
-                myValues << issues.join( "<br>" );
+                myValues << issuesString;;
 
                 offender = issueOffender( myServerLog.value( "server" ), myLog.value( "identifier" ), myLog.value( "version" ) );
                 myVersionErrCount++;
+                hasErr = true;
               }
               QString cls;
               if ( offender == ServerOffender )
@@ -631,12 +665,15 @@ void TestQgsWcsPublicServers::report()
               {
                 cls = "cell-err";
               }
-              myVersionReport += cells( myValues, cls, 8 );
+              myVersionReport += cells( myValues, cls, 12 );
               myValues.clear();
             }
             else
             {
               myValues << myLog.value( provider + "_crs" );
+              myValues << myLog.value( provider + "_width" );
+              myValues << myLog.value( provider + "_height" );
+              myValues << QString( myLog.value( provider + "_extent" ) ).replace( ",", "<br>" );
               myValues << "<img src='" + imgPath + "'>";
               myValues << myLog.value( provider + "_bandCount" );
               myValues << myLog.value( provider + "_srcType" );
@@ -644,6 +681,7 @@ void TestQgsWcsPublicServers::report()
               myValues << myLog.value( provider + "_max" );
               myValues << myLog.value( provider + "_valuesCount" );
               myValues << myLog.value( provider + "_colorsCount" );
+              myValues << myLog.value( provider + "_time" );
 
               QString cls;
               int myValuesCount = myLog.value( provider + "_valuesCount" ).toInt();
@@ -671,6 +709,19 @@ void TestQgsWcsPublicServers::report()
             }
           }
           myVersionReport += "<tr>\n";
+          QString cls;
+          if ( !issuesString.isEmpty() && !hasErr )
+          {
+            myValues << issuesString;
+          }
+          else
+          {
+            myValues << "";
+            cls = "cell-empty";
+          }
+          myVersionReport += cells( myValues, cls, 24 );
+          myValues.clear();
+          myVersionReport += "</tr>\n";
         } // coverages
         myVersionReport += "</table>\n";
         // prepend counts
@@ -696,7 +747,7 @@ void TestQgsWcsPublicServers::report()
   myRep += "<style>";
   myRep += ".tab { border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid; }";
   myRep += ".cell { border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center}";
-  //myReport += ".cell-ok { background: #00ff00; }";
+  myRep += ".cell-empty { border-width: 0; height:0; padding:0 }";
   myRep += ".cell-ok { background: #ffffff; }";
   myRep += ".cell-warn { background: #ffcc00; }";
   myRep += ".cell-err { background: #ff0000; }";
@@ -744,18 +795,22 @@ QString TestQgsWcsPublicServers::error( QString theMessage )
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::cells( QStringList theValues, QString theClass, int colspan )
+QString TestQgsWcsPublicServers::cells( QStringList theValues, QString theClass, int colspan, int rowspan )
 {
   QString myRow;
   for ( int i = 0; i < theValues.size(); i++ )
   {
     QString val = theValues.value( i );
-    QString colspanStr;
+    QString colspanStr, rowspanStr;
     if ( colspan > 1 && i == theValues.size() - 1 )
     {
       colspanStr = QString( "colspan=%1" ).arg( colspan - theValues.size() + 1 ) ;
     }
-    myRow += QString( "<td class='cell %1' %2>%3</td>" ).arg( theClass ).arg( colspanStr ).arg( val );
+    if ( rowspan > 1 )
+    {
+      rowspanStr = QString( "rowspan=%1" ).arg( rowspan ) ;
+    }
+    myRow += QString( "<td class='cell %1' %2 %3>%4</td>" ).arg( theClass ).arg( colspanStr ).arg( rowspanStr ).arg( val );
   }
   return myRow;
 }
