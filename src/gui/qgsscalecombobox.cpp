@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsscalecombobox.h"
 
 #include <QAbstractItemView>
@@ -30,7 +31,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( 0 );
-  connect( this, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( fixupScale() ) );
+  connect( this, SIGNAL( activated( const QString & ) ), this, SLOT( fixupScale() ) );
   connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
   fixupScale();
 }
@@ -65,7 +66,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   blockSignals( true );
   clear();
   addItems( myScalesList );
-  setEditText( oldScale );
+  setScaleString( oldScale );
   blockSignals( false );
 }
 
@@ -148,18 +149,25 @@ void QgsScaleComboBox::fixupScale()
   bool ok;
   QStringList txtList;
 
+  // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
   newScale = toDouble( currentText(), &ok );
   if ( ok )
   {
-    mScale = newScale;
+    // Valid string representation
+    if ( newScale != oldScale )
+    {
+      // Scale has change, update.
+      // QgsDebugMsg( QString( "New scale OK!: %1" ).arg( newScale ) );
+      mScale = newScale;
+      setScale( mScale );
+      emit scaleChanged();
+    }
   }
-  // We set to the new string representation
-  // or reset to the old
-  setScale( mScale );
-
-  if ( oldScale != mScale )
+  else
   {
-    emit scaleChanged();
+    // Invalid string representation
+    // Reset to the old
+    setScale( mScale );
   }
 }
 

@@ -1467,16 +1467,10 @@ void QgisApp::createStatusBar()
   mScaleEdit->setMaximumWidth( 100 );
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
-  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
-  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
-  // mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
-  // mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  //connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
-  //connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
   //stop rendering status bar widget
@@ -5250,15 +5244,10 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
 
 void QgisApp::showScale( double theScale )
 {
-  if ( theScale >= 1.0 )
-    mScaleEdit->setEditText( "1:" + QString::number( theScale, 'f', 0 ) );
-  else if ( theScale > 0.0 )
-    mScaleEdit->setEditText( QString::number( 1.0 / theScale, 'f', 0 ) + ":1" );
-  else
-    mScaleEdit->setEditText( tr( "Invalid scale" ) );
+  // Why has MapCanvas the scale inverted?
+  mScaleEdit->setScale( 1.0 / theScale );
 
-  mOldScale = mScaleEdit->currentText();
-
+  // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
     mScaleEdit->setMinimumWidth( mScaleEdit->width() );
@@ -5267,7 +5256,7 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  // Why has MapCanvas the scale inversed?
+  // Why has MapCanvas the scale inverted?
   mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
