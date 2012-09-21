@@ -405,11 +405,14 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
 
 void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
+  QSettings mySettings("QuantumGIS","QGISCUSTOMIZATION");
   QgsMapLayer *lyr = layer();
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
 
   // zoom to layer extent
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+  bool custom = mySettings.value("Customization/Menus/mViewMenu/mActionZoomToLayer",true).toBool();
+  if ( custom )
+	  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
                      tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
@@ -430,13 +433,19 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+  custom = mySettings.value("Customization/Menus/mLayerMenu/mActionRemoveLayer",true).toBool();
+  if ( custom )
+	  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // set layer crs
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+  custom = mySettings.value("Customization/Menus/mLayerMenu/mActionSetLayerCRS",true).toBool();
+  if ( custom )
+	theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
   // assign layer crs to project
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+  custom = mySettings.value("Customization/Menus/mLayerMenu/mActionSetProjectCRSFromLayer",true).toBool();
+  if ( custom )
+	theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
   theMenu.addSeparator();
 
@@ -445,12 +454,15 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
+	custom = mySettings.value("Customization/Menus/mLayerMenu/mActionOpenTable",true).toBool();
+	if ( custom )
+		theMenu.addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
                        QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing
     int cap = vlayer->dataProvider()->capabilities();
-    if ( cap & QgsVectorDataProvider::EditingCapabilities )
+	bool custom_edit = mySettings.value("Customization/Menus/mLayerMenu/mActionToggleEditing",true).toBool();
+    if ( cap & QgsVectorDataProvider::EditingCapabilities && custom_edit )
     {
       if ( toggleEditingAction )
       {
@@ -460,16 +472,23 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     // save as vector file
-    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
+	custom = mySettings.value("Customization/Menus/mLayerMenu/mActionLayerSaveAs",true).toBool();
+	if ( custom )
+		theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
     // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
-    if ( vlayer->selectedFeatureCount() == 0 )
-    {
-      saveSelectionAsAction->setEnabled( false );
-    }
+	custom = mySettings.value("Customization/Menus/mLayerMenu/mActionLayerSelectionSaveAs",true).toBool();
+	if ( custom )
+	{
+		QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
+		if ( vlayer->selectedFeatureCount() == 0 )
+		{
+		saveSelectionAsAction->setEnabled( false );
+		}
+	}
 
-    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
+	custom = mySettings.value("Customization/Menus/mLayerMenu/mActionLayerSubsetString",true).toBool();
+    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() && custom )
       theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     //show number of features in legend if requested
@@ -482,12 +501,16 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   }
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+    custom = mySettings.value("Customization/Menus/mLayerMenu/mActionLayerSaveAs",true).toBool();
+	if ( custom )
+		theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
   // properties goes on bottom of menu for consistency with normal ui standards
   // e.g. kde stuff
-  theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
+  custom = mySettings.value("Customization/Menus/mLayerMenu/mActionLayerProperties",true).toBool();
+  if ( custom )
+	theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 }
 
 //////////
