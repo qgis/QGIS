@@ -35,9 +35,14 @@ typedef struct sqlite3 sqlite3;
 //qgis includes
 #include "qgis.h"
 
+#ifdef DEBUG
+typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
+#else
+typedef void *OGRSpatialReferenceH;
+#endif
+
 class QgsCoordinateReferenceSystem;
 typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem* );
-
 
 /** \ingroup core
  * Class for storing a coordinate reference system (CRS)
@@ -472,7 +477,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for sql-safe value quoting
     static QString quotedValue( QString value );
 
-    void *mCRS;
+    OGRSpatialReferenceH mCRS;
 
     bool loadFromDb( QString db, QString expression, QString value );
 
