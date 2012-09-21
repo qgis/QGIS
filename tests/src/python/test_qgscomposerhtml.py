@@ -20,6 +20,7 @@ import unittest
 import os
 from utilities import unitTestDataPath, getQgisTestApp
 from PyQt4.QtCore import QUrl, QString, qDebug
+from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
@@ -36,14 +37,10 @@ class TestQgsComposerMap(unittest.TestCase):
         """Run before each test."""
         self.mComposition = QgsComposition(None)
         self.mComposition.setPaperSize(297, 210) #A4 landscape
-        self.mComposerHtml = QgsComposerHtml(self.mComposition, False)
 
     def tearDown(self):
         """Run after each test."""
         print "Tear down"
-        if self.mComposerHtml:
-            self.mComposition.removeMultiFrame(self.mComposerHtml)
-            del self.mComposerHtml
 
     def controlImagePath(self, theImageName):
         """Helper to get the path to a control image."""
@@ -62,11 +59,12 @@ class TestQgsComposerMap(unittest.TestCase):
 
     def testTable(self):
         """Test we can render a html table in a single frame."""
+        composerHtml = QgsComposerHtml(self.mComposition, False)
         htmlFrame = QgsComposerFrame(self.mComposition,
-                                     self.mComposerHtml, 0, 0, 100, 200)
+                                     composerHtml, 0, 0, 100, 200)
         htmlFrame.setFrameEnabled(True)
-        self.mComposerHtml.addFrame(htmlFrame)
-        self.mComposerHtml.setUrl(self.mComposerHtmlUrl())
+        composerHtml.addFrame(htmlFrame)
+        composerHtml.setUrl(self.htmlUrl())
         checker = QgsCompositionChecker()
         myResult, myMessage = checker.testComposition(
             "Composer html table",
@@ -77,13 +75,14 @@ class TestQgsComposerMap(unittest.TestCase):
 
     def testTableMultiFrame(self):
         """Test we can render to multiframes."""
-        htmlFrame = QgsComposerFrame(self.mComposition, self.mComposerHtml,
+        composerHtml = QgsComposerHtml(self.mComposition, False)
+        htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
                                      10, 10, 100, 50)
-        self.mComposerHtml.addFrame(htmlFrame)
-        self.mComposerHtml.setResizeMode(
+        composerHtml.addFrame(htmlFrame)
+        composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
-        self.mComposerHtml.setUrl(self.mComposerHtmlUrl())
-        self.mComposerHtml.frame(0).setFrameEnabled(True)
+        composerHtml.setUrl(self.htmlUrl())
+        composerHtml.frame(0).setFrameEnabled(True)
 
         myPage = 0
         checker1 = QgsCompositionChecker()
@@ -117,6 +116,23 @@ class TestQgsComposerMap(unittest.TestCase):
                                         myPage)
         print "Checking page 3"
         assert myResult, myMessage
+
+    def testComposerHtmlAccessor(self):
+        """Test that we can retrieve the ComposerHtml instance given an item.
+        """
+        myComposition = QgsComposition(CANVAS.mapRenderer())
+        mySubstitutionMap = {'replace-me': 'Foo bar'}
+        myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
+        myTemplateFile = file(myFile, 'rt')
+        myTemplateContent = myTemplateFile.read()
+        myTemplateFile.close()
+        myDocument = QDomDocument()
+        myDocument.setContent(myTemplateContent)
+        myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
+        myItem = myComposition.getComposerItemById('html-test')
+        myComposerHtml = myComposition.getComposerHtmlByItem(myItem)
+        myMessage = 'Could not retrieve the composer html given an item'
+        assert myComposerHtml is not None, myMessage
 
 if __name__ == '__main__':
     unittest.main()
