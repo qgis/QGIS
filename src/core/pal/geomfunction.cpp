@@ -350,30 +350,28 @@ namespace pal
    * \brief compute the point wherre two lines intersects
    * \return true if the ok false if line are parallel
    */
+  // from http://algolist.manual.ru/maths/geom/intersect/lineline2d.php
   bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
                                 double x3, double y3, double x4, double y4,  // 2nd line segment
                                 double *x, double *y )
   {
 
-    double a1, a2, b1, b2, c1, c2;
-    double denom;
+    double a, b, dd, ua, ub;
+    
+    a = ( ( x4 - x3 ) * ( y1 - y3 ) - ( y4 - y3 ) * ( x1 - x3 ) );
+    b = ( ( x2 - x1 ) * ( y1 - y3 ) - ( y2 - y1 ) * ( x1 - x3 ) );
+    dd = ( ( y4 - y3 ) * ( x2 - x1 ) - ( x4 - x3 ) * ( y2 - y1 ) );
 
-    a1 = y2 - y1;
-    b1 = x1 - x2;
-    c1 = x2 * y1 - x1 * y2;
-
-    a2 = y4 - y3;
-    b2 = x3 - x4;
-    c2 = x4 * y3 - x3 * y4;
-
-    if (( denom = a1 * b2 - a2 * b1 ) == 0 )
+    if ( dd == 0 )
     {
       return false;
     }
     else
     {
-      *x = ( b1 * c2 - b2 * c1 ) / denom;
-      *y = ( a2 * c1 - a1 * c2 ) / denom;
+      ua = a / dd;
+      ub = b / dd;
+      *x = x1 + ua * ( x2 - x1 );
+      *y = y1 + ub * ( y2 - y1 );
     }
 
     return true;
