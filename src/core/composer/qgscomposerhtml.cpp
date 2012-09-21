@@ -58,7 +58,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
     qApp->processEvents();
   }
 
-  if ( nFrames() < 1)  return;
+  if ( frameCount() < 1)  return;
   //QSize contentsSize = mWebPage->mainFrame()->contentsSize();
 
   QRectF contentRect = this->mFrameItems.at(0)->boundingRect();

@@ -203,22 +203,18 @@ const QgsComposerMap* QgsComposition::getComposerMapById( int id ) const
 
 const QgsComposerHtml* QgsComposition::getComposerHtmlByItem( QgsComposerItem *item ) const
 {
-  QList<QGraphicsItem *> itemList = items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
+  // an html item will be a composer frame and if it is we can try to get
+  // its multiframe parent and then try to cast that to a composer html
+  const QgsComposerFrame* composerFrame =
+          dynamic_cast<const QgsComposerFrame *>( item );
+  if ( composerFrame )
   {
-    const QgsComposerHtml* composerHtml = dynamic_cast<const QgsComposerHtml *>( *itemIt );
-    if ( composerHtml )
+    const QgsComposerMultiFrame * mypMultiFrame = composerFrame->multiFrame();
+    const QgsComposerHtml* composerHtml =
+            dynamic_cast<const QgsComposerHtml *>( mypMultiFrame );
+    if (composerHtml)
     {
-      //Now cycle through the items associated with this html composer
-      //and return the composer if the item matches any of them
-      for ( int i=0; i<composerHtml->frameCount(); i++ )
-      {
-        if ( composerHtml->frame(i)->id() == item->id() )
-        {
-            return composerHtml;
-        }
-      }
+      return composerHtml;
     }
   }
   return 0;

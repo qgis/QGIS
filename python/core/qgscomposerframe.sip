@@ -22,5 +22,5 @@ class QgsComposerFrame: QgsComposerItem
 
     int type() const;
 
-    QgsComposerMultiFrame* multiFrame();
+    QgsComposerMultiFrame* multiFrame() const;
 };

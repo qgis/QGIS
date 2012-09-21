@@ -36,14 +36,14 @@ class TestQgsComposerMap(unittest.TestCase):
         """Run before each test."""
         self.mComposition = QgsComposition(None)
         self.mComposition.setPaperSize(297, 210) #A4 landscape
-        self.htmlItem = QgsComposerHtml(self.mComposition, False)
+        self.mComposerHtml = QgsComposerHtml(self.mComposition, False)
 
     def tearDown(self):
         """Run after each test."""
         print "Tear down"
-        if self.htmlItem:
-            self.mComposition.removeMultiFrame(self.htmlItem)
-            del self.htmlItem
+        if self.mComposerHtml:
+            self.mComposition.removeMultiFrame(self.mComposerHtml)
+            del self.mComposerHtml
 
     def controlImagePath(self, theImageName):
         """Helper to get the path to a control image."""
@@ -63,10 +63,10 @@ class TestQgsComposerMap(unittest.TestCase):
     def testTable(self):
         """Test we can render a html table in a single frame."""
         htmlFrame = QgsComposerFrame(self.mComposition,
-                                     self.htmlItem, 0, 0, 100, 200)
+                                     self.mComposerHtml, 0, 0, 100, 200)
         htmlFrame.setFrameEnabled(True)
-        self.htmlItem.addFrame(htmlFrame)
-        self.htmlItem.setUrl(self.htmlUrl())
+        self.mComposerHtml.addFrame(htmlFrame)
+        self.mComposerHtml.setUrl(self.mComposerHtmlUrl())
         checker = QgsCompositionChecker()
         myResult, myMessage = checker.testComposition(
             "Composer html table",
@@ -77,14 +77,13 @@ class TestQgsComposerMap(unittest.TestCase):
 
     def testTableMultiFrame(self):
         """Test we can render to multiframes."""
-        htmlFrame = QgsComposerFrame(self.mComposition, self.htmlItem,
+        htmlFrame = QgsComposerFrame(self.mComposition, self.mComposerHtml,
                                      10, 10, 100, 50)
-        self.htmlItem.addFrame(htmlFrame)
-        self.htmlItem.setResizeMode(QgsComposerMultiFrame.RepeatUntilFinished)
-        self.htmlItem.setUrl(self.htmlUrl())
-        self.htmlItem.frame(0).setFrameEnabled(True)
-
-        result = True
+        self.mComposerHtml.addFrame(htmlFrame)
+        self.mComposerHtml.setResizeMode(
+            QgsComposerMultiFrame.RepeatUntilFinished)
+        self.mComposerHtml.setUrl(self.mComposerHtmlUrl())
+        self.mComposerHtml.frame(0).setFrameEnabled(True)
 
         myPage = 0
         checker1 = QgsCompositionChecker()
