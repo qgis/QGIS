@@ -2458,3 +2458,99 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
 
+/**
+  Gets creation options metadata for a given format
+*/
+QGISEXTERN QString helpCreationOptionsFormat( QString format )
+{
+  QString message;
+  GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
+  if ( myGdalDriver )
+  {
+    // need to serialize xml to get newlines
+    // should we make the basic xml prettier?
+    CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
+                                           GDAL_DMD_CREATIONOPTIONLIST, "" ) );
+    char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
+    if ( pszFormattedXML )
+      message = QString( pszFormattedXML );
+    if ( psCOL )
+      CPLDestroyXMLNode( psCOL );
+    if ( pszFormattedXML )
+      CPLFree( pszFormattedXML );
+  }
+  return message;
+}
+
+/**
+  Validates creation options for a given format, regardless of layer.
+*/
+QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptions, QString format )
+{
+  GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
+  if ( ! myGdalDriver )
+    return "invalid GDAL driver";
+
+  char** papszOptions = papszFromStringList( createOptions );
+  // get error string?
+  int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
+  CSLDestroy( papszOptions );
+
+  if ( ok == FALSE )
+    return "Failed GDALValidateCreationOptions() test";
+  return QString();
+}
+
+QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptions, QString format )
+{
+  QString message;
+
+  // first validate basic syntax with GDALValidateCreationOptions
+  message = validateCreationOptionsFormat( createOptions, format );
+  if ( !message.isNull() )
+    return message;
+
+  // next do specific validations, depending on format and dataset
+  // only check certain destination formats
+  QStringList formatsCheck;
+  formatsCheck << "gtiff";
+  if ( ! formatsCheck.contains( format.toLower() ) )
+    return QString();
+
+  // prepare a map for easier lookup
+  QMap< QString, QString > optionsMap;
+  foreach ( QString option, createOptions )
+  {
+    QStringList opt = option.split( "=" );
+    optionsMap[ opt[0].toUpper()] = opt[1];
+    QgsDebugMsg( "option: " + option );
+  }
+
+  // gtiff files - validate PREDICTOR option
+  // see gdal: frmts/gtiff/geotiff.cpp and libtiff: tif_predict.c)
+  if ( format.toLower() == "gtiff" && optionsMap.contains( "PREDICTOR" ) )
+  {
+    QString value = optionsMap.value( "PREDICTOR" );
+    GDALDataType nDataType = ( mGdalDataType.count() > 0 ) ? ( GDALDataType ) mGdalDataType[ 0 ] : GDT_Unknown;
+    int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSize( nDataType ) : 0;
+    QgsDebugMsg( QString( "PREDICTOR: %1 nbits: %2 type: %3" ).arg( value ).arg( nBitsPerSample ).arg(( GDALDataType ) mGdalDataType[ 0 ] ) );
+    // PREDICTOR=2 only valid for 8/16/32 bits per sample
+    // TODO check for NBITS option (see geotiff.cpp)
+    if ( value == "2" )
+    {
+      if ( nBitsPerSample != 8 && nBitsPerSample != 16 &&
+           nBitsPerSample != 32 )
+      {
+        message = QString( "PREDICTOR=%1 only valid for 8/16/32 bits per sample (using %2)" ).arg( value ).arg( nBitsPerSample );
+      }
+    }
+    // PREDICTOR=3 only valid for float/double precision
+    else if ( value == "3" )
+    {
+      if ( nDataType != GDT_Float32 && nDataType != GDT_Float64 )
+        message = "PREDICTOR=3 only valid for float/double precision";
+    }
+  }
+
+  return message;
+}

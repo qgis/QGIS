@@ -597,6 +597,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
              tr( "Cubic" ) << tr( "Mode" ) << tr( "None" ) : QStringList();
     }
 
+    /** Validates creation options for a specific dataset and destination format - used by GDAL provider only.
+     * See also validateCreationOptionsFormat() in gdal provider for validating options based on format only. */
+    virtual QString validateCreationOptions( const QStringList& createOptions, QString format )
+    { Q_UNUSED( createOptions ); Q_UNUSED( format ); return QString(); }
+
   signals:
     /** Emit a signal to notify of the progress event.
       * Emited theProgress is in percents (0.0-100.0) */

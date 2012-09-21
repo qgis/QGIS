@@ -285,6 +285,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**Remove dataset*/
     bool remove();
 
+    QString validateCreationOptions( const QStringList& createOptions, QString format );
+
   signals:
     void statusChanged( QString );
 
