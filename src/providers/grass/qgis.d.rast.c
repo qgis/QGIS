@@ -146,7 +146,7 @@ static int cell_draw( char *name,
   float fnul = NAN;
 #else
   double dnul = strtod( "NAN", 0 );
-  float fnul = strtof( "NAN", 0 );
+  float fnul = (float)strtod( "NAN", 0 );
   // another possibility would be nan()/nanf() - C99
   // and 0./0. if all fails
 #endif
