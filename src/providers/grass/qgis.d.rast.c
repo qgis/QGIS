@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -35,6 +36,12 @@
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
+
+#ifdef _MSC_VER
+#include <float.h>
+#define INFINITY (DBL_MAX+DBL_MAX)
+#define NAN (INFINITY-INFINITY)
+#endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
 
@@ -150,6 +157,9 @@ static int cell_draw( char *name,
   // another possibility would be nan()/nanf() - C99
   // and 0./0. if all fails
 #endif
+
+  assert( dnul != dnul );
+  assert( fnul != fnul );
 
   big_endian = !( *(( char * )( &one ) ) );
 
