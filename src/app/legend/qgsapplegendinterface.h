@@ -94,7 +94,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Pointer to QgsLegend object
     QgsLegend *mLegend;
-		QTreeWidgetItem *getItem(int itemIndex);
+    QTreeWidgetItem *getItem( int itemIndex );
 };
 
 #endif //QGSLEGENDAPPIFACE_H

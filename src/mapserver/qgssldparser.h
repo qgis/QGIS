@@ -57,7 +57,7 @@ class QgsSLDParser: public QgsConfigParser
     void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
     void featureTypeList( QDomElement &, QDomDocument & ) const {};
-    
+
     void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const {};
 
     /**Returns number of layers in configuration*/

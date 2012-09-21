@@ -218,7 +218,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
   QMap< QString, QSet<QString> > hiddenAttrs = hiddenAttributes();
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
