@@ -26,6 +26,15 @@ class QgsVectorColorRampV2
 
 };
 
+struct QgsGradientStop
+{
+  double offset;
+  QColor color;
+  QgsGradientStop( double o, const QColor& c );
+};
+
+typedef QList<QgsGradientStop> QgsGradientStopsList;
+
 class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 {
 %TypeHeaderCode
@@ -33,7 +42,9 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 %End
   public:
     QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = DEFAULT_GRADIENT_COLOR2 );
+                                  QColor color2 = QColor(0,255,0),
+                                  bool discrete = false,
+                                  QgsGradientStopsList stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -51,10 +62,11 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     void setColor1( QColor color );
     void setColor2( QColor color );
 
-    typedef QMap<double, QColor> StopsMap;
+    bool isDiscrete() const;
+    void setDiscrete( bool discrete );
 
-    void setStops( const StopsMap& stops );
-    const StopsMap& stops() const;
+    void setStops( const QgsGradientStopsList& stops );
+    const QgsGradientStopsList& stops() const;
 };
 
 class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2

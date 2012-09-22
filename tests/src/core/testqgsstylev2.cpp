@@ -110,8 +110,8 @@ void TestStyleV2::testCreateColorRamps()
 {
   // gradient ramp
   QgsVectorGradientColorRampV2* gradientRamp = new QgsVectorGradientColorRampV2( QColor( Qt::red ), QColor( Qt::blue ) );
-  QgsVectorGradientColorRampV2::StopsMap stops;
-  stops[ 0.5 ] = QColor( Qt::white );
+  QgsGradientStopsList stops;
+  stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
   QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 

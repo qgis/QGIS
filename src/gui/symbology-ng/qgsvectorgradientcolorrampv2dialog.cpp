@@ -24,29 +24,29 @@
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
     : QDialog( parent ), mRamp( ramp )
 {
-
   setupUi( this );
 
   connect( btnColor1, SIGNAL( clicked() ), this, SLOT( setColor1() ) );
   connect( btnColor2, SIGNAL( clicked() ), this, SLOT( setColor2() ) );
 
   // handle stops
-  QgsVectorGradientColorRampV2::StopsMap stops = ramp->stops();
+  QgsGradientStopsList stops = ramp->stops();
   groupStops->setChecked( !stops.isEmpty() );
 
-  QgsVectorGradientColorRampV2::StopsMap::iterator i;
   QList<QTreeWidgetItem *> items;
-  for ( i = stops.begin(); i != stops.end(); ++i )
+  for ( QgsGradientStopsList::iterator it = stops.begin();
+        it != stops.end(); ++it )
   {
     QStringList lst;
-    lst << "." << QString::number( i.key()*100, 'f', 0 );
+    lst << "." << QString::number( it->offset*100, 'f', 0 );
     QTreeWidgetItem* item = new QTreeWidgetItem( lst );
 
-    setStopColor( item, i.value() );
-    item->setData( 0, StopOffsetRole, i.key() );
+    setStopColor( item, it->color );
+    item->setData( 0, StopOffsetRole, it->offset );
 
     items.append( item );
   }
+  treeStops->clear();
   treeStops->insertTopLevelItems( 0, items );
   treeStops->resizeColumnToContents( 0 );
   treeStops->sortByColumn( 1, Qt::AscendingOrder );
@@ -63,19 +63,19 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
 void QgsVectorGradientColorRampV2Dialog::updatePreview()
 {
   // update ramp stops from the tree widget
-  QgsVectorGradientColorRampV2::StopsMap map;
+  QgsGradientStopsList stops;
   if ( groupStops->isChecked() )
   {
     int count = treeStops->topLevelItemCount();
     for ( int i = 0; i < count; i++ )
     {
       QTreeWidgetItem* item = treeStops->topLevelItem( i );
-      double key = item->data( 0, StopOffsetRole ).toDouble();
-      QColor c = item->data( 0, StopColorRole ).value<QColor>();
-      map.insert( key, c );
+      double offset = item->data( 0, StopOffsetRole ).toDouble();
+      QColor color = item->data( 0, StopColorRole ).value<QColor>();
+      stops.append( QgsGradientStop( offset, color ) );
     }
   }
-  mRamp->setStops( map );
+  mRamp->setStops( stops );
 
   // generate the preview
   QSize size( 300, 40 );

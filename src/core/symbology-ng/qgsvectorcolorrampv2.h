@@ -36,6 +36,15 @@ class CORE_EXPORT QgsVectorColorRampV2
 
 };
 
+struct QgsGradientStop
+{
+  double offset;
+  QColor color;
+  QgsGradientStop( double o, const QColor& c ) : offset( o ), color( c ) { }
+};
+
+typedef QList<QgsGradientStop> QgsGradientStopsList;
+
 #define DEFAULT_GRADIENT_COLOR1 QColor(0,0,255)
 #define DEFAULT_GRADIENT_COLOR2 QColor(0,255,0)
 
@@ -43,7 +52,9 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 {
   public:
     QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = DEFAULT_GRADIENT_COLOR2 );
+                                  QColor color2 = DEFAULT_GRADIENT_COLOR2,
+                                  bool discrete = false,
+                                  QgsGradientStopsList stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
@@ -61,14 +72,16 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
     void setColor1( QColor color ) { mColor1 = color; }
     void setColor2( QColor color ) { mColor2 = color; }
 
-    typedef QMap<double, QColor> StopsMap;
+    bool isDiscrete() const { return mDiscrete; }
+    void setDiscrete( bool discrete ) { mDiscrete = discrete; }
 
-    void setStops( const StopsMap& stops ) { mStops = stops; }
-    const StopsMap& stops() const { return mStops; }
+    void setStops( const QgsGradientStopsList& stops ) { mStops = stops; }
+    const QgsGradientStopsList& stops() const { return mStops; }
 
   protected:
     QColor mColor1, mColor2;
-    StopsMap mStops;
+    bool mDiscrete;
+    QgsGradientStopsList mStops;
 };
 
 #define DEFAULT_RANDOM_COUNT   10
@@ -163,7 +176,7 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 #define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
 #define DEFAULT_CPTCITY_VARIANTNAME "05"
 
-class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
+class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 {
   public:
     QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
@@ -172,19 +185,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
                            QString variantName = QString(), bool doLoadFile = true );
 
-
-    enum GradientType
-    {
-      Discrete, //discrete stops, e.g. Color Brewer
-      Continuous, //continuous, e.g. QgsVectorColorRampV2
-      ContinuousMulti //continuous with 2 values in intermediate stops
-    };
-    typedef QList< QPair < double, QColor > > GradientList;
-
-
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
-
-    virtual QColor color( double value ) const;
 
     virtual QString type() const { return "cpt-city"; }
 
@@ -193,15 +194,9 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 
     virtual QgsStringMap properties() const;
 
-    int count() const { return mPalette.count(); }
-
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }
     QStringList variantList() const { return mVariantList; }
-    /* QgsCptCityCollection* collection() const { return mCollection; } */
-    /* QString collectionName() const { return mCollectionName; } */
-    /* QgsCptCityCollection* collection() const */
-    /* { return QgsCptCityCollection::collectionRegistry().value( mCollectionName ); } */
 
     /* lazy loading - have to call loadPalette() explicitly */
     void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
@@ -211,8 +206,8 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }
-    /* bool isContinuous() const { return mContinuous; } */
-    GradientType gradientType() const { return mGradientType; }
+    bool hasMultiStops() const { return mMultiStops; }
+    int count() const { return mStops.count() + 2; }
 
     QString fileName() const;
     bool loadFile();
@@ -228,8 +223,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     QString mVariantName;
     QStringList mVariantList;
     bool mFileLoaded;
-    GradientType mGradientType;
-    GradientList mPalette;
+    bool mMultiStops;
 };
 
 

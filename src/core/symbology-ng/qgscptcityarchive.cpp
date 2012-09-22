@@ -730,16 +730,18 @@ void QgsCptCityColorRampItem::init( )
     if ( variantList.isEmpty() )
     {
       int count = mRamp.count();
-      QgsCptCityColorRampV2::GradientType type = mRamp.gradientType();
-      if ( type == QgsCptCityColorRampV2::Discrete )
+      if ( mRamp.isDiscrete() )
         count--;
       mInfo = QString::number( count ) + " " + tr( "colors" ) + " - ";
-      if ( type == QgsCptCityColorRampV2::Continuous )
-        mInfo += tr( "continuous" );
-      else if ( type == QgsCptCityColorRampV2::ContinuousMulti )
-        mInfo += tr( "continuous (multi)" );
-      else if ( type == QgsCptCityColorRampV2::Discrete )
+      if ( mRamp.isDiscrete() )
         mInfo += tr( "discrete" );
+      else
+      {
+        if ( !mRamp.hasMultiStops() )
+          mInfo += tr( "continuous" );
+        else
+          mInfo += tr( "continuous (multi)" );
+      }
       mShortInfo = QFileInfo( mName ).fileName();
     }
     else

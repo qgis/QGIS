@@ -254,8 +254,8 @@ void TestQgsRasterLayer::colorRamp1()
 {
   // gradient ramp
   QgsVectorGradientColorRampV2* colorRamp = new QgsVectorGradientColorRampV2( QColor( Qt::red ), QColor( Qt::black ) );
-  QgsVectorGradientColorRampV2::StopsMap stops;
-  stops[ 0.5 ] = QColor( Qt::white );
+  QgsGradientStopsList stops;
+  stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   colorRamp->setStops( stops );
 
   // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::INTERPOLATED, 5 ) );
