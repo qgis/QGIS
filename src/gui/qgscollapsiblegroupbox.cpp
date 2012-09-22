@@ -134,6 +134,18 @@ void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
   QGroupBox::mouseReleaseEvent( event );
 }
 
+void QgsCollapsibleGroupBox::changeEvent( QEvent *event )
+{
+  // always re-enable mCollapseButton when groupbox was previously disabled
+  // e.g. resulting from a disabled parent of groupbox, or a signal/slot connection
+
+  // default behaviour - pass to QGroupBox
+  QGroupBox::changeEvent( event );
+
+  if ( event->type() == QEvent::EnabledChange && isEnabled() )
+    mCollapseButton->setEnabled( true );
+}
+
 QRect QgsCollapsibleGroupBox::titleRect() const
 {
   QStyleOptionGroupBox box;

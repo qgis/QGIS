@@ -280,56 +280,62 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
     QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
     mSrcGdalDataType.append( myGdalDataType );
-    // TODO: This could be shared with GDAL provider
-    int isValid = false;
 
     // UMN Mapserver does not automaticaly set null value, METADATA wcs_rangeset_nullvalue must be used
     // http://lists.osgeo.org/pipermail/mapserver-users/2010-April/065328.html
 
-    // TODO:
-
+    // TODO: This could be shared with GDAL provider
+    int isValid = false;
     double myNoDataValue = GDALGetRasterNoDataValue( gdalBand, &isValid );
     if ( isValid )
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
-      mGdalDataType.append( myGdalDataType );
+      mSrcNoDataValue.append( myNoDataValue );
+      mSrcHasNoDataValue.append( true );
+      mUseSrcNoDataValue.append( true );
     }
     else
     {
-      // But we need a null value in case of reprojection and BTW also for
-      // aligned margines
-      switch ( dataTypeFromGdal( myGdalDataType ) )
-      {
-
-        case QgsRasterDataProvider::Byte:
-          // Use longer data type to avoid conflict with real data
-          myNoDataValue = -32768.0;
-          mGdalDataType.append( GDT_Int16 );
-          break;
-        case QgsRasterDataProvider::Int16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::UInt16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::Int32:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        case QgsRasterDataProvider::UInt32:
-          myNoDataValue = 4294967295.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        default:
-          myNoDataValue = std::numeric_limits<int>::max();
-          // Would NaN work well?
-          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
-          mGdalDataType.append( myGdalDataType );
-      }
+      mSrcNoDataValue.append( std::numeric_limits<double>::quiet_NaN() );
+      mSrcHasNoDataValue.append( false );
+      mUseSrcNoDataValue.append( false );
     }
-    mNoDataValue.append( myNoDataValue );
+    // It may happen that nodata value given by GDAL is wrong and it has to be
+    // disabled by user, in that case we need another value to be used for nodata
+    // (for reprojection for example) -> always internaly represent as wider type
+    // with mInternalNoDataValue in reserve.
+    int myInternalGdalDataType = myGdalDataType;
+    double myInternalNoDataValue;
+    switch ( srcDataType( i ) )
+    {
+      case QgsRasterDataProvider::Byte:
+        myInternalNoDataValue = -32768.0;
+        myInternalGdalDataType = GDT_Int16;
+        break;
+      case QgsRasterDataProvider::Int16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::UInt16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::Int32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = -2147483648.0;
+        break;
+      case QgsRasterDataProvider::UInt32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = 4294967295.0;
+        break;
+      default: // Float32, Float64
+        //myNoDataValue = std::numeric_limits<int>::max();
+        // NaN should work well
+        myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
+    }
+    mGdalDataType.append( myInternalGdalDataType );
+    mInternalNoDataValue.append( myInternalNoDataValue );
+    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
 
     // TODO: what to do if null values from DescribeCoverage differ?
     if ( !mCoverageSummary.nullValues.contains( myNoDataValue ) )
@@ -337,11 +343,9 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
       QgsDebugMsg( QString( "noDataValue %1 is missing in nullValues from CoverageDescription" ).arg( myNoDataValue ) );
     }
 
-    mValidNoDataValue = true;
-
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+    QgsDebugMsg( QString( "mSrcNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mSrcNoDataValue[i-1] ) );
 
     // Create and store color table
     // TODO: never tested because mapserver (6.0.3) does not support color tables
@@ -800,11 +804,17 @@ void QgsWcsProvider::cacheReplyFinished()
     QgsDebugMsg( "contentType: " + contentType );
 
     // Exception
+    // Content type examples: text/xml
+    //                        application/vnd.ogc.se_xml;charset=UTF-8
+    //                        application/xml
     if ( contentType.startsWith( "text/", Qt::CaseInsensitive ) ||
-         contentType.toLower() == "application/vnd.ogc.se_xml" )
+         contentType.toLower() == "application/xml" ||
+         contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
     {
       QByteArray text = mCacheReply->readAll();
-      if (( contentType.toLower() == "text/xml" || contentType.toLower() == "application/vnd.ogc.se_xml" )
+      if (( contentType.toLower() == "text/xml" ||
+            contentType.toLower() == "application/xml" ||
+            contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
           && parseServiceExceptionReportDom( text ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
@@ -1072,15 +1082,6 @@ QgsRasterInterface::DataType QgsWcsProvider::dataType( int bandNo ) const
 int QgsWcsProvider::bandCount() const
 {
   return mBandCount;
-}
-
-double  QgsWcsProvider::noDataValue() const
-{
-  if ( mNoDataValue.size() > 0 )
-  {
-    return mNoDataValue[0];
-  }
-  return std::numeric_limits<int>::max(); // should not happen or be used
 }
 
 // this is only called once when statistics are calculated
@@ -1525,7 +1526,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
     for ( int i = 1; i <= bandCount(); i++ )
     {
       void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      writeValue( data, dataType( i ), 0, noDataValue() );
+      writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
     return results;

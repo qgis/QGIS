@@ -586,10 +586,15 @@ void QgsVectorLayerProperties::reset( void )
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
-  leMinimumScale->setText( QString::number( layer->minimumScale(), 'f' ) );
-  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leMaximumScale->setText( QString::number( layer->maximumScale(), 'f' ) );
-  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  if ( projectScales )
+  {
+    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    cbMinimumScale->updateScales( scalesList );
+    cbMaximumScale->updateScales( scalesList );
+  }
+  cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
+  cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
   // symbology initialization
   if ( legendtypecombobox->count() == 0 )
@@ -682,8 +687,8 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  layer->setMinimumScale( leMinimumScale->text().toFloat() );
-  layer->setMaximumScale( leMaximumScale->text().toFloat() );
+  layer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
+  layer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
 
   // provider-specific options
   if ( layer->dataProvider() )

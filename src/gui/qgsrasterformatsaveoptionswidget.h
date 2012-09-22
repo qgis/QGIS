@@ -20,6 +20,8 @@
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
 
+class QgsRasterLayer;
+
 /** \ingroup gui
  * A widget to select format-specific raster saving options
  */
@@ -46,6 +48,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     void setFormat( QString format );
     void setProvider( QString provider );
+    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mRasterLayer = rasterLayer; }
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
 
@@ -53,7 +56,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     void apply();
     void helpOptions();
-    bool validateOptions( bool gui = true );
+    QString validateOptions( bool gui = true, bool reportOk = true );
     void updateProfiles();
 
   private slots:
@@ -68,11 +71,13 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void optionsTableEnableDeleteButton();
     void updateOptions();
     void swapOptionsUI( int newIndex = -1 );
+    void updateControls();
 
   private:
 
     QString mFormat;
     QString mProvider;
+    QgsRasterLayer* mRasterLayer;
     QMap< QString, QString> mOptionsMap;
     static QMap< QString, QStringList > mBuiltinProfiles;
 

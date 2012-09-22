@@ -32,7 +32,7 @@ class TestProjectionIssues: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-  void issue5895();// test for #5895
+    void issue5895();// test for #5895
   private:
     QgsRasterLayer* mRasterLayer;
     QgsMapCanvas*   mMapCanvas;
@@ -50,8 +50,8 @@ void TestProjectionIssues::initTestCase()
   // Set to WGS84
   QgsCoordinateReferenceSystem sourceCRS;
   sourceCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mRasterLayer->setCrs( sourceCRS, false);
-  
+  mRasterLayer->setCrs( sourceCRS, false );
+
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 

@@ -537,6 +537,28 @@ void QgsProjectFileTransform::transform1800to1900()
 void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
     QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
 {
+  //no data
+  //TODO: We would need to set no data on all bands, but we dont know number of bands here
+  QDomNode noDataNode = rasterPropertiesElem.namedItem( "mNoDataValue" );
+  QDomElement noDataElement = noDataNode.toElement();
+  if ( !noDataElement.text().isEmpty() )
+  {
+    QgsDebugMsg( "mNoDataValue = " + noDataElement.text() );
+    QDomElement noDataElem = doc.createElement( "noData" );
+
+    QDomElement noDataRangeList = doc.createElement( "noDataRangeList" );
+    noDataRangeList.setAttribute( "bandNo", 1 );
+
+    QDomElement noDataRange =  doc.createElement( "noDataRange" );
+    noDataRange.setAttribute( "min", noDataElement.text() );
+    noDataRange.setAttribute( "max", noDataElement.text() );
+    noDataRangeList.appendChild( noDataRange );
+
+    noDataElem.appendChild( noDataRangeList );
+
+    parentNode.appendChild( noDataElem );
+  }
+
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
   //convert general properties
 

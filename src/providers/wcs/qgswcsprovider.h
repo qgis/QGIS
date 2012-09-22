@@ -147,7 +147,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterInterface::DataType dataType( int bandNo ) const;
     QgsRasterInterface::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
-    double noDataValue() const;
+    //double noDataValue() const;
     int xBlockSize() const;
     int yBlockSize() const;
     int xSize() const;
@@ -303,7 +303,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QList<int>mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
-    QList<double> mNoDataValue;
+    //QList<double> mNoDataValue;
 
     /** Color tables indexed from 0 */
     QList< QList<QgsColorRampShader::ColorRampItem> > mColorTables;

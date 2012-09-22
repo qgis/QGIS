@@ -40,7 +40,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
-  mDone = false;
+  mDone = true;
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
 
@@ -102,15 +102,13 @@ void QgsMeasureTool::deactivate()
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
-  // Append point we will move
-  mPoints.append( QgsPoint( 0, 0 ) );
 
   mRubberBand->reset( mMeasureArea );
 
   // re-read settings
   updateSettings();
 
-  mDone = false;
+  mDone = true;
   mWrongProjectProjection = false;
 
 }
@@ -135,9 +133,10 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
     if ( mDone )
     {
       mDialog->restart();
+      QgsPoint point = snapPoint( e->pos() );
+      addPoint( point );
+      mDone = false;
     }
-    QgsPoint idPoint = snapPoint( e->pos() );
-    // mDialog->mousePress( idPoint );
   }
 }
 
@@ -178,6 +177,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::LeftButton )
   {
+    // Append point we will move
     addPoint( point );
     mDialog->show();
   }

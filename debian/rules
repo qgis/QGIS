@@ -27,6 +27,10 @@ TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
 else
 TESTMAKE=$(MAKE)
 endif
+ifneq (,$(findstring $(DISTRIBUTION),"lucid"))
+# excludes tests requiring unittest2 not available on lucid
+TESTMAKE += ARGS="-E PyQgsRectangle"
+endif
 
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)

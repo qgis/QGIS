@@ -54,7 +54,7 @@ class QgsExpressionOGCVisitor : public QgsExpression::Visitor
         case QgsExpression::boEQ:  opName = "PropertyIsEqualTo"; break;
         case QgsExpression::boNE:  opName = "PropertyIsNotEqualTo"; break;
         case QgsExpression::boLE:  opName = "PropertyIsLessThanOrEqualTo"; break;
-        case QgsExpression::boGE:  opName = "PropertyIsLessThanOrEqualTo"; break;
+        case QgsExpression::boGE:  opName = "PropertyIsGreaterThanOrEqualTo"; break;
         case QgsExpression::boLT:  opName = "PropertyIsLessThan"; break;
         case QgsExpression::boGT:  opName = "PropertyIsGreaterThan"; break;
         case QgsExpression::boOr:  opName = "Or"; break;
