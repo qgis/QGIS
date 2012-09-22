@@ -179,7 +179,7 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformParametrisatio
 
 void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
 {
-    mRasterChangeCoords.setRaster( fileRaster );
+  mRasterChangeCoords.setRaster( fileRaster );
 }
 
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
@@ -210,13 +210,13 @@ bool QgsGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &
   }
   if ( mRasterChangeCoords.hasCrs() )
   {
-      std::vector<QgsPoint> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords(pixelCoords);
-      mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoordsCorrect );
-      pixelCoordsCorrect.clear();
+    std::vector<QgsPoint> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( pixelCoords );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoordsCorrect );
+    pixelCoordsCorrect.clear();
   }
   else
   {
-      mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoords );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoords );
   }
   return mParametersInitialized;
 }

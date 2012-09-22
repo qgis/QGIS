@@ -43,20 +43,20 @@ class QgsDiagramLayerSettings;
 
 class CORE_EXPORT QgsLabelPosition
 {
-public:
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
-  int featureId;
-  double rotation;
-  QVector< QgsPoint > cornerPoints;
-  QgsRectangle labelRect;
-  double width;
-  double height;
-  QString layerID;
-  bool upsideDown;
-  bool isDiagram;
-  bool isPinned;
+  public:
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
+        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    int featureId;
+    double rotation;
+    QVector< QgsPoint > cornerPoints;
+    QgsRectangle labelRect;
+    double width;
+    double height;
+    QString layerID;
+    bool upsideDown;
+    bool isDiagram;
+    bool isPinned;
 };
 
 /** Labeling engine interface.

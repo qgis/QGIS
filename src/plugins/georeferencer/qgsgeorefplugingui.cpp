@@ -632,10 +632,10 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
 // Histogram stretch slots
 void QgsGeorefPluginGui::fullHistogramStretch()
 {
-   mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-   mLayer->setMinimumMaximumUsingDataset();
-   mLayer->setCacheImage( NULL );
-   mCanvas->refresh();
+  mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
+  mLayer->setMinimumMaximumUsingDataset();
+  mLayer->setCacheImage( NULL );
+  mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::localHistogramStretch()
@@ -863,11 +863,11 @@ void QgsGeorefPluginGui::createActions()
   // Histogram stretch
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
-  mActionLocalHistogramStretch->setEnabled(false);
+  mActionLocalHistogramStretch->setEnabled( false );
 
   mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
   connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
-  mActionFullHistogramStretch->setEnabled(false);
+  mActionFullHistogramStretch->setEnabled( false );
 
   // Help actions
   mActionHelp = new QAction( tr( "Help" ), this );
@@ -1041,7 +1041,7 @@ void QgsGeorefPluginGui::createStatusBar()
   statusBar()->addPermanentWidget( mCoordsLabel, 0 );
 
   mEPSG = createBaseLabelStatus();
-  mEPSG->setText("EPSG:");
+  mEPSG->setText( "EPSG:" );
   statusBar()->addPermanentWidget( mEPSG, 0 );
 }
 
@@ -1121,8 +1121,8 @@ void QgsGeorefPluginGui::addRaster( QString file )
 
   mAgainAddRaster = false;
 
-  mActionLocalHistogramStretch->setEnabled(true);
-  mActionFullHistogramStretch->setEnabled(true);
+  mActionLocalHistogramStretch->setEnabled( true );
+  mActionFullHistogramStretch->setEnabled( true );
 
   // Status Bar
   if ( mGeorefTransform.hasCrs() )
@@ -1133,8 +1133,8 @@ void QgsGeorefPluginGui::addRaster( QString file )
   }
   else
   {
-    mEPSG->setText( tr("None") );
-    mEPSG->setToolTip( tr("Coordinate of image(column/line)") );
+    mEPSG->setText( tr( "None" ) );
+    mEPSG->setToolTip( tr( "Coordinate of image(column/line)" ) );
   }
 }
 

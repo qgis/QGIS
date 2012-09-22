@@ -492,22 +492,22 @@
               <item row="0" column="2">
                <widget class="QLabel" name="textLabel1_2_2">
                 <property name="text">
-                 <string>Maximum</string>
+                 <string>Less than:</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QLabel" name="textLabel1">
                 <property name="text">
-                 <string>Minimum</string>
+                 <string>More than or equal to:</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="leMinimumScale"/>
+               <widget class="QgsScaleComboBox" name="cbMinimumScale"/>
               </item>
               <item row="0" column="3">
-               <widget class="QLineEdit" name="leMaximumScale"/>
+               <widget class="QgsScaleComboBox" name="cbMaximumScale"/>
               </item>
              </layout>
             </widget>
@@ -968,8 +968,8 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>pbnIndex</tabstop>
-  <tabstop>leMinimumScale</tabstop>
-  <tabstop>leMaximumScale</tabstop>
+  <tabstop>cbMinimumScale</tabstop>
+  <tabstop>cbMaximumScale</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>

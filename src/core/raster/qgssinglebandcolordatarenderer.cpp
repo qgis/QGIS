@@ -64,7 +64,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   void* rasterData = mInput->block( bandNo, extent, width, height );
   if ( ! rasterData )
   {
-    QgsDebugMsg("No raster data!" );
+    QgsDebugMsg( "No raster data!" );
     return 0;
   }
 

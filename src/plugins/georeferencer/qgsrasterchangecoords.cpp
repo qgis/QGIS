@@ -28,64 +28,64 @@
 
 QgsRasterChangeCoords::QgsRasterChangeCoords()
 {
-    mHasCrs = false;
+  mHasCrs = false;
 }
 
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
 {
-    GDALAllRegister();
-    GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
-    double adfGeoTransform[6];
-    if( GDALGetProjectionRef( hDS ) != NULL && GDALGetGeoTransform(hDS, adfGeoTransform) == CE_None)
+  GDALAllRegister();
+  GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
+  double adfGeoTransform[6];
+  if ( GDALGetProjectionRef( hDS ) != NULL && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
     //if ( false )
-    {
-        mHasCrs = true;
-        mUL_X = adfGeoTransform[0];
-        mUL_Y = adfGeoTransform[3];
-        mResX = adfGeoTransform[1];
-        mResY = adfGeoTransform[5];
-    }
-    else
-    {
-       mHasCrs = false;
-    }
-    GDALClose( hDS );
+  {
+    mHasCrs = true;
+    mUL_X = adfGeoTransform[0];
+    mUL_Y = adfGeoTransform[3];
+    mResX = adfGeoTransform[1];
+    mResY = adfGeoTransform[5];
+  }
+  else
+  {
+    mHasCrs = false;
+  }
+  GDALClose( hDS );
 }
 
-std::vector<QgsPoint> QgsRasterChangeCoords::getPixelCoords(const std::vector<QgsPoint> &mapCoords)
+std::vector<QgsPoint> QgsRasterChangeCoords::getPixelCoords( const std::vector<QgsPoint> &mapCoords )
 {
-    const int size = mapCoords.size();
-    std::vector<QgsPoint> pixelCoords( size );
-    for ( int i = 0; i < size; i++ )
-    {
-        pixelCoords[i] = toColumnLine( mapCoords.at( i ) );
-    }
-    return pixelCoords;
+  const int size = mapCoords.size();
+  std::vector<QgsPoint> pixelCoords( size );
+  for ( int i = 0; i < size; i++ )
+  {
+    pixelCoords[i] = toColumnLine( mapCoords.at( i ) );
+  }
+  return pixelCoords;
 }
 
-QgsRectangle QgsRasterChangeCoords::getBoundingBox(const QgsRectangle &rect, bool toPixel)
+QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bool toPixel )
 {
   QgsRectangle rectReturn;
   QgsPoint p1( rect.xMinimum(), rect.yMinimum() );
   QgsPoint p2( rect.xMaximum(), rect.yMaximum() );
-  QgsPoint ( QgsRasterChangeCoords::* func )( const QgsPoint & );
+  QgsPoint( QgsRasterChangeCoords::* func )( const QgsPoint & );
 
   func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
-  rectReturn.set( ( this->*func ) (p1), ( this->*func )(p2) );
+  rectReturn.set(( this->*func )( p1 ), ( this->*func )( p2 ) );
 
   return rectReturn;
 }
 
-QgsPoint QgsRasterChangeCoords::toColumnLine(const QgsPoint &pntMap)
+QgsPoint QgsRasterChangeCoords::toColumnLine( const QgsPoint &pntMap )
 {
-    double col =  ( pntMap.x() - mUL_X ) / mResX;
-    double line = ( mUL_Y - pntMap.y() ) / mResY;
-    return QgsPoint(col, line);
+  double col = ( pntMap.x() - mUL_X ) / mResX;
+  double line = ( mUL_Y - pntMap.y() ) / mResY;
+  return QgsPoint( col, line );
 }
 
-QgsPoint QgsRasterChangeCoords::toXY(const QgsPoint &pntPixel)
+QgsPoint QgsRasterChangeCoords::toXY( const QgsPoint &pntPixel )
 {
   double x = mUL_X + ( pntPixel.x() *  mResX );
   double y = mUL_Y + ( pntPixel.y() * -mResY );
-  return QgsPoint(x, y);
+  return QgsPoint( x, y );
 }

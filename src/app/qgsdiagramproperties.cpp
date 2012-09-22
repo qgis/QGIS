@@ -176,8 +176,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
-      mMinimumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).minScaleDenominator ) );
-      mMaximumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).maxScaleDenominator ) );
+      mMinimumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).minScaleDenominator, 'f' ) );
+      mMaximumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).maxScaleDenominator, 'f' ) );
       mVisibilityGroupBox->setChecked( settingList.at( 0 ).minScaleDenominator != -1 &&
                                        settingList.at( 0 ).maxScaleDenominator != -1 );
       if ( settingList.at( 0 ).sizeType == QgsDiagramSettings::MM )
@@ -257,7 +257,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       if ( lidr )
       {
         mDiagramSizeSpinBox->setEnabled( false );
-        mValueLineEdit->setText( QString::number( lidr->upperValue() ) );
+        mValueLineEdit->setText( QString::number( lidr->upperValue(), 'f' ) );
         mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
         mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->findData( lidr->classificationAttribute() ) );
       }

@@ -144,7 +144,7 @@ void QgsGCPListModel::updateModel()
         // interested in the residual in this direction
         if ( mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst ) )
         {
-          dX =  ( dst.x() - pixel.x() );
+          dX = ( dst.x() - pixel.x() );
           dY = -( dst.y() - pixel.y() );
         }
       }
