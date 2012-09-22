@@ -71,7 +71,7 @@ class QgsMapToolLabel: public QgsMapTool
     /**Finds out rotation point of current label position
       @param ignoreUpsideDown treat label as right-side-up
       @return true in case of success*/
-    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false );
+    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
 
     /**Creates label / feature / fixpoint rubber bands for the current label position*/
     void createRubberBands();

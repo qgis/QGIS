@@ -227,7 +227,8 @@ namespace pal
 
 
   bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText,
-                               double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle )
+                               double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
+                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset )
   {
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
@@ -249,6 +250,14 @@ namespace pal
     if ( fixedPos )
     {
       f->setFixedPosition( labelPosX, labelPosY );
+    }
+    if ( xQuadOffset != 0 || yQuadOffset != 0 )
+    {
+      f->setQuadOffset( xQuadOffset, yQuadOffset );
+    }
+    if ( xOffset != 0.0 || yOffset != 0.0 )
+    {
+      f->setPosOffset( xOffset, yOffset );
     }
     if ( fixedAngle )
     {
