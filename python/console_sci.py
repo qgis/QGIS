@@ -124,6 +124,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setFocus()
         
     def commandConsole(self, command):
+        if not self.is_cursor_on_last_line():
+            self.move_cursor_to_end()
         line, pos = self.getCurLine()
         selCmd= self.text(line).length()
         self.setSelection(line, 4, line, selCmd)
@@ -405,13 +407,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                             self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
                         else:
                             self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
-            elif e.key() == Qt.Key_Delete:
-                if self.hasSelectedText():
-                    self.check_selection()
-                    self.removeSelectedText()
-                elif self.is_cursor_on_last_line():
-                    self.SendScintilla(QsciScintilla.SCI_CLEAR)
-                event.accept()
             ## TODO: press event for auto-completion file directory
             #elif e.key() == Qt.Key_Tab:
                 #self.show_file_completion()
