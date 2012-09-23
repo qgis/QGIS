@@ -6254,12 +6254,14 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Console python</translation>
     </message>
     <message>
-        <source>To access Quantum GIS environment from this console
-use qgis.utils.iface object (instance of QgisInterface class).
+        <source>## To access Quantum GIS environment from this console
+## use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation>Per accedere all&apos;ambiente Quantum GIS da questa console
-usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface).</translation>
+        <translation>## Per accedere all&apos;ambiente Quantum GIS da questa console
+## usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface).
+
+</translation>
     </message>
 </context>
 <context>
