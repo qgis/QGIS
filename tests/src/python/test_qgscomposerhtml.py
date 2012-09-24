@@ -17,6 +17,7 @@ test_qgscomposerhtml.py
  ***************************************************************************/
 '''
 import unittest
+import sys
 import os
 from utilities import unitTestDataPath, getQgisTestApp
 from PyQt4.QtCore import QUrl, QString, qDebug
