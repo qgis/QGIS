@@ -162,6 +162,6 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
     double mAngle;
 };
 
-class QgsSymbolLayerV2Widget;
+class QgsSymbolLayerV2Widget;  // why does SIP fail, when this isn't here
 
 #endif

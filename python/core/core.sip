@@ -120,7 +120,7 @@
 %Include gps/qgsgpsdconnection.sip
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
-// %Include gps/qgsqtlocationconnection.sip
+%Include gps/qgsqtlocationconnection.sip
 
 %Include raster/qgscliptominmaxenhancement.sip
 %Include raster/qgsfreakoutshader.sip
@@ -161,7 +161,6 @@
 %Include renderer/qgssinglesymbolrenderer.sip
 %Include renderer/qgsuniquevaluerenderer.sip
 
-%Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgssymbologyv2conversion.sip
@@ -175,7 +174,8 @@
 %Include symbology-ng/qgssinglesymbolrendererv2.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrulebasedrendererv2.sip
-// %Include symbology-ng/qgsrendererv2registry.sip
+%Include symbology-ng/qgsrendererv2.sip
+%Include symbology-ng/qgsrendererv2registry.sip
 
 %Include symbology-ng/qgssymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2utils.sip

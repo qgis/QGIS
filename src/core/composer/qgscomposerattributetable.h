@@ -24,7 +24,7 @@ class QgsComposerMap;
 class QgsVectorLayer;
 
 /**Helper class for sorting, takes into account sorting column and ascending / descending*/
-class QgsComposerAttributeTableCompare
+class CORE_EXPORT QgsComposerAttributeTableCompare
 {
   public:
     QgsComposerAttributeTableCompare();

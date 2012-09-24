@@ -78,5 +78,12 @@ MACRO(ADD_FLEX_FILES_PREFIX _sources prefix )
       )
 
       SET(${_sources} ${${_sources}} ${_out} )
+
+      # Disable warnings
+      IF(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS /W0)
+      ELSE(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS -w)
+      ENDIF(MSVC)
     ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_FLEX_FILES_PREFIX)

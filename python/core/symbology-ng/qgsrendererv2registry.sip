@@ -1,8 +1,11 @@
+class QgsRendererV2Widget /External/;
+
 class QgsRendererV2AbstractMetadata
 {
 %TypeHeaderCode
 #include <qgsrendererv2registry.h>
 %End
+
   public:
     QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() );
     virtual ~QgsRendererV2AbstractMetadata();
@@ -31,31 +34,17 @@ class QgsRendererV2Metadata : QgsRendererV2AbstractMetadata
 #include <qgsrendererv2registry.h>
 %End
   public:
-
-    /** construct metadata */
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
-                           QgsRendererV2CreateFunc pfCreate,
-                           QIcon icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL );
-
-    QgsRendererV2Metadata( QString name,
-                           QString visibleName,
-                           QgsRendererV2CreateFunc pfCreate,
-                           QgsRendererV2CreateFromSldFunc pfCreateFromSld,
-                           QIcon icon = QIcon(),
-                           QgsRendererV2WidgetFunc pfWidget = NULL );
-    {}
-
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) /Factory/;
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType ) /Factory/;
 
-    QgsRendererV2CreateFunc createFunction() const;
-    QgsRendererV2WidgetFunc widgetFunction() const;
-    QgsFeatureRendererV2* (*)( QDomElement&, QGis::GeometryType geomType ) createFromSldFunction() const;
+    // QgsRendererV2CreateFunc createFunction() const;
+    // QgsRendererV2WidgetFunc widgetFunction() const;
+    // QgsFeatureRendererV2* (*)( QDomElement&, QGis::GeometryType geomType ) createFromSldFunction() const;
+    // void setWidgetFunction( QgsRendererV2WidgetFunc f );
 
-    void setWidgetFunction( QgsRendererV2WidgetFunc f );
+  private:
+    QgsRendererV2Metadata(); // pretend this is private
 };
 
 /**

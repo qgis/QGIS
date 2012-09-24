@@ -1,9 +1,5 @@
 class QgsSymbolLayerV2Widget /External/;
 
-typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
-typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
-typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
-
 class QgsSymbolLayerV2AbstractMetadata
 {
 %TypeHeaderCode

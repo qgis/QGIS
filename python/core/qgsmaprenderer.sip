@@ -6,7 +6,7 @@ class QgsLabelPosition
 #include <qgsmaprenderer.h>
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down );
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false );
     QgsLabelPosition();
     int featureId;
     double rotation;
@@ -58,13 +58,13 @@ class QgsLabelingEngineInterface
     virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
     //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() = 0;
+    virtual QgsLabelingEngineInterface* clone() = 0 /Factory/;
 };
 
 
-/**
- * \class QgsMapRenderer
- * \brief Class for rendering map layer set
+
+/** \ingroup core
+ * A non GUI class for rendering a map layer set onto a QPainter.
  */
 
 class QgsMapRenderer : QObject
@@ -245,5 +245,5 @@ class QgsMapRenderer : QObject
 
     /**Creates an overlay object position manager subclass according to the current settings
     @note this method was added in version 1.1*/
-    QgsOverlayObjectPositionManager* overlayManagerFromSettings();
+    QgsOverlayObjectPositionManager* overlayManagerFromSettings() /Factory/;
 };

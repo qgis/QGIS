@@ -63,20 +63,19 @@ enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
-//! Enum for Entities involved in a style
-/*!
-    The enumarator is used for identifying the entity being operated on when generic
-    database functions are being run.
-    \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
- */
-enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
-
 class CORE_EXPORT QgsStyleV2
 {
   public:
-
     QgsStyleV2();
     ~QgsStyleV2();
+
+    //! Enum for Entities involved in a style
+    /*!
+        The enumerator is used for identifying the entity being operated on when generic
+        database functions are being run.
+        \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
+     */
+    enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
     //! add color ramp to style. takes ramp's ownership
     /*!

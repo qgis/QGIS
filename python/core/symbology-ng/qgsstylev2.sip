@@ -9,6 +9,14 @@ class QgsStyleV2
     QgsStyleV2();
     ~QgsStyleV2();
 
+    //! Enum for Entities involved in a style
+    /*!
+        The enumerator is used for identifying the entity being operated on when generic
+        database functions are being run.
+        \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
+     */
+    enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+
     //! add color ramp to style. takes ramp's ownership
     /*!
      *  \note Adding a color ramp with the name of existing one replaces it.
@@ -85,7 +93,7 @@ class QgsStyleV2
      *  \param tags is the list of the tags that are to be applied as QStringList
      *  \return returns the success state of the operation
      */
-    bool tagSymbol( int type, QString symbol, QStringList tags );
+    bool tagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
     //! detags the symbol with the given list
     /*!
@@ -95,7 +103,7 @@ class QgsStyleV2
      *  \param tags is the list of tags that are to be removed as QStringList
      *  \return returns the success state of the operation
      */
-    bool detagSymbol( int type, QString symbol, QStringList tags );
+    bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
     //! remove symbol from style (and delete it)
     bool removeSymbol( QString name );
@@ -135,7 +143,7 @@ class QgsStyleV2
      *  \param groupid is id of the group to which the symbols belong to, as int
      *  \return A QStringList of the symbol or colorramp names for the given group id
      */
-    QStringList symbolsOfGroup( int type, int groupid );
+    QStringList symbolsOfGroup( StyleEntity type, int groupid );
 
     //! returns the symbol names with which have the given tag
     /*!
@@ -143,7 +151,7 @@ class QgsStyleV2
      *  \param tagid is id of the tag which has been applied over the symbol as int
      *  \return A QStringList of the symbol or colorramp names for the given tag id
      */
-    QStringList symbolsWithTag( int type, int tagid );
+    QStringList symbolsWithTag( StyleEntity type, int tagid );
 
     //! applies the specifed group to the symbol or colorramp specified by StyleEntity
     /*!
@@ -152,7 +160,7 @@ class QgsStyleV2
      *  \param groupid is the id of the group to which the entity is assigned
      *  \return returns the success state as bool
      */
-    bool group( int type, QString name, int groupid );
+    bool group( StyleEntity type, QString name, int groupid );
 
     //! rename the given entity with the specified id
     /*!
@@ -160,14 +168,14 @@ class QgsStyleV2
      *  \param id is the DB id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
-    void rename( int type, int id, QString newName );
+    void rename( StyleEntity type, int id, QString newName );
 
     //! remove the specified entity from the db
     /*!
      *  \param type is any of the style entites. Refer enum StyleEntity.
      *  \param id is the DB id of the entity to be removed
      */
-    void remove( int type, int id );
+    void remove( StyleEntity type, int id );
 
     //! add the symbol to the DB with the tags
     /*!
@@ -218,7 +226,7 @@ class QgsStyleV2
      *  \param symbol is the name of the symbol or color ramp
      *  \return A QStringList of the tags that have been applied to that symbol/colorramp
      */
-    QStringList tagsOfSymbol( int type, QString symbol );
+    QStringList tagsOfSymbol( StyleEntity type, QString symbol );
 
     //! returns the smart groups map with id as key and name as value
     QMap<int, QString> smartgroupsListMap();
@@ -234,7 +242,7 @@ class QgsStyleV2
     QString smartgroupOperator( int id );
 
     //! returns the symbols for the smartgroup
-    QStringList symbolsOfSmartgroup( int type, int id );
+    QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
     //! Exports the style as a XML file
     bool exportXML( QString filename );
@@ -265,5 +273,5 @@ class QgsStyleV2
      *  \param name is the name of an existing symbol or a color ramp
      *  \return Success state of the update operation
      */
-    bool updateSymbol( int type, QString name );
+    bool updateSymbol( StyleEntity type, QString name );
 };

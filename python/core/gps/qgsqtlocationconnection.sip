@@ -1,3 +1,6 @@
+%Feature MOBILITY_LOCATION
+
+%If (MOBILITY_LOCATION)
 class QgsQtLocationConnection: QgsGPSConnection
 {
 %TypeHeaderCode
@@ -23,3 +26,4 @@ class QgsQtLocationConnection: QgsGPSConnection
     /**Called when the number of satellites in use is updated.*/
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
 };
+%End

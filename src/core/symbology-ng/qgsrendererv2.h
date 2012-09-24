@@ -199,5 +199,6 @@ class CORE_EXPORT QgsFeatureRendererV2
     int mCurrentVertexMarkerSize;
 };
 
+class QgsRendererV2Widget;  // why does SIP fail, when this isn't here
 
 #endif // QGSRENDERERV2_H
