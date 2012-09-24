@@ -39,8 +39,6 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     //! populate column combo
     void populateColumns();
 
-    void populateColorRamps();
-
     void addCategory( const QgsRendererCategoryV2& cat );
 
     //! return row index for the currently selected category (-1 if on no selection)

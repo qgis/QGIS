@@ -1,4 +1,4 @@
-class QgsRuleBasedRendererV2Model : public QAbstractItemModel
+class QgsRuleBasedRendererV2Model : QAbstractItemModel
 {
 %TypeHeaderCode
 #include <qgsrulebasedrendererv2widget.h>
@@ -39,9 +39,6 @@ class QgsRuleBasedRendererV2Model : public QAbstractItemModel
 
     void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
-
-  protected:
-    QgsRuleBasedRendererV2* mR;
 };
 
 class QgsRuleBasedRendererV2Widget : QgsRendererV2Widget

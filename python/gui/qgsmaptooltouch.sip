@@ -1,3 +1,4 @@
+%If (HAVE_TOUCH)
 class QgsMapToolTouch : QgsMapTool
 {
 %TypeHeaderCode
@@ -24,3 +25,4 @@ class QgsMapToolTouch : QgsMapTool
 
     virtual bool isTransient();
 };
+%End

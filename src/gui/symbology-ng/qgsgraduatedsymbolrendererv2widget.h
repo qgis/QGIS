@@ -62,8 +62,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     //! populate column combos in categorized and graduated page
     void populateColumns();
 
-    void populateColorRamps();
-
     //! populate ranges of graduated symbol renderer
     void populateRanges();
 

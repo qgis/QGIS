@@ -1,7 +1,3 @@
-%TypeHeaderCode
-#include <qgsrendererv2widget.h>
-%End
-
 class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 {
 %TypeHeaderCode
@@ -42,8 +38,6 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     //! populate column combos in categorized and graduated page
     void populateColumns();
-
-    void populateColorRamps();
 
     //! populate ranges of graduated symbol renderer
     void populateRanges();

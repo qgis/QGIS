@@ -5,7 +5,7 @@ class QgsSymbolLevelsV2Dialog : QDialog
 %End
 
   public:
-    QgsSymbolLevelsV2Dialog( QList< QPair<QString, QgsSymbolV2*> > list, bool usingSymbolLevels, QWidget* parent = NULL );
+    // QgsSymbolLevelsV2Dialog( QList< QPair<QString, QgsSymbolV2*> > list, bool usingSymbolLevels, QWidget* parent = NULL );
 
     bool usingLevels() const;
 
@@ -20,4 +20,7 @@ class QgsSymbolLevelsV2Dialog : QDialog
   protected:
     void populateTable();
     void setDefaultLevels();
+
+  private:
+    QgsSymbolLevelsV2Dialog();
 };
