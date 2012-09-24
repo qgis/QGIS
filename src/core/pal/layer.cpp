@@ -263,6 +263,11 @@ namespace pal
     {
       f->setFixedAngle( angle );
     }
+    // use layer-level defined rotation, but not if position fixed
+    if ( !fixedPos && angle != 0.0 )
+    {
+      f->setFixedAngle( angle );
+    }
 
     bool first_feat = true;
 
