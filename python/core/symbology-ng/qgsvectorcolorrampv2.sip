@@ -26,7 +26,7 @@ class QgsVectorColorRampV2
 
 };
 
-class QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
+class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 {
 %TypeHeaderCode
 #include <qgsvectorcolorrampv2.h>
