@@ -1,3 +1,7 @@
+typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
+typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
+typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
+
 class QgsSymbolLayerV2AbstractMetadata
 {
 %TypeHeaderCode
@@ -21,9 +25,6 @@ class QgsSymbolLayerV2AbstractMetadata
     virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) /Factory/;
 };
 
-typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
-typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
-typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 
 /**
  Convenience metadata class that uses static functions to create symbol layer and its widget.
