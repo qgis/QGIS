@@ -977,7 +977,6 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
       composition->setAtlasMap( 0 );
     }
   }
-  // TODO: warn
 }
 
 void QgsComposerMapWidget::on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index )

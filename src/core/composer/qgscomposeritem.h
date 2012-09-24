@@ -53,8 +53,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       ComposerTable,
       ComposerAttributeTable,
       ComposerTextTable,
-      ComposerFrame,
-      ComposerAtlasMap
+      ComposerFrame
     };
 
     /**Describes the action (move or resize in different directon) to be done during mouse move*/

@@ -49,6 +49,11 @@ class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 
+/** \ingroup MapComposer
+ * Class used to render an Atlas, iterating over geometry features.
+ * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
+ * This class is used for printing, exporting to PDF and images.
+ * */
 class QgsAtlasRendering
 {
  public:
@@ -62,6 +67,7 @@ class QgsAtlasRendering
   QString currentFilename() const;
 
  private:
+  // Use the PImpl idiom for private members.
   struct QgsAtlasRenderingImpl;
   std::auto_ptr<QgsAtlasRenderingImpl> impl;
 };

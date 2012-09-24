@@ -46,6 +46,9 @@
 #include <QSettings>
 #include <QDir>
 
+/**
+ * Private members of the QgsAtlasRendering class
+ */
 struct QgsAtlasRendering::QgsAtlasRenderingImpl
 {
   QgsComposition* composition;
@@ -139,7 +142,6 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
 	throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
       }
 
-      // FIXME resolve labels
       impl->currentFilename = filenameRes.toString();
     }
 
@@ -179,8 +181,6 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
       // auto scale
       
       double geom_ratio = geom_rect.width() / geom_rect.height();
-      //      QRectF map_rect = mAtlasMap->boundingRect();
-      //      double map_ratio = map_rect.width() / map_rect.height();
       double map_ratio = impl->origExtent.width() / impl->origExtent.height();
       
       // geometry height is too big
