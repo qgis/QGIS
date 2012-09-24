@@ -42,6 +42,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsellipsesymbollayerv2.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
+  symbology-ng/qgscolorbrewerpalette.cpp
   
   diagram/qgsdiagram.cpp
   diagram/qgspiediagram.cpp
@@ -403,6 +404,7 @@ SET(QGIS_CORE_HDRS
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
+  raster/qgsrasterresamplefilter.h
   raster/qgscliptominmaxenhancement.h
   raster/qgscolorrampshader.h
   raster/qgscolorrampshader.h

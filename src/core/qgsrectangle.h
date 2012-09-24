@@ -37,7 +37,7 @@ class CORE_EXPORT QgsRectangle
     //! Constructor
     QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 );
+    QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
     //@note added in 2.0
     QgsRectangle( const QRectF & qRectF );
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsRectangle
     QString toString( bool automaticPrecision = false ) const;
     //! overloaded toString that allows precision of numbers to be set
     QString toString( int thePrecision ) const;
-    //! returns rectangle s a polygon
+    //! returns rectangle as a polygon
     QString asPolygon() const;
     /*! Comparison operator
       @return True if rectangles are equal

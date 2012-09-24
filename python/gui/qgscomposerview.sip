@@ -18,13 +18,14 @@ class QgsComposerView: QGraphicsView
     sipClass = NULL;
 %End
 
-
   public:
 
     /**Current tool*/
     enum Tool
     {
       Select = 0,      // Select/Move item
+      AddArrow,         //add arrow
+      AddHtml,
       AddMap,          // add new map
       AddLegend, // add vector legend
       AddLabel,        // add label
@@ -33,6 +34,7 @@ class QgsComposerView: QGraphicsView
       AddRectangle,
       AddEllipse,
       AddTriangle,
+      AddTable, //add attribute table
       MoveItemContent //move content of item (e.g. content of map)
     };
 
@@ -62,12 +64,17 @@ class QgsComposerView: QGraphicsView
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
     void mouseMoveEvent( QMouseEvent* );
+    void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
     void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
-    
+
+    void paintEvent( QPaintEvent* event );
+
+    void hideEvent( QHideEvent* e );
+    void showEvent( QShowEvent* e );
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/

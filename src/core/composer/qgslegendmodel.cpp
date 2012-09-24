@@ -119,6 +119,9 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
 
 QStandardItem* QgsLegendModel::addGroup( QString text, int position )
 {
+  if( text.isNull() )
+    text = tr( "Group" );
+
   QgsComposerGroupItem* groupItem = new QgsComposerGroupItem( text );
   if ( position == -1 )
   {

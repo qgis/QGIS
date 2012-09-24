@@ -3,6 +3,7 @@ class QgsMessageLog
 %TypeHeaderCode
 #include <qgsmessagelog.h>
 %End
+
   public:
     static QgsMessageLog *instance();
 
@@ -14,4 +15,24 @@ class QgsMessageLog
 
   private:
     QgsMessageLog();
+};
+
+
+/**
+\brief Default implementation of message logging interface
+
+This class outputs log messages to the standard output. Therefore it might
+be the right choice for apps without GUI.
+*/
+class QgsMessageLogConsole : QObject
+{
+%TypeHeaderCode
+#include <qgsmessagelog.h>
+%End
+
+  public:
+    QgsMessageLogConsole();
+
+  public slots:
+    void logMessage( QString message, QString tag, int level );
 };

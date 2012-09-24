@@ -23,7 +23,7 @@ class QGis
 %TypeHeaderCode
 #include <qgis.h>
 %End
-  
+
   public:
     // Version constants
     //
@@ -91,6 +91,16 @@ class QGis
       DegreesDecimalMinutes = 2,  // was 5
     };
 
+    //! Provides the canonical name of the type value
+    // Added in version 2.0
+    static QString toLiteral( QGis::UnitType unit );
+    //! Converts from the canonical name to the type value
+    // Added in version 2.0
+    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    //! Provides translated version of the type value
+    // Added in version 2.0
+    static QString tr( QGis::UnitType unit );
+
     //! User defined event types
     enum UserEvent
     {
@@ -116,7 +126,7 @@ const QString GEOWKT;
  * @note deprecated in 1.8 due to violation of coding conventions (globals
  *  should be in all caps).
  */
-const QString GEOWkt /Deprecated/;
+const QString GEOWkt; /* /Deprecated/; */
 
 const QString PROJECT_SCALES;
 
@@ -139,6 +149,10 @@ const int LAT_PREFIX_LEN;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID;
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+// Added in version 2.0
+const QString GEO_NONE;
 
 //
 // Constants for point symbols

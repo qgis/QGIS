@@ -192,6 +192,13 @@ class QgsVectorLayer : QgsMapLayer
     /** Sets the renderer. If a renderer is already present, it is deleted */
     void setRenderer( QgsRenderer * r /Transfer/ );
 
+    /** Sets diagram rendering object (takes ownership) */
+    void setDiagramRenderer( QgsDiagramRendererV2* r );
+    const QgsDiagramRendererV2* diagramRenderer() const;
+
+    void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
+    const QgsDiagramLayerSettings *diagramLayerSettings() const;
+
     /** Return renderer V2.
      * @note added in 1.4 */
     QgsFeatureRendererV2* rendererV2();
@@ -726,6 +733,9 @@ class QgsVectorLayer : QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+  protected:
+    /** Set the extent */
+    void setExtent( const QgsRectangle &rect );
 
   private:                       // Private methods
 

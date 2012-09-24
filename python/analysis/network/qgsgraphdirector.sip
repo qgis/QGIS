@@ -40,9 +40,9 @@ class QgsGraphDirector : QObject
      *
      * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
-    virtual void makeGraph( QgsGraphBuilderInterface* builder,
-                            const QVector< QgsPoint >& additionalPoints,
-                            QVector< QgsPoint>& tiedPoints /Out/ );
+    virtual void makeGraph( QgsGraphBuilderInterface *builder,
+                            const QVector< QgsPoint > &additionalPoints,
+                            QVector< QgsPoint> &tiedPoints /Out/ );
     
     void addProperter( QgsArcProperter* prop /Transfer/ ) ;
     

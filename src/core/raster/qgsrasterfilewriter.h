@@ -50,7 +50,6 @@ class CORE_EXPORT QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    //WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
     WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 

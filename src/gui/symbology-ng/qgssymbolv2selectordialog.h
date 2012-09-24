@@ -47,14 +47,14 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void keyPressEvent( QKeyEvent * event );
 
     void loadSymbol();
+    //! @note not available in python bindings
     void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
-
-    void populateLayerTypes( QgsSymbolV2* symbol );
 
     void updateUi();
 
     void updateLockButton();
 
+    //! @note not available in python bindings
     SymbolLayerItem* currentLayerItem();
     QgsSymbolLayerV2* currentLayer();
 

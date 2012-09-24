@@ -7,7 +7,12 @@ class QgsRasterProjector : QgsRasterInterface
 #include <qgsrasterprojector.h>
 #include <qgscoordinatereferencesystem.h>
 %End
+
   public:
+    /** \brief QgsRasterProjector implements approximate projection support for
+     * it calculates grid of points in source CRS for target CRS + extent
+     * which are used to calculate affine transformation matrices.
+     */
     QgsRasterProjector(
       QgsCoordinateReferenceSystem theSrcCRS,
       QgsCoordinateReferenceSystem theDestCRS,
@@ -24,34 +29,42 @@ class QgsRasterProjector : QgsRasterInterface
     );
     QgsRasterProjector();
 
+    /** \brief The destructor */
     ~QgsRasterProjector();
 
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface *clone() const /Factory/;
 
     int bandCount() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    int dataType( int bandNo ) const;
 
+    /** \brief set source and destination CRS */
     void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS );
 
+    /** \brief Get source CRS */
     QgsCoordinateReferenceSystem srcCrs() const;
 
+    /** \brief Get destination CRS */
     QgsCoordinateReferenceSystem destCrs() const;
 
+    /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
 
+    /** get source extent */
     QgsRectangle srcExtent();
 
+    /** get/set source width/height */
     int srcRows();
     int srcCols();
     void setSrcRows( int theRows );
     void setSrcCols( int theCols );
 
+    /** \brief Get source row and column indexes for current source extent and resolution */
     void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
 
     int dstRows() const;
     int dstCols() const;
 
-    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+    void *readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 };
 

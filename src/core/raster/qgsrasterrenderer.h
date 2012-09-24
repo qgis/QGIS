@@ -49,7 +49,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+    virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;

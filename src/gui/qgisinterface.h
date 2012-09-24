@@ -74,7 +74,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsLegendInterface* legendInterface() = 0;
 
-
   public slots: // TODO: do these functions really need to be slots?
 
     //! Zoom to full extent of map layers
@@ -150,7 +149,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar * addToolBar( QString name ) = 0;
+    virtual QToolBar *addToolBar( QString name ) = 0;
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
@@ -220,7 +219,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void removePluginWebMenu( QString name, QAction* action ) = 0;
 
-
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
 
@@ -272,6 +270,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param url URL to open
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
+     * @deprecated
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
@@ -309,7 +308,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *layerToolBar() = 0;
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
-    virtual QToolBar *advancedDigitizeToolBar() = 0;  // added in v1.5
+    virtual QToolBar *advancedDigitizeToolBar() = 0; // added in v1.5
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
@@ -509,20 +508,22 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Open feature form
     // returns true when dialog was accepted
     // @added in 1.6
-    virtual bool openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
     void currentLayerChanged( QgsMapLayer * layer );
+
     /**This signal is emitted when a new composer instance has been created
-      * @note added in 1.4
-      */
+     * @note added in 1.4
+     */
     void composerAdded( QgsComposerView* v );
+
     /**This signal is emitted before a new composer instance is going to be removed
-      *  @note added in 1.4
-      */
+     * @note added in 1.4
+     */
     void composerWillBeRemoved( QgsComposerView* v );
     /**This signal is emitted when the initialization is complete
       * @note added in version 1.6
@@ -548,7 +549,6 @@ class GUI_EXPORT QgisInterface : public QObject
         Added in v1.6
       */
     void newProjectCreated();
-
 };
 
 #ifdef _MSC_VER

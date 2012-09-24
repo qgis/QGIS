@@ -149,9 +149,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
   protected:
-
-    void loadSvg();
-
     QString mPath;
 
     //param(fill), param(outline), param(outline-width) are going

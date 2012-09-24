@@ -167,9 +167,6 @@ class CORE_EXPORT QgsPoint
     //! Inequality operator
     bool operator!=( const QgsPoint &other ) const;
 
-    //! Assignment
-    QgsPoint & operator=( const QgsPoint &other );
-
     //! Multiply x and y by the given value
     void multiply( const double& scalar );
 
@@ -178,6 +175,9 @@ class CORE_EXPORT QgsPoint
     //! 1 if point is on open ray a, 2 if point is within line segment,
     //! 3 if point is on open ray b.
     int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
+
+    //! Assignment
+    QgsPoint & operator=( const QgsPoint &other );
 
     QgsVector operator-( QgsPoint p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
     QgsPoint &operator+=( const QgsVector &v ) { *this = *this + v; return *this; }

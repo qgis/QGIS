@@ -38,7 +38,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
 
-    QString text() {return mText;}
+    QString text() { return mText; }
     void setText( const QString& text );
 
     /**Returns the text as it appears on screen (with replaced data field)

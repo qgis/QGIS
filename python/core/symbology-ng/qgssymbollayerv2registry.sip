@@ -1,0 +1,96 @@
+class QgsSymbolLayerV2AbstractMetadata
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2registry.h>
+%End
+
+  public:
+    QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type );
+
+    virtual ~QgsSymbolLayerV2AbstractMetadata();
+
+    QString name() const;
+    QString visibleName() const;
+    QgsSymbolV2::SymbolType type() const;
+
+    // create a symbol layer of this type given the map of properties.
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0 /Factory/;
+    // create widget for symbol layer of this type. Can return NULL if there's no GUI
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) /Factory/;
+    // create a symbol layer of this type given the map of properties.
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) /Factory/;
+};
+
+typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
+typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
+typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
+
+/**
+ Convenience metadata class that uses static functions to create symbol layer and its widget.
+ */
+class QgsSymbolLayerV2Metadata : QgsSymbolLayerV2AbstractMetadata
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2registry.h>
+%End
+
+  public:
+    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+                              QgsSymbolV2::SymbolType type,
+                              QgsSymbolLayerV2CreateFunc pfCreate,
+                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL );
+
+    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+                              QgsSymbolV2::SymbolType type,
+                              QgsSymbolLayerV2CreateFunc pfCreate,
+                              QgsSymbolLayerV2CreateFromSldFunc pfCreateFromSld,
+                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL );
+
+    QgsSymbolLayerV2CreateFunc createFunction() const;
+    QgsSymbolLayerV2WidgetFunc widgetFunction() const;
+    QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const;
+
+    void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f );
+
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) /Factory/;
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) /Factory/;
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) /Factory/;
+};
+
+/**
+ Registry of available symbol layer classes.
+ Implemented as a singleton.
+ */
+class QgsSymbolLayerV2Registry
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2registry.h>
+%End
+
+  public:
+
+    //! return the single instance of this class (instantiate it if not exists)
+    static QgsSymbolLayerV2Registry* instance();
+
+    //! return metadata for specified symbol layer. Returns NULL if not found
+    QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( QString name ) const;
+
+    //! register a new symbol layer type. Takes ownership of the metadata instance.
+    bool addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata );
+
+    //! create a new instance of symbol layer given symbol layer name and properties
+    QgsSymbolLayerV2* createSymbolLayer( QString name, const QgsStringMap& properties = QgsStringMap() ) const /Factory/;
+
+    //! create a new instance of symbol layer given symbol layer name and SLD
+    QgsSymbolLayerV2* createSymbolLayerFromSld( QString name, QDomElement &element ) const;
+
+    //! return a list of available symbol layers for a specified symbol type
+    QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );
+
+    //! create a new instance of symbol layer for specified symbol type with default settings
+    static QgsSymbolLayerV2* defaultSymbolLayer( QgsSymbolV2::SymbolType type ) /Factory/;
+
+  protected:
+    QgsSymbolLayerV2Registry();
+    ~QgsSymbolLayerV2Registry();
+};

@@ -1002,15 +1002,15 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
   coordElem.setAttribute( "cs", "," );
   coordElem.setAttribute( "ts", " " );
 
+#if 0
   //precision 4 for meters / feet, precision 8 for degrees
   int precision = 6;
-  /*
   if ( mSourceCRS.mapUnits() == QGis::Meters
        || mSourceCRS.mapUnits() == QGis::Feet )
   {
     precision = 4;
   }
-  */
+#endif
 
   QString coordString;
   QVector<QgsPoint>::const_iterator pointIt = points.constBegin();

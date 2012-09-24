@@ -63,6 +63,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void refresh();
 
     // Create vector of children
+    // @note not available in python bindings
     virtual QVector<QgsDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
@@ -109,6 +110,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
+    // @note not available in python bindings
     static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
 
     // members
@@ -116,6 +118,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     Type type() const { return mType; }
     QgsDataItem* parent() const { return mParent; }
     void setParent( QgsDataItem* parent ) { mParent = parent; }
+    // @note not available in python bindings
     QVector<QgsDataItem*> children() const { return mChildren; }
     QIcon icon() const { return mIcon; }
     QString name() const { return mName; }
@@ -236,6 +239,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDirectoryItem();
 
+    //! @note not available via python bindings
     QVector<QgsDataItem*> createChildren();
 
     virtual bool equal( const QgsDataItem *other );
@@ -243,6 +247,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QWidget * paramWidget();
 
     /* static QVector<QgsDataProvider*> mProviders; */
+    //! @note not available via python bindings
     static QVector<QLibrary*> mLibraries;
 };
 
@@ -286,6 +291,7 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
     QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
     ~QgsFavouritesItem();
 
+    //! @note not available in python bindings
     QVector<QgsDataItem*> createChildren();
 
     static const QIcon &iconFavourites();
@@ -304,9 +310,11 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QgsZipItem( QgsDataItem* parent, QString name, QString path );
     ~QgsZipItem();
 
+    //! @note not available in python bindings
     QVector<QgsDataItem*> createChildren();
     const QStringList & getZipFileList();
 
+    //! @note not avialable via python bindings
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 

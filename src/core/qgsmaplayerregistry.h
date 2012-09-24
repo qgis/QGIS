@@ -34,20 +34,18 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     Q_OBJECT
 
   public:
-
-//! Returns the instance pointer, creating the object on the first call
+    //! Returns the instance pointer, creating the object on the first call
     static QgsMapLayerRegistry * instance();
-    /*! Return the number of registered layers.
-     *
-     * */
+
+    //! Return the number of registered layers.
     int count();
 
     ~QgsMapLayerRegistry();
 
     //! Retrieve a pointer to a loaded layer by id
-    QgsMapLayer * mapLayer( QString theLayerId );
+    QgsMapLayer *mapLayer( QString theLayerId );
 
-    //! Retrieve the mapLayers collection (mainly intended for use by projectio)
+    //! Retrieve the mapLayers collection (mainly intended for use by projection)
     QMap<QString, QgsMapLayer*> & mapLayers();
 
     /** Add a layer to the map of loaded layers
@@ -123,11 +121,10 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void clearAllLayerCaches();
 
     /**Reload all provider data caches (currently used for WFS and WMS providers)
-      @note: this method was added in QGIS 1.6*/
+    @note: this method was added in QGIS 1.6*/
     void reloadAllLayers();
 
   signals:
-
     /** Emitted when one or more layers are removed from the registry
        @note intended to replace layerWillBeRemoved in QGIS 1.8
     */
@@ -143,6 +140,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
        @note intended to replace layerWasAdded in QGIS 1.8
     */
     void layersAdded( QList<QgsMapLayer *> theMapLayers );
+
     /** emitted when a layer is added to the registry
        connected to main map canvas and overview map canvas addLayer()
        @note we should deprecate this at some stage
@@ -160,8 +158,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void removedAll();
 
   protected:
-
-//! protected constructor
+    //! protected constructor
     QgsMapLayerRegistry( QObject * parent = 0 );
 
   private:

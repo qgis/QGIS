@@ -807,7 +807,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void transformPoint( double& x, double& y,
                          const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
 
-    void transformPoints( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, QgsRenderContext &renderContext );
+    void transformPoints( QVector<double>& x, QVector<double>& y, QVector<double>& z, QgsRenderContext &renderContext );
 
     /** Draw the linestring as given in the WKB format. Returns a pointer
      * to the byte after the end of the line string binary data stream (WKB).

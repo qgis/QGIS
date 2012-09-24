@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMarkerCatalogue : public QObject
 
     /** Returns a pixmap given a file name of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
-    static bool svgMarker( QPainter * thepPainter, QString name, double size );
+    static bool svgMarker( QPainter *thepPainter, QString name, double size );
 
   public slots:
     void refreshList();

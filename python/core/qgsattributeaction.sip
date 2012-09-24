@@ -12,6 +12,7 @@ class QgsAction
       Mac,
       Windows,
       Unix,
+      OpenUrl,
     };
 
     QgsAction( ActionType type, QString name, QString action, bool capture );
@@ -49,10 +50,11 @@ class QgsAttributeAction
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
-    //! Does the action using the given values. defaultValueIndex is an
-    // index into values which indicates which value in the values vector
-    // is to be used if the action has a default placeholder.
-    // @note added to python API in 1.6 (without executePython parameter)
+    /*! Does the action using the given values. defaultValueIndex is an
+     *  index into values which indicates which value in the values vector
+     *  is to be used if the action has a default placeholder.
+     *  @note added to python API in 1.6 (without executePython parameter)
+     *  @deprecated
     void doAction( int index,
                    const QMap<int, QVariant> &values,
                    int defaultValueIndex = 0 );
@@ -60,10 +62,13 @@ class QgsAttributeAction
     //! Removes all actions
     void clearActions();
 
-    //! Expands the given action, replacing all %'s with the value as given.
-    QString expandAction( QString action,
-                          const QMap<int, QVariant> &values,
-                          uint defaultValueIndex );
+    //! Return the layer
+    QgsVectorLayer *layer();
+
+    /*! Expands the given action, replacing all %'s with the value as
+     *  given.
+     */
+    QString expandAction( QString action, const QMap<int, QVariant> &values, uint defaultValueIndex );
 
     //! Writes the actions out in XML format
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
@@ -74,4 +79,8 @@ class QgsAttributeAction
     int size() const;
     QgsAction &at( int idx );
     QgsAction &operator[]( int idx );
+
+    //! Whether the action is the default action
+    int defaultAction() const;
+    void setDefaultAction( int actionNumber );
 };

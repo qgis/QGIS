@@ -15,7 +15,7 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
      * default constructor
      */
     QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
-    
+
     ~QgsGraphBuilder();
 
     /*
@@ -30,4 +30,3 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
      */
     QgsGraph* graph() /Factory/;
 };
-

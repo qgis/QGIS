@@ -9,7 +9,7 @@ class QgsScaleComboBox : QComboBox
 %End
 
   public:
-    QgsScaleComboBox(QWidget * parent = 0);
+    QgsScaleComboBox( QWidget* parent = 0 );
     ~QgsScaleComboBox();
 
     //! Function to read the selected scale as text
@@ -24,8 +24,8 @@ class QgsScaleComboBox : QComboBox
     //! Function to set the selected scale from double
     // @note added in 2.0
     void setScale( double scale );
- 
-   //! Helper function to convert a double to scale string
+
+    //! Helper function to convert a double to scale string
     // Performs rounding, so an exact representation is not to
     // be expected.
     // @note added in 2.0
@@ -34,7 +34,15 @@ class QgsScaleComboBox : QComboBox
     // @note added in 2.0
     static double toDouble( QString scaleString, bool *ok = NULL );
 
+  signals:
+    //! Signal is emitted when *user* has finished editing/selecting a new scale.
+    // @note added in 2.0
+    void scaleChanged();
+
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
+
+  protected:
+    void showPopup();
 };
 

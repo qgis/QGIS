@@ -145,7 +145,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * can easily present the user with 'natural language' representation
      * of the projection and ellipsoid by looking them up in the srs.bs sqlite
      * database. Also having the ellpse and proj elements stripped out
-     * is hepful to speed up globbing queries (see below).
+     * is helpful to speed up globbing queries (see below).
      *
      * We try to match the proj string to and srsid using the following logic:
      *
@@ -251,9 +251,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Q_DECL_DEPRECATED bool equals( QString theProj4String );
 
     /*! Restores state from the given Dom node.
-    * @param theNode The node from which state will be restored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node from which state will be restored
+     * @return bool True on success, False on failure
+     */
     bool readXML( QDomNode & theNode );
     /*! Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
@@ -277,10 +277,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Sets custom function to force valid CRS
      *  QGIS uses implementation in QgisGui::customSrsValidation
+     * @note not available in python bindings
      */
     static void setCustomSrsValidation( CUSTOM_CRS_VALIDATION f );
 
     /** Gets custom function
+     * @note not available in python bindings
      */
     static CUSTOM_CRS_VALIDATION customSrsValidation();
 

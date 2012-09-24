@@ -19,29 +19,29 @@ class QgsMessageOutput
 %End
 
   public:
-    
+
     //! message can be in plain text or in html format
     enum MessageType { MessageText, MessageHtml };
-    
+
     //! virtual destructor
     virtual ~QgsMessageOutput();
 
-    //! set message, it won't be displayed until 
-    virtual void setMessage(const QString& message, MessageType msgType) = 0;
-    
+    //! set message, it won't be displayed until
+    virtual void setMessage( const QString& message, MessageType msgType ) = 0;
+
     //! message to be appended to the current text
-    virtual void appendMessage(const QString& message) = 0;
-    
+    virtual void appendMessage( const QString& message ) = 0;
+
     //! set title for the messages
-    virtual void setTitle(const QString& title) = 0;
-    
+    virtual void setTitle( const QString& title ) = 0;
+
     //! display the message to the user
-    virtual void showMessage(bool blocking = true) = 0;
-    
+    virtual void showMessage( bool blocking = true ) = 0;
+
     //! sets function that will be used to create message output
     // TODO: implementation where python class could be passed
     // static void setMessageOutputCreator(MESSAGE_OUTPUT_CREATOR f);
-    
+
     //! function that returns new class derived from QgsMessageOutput
     //! (don't forget to delete it then)
     static QgsMessageOutput* createMessageOutput();
@@ -51,7 +51,7 @@ class QgsMessageOutput
 
 /**
 \brief Default implementation of message output interface
-           
+
 This class outputs messages to the standard output. Therefore it might
 be the right choice for apps without GUI.
 */
@@ -62,20 +62,20 @@ class QgsMessageOutputConsole : QObject, QgsMessageOutput
 %End
 
   public:
-    
+
     QgsMessageOutputConsole();
-    
-    virtual void setMessage(const QString& message, MessageType msgType);
-    
-    virtual void appendMessage(const QString& message);
-    
-    virtual void setTitle(const QString& title);
-    
+
+    virtual void setMessage( const QString& message, MessageType msgType );
+
+    virtual void appendMessage( const QString& message );
+
+    virtual void setTitle( const QString& title );
+
     //! sends the message to the standard output
-    virtual void showMessage(bool blocking = true);
-    
+    virtual void showMessage( bool blocking = true );
+
   signals:
-    
+
     //! signals that object will be destroyed and shouldn't be used anymore
     void destroyed();
 

@@ -157,7 +157,7 @@ class ANALYSIS_EXPORT QgsGraph
     const QgsGraphVertex& vertex( int idx ) const;
 
     /**
-      * retrun edge count
+      * return edge count
       */
     int arcCount() const;
 
