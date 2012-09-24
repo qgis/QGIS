@@ -132,6 +132,7 @@ void QgsRasterProjector::calc()
 {
   QgsDebugMsg( "Entered" );
   mCPMatrix.clear();
+  mCPLegalMatrix.clear();
   delete[] pHelperTop;
   pHelperTop = 0;
   delete[] pHelperBottom;
@@ -169,6 +170,12 @@ void QgsRasterProjector::calc()
     myRow.append( QgsPoint() );
     myRow.append( QgsPoint() );
     mCPMatrix.insert( i,  myRow );
+    // And the legal points
+    QList<bool> myLegalRow;
+    myLegalRow.append( bool( false ) );
+    myLegalRow.append( bool( false ) );
+    myLegalRow.append( bool( false ) );
+    mCPLegalMatrix.insert( i,  myLegalRow );
   }
   for ( int i = 0; i < mCPRows; i++ )
   {
@@ -238,7 +245,10 @@ void QgsRasterProjector::calcSrcExtent()
     for ( int j = 0; j < mCPCols ; j++ )
     {
       myPoint = mCPMatrix[i][j];
-      mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
+      if ( mCPLegalMatrix[i][j] )
+      {
+        mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
+      }
     }
   }
   // Expand a bit to avoid possible approx coords falling out because of representation error?
@@ -288,7 +298,14 @@ QString QgsRasterProjector::cpToString()
       if ( j > 0 )
         myString += "  ";
       QgsPoint myPoint = mCPMatrix[i][j];
-      myString += myPoint.toString();
+      if ( mCPLegalMatrix[i][j] )
+      {
+        myString += myPoint.toString();
+      }
+      else
+      {
+        myString += "(-,-)";
+      }
     }
   }
   return myString;
@@ -316,13 +333,16 @@ void QgsRasterProjector::calcSrcRowsCols()
       QgsPoint myPointA = mCPMatrix[i][j];
       QgsPoint myPointB = mCPMatrix[i][j+1];
       QgsPoint myPointC = mCPMatrix[i+1][j];
-      double mySize = sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
-      if ( mySize < myMinSize )
-        myMinSize = mySize;
+      if ( mCPLegalMatrix[i][j] && mCPLegalMatrix[i][j+1] && mCPLegalMatrix[i+1][j] )
+      {
+        double mySize = sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
+        if ( mySize < myMinSize )
+          myMinSize = mySize;
 
-      mySize = sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
-      if ( mySize < myMinSize )
-        myMinSize = mySize;
+        mySize = sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
+        if ( mySize < myMinSize )
+          myMinSize = mySize;
+      }
     }
   }
 
@@ -517,12 +537,15 @@ void QgsRasterProjector::insertRows()
   for ( int r = 0; r < mCPRows - 1; r++ )
   {
     QList<QgsPoint> myRow;
+    QList<bool> myLegalRow;
     for ( int c = 0; c < mCPCols; c++ )
     {
       myRow.append( QgsPoint() );
+      myLegalRow.append( false );
     }
     QgsDebugMsgLevel( QString( "insert new row at %1" ).arg( 1 + r*2 ), 3 );
     mCPMatrix.insert( 1 + r*2,  myRow );
+    mCPLegalMatrix.insert( 1 + r*2,  myLegalRow );
   }
   mCPRows += mCPRows - 1;
   for ( int r = 1; r < mCPRows - 1; r += 2 )
@@ -536,9 +559,11 @@ void QgsRasterProjector::insertCols()
   for ( int r = 0; r < mCPRows; r++ )
   {
     QList<QgsPoint> myRow;
+    QList<bool> myLegalRow;
     for ( int c = 0; c < mCPCols - 1; c++ )
     {
       mCPMatrix[r].insert( 1 + c*2,  QgsPoint() );
+      mCPLegalMatrix[r].insert( 1 + c*2,  false );
     }
   }
   mCPCols += mCPCols - 1;
@@ -554,8 +579,17 @@ void QgsRasterProjector::calcCP( int theRow, int theCol )
   double myDestX, myDestY;
   destPointOnCPMatrix( theRow, theCol, &myDestX, &myDestY );
   QgsPoint myDestPoint( myDestX, myDestY );
-
-  mCPMatrix[theRow][theCol] = mCoordinateTransform.transform( myDestPoint );
+  try
+  {
+    mCPMatrix[theRow][theCol] = mCoordinateTransform.transform( myDestPoint );
+    mCPLegalMatrix[theRow][theCol] = true;
+  }
+  catch ( QgsCsException &e )
+  {
+    Q_UNUSED( e );
+    // Caught an error in transform
+    mCPLegalMatrix[theRow][theCol] = true;
+  }
 }
 
 bool QgsRasterProjector::calcRow( int theRow )
@@ -595,6 +629,11 @@ bool QgsRasterProjector::checkCols()
       QgsPoint mySrcPoint3 = mCPMatrix[r+1][c];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
+      if ( !mCPLegalMatrix[r-1][c] || !mCPLegalMatrix[r][c] || !mCPLegalMatrix[r+1][c] )
+      {
+        // There was an error earlier in transform, just abort
+        return false;
+      }
       try
       {
         QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
@@ -630,6 +669,11 @@ bool QgsRasterProjector::checkRows()
       QgsPoint mySrcPoint3 = mCPMatrix[r][c+1];
 
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
+      if ( !mCPLegalMatrix[r][c-1] || !mCPLegalMatrix[r][c] || !mCPLegalMatrix[r][c+1] )
+      {
+        // There was an error earlier in transform, just abort
+        return false;
+      }
       try
       {
         QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
