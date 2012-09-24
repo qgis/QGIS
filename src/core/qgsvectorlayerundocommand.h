@@ -37,7 +37,7 @@ typedef QSet<int> QgsAttributeIds;
 /**
  * Class to support universal undo command sequence for application, basic for
  */
-class QgsUndoCommand : public QUndoCommand
+class CORE_EXPORT QgsUndoCommand : public QUndoCommand
 {
   public:
 

@@ -56,6 +56,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! @note not available in python bindings
     QgsLegendSymbolList legendSymbolItems();
 
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
@@ -65,6 +66,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r );
     QgsFeatureRendererV2* embeddedRenderer() { return mRenderer;}
 
+    //! not available in python bindings
     void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
 
     void setLabelFont( const QFont& f ) { mLabelFont = f; }

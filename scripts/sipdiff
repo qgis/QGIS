@@ -1,0 +1,10 @@
+#!/bin/bash
+
+file=$1
+
+d=${file#*/}
+d=${d%/*}
+f=${file##*/}
+f=${f%.*}
+
+vimdiff src/$d/$f.h python/$d/$f.sip

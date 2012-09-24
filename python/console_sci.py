@@ -124,6 +124,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setFocus()
         
     def commandConsole(self, command):
+        if not self.is_cursor_on_last_line():
+            self.move_cursor_to_end()
         line, pos = self.getCurLine()
         selCmd= self.text(line).length()
         self.setSelection(line, 4, line, selCmd)
@@ -203,8 +205,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
     def insertInitText(self):
         #self.setLexers(False)
-        txtInit = ("## To access Quantum GIS environment from this console\n"
-                    "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
+        txtInit = QCoreApplication.translate("PythonConsole","## To access Quantum GIS environment from this console\n"
+                                             "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
         initText = self.setText(txtInit)
 
     def getCurrentPos(self):
@@ -324,7 +326,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             
-
     def showNext(self):
         if  self.historyIndex > 0 and not self.history.isEmpty():
             line, pos = self.getCurLine()
@@ -365,7 +366,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 QsciScintilla.keyPressEvent(self, e)
             elif e.key() == Qt.Key_Delete:
                 if self.hasSelectedText():
-                    self.check_selection()
                     self.removeSelectedText()
                 elif self.is_cursor_on_last_line():
                     self.SendScintilla(QsciScintilla.SCI_CLEAR)
@@ -405,13 +405,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                             self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
                         else:
                             self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
-            elif e.key() == Qt.Key_Delete:
-                if self.hasSelectedText():
-                    self.check_selection()
-                    self.removeSelectedText()
-                elif self.is_cursor_on_last_line():
-                    self.SendScintilla(QsciScintilla.SCI_CLEAR)
-                event.accept()
             ## TODO: press event for auto-completion file directory
             #elif e.key() == Qt.Key_Tab:
                 #self.show_file_completion()
@@ -423,28 +416,29 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def paste(self):
         """Reimplement QScintilla method"""
         stringPaste = unicode(QApplication.clipboard().text())
+        if self.hasSelectedText():
+            self.removeSelectedText()
         self.insertFromDropPaste(stringPaste)
         
     ## Drag and drop
-    def dragEnterEvent(self, e):
-        if e.mimeData().hasFormat('text/plain'):
+    def dropEvent(self, e):
+        if e.mimeData().hasText():
+            stringDrag = e.mimeData().text()
+            self.insertFromDropPaste(stringDrag)
+            e.setDropAction(Qt.MoveAction)
             e.accept()
         else:
-            e.ignore() 
+            QsciScintillaCompat.dropEvent(self, e)
 
-    def dropEvent(self, e):
-        stringDrag = e.mimeData().text()
-        self.insertFromDropPaste(stringDrag)
-        
     def insertFromDropPaste(self, textDP):
         pasteList = QStringList()
         pasteList = textDP.split("\n")
         for line in pasteList[:-1]:
-            self.append(line)
+            self.insert(line)
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             self.runCommand(unicode(self.currentCommand()))
-        self.append(unicode(pasteList[-1]))
+        self.insert(unicode(pasteList[-1]))
         self.move_cursor_to_end()
 
     def getTextFromEditor(self):

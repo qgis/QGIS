@@ -25,7 +25,7 @@
 
 class QTextDocument;
 
-class QgsExpressionHighlighter : QSyntaxHighlighter
+class GUI_EXPORT QgsExpressionHighlighter : QSyntaxHighlighter
 {
     Q_OBJECT
 

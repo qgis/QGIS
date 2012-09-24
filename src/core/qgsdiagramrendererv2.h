@@ -32,124 +32,124 @@ namespace pal { class Layer; }
 
 class CORE_EXPORT QgsDiagramLayerSettings
 {
-public:
-  //avoid inclusion of QgsPalLabeling
-  enum Placement
-  {
-    AroundPoint = 0, // Point / Polygon
-    OverPoint, // Point / Polygon
-    Line, // Line / Polygon
-    Curved, // Line
-    Horizontal, // Polygon
-    Free // Polygon
-  };
+  public:
+    //avoid inclusion of QgsPalLabeling
+    enum Placement
+    {
+      AroundPoint = 0, // Point / Polygon
+      OverPoint, // Point / Polygon
+      Line, // Line / Polygon
+      Curved, // Line
+      Horizontal, // Polygon
+      Free // Polygon
+    };
 
-  enum LinePlacementFlags
-  {
-    OnLine    = 1,
-    AboveLine = 2,
-    BelowLine = 4,
-    MapOrientation = 8
-  };
+    enum LinePlacementFlags
+    {
+      OnLine    = 1,
+      AboveLine = 2,
+      BelowLine = 4,
+      MapOrientation = 8
+    };
 
-  QgsDiagramLayerSettings()
-      : placement( AroundPoint )
-      , placementFlags( OnLine )
-      , priority( 5 )
-      , obstacle( false )
-      , dist( 0.0 )
-      , renderer( 0 )
-      , palLayer( 0 )
-      , ct( 0 )
-      , xform( 0 )
-      , xPosColumn( -1 )
-      , yPosColumn( -1 )
-  {
-  }
+    QgsDiagramLayerSettings()
+        : placement( AroundPoint )
+        , placementFlags( OnLine )
+        , priority( 5 )
+        , obstacle( false )
+        , dist( 0.0 )
+        , renderer( 0 )
+        , palLayer( 0 )
+        , ct( 0 )
+        , xform( 0 )
+        , xPosColumn( -1 )
+        , yPosColumn( -1 )
+    {
+    }
 
-  //pal placement properties
-  Placement placement;
-  LinePlacementFlags placementFlags;
-  int priority; // 0 = low, 10 = high
-  bool obstacle; // whether it's an obstacle
-  double dist; // distance from the feature (in mm)
-  QgsDiagramRendererV2* renderer;
+    //pal placement properties
+    Placement placement;
+    LinePlacementFlags placementFlags;
+    int priority; // 0 = low, 10 = high
+    bool obstacle; // whether it's an obstacle
+    double dist; // distance from the feature (in mm)
+    QgsDiagramRendererV2* renderer;
 
-  //assigned when layer gets prepared
-  pal::Layer* palLayer;
-  const QgsCoordinateTransform* ct;
-  const QgsMapToPixel* xform;
-  QList<QgsPalGeometry*> geometries;
+    //assigned when layer gets prepared
+    pal::Layer* palLayer;
+    const QgsCoordinateTransform* ct;
+    const QgsMapToPixel* xform;
+    QList<QgsPalGeometry*> geometries;
 
-  int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
-  int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
+    int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
+    int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
 
-  void readXML( const QDomElement& elem );
-  void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem );
+    void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 };
 
 //diagram settings for rendering
 class CORE_EXPORT QgsDiagramSettings
 {
-public:
-  enum SizeType
-  {
-    MM,
-    MapUnits
-  };
+  public:
+    enum SizeType
+    {
+      MM,
+      MapUnits
+    };
 
-  enum LabelPlacementMethod
-  {
-    Height,
-    XHeight
-  };
+    enum LabelPlacementMethod
+    {
+      Height,
+      XHeight
+    };
 
-  //! Orientation of histogram
-  enum DiagramOrientation
-  {
-    Up,
-    Down,
-    Left,
-    Right
-  };
+    //! Orientation of histogram
+    enum DiagramOrientation
+    {
+      Up,
+      Down,
+      Left,
+      Right
+    };
 
-  QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
-  {}
-  QFont font;
-  QList< QColor > categoryColors;
-  QList< int > categoryIndices;
-  QSizeF size; //size
-  SizeType sizeType; //mm or map units
-  QColor backgroundColor;
-  QColor penColor;
-  double penWidth;
-  LabelPlacementMethod labelPlacementMethod;
-  DiagramOrientation diagramOrientation;
-  double barWidth;
-  int transparency; // 0 - 100
-  bool scaleByArea;
+    QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
+    {}
+    QFont font;
+    QList< QColor > categoryColors;
+    QList< int > categoryIndices;
+    QSizeF size; //size
+    SizeType sizeType; //mm or map units
+    QColor backgroundColor;
+    QColor penColor;
+    double penWidth;
+    LabelPlacementMethod labelPlacementMethod;
+    DiagramOrientation diagramOrientation;
+    double barWidth;
+    int transparency; // 0 - 100
+    bool scaleByArea;
 
-  //scale range (-1 if no lower / upper bound )
-  double minScaleDenominator;
-  double maxScaleDenominator;
+    //scale range (-1 if no lower / upper bound )
+    double minScaleDenominator;
+    double maxScaleDenominator;
 
-  //! Scale diagrams smaller than mMinimumSize to mMinimumSize
-  double minimumSize;
+    //! Scale diagrams smaller than mMinimumSize to mMinimumSize
+    double minimumSize;
 
-  void readXML( const QDomElement& elem );
-  void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem );
+    void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
 };
 
 //additional diagram settings for interpolated size rendering
 class CORE_EXPORT QgsDiagramInterpolationSettings
 {
-public:
-  QSizeF lowerSize;
-  QSizeF upperSize;
-  double lowerValue;
-  double upperValue;
-  /**Index of the classification attribute*/
-  int classificationAttribute;
+  public:
+    QSizeF lowerSize;
+    QSizeF upperSize;
+    double lowerValue;
+    double upperValue;
+    /**Index of the classification attribute*/
+    int classificationAttribute;
 };
 
 /**Returns diagram settings for a feature*/
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsDiagramRendererV2
 };
 
 /**Renders the diagrams for all features with the same settings*/
-class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
     QgsSingleCategoryDiagramRenderer();
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
     QgsDiagramSettings mSettings;
 };
 
-class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();

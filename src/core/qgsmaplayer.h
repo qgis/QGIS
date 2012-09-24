@@ -69,12 +69,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @note added in 1.7
-     **/
+     */
     QString id() const;
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @deprecated use id()
-     **/
+     */
     Q_DECL_DEPRECATED QString getLayerID() const { return id(); }
 
     /** Set the display name of the layer
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    QString const & name() const;
+    const QString & name() const;
 
     void setTitle( const QString& title ) { mTitle = title; }
     const QString& title() const { return mTitle; }
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    QString const &source() const;
+    const QString &source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
-    QImage * cacheImage() { return mpCacheImage; }
+    QImage *cacheImage() { return mpCacheImage; }
     /** Set the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage );

@@ -268,15 +268,12 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
   }
 
-  // Label tab collapsed groupboxes
-  chkBuffer->setCollapsed( true );
-  mFontMultiLineGroupBox->setCollapsed( true );
-  chkFormattedNumbers->setCollapsed( true );
-  chkScaleBasedVisibility->setCollapsed( true );
-
-  // Data defined tab collapsed groupboxes
-  mBufferAttributesPropertiesGroupBox->setCollapsed( true );
-  mFontAttributePropertiesGroupBox->setCollapsed( true );
+  // Global settings group for groupboxes' saved/retored collapsed state
+  // maintains state across different dialogs
+  foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
+  {
+    grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
+  }
 
   connect( groupBox_mPreview,
            SIGNAL( collapsedStateChanged( QgsCollapsibleGroupBox* ) ),

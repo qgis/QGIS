@@ -49,6 +49,7 @@ class CORE_EXPORT QgsScaleCalculator
      * @param dpi Dots per inch of monitor resolution
      */
     void setDpi( double dpi );
+
     /**
      * Accessor for dpi used in scale calculations
      * @return int the dpi used for scale calculations.

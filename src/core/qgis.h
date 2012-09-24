@@ -75,9 +75,11 @@ class CORE_EXPORT QGis
     };
 
     // String representation of geometry types (set in qgis.cpp)
+    //! @note not available in python bindings
     static const char *qgisVectorGeometryType[];
 
     //! description strings for feature types
+    //! @note not available in python bindings
     static const char *qgisFeatureTypes[];
 
     /** Map units that qgis supports

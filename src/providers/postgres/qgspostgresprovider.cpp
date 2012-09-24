@@ -1029,7 +1029,7 @@ bool QgsPostgresProvider::loadFields()
       QString attnum = tresult.PQgetvalue( 0, 0 );
       formattedFieldType = tresult.PQgetvalue( 0, 1 );
 
-      if( !attnum.isEmpty() )
+      if ( !attnum.isEmpty() )
       {
         sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
               .arg( tableoid ).arg( attnum );

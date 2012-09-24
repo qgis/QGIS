@@ -229,7 +229,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( )
     // We prefer 1.0 because 1.1 has many issues, each server implements it in defferent
     // way with various particularities
     // It may happen that server supports 1.1.0 but gives error for 1.1
-    versions << "VERSION=1.0.0" << "AcceptVersions=1.1.0,1.0.0";
+    versions << "1.0.0" << "1.1.0,1.0.0";
   }
 
   foreach ( QString v, versions )

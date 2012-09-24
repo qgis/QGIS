@@ -108,7 +108,7 @@ class CORE_EXPORT QgsFeature
     QgsFeature( QgsFeatureId id = QgsFeatureId(), QString typeName = "" );
 
     /** copy ctor needed due to internal pointer */
-    QgsFeature( QgsFeature const & rhs );
+    QgsFeature( const QgsFeature & rhs );
 
     /** assignment operator needed due to internal pointer */
     QgsFeature & operator=( QgsFeature const & rhs );
@@ -205,6 +205,7 @@ class CORE_EXPORT QgsFeature
     void setGeometry( const QgsGeometry& geom );
 
     /** Set this feature's geometry (takes geometry ownership)
+     * @note not available in python bindings
      */
     void setGeometry( QgsGeometry* geom );
 

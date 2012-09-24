@@ -30,7 +30,7 @@ class QgsComposerMap;
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
  */
-class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
+class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
     Q_OBJECT
 

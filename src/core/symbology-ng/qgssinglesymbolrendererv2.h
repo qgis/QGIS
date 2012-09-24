@@ -77,6 +77,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems();
 
   protected:

@@ -5,10 +5,10 @@ class QgsTolerance
 #include <qgstolerance.h>
 %End
 
-public:
+  public:
     /**Type of unit of tolerance value from settings*/
-    enum UnitType 
-    { 
+    enum UnitType
+    {
       /**Map unit value*/
       MapUnits,
       /**Pixels unit of tolerance*/
@@ -31,11 +31,12 @@ public:
 
     /**
     * Static function to translate tolerance value into current map unit value
-    * @param tolerace tolerance value to be translated
+    * @param tolerance tolerance value to be translated
+    * @param layer reference layer
+    * @param renderer renderer
     * @param units type of units to be translated
     * @return value of tolerance in map units
     */
     static double toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units = MapUnits );
 
 };
-

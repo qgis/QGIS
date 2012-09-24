@@ -70,9 +70,11 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry();
 
     /** copy constructor will prompt a deep copy of the object */
-    QgsGeometry( QgsGeometry const & );
+    QgsGeometry( const QgsGeometry & );
 
-    /** assignments will prompt a deep copy of the object */
+    /** assignments will prompt a deep copy of the object
+      @note not available in python bindings
+      */
     QgsGeometry & operator=( QgsGeometry const & rhs );
 
     //! Destructor
@@ -98,6 +100,7 @@ class CORE_EXPORT QgsGeometry
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
     void fromGeos( GEOSGeometry* geos );
     /**
@@ -118,7 +121,9 @@ class CORE_EXPORT QgsGeometry
     size_t wkbSize();
 
     /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
-        @note this method was added in version 1.1*/
+        @note this method was added in version 1.1
+        @note not available in python bindings
+      */
     GEOSGeometry* asGeos();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */

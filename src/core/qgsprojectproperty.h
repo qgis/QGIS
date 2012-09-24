@@ -92,7 +92,7 @@ class CORE_EXPORT QgsProperty
        @param element the parent (or encompassing) property element
        @param document the overall project file Dom document
     */
-    virtual bool writeXML( QString const & nodeName,
+    virtual bool writeXML( const QString & nodeName,
                            QDomElement   & element,
                            QDomDocument  & document ) = 0;
 
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     QgsPropertyValue()
     {}
 
-    QgsPropertyValue( QVariant const &value )
+    QgsPropertyValue( const QVariant &value )
         : value_( value )
     {}
 
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
     bool readXML( QDomNode & keyNode );
 
-    bool writeXML( QString const & nodeName,
+    bool writeXML( const QString & nodeName,
                    QDomElement   & element,
                    QDomDocument  & document );
 
@@ -198,14 +198,12 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
-
-    QgsPropertyKey( QString const name = "" );
-
+    QgsPropertyKey( const QString name = "" );
     virtual ~ QgsPropertyKey();
 
     /// every key has a name
     // @{
-    QString const & name() const
+    const QString &name() const
     { return mName; }
 
     QString & name()
@@ -220,7 +218,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
     /// add the given property key
-    QgsPropertyKey * addKey( QString const & keyName )
+    QgsPropertyKey * addKey( const QString & keyName )
     {
       delete mProperties.take( keyName );
       mProperties.insert( keyName, new QgsPropertyKey( keyName ) );
@@ -230,7 +228,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
     /// remove the given key
-    void removeKey( QString const & keyName )
+    void removeKey( const QString & keyName )
     {
       delete mProperties.take( keyName );
     }
@@ -240,7 +238,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
         @param value is the value to set
     @return pointer to property value
     */
-    QgsPropertyValue * setValue( QString const & name, QVariant const & value )
+    QgsPropertyValue * setValue( const QString & name, const QVariant & value )
     {
       delete mProperties.take( name );
       mProperties.insert( name, new QgsPropertyValue( value ) );
@@ -253,7 +251,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     @note that the single value node associated with each key is always
     stored keyed by the current key name
     */
-    QgsPropertyValue * setValue( QVariant const & value )
+    QgsPropertyValue * setValue( const QVariant & value )
     {
       return setValue( name(), value );
     }
@@ -264,7 +262,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
     bool readXML( QDomNode & keyNode );
 
-    bool writeXML( QString const &nodeName, QDomElement & element, QDomDocument & document );
+    bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document );
 
     /// how many elements are contained within this one?
     size_t count() const
@@ -323,9 +321,5 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     QHash < QString, QgsProperty* > mProperties;
 
 }; // class QgsPropertyKey
-
-
-
-
 
 #endif

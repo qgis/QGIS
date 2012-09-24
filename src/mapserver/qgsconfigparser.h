@@ -44,6 +44,8 @@ class QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned
       @param allowCache true if layer can be read from / written to cache*/

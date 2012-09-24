@@ -25,7 +25,7 @@ class QResizeEvent;
  * @see QgsGenericProjectionSelector.
   @author Tim Sutton
   */
-class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBase
+class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjectionSelectorBase
 {
     Q_OBJECT
   public:
@@ -69,9 +69,6 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Gets the current EpsgCrsId-style projection identifier
     // @deprecated there are other authorities - use selectedAuthId()
     Q_DECL_DEPRECATED long selectedEpsg();
-
-    //! Gets the current InternalCrsId-style projection identifier
-    long selectedSrsid();
 
     //! Gets the current authority-style projection identifier
     QString selectedAuthId();

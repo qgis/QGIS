@@ -83,7 +83,7 @@ class TestQgsDiagram: public QObject
       QString myPointsFileName = mTestDataDir + "points.shp";
       QFileInfo myPointFileInfo( myPointsFileName );
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                          myPointFileInfo.completeBaseName(), "ogr" );
+                                         myPointFileInfo.completeBaseName(), "ogr" );
 
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayers(
@@ -159,14 +159,14 @@ class TestQgsDiagram: public QObject
       dls.placement = QgsDiagramLayerSettings::OverPoint;
       dls.renderer = dr;
 
-      dynamic_cast<QgsPalLabeling*> (mMapRenderer->labelingEngine())->setShowingAllLabels( true );
+      dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() )->setShowingAllLabels( true );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
       mComposerMap->setNewExtent( QgsRectangle( -122, -79, -70, 47 ) );
       QgsCompositionChecker checker( "Composer map render", mComposition, QString( QString( TEST_DATA_DIR )
-          + QDir::separator() + "control_images" + QDir::separator() + "expected_diagram" + QDir::separator()
-          + "expected_piediagram.png" ) );
+                                     + QDir::separator() + "control_images" + QDir::separator() + "expected_diagram" + QDir::separator()
+                                     + "expected_piediagram.png" ) );
 
       QVERIFY( checker.testComposition() );
 

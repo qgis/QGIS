@@ -27,10 +27,10 @@ class QgsRasterChangeCoords
     QgsRasterChangeCoords( );
     void setRaster( const QString &fileRaster );
     bool hasCrs() const { return mHasCrs; }
-    std::vector<QgsPoint> getPixelCoords(const std::vector<QgsPoint> &mapCoords);
-    QgsRectangle getBoundingBox(const QgsRectangle &rect, bool toPixel);
-    QgsPoint toColumnLine(const QgsPoint &pntMap);
-    QgsPoint toXY(const QgsPoint &pntPixel);
+    std::vector<QgsPoint> getPixelCoords( const std::vector<QgsPoint> &mapCoords );
+    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
+    QgsPoint toColumnLine( const QgsPoint &pntMap );
+    QgsPoint toXY( const QgsPoint &pntPixel );
 
   private:
     bool mHasCrs;

@@ -30,7 +30,7 @@
  * \since 1.5
  *
  * This class implements the QGIS network access manager.  It's a singleton
- * that can be use across QGIS.
+ * that can be used across QGIS.
  *
  * Plugins can insert proxy factories and thereby redirect requests to
  * individual proxies.
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0 );
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
   private:
     QgsNetworkAccessManager( QObject *parent = 0 );

@@ -17,7 +17,7 @@ class QgsDistanceArea
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
-    void setProjectionsEnabled(bool flag) /Deprecated/;
+    void setProjectionsEnabled( bool flag ) /Deprecated/;
 
     //! returns projections enabled flag
     bool ellipsoidalEnabled() const;

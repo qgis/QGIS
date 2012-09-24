@@ -49,7 +49,8 @@ class QgsPalLayerSettings
       MinScale,
       MaxScale,
       FontTransp,
-      BufferTransp
+      BufferTransp,
+      PropertyCount, // keep last entry
     };
 
     QString fieldName;
@@ -141,6 +142,7 @@ class QgsLabelCandidate
 %TypeHeaderCode
 #include <qgspallabeling.h>
 %End
+
   public:
     QgsLabelCandidate( QRectF r, double c );
 
@@ -152,8 +154,8 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 {
 %TypeHeaderCode
 #include <qgspallabeling.h>
-#include <qgsdiagramrendererv2.h>
 %End
+
   public:
     QgsPalLabeling();
     ~QgsPalLabeling();
@@ -184,25 +186,28 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
     //! adds a diagram layer to the labeling engine
-    // virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
-    // virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
     //! return infos about labels at a given (map) position
-    //virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
     //! return infos about labels within a given (map) rectangle
-    //virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() /Factory/;
 
-    //void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+/*
+    void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
-    //void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
-    //                const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
-    //static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
+    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
+                    const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
+*/
+    static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
+
 };

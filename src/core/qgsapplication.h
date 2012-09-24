@@ -271,6 +271,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static void applyGdalSkippedDrivers();
 
   signals:
+    //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:

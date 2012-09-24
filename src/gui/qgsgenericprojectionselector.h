@@ -85,8 +85,6 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * \warning This function's behaviour is undefined if it is called after the dialog is shown.
      */
     void setOgcWmsCrsFilter( QSet<QString> crsFilter );
-
-
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H
