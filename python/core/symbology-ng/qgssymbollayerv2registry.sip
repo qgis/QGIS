@@ -1,3 +1,5 @@
+class QgsSymbolLayerV2Widget /External/;
+
 typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
 typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
 typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
@@ -36,27 +38,14 @@ class QgsSymbolLayerV2Metadata : QgsSymbolLayerV2AbstractMetadata
 %End
 
   public:
-    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
-                              QgsSymbolV2::SymbolType type,
-                              QgsSymbolLayerV2CreateFunc pfCreate,
-                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL );
-
-    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
-                              QgsSymbolV2::SymbolType type,
-                              QgsSymbolLayerV2CreateFunc pfCreate,
-                              QgsSymbolLayerV2CreateFromSldFunc pfCreateFromSld,
-                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL );
-
-    QgsSymbolLayerV2CreateFunc createFunction() const;
-    QgsSymbolLayerV2WidgetFunc widgetFunction() const;
-    QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const;
-
-    void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f );
-
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) /Factory/;
     virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) /Factory/;
     virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) /Factory/;
+
+  private:
+    QgsSymbolLayerV2Metadata(); // pretend this is private
 };
+
 
 /**
  Registry of available symbol layer classes.
