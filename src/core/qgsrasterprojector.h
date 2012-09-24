@@ -213,6 +213,10 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** Grid of source control points */
     QList< QList<QgsPoint> > mCPMatrix;
 
+    /** Grid of source control points transformation possible indicator */
+    /* Same size as mCPMatrix */
+    QList< QList<bool> > mCPLegalMatrix;
+
     /** Array of source points for each destination column on top of current CPMatrix grid row */
     /* Warning: using QList is slow on access */
     QgsPoint *pHelperTop;
