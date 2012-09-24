@@ -549,10 +549,21 @@ void QgsCustomization::createTreeItemDocks( )
     {
       QDockWidget* dw = qobject_cast<QDockWidget*> ( obj );
       QStringList dwstrs;
+	  QString st = dw->objectName();
       dwstrs << dw->objectName() << dw->windowTitle();
       QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
       dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       dwItem->setCheckState( 0, Qt::Checked );
+
+	  if ( st == "Legend" )
+	  {
+		QStringList legenddwstrs;
+		legenddwstrs << "ZoomToLayer" << "ZoomToLayer";
+		QTreeWidgetItem* legenddwItem = new QTreeWidgetItem( dwItem, legenddwstrs );
+		legenddwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+		legenddwItem->setCheckState( 0, Qt::Checked );
+	  }
+
     }
   }
 
