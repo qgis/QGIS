@@ -440,17 +440,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**Copies the symbology settings from another layer. Returns true in case of success*/
     bool copySymbologySettings( const QgsMapLayer& theOther );
 
-    /** \brief Get a pointer to the color table
-      @note not available in python bindings
-     */
+    /** \brief Get a pointer to the color table */
     QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner
-      @note not available in python bindings
-      */
+    /** Returns the data provider in a const-correct manner */
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource
@@ -479,7 +475,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
     /** \brief Identify raster value(s) found on the point position
-      * @note not available in python bindings
+      * @note available in python bindings as identifyMap
       */
     bool identify( const QgsPoint & point, QMap<int, QString>& results );
 
@@ -508,9 +504,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QPixmap legendAsPixmap();
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
+    //! @deprecated
+    //! @note available as legendAsPixmapBool in python bindings
     Q_DECL_DEPRECATED QPixmap legendAsPixmap( bool );
 
     /** \brief Use this method when you want an annotated legend suitable for print output etc */
+    //! @note available as legendAsPixmapCount in python bindings
     Q_DECL_DEPRECATED QPixmap legendAsPixmap( int theLabelCount );
 
     /** \brief Accessor for maximum value user for contrast enhancement */

@@ -25,25 +25,25 @@ class QgsDataItem : QObject
     virtual void refresh();
 
     // Create vector of children
-    // virtual QVector<QgsDataItem*> createChildren();
+    virtual QVector<QgsDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsDataItem * child, bool refresh = false );
+    virtual void addChildItem( QgsDataItem *child /Transfer/, bool refresh = false );
 
-    // remove and delete child item, signals to browser are emited
+    // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsDataItem * child );
 
     // remove child item but don't delete it, signals to browser are emited
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsDataItem * removeChildItem( QgsDataItem * child );
+    virtual QgsDataItem *removeChildItem( QgsDataItem * child ) /TransferBack/;
 
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget *paramWidget();
+    virtual QWidget *paramWidget() /Factory/;
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions();
@@ -70,14 +70,14 @@ class QgsDataItem : QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
-    // static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
+    static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
 
     // members
 
     Type type() const;
     QgsDataItem* parent() const;
     void setParent( QgsDataItem* parent );
-    // QVector<QgsDataItem*> children() const;
+    QVector<QgsDataItem*> children() const;
     QIcon icon() const;
     QString name() const;
     QString path() const;
@@ -160,7 +160,7 @@ class QgsDataCollectionItem : QgsDataItem
     ~QgsDataCollectionItem();
 
     void setPopulated();
-    void addChild( QgsDataItem *item );
+    void addChild( QgsDataItem *item /Transfer/ );
 
     static const QIcon &iconDir(); // shared icon: open/closed directory
     static const QIcon &iconDataCollection(); // default icon for data collection
@@ -186,11 +186,11 @@ class QgsDirectoryItem : QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDirectoryItem();
 
-    // QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren();
 
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget * paramWidget();
+    virtual QWidget *paramWidget() /Factory/;
 
     /* static QVector<QgsDataProvider*> mProviders; */
     // static QVector<QLibrary*> mLibraries;
@@ -222,7 +222,7 @@ class QgsFavouritesItem : QgsDataCollectionItem
     QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
     ~QgsFavouritesItem();
 
-    // QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren();
 
     static const QIcon &iconFavourites();
 };
@@ -238,7 +238,7 @@ class QgsZipItem : QgsDataCollectionItem
     QgsZipItem( QgsDataItem* parent, QString name, QString path );
     ~QgsZipItem();
 
-    // QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren();
     const QStringList & getZipFileList();
 
     // static QVector<dataItem_t *> mDataItemPtr;
@@ -246,7 +246,7 @@ class QgsZipItem : QgsDataCollectionItem
 
     static QString vsiPrefix( QString uri );
 
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name ) /Factory/;
 
     static const QIcon &iconZip();
 

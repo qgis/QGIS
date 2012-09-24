@@ -6,11 +6,7 @@
 class QgsRasterLayer : QgsMapLayer
 {
 %TypeHeaderCode
-// #include <qgsrasterpyramid.h>
 #include <qgsrasterlayer.h>
-#include <qgscontrastenhancement.h>
-#include <qgsrastertransparency.h>
-#include <qgsrastershader.h>
 %End
 
   public:
@@ -275,13 +271,16 @@ class QgsRasterLayer : QgsMapLayer
     bool copySymbologySettings( const QgsMapLayer& theOther );
 
     /** \brief Get a pointer to the color table */
-    // QList<QgsColorRampShader::ColorRampItem>* colorTable( int theBandNoInt );
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
     /** Returns the data provider in a const-correct manner */
-    // const QgsRasterDataProvider* dataProvider() const;
+    const QgsRasterDataProvider* constDataProvider() const;
+%MethodCode
+      sipRes = sipCpp->dataProvider();
+%End
 
     /**Synchronises with changes in the datasource
     @note added in version 1.6*/
@@ -309,7 +308,10 @@ class QgsRasterLayer : QgsMapLayer
     bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
 
     /** \brief Identify raster value(s) found on the point position */
-    // bool identify( const QgsPoint & point, QMap<int, QString>& results /Out/ );
+    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
+%MethodCode
+      sipRes = sipCpp->identify( *a0, *a1 );
+%End
 
     /** \brief Identify arbitrary details from the WMS server found on the point position */
     QString identifyAsText( const QgsPoint & point );
@@ -336,10 +338,16 @@ class QgsRasterLayer : QgsMapLayer
     QPixmap legendAsPixmap();
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
-    // QPixmap legendAsPixmap( bool ) /Deprecated/;
+    QPixmap legendAsPixmapBool( bool ) /Deprecated/;
+%MethodCode
+      sipRes = new QPixmap( sipCpp->legendAsPixmap( a0 ) );
+%End
 
     /** \brief Use this method when you want an annotated legend suitable for print output etc */
-    QPixmap legendAsPixmap( int theLabelCount ) /Deprecated/;
+    QPixmap legendAsPixmapCount( int theLabelCount ) /Deprecated/;
+%MethodCode
+      sipRes = new QPixmap( sipCpp->legendAsPixmap( a0 ) );
+%End
 
     /** \brief Accessor for maximum value user for contrast enhancement */
     double maximumValue( unsigned int theBand );
@@ -392,7 +400,8 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Mutator for contrast enhancement algorithm using min/max */
     // TODO: remove in 2.0, replaced by following
-    // void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag = true );
+    // void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+    //                                       bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for contrast enhancement algorithm
      *  @param theAlgorithm Contrast enhancement algorithm

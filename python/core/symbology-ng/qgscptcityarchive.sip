@@ -33,8 +33,8 @@ class QgsCptCityArchive
     static QMap< QString, QgsCptCityArchive* > archiveRegistry();
 
     // items
-    // QVector< QgsCptCityDataItem* > rootItems() const;
-    // QVector< QgsCptCityDataItem* > selectionItems() const;
+    QVector< QgsCptCityDataItem* > rootItems() const;
+    QVector< QgsCptCityDataItem* > selectionItems() const;
 };
 
 /** base class for all items in the model */
@@ -66,7 +66,7 @@ class QgsCptCityDataItem : QObject
     virtual void refresh();
 
     // Create vector of children
-    // virtual QVector<QgsCptCityDataItem*> createChildren();
+    virtual QVector<QgsCptCityDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
@@ -74,18 +74,18 @@ class QgsCptCityDataItem : QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem( QgsCptCityDataItem * child, bool refresh = false );
+    virtual void addChildItem( QgsCptCityDataItem * child /Transfer/, bool refresh = false );
 
     // remove and delete child item, signals to browser are emited
     virtual void deleteChildItem( QgsCptCityDataItem * child );
 
     // remove child item but don't delete it, signals to browser are emited
     // returns pointer to the removed item or null if no such item was found
-    virtual QgsCptCityDataItem * removeChildItem( QgsCptCityDataItem * child );
+    virtual QgsCptCityDataItem * removeChildItem( QgsCptCityDataItem * child ) /TransferBack/;
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
-    virtual QWidget * paramWidget();
+    virtual QWidget *paramWidget() /Factory/;
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions();
@@ -99,14 +99,14 @@ class QgsCptCityDataItem : QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
-    // static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
+    static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
 
     // members
 
     Type type() const;
     QgsCptCityDataItem* parent() const;
     void setParent( QgsCptCityDataItem* parent );
-    // QVector<QgsCptCityDataItem*> children() const;
+    QVector<QgsCptCityDataItem*> children() const;
     virtual QIcon icon();
     virtual QIcon icon( const QSize& size );
     QString name() const;
@@ -175,8 +175,8 @@ class QgsCptCityCollectionItem : QgsCptCityDataItem
     ~QgsCptCityCollectionItem();
 
     void setPopulated();
-    void addChild( QgsCptCityDataItem *item );
-    // QVector<QgsCptCityDataItem*> childrenRamps( bool recursive );
+    void addChild( QgsCptCityDataItem *item /Transfer/ );
+    QVector<QgsCptCityDataItem*> childrenRamps( bool recursive );
 };
 
 /** A directory: contains subdirectories and color ramps */
@@ -190,7 +190,7 @@ class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
                              QString name, QString path );
     ~QgsCptCityDirectoryItem();
 
-    // QVector<QgsCptCityDataItem*> createChildren();
+    QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
@@ -213,7 +213,7 @@ class QgsCptCitySelectionItem : QgsCptCityCollectionItem
     QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path );
     ~QgsCptCitySelectionItem();
 
-    // QVector<QgsCptCityDataItem*> createChildren();
+    QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );
 

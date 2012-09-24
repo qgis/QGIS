@@ -74,7 +74,6 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QgsPluginLayerType* pluginLayerType( QString typeName );
 
     /** return new layer if corresponding plugin has been found, else return NULL */
-    // @note not available in python bindings
     QgsPluginLayer* createLayer( QString typeName );
 
   private:

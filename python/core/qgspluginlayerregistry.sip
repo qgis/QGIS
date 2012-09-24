@@ -43,7 +43,7 @@ class QgsPluginLayerRegistry
     QgsPluginLayerType* pluginLayerType(QString typeName);
 
     /** return new layer if corresponding plugin has been found, else return NULL */
-    // QgsPluginLayer* createLayer(QString typeName) /Factory/;
+    QgsPluginLayer* createLayer(QString typeName) /Factory/;
 
   private:
 

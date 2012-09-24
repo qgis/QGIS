@@ -213,9 +213,9 @@ class CORE_EXPORT QgsProject : public QObject
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    //! @note not available in python bindings
-    bool writeEntry( QString const & scope, const QString & key, bool value );
-    //! @note not available in python bindings
+    //! @note available in python bindings as writeEntryBool
+    bool writeEntry( const QString & scope, const QString & key, bool value );
+    //! @note available in python bindings as writeEntryDouble
     bool writeEntry( const QString & scope, const QString & key, double value );
     bool writeEntry( const QString & scope, const QString & key, int value );
     bool writeEntry( const QString & scope, const QString & key, const QString & value );

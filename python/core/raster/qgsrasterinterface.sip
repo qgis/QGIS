@@ -182,7 +182,8 @@ class QgsRasterInterface
     /** \brief Test if value is within the list of ranges
      *  @param value value
      *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges */
-    // static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
+     *  @return true if value is in at least one of ranges
+     */
+    static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
 };
 

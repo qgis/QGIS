@@ -47,7 +47,8 @@ class QgsMapToPixel
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
-       transform. */
+       transform.
+     */
     // void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
 
     QgsPoint toMapCoordinates( int x, int y ) const;

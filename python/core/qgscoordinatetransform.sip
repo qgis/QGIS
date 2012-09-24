@@ -121,9 +121,9 @@ class QgsCoordinateTransform : QObject
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform) const throw (QgsCsException);
 
-   // TODO: argument not supported
-   //void transformInPlace(std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
-   //    TransformDirection direction = ForwardTransform);
+    // TODO: argument not supported
+    // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
+    //                        TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform a QgsRectangle to the dest Coordinate system
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
