@@ -314,7 +314,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     const QStringList & getZipFileList();
 
-    //! @note not avialable via python bindings
+    //! @note not available via python bindings
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 

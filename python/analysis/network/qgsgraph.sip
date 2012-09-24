@@ -105,7 +105,7 @@ class QgsGraph
     int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
 
     /**
-     * retrun vertex count
+     * return vertex count
      */
     int vertexCount() const;
 
@@ -120,7 +120,7 @@ class QgsGraph
     int arcCount() const;
 
     /**
-     * retrun edge at index
+     * return edge at index
      */
     const QgsGraphArc& arc( int idx ) const;
 

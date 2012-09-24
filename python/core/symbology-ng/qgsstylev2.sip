@@ -153,7 +153,7 @@ class QgsStyleV2
      */
     QStringList symbolsWithTag( StyleEntity type, int tagid );
 
-    //! applies the specifed group to the symbol or colorramp specified by StyleEntity
+    //! applies the specified group to the symbol or colorramp specified by StyleEntity
     /*!
      *  \param type is either SymbolEntity of ColorrampEntity
      *  \param name is the name of the symbol or coloramp whose group is to be set

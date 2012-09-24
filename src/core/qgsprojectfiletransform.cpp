@@ -538,7 +538,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
     QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
 {
   //no data
-  //TODO: We would need to set no data on all bands, but we dont know number of bands here
+  //TODO: We would need to set no data on all bands, but we don't know number of bands here
   QDomNode noDataNode = rasterPropertiesElem.namedItem( "mNoDataValue" );
   QDomElement noDataElement = noDataNode.toElement();
   if ( !noDataElement.text().isEmpty() )

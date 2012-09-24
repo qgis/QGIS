@@ -252,7 +252,7 @@ if the number of output layers cannot be know in advance), then it is
 not possible to use it within a model, and thus does not appear in the
 list of them that you can find in the modeler dialog.
 
-Additionaly, you will see some algorithms in the modeler that are not
+Additionally, you will see some algorithms in the modeler that are not
 found in the toolbox. This algorithms are meant to be used exclusively
 as part of a model, and they are of no interest in a different context.
 The *Calculator* algorithm is an example of that. It is just a simple
