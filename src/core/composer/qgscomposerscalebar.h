@@ -27,7 +27,6 @@ class QgsScaleBarStyle;
 
 class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 {
-
     Q_OBJECT
 
   public:

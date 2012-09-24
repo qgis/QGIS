@@ -27,32 +27,33 @@ class QDomElement;
 class QImage;
 class QPicture;
 
-struct CORE_EXPORT QgsSvgCacheEntry
+class CORE_EXPORT QgsSvgCacheEntry
 {
-  QgsSvgCacheEntry();
-  QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
-  ~QgsSvgCacheEntry();
+  public:
+    QgsSvgCacheEntry();
+    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
+    ~QgsSvgCacheEntry();
 
-  QString file;
-  int size; //size in pixel
-  double outlineWidth;
-  double widthScaleFactor;
-  double rasterScaleFactor;
-  QColor fill;
-  QColor outline;
-  QImage* image;
-  QPicture* picture;
-  //content (with params replaced)
-  QByteArray svgContent;
+    QString file;
+    int size; //size in pixel
+    double outlineWidth;
+    double widthScaleFactor;
+    double rasterScaleFactor;
+    QColor fill;
+    QColor outline;
+    QImage* image;
+    QPicture* picture;
+    //content (with params replaced)
+    QByteArray svgContent;
 
-  //keep entries on a least, sorted by last access
-  QgsSvgCacheEntry* nextEntry;
-  QgsSvgCacheEntry* previousEntry;
+    //keep entries on a least, sorted by last access
+    QgsSvgCacheEntry* nextEntry;
+    QgsSvgCacheEntry* previousEntry;
 
-  /**Don't consider image, picture, last used timestamp for comparison*/
-  bool operator==( const QgsSvgCacheEntry& other ) const;
-  /**Return memory usage in bytes*/
-  int dataSize() const;
+    /**Don't consider image, picture, last used timestamp for comparison*/
+    bool operator==( const QgsSvgCacheEntry& other ) const;
+    /**Return memory usage in bytes*/
+    int dataSize() const;
 };
 
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files

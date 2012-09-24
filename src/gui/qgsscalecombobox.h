@@ -30,6 +30,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
   public:
     QgsScaleComboBox( QWidget* parent = 0 );
     virtual ~QgsScaleComboBox();
+
     //! Function to read the selected scale as text
     // @note added in 2.0
     QString scaleString();
@@ -59,7 +60,6 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
-
 
   protected:
     void showPopup();

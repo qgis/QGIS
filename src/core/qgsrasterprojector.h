@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief QgsRasterProjector implements approximate projection support for
      * it calculates grid of points in source CRS for target CRS + extent
      * which are used to calculate affine transformation matrices.
-     * */
+     */
     QgsRasterProjector(
       QgsCoordinateReferenceSystem theSrcCRS,
       QgsCoordinateReferenceSystem theDestCRS,
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface *clone() const;
 
     int bandCount() const;
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     int dstRows() const { return mDestRows; }
     int dstCols() const { return mDestCols; }
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    void *readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
 
   private:
@@ -212,6 +212,10 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     /** Grid of source control points */
     QList< QList<QgsPoint> > mCPMatrix;
+
+    /** Grid of source control points transformation possible indicator */
+    /* Same size as mCPMatrix */
+    QList< QList<bool> > mCPLegalMatrix;
 
     /** Array of source points for each destination column on top of current CPMatrix grid row */
     /* Warning: using QList is slow on access */

@@ -119,7 +119,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( QString const & uri );
+    QgsRasterDataProvider( const QString & uri );
 
     virtual ~QgsRasterDataProvider() {};
 
@@ -131,8 +131,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
-    virtual void addLayers( QStringList const & layers,
-                            QStringList const & styles = QStringList() ) = 0;
+    virtual void addLayers( const QStringList & layers,
+                            const QStringList & styles = QStringList() ) = 0;
 
     //! get raster image encodings supported by (e.g.) the WMS Server, expressed as MIME types
     virtual QStringList supportedImageEncodings() = 0;
@@ -145,18 +145,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageEncoding( QString const & mimeType ) = 0;
+    virtual void setImageEncoding( const QString & mimeType ) = 0;
 
     /**
      * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageCrs( QString const & crs ) = 0;
+    virtual void setImageCrs( const QString & crs ) = 0;
 
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      */
-    virtual QImage* draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight ) = 0;
+    virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       }
     }
     /** Reload data (data could change) */
-    virtual bool reload( ) { return true; }
+    virtual bool reload() { return true; }
 
     virtual QString colorInterpretationName( int theBandNo ) const
     {
@@ -278,18 +278,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** read block of data  */
     // TODO clarify what happens on the last block (the part outside raster)
+    // @note not available in python bindings
     virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** read block of data using give extent and size */
+    // @note not available in python bindings
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
     /** read block of data using give extent and size */
+    // @note not available in python bindings
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
     /** Read block of data using given extent and size. */
-    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    // @note not available in python bindings
+    virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -341,6 +345,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * @param theIncludeOutOfRange include out of range values
      * @return Vector of non NULL cell counts for each bin.
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
      */
     virtual QgsRasterHistogram histogram( int theBandNo,
                                           int theBinCount = 0,
@@ -350,9 +355,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                                           int theSampleSize = 0,
                                           bool theIncludeOutOfRange = false );
 
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
     virtual bool hasHistogram( int theBandNo,
-                               int theBinCount = 0,
+                               int theBinCount,
                                double theMinimum = std::numeric_limits<double>::quiet_NaN(),
                                double theMaximum = std::numeric_limits<double>::quiet_NaN(),
                                const QgsRectangle & theExtent = QgsRectangle(),
@@ -433,16 +440,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString metadata() = 0;
 
-    /** \brief Identify raster value(s) found on the point position */
-    //virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    //virtual bool identify( const QgsPoint & point, QMap<int, QString>& results );
-
     /** \brief Identify raster value(s) found on the point position
      * @param point coordinates in data source CRS
      * @return list of pointers to data blocks for all bands,
      *         caller is responsible to free the allocated memory,
      *         readValue() may be used to get values
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
      */
     // TODO: Consider QVariant or similar instead of void*
     virtual QMap<int, void *> identify( const QgsPoint & point );
@@ -508,19 +511,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString lastErrorFormat();
 
-    //virtual void buildSupportedRasterFileFilter( QString & theFileFiltersString ) ;
-
-    /** This helper checks to see whether the file name appears to be a valid
-     *  raster file name.  If the file name looks like it could be valid,
-     *  but some sort of error occurs in processing the file, the error is
-     *  returned in retError.
-     */
-
-    //virtual bool isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg ) { return false; } ;
-
-    //virtual bool isValidRasterFileName( const QString & theFileNameQString ) { return false; };
-
-
     /**Returns the dpi of the output device.
       @note: this method was added in version 1.2*/
     int dpi() const {return mDpi;}
@@ -529,13 +519,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       @note: this method was added in version 1.2*/
     void setDpi( int dpi ) {mDpi = dpi;}
 
-    /** \brief Is the NoDataValue Valid */
-    //bool isNoDataValueValid() const { return mValidNoDataValue; }
-
     static QStringList cStringList2Q_( char ** stringList );
 
-    static QString makeTableCell( QString const & value );
-    static QString makeTableCells( QStringList const & values );
+    static QString makeTableCell( const QString & value );
+    static QString makeTableCells( const QStringList & values );
 
     /** \brief Set null value in char */
     QByteArray noValueBytes( int theBandNo );
@@ -562,7 +549,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterDataProvider::DataType type,
+                         QgsRasterInterface::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ )
@@ -649,7 +636,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** \brief List  of cached histograms, all bands mixed */
     QList <QgsRasterHistogram> mHistograms;
 
-    /** Fill in histogram defaults if not specified */
+    /** Fill in histogram defaults if not specified
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
     void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
                         int theBinCount = 0,
                         double theMinimum = std::numeric_limits<double>::quiet_NaN(),

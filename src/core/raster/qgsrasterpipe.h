@@ -50,7 +50,7 @@ class CORE_EXPORT QgsRasterPipe
       NullerRole = 5,
     };
 
-    QgsRasterPipe( );
+    QgsRasterPipe();
     QgsRasterPipe( const QgsRasterPipe& thePipe );
 
     ~QgsRasterPipe();

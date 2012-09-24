@@ -118,6 +118,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature );
 
+    //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
     /** close opened shapefile for writing */
@@ -130,7 +131,7 @@ class CORE_EXPORT QgsVectorFileWriter
     static bool deleteShapeFile( QString theFileName );
 
   protected:
-
+    //! @note not available in python bindings
     OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
 
     OGRDataSourceH mDS;

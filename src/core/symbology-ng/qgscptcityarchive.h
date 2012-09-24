@@ -49,6 +49,7 @@ class CORE_EXPORT QgsCptCityArchive
     static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
     static QMap< QString, QString > copyingInfo( const QString& fileName );
     static QMap< QString, QString > description( const QString& fileName );
+    //! note not available in python bindings
     static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString& fileName );
 
     // archive management
@@ -105,6 +106,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     virtual void refresh();
 
     // Create vector of children
+    //! note not available in python bindings
     virtual QVector<QgsCptCityDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
@@ -138,14 +140,15 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
+    //! note not available in python bindings
     static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
-    /* static QgsCptCityDataItem* dataItem( QString path ); */
 
     // members
 
     Type type() const { return mType; }
     QgsCptCityDataItem* parent() const { return mParent; }
     void setParent( QgsCptCityDataItem* parent ) { mParent = parent; }
+    //! note not available in python bindings
     QVector<QgsCptCityDataItem*> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
     virtual QIcon icon( const QSize& size ) { Q_UNUSED( size ) ; return icon(); }
@@ -193,7 +196,6 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 {
     Q_OBJECT
   public:
-
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
                              QString variantName = QString() );
@@ -231,6 +233,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
 
     void setPopulated() { mPopulated = true; }
     void addChild( QgsCptCityDataItem *item ) { mChildren.append( item ); }
+    //! note not available in python bindings
     QVector<QgsCptCityDataItem*> childrenRamps( bool recursive );
 
   protected:
@@ -246,6 +249,7 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
                              QString name, QString path );
     ~QgsCptCityDirectoryItem();
 
+    //! note not available in python bindings
     QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );
@@ -267,6 +271,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path );
     ~QgsCptCitySelectionItem();
 
+    //! note not available in python bindings
     QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );

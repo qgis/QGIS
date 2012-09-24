@@ -16,9 +16,4 @@ class QgsOverlayAnalyzer
     bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
                        const QString& shapefileName, bool onlySelectedFeatures = false,
                        QProgressDialog* p = 0 );
-
-  private:
-    void combineFieldLists( QgsFieldMap fieldListA, QgsFieldMap fieldListB );
-    void intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw, QgsVectorLayer* dp,
-                           QgsSpatialIndex* index );
 };

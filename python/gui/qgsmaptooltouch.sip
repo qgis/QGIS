@@ -22,5 +22,5 @@ class QgsMapToolTouch : QgsMapTool
     //! Overridden Mouse double click event.
     virtual void canvasDoubleClickEvent( QMouseEvent * e );
 
-    virtual bool isTransient() { return true; }
-}
+    virtual bool isTransient();
+};

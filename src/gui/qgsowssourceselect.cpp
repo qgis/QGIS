@@ -803,9 +803,9 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
   selectedItem->setSelected( true );
 }
 
-QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats()
+QList<QgsOWSSourceSelect::SupportedFormat> QgsOWSSourceSelect::providerFormats()
 {
-  return QList<QgsOWSSupportedFormat>();
+  return QList<SupportedFormat>();
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersFormats()

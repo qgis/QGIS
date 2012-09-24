@@ -205,8 +205,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
     def insertInitText(self):
         #self.setLexers(False)
-        txtInit = ("## To access Quantum GIS environment from this console\n"
-                    "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
+        txtInit = QCoreApplication.translate("PythonConsole","## To access Quantum GIS environment from this console\n"
+                                             "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
         initText = self.setText(txtInit)
 
     def getCurrentPos(self):

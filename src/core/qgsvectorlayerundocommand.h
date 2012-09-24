@@ -37,12 +37,12 @@ typedef QSet<int> QgsAttributeIds;
 /**
  * Class to support universal undo command sequence for application, basic for
  */
-class QgsUndoCommand : public QUndoCommand
+class CORE_EXPORT QgsUndoCommand : public QUndoCommand
 {
   public:
 
     /** change structure for attribute for undo/redo purpose */
-    class AttributeChangeEntry
+    class CORE_EXPORT AttributeChangeEntry
     {
       public:
         bool isFirstChange;
@@ -53,7 +53,7 @@ class QgsUndoCommand : public QUndoCommand
     typedef QMap<int, AttributeChangeEntry> AttributeChanges;
 
     /** change structure to geometry for undo/redo purpose */
-    class GeometryChangeEntry
+    class CORE_EXPORT GeometryChangeEntry
     {
       public:
         GeometryChangeEntry();

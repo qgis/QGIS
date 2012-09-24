@@ -35,9 +35,6 @@
 
 class GUI_EXPORT QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
 {
-
-//  Q_OBJECT
-
   public:
     /**
     * Constructor.

@@ -51,5 +51,4 @@ class GUI_EXPORT QgsColorButtonV2 : public QPushButton
     QColor mColor;
 };
 
-
 #endif

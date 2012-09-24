@@ -332,12 +332,12 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
     if ( groupsCombo->itemData( index ).toString() == "smart" )
     {
       groupid = mStyle->smartgroupId( text );
-      symbols = mStyle->symbolsOfSmartgroup( SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, groupid );
     }
     else
     {
       groupid = groupsCombo->itemData( index ).toInt();
-      symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, groupid );
     }
   }
   populateSymbols( symbols );

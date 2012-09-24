@@ -181,14 +181,14 @@ void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
   delete mySelector;
 }
 
-void QgsNewVectorLayerDialog::attributes( std::list<std::pair<QString, QString> >& at ) const
+void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at ) const
 {
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
     QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ) ).arg( item->text( 2 ) ).arg( item->text( 3 ) );
-    at.push_back( std::make_pair( item->text( 0 ), type ) );
+    at.push_back( qMakePair( item->text( 0 ), type ) );
     QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( type ) );
     ++it;
   }
@@ -226,7 +226,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
   int crsId = geomDialog.selectedCrsId();
   QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
-  std::list<std::pair<QString, QString> > attributes;
+  QList< QPair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
 
   QString enc;
@@ -279,7 +279,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pE
     QgsDebugMsg( "ogr provider loaded" );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const std::list<std::pair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
+        const QList< QPair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {

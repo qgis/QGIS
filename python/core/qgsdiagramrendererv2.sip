@@ -137,7 +137,6 @@ class QgsDiagramRendererV2
     virtual void readXML( const QDomElement& elem ) = 0;
     virtual void writeXML( QDomElement& layerElem, QDomDocument& doc ) const = 0;
 
-
   protected:
 
     /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
@@ -159,9 +158,6 @@ class QgsDiagramRendererV2
     //read / write diagram
     void _readXML( const QDomElement& elem );
     void _writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
-
-    /**Reference to the object that does the real diagram rendering*/
-    QgsDiagram* mDiagram;
 };
 
 /**Renders the diagrams for all features with the same settings*/
@@ -170,6 +166,7 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>
 %End
+
   public:
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
@@ -196,6 +193,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
 %TypeHeaderCode
 #include <qgsdiagramrendererv2.h>
 %End
+
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();

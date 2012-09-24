@@ -28,17 +28,35 @@ INCLUDE_DIRECTORIES(
     ${QT_QTXML_INCLUDE_DIR}
     ${GDAL_INCLUDE_DIR}
     ${GEOS_INCLUDE_DIR}
+    ${QWT_INCLUDE_DIR}
 
     ../src/core
+    ../src/core/pal
     ../src/core/composer
+    ../src/core/diagram
     ../src/core/gps
     ../src/core/gps/qextserialport
     ../src/core/raster
     ../src/core/renderer
     ../src/core/symbology
     ../src/core/symbology-ng
+
+    ../src/gui/raster
+    ../src/gui/attributetable
+
+    ../src/analysis/interpolation
+    ../src/analysis/raster
+
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
+
+IF(NOT WITH_TOUCH)
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_TOUCH)
+ENDIF(NOT WITH_TOUCH)
+
+IF(NOT QT_MOBILITY_LOCATION_FOUND)
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
+ENDIF(NOT QT_MOBILITY_LOCATION_FOUND)
 
 IF(PYQT4_VERSION_NUM LESS 263680)	# 0x040600
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} PROXY_FACTORY)

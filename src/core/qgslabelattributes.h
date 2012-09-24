@@ -98,88 +98,88 @@ class  CORE_EXPORT QgsLabelAttributes
 
     /* Text */
     void setText( const QString & text );
-    bool textIsSet( void ) const;
-    const QString text( void ) const;
+    bool textIsSet() const;
+    const QString text() const;
 
     /* Font */
     void setFamily( const QString & family );
-    bool familyIsSet( void ) const;
-    const QString family( void ) const;
+    bool familyIsSet() const;
+    const QString family() const;
 
     void setBold( bool enable );
-    bool boldIsSet( void ) const;
-    bool bold( void ) const;
+    bool boldIsSet() const;
+    bool bold() const;
 
     void setItalic( bool enable );
-    bool italicIsSet( void ) const;
-    bool italic( void ) const;
+    bool italicIsSet() const;
+    bool italic() const;
 
     void setUnderline( bool enable );
-    bool underlineIsSet( void ) const;
-    bool underline( void ) const;
+    bool underlineIsSet() const;
+    bool underline() const;
 
     /* strikeout added in 1.5 */
     void setStrikeOut( bool enable );
-    bool strikeOutIsSet( void ) const;
-    bool strikeOut( void ) const;
+    bool strikeOutIsSet() const;
+    bool strikeOut() const;
 
     void   setSize( double size, int type );
-    bool   sizeIsSet( void ) const;
-    int    sizeType( void ) const;
-    double size( void ) const;
+    bool   sizeIsSet() const;
+    int    sizeType() const;
+    double size() const;
 
     void  setColor( const QColor &color );
-    bool  colorIsSet( void ) const;
-    const QColor & color( void ) const;
+    bool  colorIsSet() const;
+    const QColor & color() const;
 
     /* Offset */
     void   setOffset( double x, double y, int type );
-    bool   offsetIsSet( void ) const;
-    int    offsetType( void ) const;
-    double xOffset( void ) const;
-    double yOffset( void ) const;
+    bool   offsetIsSet() const;
+    int    offsetType() const;
+    double xOffset() const;
+    double yOffset() const;
 
     /* Angle */
     void   setAngle( double angle );
-    bool   angleIsSet( void ) const;
-    double angle( void ) const;
+    bool   angleIsSet() const;
+    double angle() const;
 
-    bool   angleIsAuto( void ) const;
+    bool   angleIsAuto() const;
     void   setAutoAngle( bool state );
 
     /* Alignment */
     void setAlignment( int alignment );
-    bool alignmentIsSet( void ) const;
-    int  alignment( void ) const;
+    bool alignmentIsSet() const;
+    int  alignment() const;
 
     /* Buffer */
     bool   bufferEnabled() const;
     void   setBufferEnabled( bool useBufferFlag );
     void   setBufferSize( double size, int type );
-    bool   bufferSizeIsSet( void ) const;
-    int    bufferSizeType( void ) const;
-    double bufferSize( void ) const;
+    bool   bufferSizeIsSet() const;
+    int    bufferSizeType() const;
+    double bufferSize() const;
 
     void  setBufferColor( const QColor &color );
-    bool  bufferColorIsSet( void ) const;
-    QColor bufferColor( void ) const;
+    bool  bufferColorIsSet() const;
+    QColor bufferColor() const;
 
     void  setBufferStyle( Qt::BrushStyle style );
-    bool  bufferStyleIsSet( void ) const;
-    Qt::BrushStyle bufferStyle( void ) const;
+    bool  bufferStyleIsSet() const;
+    Qt::BrushStyle bufferStyle() const;
 
     /* Border */
     void  setBorderColor( const QColor &color );
-    bool  borderColorIsSet( void ) const;
-    QColor borderColor( void ) const;
+    bool  borderColorIsSet() const;
+    QColor borderColor() const;
 
     void  setBorderWidth( int width );
-    bool  borderWidthIsSet( void ) const;
-    int   borderWidth( void ) const;
+    bool  borderWidthIsSet() const;
+    int   borderWidth() const;
 
     void  setBorderStyle( Qt::PenStyle style );
-    bool  borderStyleIsSet( void ) const;
-    Qt::PenStyle   borderStyle( void ) const;
+    bool  borderStyleIsSet() const;
+    Qt::PenStyle   borderStyle() const;
 
     bool  multilineEnabled() const;
     void  setMultilineEnabled( bool useMultiline );

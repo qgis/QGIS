@@ -40,10 +40,10 @@ class CORE_EXPORT QgsProjectVersion
     int minorVersion() { return mMinor;};
     int subVersion()   { return mSub;};
     QString text();
+
     /*! Boolean equal operator
     */
     bool operator==( const QgsProjectVersion &other );
-
 
     /*! Boolean >= operator
     */

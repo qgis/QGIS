@@ -28,191 +28,204 @@ class QgisInterface : QObject
     /** Get pointer to legend interface
       \note added in 1.4
      */
-    virtual QgsLegendInterface* legendInterface()=0;
+    virtual QgsLegendInterface* legendInterface() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
     //! Zoom to full extent of map layers
-    virtual void zoomFull()=0;
+    virtual void zoomFull() = 0;
+
     //! Zoom to previous view extent
-    virtual void zoomToPrevious()=0;
+    virtual void zoomToPrevious() = 0;
+
     //! Zoom to next view extent
-    virtual void zoomToNext()=0;
-    //! Zoome to extent of the active layer
-    virtual void zoomToActiveLayer()=0;
+    virtual void zoomToNext() = 0;
+
+    //! Zoom to extent of the active layer
+    virtual void zoomToActiveLayer() = 0;
 
     //! Add a vector layer
-    virtual QgsVectorLayer* addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;
+    virtual QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey ) = 0;
+
     //! Add a raster layer given a raster layer file name
-    virtual QgsRasterLayer* addRasterLayer(QString rasterLayerPath, QString baseName = QString())=0;
+    virtual QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName = QString() ) = 0;
+
     //! Add a WMS layer
-    virtual QgsRasterLayer* addRasterLayer(const QString& uri, const QString& baseName, const QString& providerKey) = 0;
+    virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject(QString theProject)=0;
+    virtual bool addProject( QString theProject ) = 0;
     //! Start a blank project
-    virtual void newProject(bool thePromptToSaveFlag=false)=0;
+    virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
 
     //! Get pointer to the active layer (layer selected in the legend)
-    virtual QgsMapLayer *activeLayer()=0;
+    virtual QgsMapLayer *activeLayer() = 0;
 
-    //! Get pointer to the active layer (layer selected in the legend)
+    //! Set the active layer (layer gets selected in the legend)
+    //! returns true if the layer exists, false otherwise
     //! added in 1.4
-    virtual bool setActiveLayer( QgsMapLayer * )=0;
+    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
     //! Add an icon to the plugins toolbar
-    virtual int addToolBarIcon(QAction *qAction) =0;
+    virtual int addToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the plugin toolbar
-    virtual void removeToolBarIcon(QAction *qAction) = 0;
+    virtual void removeToolBarIcon( QAction *qAction ) = 0;
+
     //! Add an icon to the Raster toolbar
     //! @note added in 2.0
-    virtual int addRasterToolBarIcon(QAction *qAction) =0;
+    virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the Raster toolbar
     //! @note added in 2.0
-    virtual void removeRasterToolBarIcon(QAction *qAction) = 0;
+    virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
+
     //! Add an icon to the Vector toolbar
     //! @note added in 2.0
-    virtual int addVectorToolBarIcon(QAction *qAction) =0;
+    virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the Vector toolbar
     //! @note added in 2.0
-    virtual void removeVectorToolBarIcon(QAction *qAction) = 0;
+    virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
+
     //! Add an icon to the Database toolbar
     //! @note added in 2.0
-    virtual int addDatabaseToolBarIcon(QAction *qAction) =0;
+    virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the Database toolbar
     //! @note added in 2.0
-    virtual void removeDatabaseToolBarIcon(QAction *qAction) = 0;
+    virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
+
     //! Add an icon to the Web toolbar
     //! @note added in 2.0
-    virtual int addWebToolBarIcon(QAction *qAction) =0;
+    virtual int addWebToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the Web toolbar
     //! @note added in 2.0
-    virtual void removeWebToolBarIcon(QAction *qAction) = 0;
+    virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar* addToolBar(QString name)=0 /Factory/;
-
-    // TODO: is this deprecated in favour of QgsContextHelp?
-    /** Open a url in the users browser. By default the QGIS doc directory is used
-     * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
-     * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
-     * url to the QGIS documentation directory path (<prefix>/share/doc)
-     * @deprecated
-     */
-    virtual void openURL(QString url, bool useQgisDocDirectory=true)=0 /Deprecated/;
+    virtual QToolBar *addToolBar( QString name ) = 0 /Factory/;
 
     /** Return a pointer to the map canvas */
-    virtual QgsMapCanvas * mapCanvas()=0;
+    virtual QgsMapCanvas * mapCanvas() = 0;
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
-    virtual QWidget * mainWindow()=0;
+    virtual QWidget * mainWindow() = 0;
 
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
-
-    /** Return pointers to the composer views of the running instance (currently only one)*/
-    //virtual QList<QgsComposerView*> composerViews()=0;
 
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
     /** Add action to the plugins menu */
-    virtual void addPluginToMenu(QString name, QAction* action)=0;
+    virtual void addPluginToMenu( QString name, QAction* action ) = 0;
+
     /** Remove action from the plugins menu */
-    virtual void removePluginMenu(QString name, QAction* action)=0;
+    virtual void removePluginMenu( QString name, QAction* action ) = 0;
 
-    /** Add "add layer" action to the layer menu
+    /** Add "add layer" action to layer menu
      * @note added in 1.7
      */
-    virtual void insertAddLayerAction( QAction* action )=0;
+    virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    /** Remove "add layer" action from the layer menu
+    /** Remove "add layer" action from layer menu
      * @note added in 1.7
      */
-    virtual void removeAddLayerAction( QAction* action )=0;
+    virtual void removeAddLayerAction( QAction *action ) = 0;
 
     /** Add action to the Database menu
-      * @note added in 1.7
-      */
-    virtual void addPluginToDatabaseMenu(QString name, QAction* action)=0;
+     * @note added in 1.7
+     */
+    virtual void addPluginToDatabaseMenu( QString name, QAction* action ) = 0;
 
     /** Remove action from the Database menu
-      * @note added in 1.7
-      */
-    virtual void removePluginDatabaseMenu(QString name, QAction* action)=0;
+     * @note added in 1.7
+     */
+    virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
 
     /** Add action to the Raster menu
-      * @note added in 2.0
-      */
-    virtual void addPluginToRasterMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void addPluginToRasterMenu( QString name, QAction* action ) = 0;
 
     /** Remove action from the Raster menu
-      * @note added in 2.0
-      */
-    virtual void removePluginRasterMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void removePluginRasterMenu( QString name, QAction* action ) = 0;
 
     /** Add action to the Vector menu
-      * @note added in 2.0
-      */
-    virtual void addPluginToVectorMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void addPluginToVectorMenu( QString name, QAction* action ) = 0;
 
     /** Remove action from the Vector menu
-      * @note added in 2.0
-      */
-    virtual void removePluginVectorMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void removePluginVectorMenu( QString name, QAction* action ) = 0;
 
     /** Add action to the Web menu
-      * @note added in 2.0
-      */
-    virtual void addPluginToWebMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void addPluginToWebMenu( QString name, QAction* action ) = 0;
 
     /** Remove action from the Web menu
-      * @note added in 2.0
-      */
-    virtual void removePluginWebMenu(QString name, QAction* action)=0;
+     * @note added in 2.0
+     */
+    virtual void removePluginWebMenu( QString name, QAction* action ) = 0;
 
-    /** Add a dock widget to the main window
-       @note added in 1.7 */
-    virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
+    /** Add a dock widget to the main window */
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
 
     /** Remove specified dock widget from main window (doesn't delete it).
-      * @note added in 1.1
-      */
-    virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
-
-    /** refresh legend of a layer
-     \note deprecated - use QgsLegendInterface::refreshLayerSymbology()
+     * @note Added in 1.1
      */
-    virtual void refreshLegend( QgsMapLayer * layer )=0 /Deprecated/;
+    virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
-    /** open layer properties
-      \note added in 1.5
+    /** refresh the legend of a layer
+     \deprecated use QgsLegendInterface::refreshLayerSymbology
      */
-    virtual void showLayerProperties( QgsMapLayer * layer )=0;
+    virtual void refreshLegend( QgsMapLayer * layer ) = 0 /Deprecated/;
 
-    /** open attribute table
-      \note added in 1.7
+    /** open layer properties dialog
+     \note added in 1.5
      */
-    virtual void showAttributeTable( QgsVectorLayer * layer )=0;
+    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+
+    /** open attribute table dialog
+     \note added in 1.7
+     */
+    virtual void showAttributeTable( QgsVectorLayer *l ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) = 0;
+
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
     /** Register action to the shortcuts manager so its shortcut can be changed in GUI
-       \note added in 1.2
+      \note added in 1.2
     */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
 
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
-       \note added in 1.2
+      \note added in 1.2
     */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
+
+    // @todo is this deprecated in favour of QgsContextHelp?
+    /** Open a url in the users browser. By default the QGIS doc directory is used
+     * as the base for the URL. To open a URL that is not relative to the installed
+     * QGIS documentation, set useQgisDocDirectory to false.
+     * @param url URL to open
+     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
+     * url to the QGIS documentation directory path (prefix/share/doc)
+     * @deprecated
+     */
+    virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
@@ -226,11 +239,15 @@ class QgisInterface : QObject
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
-    //** @note added in 2.0
-    virtual QMenu *vectorMenu() = 0;
-    //** @note added in 2.0
-    virtual QMenu *webMenu() = 0;
+    /** \note added in 1.7
+    */
     virtual QMenu *databaseMenu() = 0;
+    /** \note added in 2.0
+    */
+    virtual QMenu *vectorMenu() = 0;
+    /** \note added in 2.0
+    */
+    virtual QMenu *webMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
     virtual QMenu *windowMenu() = 0;
     virtual QMenu *helpMenu() = 0;
@@ -244,12 +261,17 @@ class QgisInterface : QObject
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
+    /** \note added in 1.7
+    */
     virtual QToolBar *rasterToolBar() = 0;
-    //** @note added in 2.0
+    /** \note added in 2.0
+    */
     virtual QToolBar *vectorToolBar() = 0;
-    //** @note added in 2.0
+    /** \note added in 2.0
+    */
     virtual QToolBar *databaseToolBar() = 0;
-    //** @note added in 2.0
+    /** \note added in 2.0
+    */
     virtual QToolBar *webToolBar() = 0;
 
     //! File menu actions
@@ -282,8 +304,8 @@ class QgisInterface : QObject
     virtual QAction *actionDeleteVertex() = 0 /Deprecated/;
     virtual QAction *actionMoveVertex() = 0 /Deprecated/;
     virtual QAction *actionAddRing() = 0;
-    virtual QAction *actionAddPart() = 0;
     virtual QAction *actionAddIsland() = 0 /Deprecated/;
+    virtual QAction *actionAddPart() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
@@ -360,7 +382,8 @@ class QgisInterface : QObject
     virtual QAction *actionHelpSeparator2() = 0 /Deprecated/;
     virtual QAction *actionAbout() = 0;
 
-    //! open feature form
+    //! Open feature form
+    // returns true when dialog was accepted
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
 
@@ -368,20 +391,21 @@ class QgisInterface : QObject
     /** Emited whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
-    void currentLayerChanged ( QgsMapLayer * layer );
+    void currentLayerChanged( QgsMapLayer * layer );
 
     /**This signal is emitted when a new composer instance has been created
-       @note added in version 1.4*/
+     * @note added in 1.4
+     */
     void composerAdded( QgsComposerView* v );
 
     /**This signal is emitted before a new composer instance is going to be removed
-       @note added in version 1.4*/
+     * @note added in 1.4
+     */
     void composerWillBeRemoved( QgsComposerView* v );
-
-    /**This signal is emitted when QGIS' initialization is complete
-       @note added in version 1.6*/
+    /**This signal is emitted when the initialization is complete
+      * @note added in version 1.6
+      */
     void initializationCompleted();
-
     /** emitted when a project file is successfully read
         @note
         This is useful for plug-ins that store properties with project files.  A
@@ -401,5 +425,5 @@ class QgisInterface : QObject
 
         Added in v1.6
       */
-     void newProjectCreated();
+    void newProjectCreated();
 };

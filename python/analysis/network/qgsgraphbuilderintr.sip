@@ -27,7 +27,7 @@ class QgsGraphBuilderInterface
      * @param ctfEnabled enable coordinate transform from source graph CRS to CRS graph 
      * @param topologyTolerance sqrt distance between source point as one graph vertex
      * @param ellipsoidID ellipsoid for edge measurement
-     */  
+     */
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
 
     QgsCoordinateReferenceSystem& destinationCrs();
@@ -43,11 +43,11 @@ class QgsGraphBuilderInterface
 
     /**
      * add vertex
-     * @param id vertex identyficator
+     * @param id vertex identifier
      * @param pt vertex coordinate
-     * @note id and pt is a redundant interface. You can use coordinates or id for vertex identyfy
+     * @note id and pt are redundant. You can use pt or id to identify the vertex
      */
-    virtual void addVertex( int id, const QgsPoint& pt );
+    virtual void addVertex( int id, const QgsPoint &pt );
 
     /**
      * add arc
@@ -61,4 +61,3 @@ class QgsGraphBuilderInterface
     virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& properties );
   
 };
-
