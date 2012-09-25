@@ -315,14 +315,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.historyIndex = len(self.history)
         
     def writeHistoryFile(self):
-        #hystoryFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
         wH = open(_historyFile, 'w')
         for s in self.history:
             wH.write(s + '\n')
         wH.close()
         
     def readHistoryFile(self):
-        #hystoryFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
         fileExist = QFile.exists(_historyFile)
         if fileExist:
             rH = open(_historyFile, 'r')
@@ -505,11 +503,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             if cmd == '_save':
                 self.writeHistoryFile()
                 print QCoreApplication.translate("PythonConsole", "## History saved successfully ##")
-                #del self.buffer[-1]
             elif cmd == '_clear':
                 self.clearHistoryFile()
                 print QCoreApplication.translate("PythonConsole", "## History cleared successfully ##")
-                #del self.buffer[-1]
             output = sys.stdout.get_and_clean_data()
             if output:
                 self.append(output)
