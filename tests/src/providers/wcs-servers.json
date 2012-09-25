@@ -41,7 +41,20 @@
       }
     ]
   }, {
-    url: 'http://demo.geonode.org/geoserver/wcs'
+    url: 'http://demo.geonode.org/geoserver/wcs',
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'geonode:__137_FMCvivo_tif', 'geonode:__137_FMCvivo_tif_1', 'geonode:cl_minu1_2', 'geonode:cl_minu1_2_1', 'geonode:cl_minu1_2_2', 'geonode:dof_5modelAvg_sresb1_2010_2019', 'geonode:dof_5modelAvg_sresb1_2010_2019_1', 'geonode:MOS_EU_LAEA_2000' ],
+        versions: [ '1.0.0' ],
+        description: "The server DescribeCoverage fails: 'java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encodin...'"
+      },{
+        offender: 'server',
+        coverages: [ 'geonode:elevation_1', 'geonode:elevation_2', 'geonode:quake' ],
+        versions: [ '1.0.0' ],
+        description: "The spatialDomain.Envelope in DescribeCoverage is wrong, it is larger than (real?) extent and that reported in lonLatEnvelope."
+      }
+    ]
   }, {
     url: 'http://demo.mapserver.org/cgi-bin/wcs',
     issues: [

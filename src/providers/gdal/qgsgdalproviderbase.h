@@ -53,6 +53,8 @@ class QgsGdalProviderBase
     int colorInterpretationFromGdal( int gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
+
+    QgsRectangle extent( GDALDatasetH gdalDataset ) const;
 };
 
 #endif
