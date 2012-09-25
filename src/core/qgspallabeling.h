@@ -202,7 +202,6 @@ class CORE_EXPORT QgsPalLayerSettings
     // temporary stuff: set when layer gets prepared
     pal::Layer* palLayer;
     int fieldIndex;
-    QFontMetricsF* fontMetrics;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;

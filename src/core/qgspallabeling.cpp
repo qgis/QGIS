@@ -64,6 +64,7 @@ class QgsPalGeometry : public PalGeometry
         , mInfo( NULL )
         , mIsDiagram( false )
         , mIsPinned( false )
+        , mFontMetrics( NULL )
     {
       mStrId = FID_TO_STRING( id ).toAscii();
     }
@@ -73,6 +74,7 @@ class QgsPalGeometry : public PalGeometry
       if ( mG )
         GEOSGeom_destroy( mG );
       delete mInfo;
+      delete mFontMetrics;
     }
 
     // getGeosGeometry + releaseGeosGeometry is called twice: once when adding, second time when labeling
@@ -93,6 +95,8 @@ class QgsPalGeometry : public PalGeometry
     {
       if ( mInfo )
         return mInfo;
+
+      mFontMetrics = new QFontMetricsF( *fm ); // duplicate metrics for when drawing label
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
@@ -117,6 +121,8 @@ class QgsPalGeometry : public PalGeometry
     void setIsPinned( bool f ) { mIsPinned = f; }
     bool isPinned() const { return mIsPinned; }
 
+    QFontMetricsF* getLabelFontMetrics() { return mFontMetrics; }
+
     void addDiagramAttribute( int index, QVariant value ) { mDiagramAttributes.insert( index, value ); }
     const QgsAttributeMap& diagramAttributes() { return mDiagramAttributes; }
 
@@ -128,6 +134,7 @@ class QgsPalGeometry : public PalGeometry
     LabelInfo* mInfo;
     bool mIsDiagram;
     bool mIsPinned;
+    QFontMetricsF* mFontMetrics;
     /**Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
@@ -138,7 +145,7 @@ class QgsPalGeometry : public PalGeometry
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL ), fontMetrics( NULL ), ct( NULL ), extentGeom( NULL ), expression( NULL )
+    : palLayer( NULL ), ct( NULL ), extentGeom( NULL ), expression( NULL )
 {
   placement = AroundPoint;
   placementFlags = 0;
@@ -231,7 +238,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   preserveRotation = s.preserveRotation;
 
   dataDefinedProperties = s.dataDefinedProperties;
-  fontMetrics = NULL;
   ct = NULL;
   extentGeom = NULL;
   expression = NULL;
@@ -242,7 +248,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 {
   // pal layer is deleted internally in PAL
 
-  delete fontMetrics;
   delete ct;
   delete expression;
   delete extentGeom;
@@ -656,19 +661,17 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( size.isValid() )
     {
       double sizeDouble = size.toDouble();
-      if ( sizeDouble <= 0 || sizeToPixel( sizeDouble, context ) < 1 )
+      if ( sizeDouble <= 0.0 || sizeToPixel( sizeDouble, context ) < 1 )
       {
         return;
       }
       labelFont.setPixelSize( sizeToPixel( sizeDouble, context ) );
     }
-    QFontMetricsF labelFontMetrics( labelFont );
-    calculateLabelSize( &labelFontMetrics, labelText, labelX, labelY );
   }
-  else
-  {
-    calculateLabelSize( fontMetrics, labelText, labelX, labelY );
-  }
+
+  // this should come after any data defined option that affects font metrics
+  QFontMetricsF* labelFontMetrics = new QFontMetricsF( labelFont );
+  calculateLabelSize( labelFontMetrics, labelText, labelX, labelY );
 
   QgsGeometry* geom = f.geometry();
   if ( !geom )
@@ -819,8 +822,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
             }
             else
             {
-              QFontMetrics labelFontMetrics( labelFont );
-              double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
+              double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
 
               if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
               {
@@ -887,7 +889,9 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   // TODO: only for placement which needs character info
   pal::Feature* feat = palLayer->getFeature( lbl->strId() );
-  feat->setLabelInfo( lbl->info( fontMetrics, xform, rasterCompressFactor ) );
+  // account for any data defined font metrics adjustments
+  feat->setLabelInfo( lbl->info( labelFontMetrics, xform, rasterCompressFactor ) );
+  delete labelFontMetrics;
 
   // TODO: allow layer-wide feature dist in PAL...?
 
@@ -1084,8 +1088,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   if ( pixelFontSize < 1 )
   {
-    lyr.textFont.setPixelSize( 1 );
     lyr.textFont.setPointSize( 1 );
+    lyr.textFont.setPixelSize( 1 );
   }
   else
   {
@@ -1116,7 +1120,6 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;
   lyr.fieldIndex = fldIndex;
-  lyr.fontMetrics = new QFontMetricsF( lyr.textFont );
 
   lyr.xform = mMapRenderer->coordinateTransform();
   if ( mMapRenderer->hasCrsTransformEnabled() )
@@ -1632,6 +1635,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   const QgsPalLayerSettings& lyr = layer( QString::fromUtf8( label->getLayerName() ) );
   QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
+  QFontMetricsF* labelfm = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->getLabelFontMetrics();
 
   //add the direction symbol if needed
   if ( !txt.isEmpty() && lyr.placement == QgsPalLayerSettings::Line &&
@@ -1665,9 +1669,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     // to workaround a Qt font scaling bug with small font sizes
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
-    double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
+    double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * labelfm->height();
     double ascentOffset = 0.0;
-    ascentOffset = lyr.fontMetrics->height() * 0.25 * lyr.fontMetrics->ascent() / lyr.fontMetrics->height();
+    ascentOffset = labelfm->height() * 0.25 * labelfm->ascent() / labelfm->height();
     painter->translate( QPointF( 0, - ascentOffset - yMultiLineOffset ) );
 
     if ( drawBuffer )
