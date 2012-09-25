@@ -30,6 +30,9 @@ email                : morb at ozemail dot com dot au
 
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
+#include <QSet>
+
+class QgsVectorLayer;
 
 /** polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -429,9 +432,10 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @ignoreFeatures possibility to give a list of features where intersections should be ignored
      *  @note added in 1.5
      */
-    int avoidIntersections();
+    int avoidIntersections( QMap<QgsVectorLayer*, QSet<qint64> > ignoreFeatures = QMap<QgsVectorLayer*, QSet<qint64> >() );
 
     class Error
     {

@@ -430,8 +430,8 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   // the rest of them so end the loop at that point.
   for ( int i = 0; i < nPoints; ++i )
   {
-    if ( qAbs( x.at(i) ) > QgsClipper::MAX_X ||
-         qAbs( y.at(i) ) > QgsClipper::MAX_Y )
+    if ( qAbs( x.at( i ) ) > QgsClipper::MAX_X ||
+         qAbs( y.at( i ) ) > QgsClipper::MAX_Y )
     {
       QgsClipper::trimFeature( x, y, true ); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -443,8 +443,8 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   QPolygonF pa( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
-    pa[i].setX( x.at(i) );
-    pa[i].setY( y.at(i) );
+    pa[i].setX( x.at( i ) );
+    pa[i].setY( y.at( i ) );
   }
 
   // The default pen gives bevelled joins between segements of the
@@ -2489,7 +2489,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   return returnCode;
 }
 
-int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
+int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures )
 {
   if ( !hasGeometryType() )
     return 1;
@@ -2511,6 +2511,11 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
   QgsFeature f;
   while ( nextFeature( f ) )
   {
+    if ( ignoreFeatures.contains( f.id() ) )
+    {
+      continue;
+    }
+
     //call geometry->makeDifference for each feature
     QgsGeometry *currentGeom = f.geometry();
     if ( currentGeom )
