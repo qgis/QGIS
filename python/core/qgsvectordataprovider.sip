@@ -88,7 +88,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Gets the feature at the given feature ID.
      * @param featureId id of the feature
      * @param feature feature which will receive the data
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
+     * @param fetchGeometry if true, geometry will be fetched from the provider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      *

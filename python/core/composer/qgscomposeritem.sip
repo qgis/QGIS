@@ -212,7 +212,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @param none
      * @return boolean - true if there is a frame around this item, otherwise false.
      * @note deprecated since 1.8 don't use!
      * @see hasFrame
