@@ -100,6 +100,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     mPyramidsGroupBox->setEnabled( false );
   }
 
+  // restore checked state for most groupboxes (default is to restore collapsed state)
+  // create options and pyramids will be preset, if user has selected defaults in the gdal options dlg
+  mCreateOptionsGroupBox->setSaveCheckedState( true );
+  mTilesGroupBox->setSaveCheckedState( true );
+  // don't restore nodata, it needs user input
+  // pyramids are not necessarily built every time
+
   updateCrsGroup();
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );

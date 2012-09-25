@@ -51,7 +51,7 @@ void QgsCollapsibleGroupBox::init()
 {
   // variables
   mCollapsed = false;
-  mSaveState = true;
+  mSaveCollapsedState = true;
   // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
   // in multiple places or used as options for different parent objects
   mSaveCheckedState = false;
@@ -179,7 +179,7 @@ QString QgsCollapsibleGroupBox::saveKey() const
 
 void QgsCollapsibleGroupBox::loadState()
 {
-  if ( ! mSaveState )
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
 
   setUpdatesEnabled( false );
@@ -193,22 +193,28 @@ void QgsCollapsibleGroupBox::loadState()
     if ( ! val.isNull() )
       setChecked( val.toBool() );
   }
-  val = settings.value( key + "/collapsed" );
-  if ( ! val.isNull() )
-    setCollapsed( val.toBool() );
+  if ( mSaveCollapsedState )
+  {
+    val = settings.value( key + "/collapsed" );
+    if ( ! val.isNull() )
+      setCollapsed( val.toBool() );
+  }
 
   setUpdatesEnabled( true );
 }
 
 void QgsCollapsibleGroupBox::saveState()
 {
-  if ( ! mSaveState )
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
+
   QSettings settings;
   QString key = saveKey();
+
   if ( mSaveCheckedState )
     settings.setValue( key + "/checked", isChecked() );
-  settings.setValue( key + "/collapsed", isCollapsed() );
+  if ( mSaveCollapsedState )
+    settings.setValue( key + "/collapsed", isCollapsed() );
 }
 
 void QgsCollapsibleGroupBox::checkToggled( bool chkd )
