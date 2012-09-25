@@ -6254,6 +6254,34 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Console python</translation>
     </message>
     <message>
+        <source>Clear console</source>
+        <translation>Pulisci console</translation>
+    </message>
+    <message>
+        <source>Import iface class</source>
+        <translation>Importa la classe iface</translation>
+    </message>
+    <message>
+        <source>Import sextante class</source>
+        <translation>Importa la classe Sextante</translation>
+    </message>
+    <message>
+        <source>Open script file</source>
+        <translation>Apri file</translation>
+    </message>
+    <message>
+        <source>Save to script file</source>
+        <translation>Salva file</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Aiuto</translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation>Esegui comando</translation>
+    </message>
+    <message>
         <source>## To access Quantum GIS environment from this console
 ## use qgis.utils.iface object (instance of QgisInterface class).
 
