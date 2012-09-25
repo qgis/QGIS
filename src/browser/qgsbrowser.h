@@ -59,6 +59,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 
   protected:
     void keyPressEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent * e );
 
     bool layerClicked( QgsLayerItem* ptr );
 
