@@ -32,6 +32,7 @@ import traceback
 import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
+_historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def __init__(self, parent=None):
@@ -59,6 +60,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             
         self.history = QStringList()
         self.historyIndex = 0
+        # Read history command file
+        self.readHistoryFile()
           
         # Brace matching: enable for a brace immediately before or after
         # the current position
@@ -206,7 +209,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def insertInitText(self):
         #self.setLexers(False)
         txtInit = QCoreApplication.translate("PythonConsole","## To access Quantum GIS environment from this console\n"
-                                             "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
+                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
 
     def getCurrentPos(self):
@@ -310,6 +313,29 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             not command == self.history[-1]:
                 self.history.append(command)
         self.historyIndex = len(self.history)
+        
+    def writeHistoryFile(self):
+        #hystoryFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
+        wH = open(_historyFile, 'w')
+        for s in self.history:
+            wH.write(s + '\n')
+        wH.close()
+        
+    def readHistoryFile(self):
+        #hystoryFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
+        fileExist = QFile.exists(_historyFile)
+        if fileExist:
+            rH = open(_historyFile, 'r')
+            for line in rH:
+                if line != "\n":
+                    l = line.rstrip('\n')
+                    self.updateHistory(l)
+        else:
+            return
+        
+    def clearHistoryFile(self):
+        cH = open(_historyFile, 'w')
+        cH.close()
         
     def showPrevious(self):
         if self.historyIndex < len(self.history) and not self.history.isEmpty():
@@ -475,18 +501,30 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def runCommand(self, cmd):
         self.updateHistory(cmd)
         self.SendScintilla(QsciScintilla.SCI_NEWLINE)
-        self.buffer.append(cmd)
-        src = "\n".join(self.buffer)
-        more = self.runsource(src, "<input>")
-        if not more:
-            self.buffer = []
-                       
-        output = sys.stdout.get_and_clean_data()
-        if output:
-            self.append(output)
-            
-        self.move_cursor_to_end()
-        self.displayPrompt(more)
+        if cmd in ('_save', '_clear'):
+            if cmd == '_save':
+                self.writeHistoryFile()
+                print QCoreApplication.translate("PythonConsole", "## History saved successfully ##")
+                #del self.buffer[-1]
+            elif cmd == '_clear':
+                self.clearHistoryFile()
+                print QCoreApplication.translate("PythonConsole", "## History cleared successfully ##")
+                #del self.buffer[-1]
+            output = sys.stdout.get_and_clean_data()
+            if output:
+                self.append(output)
+            self.displayPrompt(False)
+        else:
+            self.buffer.append(cmd)
+            src = "\n".join(self.buffer)
+            more = self.runsource(src, "<input>")
+            if not more:
+                self.buffer = []
+            output = sys.stdout.get_and_clean_data()
+            if output:
+                self.append(output)
+            self.move_cursor_to_end()
+            self.displayPrompt(more)
 
     def write(self, txt):
         self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)

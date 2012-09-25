@@ -260,6 +260,7 @@ class PythonConsole(QDockWidget):
         dlg.exec_()
 
     def closeEvent(self, event):
+        self.edit.writeHistoryFile()
         QWidget.closeEvent(self, event)
 
 
