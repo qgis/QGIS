@@ -30,6 +30,8 @@ email                : morb at ozemail dot com dot au
 
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
+
 #include <QSet>
 
 class QgsVectorLayer;
@@ -432,10 +434,10 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
-     *  @ignoreFeatures possibility to give a list of features where intersections should be ignored
+     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections( QMap<QgsVectorLayer*, QSet<qint64> > ignoreFeatures = QMap<QgsVectorLayer*, QSet<qint64> >() );
+    int avoidIntersections( QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() );
 
     class Error
     {

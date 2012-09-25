@@ -395,9 +395,10 @@ class QgsVectorLayer : QgsMapLayer
     /**Changes the specified geometry such that it has no intersections with other
      *  polygon (or multipolygon) geometries in this vector layer
      *  @param geom geometry to modify
+     *  @param ignoreFeatures list of feature ids where intersections should be ignored
      *  @return 0 in case of success
      */
-    int removePolygonIntersections( QgsGeometry* geom );
+    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features

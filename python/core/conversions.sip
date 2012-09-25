@@ -1490,8 +1490,6 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
-    PyObject *tobj;
-
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
     {
@@ -1500,7 +1498,7 @@ template <TYPE>
 
       for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
       {
-        if (!sipCanConvertToInstance(tobj, sipClass_TYPE, SIP_NOT_NONE))
+        if (!sipCanConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, SIP_NOT_NONE))
           return 0;
       }
 
@@ -1513,7 +1511,7 @@ template <TYPE>
     {
       int state;
 
-      TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(tobj, sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
       if (*sipIsErr)
       {
