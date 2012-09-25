@@ -17,8 +17,11 @@
 #include <config.h>
 #endif
 
+#ifdef _MSC_VER
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE
-
+#endif
+#endif
 
 #ifndef RTREE_H
 #define RTREE_H
