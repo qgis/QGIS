@@ -1,7 +1,7 @@
 [
   {
     url: 'http://demo.opengeo.org/geoserver/wcs',
-    description: 'It does not work at all with gvSIG-1_11-1305-final. The Coverage usgs:ned is quite slow and it can fail even with timeout 60s',  
+    description: 'It does not work at all with gvSIG-1_11-1305-final. Some layer may sometimes fail, probably when the server is overloaded or crashes.',  
     issues: [
       {
         offender: 'server',
@@ -17,7 +17,7 @@
         offender: 'server',
         coverages: [ 'usgs:ned' ],
         versions: [ '1.0.0' ],
-        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s, but even with timeout 300s it usually fails to render. It was seen to rendered in QGIS however."
+        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s. It was seen to rendered in sometimes however."
       },{
         offender: 'server',
         coverages: [ 'bm' ],
