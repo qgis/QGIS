@@ -90,6 +90,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   {
     QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions()[i];
     QString name = func.mName;
+    if ( name.startsWith( "_" ) ) // do not display private functions
+      continue;
     if ( func.mParams >= 1 )
       name += "(";
     registerItem( func.mGroup, func.mName, " " + name + " " );
@@ -259,8 +261,6 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
   QgsExpression exp( text );
 
-  // TODO We could do this without a layer.
-  // Maybe just calling exp.evaluate()?
   if ( mLayer )
   {
     if ( !mFeature.isValid() )
@@ -280,6 +280,15 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
       // The feature is invalid because we don't have one but that doesn't mean user can't
       // build a expression string.  They just get no preview.
       lblPreview->setText( "" );
+    }
+  }
+  else
+  {
+    // No layer defined
+    QVariant value = exp.evaluate();
+    if ( !exp.hasEvalError() )
+    {
+      lblPreview->setText( value.toString() );
     }
   }
 

@@ -119,6 +119,8 @@ public:
 
     static const QList<QgsExpression::FunctionDef> &BuiltinFunctions();
 
+    static QList<QgsExpression::FunctionDef> specialColumns();
+
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 
