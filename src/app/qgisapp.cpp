@@ -1246,13 +1246,16 @@ void QgisApp::createMenus()
 
   // Database Menu
   // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ), this );
+  mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
+  mDatabaseMenu->setObjectName( "mDatabaseMenu" );
   // Vector Menu
   // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ), this );
+  mVectorMenu = new QMenu( tr( "Vect&or" ), menuBar() );
+  mVectorMenu->setObjectName( "mVectorMenu" );
   // Web Menu
   // don't add it yet, wait for a plugin
-  mWebMenu = new QMenu( tr( "&Web" ), this );
+  mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
+  mWebMenu->setObjectName( "mWebMenu" );
 
   // Help menu
   // add What's this button to it
