@@ -50,6 +50,7 @@ class TestQgsComposition(unittest.TestCase):
         """Run after each test."""
         pass
 
+    @expectedFailure
     def testSubstitutionMap(self):
         """Test that we can use degree symbols in substitutions.
         """
@@ -64,14 +65,34 @@ class TestQgsComposition(unittest.TestCase):
         # Load the composition with the substitutions
         myComposition = QgsComposition(CANVAS.mapRenderer())
         mySubstitutionMap = {'replace-me': myText }
-        myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
+        myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         myTemplateFile = file(myFile, 'rt')
         myTemplateContent = myTemplateFile.read()
         myTemplateFile.close()
         myDocument = QDomDocument()
         myDocument.setContent(myTemplateContent)
         myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
-        
+
+        # We should be able to get map0
+        myMap = myComposition.getComposerMapById(0)
+        myMessage = ('Map 0 could not be found in template %s', myFile)
+        assert myMap is not None, myMessage
+
+    def testNoSubstitutionMap(self):
+        """Test that we can get a map if we use no text substitutions."""
+        myComposition = QgsComposition(CANVAS.mapRenderer())
+        myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
+        myTemplateFile = file(myFile, 'rt')
+        myTemplateContent = myTemplateFile.read()
+        myTemplateFile.close()
+        myDocument = QDomDocument()
+        myDocument.setContent(myTemplateContent)
+        myComposition.loadFromTemplate(myDocument)
+
+        # We should be able to get map0
+        myMap = myComposition.getComposerMapById(0)
+        myMessage = ('Map 0 could not be found in template %s', myFile)
+        assert myMap is not None, myMessage
 
 if __name__ == '__main__':
     unittest.main()
