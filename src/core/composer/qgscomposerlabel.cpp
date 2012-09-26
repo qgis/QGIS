@@ -84,14 +84,18 @@ QString QgsComposerLabel::displayText() const
 
 void QgsComposerLabel::replaceDateText( QString& text ) const
 {
-  int currentDatePos = text.indexOf( "$CURRENT_DATE" );
+  QString constant = "$CURRENT_DATE";
+  int currentDatePos = text.indexOf( constant );
   if ( currentDatePos != -1 )
   {
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
     int openingBracketPos = text.indexOf( "(", currentDatePos );
     int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
-    if ( openingBracketPos != -1 && closingBracketPos != -1 && ( closingBracketPos - openingBracketPos ) > 1 )
+    if ( openingBracketPos != -1 &&
+	 closingBracketPos != -1 &&
+	 ( closingBracketPos - openingBracketPos ) > 1 && 
+	 openingBracketPos == currentDatePos + constant.size() )
     {
       formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
       text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );
