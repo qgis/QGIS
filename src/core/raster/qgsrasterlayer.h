@@ -233,14 +233,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       UndefinedDrawingStyle,
       SingleBandGray,                 // a single band image drawn as a range of gray colors
       SingleBandPseudoColor,          // a single band image drawn using a pseudocolor algorithm
-      PalettedColor,                  //a "Palette" image drawn using color table
-      PalettedSingleBandGray,        // a "Palette" layer drawn in gray scale
-      PalettedSingleBandPseudoColor, // a "Palette" layerdrawn using a pseudocolor algorithm
+      PalettedColor,                  // a "Palette" image drawn using color table
+      PalettedSingleBandGray,         // a "Palette" layer drawn in gray scale
+      PalettedSingleBandPseudoColor,  // a "Palette" layerdrawn using a pseudocolor algorithm
       PalettedMultiBandColor,         // currently not supported
-      MultiBandSingleBandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
-      MultiBandColor,                  //a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
-      SingleBandColorDataStyle         // ARGB values rendered directly
+      MultiBandSingleBandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandPseudoColor, // a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
+      MultiBandColor,                 // a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      SingleBandColorDataStyle        // ARGB values rendered directly
     };
 
     /** \brief This enumerator describes the type of raster layer */
@@ -292,7 +292,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     static bool isValidRasterFileName( const QString & theFileNameQString );
     //static QStringList subLayers( GDALDatasetH dataset );
 
-
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
@@ -340,12 +339,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height() { return mHeight; }
-
-    /** \brief Is the NoDataValue Valid */
-    //bool isNoDataValueValid() const { return mValidNoDataValue; }
-
-    /** \brief Accessor that returns the NO_DATA entry for this raster */
-    //double noDataValue( bool* isValid = 0 ) { if ( isValid ) { *isValid = mValidNoDataValue;} return mNoDataValue; }
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
@@ -401,12 +394,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     *   If no matching band is found zero will be returned! */
     int bandNumber( const QString & theBandName ) const;
 
-    /** \brief Get RasterBandStats for a band given its number (read only)  */
-    //const  QgsRasterBandStats bandStatistics( int );
-
-    /** \brief Get RasterBandStats for a band given its name (read only)  */
-    //const  QgsRasterBandStats bandStatistics( const QString & );
-
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
@@ -417,20 +404,28 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
 
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
+      @note python bindings not available
+      */
     void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
 
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
+    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
+      @note python bindings not available
+      */
     void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
     void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
 
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
+    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
+      @note python bindings not available
+      */
     void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
+    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
+      @note python bindings not available
+      */
     void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
@@ -476,13 +471,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Checks if symbology is the same as another layers */
     bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
 
-    /** \brief  Check whether a given band number has stats associated with it */
-    //bool hasStatistics( int theBandNoInt );
-
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
-    /** \brief Identify raster value(s) found on the point position */
+    /** \brief Identify raster value(s) found on the point position
+      * @note available in python bindings as identifyMap
+      */
     bool identify( const QgsPoint & point, QMap<int, QString>& results );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position */
@@ -510,9 +504,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QPixmap legendAsPixmap();
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
+    //! @deprecated
+    //! @note available as legendAsPixmapBool in python bindings
     Q_DECL_DEPRECATED QPixmap legendAsPixmap( bool );
 
     /** \brief Use this method when you want an annotated legend suitable for print output etc */
+    //! @note available as legendAsPixmapCount in python bindings
     Q_DECL_DEPRECATED QPixmap legendAsPixmap( int theLabelCount );
 
     /** \brief Accessor for maximum value user for contrast enhancement */
@@ -546,10 +543,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    //const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
-
     /** \brief Read color table from GDAL raster band */
     // Keep this for QgsRasterLayerProperties
+    // @note not available in python bindings
     bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
 
     /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
@@ -569,6 +565,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Mutator for contrast enhancement algorithm using min/max */
     // TODO: remove in 2.0, replaced by following
+    // @note not available in python bindings
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
                                           bool theGenerateLookupTableFlag = true );
 
@@ -625,9 +622,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for setting the minimum value for contrast enhancement */
     Q_DECL_DEPRECATED void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
-    /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
-    //void setNoDataValue( double theNoData );
-
     /** \brief Set the raster shader function to a user defined function
       \note ownership of the shader function is transfered to raster shader */
     Q_DECL_DEPRECATED void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
@@ -646,6 +640,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
     void thumbnailAsPixmap( QPixmap * theQPixmap );
+
     /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */

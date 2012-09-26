@@ -166,7 +166,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 
     bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
-    double destNoDataValue;
+    double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
     QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
     //QgsRasterInterface::DataType destDataType = srcProvider->dataType( bandNo );
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
@@ -219,7 +219,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         destHasNoDataValue = true;
       }
     }
-    if ( nuller ) nuller->setOutputNoData( destNoDataValue );
+
+    if ( nuller && destHasNoDataValue )
+      nuller->setOutputNoData( destNoDataValue );
 
     QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
     destDataTypeList.append( destDataType );

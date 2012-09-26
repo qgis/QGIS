@@ -48,6 +48,8 @@ class TestQgsWcsPublicServers: public QObject
       QString url; // URL
       QString description; // notes
       QList<TestQgsWcsPublicServers::Issue> issues;
+      // additional params to be set on URI, e.g. IgnoreGetMapUrl
+      QMap<QString, QString> params;
     };
 
     enum OffenderType

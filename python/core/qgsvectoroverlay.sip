@@ -7,7 +7,10 @@ class QgsVectorOverlay
     QgsVectorOverlay( QgsVectorLayer* vl );
     virtual ~QgsVectorOverlay();
 
-    /**Create the overlay objects contained in a view extent. Subclasses need to implement this method and assign                   width/height information to the overlay objects*/
+    /**Create the overlay objects contained in a view extent. Subclasses need
+     * to implement this method and assign width/height information to the
+     * overlay objects
+     */
 
     virtual void createOverlayObjects( const QgsRenderContext& renderContext ) = 0;
 

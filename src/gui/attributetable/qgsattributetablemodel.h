@@ -147,6 +147,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void modelChanged();
 
+    //! @note not available in python bindings
     void progress( int i, bool &cancel );
     void finished();
 
@@ -207,11 +208,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     //! useful when showing only features from a particular extent
     QgsRectangle mCurrentExtent;
-
-    /**
-     * Initializes id <-> row maps
-     */
-    void initIdMaps();
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps

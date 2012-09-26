@@ -1,7 +1,7 @@
 [
   {
     url: 'http://demo.opengeo.org/geoserver/wcs',
-    description: 'It does not work at all with gvSIG-1_11-1305-final. The Coverage usgs:ned is quite slow and it can fail even with timeout 60s',  
+    description: 'It does not work at all with gvSIG-1_11-1305-final. Some layer may sometimes fail, probably when the server is overloaded or crashes.',  
     issues: [
       {
         offender: 'server',
@@ -17,7 +17,7 @@
         offender: 'server',
         coverages: [ 'usgs:ned' ],
         versions: [ '1.0.0' ],
-        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s, but even with timeout 300s it usually fails to render. It was seen to rendered in QGIS however."
+        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s. It was seen to rendered in sometimes however."
       },{
         offender: 'server',
         coverages: [ 'bm' ],
@@ -41,7 +41,20 @@
       }
     ]
   }, {
-    url: 'http://demo.geonode.org/geoserver/wcs'
+    url: 'http://demo.geonode.org/geoserver/wcs',
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'geonode:__137_FMCvivo_tif', 'geonode:__137_FMCvivo_tif_1', 'geonode:cl_minu1_2', 'geonode:cl_minu1_2_1', 'geonode:cl_minu1_2_2', 'geonode:dof_5modelAvg_sresb1_2010_2019', 'geonode:dof_5modelAvg_sresb1_2010_2019_1', 'geonode:MOS_EU_LAEA_2000' ],
+        versions: [ '1.0.0' ],
+        description: "The server DescribeCoverage fails: 'java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encodin...'"
+      },{
+        offender: 'server',
+        coverages: [ 'geonode:elevation_1', 'geonode:elevation_2', 'geonode:quake' ],
+        versions: [ '1.0.0' ],
+        description: "The spatialDomain.Envelope in DescribeCoverage is wrong, it is larger than (real?) extent and that reported in lonLatEnvelope."
+      }
+    ]
   }, {
     url: 'http://demo.mapserver.org/cgi-bin/wcs',
     issues: [
@@ -79,7 +92,9 @@
   }, {
     url: 'http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd'
   }, {
-    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer'
+    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer',
+    description: "GetCapabilities gives wrong URL for all requests (server does not exists). Additional parameter IgnoreGetMapUrl must be used",
+    params: { 'IgnoreGetMapUrl': '1' }
   }, {
     url: 'http://nsidc.org/cgi-bin/atlas_north'
 /*

@@ -32,6 +32,7 @@ import traceback
 import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
+_historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def __init__(self, parent=None):
@@ -59,6 +60,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             
         self.history = QStringList()
         self.historyIndex = 0
+        # Read history command file
+        self.readHistoryFile()
           
         # Brace matching: enable for a brace immediately before or after
         # the current position
@@ -124,6 +127,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setFocus()
         
     def commandConsole(self, command):
+        if not self.is_cursor_on_last_line():
+            self.move_cursor_to_end()
         line, pos = self.getCurLine()
         selCmd= self.text(line).length()
         self.setSelection(line, 4, line, selCmd)
@@ -203,8 +208,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
     def insertInitText(self):
         #self.setLexers(False)
-        txtInit = ("## To access Quantum GIS environment from this console\n"
-                    "## use qgis.utils.iface object (instance of QgisInterface class).\n\n")
+        txtInit = QCoreApplication.translate("PythonConsole","## To access Quantum GIS environment from this console\n"
+                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
 
     def getCurrentPos(self):
@@ -309,6 +314,27 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 self.history.append(command)
         self.historyIndex = len(self.history)
         
+    def writeHistoryFile(self):
+        wH = open(_historyFile, 'w')
+        for s in self.history:
+            wH.write(s + '\n')
+        wH.close()
+        
+    def readHistoryFile(self):
+        fileExist = QFile.exists(_historyFile)
+        if fileExist:
+            rH = open(_historyFile, 'r')
+            for line in rH:
+                if line != "\n":
+                    l = line.rstrip('\n')
+                    self.updateHistory(l)
+        else:
+            return
+        
+    def clearHistoryFile(self):
+        cH = open(_historyFile, 'w')
+        cH.close()
+        
     def showPrevious(self):
         if self.historyIndex < len(self.history) and not self.history.isEmpty():
             line, pos = self.getCurLine()
@@ -324,7 +350,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             
-
     def showNext(self):
         if  self.historyIndex > 0 and not self.history.isEmpty():
             line, pos = self.getCurLine()
@@ -365,7 +390,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 QsciScintilla.keyPressEvent(self, e)
             elif e.key() == Qt.Key_Delete:
                 if self.hasSelectedText():
-                    self.check_selection()
                     self.removeSelectedText()
                 elif self.is_cursor_on_last_line():
                     self.SendScintilla(QsciScintilla.SCI_CLEAR)
@@ -405,13 +429,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                             self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
                         else:
                             self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
-            elif e.key() == Qt.Key_Delete:
-                if self.hasSelectedText():
-                    self.check_selection()
-                    self.removeSelectedText()
-                elif self.is_cursor_on_last_line():
-                    self.SendScintilla(QsciScintilla.SCI_CLEAR)
-                event.accept()
             ## TODO: press event for auto-completion file directory
             #elif e.key() == Qt.Key_Tab:
                 #self.show_file_completion()
@@ -423,28 +440,29 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def paste(self):
         """Reimplement QScintilla method"""
         stringPaste = unicode(QApplication.clipboard().text())
+        if self.hasSelectedText():
+            self.removeSelectedText()
         self.insertFromDropPaste(stringPaste)
         
     ## Drag and drop
-    def dragEnterEvent(self, e):
-        if e.mimeData().hasFormat('text/plain'):
+    def dropEvent(self, e):
+        if e.mimeData().hasText():
+            stringDrag = e.mimeData().text()
+            self.insertFromDropPaste(stringDrag)
+            e.setDropAction(Qt.MoveAction)
             e.accept()
         else:
-            e.ignore() 
+            QsciScintillaCompat.dropEvent(self, e)
 
-    def dropEvent(self, e):
-        stringDrag = e.mimeData().text()
-        self.insertFromDropPaste(stringDrag)
-        
     def insertFromDropPaste(self, textDP):
         pasteList = QStringList()
         pasteList = textDP.split("\n")
         for line in pasteList[:-1]:
-            self.append(line)
+            self.insert(line)
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             self.runCommand(unicode(self.currentCommand()))
-        self.append(unicode(pasteList[-1]))
+        self.insert(unicode(pasteList[-1]))
         self.move_cursor_to_end()
 
     def getTextFromEditor(self):
@@ -481,18 +499,28 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def runCommand(self, cmd):
         self.updateHistory(cmd)
         self.SendScintilla(QsciScintilla.SCI_NEWLINE)
-        self.buffer.append(cmd)
-        src = "\n".join(self.buffer)
-        more = self.runsource(src, "<input>")
-        if not more:
-            self.buffer = []
-                       
-        output = sys.stdout.get_and_clean_data()
-        if output:
-            self.append(output)
-            
-        self.move_cursor_to_end()
-        self.displayPrompt(more)
+        if cmd in ('_save', '_clear'):
+            if cmd == '_save':
+                self.writeHistoryFile()
+                print QCoreApplication.translate("PythonConsole", "## History saved successfully ##")
+            elif cmd == '_clear':
+                self.clearHistoryFile()
+                print QCoreApplication.translate("PythonConsole", "## History cleared successfully ##")
+            output = sys.stdout.get_and_clean_data()
+            if output:
+                self.append(output)
+            self.displayPrompt(False)
+        else:
+            self.buffer.append(cmd)
+            src = "\n".join(self.buffer)
+            more = self.runsource(src, "<input>")
+            if not more:
+                self.buffer = []
+            output = sys.stdout.get_and_clean_data()
+            if output:
+                self.append(output)
+            self.move_cursor_to_end()
+            self.displayPrompt(more)
 
     def write(self, txt):
         self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)

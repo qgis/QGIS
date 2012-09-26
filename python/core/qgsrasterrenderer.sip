@@ -40,7 +40,7 @@ class QgsRasterRenderer : QgsRasterInterface
     void setOpacity( double opacity );
     double opacity() const;
 
-    void setRasterTransparency( QgsRasterTransparency* t );
+    void setRasterTransparency( QgsRasterTransparency* t /Transfer/ );
     const QgsRasterTransparency* rasterTransparency() const;
 
     void setAlphaBand( int band );

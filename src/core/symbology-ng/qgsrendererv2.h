@@ -143,6 +143,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note: not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems();
 
     //! set type and size of editing vertex markers for subsequent rendering
@@ -198,5 +199,6 @@ class CORE_EXPORT QgsFeatureRendererV2
     int mCurrentVertexMarkerSize;
 };
 
+class QgsRendererV2Widget;  // why does SIP fail, when this isn't here
 
 #endif // QGSRENDERERV2_H

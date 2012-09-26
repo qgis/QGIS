@@ -192,15 +192,15 @@ void QgsWCSSourceSelect::updateButtons()
   mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
 }
 
-QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
+QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QgsDebugMsg( "entered" );
-  QList<QgsOWSSupportedFormat> formats;
+  QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
   foreach ( QString mime, mimes.keys() )
   {
-    QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { mime, mimes.value( mime ) };
 
     // prefer tiff
     if ( mime == "image/tiff" )

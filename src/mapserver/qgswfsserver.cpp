@@ -264,7 +264,7 @@ QDomDocument QgsWFSServer::describeFeatureType()
   {
     typeName = "";
   }
-  mConfigParser->describeFeatureType( typeName, schemaElement, doc);
+  mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   return doc;
 }
 
@@ -511,7 +511,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
-    fcString += " \"bbox\": [ "+ QString::number( rect->xMinimum(), 'f' ) +", "+ QString::number( rect->yMinimum(), 'f' ) +", "+ QString::number( rect->xMaximum(), 'f' ) +", "+ QString::number( rect->yMaximum(), 'f' ) +"],\n";
+    fcString += " \"bbox\": [ " + QString::number( rect->xMinimum(), 'f' ) + ", " + QString::number( rect->yMinimum(), 'f' ) + ", " + QString::number( rect->xMaximum(), 'f' ) + ", " + QString::number( rect->yMaximum(), 'f' ) + "],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
@@ -599,7 +599,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     fcString += " xmlns=\"http://www.opengis.net/wfs\"";
     fcString += " xmlns:wfs=\"http://www.opengis.net/wfs\"";
     fcString += " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.opengis.net/gml "+ hrefString.replace( "&", "&amp;" ) +"\"";
+    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.opengis.net/gml " + hrefString.replace( "&", "&amp;" ) + "\"";
     fcString += " xmlns:ogc=\"http://www.opengis.net/ogc\"";
     fcString += " xmlns:gml=\"http://www.opengis.net/gml\"";
     fcString += " xmlns:ows=\"http://www.opengis.net/ows\"";
@@ -691,7 +691,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   {
     QgsRectangle box = geom->boundingBox();
 
-    fStr += " \"bbox\": [ "+ QString::number( box.xMinimum(), 'f' ) +", "+ QString::number( box.yMinimum(), 'f' ) +", "+ QString::number( box.xMaximum(), 'f' ) +", "+ QString::number( box.yMaximum(), 'f' ) +"],\n";
+    fStr += " \"bbox\": [ " + QString::number( box.xMinimum(), 'f' ) + ", " + QString::number( box.yMinimum(), 'f' ) + ", " + QString::number( box.xMaximum(), 'f' ) + ", " + QString::number( box.yMaximum(), 'f' ) + "],\n";
 
     fStr += "  \"geometry\": ";
     fStr += geom->exportToGeoJSON();
@@ -1002,15 +1002,15 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
   coordElem.setAttribute( "cs", "," );
   coordElem.setAttribute( "ts", " " );
 
+#if 0
   //precision 4 for meters / feet, precision 8 for degrees
   int precision = 6;
-  /*
   if ( mSourceCRS.mapUnits() == QGis::Meters
        || mSourceCRS.mapUnits() == QGis::Feet )
   {
     precision = 4;
   }
-  */
+#endif
 
   QString coordString;
   QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
@@ -1020,7 +1020,7 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x(), 'f');
+    coordString += QString::number( pointIt->x(), 'f' );
     coordString += ",";
     coordString += QString::number( pointIt->y(), 'f' );
   }

@@ -6696,7 +6696,7 @@ bool QgsGeometry::deletePart( int partNum )
   return true;
 }
 
-int QgsGeometry::avoidIntersections()
+int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet<qint64> > ignoreFeatures )
 {
   int returnValue = 0;
 
@@ -6724,7 +6724,14 @@ int QgsGeometry::avoidIntersections()
     currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
     if ( currentLayer )
     {
-      if ( currentLayer->removePolygonIntersections( this ) != 0 )
+      QgsFeatureIds ignoreIds;
+      QMap<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+      if ( ignoreIt != ignoreFeatures.constEnd() )
+      {
+        ignoreIds = ignoreIt.value();
+      }
+
+      if ( currentLayer->removePolygonIntersections( this, ignoreIds ) != 0 )
       {
         returnValue = 3;
       }

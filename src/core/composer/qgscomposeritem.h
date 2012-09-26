@@ -105,16 +105,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected( void ) {return QGraphicsRectItem::isSelected();}
+    virtual bool selected() {return QGraphicsRectItem::isSelected();}
 
     /** stores state in project */
-    virtual bool writeSettings( void );
+    virtual bool writeSettings();
 
     /** read state from project */
-    virtual bool readSettings( void );
+    virtual bool readSettings();
 
     /** delete settings from project file  */
-    virtual bool removeSettings( void );
+    virtual bool removeSettings();
 
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
@@ -168,6 +168,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
+     * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
     /** Set whether this item has a frame drawn around it or not.

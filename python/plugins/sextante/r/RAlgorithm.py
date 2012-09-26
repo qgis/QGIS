@@ -230,7 +230,7 @@ class RAlgorithm(GeoAlgorithm):
         # if rgdal is not available, try to install it
         # just use US mirror
         commands.append('options("repos"="http://cran.us.r-project.org")')
-        rLibDir = "%s/rlibs" % SextanteUtils.userFolder()
+        rLibDir = "%s/rlibs" % SextanteUtils.userFolder().replace("\\","/")
         if not os.path.isdir(rLibDir): os.mkdir(rLibDir)
         commands.append(
             'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)

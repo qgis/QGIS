@@ -247,3 +247,32 @@ void QgsGdalProviderBase::registerGdalDrivers()
     QgsApplication::applyGdalSkippedDrivers();
   }
 }
+
+QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
+{
+  double myGeoTransform[6];
+
+  bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
+  if ( !myHasGeoTransform )
+  {
+    // Initialise the affine transform matrix
+    myGeoTransform[0] =  0;
+    myGeoTransform[1] =  1;
+    myGeoTransform[2] =  0;
+    myGeoTransform[3] =  0;
+    myGeoTransform[4] =  0;
+    myGeoTransform[5] = -1;
+  }
+
+  // Use the affine transform to get geo coordinates for
+  // the corners of the raster
+  double myXMax = myGeoTransform[0] +
+                  GDALGetRasterXSize( gdalDataset ) * myGeoTransform[1] +
+                  GDALGetRasterYSize( gdalDataset ) * myGeoTransform[2];
+  double myYMin = myGeoTransform[3] +
+                  GDALGetRasterXSize( gdalDataset ) * myGeoTransform[4] +
+                  GDALGetRasterYSize( gdalDataset ) * myGeoTransform[5];
+
+  QgsRectangle extent( myGeoTransform[0], myYMin, myXMax, myGeoTransform[3] );
+  return extent;
+}

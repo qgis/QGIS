@@ -3,6 +3,7 @@ class QgsCredentials
 %TypeHeaderCode
 #include <qgscredentials.h>
 %End
+
   public:
     //! virtual destructor
     virtual ~QgsCredentials();

@@ -88,6 +88,8 @@ namespace pal
       void setDistLabel( double dist ) { distlabel = dist; }
       //Set label position of the feature to fixed x/y values
       void setFixedPosition( double x, double y ) { fixedPos = true; fixedPosX = x; fixedPosY = y;}
+      void setQuadOffset( double x, double y ) { quadOffset = true; quadOffsetX = x; quadOffsetY = y;}
+      void setPosOffset( double x, double y ) { offsetPos = true; offsetPosX = x; offsetPosY = y;}
       bool fixedPosition() const { return fixedPos; }
       //Set label rotation to fixed value
       void setFixedAngle( double a ) { fixedRotation = true; fixedAngle = a; }
@@ -105,6 +107,12 @@ namespace pal
       bool fixedPos; //true in case of fixed position (only 1 candidate position with cost 0)
       double fixedPosX;
       double fixedPosY;
+      bool quadOffset; // true if a quadrant offset exists
+      double quadOffsetX;
+      double quadOffsetY;
+      bool offsetPos; //true if position is to be offset by set amount
+      double offsetPosX;
+      double offsetPosY;
       //Fixed (e.g. data defined) angle only makes sense together with fixed position
       bool fixedRotation;
       double fixedAngle; //fixed angle value (in rad)

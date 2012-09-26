@@ -88,7 +88,7 @@ void QgsMapToolLabel::createRubberBands( )
 
     //fixpoint rubber band
     QgsPoint fixPoint;
-    if ( rotationPoint( fixPoint ) )
+    if ( rotationPoint( fixPoint, false, false ) )
     {
       if ( mCanvas )
       {
@@ -293,7 +293,7 @@ bool QgsMapToolLabel::preserveRotation()
   return true; // default, so there is no accidental data loss
 }
 
-bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
+bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool rotatingUnpinned )
 {
   QVector<QgsPoint> cornerPoints = mCurrentLabelPos.cornerPoints;
   if ( cornerPoints.size() < 4 )
@@ -322,7 +322,8 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
   QString haliString, valiString;
   currentAlignment( haliString, valiString );
 
-  if ( !mCurrentLabelPos.isPinned )
+  // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
+  if ( rotatingUnpinned )
   {
     haliString = "Center";
     valiString = "Half";

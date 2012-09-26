@@ -51,7 +51,11 @@ void QgsCollapsibleGroupBox::init()
 {
   // variables
   mCollapsed = false;
-  mSaveState = true;
+  mSaveCollapsedState = true;
+  // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
+  // in multiple places or used as options for different parent objects
+  mSaveCheckedState = false;
+  mSettingGroup = ""; // if not set, use window object name
   mInitFlat = false;
   mScrollOnExpand = true;
   mShown = false;
@@ -167,38 +171,50 @@ QString QgsCollapsibleGroupBox::saveKey() const
   // }
   // if ( parent() != NULL )
   //   saveKey = "/" + parent()->objectName() + saveKey;
-  saveKey = "/" + window()->objectName() + saveKey;
+  QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
+  saveKey = "/" + setgrp + saveKey;
   saveKey = "QgsCollapsibleGroupBox" + saveKey;
   return saveKey;
 }
 
 void QgsCollapsibleGroupBox::loadState()
 {
-  if ( ! mSaveState )
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
 
   setUpdatesEnabled( false );
 
   QSettings settings;
   QString key = saveKey();
-  QVariant val = settings.value( key + "/checked" );
-  if ( ! val.isNull() )
-    setChecked( val.toBool() );
-  val = settings.value( key + "/collapsed" );
-  if ( ! val.isNull() )
-    setCollapsed( val.toBool() );
+  QVariant val;
+  if ( mSaveCheckedState )
+  {
+    val = settings.value( key + "/checked" );
+    if ( ! val.isNull() )
+      setChecked( val.toBool() );
+  }
+  if ( mSaveCollapsedState )
+  {
+    val = settings.value( key + "/collapsed" );
+    if ( ! val.isNull() )
+      setCollapsed( val.toBool() );
+  }
 
   setUpdatesEnabled( true );
 }
 
 void QgsCollapsibleGroupBox::saveState()
 {
-  if ( ! mSaveState )
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
+
   QSettings settings;
   QString key = saveKey();
-  settings.setValue( key + "/checked", isChecked() );
-  settings.setValue( key + "/collapsed", isCollapsed() );
+
+  if ( mSaveCheckedState )
+    settings.setValue( key + "/checked", isChecked() );
+  if ( mSaveCollapsedState )
+    settings.setValue( key + "/collapsed", isCollapsed() );
 }
 
 void QgsCollapsibleGroupBox::checkToggled( bool chkd )

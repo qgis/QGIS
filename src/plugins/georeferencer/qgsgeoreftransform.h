@@ -90,10 +90,10 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     bool hasCrs() const { return mRasterChangeCoords.hasCrs(); }
 
     //! \returns Coordinates of image
-    QgsPoint toColumnLine(const QgsPoint &pntMap) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    QgsPoint toColumnLine( const QgsPoint &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
 
     //! \returns Bounding box of image(transform to coordinate of Map or Image )
-    QgsRectangle getBoundingBox(const QgsRectangle &rect, bool toPixel) { return mRasterChangeCoords.getBoundingBox( rect, toPixel); }
+    QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
     TransformParametrisation transformParametrisation() const;

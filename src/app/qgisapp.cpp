@@ -1246,13 +1246,16 @@ void QgisApp::createMenus()
 
   // Database Menu
   // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ), this );
+  mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
+  mDatabaseMenu->setObjectName( "mDatabaseMenu" );
   // Vector Menu
   // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ), this );
+  mVectorMenu = new QMenu( tr( "Vect&or" ), menuBar() );
+  mVectorMenu->setObjectName( "mVectorMenu" );
   // Web Menu
   // don't add it yet, wait for a plugin
-  mWebMenu = new QMenu( tr( "&Web" ), this );
+  mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
+  mWebMenu->setObjectName( "mWebMenu" );
 
   // Help menu
   // add What's this button to it
@@ -1467,16 +1470,11 @@ void QgisApp::createStatusBar()
   mScaleEdit->setMaximumWidth( 100 );
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
-  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
-  QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
-  mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
-  mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
-  connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
@@ -5249,15 +5247,10 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
 
 void QgisApp::showScale( double theScale )
 {
-  if ( theScale >= 1.0 )
-    mScaleEdit->setEditText( "1:" + QString::number( theScale, 'f', 0 ) );
-  else if ( theScale > 0.0 )
-    mScaleEdit->setEditText( QString::number( 1.0 / theScale, 'f', 0 ) + ":1" );
-  else
-    mScaleEdit->setEditText( tr( "Invalid scale" ) );
+  // Why has MapCanvas the scale inverted?
+  mScaleEdit->setScale( 1.0 / theScale );
 
-  mOldScale = mScaleEdit->currentText();
-
+  // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
     mScaleEdit->setMinimumWidth( mScaleEdit->width() );
@@ -5266,31 +5259,8 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  if ( mOldScale == mScaleEdit->currentText() )
-  {
-    return;
-  }
-
-  QStringList parts = mScaleEdit->currentText().split( ':' );
-  if ( parts.size() == 2 )
-  {
-    bool leftOk, rightOk;
-    double leftSide = parts.at( 0 ).toDouble( &leftOk );
-    double rightSide = parts.at( 1 ).toDouble( &rightOk );
-    if ( leftSide > 0.0 && leftOk && rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide / leftSide );
-    }
-  }
-  else
-  {
-    bool rightOk;
-    double rightSide = parts.at( 0 ).toDouble( &rightOk );
-    if ( rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide );
-    }
-  }
+  // Why has MapCanvas the scale inverted?
+  mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
 void QgisApp::userCenter()

@@ -42,8 +42,19 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );
 
-    //! set this to false to not save/restore check and collapse state
-    void setSaveState( bool save ) { mSaveState = save; }
+    //! set this to false to not save/restore collapsed state
+    void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
+    /** set this to true to save/restore checked state
+     * @note only turn on mSaveCheckedState for groupboxes NOT used
+     * in multiple places or used as options for different parent objects */
+    void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
+    bool saveCollapsedState() { return mSaveCollapsedState; }
+    bool saveCheckedState() { return mSaveCheckedState; }
+
+    //! set this to a defined string to share save/restore collapsed state across dialogs
+    void setSettingGroup( const QString &group ) { mSettingGroup = group; }
+    QString settingGroup() const { return mSettingGroup; }
+
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
@@ -70,7 +81,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     QString saveKey() const;
 
     bool mCollapsed;
-    bool mSaveState;
+    bool mSaveCollapsedState;
+    bool mSaveCheckedState;
+    QString mSettingGroup;
     bool mInitFlat;
     bool mScrollOnExpand;
     bool mShown;

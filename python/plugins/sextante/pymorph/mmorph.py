@@ -563,7 +563,7 @@ def randomcolor(X):
     Returns
     -------
     y : 3d-array of uint8 of shape (h, w, 3)
-        Colour image.
+        Color image.
     """
     from numpy import take, reshape, shape, dstack
     from numpy.random import rand
@@ -630,7 +630,7 @@ def overlay(X, red=None, green=None, blue=None, magenta=None, yellow=None, cyan=
     """
     Y = overlay(X, red=None, green=None, blue=None, magenta=None, yellow=None, cyan=None)
 
-    Apply binary overlays as colour layers on a binary or gray-scale image
+    Apply binary overlays as color layers on a binary or gray-scale image
 
     Parameters
     ----------
@@ -644,7 +644,7 @@ def overlay(X, red=None, green=None, blue=None, magenta=None, yellow=None, cyan=
 
     Returns
     -------
-    Y : Colour image (in HxWx3 format)
+    Y : Color image (in HxWx3 format)
     """
     from numpy import dstack
     if isbinary(X): X = gray(X,'uint8')
@@ -4273,7 +4273,7 @@ def to_gray(f):
     """
     g = to_gray(f)
 
-    Transform (possibly colour) image to gray image.
+    Transform (possibly color) image to gray image.
 
     If input file is a color RGB image, it is converted to gray-scale using the
     equation:
@@ -4283,7 +4283,7 @@ def to_gray(f):
     Parameters
     ----------
     f : ndarray of shape HxWx3
-        colour image.
+        color image.
 
     Returns
     -------
@@ -4294,7 +4294,7 @@ def to_gray(f):
     if len(f.shape) == 2:
         return f
     if len(f.shape) != 3:
-        raise ValueError, 'pymorph.to_gray: can only handle gray and colour images'
+        raise ValueError, 'pymorph.to_gray: can only handle gray and color images'
     r = f[:,:,0]
     g = f[:,:,1]
     b = f[:,:,2]

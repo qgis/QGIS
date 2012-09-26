@@ -32,7 +32,7 @@ Tree model for the rules:
  +--- top level rule
  +--- top level rule
 */
-class QgsRuleBasedRendererV2Model : public QAbstractItemModel
+class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );

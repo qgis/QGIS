@@ -22,6 +22,7 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
+#include <QVector>
 
 extern "C"
 {
@@ -317,8 +318,8 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   }
 }
 
-void QgsCoordinateTransform::transformInPlace( std::vector<double>& x,
-    std::vector<double>& y, std::vector<double>& z,
+void QgsCoordinateTransform::transformInPlace(
+    QVector<double>& x, QVector<double>& y, QVector<double>& z,
     TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
@@ -371,8 +372,8 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
   }
 }
 
-void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
-    std::vector<float>& y, std::vector<float>& z,
+void QgsCoordinateTransform::transformInPlace(
+    QVector<float>& x, QVector<float>& y, QVector<float>& z,
     TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
@@ -389,9 +390,9 @@ void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
   {
     //copy everything to double vectors since proj needs double
     int vectorSize = x.size();
-    std::vector<double> xd( x.size() );
-    std::vector<double> yd( y.size() );
-    std::vector<double> zd( z.size() );
+    QVector<double> xd( x.size() );
+    QVector<double> yd( y.size() );
+    QVector<double> zd( z.size() );
     for ( int i = 0; i < vectorSize; ++i )
     {
       xd[i] = x[i];

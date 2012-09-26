@@ -12,7 +12,8 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
       Default, // everything except profile buttons (save as dlg)
       Full, // everything (options dlg)
       Table, // just table
-      LineEdit // just the line edit
+      LineEdit, // just the line edit
+      ProfileLineEdit // Profile + LineEdit
     };
 
     QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff",
@@ -22,6 +23,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 
     void setFormat( QString format );
     void setProvider( QString provider );
+    void setRasterLayer( QgsRasterLayer* rasterLayer );
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
 
@@ -30,6 +32,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void apply();
     void helpOptions();
     QString validateOptions( bool gui = true, bool reportOk = true );
+    void updateProfiles();
 
   private slots:
 
@@ -38,12 +41,12 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void on_mProfileResetButton_clicked();
     void on_mOptionsAddButton_clicked();
     void on_mOptionsDeleteButton_clicked();
-    void on_mOptionsLabel_clicked(); 
     void on_mOptionsLineEdit_editingFinished();
     void optionsTableChanged();
     void optionsTableEnableDeleteButton();
     void updateOptions();
     void swapOptionsUI( int newIndex = -1 );
+    void updateControls();
 
   private:
 
@@ -55,7 +58,6 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void setCreateOptions( QString profile, QString options );
     void setCreateOptions( QString profile, QStringList list );
     QStringList profiles() const;
-    void updateProfiles();
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter( QObject *obj, QEvent *event );
 
 };

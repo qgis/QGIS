@@ -211,7 +211,9 @@ class CORE_EXPORT QgsExpression
       QString mName;
       /** The number of parameters this function takes. */
       int mParams;
-      /** Pointer to fucntion. */
+      /** Pointer to funntion.
+        * @note not available in python bindings
+         */
       FcnEval mFcn;
       /** Does this function use a geometry object. */
       bool mUsesGeometry;

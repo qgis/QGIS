@@ -14,6 +14,6 @@ class QgsTextAnnotationItem: QgsAnnotationItem
 
     void writeXML( QDomDocument& doc ) const;
     void readXML( const QDomDocument& doc, const QDomElement& itemElem );
-    
+
     void paint( QPainter* painter );
 };

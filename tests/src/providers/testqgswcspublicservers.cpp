@@ -57,7 +57,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, 
     , mCoverage( coverage )
     , mVersion( version )
     , mForce( force )
-    , mTimeout( 60000 )
+    , mTimeout( 300000 )
 {
 
 }
@@ -135,6 +135,14 @@ void TestQgsWcsPublicServers::init()
 
       Server server( serverUrl );
       server.description = serverValue.property( "description" ).toString();
+
+      QScriptValueIterator paramsIt( serverValue.property( "params" ) );
+      while ( paramsIt.hasNext() )
+      {
+        paramsIt.next();
+        QgsDebugMsg( QString( "params value: %1" ).arg( paramsIt.value().toString() ) );
+        server.params.insert( paramsIt.name(), paramsIt.value().toString() );
+      }
 
       QScriptValue issuesValue = serverValue.property( "issues" );
 
@@ -267,6 +275,7 @@ void TestQgsWcsPublicServers::test( )
 
   foreach ( QString serverUrl, serverUrls )
   {
+    Server myServer = getServer( serverUrl );
     QStringList myServerLog;
     myServerLog << "server:" + serverUrl;
     QString myServerDirName = serverUrl;
@@ -306,6 +315,11 @@ void TestQgsWcsPublicServers::test( )
       if ( !version.isEmpty() )
       {
         myServerUri.setParam( "version", version );
+      }
+
+      foreach ( QString key, myServer.params.keys() )
+      {
+        myServerUri.setParam( key, myServer.params.value( key ) );
       }
 
       QgsWcsCapabilities myCapabilities;
@@ -573,7 +587,16 @@ void TestQgsWcsPublicServers::report()
     Server myServer = getServer( myServerLog.value( "server" ) );
     if ( !myServer.description.isEmpty() )
     {
-      myReport += myServer.description + "<br>";
+      myReport += myServer.description + "<br>\n";
+    }
+    if ( myServer.params.size() > 0 )
+    {
+      myReport += "<br>Additional params: ";
+      foreach ( QString key, myServer.params.keys() )
+      {
+        myReport += key + "=" + myServer.params.value( key ) + " ";
+      }
+      myReport += "<br>\n";
     }
 
     QString myServerReport;

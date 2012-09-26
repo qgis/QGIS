@@ -56,8 +56,12 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Sets layer set and groups*/
     void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
     void setLayerSet( const QStringList& layerIds );
-    /**Adds a group to a toplevel position (or -1 if it should be placed at the end of the legend). Returns a pointer to the added group*/
-    QStandardItem* addGroup( QString text = tr( "Group" ), int position = -1 );
+    /**Adds a group
+      @param text name of group (defaults to translation of "Group")
+      @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
+      @returns a pointer to the added group
+      */
+    QStandardItem *addGroup( QString text = QString::null, int position = -1 );
 
     /**Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
     void updateItem( QStandardItem* item );

@@ -27,9 +27,7 @@ class QgsRendererCategoryV2;
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget
 {
     Q_OBJECT
-
   public:
-
     static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
     QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
@@ -63,8 +61,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     //! populate column combo
     void populateColumns();
-
-    void populateColorRamps();
 
     void addCategory( const QgsRendererCategoryV2& cat );
 

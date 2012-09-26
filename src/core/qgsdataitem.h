@@ -72,7 +72,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // refresh - refresh populated item, emit signals to model
     virtual void addChildItem( QgsDataItem * child, bool refresh = false );
 
-    // remove and delete child item, signals to browser are emited
+    // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsDataItem * child );
 
     // remove child item but don't delete it, signals to browser are emited
@@ -243,6 +243,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QWidget * paramWidget();
 
     /* static QVector<QgsDataProvider*> mProviders; */
+    //! @note not available via python bindings
     static QVector<QLibrary*> mLibraries;
 };
 
@@ -307,6 +308,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     const QStringList & getZipFileList();
 
+    //! @note not available via python bindings
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 

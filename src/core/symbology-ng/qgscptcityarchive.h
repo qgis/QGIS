@@ -49,6 +49,7 @@ class CORE_EXPORT QgsCptCityArchive
     static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
     static QMap< QString, QString > copyingInfo( const QString& fileName );
     static QMap< QString, QString > description( const QString& fileName );
+    //! note not available in python bindings
     static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString& fileName );
 
     // archive management
@@ -139,7 +140,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
-    /* static QgsCptCityDataItem* dataItem( QString path ); */
 
     // members
 
@@ -193,7 +193,6 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 {
     Q_OBJECT
   public:
-
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
                              QString variantName = QString() );

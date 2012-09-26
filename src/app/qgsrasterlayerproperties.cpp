@@ -83,10 +83,17 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  leMinimumScale->setText( QString::number( lyr->minimumScale(), 'f' ) );
-  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
-  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  if ( projectScales )
+  {
+    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    cbMinimumScale->updateScales( scalesList );
+    cbMaximumScale->updateScales( scalesList );
+  }
+  cbMinimumScale->setScale( 1.0 / lyr->minimumScale() );
+  cbMaximumScale->setScale( 1.0 / lyr->maximumScale() );
+
+
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   // build GUI components
@@ -750,8 +757,8 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  mRasterLayer->setMinimumScale( leMinimumScale->text().toFloat() );
-  mRasterLayer->setMaximumScale( leMaximumScale->text().toFloat() );
+  mRasterLayer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
+  mRasterLayer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
 
   //update the legend pixmap
   pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
