@@ -650,6 +650,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
       if ( progress.wasCanceled() )
       {
+	atlasRender.end();
 	break;
       }
       try
@@ -717,6 +718,7 @@ void QgsComposer::on_mActionPrint_triggered()
 
       if ( progress.wasCanceled() )
       {
+	atlasRender.end();
 	break;
       }
       try
@@ -893,6 +895,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       
       if ( progress.wasCanceled() )
       {
+	atlasRender.end();
 	break;
       }
       try

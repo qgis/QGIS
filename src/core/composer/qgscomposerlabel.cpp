@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgscomposerlabel.h"
+#include "qgsexpression.h"
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
-    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
+  QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
+  mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
+  mExpressionFeature( 0 ), mExpressionLayer( 0 )
 {
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
@@ -75,11 +78,17 @@ void QgsComposerLabel::setText( const QString& text )
   emit itemChanged();
 }
 
+void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+{
+  mExpressionFeature = feature;
+  mExpressionLayer = layer;
+}
+
 QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
   replaceDateText( displayText );
-  return displayText;
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

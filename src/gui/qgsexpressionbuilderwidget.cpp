@@ -97,6 +97,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     registerItem( func.mGroup, func.mName, " " + name + " " );
   }
 
+  QList<QgsExpression::FunctionDef> specials = QgsExpression::specialColumns();
+  for ( int i = 0; i < specials.size(); ++i )
+  {
+    QString name = specials[i].mName;
+    registerItem( specials[i].mGroup, name, " " + name + " " );
+  }
+
 #if QT_VERSION >= 0x040700
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
 #endif

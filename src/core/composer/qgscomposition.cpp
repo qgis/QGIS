@@ -28,6 +28,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgscomposerlabel.h"
 #include "qgscomposerattributetable.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
@@ -57,6 +58,8 @@ struct QgsAtlasRendering::QgsAtlasRenderingImpl
   QgsRectangle origExtent;
   bool restoreLayer;
   std::auto_ptr<QgsExpression> filenameExpr;
+  size_t pageNumber;
+  size_t numberOfPages;
 };
 
 QgsAtlasRendering::QgsAtlasRendering( QgsComposition* composition )
@@ -125,6 +128,10 @@ void QgsAtlasRendering::begin( const QString& filenamePattern )
       layerSet.removeAt( removeAt );
     }
   }
+
+  // special columns for expressions
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)impl->nFeatures ) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant( (int)impl->composition->numPages() ) );
 }
 
 void QgsAtlasRendering::prepareForFeature( size_t featureI )
@@ -133,6 +140,7 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
 
     if ( impl->filenamePattern.size() > 0 )
     {
+      QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
       QVariant filenameRes = impl->filenameExpr->evaluate( &*fit );
       if ( impl->filenameExpr->hasEvalError() )
       {
@@ -204,7 +212,20 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
 	new_extent.scale( 1 + impl->composition->atlasMap()->atlasMargin() );
       }
     }
-    impl->composition->atlasMap()->setNewExtent( new_extent );   
+
+    // evaluate label expressions
+    QList<QgsComposerLabel*> labels;
+    impl->composition->composerItems( labels );
+    QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
+    for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
+    {
+      QgsExpression::setSpecialColumn( "$page", QVariant( (int)impl->composition->itemPageNumber( *lit ) + 1 ) );
+      (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer() );
+    }
+
+
+    // set the new extent (and render)
+    impl->composition->atlasMap()->setNewExtent( new_extent );
 }
 
 size_t QgsAtlasRendering::numFeatures() const
@@ -212,13 +233,21 @@ size_t QgsAtlasRendering::numFeatures() const
   return impl->nFeatures;
 }
 
-QString QgsAtlasRendering::currentFilename() const
+const QString& QgsAtlasRendering::currentFilename() const
 {
   return impl->currentFilename;
 }
 
 void QgsAtlasRendering::end()
 {
+  // reset label expression contexts
+  QList<QgsComposerLabel*> labels;
+  impl->composition->composerItems( labels );
+  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
+  {
+    (*lit)->setExpressionContext( 0, 0 );
+  }
+
   // restore the coverage visibility
   if ( impl->restoreLayer )
   {
@@ -242,6 +271,11 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
 
   mPrintResolution = 300; //hardcoded default
   loadSettings();
+
+  QgsExpression::setSpecialColumn( "$page", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant((int)0) );
 }
 
 QgsComposition::QgsComposition():
@@ -250,6 +284,11 @@ QgsComposition::QgsComposition():
   mAtlasMap( 0 )
 {
   loadSettings();
+
+  QgsExpression::setSpecialColumn( "$page", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant((int)0) );
 }
 
 QgsComposition::~QgsComposition()
@@ -339,6 +378,16 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
     }
   }
   return 0;
+}
+
+int QgsComposition::pageNumberAt( const QPointF& position ) const
+{
+  return position.y() / (paperHeight() + spaceBetweenPages() );
+}
+
+int QgsComposition::itemPageNumber( const QgsComposerItem* item ) const
+{
+  return pageNumberAt( QPointF( item->transform().dx(), item->transform().dy()) );
 }
 
 QList<QgsComposerItem*> QgsComposition::selectedComposerItems()

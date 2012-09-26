@@ -59,7 +59,8 @@ class QgsAtlasRendering
 
   size_t numFeatures() const;
   void prepareForFeature( size_t i );
-  QString currentFilename() const;
+
+  const QString& currentFilename() const;
 
  private:
   struct QgsAtlasRenderingImpl;
@@ -135,6 +136,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
+
+    /** Returns the page number (0-bsaed) given a coordinate */
+    int pageNumberAt( const QPointF& position ) const;
+
+    /** Returns on which page number (0-based) is displayed an item */
+    int itemPageNumber( const QgsComposerItem* ) const;
 
     QList<QgsComposerItem*> selectedComposerItems();
 
