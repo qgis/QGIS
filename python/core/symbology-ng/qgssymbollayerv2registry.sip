@@ -62,7 +62,7 @@ class QgsSymbolLayerV2Registry
     QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata( QString name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
-    bool addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata );
+    bool addSymbolLayerType( QgsSymbolLayerV2AbstractMetadata* metadata /Transfer/ );
 
     //! create a new instance of symbol layer given symbol layer name and properties
     QgsSymbolLayerV2* createSymbolLayer( QString name, const QgsStringMap& properties = QgsStringMap() ) const /Factory/;

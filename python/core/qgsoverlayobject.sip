@@ -35,7 +35,7 @@ class QgsOverlayObject
     void setWidth( int width );
     void setRotation( double rotation );
     /**Set geometry. This class takes ownership of the object*/
-    void setGeometry( QgsGeometry* g );
+    void setGeometry( QgsGeometry* g /Transfer/ );
     /**Adds a position in map coordinates*/
     void addPosition( const QgsPoint& position );
 };

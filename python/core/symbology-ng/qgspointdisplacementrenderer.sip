@@ -24,7 +24,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     QgsSymbolV2List symbols();
 
     //! create a renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& symbologyElem );
+    static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;
     QDomElement save( QDomDocument& doc );
 
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
@@ -35,7 +35,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     QString labelAttributeName() const;
 
     /**Sets embedded renderer (takes ownership)*/
-    void setEmbeddedRenderer( QgsFeatureRendererV2* r );
+    void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     QgsFeatureRendererV2* embeddedRenderer();
 
     // void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
@@ -61,7 +61,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol();
     /**Sets the center symbol (takes ownership)*/
-    void setCenterSymbol( QgsMarkerSymbolV2* symbol );
+    void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
 
     void setTolerance( double t );
     double tolerance() const;

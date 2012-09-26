@@ -50,7 +50,7 @@ class QgsComposerSymbolItem : QgsComposerLegendItem
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     /**Set symbol (takes ownership)*/
-    void setSymbol( QgsSymbol* s );
+    void setSymbol( QgsSymbol* s /Transfer/ );
     QgsSymbol* symbol();
 
     void setLayerID( const QString& id );
@@ -77,7 +77,7 @@ class QgsComposerSymbolV2Item: QgsComposerLegendItem
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     /**Set symbol (takes ownership)*/
-    void setSymbolV2( QgsSymbolV2* s );
+    void setSymbolV2( QgsSymbolV2* s /Transfer/ );
     QgsSymbolV2* symbolV2();
 
     ItemType itemType() const;

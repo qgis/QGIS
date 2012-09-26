@@ -245,7 +245,7 @@ class QgsProject : QObject
     /** Change handler for missing layers.
       Deletes old handler and takes ownership of the new one.
       @note added in 1.4 */
-    void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
+    void setBadLayerHandler( QgsProjectBadLayerHandler* handler /Transfer/ );
 
     /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
     QString layerIsEmbedded( const QString& id ) const;

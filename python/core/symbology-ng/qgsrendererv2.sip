@@ -90,7 +90,7 @@ class QgsFeatureRendererV2
     void setUsingSymbolLevels( bool usingSymbolLevels );
 
     //! create a renderer from XML element
-    static QgsFeatureRendererV2* load( QDomElement& symbologyElem );
+    static QgsFeatureRendererV2* load( QDomElement& symbologyElem ) /Factory/;
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
@@ -110,7 +110,7 @@ class QgsFeatureRendererV2
      * @return the renderer
      * @note added in 1.9
      */
-    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage );
+    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage ) /Factory/;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     //! @note added in 1.9

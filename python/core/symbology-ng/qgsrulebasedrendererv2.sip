@@ -125,7 +125,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! take child rule out, set parent as null
         void takeChild( QgsRuleBasedRendererV2::Rule* rule );
         //! take child rule out, set parent as null
-        QgsRuleBasedRendererV2::Rule* takeChildAt( int i );
+        QgsRuleBasedRendererV2::Rule* takeChildAt( int i ) /TransferBack/;
 
       protected:
         void initFilter();
@@ -157,7 +157,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType ) /Factory/;
 
     virtual QgsSymbolV2List symbols();
 

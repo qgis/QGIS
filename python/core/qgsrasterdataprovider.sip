@@ -85,7 +85,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsRasterInterface * clone() const = 0;
 
     /* It makes no sense to set input on provider */
-    bool setInput( QgsRasterInterface* input /Transfer/ );
+    bool setInput( QgsRasterInterface* input );
 
     /**
      * Add the list of WMS layer names to be rendered by this server

@@ -22,11 +22,11 @@ class QgsRasterResampleFilter : QgsRasterInterface
     void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
 
     /**Set resampler for zoomed in scales. Takes ownership of the object*/
-    void setZoomedInResampler( QgsRasterResampler* r );
+    void setZoomedInResampler( QgsRasterResampler* r /Transfer/ );
     const QgsRasterResampler* zoomedInResampler() const;
 
     /**Set resampler for zoomed out scales. Takes ownership of the object*/
-    void setZoomedOutResampler( QgsRasterResampler* r );
+    void setZoomedOutResampler( QgsRasterResampler* r /Transfer/ );
     const QgsRasterResampler* zoomedOutResampler() const;
 
     void setMaxOversampling( double os );
