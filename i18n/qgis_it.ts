@@ -6282,6 +6282,12 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Esegui comando</translation>
     </message>
     <message>
+        <source>Are you sure you want to completely
+delete the command history ?</source>
+        <translation>Sei sicuro di voler concellare completamente
+la cronologia dei comandi ?</translation>
+    </message>
+    <message>
         <source>## History saved successfully ##</source>
         <translation>## Storia comandi salvata con successo ##</translation>
     </message>

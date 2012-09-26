@@ -41,6 +41,7 @@
 		</tr>
 	</table>
 	<p align="justify">
+		<ul>
 		<li>Auto-completion and highlighting syntax for the following APIs:
 			<ol>
 				<li>Python</li>
@@ -50,9 +51,23 @@
 				<li>osgeo-gdal-ogr</li>
 			</ol>
 		</li>
-		<li>Saves command history by typing <b>_save</b> or closing the widget.</li>
 		<br>
-		<li>Clears command history  by typing <b>_clear</b>.</li>
+		<li>CTRL+SPACE to view the auto-completion list.</li>
+		<br>
+		<li>CTRL+ALT+SPACE to view the command history list.</li>
+		<br>
+		<li>Saves command history by typing <b>_save</b> or closing the widget.<br>
+			This command saves the history command in the file ~/.qgis/console_history.txt
+		</li>
+		<br>
+		<li>Clears command history  by typing <b>_clear</b>.<br>
+			This command clears the history command from file ~/.qgis/console_history.txt
+		</li>
+		<br>
+		<li>Clears completely command history  by typing <b>_clearAll</b>.<br>
+			This command clears completely the history command. It has an irreversible effect.
+		</li>
+		</ul>
 	</p>
 	<table id="header">
 		<tr>
