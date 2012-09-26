@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
       @note this function was added in version 1.2*/
     QString displayText() const;
 
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer );
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = QMap<QString, QVariant>() );
 
     QFont font() const;
     void setFont( const QFont& f );
@@ -128,6 +128,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QgsFeature* mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
+    QMap<QString, QVariant> mSubstitutions;
 };
 
 #endif

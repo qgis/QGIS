@@ -47,6 +47,9 @@
 #include <QSettings>
 #include <QDir>
 
+/**
+ * Private members of the QgsAtlasRendering class
+ */
 struct QgsAtlasRendering::QgsAtlasRenderingImpl
 {
   QgsComposition* composition;
@@ -147,7 +150,6 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
 	throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
       }
 
-      // FIXME resolve labels
       impl->currentFilename = filenameRes.toString();
     }
 
@@ -187,8 +189,6 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
       // auto scale
       
       double geom_ratio = geom_rect.width() / geom_rect.height();
-      //      QRectF map_rect = mAtlasMap->boundingRect();
-      //      double map_ratio = map_rect.width() / map_rect.height();
       double map_ratio = impl->origExtent.width() / impl->origExtent.height();
       
       // geometry height is too big
@@ -217,10 +217,13 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
     QList<QgsComposerLabel*> labels;
     impl->composition->composerItems( labels );
     QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
+    
     for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
     {
-      QgsExpression::setSpecialColumn( "$page", QVariant( (int)impl->composition->itemPageNumber( *lit ) + 1 ) );
-      (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer() );
+      // build a local substitution map
+      QMap<QString, QVariant> pageMap;
+      pageMap.insert( "$page", QVariant( (int)impl->composition->itemPageNumber( *lit ) + 1 ) ); 
+      (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer(), pageMap );
     }
 
 
@@ -272,6 +275,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
   mPrintResolution = 300; //hardcoded default
   loadSettings();
 
+  // declare special columns with a default value
   QgsExpression::setSpecialColumn( "$page", QVariant((int)0) );
   QgsExpression::setSpecialColumn( "$feature", QVariant((int)0) );
   QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
@@ -1683,14 +1687,19 @@ void QgsComposition::deleteAndRemoveMultiFrames()
   mMultiFrames.clear();
 }
 
-void QgsComposition::exportAsPDF( const QString& file )
+void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
 {
-  QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( file );
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
 
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
+}
+
+void QgsComposition::exportAsPDF( const QString& file )
+{
+  QPrinter printer;
+  beginPrintAsPDF( printer, file );
   print( printer );
 }
 

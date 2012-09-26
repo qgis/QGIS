@@ -89,6 +89,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mAtlasFilenameExpressionButton_clicked();
     void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
     void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
+    void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
   protected:
     void showEvent( QShowEvent * event );

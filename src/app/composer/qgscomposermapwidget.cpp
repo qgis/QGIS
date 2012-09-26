@@ -977,7 +977,6 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
       composition->setAtlasMap( 0 );
     }
   }
-  // TODO: warn
 }
 
 void QgsComposerMapWidget::on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index )
@@ -1050,6 +1049,15 @@ void QgsComposerMapWidget::on_mAtlasFixedScaleCheckBox_stateChanged( int state )
   {
     mAtlasMarginSpinBox->setEnabled( true );
   }
+}
+
+void QgsComposerMapWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
+{
+  if (!mComposerMap)
+  {
+    return;
+  }
+  mComposerMap->setAtlasSingleFile( state == Qt::Checked );
 }
 
 void QgsComposerMapWidget::showEvent( QShowEvent * event )

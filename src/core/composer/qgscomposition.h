@@ -49,6 +49,11 @@ class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 
+/** \ingroup MapComposer
+ * Class used to render an Atlas, iterating over geometry features.
+ * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
+ * This class is used for printing, exporting to PDF and images.
+ * */
 class QgsAtlasRendering
 {
  public:
@@ -63,6 +68,7 @@ class QgsAtlasRendering
   const QString& currentFilename() const;
 
  private:
+  // Use the PImpl idiom for private members.
   struct QgsAtlasRenderingImpl;
   std::auto_ptr<QgsAtlasRenderingImpl> impl;
 };
@@ -279,13 +285,18 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     //printing
 
-    void exportAsPDF( const QString& file );
-
-    void exportAtlasAsSinglePagePDF( const QString& directory, const QString& filenamePattern );
-
+    /** Prepare the printer for printing */
     void beginPrint( QPrinter& printer );
+    /** Prepare the printer for printing in a PDF */
+    void beginPrintAsPDF( QPrinter& printer, const QString& file );
+    /** Print on a preconfigured printer */
     void doPrint( QPrinter& printer, QPainter& painter );
+
+    /** Convenience function that prepares the printer and prints */
     void print( QPrinter &printer );
+
+    /** Convenience function that prepares the printer for printing in PDF and prints */
+    void exportAsPDF( const QString& file );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned

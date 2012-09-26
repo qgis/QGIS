@@ -78,17 +78,18 @@ void QgsComposerLabel::setText( const QString& text )
   emit itemChanged();
 }
 
-void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer )
+void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
 {
   mExpressionFeature = feature;
   mExpressionLayer = layer;
+  mSubstitutions = substitutions;
 }
 
 QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
   replaceDateText( displayText );
-  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer );
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &mSubstitutions );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

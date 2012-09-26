@@ -330,6 +330,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsVectorLayer* atlasCoverageLayer() const { return mAtlasCoverageLayer; }
     void setAtlasCoverageLayer( QgsVectorLayer* lmap ) { mAtlasCoverageLayer = lmap; }
 
+    bool atlasSingleFile() const { return mAtlasSingleFile; }
+    void setAtlasSingleFile( bool single ) { mAtlasSingleFile = single; }
+
   signals:
     void extentChanged();
 
@@ -460,6 +463,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mAtlasMargin;
     QString mAtlasFilenamePattern;
     QgsVectorLayer* mAtlasCoverageLayer;
+    bool mAtlasSingleFile;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );

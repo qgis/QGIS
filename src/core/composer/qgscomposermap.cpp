@@ -754,6 +754,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     }
     atlasElem.setAttribute( "hideCoverage", mAtlasHideCoverage ? "true" : "false" );
     atlasElem.setAttribute( "fixedScale", mAtlasFixedScale ? "true" : "false" );
+    atlasElem.setAttribute( "singleFile", mAtlasSingleFile ? "true" : "false" );
     atlasElem.setAttribute( "margin", QString::number(mAtlasMargin) );
     atlasElem.setAttribute( "filenamePattern", mAtlasFilenamePattern );
 
@@ -919,6 +920,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mAtlasMargin = atlasElem.attribute( "margin", "0.0" ).toDouble();
     mAtlasHideCoverage = atlasElem.attribute( "hideCoverage", "false" ) == "true" ? true : false;
     mAtlasFixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
+    mAtlasSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
     mAtlasFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
   }
 

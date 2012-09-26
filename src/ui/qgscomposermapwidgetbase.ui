@@ -36,7 +36,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>557</width>
+        <width>437</width>
         <height>408</height>
        </rect>
       </property>
@@ -254,8 +254,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>570</width>
-        <height>388</height>
+        <width>450</width>
+        <height>377</height>
        </rect>
       </property>
       <attribute name="label">
@@ -362,8 +362,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>557</width>
-        <height>851</height>
+        <width>437</width>
+        <height>893</height>
        </rect>
       </property>
       <attribute name="label">
@@ -854,22 +854,52 @@
            <number>0</number>
           </property>
           <item>
-           <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0" columnstretch="0,0,0">
-            <item row="2" column="0">
+           <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0" columnstretch="0,0,0">
+            <item row="1" column="0" colspan="2">
+             <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
+              <property name="toolTip">
+               <string>Hide the coverage layer when generating the output</string>
+              </property>
+              <property name="text">
+               <string>Hidden coverage layer</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
                <string>Margin around coverage</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>Output filename expression</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="mAtlasMarginSpinBox">
+              <property name="suffix">
+               <string> %</string>
+              </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
              <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
             </item>
             <item row="0" column="0">
@@ -886,40 +916,17 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
-             <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
-              <property name="toolTip">
-               <string>Hide the coverage layer when generating the output</string>
-              </property>
-              <property name="text">
-               <string>Hidden</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QSpinBox" name="mAtlasMarginSpinBox">
-              <property name="suffix">
-               <string> %</string>
-              </property>
-              <property name="maximum">
-               <number>100</number>
-              </property>
-              <property name="value">
-               <number>10</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
+            <item row="4" column="0" colspan="2">
              <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
               <property name="text">
                <string>Fixed scale</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
+            <item row="7" column="0" colspan="2">
+             <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
               <property name="text">
-               <string>...</string>
+               <string>Single file export when possible</string>
               </property>
              </widget>
             </item>
