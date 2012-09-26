@@ -303,7 +303,7 @@ GRASS
 
 Configuring GRASS is not much different from configuring SAGA. First,
 the path to the GRASS folder has to be defined, but only if you are
-running Windows. Additionaly, a shell interpreter (usually msys.exe,
+running Windows. Additionally, a shell interpreter (usually msys.exe,
 which can be found in most GRASS for Windows distributions) has to be
 defined and its path set up as well. 
 

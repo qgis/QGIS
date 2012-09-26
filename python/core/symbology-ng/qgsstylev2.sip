@@ -268,7 +268,7 @@ class QgsStyleV2
 
     //! updates the properties of an existing symbol/colorramp
     /*!
-     *  \note This should not be called seperately, only called through addSymbol or addColorRamp
+     *  \note This should not be called separately, only called through addSymbol or addColorRamp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param name is the name of an existing symbol or a color ramp
      *  \return Success state of the update operation

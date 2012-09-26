@@ -563,7 +563,7 @@ def randomcolor(X):
     Returns
     -------
     y : 3d-array of uint8 of shape (h, w, 3)
-        Colour image.
+        Color image.
     """
     from numpy import take, reshape, shape, dstack
     from numpy.random import rand
@@ -644,7 +644,7 @@ def overlay(X, red=None, green=None, blue=None, magenta=None, yellow=None, cyan=
 
     Returns
     -------
-    Y : Colour image (in HxWx3 format)
+    Y : Color image (in HxWx3 format)
     """
     from numpy import dstack
     if isbinary(X): X = gray(X,'uint8')
