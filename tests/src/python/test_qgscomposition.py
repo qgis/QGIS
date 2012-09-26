@@ -20,11 +20,16 @@ import unittest
 import sys
 import os
 from utilities import unitTestDataPath, getQgisTestApp
-from PyQt4.QtCore import QUrl, QString, qDebug
+from PyQt4.QtCore import QFileInfo, QDir, QStringList
 from PyQt4.QtXml import QDomDocument
-from qgis.core import (QgsComposition, QgsPoint)
+from qgis.core import (QgsComposition,
+                       QgsPoint,
+                       QgsRasterLayer,
+                       QgsMultiBandColorRenderer,
+                       QgsMapLayerRegistry,
+                       QgsMapRenderer
+                       )
 
-from qgscompositionchecker import QgsCompositionChecker
 # support python < 2.7 via unittest2
 # needed for expected failure decorator
 if sys.version_info[0:2] < (2,7):
@@ -34,7 +39,7 @@ if sys.version_info[0:2] < (2,7):
         print "You need to install unittest2 to run the salt tests"
         sys.exit(1)
 else:
-    from unittest import TestCase, expectedFailure
+    from unittest import  expectedFailure
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
@@ -93,6 +98,63 @@ class TestQgsComposition(unittest.TestCase):
         myMap = myComposition.getComposerMapById(0)
         myMessage = ('Map 0 could not be found in template %s', myFile)
         assert myMap is not None, myMessage
+
+    def testPrintMapFromTemplate(self):
+        """Test that we can get a map to render in the template."""
+        myPath = os.path.join(TEST_DATA_DIR, 'landsat.tif')
+        myFileInfo = QFileInfo(myPath)
+        myRasterLayer = QgsRasterLayer(myFileInfo.filePath(),
+                                       myFileInfo.completeBaseName())
+        myRenderer = QgsMultiBandColorRenderer(
+                        myRasterLayer.dataProvider(), 2, 3, 4)
+        #mRasterLayer.setRenderer( rasterRenderer )
+        myPipe = myRasterLayer.pipe()
+        assert myPipe.set( myRenderer ), "Cannot set pipe renderer"
+
+        QgsMapLayerRegistry.instance().addMapLayer(myRasterLayer)
+
+        myMapRenderer = QgsMapRenderer()
+        myLayerStringList = QStringList()
+        myLayerStringList.append(myRasterLayer.id())
+        myMapRenderer.setLayerSet(myLayerStringList)
+        myMapRenderer.setProjectionsEnabled(False)
+
+
+        myComposition = QgsComposition(myMapRenderer)
+        myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
+        myTemplateFile = file(myFile, 'rt')
+        myTemplateContent = myTemplateFile.read()
+        myTemplateFile.close()
+        myDocument = QDomDocument()
+        myDocument.setContent(myTemplateContent)
+        myComposition.loadFromTemplate(myDocument)
+
+        # now render the map, first zooming to the raster extents
+        myMap = myComposition.getComposerMapById(0)
+        myMessage = ('Map 0 could not be found in template %s', myFile)
+        assert myMap is not None, myMessage
+
+        myExtent = myRasterLayer.extent()
+        myMap.setNewExtent(myExtent)
+
+        myImagePath = os.path.join(str(QDir.tempPath()),
+                                   'template_map_render_python.png')
+
+        myPageNumber = 0
+        myImage = myComposition.printPageAsRaster(myPageNumber)
+        myImage.save(myImagePath)
+        assert os.path.exists(myImagePath), 'Map render was not created.'
+
+        # Not sure if this is a predictable way to test but its quicker than
+        # rendering.
+        myFileSize = QFileInfo(myImagePath).size()
+        myExpectedFileSize = 100000
+        myMessage = ('Expected file size to be greater than %s, got %s' %
+                     (myExpectedFileSize, myFileSize))
+        assert myFileSize > myExpectedFileSize, myMessage
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
