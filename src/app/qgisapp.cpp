@@ -457,7 +457,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
+  setAppStyleSheet();
 
   QWidget *centralWidget = this->centralWidget();
   QGridLayout *centralLayout = new QGridLayout( centralWidget );
@@ -1147,11 +1147,48 @@ void QgisApp::createActionGroups()
 
 void QgisApp::setFontSize( int fontSize )
 {
-  setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
+  if ( fontSize < 4 || 99 < fontSize ) // defaults for Options spinbox
+  {
+    return;
+  }
+  QSettings settings;
+  settings.setValue( "/fontPointSize", fontSize );
+  setAppStyleSheet();
+}
 
+void QgisApp::setFontFamily( const QString& fontFamily )
+{
+  QSettings settings;
+  settings.setValue( "/fontFamily", fontFamily );
+  setAppStyleSheet();
+}
+
+void QgisApp::setAppStyleSheet()
+{
+  QSettings settings;
+  int fontSize = settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt();
+
+  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
+
+  QString family = QString( "" ); // use default Qt font family
+  if ( fontFamily != "QtDefault" )
+  {
+    QFont *tempFont = new QFont( fontFamily );
+    // is exact family match returned from system?
+    if ( tempFont->family() == fontFamily )
+    {
+      family = QString( " \"%1\";" ).arg( fontFamily );
+    }
+    delete tempFont;
+  }
+
+  QString stylesheet = QString( "font: %1pt%2\n" ).arg( fontSize ).arg( family );
+  setStyleSheet( stylesheet );
+
+  // cascade styles to any current project composers
   foreach ( QgsComposer *c, mPrintComposers )
   {
-    c->setFontSize( fontSize );
+    c->setAppStyleSheet();
   }
 }
 
