@@ -304,28 +304,28 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     childElem = childElem.nextSiblingElement();
   }
 
+  if ( layers.size() == 0 )
+    return NULL;
+
   // now create the symbol
-  QgsSymbolV2 *symbol = 0;
-  if ( layers.size() > 0 )
+  QgsSymbolV2 *symbol;
+  switch ( geomType )
   {
-    switch ( geomType )
-    {
-      case QGis::Line:
-        symbol = new QgsLineSymbolV2( layers );
-        break;
+    case QGis::Line:
+      symbol = new QgsLineSymbolV2( layers );
+      break;
 
-      case QGis::Polygon:
-        symbol = new QgsFillSymbolV2( layers );
-        break;
+    case QGis::Polygon:
+      symbol = new QgsFillSymbolV2( layers );
+      break;
 
-      case QGis::Point:
-        symbol = new QgsMarkerSymbolV2( layers );
-        break;
+    case QGis::Point:
+      symbol = new QgsMarkerSymbolV2( layers );
+      break;
 
-      default:
-        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
-        return NULL;
-    }
+    default:
+      QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+      return NULL;
   }
 
   // and finally return the new renderer
