@@ -136,8 +136,6 @@ class QgsExpression
 
     static const QList<QgsExpression::FunctionDef> &BuiltinFunctions();
 
-    static QList<QgsExpression::FunctionDef> specialColumns();
-
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 
@@ -152,7 +150,7 @@ class QgsExpression
     /**
      * Returns a list of special Column definitions
      */
-    static QList<FunctionDef> specialColumns();
+    static QList<QgsExpression::FunctionDef> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
