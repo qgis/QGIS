@@ -10,7 +10,7 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
   else if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMarkerLineSymbolLayerV2;
   else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsSimpleLineSymbolLayerV2;  
+    sipClass = sipClass_QgsSimpleLineSymbolLayerV2;
   else
     sipClass = 0;
 %End

@@ -26,7 +26,8 @@ class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayerV2
     QgsVectorFieldSymbolLayer();
     ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayerV2* create( const QgsStringMap& properties );
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     QString layerType() const;
 

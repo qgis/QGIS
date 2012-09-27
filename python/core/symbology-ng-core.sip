@@ -565,7 +565,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
     /////
-
+    
 		Rule* rootRule();
 
     //////

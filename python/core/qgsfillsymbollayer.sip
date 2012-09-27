@@ -70,6 +70,10 @@ public:
                                 QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
                                 double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH);
+                                
+		static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );                                
+                                
 		QString layerType() const;
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
