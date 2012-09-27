@@ -1450,7 +1450,8 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     myProg.provider = this;
     // Observed problem: if a *.rrd file exists and GDALBuildOverviews() is called,
     // the *.rrd is deleted and no overviews are created, if GDALBuildOverviews()
-    // is called next time, it crashes somewhere in GDAL.
+    // is called next time, it crashes somewhere in GDAL:
+    // https://trac.osgeo.org/gdal/ticket/4831
     // Crash can be avoided if dataset is reopened
     myError = GDALBuildOverviews( mGdalBaseDataset, theMethod,
                                   myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
