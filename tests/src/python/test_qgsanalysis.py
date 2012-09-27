@@ -46,7 +46,7 @@ class TestQgsZonalStatistics(TestCase):
         """Run after each test."""
         pass
 
-    @expectedFailure
+    #@expectedFailure
     def testSubstitutionMap(self):
         """Test that we can import zonal statistics was failing as of d5f6543
         """
