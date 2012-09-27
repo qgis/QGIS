@@ -534,10 +534,12 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
-    if ( !doubleNear( cacheExtent.xMinimum(), viewExtent.xMinimum() ) ||
-         !doubleNear( cacheExtent.yMinimum(), viewExtent.yMinimum() ) ||
-         !doubleNear( cacheExtent.xMaximum(), viewExtent.xMaximum() ) ||
-         !doubleNear( cacheExtent.yMaximum(), viewExtent.yMaximum() ) )
+    // using doubleNear is too precise, example accetable difference:
+    // 179.9999999306699863 x 179.9999999306700431
+    if ( !doubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
     {
       QgsDebugMsg( "cacheExtent and viewExtent differ" );
       QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
@@ -1380,10 +1382,10 @@ bool QgsWcsProvider::calculateExtent()
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
-    if ( !doubleNear( cacheExtent.xMinimum(), mCoverageExtent.xMinimum() ) ||
-         !doubleNear( cacheExtent.yMinimum(), mCoverageExtent.yMinimum() ) ||
-         !doubleNear( cacheExtent.xMaximum(), mCoverageExtent.xMaximum() ) ||
-         !doubleNear( cacheExtent.yMaximum(), mCoverageExtent.yMaximum() ) )
+    if ( !doubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
     {
       QgsDebugMsg( "cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent" );
       mCoverageExtent = cacheExtent;
