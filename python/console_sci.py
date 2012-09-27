@@ -97,6 +97,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     
         # not too small
         #self.setMinimumSize(500, 300)
+        self.setMinimumHeight(125)
         
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 1)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -114,7 +115,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
         self.newShortcutCS.activated.connect(self.autoComplete)
-        self.newShortcutCAS.activated.connect(self.autoComplete)
+        self.newShortcutCAS.activated.connect(self.showHistory)
+        self.connect(self, SIGNAL('userListActivated(int, const QString)'),
+                     self.completion_list_selected)
+    
+    def showHistory(self):
+        self.showUserList(1, QStringList(self.history))
     
     def autoComplete(self):
         self.autoCompleteFromAll()
@@ -161,8 +167,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.setMarginsFont(font)
             self.lexer = QsciLexerPython()
             self.lexer.setDefaultFont(font)
-            #self.lexer.setDefaultFont(QFont('Mono', 10, 0, False))
-            #self.lexer.setDefaultColor(Qt.darkGray)
             self.lexer.setColor(Qt.red, 1)
             self.lexer.setColor(Qt.darkGreen, 5)
             self.lexer.setColor(Qt.darkBlue, 15)
@@ -171,44 +175,25 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
             self.api.loadPrepared(QString(os.path.dirname(__file__) + "/api/pyqgis_master.pap"))
-#            self.api.load(os.path.dirname(__file__) + "/api/PyQGIS_1.8.api")
-#            self.api.load(os.path.dirname(__file__) + "/api/osgeo_gdal-ogr_1.9.1-1.api")
-#            self.api.load("qgis.networkanalysis.api")
-#            self.api.load("qgis.gui.api")
-#            self.api.load("qgis.core.api")
-#            self.api.load("qgis.analysis.api")
-
-#            self.api.prepare()
-#            self.lexer.setAPIs(self.api)
             self.setLexer(self.lexer)
             
-     ## TODO: show completion list for file and directory       
-#    def show_completion_list(self, completions, text):
-#        """Private method to display the possible completions"""
-#        if len(completions) == 0:
-#            return
-#        if len(completions) > 1:
-#            self.showUserList(1, QStringList(sorted(completions)))
-#            self.completion_chars = 1
-#        else:
-#            txt = completions[0]
-#            if text != "":
-#                txt = txt.replace(text, "")
-#            self.insert(txt)
-#            self.completion_chars = 0
-#
-#    def show_file_completion(self):
-#        """Display a completion list for files and directories"""
-#        cwd = os.getcwdu()
-#        self.show_completion_list(self.listdir_fullpath('/'), cwd)
-#        
-#    def listdir_fullpath(self, d):
-#        return [os.path.join(d, f) for f in os.listdir(d)]
+    ## TODO: show completion list for file and directory
+    
+    def completion_list_selected(self, id, txt):
+        if id == 1:
+            txt = unicode(txt)
+            # get current cursor position 
+            line, pos = self.getCurLine()
+            selCmd= self.text(line).length()
+            # select typed text
+            self.setSelection(line, 4, line, selCmd)
+            self.removeSelectedText()
+            self.insert(txt)
 
-        
     def insertInitText(self):
         #self.setLexers(False)
-        txtInit = QCoreApplication.translate("PythonConsole","## To access Quantum GIS environment from this console\n"
+        txtInit = QCoreApplication.translate("PythonConsole",
+                                             "## To access Quantum GIS environment from this console\n"
                                              "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
 
@@ -379,7 +364,39 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                     self.entered()
             elif e.modifiers() & Qt.ControlModifier:
                 if e.key() == Qt.Key_V:
-                    self.paste()             
+                    self.paste()
+                elif e.key() == Qt.Key_C:
+                    self.copy()
+                elif e.key() == Qt.Key_X:
+                    self.cut()  
+                elif e.key() == Qt.Key_Left:
+                    e.accept()
+                    if e.modifiers() & Qt.ShiftModifier:
+                        if index > 4:
+                            if e.modifiers() & Qt.ControlModifier:
+                                self.SendScintilla(QsciScintilla.SCI_WORDLEFTEXTEND)
+                            else:
+                                self.SendScintilla(QsciScintilla.SCI_CHARLEFTEXTEND)
+                    else:
+                        if index > 4:
+                            if e.modifiers() & Qt.ControlModifier:
+                                self.SendScintilla(QsciScintilla.SCI_WORDLEFT)
+                            else:
+                                self.SendScintilla(QsciScintilla.SCI_CHARLEFT)
+                elif e.key() == Qt.Key_Right:
+                    e.accept()
+                    if e.modifiers() & Qt.ShiftModifier:
+                        if index >= 4:
+                            if e.modifiers() & Qt.ControlModifier:
+                                self.SendScintilla(QsciScintilla.SCI_WORDRIGHTEXTEND)
+                            else:
+                                self.SendScintilla(QsciScintilla.SCI_CHARRIGHTEXTEND)
+                    else:
+                        if index >= 4:
+                            if e.modifiers() & Qt.ControlModifier:
+                                self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
+                            else:
+                                self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
             elif e.key() == Qt.Key_Backspace:
                 curPos, pos = self.getCursorPosition()
                 line = self.lines() -1
@@ -401,39 +418,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 self.showPrevious()
             elif e.key() == Qt.Key_Up and not self.isListActive():
                 self.showNext()
-            elif e.key() == Qt.Key_Left:
-                e.accept()
-                if e.modifiers() & Qt.ShiftModifier:
-                    if index > 4:
-                        if e.modifiers() & Qt.ControlModifier:
-                            self.SendScintilla(QsciScintilla.SCI_WORDLEFTEXTEND)
-                        else:
-                            self.SendScintilla(QsciScintilla.SCI_CHARLEFTEXTEND)
-                else:
-                    if index > 4:
-                        if e.modifiers() & Qt.ControlModifier:
-                            self.SendScintilla(QsciScintilla.SCI_WORDLEFT)
-                        else:
-                            self.SendScintilla(QsciScintilla.SCI_CHARLEFT)
-            elif e.key() == Qt.Key_Right:
-                e.accept()
-                if e.modifiers() & Qt.ShiftModifier:
-                    if index >= 4:
-                        if e.modifiers() & Qt.ControlModifier:
-                            self.SendScintilla(QsciScintilla.SCI_WORDRIGHTEXTEND)
-                        else:
-                            self.SendScintilla(QsciScintilla.SCI_CHARRIGHTEXTEND)
-                else:
-                    if index >= 4:
-                        if e.modifiers() & Qt.ControlModifier:
-                            self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
-                        else:
-                            self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
             ## TODO: press event for auto-completion file directory
-            #elif e.key() == Qt.Key_Tab:
-                #self.show_file_completion()
-                #else:
-                    #self.on_new_line()
             else:
                 QsciScintilla.keyPressEvent(self, e)
                 
@@ -499,13 +484,28 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def runCommand(self, cmd):
         self.updateHistory(cmd)
         self.SendScintilla(QsciScintilla.SCI_NEWLINE)
-        if cmd in ('_save', '_clear'):
+        if cmd in ('_save', '_clear', '_clearAll'):
             if cmd == '_save':
                 self.writeHistoryFile()
-                print QCoreApplication.translate("PythonConsole", "## History saved successfully ##")
+                print QCoreApplication.translate("PythonConsole", 
+                                                 "## History saved successfully ##")
             elif cmd == '_clear':
                 self.clearHistoryFile()
-                print QCoreApplication.translate("PythonConsole", "## History cleared successfully ##")
+                print QCoreApplication.translate("PythonConsole", 
+                                                 "## History cleared successfully ##")
+            elif cmd == '_clearAll':
+                res = QMessageBox.question(self, "Python Console", 
+                                           QCoreApplication.translate("PythonConsole", 
+                                                                      "Are you sure you want to completely\n"
+                                                                      "delete the command history ?"),
+                                                                      QMessageBox.Yes | QMessageBox.No)
+                if res == QMessageBox.No:
+                    self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+                    return
+                self.history = QStringList()
+                self.clearHistoryFile()
+                print QCoreApplication.translate("PythonConsole", 
+                                                 "## History cleared successfully ##")
             output = sys.stdout.get_and_clean_data()
             if output:
                 self.append(output)
