@@ -6,24 +6,24 @@
 
 %Import core/core.sip
 
-%Include qgsgeometryanalyzer.sip
-%Include qgsoverlayanalyzer.sip
-%Include qgszonalstatistics.sip
+%Include vector/qgsgeometryanalyzer.sip
+%Include vector/qgsoverlayanalyzer.sip
+%Include vector/qgszonalstatistics.sip
 
-// %Include interpolation/Bezier3D.sip
-// %Include interpolation/CloughTocherInterpolator.sip
-// %Include interpolation/DualEdgeTriangulation.sip
-// %Include interpolation/HalfEdge.sip
-// %Include interpolation/LinTriangleInterpolator.sip
-// %Include interpolation/Line3D.sip
-// %Include interpolation/Node.sip
-// %Include interpolation/NormVecDecorator.sip
-// %Include interpolation/ParametricLine.sip
-// %Include interpolation/Point3D.sip
-// %Include interpolation/TriangleInterpolator.sip
-// %Include interpolation/Triangulation.sip
-// %Include interpolation/TriDecorator.sip
-// %Include interpolation/Vector3D.sip
+// // %Include interpolation/Bezier3D.sip
+// // %Include interpolation/CloughTocherInterpolator.sip
+// // %Include interpolation/DualEdgeTriangulation.sip
+// // %Include interpolation/HalfEdge.sip
+// // %Include interpolation/LinTriangleInterpolator.sip
+// // %Include interpolation/Line3D.sip
+// // %Include interpolation/Node.sip
+// // %Include interpolation/NormVecDecorator.sip
+// // %Include interpolation/ParametricLine.sip
+// // %Include interpolation/Point3D.sip
+// // %Include interpolation/TriangleInterpolator.sip
+// // %Include interpolation/Triangulation.sip
+// // %Include interpolation/TriDecorator.sip
+// // %Include interpolation/Vector3D.sip
 %Include interpolation/qgsgridfilewriter.sip
 %Include interpolation/qgsinterpolator.sip
 %Include interpolation/qgsidwinterpolator.sip
@@ -40,13 +40,3 @@
 %Include raster/qgsruggednessfilter.sip
 %Include raster/qgsslopefilter.sip
 %Include raster/qgstotalcurvaturefilter.sip
-
-%Include network/qgsgraph.sip
-%Include network/qgsarcproperter.sip
-%Include network/qgsgraphanalyzer.sip
-%Include network/qgslinevectorlayerdirector.sip
-%Include network/qgsgraphbuilderintr.sip
-%Include network/qgsgraphbuilder.sip
-%Include network/qgsgraphdirector.sip
-%Include network/networkanalysis.sip
-%Include network/qgsdistancearcproperter.sip
