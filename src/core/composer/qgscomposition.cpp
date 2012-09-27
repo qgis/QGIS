@@ -379,7 +379,13 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     {
       xmlString = xmlString.replace( "[" + sIt.key() + "]", encodeStringForXML( sIt.value() ) );
     }
-    importDoc.setContent( xmlString );
+
+    QString errorMsg;
+    int errorLine, errorColumn;
+    if ( !importDoc.setContent( xmlString, &errorMsg, &errorLine, &errorColumn ) )
+    {
+      return false;
+    }
   }
   else
   {
