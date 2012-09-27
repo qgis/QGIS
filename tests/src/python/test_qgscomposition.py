@@ -2,11 +2,9 @@
 '''
 test_qgscomposerhtml.py
                      --------------------------------------
-               Date                 : August 2012
-               Copyright            : (C) 2012 by Dr. Horst Düster /
-                                                  Dr. Marco Hugentobler
-                                                  Tim Sutton
-               email                : marco@sourcepole.ch
+               Date                 : September 2012
+               Copyright            : (C) 2012 by Tim Sutton
+               email                : tim@linfiniti.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
