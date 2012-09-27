@@ -97,6 +97,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     
         # not too small
         #self.setMinimumSize(500, 300)
+        self.setMinimumHeight(125)
         
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 1)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)

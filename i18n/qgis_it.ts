@@ -6254,6 +6254,14 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Console python</translation>
     </message>
     <message>
+        <source>Import Class</source>
+        <translation>Importa Modulo</translation>
+    </message>
+    <message>
+        <source>Manage Script</source>
+        <translation>Gestione Script</translation>
+    </message>
+    <message>
         <source>Clear console</source>
         <translation>Pulisci console</translation>
     </message>
