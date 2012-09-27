@@ -91,8 +91,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mPassword( QString::null )
     , mFixBox( false )
     , mFixRotate( false )
-    // TODO: optional
-    , mGetCoverageCacheLoadControl( QNetworkRequest::PreferCache )
+    , mCacheLoadControl( QNetworkRequest::PreferCache )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -403,6 +402,28 @@ bool QgsWcsProvider::parseUri( QString uriString )
   {
     setCoverageCrs( uri.param( "crs" ) );
   }
+
+  QString cache = uri.param( "cache" );
+  if ( !cache.isEmpty() )
+  {
+    if ( cache.compare( "AlwaysCache", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::AlwaysCache;
+    }
+    else if ( cache.compare( "PreferCache", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::PreferCache;
+    }
+    else if ( cache.compare( "PreferNetwork", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::PreferNetwork;
+    }
+    else if ( cache.compare( "AlwaysNetwork", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::AlwaysNetwork;
+    }
+  }
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) ) ;
 
   return true;
 }
@@ -738,7 +759,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   QNetworkRequest request( url );
   setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mGetCoverageCacheLoadControl );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   mCacheReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
@@ -789,6 +810,7 @@ void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *blo
 
 void QgsWcsProvider::cacheReplyFinished()
 {
+  QgsDebugMsg( QString( "mCacheReply->error() = %1" ).arg( mCacheReply->error() ) );
   if ( mCacheReply->error() == QNetworkReply::NoError )
   {
     QVariant redirect = mCacheReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
@@ -799,6 +821,7 @@ void QgsWcsProvider::cacheReplyFinished()
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
       mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
       return;
     }
 
@@ -1064,6 +1087,21 @@ void QgsWcsProvider::cacheReplyFinished()
   }
   else
   {
+    // Resend request if AlwaysCache
+    QNetworkRequest request = mCacheReply->request();
+    if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+    {
+      QgsDebugMsg( "Resend request with PreferCache" );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+
+      mCacheReply->deleteLater();
+
+      mCacheReply = QgsNetworkAccessManager::instance()->get( request );
+      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+      return;
+    }
+
     mErrors++;
     if ( mErrors < 100 )
     {

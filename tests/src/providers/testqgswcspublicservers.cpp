@@ -316,6 +316,7 @@ void TestQgsWcsPublicServers::test( )
       {
         myServerUri.setParam( "version", version );
       }
+      myServerUri.setParam( "cache", "AlwaysNetwork" );
 
       foreach ( QString key, myServer.params.keys() )
       {

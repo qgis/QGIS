@@ -28,6 +28,7 @@
 
 #include <QStringList>
 #include <QPushButton>
+#include <QNetworkRequest>
 
 class QgisApp;
 class QgsDataProvider;
@@ -209,6 +210,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! Returns currently selected time
     QString selectedTime();
+
+    //! Returns currently selected cache load control
+    QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;

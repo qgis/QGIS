@@ -422,7 +422,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Fix for rasters rotated by GeoServer
     bool mFixRotate;
 
-    QNetworkRequest::CacheLoadControl mGetCoverageCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl;
 };
 
 
