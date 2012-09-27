@@ -38,6 +38,8 @@ private slots:
   void evaluation();
   // test expression evaluation when a feature is set
   void feature_evaluation();
+  // test "$page" expressions
+  void page_evaluation();
   private:
   QgsComposition* mComposition;
   QgsComposerLabel* mComposerLabel;
@@ -157,6 +159,21 @@ void TestQgsComposerLabel::feature_evaluation()
     QString evaluated = mComposerLabel->displayText();
     QString expected = "BretagneOK";
     QCOMPARE( evaluated, expected );
+  }
+}
+
+void TestQgsComposerLabel::page_evaluation()
+{
+  mComposition->setNumPages( 2 );
+  {
+    mComposerLabel->setText( "[%$page||'/'||$numpages%]" );
+    QString evaluated = mComposerLabel->displayText();
+    QString expected = "1/2";
+    QCOMPARE( evaluated, expected );
+
+    // move to the second page and re-evaluate
+    mComposerLabel->setItemPosition( 0, 320 );
+    QCOMPARE( mComposerLabel->displayText(), QString("2/2") );
   }
 }
 
