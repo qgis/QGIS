@@ -48,6 +48,7 @@ class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  * Class used to render an Atlas, iterating over geometry features.
@@ -59,12 +60,18 @@ class QgsAtlasRendering
  public:
   QgsAtlasRendering( QgsComposition* composition );
 
+  /** Begins the rendering. Sets an optional output filename pattern */
   void begin( const QString& filenamePattern = "" );
+  /** Ends the rendering. Restores original extent*/
   void end();
 
+  /** Returns the number of features in the coverage layer */
   size_t numFeatures() const;
+
+  /** Prepare the atlas map for the given feature. Sets the extent and context variables */
   void prepareForFeature( size_t i );
 
+  /** Returns the current filename. Must be called after prepareForFeature( i ) */
   const QString& currentFilename() const;
 
  private:
@@ -194,7 +201,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
     QgsComposerMap* atlasMap() { return mAtlasMap; }
-    void setAtlasMap( QgsComposerMap* map ) { mAtlasMap = map; }
+    void setAtlasMap( QgsComposerMap* map );
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -332,6 +339,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
+
+  private slots:
+    void onAtlasCoverageChanged( QgsVectorLayer* );
 
   private:
     /**Pointer to map renderer of QGIS main map*/

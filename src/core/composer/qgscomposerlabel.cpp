@@ -89,7 +89,9 @@ QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
   replaceDateText( displayText );
-  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &mSubstitutions );
+  QMap<QString, QVariant> subs = mSubstitutions;
+  subs[ "$page" ] = QVariant((int)mComposition->itemPageNumber( this ) + 1);
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

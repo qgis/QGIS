@@ -330,13 +330,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setAtlasFilenamePattern( const QString& pattern ) { mAtlasFilenamePattern = pattern; }
 
     QgsVectorLayer* atlasCoverageLayer() const { return mAtlasCoverageLayer; }
-    void setAtlasCoverageLayer( QgsVectorLayer* lmap ) { mAtlasCoverageLayer = lmap; }
+    void setAtlasCoverageLayer( QgsVectorLayer* lmap );
 
     bool atlasSingleFile() const { return mAtlasSingleFile; }
     void setAtlasSingleFile( bool single ) { mAtlasSingleFile = single; }
 
   signals:
     void extentChanged();
+
+    void atlasCoverageLayerChanged( QgsVectorLayer* );
 
   public slots:
 

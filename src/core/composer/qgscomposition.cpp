@@ -74,6 +74,9 @@ QgsAtlasRendering::QgsAtlasRendering( QgsComposition* composition )
 
 void QgsAtlasRendering::begin( const QString& filenamePattern )
 {
+  if ( !impl->composition || !impl->composition->atlasMap() || !impl->composition->atlasMap()->atlasCoverageLayer() )
+    return;
+
   impl->filenamePattern = filenamePattern;
 
   QgsVectorLayer* coverage = impl->composition->atlasMap()->atlasCoverageLayer();
@@ -103,12 +106,7 @@ void QgsAtlasRendering::begin( const QString& filenamePattern )
   }
 
   // select all features with all attributes
-  QgsAttributeList selectedAttributes;
-  for ( QgsFieldMap::const_iterator fit = fieldmap.begin(); fit != fieldmap.end(); ++fit )
-  {
-    selectedAttributes.push_back( fit.key() );
-  }
-  provider->select( selectedAttributes );
+  provider->select( provider->attributeIndexes() );
 
   // features must be stored in a list, since modifying the layer's extent rewinds nextFeature()
   QgsFeature feature;
@@ -134,101 +132,104 @@ void QgsAtlasRendering::begin( const QString& filenamePattern )
 
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)impl->nFeatures ) );
-  QgsExpression::setSpecialColumn( "$numpages", QVariant( (int)impl->composition->numPages() ) );
 }
 
 void QgsAtlasRendering::prepareForFeature( size_t featureI )
 {
-    QgsFeature* fit = &impl->features[featureI];
+  if ( !impl->composition || !impl->composition->atlasMap() || !impl->composition->atlasMap()->atlasCoverageLayer() )
+    return;
 
-    if ( impl->filenamePattern.size() > 0 )
-    {
-      QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
-      QVariant filenameRes = impl->filenameExpr->evaluate( &*fit );
-      if ( impl->filenameExpr->hasEvalError() )
-      {
-	throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
-      }
-
-      impl->currentFilename = filenameRes.toString();
-    }
-
-    //
-    // compute the new extent
-    // keep the original aspect ratio
-    // and apply a margin
-
-    // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
-    // They have to be transformed to the MapRenderer's one
-    QgsRectangle geom_rect = impl->transform.transform( fit->geometry()->boundingBox() );
-    double xa1 = geom_rect.xMinimum();
-    double xa2 = geom_rect.xMaximum();
-    double ya1 = geom_rect.yMinimum();
-    double ya2 = geom_rect.yMaximum();
-    QgsRectangle new_extent = geom_rect;
-
-    // restore the original extent
-    // (successive calls to setNewExtent tend to deform the original rectangle)
-    impl->composition->atlasMap()->setNewExtent( impl->origExtent );
-
-    if ( impl->composition->atlasMap()->atlasFixedScale() )
-    {
-      // only translate, keep the original scale (i.e. width x height)
-      
-      double geom_center_x = (xa1 + xa2) / 2.0;
-      double geom_center_y = (ya1 + ya2) / 2.0;
-      double xx = geom_center_x - impl->origExtent.width() / 2.0;
-      double yy = geom_center_y - impl->origExtent.height() / 2.0;
-      new_extent = QgsRectangle( xx,
-				 yy,
-				 xx + impl->origExtent.width(),
-				 yy + impl->origExtent.height() );
-    }
-    else
-    {
-      // auto scale
-      
-      double geom_ratio = geom_rect.width() / geom_rect.height();
-      double map_ratio = impl->origExtent.width() / impl->origExtent.height();
-      
-      // geometry height is too big
-      if ( geom_ratio < map_ratio )
-      {
-	new_extent = QgsRectangle( (xa1 + xa2 + map_ratio * (ya1 - ya2)) / 2.0,
-				   ya1,
-				   xa1 + map_ratio * (ya2 - ya1),
-				   ya2);
-      }
-      // geometry width is too big
-      else if ( geom_ratio > map_ratio )
-      {
-	new_extent = QgsRectangle( xa1,
-				   (ya1 + ya2 + (xa1 - xa2) / map_ratio) / 2.0,
-				   xa2,
-				   ya1 + (xa2 - xa1) / map_ratio);
-      }
-      if ( impl->composition->atlasMap()->atlasMargin() > 0.0 )
-      {
-	new_extent.scale( 1 + impl->composition->atlasMap()->atlasMargin() );
-      }
-    }
-
-    // evaluate label expressions
-    QList<QgsComposerLabel*> labels;
-    impl->composition->composerItems( labels );
+  QgsFeature* fit = &impl->features[featureI];
+  
+  if ( impl->filenamePattern.size() > 0 )
+  {
     QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
-    
-    for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
+    QVariant filenameRes = impl->filenameExpr->evaluate( &*fit );
+    if ( impl->filenameExpr->hasEvalError() )
     {
-      // build a local substitution map
-      QMap<QString, QVariant> pageMap;
-      pageMap.insert( "$page", QVariant( (int)impl->composition->itemPageNumber( *lit ) + 1 ) ); 
-      (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer(), pageMap );
+      throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
     }
+    
+    impl->currentFilename = filenameRes.toString();
+  }
+  
+  //
+  // compute the new extent
+  // keep the original aspect ratio
+  // and apply a margin
+  
+  // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
+  // We have to transform the grometry to the destination CRS and ask for the bounding box
+  // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
 
+  QgsGeometry tgeom( *fit->geometry() );
+  tgeom.transform( impl->transform );
+  QgsRectangle geom_rect = tgeom.boundingBox();
 
-    // set the new extent (and render)
-    impl->composition->atlasMap()->setNewExtent( new_extent );
+  double xa1 = geom_rect.xMinimum();
+  double xa2 = geom_rect.xMaximum();
+  double ya1 = geom_rect.yMinimum();
+  double ya2 = geom_rect.yMaximum();
+  QgsRectangle new_extent = geom_rect;
+  
+  // restore the original extent
+  // (successive calls to setNewExtent tend to deform the original rectangle)
+  impl->composition->atlasMap()->setNewExtent( impl->origExtent );
+  
+  if ( impl->composition->atlasMap()->atlasFixedScale() )
+  {
+    // only translate, keep the original scale (i.e. width x height)
+    
+    double geom_center_x = (xa1 + xa2) / 2.0;
+    double geom_center_y = (ya1 + ya2) / 2.0;
+    double xx = geom_center_x - impl->origExtent.width() / 2.0;
+    double yy = geom_center_y - impl->origExtent.height() / 2.0;
+    new_extent = QgsRectangle( xx,
+			       yy,
+			       xx + impl->origExtent.width(),
+			       yy + impl->origExtent.height() );
+  }
+  else
+  {
+    // auto scale
+    
+    double geom_ratio = geom_rect.width() / geom_rect.height();
+    double map_ratio = impl->origExtent.width() / impl->origExtent.height();
+    
+    // geometry height is too big
+    if ( geom_ratio < map_ratio )
+    {
+      new_extent = QgsRectangle( (xa1 + xa2 + map_ratio * (ya1 - ya2)) / 2.0,
+				 ya1,
+				 xa1 + map_ratio * (ya2 - ya1),
+				 ya2);
+    }
+    // geometry width is too big
+    else if ( geom_ratio > map_ratio )
+    {
+      new_extent = QgsRectangle( xa1,
+				 (ya1 + ya2 + (xa1 - xa2) / map_ratio) / 2.0,
+				 xa2,
+				 ya1 + (xa2 - xa1) / map_ratio);
+    }
+    if ( impl->composition->atlasMap()->atlasMargin() > 0.0 )
+    {
+      new_extent.scale( 1 + impl->composition->atlasMap()->atlasMargin() );
+    }
+  }
+  
+  // evaluate label expressions
+  QList<QgsComposerLabel*> labels;
+  impl->composition->composerItems( labels );
+  QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
+  
+  for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
+  {
+    (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer() );
+  }
+  
+  // set the new extent (and render)
+  impl->composition->atlasMap()->setNewExtent( new_extent );
 }
 
 size_t QgsAtlasRendering::numFeatures() const
@@ -243,6 +244,9 @@ const QString& QgsAtlasRendering::currentFilename() const
 
 void QgsAtlasRendering::end()
 {
+  if ( !impl->composition || !impl->composition->atlasMap() || !impl->composition->atlasMap()->atlasCoverageLayer() )
+    return;
+
   // reset label expression contexts
   QList<QgsComposerLabel*> labels;
   impl->composition->composerItems( labels );
@@ -350,6 +354,10 @@ void QgsComposition::setNumPages( int pages )
       mPages.removeLast();
     }
   }
+
+  // update the corresponding variable
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)numPages()) );
+
   emit nPagesChanged();
 }
 
@@ -1700,6 +1708,8 @@ void QgsComposition::addPaperItem()
   addItem( paperItem );
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
+
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)mPages.size()) );
 }
 
 void QgsComposition::removePaperItems()
@@ -1709,6 +1719,7 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
 }
 
 void QgsComposition::deleteAndRemoveMultiFrames()
@@ -1835,4 +1846,33 @@ void QgsComposition::renderPage( QPainter* p, int page )
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
 
   mPlotStyle = savedPlotStyle;
+}
+
+void QgsComposition::setAtlasMap( QgsComposerMap* map )
+{
+  mAtlasMap = map;
+  if ( map != 0 )
+  {
+    QObject::connect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* )), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
+  }
+  else
+  {
+    QObject::disconnect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* )), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
+  }
+}
+
+void QgsComposition::onAtlasCoverageChanged( QgsVectorLayer* )
+{
+  // update variables
+  if ( mAtlasMap != 0 && mAtlasMap->atlasCoverageLayer() != 0 )
+  {
+    QgsVectorDataProvider* provider = mAtlasMap->atlasCoverageLayer()->dataProvider();
+    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)provider->featureCount() ) );
+  }
+  else
+  {
+    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)0 ) );
+  }
+  // 
+  QgsExpression::setSpecialColumn( "$numpages", QVariant( (int)numPages() ) );
 }

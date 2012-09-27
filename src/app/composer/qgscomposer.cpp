@@ -608,7 +608,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       {
 	return;
       }
-      atlasMap->setAtlasFilenamePattern( "'output_'||$id" );
+      atlasMap->setAtlasFilenamePattern( "'output_'||$feature" );
     }
 
     QSettings myQSettings;
@@ -858,7 +858,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       {
 	return;
       }
-      atlasMap->setAtlasFilenamePattern( "'output_'||$id" );
+      atlasMap->setAtlasFilenamePattern( "'output_'||$feature" );
     }
 
     QSettings myQSettings;
@@ -1054,7 +1054,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
       {
 	return;
       }
-      atlasMap->setAtlasFilenamePattern( "'output_'||$id||'_'||$page" );
+      atlasMap->setAtlasFilenamePattern( "'output_'||$feature" );
     }
 
     QSettings myQSettings;
