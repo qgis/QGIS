@@ -432,6 +432,7 @@ void QgsComposerMapWidget::updateGuiElements()
       mAtlasFilenamePatternEdit->setText( mComposerMap->atlasFilenamePattern() );
       mAtlasFixedScaleCheckBox->setCheckState( mComposerMap->atlasFixedScale() ? Qt::Checked : Qt::Unchecked );
       mAtlasHideCoverageCheckBox->setCheckState( mComposerMap->atlasHideCoverage() ? Qt::Checked : Qt::Unchecked );
+      mAtlasSingleFileCheckBox->setCheckState( mComposerMap->atlasSingleFile() ? Qt::Checked : Qt::Unchecked );
     }
     else
     {
