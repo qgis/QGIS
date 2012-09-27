@@ -8,10 +8,14 @@
     		/*font-family:Verdana,Geneva,sans-serif;*/
     		font-size : 12px;
 		}
+		#header{
+    		background: #c6c6c6;
+    		width: 100%;
+		}
 	</style>
 </head>
 <body>
-	<table>
+	<table id="header">
 		<tr>
 		<td>
 			<img src="../iconConsole/imgHelpDialog.png" />
@@ -22,28 +26,64 @@
 		</tr>
 	</table>
 	<p align="justify">
-		Now you can use auto-completion and highlighting for syntax in console!!!
-		<br>
-		(Thanks to Larry Shaffer who provided the API files)
+		Python Console based on pyScintilla. (Developed by Salvatore Larosa)
 		<br><br>
 		To access Quantum GIS environment from this console
 		use qgis.utils.iface object (instance of QgisInterface class).
 		To import the class QgisInterface can also use the dedicated 
 		button on the toolbar on the left.
-		<br><br>
-		To save history commands type '<b>_save</b>' in console or close this widget.
-		<br><br>
-		To clear history commands type '<b>_clear</b>' in console.
-		<br><br>
-		The following is a description of the tools in the toolbar:
 	</p>
-	<table width="100%" bordercolor="#000" border="1">
+	<table id="header">
+		<tr>
+		<td>
+			<h4>Features</h4>
+		</td>
+		</tr>
+	</table>
+	<p align="justify">
+		<ul>
+		<li>Auto-completion and highlighting syntax for the following APIs:
+			<ol>
+				<li>Python</li>
+				<li>PyQGIS-master</li>
+				<li>PyQt4</li>
+				<li>QScintilla2</li>
+				<li>osgeo-gdal-ogr</li>
+			</ol>
+		</li>
+		<br>
+		<li>CTRL+SPACE to view the auto-completion list.</li>
+		<br>
+		<li>CTRL+ALT+SPACE to view the command history list.</li>
+		<br>
+		<li>Saves command history by typing <b>_save</b> or closing the widget.<br>
+			This command saves the history command in the file ~/.qgis/console_history.txt
+		</li>
+		<br>
+		<li>Clears command history  by typing <b>_clear</b>.<br>
+			This command clears the history command from file ~/.qgis/console_history.txt
+		</li>
+		<br>
+		<li>Clears completely command history  by typing <b>_clearAll</b>.<br>
+			This command clears completely the history command. It has an irreversible effect.
+		</li>
+		</ul>
+	</p>
+	<table id="header">
+		<tr>
+		<td>
+			<h4>Toolbar</h4>
+		</td>
+		</tr>
+	</table>
+	<p>The following is a description of the tools in the toolbar:</p>		
+	<table width="100%">
 		<tr>
 		<td><img src="../iconConsole/iconClearConsole.png" /></td>
 		<td>Tool to clear python console</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconTempConsole.png" /></td>
+		<td><img src="../iconConsole/iconIfaceConsole.png" /></td>
 		<td>Tool to import iface class</td>
 		</tr>
 		<tr>
@@ -67,5 +107,16 @@
 		<td>Run command (like Enter key pressed)</td>
 		</tr>
 	</table>
+	<br>
+	<table id="header">
+		<tr>
+		<td>
+			<h4>Acknowledgments</h4>
+		</td>
+		</tr>
+	</table>
+	<p>
+		Thanks to Larry Shaffer who provided the API files.
+	</p>
 </body>
 </html>

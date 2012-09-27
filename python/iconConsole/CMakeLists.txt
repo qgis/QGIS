@@ -7,6 +7,8 @@ iconSextanteConsole.png
 iconSaveConsole.png 
 iconHelpConsole.png
 imgHelpDialog.png
+iconIfaceConsole.png
+iconClassConsole.png
 )
 
 FILE(GLOB ICON_FILES *.png)
