@@ -92,7 +92,9 @@
   }, {
     url: 'http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd'
   }, {
-    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer'
+    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer',
+    description: "GetCapabilities gives wrong URL for all requests (server does not exists). Additional parameter IgnoreGetMapUrl must be used",
+    params: { 'IgnoreGetMapUrl': '1' }
   }, {
     url: 'http://nsidc.org/cgi-bin/atlas_north'
 /*

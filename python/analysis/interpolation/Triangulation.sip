@@ -9,7 +9,7 @@ class Triangulation
     enum forcedCrossBehaviour {SnappingType_VERTICE, DELETE_FIRST, INSERT_VERTICE};
     virtual ~Triangulation();
     /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
-    virtual void addLine( Line3D* line, bool breakline ) = 0;
+    virtual void addLine( Line3D* line /Transfer/, bool breakline ) = 0;
     /**Adds a point to the triangulation*/
     virtual int addPoint( Point3D* p ) = 0;
     /**Calculates the normal at a point on the surface and assigns it to 'result'. Returns true in case of success and flase in case of failure*/

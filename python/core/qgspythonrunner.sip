@@ -15,7 +15,7 @@ class QgsPythonRunner
     /** assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
-    static void setInstance( QgsPythonRunner* runner );
+    static void setInstance( QgsPythonRunner* runner /Transfer/ );
 
   protected:
     /** protected constructor: can be instantiated only from children */

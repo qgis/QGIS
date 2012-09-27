@@ -39,13 +39,13 @@ if sys.version_info[0:2] < (2,7):
         print "You need to install unittest2 to run the salt tests"
         sys.exit(1)
 else:
-    from unittest import  expectedFailure
+    from unittest import TestCase, expectedFailure
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposition(unittest.TestCase):
+class TestQgsComposition(TestCase):
 
     def setUp(self):
         """Run before each test."""

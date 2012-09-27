@@ -18,7 +18,7 @@ class QgsRendererV2AbstractMetadata
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0 /Factory/;
     /** Return new instance of settings widget for the renderer. Returns NULL on error. */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
 

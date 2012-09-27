@@ -202,7 +202,7 @@ void QgsRasterProjector::calc()
     }
     // What is the maximum reasonable size of transformatio matrix?
     // TODO: consider better when to break - ratio
-    if ( mCPRows * mCPCols > 0.0625 * mDestRows * mDestCols )
+    if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
     {
       QgsDebugMsg( "Too large CP matrix" );
       mApproximate = false;

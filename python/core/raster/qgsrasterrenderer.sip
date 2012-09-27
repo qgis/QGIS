@@ -26,7 +26,7 @@ class QgsRasterRenderer : QgsRasterInterface
 %End
 
   public:
-    QgsRasterRenderer( QgsRasterInterface* input /Transfer/ = 0, const QString& type = "" );
+    QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
     virtual QgsRasterInterface * clone() const = 0 /Factory/;
