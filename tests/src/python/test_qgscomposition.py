@@ -119,7 +119,6 @@ class TestQgsComposition(unittest.TestCase):
         myMapRenderer.setLayerSet(myLayerStringList)
         myMapRenderer.setProjectionsEnabled(False)
 
-
         myComposition = QgsComposition(myMapRenderer)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         myTemplateFile = file(myFile, 'rt')
