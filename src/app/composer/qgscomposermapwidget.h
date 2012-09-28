@@ -31,7 +31,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   public:
 
     QgsComposerMapWidget( QgsComposerMap* composerMap );
-    ~QgsComposerMapWidget();
+    virtual ~QgsComposerMapWidget();
 
   public slots:
     void on_mWidthLineEdit_editingFinished();
@@ -83,8 +83,21 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
     void on_mFrameWidthSpinBox_valueChanged( double d );
 
+    void on_mIsAtlasCheckBox_stateChanged( int state );
+    void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
+    void on_mAtlasFilenamePatternEdit_textChanged( const QString& );
+    void on_mAtlasFilenameExpressionButton_clicked();
+    void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
+    void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
+    void on_mAtlasSingleFileCheckBox_stateChanged( int state );
+
   protected:
     void showEvent( QShowEvent * event );
+
+    void addPageToToolbox( QWidget * widget, const QString& name );
+
+    /**Sets the current composer map values to the GUI elements*/
+    virtual void updateGuiElements();
 
   private slots:
 
@@ -93,9 +106,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
   private:
     QgsComposerMap* mComposerMap;
-
-    /**Sets the current composer map values to the GUI elements*/
-    void updateGuiElements();
 
     /**Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();

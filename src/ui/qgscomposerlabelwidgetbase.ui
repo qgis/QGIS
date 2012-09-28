@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
-    <height>488</height>
+    <width>307</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>271</width>
-        <height>470</height>
+        <width>276</width>
+        <height>503</height>
        </rect>
       </property>
       <attribute name="label">
@@ -45,14 +45,14 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="2">
+       <item row="3" column="0" colspan="2">
         <widget class="QPushButton" name="mFontColorButton">
          <property name="text">
           <string>Font color...</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="buttonGroup1">
          <property name="title">
           <string>Horizontal Alignment:</string>
@@ -98,7 +98,7 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="5" column="0" colspan="2">
         <widget class="QGroupBox" name="buttonGroup2">
          <property name="title">
           <string>Vertical Alignment:</string>
@@ -141,7 +141,7 @@
          </layout>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="6" column="0" colspan="2">
         <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
          <property name="prefix">
           <string>Margin </string>
@@ -151,7 +151,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="7" column="0">
         <widget class="QLabel" name="mRotationLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -170,14 +170,14 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <widget class="QDoubleSpinBox" name="mRotationSpinBox">
          <property name="maximum">
           <double>360.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="mFontButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -187,6 +187,13 @@
          </property>
          <property name="text">
           <string>Font</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QPushButton" name="mInsertExpressionButton">
+         <property name="text">
+          <string>Insert an expression</string>
          </property>
         </widget>
        </item>

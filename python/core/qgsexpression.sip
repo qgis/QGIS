@@ -43,6 +43,13 @@ class QgsExpression
     //! Return the number used for $rownum special column
     int currentRowNumber();
 
+    //! Assign a special column
+    static void setSpecialColumn( const QString& name, QVariant value );
+    //! Unset a special column
+    static void unsetSpecialColumn( const QString& name );
+    //! Return the value of the given special column or a null QVariant if undefined
+    static QVariant specialColumn( const QString& name );
+
     void setScale( double scale );
 
     int scale();
@@ -64,7 +71,6 @@ class QgsExpression
     static QString replaceExpressionText( QString action, QgsFeature &feat,
                                           QgsVectorLayer* layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
-
     //
 
     enum UnaryOperator
@@ -140,6 +146,11 @@ class QgsExpression
       *  @return The number of function defined in the parser.
       */
     static int functionCount();
+
+    /**
+     * Returns a list of special Column definitions
+     */
+    static QList<QgsExpression::FunctionDef> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
