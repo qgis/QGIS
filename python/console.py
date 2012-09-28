@@ -128,7 +128,7 @@ class PythonConsole(QDockWidget):
         self.actionScript = QAction(parent)
         self.actionScript.setCheckable(False)
         self.actionScript.setEnabled(True)
-        self.actionScript.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconTempConsole.png"))
+        self.actionScript.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconScriptConsole.png"))
         self.actionScript.setMenuRole(QAction.PreferencesRole)
         self.actionScript.setIconVisibleInMenu(True)
         self.actionScript.setToolTip(actionScriptBt)
