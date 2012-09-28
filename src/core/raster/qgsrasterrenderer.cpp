@@ -32,9 +32,9 @@
 #include <QPainter>
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
-    : QgsRasterInterface( input ),
-    mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 ),
-    mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
+    : QgsRasterInterface( input )
+    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 )
+    , mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {
 }
 

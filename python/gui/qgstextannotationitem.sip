@@ -8,7 +8,7 @@ class QgsTextAnnotationItem: QgsAnnotationItem
     ~QgsTextAnnotationItem();
 
     /**Returns document (caller takes ownership)*/
-    QTextDocument* document() const;
+    QTextDocument* document() const /Factory/;
     /**Sets document (does not take ownership)*/
     void setDocument( const QTextDocument* doc );
 

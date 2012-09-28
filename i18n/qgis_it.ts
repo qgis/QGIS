@@ -6254,6 +6254,14 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Console python</translation>
     </message>
     <message>
+        <source>Import Class</source>
+        <translation>Importa Modulo</translation>
+    </message>
+    <message>
+        <source>Manage Script</source>
+        <translation>Gestione Script</translation>
+    </message>
+    <message>
         <source>Clear console</source>
         <translation>Pulisci console</translation>
     </message>
@@ -6280,6 +6288,12 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     <message>
         <source>Run command</source>
         <translation>Esegui comando</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to completely
+delete the command history ?</source>
+        <translation>Sei sicuro di voler concellare completamente
+la cronologia dei comandi ?</translation>
     </message>
     <message>
         <source>## History saved successfully ##</source>

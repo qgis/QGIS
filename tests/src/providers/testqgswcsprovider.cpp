@@ -124,6 +124,7 @@ void TestQgsWcsProvider::read( )
       uri.setParam( "identifier", identifier );
       uri.setParam( "crs", "epsg:4326" );
       uri.setParam( "version", version );
+      uri.setParam( "cache", "AlwaysNetwork" );
 
       if ( !read( identifier, uri.encodedUri(), QDir::tempPath() + "/" + identifier + ".tif", mReport ) )
       {

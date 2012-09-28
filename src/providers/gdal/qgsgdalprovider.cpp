@@ -1368,8 +1368,6 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       // if the dataset couldn't be opened in read / write mode, tell the user
       if ( !mGdalBaseDataset )
       {
-        //mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
-        //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri()).constData(), GA_ReadOnly );
         mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
@@ -1390,7 +1388,8 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   // marked as exists in each RasterPyramid struct.
   //
   CPLErr myError; //in case anything fails
-  int myCount = 1;
+
+  QVector<int> myOverviewLevelsVector;
   QList<QgsRasterPyramid>::const_iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator = theRasterPyramidList.begin();
         myRasterPyramidIterator != theRasterPyramidList.end();
@@ -1404,89 +1403,97 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 #endif
     if ( myRasterPyramidIterator->build )
     {
-      QgsDebugMsg( "Building....." );
-      //emit drawingProgress( myCount, myTotal );
-      int myOverviewLevelsArray[1] = { myRasterPyramidIterator->level };
-      /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
-       * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE"
-       *                 controlling the downsampling method applied.
-       * nOverviews : number of overviews to build.
-       * panOverviewList : the list of overview decimation factors to build.
-       * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
-       * panBandList : list of band numbers.
-       * pfnProgress : a function to call to report progress, or NULL.
-       * pProgressData : application data to pass to the progress function.
-       */
-      //build the pyramid and show progress to console
-      try
-      {
-        //build the pyramid and show progress to console
-        QgsGdalProgress myProg;
-        myProg.type = ProgressPyramids;
-        myProg.provider = this;
-        const char* theMethod;
-        if ( theResamplingMethod == tr( "Gauss" ) )
-          theMethod = "GAUSS";
-        else if ( theResamplingMethod == tr( "Cubic" ) )
-          theMethod = "CUBIC";
-        else if ( theResamplingMethod == tr( "Average" ) )
-          theMethod = "AVERAGE";
-        else if ( theResamplingMethod == tr( "Mode" ) )
-          theMethod = "MODE";
-        //NOTE magphase is disabled in the gui since it tends
-        //to create corrupted images. The images can be repaired
-        //by running one of the other resampling strategies below.
-        //see ticket #284
-        // else if ( theResamplingMethod == tr( "Average Magphase" ) )
-        //   theMethod = "AVERAGE_MAGPHASE";
-        else if ( theResamplingMethod == tr( "None" ) )
-          theMethod = "NONE";
-        else // fall back to nearest neighbor
-          theMethod = "NEAREST";
-        QgsDebugMsg( QString( "building overview at level %1 using resampling method %2"
-                            ).arg( myRasterPyramidIterator->level ).arg( theMethod ) );
-        // TODO - it would be more efficient to do it once instead of for each level
-        myError = GDALBuildOverviews( mGdalBaseDataset, theMethod, 1,
-                                      myOverviewLevelsArray, 0, NULL,
-                                      progressCallback, &myProg ); //this is the arg for the gdal progress callback
-
-        if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
-        {
-          //something bad happenend
-          //QString myString = QString (CPLGetLastError());
-          GDALClose( mGdalBaseDataset );
-          //mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
-          //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_ReadOnly );
-          mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
-          //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
-          mGdalDataset = mGdalBaseDataset;
-
-          //emit drawingProgress( 0, 0 );
-          // restore former USE_RRD config (Erdas)
-          CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-          return "FAILED_NOT_SUPPORTED";
-        }
-        else
-        {
-          //make sure the raster knows it has pyramids
-          mHasPyramids = true;
-        }
-        myCount++;
-
-      }
-      catch ( CPLErr )
-      {
-        QgsLogger::warning( "Pyramid overview building failed!" );
-      }
+      QgsDebugMsg( QString( "adding overview at level %1 to list"
+                          ).arg( myRasterPyramidIterator->level ) );
+      myOverviewLevelsVector.append( myRasterPyramidIterator->level );
     }
+  }
+  /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
+   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE"
+   *                 controlling the downsampling method applied.
+   * nOverviews : number of overviews to build.
+   * panOverviewList : the list of overview decimation factors to build.
+   * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
+   * panBandList : list of band numbers.
+   * pfnProgress : a function to call to report progress, or NULL.
+   * pProgressData : application data to pass to the progress function.
+   */
+
+  const char* theMethod;
+  if ( theResamplingMethod == tr( "Gauss" ) )
+    theMethod = "GAUSS";
+  else if ( theResamplingMethod == tr( "Cubic" ) )
+    theMethod = "CUBIC";
+  else if ( theResamplingMethod == tr( "Average" ) )
+    theMethod = "AVERAGE";
+  else if ( theResamplingMethod == tr( "Mode" ) )
+    theMethod = "MODE";
+  //NOTE magphase is disabled in the gui since it tends
+  //to create corrupted images. The images can be repaired
+  //by running one of the other resampling strategies below.
+  //see ticket #284
+  // else if ( theResamplingMethod == tr( "Average Magphase" ) )
+  //   theMethod = "AVERAGE_MAGPHASE";
+  else if ( theResamplingMethod == tr( "None" ) )
+    theMethod = "NONE";
+  else // fall back to nearest neighbor
+    theMethod = "NEAREST";
+
+  //build the pyramid and show progress to console
+  QgsDebugMsg( QString( "Building overviews at %1 levels using resampling method %2"
+                      ).arg( myOverviewLevelsVector.size() ).arg( theMethod ) );
+  try
+  {
+    //build the pyramid and show progress to console
+    QgsGdalProgress myProg;
+    myProg.type = ProgressPyramids;
+    myProg.provider = this;
+    // Observed problem: if a *.rrd file exists and GDALBuildOverviews() is called,
+    // the *.rrd is deleted and no overviews are created, if GDALBuildOverviews()
+    // is called next time, it crashes somewhere in GDAL:
+    // https://trac.osgeo.org/gdal/ticket/4831
+    // Crash can be avoided if dataset is reopened
+    myError = GDALBuildOverviews( mGdalBaseDataset, theMethod,
+                                  myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
+                                  0, NULL,
+                                  progressCallback, &myProg ); //this is the arg for the gdal progress callback
+
+    if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
+    {
+      QgsDebugMsg( "Building pyramids failed" );
+      //something bad happenend
+      //QString myString = QString (CPLGetLastError());
+      GDALClose( mGdalBaseDataset );
+      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+      //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+      mGdalDataset = mGdalBaseDataset;
+
+      //emit drawingProgress( 0, 0 );
+      // restore former USE_RRD config (Erdas)
+      CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
+      return "FAILED_NOT_SUPPORTED";
+    }
+    else
+    {
+      QgsDebugMsg( "Building pyramids finished OK" );
+      //make sure the raster knows it has pyramids
+      mHasPyramids = true;
+    }
+  }
+  catch ( CPLErr )
+  {
+    QgsLogger::warning( "Pyramid overview building failed!" );
   }
 
   // restore former USE_RRD config (Erdas)
   CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
 
   QgsDebugMsg( "Pyramid overviews built" );
-  if ( theFormat == PyramidsInternal )
+
+  // For now always reopen to avoid crash described above
+  if ( true || theFormat == PyramidsInternal )
   {
+    QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
     mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );

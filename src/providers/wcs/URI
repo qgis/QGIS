@@ -27,6 +27,8 @@ Parameters:
 
 * IgnoreAxisOrientation (optional,hack) : If specified (set to 1), do not invert axis orientation according to WCS standard for geographic CRS.
 
+* cache (optional) : cache load control, as described in QNetworkRequest::CacheLoadControl, but request is resend as PreferCache if faild with AlwaysCache. Allowed values: AlwaysCache, PreferCache, PreferNetwork, AlwaysNetwork. Default is AlwaysCache.
+
 
 Python console example, adds new layer to map canvas:
 

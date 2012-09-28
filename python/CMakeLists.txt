@@ -44,9 +44,6 @@ INCLUDE_DIRECTORIES(
     ../src/gui/raster
     ../src/gui/attributetable
 
-    ../src/analysis/interpolation
-    ../src/analysis/raster
-
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
 
@@ -95,9 +92,13 @@ ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
 # additional analysis includes
 INCLUDE_DIRECTORIES(
     ../src/analysis/vector
+    ../src/analysis/raster
     ../src/analysis/network
+    ../src/analysis/interpolation
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/network
+    ${CMAKE_BINARY_DIR}/src/analysis/raster
+    ${CMAKE_BINARY_DIR}/src/analysis/interpolation
 )
 
 # analysis module

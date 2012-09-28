@@ -150,6 +150,28 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "time", selectedTime() );
   }
 
+  QString cache;
+  QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
+  switch ( selectedCacheLoadControl() )
+  {
+    case QNetworkRequest::AlwaysCache:
+      cache = "AlwaysCache";
+      break;
+    case QNetworkRequest::PreferCache:
+      cache = "PreferCache";
+      break;
+    case QNetworkRequest::PreferNetwork:
+      cache = "PreferNetwork";
+      break;
+    case QNetworkRequest::AlwaysNetwork:
+      cache = "AlwaysNetwork";
+      break;
+    default:
+      cache = "PreferCache";
+      break;
+  }
+  uri.setParam( "cache", cache );
+
   emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 

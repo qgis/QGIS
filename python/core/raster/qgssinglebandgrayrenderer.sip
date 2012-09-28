@@ -6,9 +6,9 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
   public:
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsRasterInterface * clone();
+    QgsRasterInterface * clone() /Factory/;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
     void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
@@ -16,7 +16,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     void setGrayBand( int band );
     const QgsContrastEnhancement* contrastEnhancement() const;
     /**Takes ownership*/
-    void setContrastEnhancement( QgsContrastEnhancement* ce );
+    void setContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

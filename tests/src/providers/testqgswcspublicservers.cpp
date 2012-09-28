@@ -316,6 +316,7 @@ void TestQgsWcsPublicServers::test( )
       {
         myServerUri.setParam( "version", version );
       }
+      myServerUri.setParam( "cache", "AlwaysNetwork" );
 
       foreach ( QString key, myServer.params.keys() )
       {
@@ -779,7 +780,6 @@ void TestQgsWcsPublicServers::report()
   myRep += ".errmsg { color: #ff0000; }";
   myRep += "</style>";
 
-  myRep += QString( "<p>Tested first %1 coverages for each server/version</p>" ).arg( mMaxCoverages );
   myRep += QString( "<b>Servers: %1</b><br>\n" ).arg( myServerCount );
   myRep += QString( "<b>Servers with error: %1</b><br>\n" ).arg( myServerErrCount );
   myRep += QString( "<b>Servers with warning: %1</b><br>\n" ).arg( myServerWarnCount );

@@ -193,7 +193,7 @@ class QgsVectorLayer : QgsMapLayer
     void setRenderer( QgsRenderer * r /Transfer/ );
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r );
+    void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
     const QgsDiagramRendererV2* diagramRenderer() const;
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
