@@ -110,7 +110,7 @@ Optional dependencies:
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - expat >= 1.95 and gpsbabel
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2
+- for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2 with python bindings
 - for qgis mapserver - FastCGI
 
 
