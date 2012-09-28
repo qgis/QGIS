@@ -74,3 +74,21 @@ def extractPoints( geom ):
                 points.extend(line)
 
     return points
+
+def getUniqueValuesCount(layer, fieldIndex, useSelection):
+    count = 0
+    values = []
+    layer.select([fieldIndex], QgsRectangle(), False)
+    if useSelection:
+        selection = layer.selectedFeatures()
+        for f in selection:
+            if f.attributeMap()[fieldIndex].toString() not in values:
+                values.append(f.attributeMap()[fieldIndex].toString())
+                count += 1
+    else:
+        feat = QgsFeature()
+        while layer.nextFeature(feat):
+            if feat.attributeMap()[fieldIndex].toString() not in values:
+                values.append(feat.attributeMap()[fieldIndex].toString())
+                count += 1
+    return count
