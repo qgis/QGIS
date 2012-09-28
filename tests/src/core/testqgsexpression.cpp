@@ -246,6 +246,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
+      QTest::newRow( "log(-2,32)" ) << "log(-2,32)" << false << QVariant( );
+      QTest::newRow( "log(2,-32)" ) << "log(2,-32)" << false << QVariant( );
+      QTest::newRow( "log(0.5,32)" ) << "log(0.5,32)" << false << QVariant( -5. );
       QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
       QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
