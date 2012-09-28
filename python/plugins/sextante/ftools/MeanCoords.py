@@ -1,14 +1,20 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
 import os.path
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
 from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.ftools import ftools_utils
+
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.parameters.ParameterVector import ParameterVector
+
 from sextante.outputs.OutputVector import OutputVector
+
+from sextante.ftools import FToolsUtils as utils
+
 
 class MeanCoords(GeoAlgorithm):
 
@@ -21,44 +27,67 @@ class MeanCoords(GeoAlgorithm):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/mean.png")
 
+    def defineCharacteristics(self):
+        self.name = "Mean coordinate(s)"
+        self.group = "Analysis tools"
+
+        self.addParameter(ParameterVector(self.POINTS, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.WEIGHT, "Weight field", MeanCoords.POINTS, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.UID, "Unique ID field", MeanCoords.POINTS, ParameterTableField.DATA_TYPE_NUMBER))
+
+        self.addOutput(OutputVector(MeanCoords.OUTPUT, "Result"))
+
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(MeanCoords.POINTS))
-        weightField = self.getParameterValue(MeanCoords.WEIGHT)
-        uniqueField = self.getParameterValue(MeanCoords.UID)
-        provider = vlayer.dataProvider()
-        weightIndex = provider.fieldNameIndex(weightField)
-        uniqueIndex = provider.fieldNameIndex(uniqueField)
-        feat = QgsFeature()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
-        sRs = provider.crs()
+        settings = QSettings()
+        encoding = settings.value( "/UI/encoding", "System" ).toString()
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        weightField = self.getParameterValue(self.WEIGHT)
+        uniqueField = self.getParameterValue(self.UID)
+
+        output = self.getOutputValue(self.OUTPUT)
+
+        provider = layer.dataProvider()
+        weightIndex = layer.fieldNameIndex(weightField)
+        uniqueIndex = layer.fieldNameIndex(uniqueField)
+
         if uniqueIndex <> -1:
-            uniqueValues = ftools_utils.getUniqueValues(provider, int( uniqueIndex ) )
+            uniqueValues = layer.uniqueValues(uniqueIndex)
             single = False
         else:
             uniqueValues = [QVariant(1)]
             single = True
-        fieldList = { 0 : QgsField("MEAN_X", QVariant.Double), 1 : QgsField("MEAN_Y", QVariant.Double), 2 : QgsField("UID", QVariant.String)  }
-        writer = self.getOutputFromName(MeanCoords.OUTPUT).getVectorWriter(fieldList, QGis.WKBPoint, sRs)
-        outfeat = QgsFeature()
-        points = []
-        weights = []
-        nFeat = provider.featureCount() * len(uniqueValues)
-        nElement = 0
+
+        fieldList = {0 : QgsField("MEAN_X", QVariant.Double, "", 24, 15),
+                     1 : QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
+                     2 : QgsField("UID", QVariant.String, "", 255)
+                    }
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
+                     QGis.WKBPoint, provider.crs())
+
+        current = 0
+        total = 100.0 / float(provider.featureCount() * len(uniqueValues))
+
+        feat = QgsFeature()
+        outFeat = QgsFeature()
+
         for j in uniqueValues:
             provider.rewind()
-            provider.select(allAttrs)
+            layer.select([weightIndex, uniqueIndex])
             cx = 0.00
             cy = 0.00
             points = []
             weights = []
-            while provider.nextFeature(feat):
-                nElement += 1
-                progress.setPercentage(nElement/nFeat * 100)
+            while layer.nextFeature(feat):
+                current += 1
+                progress.setPercentage(current * total)
+
                 if single:
                     check = j.toString().trimmed()
                 else:
                     check = feat.attributeMap()[uniqueIndex].toString().trimmed()
+
                 if check == j.toString().trimmed():
                     cx = 0.00
                     cy = 0.00
@@ -69,13 +98,15 @@ class MeanCoords(GeoAlgorithm):
                             weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
                         except:
                             weight = 1.00
+
                     geom = QgsGeometry(feat.geometry())
-                    geom = ftools_utils.extractPoints(geom)
+                    geom = utils.extractPoints(geom)
                     for i in geom:
                         cx += i.x()
                         cy += i.y()
                     points.append(QgsPoint((cx / len(geom)), (cy / len(geom))))
                     weights.append(weight)
+
             sumWeight = sum(weights)
             cx = 0.00
             cy = 0.00
@@ -83,24 +114,18 @@ class MeanCoords(GeoAlgorithm):
             for item, i in enumerate(points):
                 cx += i.x() * weights[item]
                 cy += i.y() * weights[item]
+
             cx = cx / sumWeight
             cy = cy / sumWeight
             meanPoint = QgsPoint(cx, cy)
-            outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outfeat.addAttribute(0, QVariant(cx))
-            outfeat.addAttribute(1, QVariant(cy))
-            outfeat.addAttribute(2, QVariant(j))
-            writer.addFeature(outfeat)
+
+            outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
+            outFeat.addAttribute(0, QVariant(cx))
+            outFeat.addAttribute(1, QVariant(cy))
+            outFeat.addAttribute(2, QVariant(j))
+            writer.addFeature(outFeat)
+
             if single:
                 break
+
         del writer
-
-
-
-    def defineCharacteristics(self):
-        self.name = "Mean coordinate(s)"
-        self.group = "Analysis tools"
-        self.addParameter(ParameterVector(MeanCoords.POINTS, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterTableField(MeanCoords.WEIGHT, "Weight field", MeanCoords.POINTS))
-        self.addParameter(ParameterTableField(MeanCoords.UID, "Unique ID field", MeanCoords.POINTS))
-        self.addOutput(OutputVector(MeanCoords.OUTPUT, "Result"))

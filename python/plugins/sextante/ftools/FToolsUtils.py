@@ -47,3 +47,30 @@ def findOrCreateField(layer, fieldList, fieldName, fieldLen = 24, fieldPrec = 15
         field =  QgsField(fn, QVariant.Double, "", fieldLen, fieldPrec)
         fieldList[idx] = field
     return idx, fieldList
+
+def extractPoints( geom ):
+    points = []
+    if geom.type() ==  QGis.Point:
+        if geom.isMultipart():
+            points = geom.asMultiPoint()
+        else:
+            points.append(geom.asPoint())
+    elif geom.type() == QGis.Line:
+        if geom.isMultipart():
+            lines = geom.asMultiPolyline()
+            for line in lines:
+              points.extend(line)
+        else:
+            points = geom.asPolyline()
+    elif geom.type() == QGis.Polygon:
+        if geom.isMultipart():
+            polygons = geom.asMultiPolygon()
+            for poly in polygons:
+                for line in poly:
+                    points.extend(line)
+        else:
+            polygon = geom.asPolygon()
+            for line in polygon:
+                points.extend(line)
+
+    return points
