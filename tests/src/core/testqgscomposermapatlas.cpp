@@ -44,6 +44,8 @@ private slots:
   void autoscale_render();
   // test rendering with a fixed scale atlas
   void fixedscale_render();
+  // test rendering with a hidden coverage
+  void hiding_render();
   private:
   QgsComposition* mComposition;
   QgsComposerLabel* mLabel1;
@@ -117,13 +119,9 @@ void TestQgsComposerMapAtlas::initTestCase()
 
 void TestQgsComposerMapAtlas::cleanupTestCase()
 {
-  /*  delete mComposition;
-  delete mComposerMap;
-  delete mLabel1;
-  delete mLabel2;
+  delete mComposition;
   delete mMapRenderer;
   delete mVectorLayer;
-  */
 }
 
 void TestQgsComposerMapAtlas::init()
@@ -148,6 +146,7 @@ void TestQgsComposerMapAtlas::filename()
   }
   atlasRender.end();
 }
+
 
 void TestQgsComposerMapAtlas::autoscale_render()
 {
@@ -190,6 +189,31 @@ void TestQgsComposerMapAtlas::fixedscale_render()
 				   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
 				   "expected_composermapatlas" + QDir::separator() +
 				   QString( "fixedscale_%1.png" ).arg((int)fit) );
+    QVERIFY( checker.testComposition( 0 ) );
+  }
+  atlasRender.end();  
+
+}
+
+void TestQgsComposerMapAtlas::hiding_render()
+{
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlasMap->setAtlasFixedScale( true );
+  mAtlasMap->setAtlasHideCoverage( true );
+
+  QgsAtlasRendering atlasRender( mComposition );
+
+  atlasRender.begin();
+
+  for ( size_t fit = 0; fit < 2; ++fit )
+  {
+    atlasRender.prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( "Atlas hidden test", mComposition,
+				   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+				   "expected_composermapatlas" + QDir::separator() +
+				   QString( "hiding_%1.png" ).arg((int)fit) );
     QVERIFY( checker.testComposition( 0 ) );
   }
   atlasRender.end();  
