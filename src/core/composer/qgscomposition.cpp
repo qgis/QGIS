@@ -206,13 +206,13 @@ const QgsComposerHtml* QgsComposition::getComposerHtmlByItem( QgsComposerItem *i
   // an html item will be a composer frame and if it is we can try to get
   // its multiframe parent and then try to cast that to a composer html
   const QgsComposerFrame* composerFrame =
-          dynamic_cast<const QgsComposerFrame *>( item );
+    dynamic_cast<const QgsComposerFrame *>( item );
   if ( composerFrame )
   {
     const QgsComposerMultiFrame * mypMultiFrame = composerFrame->multiFrame();
     const QgsComposerHtml* composerHtml =
-            dynamic_cast<const QgsComposerHtml *>( mypMultiFrame );
-    if (composerHtml)
+      dynamic_cast<const QgsComposerHtml *>( mypMultiFrame );
+    if ( composerHtml )
     {
       return composerHtml;
     }
@@ -377,7 +377,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
     for ( ; sIt != substitutionMap->constEnd(); ++sIt )
     {
-      xmlString = xmlString.replace( "[" + sIt.key() + "]", sIt.value() );
+      xmlString = xmlString.replace( "[" + sIt.key() + "]", encodeStringForXML( sIt.value() ) );
     }
     importDoc.setContent( xmlString );
   }
@@ -1569,4 +1569,15 @@ void QgsComposition::renderPage( QPainter* p, int page )
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
 
   mPlotStyle = savedPlotStyle;
+}
+
+QString QgsComposition::encodeStringForXML( const QString& str )
+{
+  QString modifiedStr( str );
+  modifiedStr.replace( "&", "&amp;" );
+  modifiedStr.replace( "\"", "&quot;" );
+  modifiedStr.replace( "'", "&apos;" );
+  modifiedStr.replace( "<", "&lt;" );
+  modifiedStr.replace( ">", "&gt;" );
+  return modifiedStr;
 }

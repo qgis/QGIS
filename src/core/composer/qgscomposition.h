@@ -343,6 +343,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void removePaperItems();
     void deleteAndRemoveMultiFrames();
 
+    static QString encodeStringForXML( const QString& str );
+
   signals:
     void paperSizeChanged();
     void nPagesChanged();
