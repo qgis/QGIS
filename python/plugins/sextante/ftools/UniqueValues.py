@@ -1,4 +1,5 @@
 import os.path
+import codecs
 
 from PyQt4 import QtGui
 
@@ -11,8 +12,6 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
-
-from sextante.ftools import ftools_utils
 
 class UniqueValues(GeoAlgorithm):
 
@@ -27,27 +26,29 @@ class UniqueValues(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "List unique values"
         self.group = "Analysis tools"
-        self.addParameter(ParameterVector(UniqueValues.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterTableField(UniqueValues.FIELD_NAME, "Targer field", UniqueValues.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addOutput(OutputHTML(UniqueValues.OUTPUT, "Unique values"))
-        self.addOutput(OutputNumber(UniqueValues.TOTAL_VALUES, "Total unique values"))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.FIELD_NAME, "Targer field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addOutput(OutputHTML(self.OUTPUT, "Unique values"))
+        self.addOutput(OutputNumber(self.TOTAL_VALUES, "Total unique values"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(UniqueValues.INPUT_LAYER))
-        fieldName = self.getParameterValue(UniqueValues.FIELD_NAME)
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        fieldName = self.getParameterValue(self.FIELD_NAME)
 
-        outputFile = self.getOutputValue(UniqueValues.OUTPUT)
+        outputFile = self.getOutputValue(self.OUTPUT)
 
         values = layer.uniqueValues(layer.fieldNameIndex(fieldName))
         self.createHTML(outputFile, values)
-        self.setOutputValue(UniqueValues.TOTAL_VALUES, len(values))
+        self.setOutputValue(self.TOTAL_VALUES, len(values))
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, "w")
+        f = codecs.open(outputFile, "w", encoding="utf-8")
+        f.write('<html><head>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>')
         f.write("<p>Total unique values: " + str(len(algData)) + "</p>")
         f.write("<p>Unique values:</p>")
         f.write("<ul>")
         for s in algData:
             f.write("<li>" + unicode(s.toString()) + "</li>")
-        f.write("</ul>")
+        f.write("</ul></body></html>")
         f.close()
