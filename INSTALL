@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Saturday August 04, 2012
+Friday September 28, 2012
 
 
-Last Updated: Saturday August 04, 2012
-Last Change : Saturday July 21, 2012
+Last Updated: Friday September 28, 2012
+Last Change : Friday September 28, 2012
 
 
   1. Introduction
@@ -110,7 +110,7 @@ Optional dependencies:
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - expat >= 1.95 and gpsbabel
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.8, PyQt >= must match Qt version
+- for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 
 
@@ -593,6 +593,7 @@ Advanced Installation):
 - sip
 - spatialite
 - libspatialindex-devel
+- python-qscintilla
 
 This will also select packages the above packages depend on.
 
@@ -605,9 +606,7 @@ Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
 
-
-    4.1.3. Setting up the Visual Studio project with CMake
-    ======================================================
+=== Setting up the Visual Studio project with CMake ===
 
 To start a command prompt with an environment that both has the VC++ and the OSGeo4W
 variables create the following batch file (assuming the above packages were
@@ -631,6 +630,7 @@ installed in the default locations):
   @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
   
   @cmd
+
 
 Start the batch file and on the command prompt checkout the QGIS source from
 git to the source directory Quantum-GIS:
@@ -676,7 +676,7 @@ You will also either need to add all the dependency DLLs to the QGIS install
 directory or add their respective directories to your PATH.
 
 
-    4.1.4. Packaging
+    4.1.3. Packaging
     ================
 
 To create a standalone installer there is a perl script named 'creatensis.pl'
@@ -697,7 +697,7 @@ and 'bzip2') is available at:
   http://cygwin.com
 
 
-    4.1.5. Packaging your own build of QGIS
+    4.1.4. Packaging your own build of QGIS
     =======================================
 
 Assuming you have completed the above packaging step, if you want to include
@@ -717,7 +717,7 @@ After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
 
-    4.1.6. Osgeo4w packaging
+    4.1.5. Osgeo4w packaging
     ========================
 
 The actual packaging process is currently not documented, for now please take a
