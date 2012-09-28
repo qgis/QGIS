@@ -53,7 +53,6 @@ class TestQgsComposition(TestCase):
         """Run after each test."""
         pass
 
-    @expectedFailure
     def testSubstitutionMap(self):
         """Test that we can use degree symbols in substitutions.
         """
