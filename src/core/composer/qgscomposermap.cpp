@@ -45,7 +45,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ),
       mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ),
-      mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0)
+      mAtlasHideCoverage( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0), mAtlasSingleFile( false )
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
@@ -87,7 +87,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
       mMapCanvas( 0 ), mDrawCanvasItems( true ),
-      mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0)
+      mAtlasHideCoverage( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0), mAtlasSingleFile( false )
 {
   mOverviewFrameMapSymbol = 0;
   createDefaultOverviewFrameSymbol();
