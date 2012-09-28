@@ -9,8 +9,12 @@
     		font-size : 12px;
 		}
 		#header{
-    		background: #c6c6c6;
+    		background: #cccccc;
     		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
 		}
 	</style>
 </head>
@@ -56,16 +60,16 @@
 		<br>
 		<li>CTRL+ALT+SPACE to view the command history list.</li>
 		<br>
-		<li>Saves command history by typing <b>_save</b> or closing the widget.<br>
+		<li>Saves the command history by typing <b>_save</b> or closing the widget.<br>
 			This command saves the history command in the file ~/.qgis/console_history.txt
 		</li>
 		<br>
-		<li>Clears command history  by typing <b>_clear</b>.<br>
-			This command clears the history command from file ~/.qgis/console_history.txt
+		<li>Clears the command history  by typing <b>_clear</b>.<br>
+			This command clears the command history from file ~/.qgis/console_history.txt
 		</li>
 		<br>
 		<li>Clears completely command history  by typing <b>_clearAll</b>.<br>
-			This command clears completely the history command. It has an irreversible effect.
+			This command clears completely the command history. It has an irreversible effect.
 		</li>
 		</ul>
 	</p>
@@ -77,34 +81,38 @@
 		</tr>
 	</table>
 	<p>The following is a description of the tools in the toolbar:</p>		
-	<table width="100%">
+	<table width="100%" border="0" id="headerTool">
 		<tr>
-		<td><img src="../iconConsole/iconClearConsole.png" /></td>
-		<td>Tool to clear python console</td>
+			<td><img src="../iconConsole/iconClearConsole.png" /></td>
+			<td colspan="2">Tool to clear python console</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconIfaceConsole.png" /></td>
-		<td>Tool to import iface class</td>
+			<td><img src="../iconConsole/iconClassConsole.png" /></td>
+			<td><img src="../iconConsole/iconIfaceConsole.png" /></td>
+			<td>Tool to import iface class</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconSextanteConsole.png" /></td>
-		<td>Tool to import Sextante class</td>
+			<td></td>
+			<td><img src="../iconConsole/iconSextanteConsole.png" /></td>
+			<td>Tool to import Sextante class</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconOpenConsole.png" /></td>
-		<td>Tool to open a python script and load in console</td>
+			<td><img src="../iconConsole/iconScriptConsole.png" /></td>
+			<td><img src="../iconConsole/iconOpenConsole.png" /></td>
+			<td>Tool to open a python script and load in console</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconSaveConsole.png" /></td>
-		<td>Tool to save a python script</td>
+			<td></td>
+			<td><img src="../iconConsole/iconSaveConsole.png" /></td>
+			<td>Tool to save a python script</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconHelpConsole.png" /></td>
-		<td>This! ;-)</td>
+			<td><img src="../iconConsole/iconHelpConsole.png" /></td>
+			<td colspan="2">Help</td>
 		</tr>
 		<tr>
-		<td><img src="../iconConsole/iconRunConsole.png" /></td>
-		<td>Run command (like Enter key pressed)</td>
+			<td><img src="../iconConsole/iconRunConsole.png" /></td>
+			<td colspan="2">Run command (like Enter key pressed)</td>
 		</tr>
 	</table>
 	<br>

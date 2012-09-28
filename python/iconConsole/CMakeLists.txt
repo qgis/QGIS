@@ -9,6 +9,7 @@ iconHelpConsole.png
 imgHelpDialog.png
 iconIfaceConsole.png
 iconClassConsole.png
+iconScriptConsole.png
 )
 
 FILE(GLOB ICON_FILES *.png)
