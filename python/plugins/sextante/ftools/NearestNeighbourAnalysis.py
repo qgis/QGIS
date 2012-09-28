@@ -1,70 +1,102 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
 import os.path
-from PyQt4 import QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.core.QGisLayers import QGisLayers
-from sextante.ftools import ftools_utils
 import math
+
+from PyQt4 import QtGui
+
+from qgis.core import *
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.QGisLayers import QGisLayers
+
+from sextante.parameters.ParameterVector import ParameterVector
+
 from sextante.outputs.OutputHTML import OutputHTML
+from sextante.outputs.OutputNumber import OutputNumber
+
+from sextante.ftools import FToolsUtils as utils
 
 class NearestNeighbourAnalysis(GeoAlgorithm):
 
     POINTS = "POINTS"
+
     OUTPUT = "OUTPUT"
+
+    OBSERVED_MD = "OBSERVED_MD"
+    EXPECTED_MD = "EXPECTED_MD"
+    NN_INDEX = "NN_INDEX"
+    POINT_COUNT = "POINT_COUNT"
+    Z_SCORE = "Z_SCORE"
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/neighbour.png")
 
-    def processAlgorithm(self, progress):
-        output = self.getOutputValue(NearestNeighbourAnalysis.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(NearestNeighbourAnalysis.POINTS))
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
-        feat = QgsFeature()
-        neighbour = QgsFeature()
-        sumDist = 0.00
-        distance = QgsDistanceArea()
-        A = vlayer.extent()
-        A = float( A.width() * A.height() )
-        index = ftools_utils.createIndex( vprovider )
-        vprovider.rewind()
-        nFeat = vprovider.featureCount()
-        nElement = 0
-        while vprovider.nextFeature( feat ):
-          neighbourID = index.nearestNeighbor( feat.geometry().asPoint(), 2 )[ 1 ]
-          vprovider.featureAtId( neighbourID, neighbour, True, [] )
-          nearDist = distance.measureLine( neighbour.geometry().asPoint(), feat.geometry().asPoint() )
-          sumDist += nearDist
-          nElement += 1
-          progress.setPercentage(int(nElement/nFeat * 100))
-        nVal = vprovider.featureCount()
-        do = float( sumDist) / nVal
-        de = float( 0.5 / math.sqrt( nVal / A ) )
-        d = float( do / de )
-        SE = float( 0.26136 / math.sqrt( ( nVal * nVal ) / A ) )
-        zscore = float( ( do - de ) / SE )
-        lstStats = []
-        lstStats.append("Observed mean distance:" + unicode( do ) )
-        lstStats.append("Expected mean distance:" + unicode( de ) )
-        lstStats.append("Nearest neighbour index:" + unicode( d ) )
-        lstStats.append("N:" + unicode( nVal ) )
-        lstStats.append("Z-Score:"  + unicode( zscore ) )
-        self.createHTML(output, lstStats)
-
-
-    def createHTML(self, outputFile, lstStats):
-        f = open(outputFile, "w")
-        for s in lstStats:
-            f.write("<p>" + str(s) + "</p>")
-        f.close()
-
-
     def defineCharacteristics(self):
         self.name = "Nearest neighbour analysis"
         self.group = "Analysis tools"
-        self.addParameter(ParameterVector(NearestNeighbourAnalysis.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
-        self.addOutput(OutputHTML(NearestNeighbourAnalysis.OUTPUT, "Result"))
+
+        self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
+
+        self.addOutput(OutputHTML(self.OUTPUT, "Result"))
+
+        self.addOutput(OutputNumber(self.OBSERVED_MD, "Observed mean distance"))
+        self.addOutput(OutputNumber(self.EXPECTED_MD, "Expected mean distance"))
+        self.addOutput(OutputNumber(self.NN_INDEX, "Nearest neighbour index"))
+        self.addOutput(OutputNumber(self.POINT_COUNT, "Number of points"))
+        self.addOutput(OutputNumber(self.Z_SCORE, "Z-Score"))
+
+
+    def processAlgorithm(self, progress):
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
+        output = self.getOutputValue(self.OUTPUT)
+
+        provider = layer.dataProvider()
+        spatialIndex = utils.createSpatialIndex(provider)
+        provider.rewind()
+        provider.select()
+
+        feat = QgsFeature()
+        neighbour = QgsFeature()
+        distance = QgsDistanceArea()
+
+        sumDist = 0.00
+        A = layer.extent()
+        A = float(A.width() * A.height())
+
+        current = 0
+        total = 100.0 / float(provider.featureCount())
+
+        while provider.nextFeature( feat ):
+            neighbourID = spatialIndex.nearestNeighbor(feat.geometry().asPoint(), 2)[1]
+            provider.featureAtId(neighbourID, neighbour, True)
+            sumDist += distance.measureLine(neighbour.geometry().asPoint(), feat.geometry().asPoint())
+
+            current += 1
+            progress.setPercentage(int(current * total))
+
+        count = provider.featureCount()
+        do = float(sumDist) / count
+        de = float(0.5 / math.sqrt(count / A))
+        d = float(do / de)
+        SE = float(0.26136 / math.sqrt(( count ** 2) / A))
+        zscore = float((do - de) / SE)
+
+        data = []
+        data.append("Observed mean distance: " + unicode(do))
+        data.append("Expected mean distance: " + unicode(de))
+        data.append("Nearest neighbour index: " + unicode(d))
+        data.append("Number of points: " + unicode(count))
+        data.append("Z-Score: " + unicode(zscore))
+
+        self.createHTML(output, data)
+
+        self.setOutputValue(self.OBSERVED_MD, float( data[ 0 ].split( ": " )[ 1 ] ) )
+        self.setOutputValue(self.EXPECTED_MD, float( data[ 1 ].split( ": " )[ 1 ] ) )
+        self.setOutputValue(self.NN_INDEX, float( data[ 2 ].split( ": " )[ 1 ] ) )
+        self.setOutputValue(self.POINT_COUNT, float( data[ 3 ].split( ": " )[ 1 ] ) )
+        self.setOutputValue(self.Z_SCORE, float( data[ 4 ].split( ": " )[ 1 ] ) )
+
+    def createHTML(self, outputFile, algData):
+        f = open(outputFile, "w")
+        for s in algData:
+            f.write("<p>" + str(s) + "</p>")
+        f.close()
