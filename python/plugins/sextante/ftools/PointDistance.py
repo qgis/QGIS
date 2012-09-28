@@ -9,7 +9,6 @@ from qgis.core import *
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterVector import ParameterVector
@@ -40,24 +39,24 @@ class PointDistance(GeoAlgorithm):
         self.name = "Distance matrix"
         self.group = "Analysis tools"
 
-        self.addParameter(ParameterVector(PointDistance.INPUT_LAYER, "Input point layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addParameter(ParameterTableField(PointDistance.INPUT_FIELD, "Input unique ID field", PointDistance.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterVector(PointDistance.TARGET_LAYER, "Target point layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addParameter(ParameterTableField(PointDistance.TARGET_FIELD, "Target unique ID field", PointDistance.TARGET_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterSelection(PointDistance.MATRIX_TYPE, "Output matrix type", PointDistance.MAT_TYPES, 0))
-        self.addParameter(ParameterNumber(PointDistance.NEAREST_POINTS, "Use only the nearest (k) target points", 0, 9999, 0))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input point layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterTableField(self.INPUT_FIELD, "Input unique ID field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterVector(self.TARGET_LAYER, "Target point layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterTableField(self.TARGET_FIELD, "Target unique ID field", self.TARGET_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterSelection(self.MATRIX_TYPE, "Output matrix type", self.MAT_TYPES, 0))
+        self.addParameter(ParameterNumber(self.NEAREST_POINTS, "Use only the nearest (k) target points", 0, 9999, 0))
 
-        self.addOutput(OutputFile(PointDistance.DISTANCE_MATRIX, "Distance matrix"))
+        self.addOutput(OutputFile(self.DISTANCE_MATRIX, "Distance matrix"))
 
     def processAlgorithm(self, progress):
-        inLayer = QGisLayers.getObjectFromUri(self.getParameterValue(PointDistance.INPUT_LAYER))
-        inField = self.getParameterValue(PointDistance.INPUT_FIELD)
-        targetLayer = QGisLayers.getObjectFromUri(self.getParameterValue(PointDistance.TARGET_LAYER))
-        targetField = self.getParameterValue(PointDistance.TARGET_FIELD)
-        matType = self.getParameterValue(PointDistance.MATRIX_TYPE)
-        nPoints = self.getParameterValue(PointDistance.NEAREST_POINTS)
+        inLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        inField = self.getParameterValue(self.INPUT_FIELD)
+        targetLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.TARGET_LAYER))
+        targetField = self.getParameterValue(self.TARGET_FIELD)
+        matType = self.getParameterValue(self.MATRIX_TYPE)
+        nPoints = self.getParameterValue(self.NEAREST_POINTS)
 
-        outputFile = self.getOutputValue(PointDistance.DISTANCE_MATRIX)
+        outputFile = self.getOutputValue(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
             nPoints = targetLayer.featureCount()
@@ -92,10 +91,10 @@ class PointDistance(GeoAlgorithm):
             index.insertFeature(inFeat)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        inProvider.select([inIdx])
+        inLayer.select([inIdx])
         outIdx = targetLayer.fieldNameIndex(inField)
         targetProvider.rewind()
-        targetProvider.select([outIdx])
+        targetLayer.select([outIdx])
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -103,16 +102,16 @@ class PointDistance(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         current = 0
-        count = inLayer.featureCount()
+        total = 100.0 / float(inLayer.featureCount())
 
-        while inProvider.nextFeature(inFeat):
+        while inLayer.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             inID = inFeat.attributeMap()[inIdx].toString()
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
             for i in featList:
-                targetProvider.featureAtId(i, outFeat, True, [outIdx])
+                targetLayer.featureAtId(i, outFeat)
                 outID = outFeat.attributeMap()[outIdx].toString()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
@@ -129,7 +128,7 @@ class PointDistance(GeoAlgorithm):
                 self.writer.writerow([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
 
             current += 1
-            progress.setPercentage(int(current/count * 100))
+            progress.setPercentage(int(current * total))
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
         inProvider = inLayer.dataProvider()
@@ -142,10 +141,10 @@ class PointDistance(GeoAlgorithm):
             index.insertFeature(inFeat)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        inProvider.select([inIdx])
+        inLayer.select([inIdx])
         outIdx = targetLayer.fieldNameIndex(inField)
         targetProvider.rewind()
-        targetProvider.select([outIdx])
+        targetLayer.select([outIdx])
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -154,9 +153,9 @@ class PointDistance(GeoAlgorithm):
 
         first = True
         current = 0
-        count = inLayer.featureCount()
+        total = 100.0 / float(inLayer.featureCount())
 
-        while inProvider.nextFeature(inFeat):
+        while inLayer.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             inID = inFeat.attributeMap()[inIdx].toString()
             if first:
@@ -164,20 +163,20 @@ class PointDistance(GeoAlgorithm):
                 first = False
                 data = ["ID"]
                 for i in featList:
-                    targetProvider.featureAtId(i, outFeat, True, [outIdx])
+                    targetLayer.featureAtId(i, outFeat)
                     data.append(unicode(outFeat.attributeMap()[outIdx].toString()))
                 self.writer.writerow(data)
 
             data = [unicode(inID)]
             for i in featList:
-                targetProvider.featureAtId(i, outFeat, True)
+                targetLayer.featureAtId(i, outFeat)
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 data.append(unicode(float(dist)))
             self.writer.writerow(data)
 
             current += 1
-            progress.setPercentage(int(current/count * 100))
+            progress.setPercentage(int(current * total))
 
 class UnicodeWriter:
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
