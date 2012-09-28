@@ -76,7 +76,6 @@ void QgsGCPListModel::updateModel()
     return;
 
   bool bTransformUpdated = false;
-  QgsPoint origin;
 
   vector<QgsPoint> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
@@ -125,7 +124,7 @@ void QgsGCPListModel::updateModel()
     setItem( i, j++, si );
     setItem( i, j++, new QgsStandardItem( i ) );
     setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( -p->pixelCoords().y() ) );
+    setItem( i, j++, new QgsStandardItem( p->pixelCoords().y() ) );
     setItem( i, j++, new QgsStandardItem( p->mapCoords().x() ) );
     setItem( i, j++, new QgsStandardItem( p->mapCoords().y() ) );
 
@@ -136,6 +135,7 @@ void QgsGCPListModel::updateModel()
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPoint dst;
+      QgsPoint pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:
@@ -144,13 +144,13 @@ void QgsGCPListModel::updateModel()
         // interested in the residual in this direction
         if ( mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst ) )
         {
-          dX = ( dst.x() - p->pixelCoords().x() );
-          dY = -( dst.y() - p->pixelCoords().y() );
+          dX = ( dst.x() - pixel.x() );
+          dY = -( dst.y() - pixel.y() );
         }
       }
       else if ( unitType == tr( "map units" ) )
       {
-        if ( mGeorefTransform->transformRasterToWorld( p->pixelCoords(), dst ) )
+        if ( mGeorefTransform->transformRasterToWorld( pixel, dst ) )
         {
           dX = ( dst.x() - p->mapCoords().x() );
           dY = ( dst.y() - p->mapCoords().y() );

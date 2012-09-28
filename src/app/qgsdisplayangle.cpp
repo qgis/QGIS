@@ -14,58 +14,48 @@
  ***************************************************************************/
 
 #include "qgsdisplayangle.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+
 #include <QSettings>
 #include <cmath>
 
-QgsDisplayAngle::QgsDisplayAngle( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
+    : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );
-  QSettings settings;
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
-    mcbProjectionEnabled->setCheckState( Qt::Checked );
-  else
-    mcbProjectionEnabled->setCheckState( Qt::Unchecked );
-
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SLOT( changeState() ) );
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SIGNAL( changeProjectionEnabledState() ) );
 }
 
 QgsDisplayAngle::~QgsDisplayAngle()
 {
-
-}
-
-bool QgsDisplayAngle::projectionEnabled()
-{
-  return mcbProjectionEnabled->isChecked();
 }
 
 void QgsDisplayAngle::setValueInRadians( double value )
 {
+  mValue = value;
+  updateUi();
+}
+
+void QgsDisplayAngle::updateUi()
+{
   QSettings settings;
   QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
+  int decimals = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+
   if ( unitString == "degrees" )
   {
-    mAngleLineEdit->setText( tr( "%1 degrees" ).arg( value * 180 / M_PI ) );
+    mAngleLineEdit->setText( tr( "%1 degrees" ).arg( QLocale::system().toString( mValue * 180 / M_PI ),
+                             'f', decimals ) );
   }
   else if ( unitString == "radians" )
   {
-    mAngleLineEdit->setText( tr( "%1 radians" ).arg( value ) );
+    mAngleLineEdit->setText( tr( "%1 radians" ).arg( QLocale::system().toString( mValue ),
+                             'f', decimals ) );
+
   }
   else if ( unitString == "gon" )
   {
-    mAngleLineEdit->setText( tr( "%1 gon" ).arg( value / M_PI * 200 ) );
+    mAngleLineEdit->setText( tr( "%1 gon" ).arg( QLocale::system().toString( mValue / M_PI * 200 ),
+                             'f', decimals ) );
   }
-}
-
-void QgsDisplayAngle::changeState()
-{
-  QSettings settings;
-  if ( mcbProjectionEnabled->isChecked() )
-    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
-  else
-    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
 }

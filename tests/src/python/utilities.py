@@ -10,7 +10,7 @@ from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
 
-QGISAPP = None  # Static vainasafele used to hold hand to running QGis app
+QGISAPP = None  # Static variable used to hold hand to running QGis app
 CANVAS = None
 PARENT = None
 IFACE = None
@@ -68,7 +68,9 @@ def getQgisTestApp():
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
 
+        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication - no need to mess with it here.
         QGISAPP = QgsApplication(sys.argv, myGuiFlag)
+
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()
         print s

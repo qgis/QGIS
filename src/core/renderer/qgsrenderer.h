@@ -86,8 +86,6 @@ class CORE_EXPORT QgsRenderer
      @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found*/
     virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl ) = 0;
 
-    /**Writes the contents of the renderer to a configuration file*/
-    // virtual void writeXML(std::ostream& xml)=0;
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
     virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const = 0;

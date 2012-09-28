@@ -1,0 +1,9 @@
+Destriping 1
+contrib_a_perego
+ParameterRaster|INPUT|Input|False
+ParameterNumber|ANG|Angle (in degrees)|None|None|0.0
+ParameterNumber|R|Radius|None|None|19.0
+ParameterNumber|D|Stripes distance|None|None|2.0
+OutputRaster|RESULT3|Destriped Grid
+OutputRaster|RESULT1|Low-pass 1
+OutputRaster|RESULT2|Low-pass 2

@@ -1,0 +1,365 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdruler</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdrobotop.html"><tt>mmdrobotop</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdsoil.html"><tt>mmdsoil</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdruler
+      <br>
+      <span class="subtitle">Detect defects in a ruler.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      The input image is a gray-scale image of a ruler, that has a number touching a tick mark. This number and mark are detected based on morphological and connected filtering.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The gray-scale image of the ruler is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('mm3.tif');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_001.jpg">a</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Segmentation</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The close top-hat operator followed by a thresholding is applied.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmthreshad( mmcloseth(a,mmsebox(5)),40);</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint8.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_002.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_002.jpg">b</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Size filtering</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The vertical lines longer than 50 pixels are detected.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c = mmopen(b,mmseline(50,90));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(c);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_003.jpg">c</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ruler tick marks filtering</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        It closes ruler tick marks gaps.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; d =mmclose(c,mmseline(15));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_004.jpg">d</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ruler tick marks connection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        It detects all objects connected to the ruler tick markers.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; e = mminfrec(d,b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_005.jpg">e</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ruler tick mark vertical connection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        It detects all objects vertically connected to the ruler tick mark. Note that the 3x1 rectangle is used as structuring element in the vertical  reconstruction.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; f = mminfrec(d,b,mmseline(3,90));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_006.jpg">f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Non ruler tick mark vertical connection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The residues obtained from the previous image.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; g = mmsubm(e,f);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(g);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_007.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_007.jpg">g</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ruler tick marks detection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        It uses an opening by an elementary cross structuring element to  eliminate the artifacts.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; h = mmopen(g);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(h);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_008.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_008.jpg">h</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Objects detection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        It detects the objects connected to ruler tick marks. A reconstruction  from the ruler marks detected is applied.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; i = mminfrec(h, b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(i);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_009.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_009.jpg">i</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Final presentation</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Overlay the detected defect over the original image
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; mmshow(a,i);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdruler_010.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdruler_010.jpg">a,i</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdrobotop.html"><tt>mmdrobotop</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdsoil.html"><tt>mmdsoil</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

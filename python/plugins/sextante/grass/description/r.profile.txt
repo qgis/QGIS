@@ -1,0 +1,11 @@
+r.profile
+r.profile - Outputs the raster map layer values lying on user-defined line(s).
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|profile|Profile coordinate pairs|
+ParameterString|res|Resolution along profile (default = current region resolution)|
+ParameterString|null|Character to represent no data cell|*
+ParameterBoolean|-i|Interactively select End-Points|False
+ParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
+ParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
+OutputFile|output|Name of file for output (use output=- for stdout)

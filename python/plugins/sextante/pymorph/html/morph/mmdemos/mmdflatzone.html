@@ -1,0 +1,282 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdflatzone</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdfila.html"><tt>mmdfila</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdflow.html"><tt>mmdflow</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdflatzone
+      <br>
+      <span class="subtitle">Flat-zone image simplification by connected filtering.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      This experiment illustrates the flat zone extension property of connected filters. The flat zones of an image is the set of the largest connected components with identical intensity values. The main property of the connected filter is that every flat zone of the input image is included in a flat zone of the output image.
+
+          <br>This example was kindly provided by Prof. Jose Crespo from Facultad de Informatica of Universidad Politecnica de Madrid and adapted from CrScSeGrMe:98.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The input image is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('cameraman.tif')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_001.jpg">a</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Flat zone computation</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Obtain the flat zones (8-connectivity) and compute its number. The number of flat zones is determined by the maximum labeling value ( starting from flat zone one).
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmlabelflat(a,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; nfz=mmstats(b,'max')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print nfz</pre>
+                  <pre class="computer">43268.0</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(b)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_002.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdflatzone_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_002.jpg">a</a></td>
+                      <td><a href="../images/img_mmdflatzone_003.jpg">b</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Flat zone extension using connected filter</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Apply the alternating sequential filter by reconstruction with increasing sizes. They constitute a connected pyramid.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c=mmasfrec(a,'CO',mmsebox(),mmsebox(),2)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; d=mmasfrec(a,'CO',mmsebox(),mmsebox(),4)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e=mmasfrec(a,'CO',mmsebox(),mmsebox(),16)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(c)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_004.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdflatzone_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_004.jpg">c</a></td>
+                      <td><a href="../images/img_mmdflatzone_005.jpg">d</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_006.jpg">e</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Flat zone visualization and counting</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        These figures show the image simplification in a connected pyramid. Notice how the shapes are well preserved along the scale space. The number of flat zones at each level of the pyramid are computed to illustrate the flat zone number reduction.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c_lab=mmlabelflat(c,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; d_lab=mmlabelflat(d,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e_lab=mmlabelflat(e,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print mmstats(c_lab,'max')</pre>
+                  <pre class="computer">15509.0</pre>
+                  <pre class="user">&gt;&gt;&gt; print mmstats(d_lab,'max')</pre>
+                  <pre class="computer">11990.0</pre>
+                  <pre class="user">&gt;&gt;&gt; print mmstats(e_lab,'max')</pre>
+                  <pre class="computer">5648.0</pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(c_lab)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(d_lab)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(e_lab)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_007.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdflatzone_008.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_007.jpg">c_lab</a></td>
+                      <td><a href="../images/img_mmdflatzone_008.jpg">d_lab</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_009.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_009.jpg">e_lab</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Flat zone inclusion property</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        In this experiment we select a particular flat zone, the flat zone to  which the pixel (90,60) belongs, and display it at each level of the  connected pyramid. Notice the flat zone inclusion property.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c_v=c_lab[89,59]</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; c_flat=mmcmp(c_lab,'==',c_v)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; d_v=d_lab[89,59]</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; d_flat=mmcmp(d_lab,'==',d_v)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e_v=e_lab[89,59]</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e_flat=mmcmp(e_lab,'==',e_v)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a,e_flat,d_flat,c_flat)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdflatzone_010.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdflatzone_010.jpg">a,e_flat,d_flat,c_flat</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdfila.html"><tt>mmdfila</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdflow.html"><tt>mmdflow</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

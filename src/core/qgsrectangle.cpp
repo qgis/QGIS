@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <QRectF>
 #include <QString>
 #include <QTextStream>
 #include <qnumeric.h>
@@ -35,6 +36,14 @@ QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, doub
 QgsRectangle::QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 )
 {
   set( p1, p2 );
+}
+
+QgsRectangle::QgsRectangle( QRectF const & qRectF )
+{
+  xmin = qRectF.topLeft().x();
+  ymin = qRectF.topLeft().y();
+  xmax = qRectF.bottomRight().x();
+  ymax = qRectF.bottomRight().y();
 }
 
 QgsRectangle::QgsRectangle( const QgsRectangle &r )
@@ -182,6 +191,32 @@ QString QgsRectangle::asWktCoordinates() const
     QString::number( ymax, 'f', 16 );
 
   return rep;
+}
+
+QString QgsRectangle::asWktPolygon() const
+{
+  QString rep =
+    QString( "POLYGON((" ) +
+    QString::number( xmin, 'f', 16 ) + " " +
+    QString::number( ymin, 'f', 16 ) + ", " +
+    QString::number( xmax, 'f', 16 ) + " " +
+    QString::number( ymin, 'f', 16 ) + ", " +
+    QString::number( xmax, 'f', 16 ) + " " +
+    QString::number( ymax, 'f', 16 ) + ", " +
+    QString::number( xmin, 'f', 16 ) + " " +
+    QString::number( ymax, 'f', 16 ) + ", " +
+    QString::number( xmin, 'f', 16 ) + " " +
+    QString::number( ymin, 'f', 16 ) +
+    QString( "))" );
+
+  return rep;
+}
+
+//! returns a QRectF with same coordinates.
+//@note added in 2.0
+QRectF QgsRectangle::toRectF() const
+{
+  return QRectF(( qreal )xmin, ( qreal )ymin, ( qreal )xmax - xmin, ( qreal )ymax - ymin );
 }
 
 // Return a string representation of the rectangle with automatic or high precision

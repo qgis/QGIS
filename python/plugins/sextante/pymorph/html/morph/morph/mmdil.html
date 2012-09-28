@@ -1,0 +1,327 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdil</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmcero.html"><tt>mmcero</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmero.html"><tt>mmero</tt></a>]
+              </td>
+        <td class="title">Dilations And Erosions</td>
+      </tr>
+    </table>
+    <h1>mmdil
+      <br>
+      <span class="subtitle">Dilate an image by a structuring element.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmdil</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">b</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">b</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmdil</span> performs the dilation of image 
+          <code>f</code> by the structuring element 
+          <code>b</code>.  Dilation is a neighbourhood operator that compares locally 
+          <code>b</code> with 
+          <code>f</code>, according to an intersection rule.  Since Dilation is a fundamental operator to the construction of all other morphological operators,  it is also called an elementary operator of Mathematical Morphology. When 
+          <code>f</code> is a gray-scale image, 
+          <code>b</code> may be a flat or non-flat structuring element.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical examples</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmbinary([
+   [0, 0, 0, 0, 0, 0, 1],
+   [0, 1, 0, 0, 0, 0, 0],
+   [0, 0, 0, 0, 1, 0, 0]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b=mmbinary([1, 1, 0])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmdil(f,b)</pre>
+              <pre class="computer">array([[0, 0, 0, 0, 0, 1, 1],
+       [1, 1, 0, 0, 0, 0, 0],
+       [0, 0, 0, 1, 1, 0, 0]],'1')</pre>
+              <pre class="user">&gt;&gt;&gt; f=uint8([
+   [ 0,   1,  2, 50,  4,  5],
+   [ 2,   3,  4,  0,  0,  0],
+   [12, 255, 14, 15, 16, 17]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmdil(f,b)</pre>
+              <pre class="computer">array([[  1,   2,  50,  50,   5,   5],
+       [  3,   4,   4,   0,   0,   0],
+       [255, 255,  15,  16,  17,  17]],'b')</pre>
+            </div>
+          </div>
+          <div class="bridge">Binary image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmbinary(mmreadgray('blob.tif'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; bimg=mmbinary(mmreadgray('blob1.tif'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b=mmimg2se(bimg)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmdil(f,b))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmdil(f,b),mmgradm(f))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="239" src="../images/img_mmdil_001.jpg"></td>
+                  <td><img width="239" src="../images/img_mmdil_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmdil_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmdil_002.jpg">mmdil(f,b)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="239" src="../images/img_mmdil_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmdil_003.jpg">mmdil(f,b),mmgradm(f)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Gray-scale image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('pcb_gray.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b=mmsedisk(5)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmdil(f,b))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmdil_004.jpg"></td>
+                  <td><img width="256" src="../images/img_mmdil_005.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmdil_004.jpg">f</a></td>
+                  <td><a href="../images/img_mmdil_005.jpg">mmdil(f,b)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Flat structuring element:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmdil001.png">
+          </div>
+          <div class="bridge">Non-flat structuring element:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmdil002.png">
+          </div>Where
+
+          <div class="eqfig">
+            <img src="../images/eq_mmdil003.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmdil(f, b=None):
+    from Numeric import maximum, NewAxis, ones
+    if b is None: b = mmsecross()
+    if len(f.shape) == 1: f = f[NewAxis,:]
+    h,w = f.shape
+    x,v = mmmat2set(b)
+    if len(x)==0:
+        y = (ones((h,w)) * mmlimits(f)[0]).astype(f.typecode())
+    else:
+        if mmisbinary(v):
+            v = mmintersec(mmgray(v,'int32'),0)
+        mh,mw = max(abs(x)[:,0]),max(abs(x)[:,1])
+        y = (ones((h+2*mh,w+2*mw)) * mmlimits(f)[0]).astype(f.typecode())
+        for i in range(x.shape[0]):
+            if v[i] &gt; -2147483647:
+                y[mh+x[i,0]:mh+x[i,0]+h, mw+x[i,1]:mw+x[i,1]+w] = maximum(
+                    y[mh+x[i,0]:mh+x[i,0]+h, mw+x[i,1]:mw+x[i,1]+w], mmadd4dil(f,v[i]))
+        y = y[mh:mh+h, mw:mw+w]
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmcdil.html">mmcdil</a></td>
+              <td class="def">Dilate an image conditionally.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmero.html">mmero</a></td>
+              <td class="def">Erode an image by a structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmimg2se.html">mmimg2se</a></td>
+              <td class="def">Create a structuring element from a pair of images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsesum.html">mmsesum</a></td>
+              <td class="def">N-1 iterative Minkowski  additions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsedil.html">mmsedil</a></td>
+              <td class="def">Dilate one structuring element by another</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmcdil.html">mmcdil</a></td>
+              <td class="def">Dilate an image conditionally.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmero.html">mmero</a></td>
+              <td class="def">Erode an image by a structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmimg2se.html">mmimg2se</a></td>
+              <td class="def">Create a structuring element from a pair of images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsesum.html">mmsesum</a></td>
+              <td class="def">N-1 iterative Minkowski  additions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmcero.html"><tt>mmcero</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmero.html"><tt>mmero</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

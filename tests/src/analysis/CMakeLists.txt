@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS ../core/qgsrenderchecker.cpp)
+SET (util_SRCS)
 
 
 #####################################################

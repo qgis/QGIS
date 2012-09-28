@@ -32,9 +32,9 @@
 #include <QPainter>
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
-    : QgsRasterInterface( input ),
-    mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 ),
-    mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
+    : QgsRasterInterface( input )
+    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 )
+    , mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {
 }
 
@@ -53,6 +53,8 @@ int QgsRasterRenderer::bandCount() const
 
 QgsRasterInterface::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
+  QgsDebugMsg( "Entered" );
+
   if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
@@ -74,13 +76,13 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
 
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( typeIsNumeric( input->dataType( i ) ) )
+    if ( !typeIsNumeric( input->dataType( i ) ) )
     {
-      mInput = input;
-      return true;
+      return false;
     }
   }
-  return false;
+  mInput = input;
+  return true;
 }
 
 bool QgsRasterRenderer::usesTransparency( ) const
@@ -89,7 +91,8 @@ bool QgsRasterRenderer::usesTransparency( ) const
   {
     return true;
   }
-  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue() ) ) || !doubleNear( mOpacity, 1.0 ) );
+  // TODO: nodata per band
+  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue( 1 ) ) ) || !doubleNear( mOpacity, 1.0 ) );
 }
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )

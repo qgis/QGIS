@@ -120,6 +120,8 @@ class QgisAppInterface : public QgisInterface
     */
     QWidget * mainWindow();
 
+    QgsMessageBar * messageBar();
+
     QList<QgsComposerView*> activeComposers();
 
     /** Add action to the plugins menu */

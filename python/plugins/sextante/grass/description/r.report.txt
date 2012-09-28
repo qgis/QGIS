@@ -1,0 +1,15 @@
+r.report
+r.report - Reports statistics for raster map layers.
+Raster (r.*)
+ParameterMultipleInput|map|Raster map(s) to report on|3.0|False
+ParameterSelection|units|Units|mi;me;k;a;h;c;p
+ParameterString|null|Character representing no data cell value|*
+ParameterNumber|nsteps|Number of fp subranges to collect stats from|None|None|255
+ParameterBoolean|-h|Suppress page headers|True
+ParameterBoolean|-f|Use formfeeds between pages|True
+ParameterBoolean|-e|Scientific format|True
+ParameterBoolean|-n|Filter out all no data cells|True
+ParameterBoolean|-N|Filter out cells where all maps have no data|True
+ParameterBoolean|-C|Report for cats fp ranges (fp maps only)|True
+ParameterBoolean|-i|Read fp map as integer (use map's quant rules)|True
+OutputHTML|output|Name of an output file to hold the report

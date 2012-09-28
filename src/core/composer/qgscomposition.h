@@ -117,12 +117,35 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QList<QgsComposerItem*> selectedComposerItems();
 
-    /**Returns pointers to all composer maps in the scene*/
+    /**Returns pointers to all composer maps in the scene
+      @note not available in python bindings
+     */
     QList<const QgsComposerMap*> composerMapItems() const;
 
+    /**Return composer items of a specific type
+      @note not available in python bindings
+     */
+    template<class T> void composerItems( QList<T*>& itemList );
+
     /**Returns the composer map with specified id
-     @return id or 0 pointer if the composer map item does not exist*/
+     @return QgsComposerMap or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
+
+    /*Returns the composer html with specified id (a string as named in the
+      composer user interface item properties).
+      @note Added in QGIS 2.0
+      @param id - A QString representing the id of the item.
+      @return QgsComposerHtml pointer or 0 pointer if no such item exists.
+    */
+    const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
+
+    /**Returns a composer item given its text identifier.
+      @note added in 2.0
+      @param theId - A QString representing the identifier of the item to
+        retrieve.
+      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      **/
+    const QgsComposerItem* getComposerItemById( QString theId ) const;
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
@@ -153,12 +176,21 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
+    /**Load a template document
+        @param doc template document
+        @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
+        @param addUndoCommands whether or not to add undo commands
+      */
+    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0, bool addUndoCommands = false );
+
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
       @param doc xml document
       @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
-      @param pos item position. Optional, take position from xml if 0*/
+      @param pos item position. Optional, take position from xml if 0
+      @note not available in python bindings
+     */
     void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
                           bool addUndoCommands = false, QPointF* pos = 0 );
 
@@ -210,7 +242,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
-    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)
+      @note not available in python bindings*/
     void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
@@ -308,6 +341,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void updatePaperItems();
     void addPaperItem();
     void removePaperItems();
+    void deleteAndRemoveMultiFrames();
 
   signals:
     void paperSizeChanged();
@@ -336,6 +370,21 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
 };
+
+template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
+{
+  itemList.clear();
+  QList<QGraphicsItem *> graphicsItemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
+  for ( ; itemIt != graphicsItemList.end(); ++itemIt )
+  {
+    T* item = dynamic_cast<T*>( *itemIt );
+    if ( item )
+    {
+      itemList.push_back( item );
+    }
+  }
+}
 
 #endif
 

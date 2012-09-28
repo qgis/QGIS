@@ -1,0 +1,14 @@
+KMeansClassification
+otbcli_KMeansClassification
+Unsupervised KMeans image classification
+Learning
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterRaster|-vm|Validity Mask|True
+ParameterNumber|-ts|Training set size|None|None|100
+ParameterNumber|-nc|Number of classes|None|None|5
+ParameterNumber|-maxit|Maximum number of iterations|None|None|1000
+ParameterNumber|-ct|Convergence threshold|None|None|9.99999974738e-05
+OutputFile|-outmeans|Centroid filename
+ParameterNumber|-rand|set user defined seed|None|None|0

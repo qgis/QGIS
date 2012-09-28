@@ -75,9 +75,11 @@ class CORE_EXPORT QGis
     };
 
     // String representation of geometry types (set in qgis.cpp)
+    //! @note not available in python bindings
     static const char *qgisVectorGeometryType[];
 
     //! description strings for feature types
+    //! @note not available in python bindings
     static const char *qgisFeatureTypes[];
 
     /** Map units that qgis supports
@@ -97,11 +99,14 @@ class CORE_EXPORT QGis
       DegreesDecimalMinutes = 2,  // was 5
     };
 
-    // Provides the canonical name of the type value
+    //! Provides the canonical name of the type value
+    // Added in version 2.0
     static QString toLiteral( QGis::UnitType unit );
-    // Converts from the canonical name to the type value
+    //! Converts from the canonical name to the type value
+    // Added in version 2.0
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
-    // Provides translated version of the type value
+    //! Provides translated version of the type value
+    // Added in version 2.0
     static QString tr( QGis::UnitType unit );
 
     //! User defined event types
@@ -147,6 +152,24 @@ inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
+}
+
+//
+// compare two doubles using specified number of significant digits
+//
+inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
+{
+  // The most simple would be to print numbers as %.xe and compare as strings
+  // but that is probably too costly
+  // Then the fastest would be to set some bits directly, but little/big endian
+  // has to be considered (maybe TODO)
+  // Is there a better way?
+  int aexp, bexp;
+  double ar = frexp( a, &aexp );
+  double br = frexp( b, &bexp );
+
+  return aexp == bexp &&
+         ceil( ar * pow( 10.0, significantDigits ) ) == ceil( br * pow( 10.0, significantDigits ) ) ;
 }
 
 /** Wkt string that represents a geographic coord sys
@@ -196,6 +219,10 @@ const int LAT_PREFIX_LEN = 7;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+// Added in version 2.0
+const QString GEO_NONE = "NONE";
 
 //
 // Constants for point symbols

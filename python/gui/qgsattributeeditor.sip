@@ -5,6 +5,7 @@ class QgsAttributeEditor : QObject
 %TypeHeaderCode
 #include <qgsattributeeditor.h>
 %End
+
   public:
     QgsAttributeEditor( QObject *parent );
     static QWidget *createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value );

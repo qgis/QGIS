@@ -141,7 +141,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     bool isValid();
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    QMap<int, void *> identify( const QgsPoint & thePoint );
 
     /**
      * \brief Identify details from a GRASS layer from the last screen update
@@ -208,9 +209,14 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
-    double noDataValue() const;
+    //double noDataValue() const;
     double minimumValue( int bandNo )const;
     double maximumValue( int bandNo )const;
+
+    QgsRasterBandStats bandStatistics( int theBandNo,
+                                       int theStats = QgsRasterBandStats::All,
+                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       int theSampleSize = 0 );
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
@@ -257,7 +263,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsGrassRasterValue mRasterValue;
 
-    double mNoDataValue;
+    //double mNoDataValue;
 };
 
 #endif

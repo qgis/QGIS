@@ -38,7 +38,7 @@
 #include <QTime>
 #include <QPainter>
 
-#include "qgsdiagram.h"
+#include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
@@ -142,6 +142,12 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 {
   placement = AroundPoint;
   placementFlags = 0;
+  xQuadOffset = 0;
+  yQuadOffset = 0;
+  xOffset = 0;
+  yOffset = 0;
+  angleOffset = 0;
+  centroidWhole = false;
   //textFont = QFont();
   textNamedStyle = QString( "" );
   textColor = Qt::black;
@@ -162,6 +168,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   decimals = 3;
   plusSign = false;
   labelPerPart = false;
+  displayAll = false;
   mergeLines = false;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
@@ -169,6 +176,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   addDirectionSymbol = false;
   fontSizeInMapUnits = false;
   bufferSizeInMapUnits = false;
+  labelOffsetInMapUnits = true;
   distInMapUnits = false;
   wrapChar = "";
   preserveRotation = true;
@@ -181,6 +189,12 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   isExpression = s.isExpression;
   placement = s.placement;
   placementFlags = s.placementFlags;
+  xQuadOffset = s.xQuadOffset;
+  yQuadOffset = s.yQuadOffset;
+  xOffset = s.xOffset;
+  yOffset = s.yOffset;
+  angleOffset = s.angleOffset;
+  centroidWhole = s.centroidWhole;
   textFont = s.textFont;
   textNamedStyle = s.textNamedStyle;
   textColor = s.textColor;
@@ -201,6 +215,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   decimals = s.decimals;
   plusSign = s.plusSign;
   labelPerPart = s.labelPerPart;
+  displayAll = s.displayAll;
   mergeLines = s.mergeLines;
   minFeatureSize = s.minFeatureSize;
   vectorScaleFactor = s.vectorScaleFactor;
@@ -209,6 +224,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   bufferSizeInMapUnits = s.bufferSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
+  labelOffsetInMapUnits = s.labelOffsetInMapUnits;
   wrapChar = s.wrapChar;
   preserveRotation = s.preserveRotation;
 
@@ -260,7 +276,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   {
     return;
   }
-  for ( int i = 0; i < 20; ++i )
+  for ( int i = 0; i < QgsPalLayerSettings::PropertyCount; ++i )
   {
     QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
@@ -326,7 +342,8 @@ void QgsPalLayerSettings::updateFontViaStyle( const QString & fontstyle )
 {
   if ( !fontstyle.isEmpty() )
   {
-    QFont styledfont = mFontDB.font( textFont.family(), fontstyle, textFont.pointSizeF() );
+    QFont styledfont = mFontDB.font( textFont.family(), fontstyle, 12 );
+    styledfont.setPointSizeF( textFont.pointSizeF() );
     if ( QApplication::font().toString() != styledfont.toString() )
     {
       textFont = styledfont;
@@ -343,6 +360,12 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
   placement = ( Placement ) layer->customProperty( "labeling/placement" ).toInt();
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
+  xQuadOffset = layer->customProperty( "labeling/xQuadOffset", QVariant( 0 ) ).toInt();
+  yQuadOffset = layer->customProperty( "labeling/yQuadOffset", QVariant( 0 ) ).toInt();
+  xOffset = layer->customProperty( "labeling/xOffset", QVariant( 0.0 ) ).toDouble();
+  yOffset = layer->customProperty( "labeling/yOffset", QVariant( 0.0 ) ).toDouble();
+  angleOffset = layer->customProperty( "labeling/angleOffset", QVariant( 0.0 ) ).toDouble();
+  centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
   QString fontFamily = layer->customProperty( "labeling/fontFamily" ).toString();
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
@@ -350,9 +373,12 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
-  updateFontViaStyle( textNamedStyle );
+  updateFontViaStyle( textNamedStyle ); // must come after textFont.setPointSizeF()
+  textFont.setCapitalization(( QFont::Capitalization ) layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
+  textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( "labeling/fontLetterSpacing", QVariant( 0.0 ) ).toDouble() );
+  textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", "#ffffff" ).toString() );
@@ -371,12 +397,14 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
   plusSign = layer->customProperty( "labeling/plussign" ).toInt();
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
+  displayAll = layer->customProperty( "labeling/displayAll", QVariant( false ) ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
+  labelOffsetInMapUnits = layer->customProperty( "labeling/labelOffsetInMapUnits", QVariant( true ) ).toBool();
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
   _readDataDefinedPropertyMap( layer, dataDefinedProperties );
@@ -391,14 +419,23 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/isExpression", isExpression );
   layer->setCustomProperty( "labeling/placement", placement );
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
+  layer->setCustomProperty( "labeling/xQuadOffset", xQuadOffset );
+  layer->setCustomProperty( "labeling/yQuadOffset", yQuadOffset );
+  layer->setCustomProperty( "labeling/xOffset", xOffset );
+  layer->setCustomProperty( "labeling/yOffset", yOffset );
+  layer->setCustomProperty( "labeling/angleOffset", angleOffset );
+  layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
 
   layer->setCustomProperty( "labeling/fontFamily", textFont.family() );
   layer->setCustomProperty( "labeling/namedStyle", textNamedStyle );
+  layer->setCustomProperty( "labeling/fontCapitals", ( unsigned int )textFont.capitalization() );
   layer->setCustomProperty( "labeling/fontSize", textFont.pointSizeF() );
   layer->setCustomProperty( "labeling/fontWeight", textFont.weight() );
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
   layer->setCustomProperty( "labeling/fontStrikeout", textFont.strikeOut() );
   layer->setCustomProperty( "labeling/fontUnderline", textFont.underline() );
+  layer->setCustomProperty( "labeling/fontLetterSpacing", textFont.letterSpacing() );
+  layer->setCustomProperty( "labeling/fontWordSpacing", textFont.wordSpacing() );
 
   _writeColor( layer, "labeling/textColor", textColor );
   layer->setCustomProperty( "labeling/textTransp", textTransp );
@@ -418,12 +455,14 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/decimals", decimals );
   layer->setCustomProperty( "labeling/plussign", plusSign );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
+  layer->setCustomProperty( "labeling/displayAll", displayAll );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
+  layer->setCustomProperty( "labeling/labelOffsetInMapUnits", labelOffsetInMapUnits );
   layer->setCustomProperty( "labeling/wrapChar", wrapChar );
   layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
   _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
@@ -565,6 +604,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   QString labelText;
+
   // Check to see if we are a expression string.
   if ( isExpression )
   {
@@ -574,6 +614,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
       return;
     }
+    exp->setScale( context.rendererScale() );
     QVariant result = exp->evaluate( &f, layer->pendingFields() );
     if ( exp->hasEvalError() )
     {
@@ -639,35 +680,88 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     return;
   }
 
+  // whether we're going to create a centroid for polygon
+  bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
+                         || placement == QgsPalLayerSettings::OverPoint )
+                       && geom->type() == QGis::Polygon );
+
   // CLIP the geometry if it is bigger than the extent
-  QgsGeometry* geomClipped = NULL;
-  GEOSGeometry* geos_geom;
-  bool do_clip = !extentGeom->contains( geom );
-  if ( do_clip )
+  // don't clip if centroid is requested for whole feature
+  bool do_clip = false;
+  if ( !centroidPoly || ( centroidPoly && !centroidWhole ) )
   {
-    geomClipped = geom->intersection( extentGeom ); // creates new geometry
-    if ( !geomClipped )
+    do_clip = !extentGeom->contains( geom );
+    if ( do_clip )
     {
-      return;
+      geom = geom->intersection( extentGeom ); // creates new geometry
+      if ( !geom )
+      {
+        return;
+      }
     }
-    geos_geom = geomClipped->asGeos();
   }
-  else
-  {
-    geos_geom = geom->asGeos();
-  }
+
+  GEOSGeometry* geos_geom = geom->asGeos();
 
   if ( geos_geom == NULL )
     return; // invalid geometry
+
   GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
-  if ( do_clip )
-    delete geomClipped;
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
+  bool labelIsPinned = false;
+  bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
-  bool ddXPos, ddYPos;
+  bool ddXPos = false, ddYPos = false;
+  double quadOffsetX = 0.0, quadOffsetY = 0.0;
+  double offsetX = 0.0, offsetY = 0.0;
+
+  // adjust quadrant offset of labels
+  if ( xQuadOffset != 0 )
+  {
+    quadOffsetX = xQuadOffset;
+  }
+  if ( yQuadOffset != 0 )
+  {
+    quadOffsetY = yQuadOffset;
+  }
+
+  // adjust offset of labels to match chosen unit and map scale
+  double mapUntsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
+  if ( xOffset != 0 )
+  {
+    offsetX = xOffset;
+    if ( !labelOffsetInMapUnits )
+    {
+      offsetX = xOffset * mapUntsPerMM; //convert offset from mm to map units
+    }
+  }
+  if ( yOffset != 0 )
+  {
+    offsetY = yOffset;
+    if ( !labelOffsetInMapUnits )
+    {
+      offsetY = yOffset * mapUntsPerMM; //convert offset from mm to map units
+    }
+  }
+
+  // layer defined rotation?
+  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+  if ( placement == QgsPalLayerSettings::OverPoint && angleOffset != 0 )
+  {
+    layerDefinedRotation = true;
+    angle = angleOffset * M_PI / 180; // convert to radians
+  }
+
+  //data defined rotation?
+  QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
+  if ( rotIt != dataDefinedProperties.constEnd() )
+  {
+    dataDefinedRotation = true;
+    angle = f.attributeMap().value( *rotIt ).toDouble() * M_PI / 180.0;
+  }
 
   QMap< DataDefinedProperties, int >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );
   if ( dPosXIt != dataDefinedProperties.constEnd() )
@@ -682,13 +776,20 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       if ( ddXPos && ddYPos )
       {
         dataDefinedPosition = true;
+        labelIsPinned = true;
+        // layer rotation set, but don't rotate pinned labels unless data defined
+        if ( layerDefinedRotation && !dataDefinedRotation )
+        {
+          angle = 0.0;
+        }
+
         //x/y shift in case of alignment
-        double xdiff = 0;
-        double ydiff = 0;
+        double xdiff = 0.0;
+        double ydiff = 0.0;
 
         //horizontal alignment
         QMap< DataDefinedProperties, int >::const_iterator haliIt = dataDefinedProperties.find( QgsPalLayerSettings::Hali );
-        if ( haliIt != dataDefinedProperties.end() )
+        if ( haliIt != dataDefinedProperties.constEnd() )
         {
           QString haliString = f.attributeMap().value( *haliIt ).toString();
           if ( haliString.compare( "Center", Qt::CaseInsensitive ) == 0 )
@@ -730,12 +831,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           }
         }
 
-        //data defined rotation?
-        QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
-        if ( rotIt != dataDefinedProperties.constEnd() )
+        if ( dataDefinedRotation )
         {
-          dataDefinedRotation = true;
-          angle = f.attributeMap().value( *rotIt ).toDouble() * M_PI / 180;
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
           double xd = xdiff * cos( angle ) - ydiff * sin( angle );
           double yd = xdiff * sin( angle ) + ydiff * cos( angle );
@@ -750,9 +847,16 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           ct->transformInPlace( xPos, yPos, z );
         }
 
-        yPos += ydiff;
         xPos += xdiff;
-
+        yPos += ydiff;
+      }
+      else
+      {
+        // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+        if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
+        {
+          angle = 0.0;
+        }
       }
     }
   }
@@ -766,7 +870,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
-                                     xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation ) )
+                                     xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY ) )
       return;
   }
   catch ( std::exception &e )
@@ -811,7 +916,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   // set geometry's pinned property
-  lbl->setIsPinned( dataDefinedPosition );
+  lbl->setIsPinned( labelIsPinned );
 }
 
 int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c, bool buffer ) const
@@ -947,7 +1052,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
                              min_scale, max_scale, arrangement,
-                             METER, priority, lyr.obstacle, true, true );
+                             METER, priority, lyr.obstacle, true, true,
+                             lyr.displayAll );
 
   if ( lyr.placementFlags )
     l->setArrangementFlags( lyr.placementFlags );
@@ -970,6 +1076,24 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   {
     lyr.textFont.setPixelSize( pixelFontSize );
   }
+
+  // scale spacing sizes if using map units
+  if ( lyr.fontSizeInMapUnits )
+  {
+    double spacingPixelSize;
+    if ( lyr.textFont.wordSpacing() != 0 )
+    {
+      spacingPixelSize = lyr.textFont.wordSpacing() / ctx.mapToPixel().mapUnitsPerPixel() * ctx.rasterScaleFactor();
+      lyr.textFont.setWordSpacing( spacingPixelSize );
+    }
+
+    if ( lyr.textFont.letterSpacing() != 0 )
+    {
+      spacingPixelSize = lyr.textFont.letterSpacing() / ctx.mapToPixel().mapUnitsPerPixel() * ctx.rasterScaleFactor();
+      lyr.textFont.setLetterSpacing( QFont::AbsoluteSpacing, spacingPixelSize );
+    }
+  }
+
   //raster and vector scale factors
   lyr.vectorScaleFactor = ctx.scaleFactor();
   lyr.rasterCompressFactor = ctx.rasterScaleFactor();
@@ -1527,7 +1651,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
     double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * lyr.fontMetrics->height();
-    painter->translate( QPointF( 0, - lyr.fontMetrics->descent() - yMultiLineOffset ) );
+    double ascentOffset = 0.0;
+    ascentOffset = lyr.fontMetrics->height() * 0.25 * lyr.fontMetrics->ascent() / lyr.fontMetrics->height();
+    painter->translate( QPointF( 0, - ascentOffset - yMultiLineOffset ) );
 
     if ( drawBuffer )
     {

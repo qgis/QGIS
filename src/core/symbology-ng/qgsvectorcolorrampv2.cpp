@@ -278,26 +278,29 @@ TODO load schemes
 
 */
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName )
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
+    bool doLoadFile )
     : mSchemeName( schemeName ), mVariantName( variantName ),
-    mGradientType( Continuous ), mFileLoaded( false )
+    mVariantList( QStringList() ), mFileLoaded( false ),
+    mGradientType( Continuous )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
-  if ( variantName != QString() || mVariantList.isEmpty() )
+  if ( doLoadFile && ( variantName != QString() || mVariantList.isEmpty() ) )
     loadFile();
 }
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
-    QString variantName )
+    QString variantName, bool doLoadFile )
     : mSchemeName( schemeName ), mVariantName( variantName ),
-    mGradientType( Continuous ), mFileLoaded( false )
+    mVariantList( variantList ), mFileLoaded( false ),
+    mGradientType( Continuous )
 {
   mVariantList = variantList;
 
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
-  if ( variantName != QString() || mVariantList.isEmpty() )
+  if ( doLoadFile && ( variantName != QString() || mVariantList.isEmpty() ) )
     loadFile();
 }
 
@@ -351,7 +354,24 @@ QColor QgsCptCityColorRampV2::color( double value ) const
 
 QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
 {
-  return new QgsCptCityColorRampV2( mSchemeName, mVariantName );
+  QgsCptCityColorRampV2* ramp = new QgsCptCityColorRampV2( "", "", false );
+  ramp->copy( this );
+  return ramp;
+}
+
+void QgsCptCityColorRampV2::copy( const QgsCptCityColorRampV2* other )
+{
+  if ( ! other )
+    return;
+  mSchemeName = other->mSchemeName;
+  mVariantName = other->mVariantName;
+  mVariantList = other->mVariantList;
+  mFileLoaded = other->mFileLoaded;
+  if ( other->mFileLoaded )
+  {
+    mGradientType = other->mGradientType;
+    mPalette = other->mPalette;
+  }
 }
 
 QgsStringMap QgsCptCityColorRampV2::properties() const

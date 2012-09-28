@@ -147,13 +147,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterInterface::DataType dataType( int bandNo ) const;
     QgsRasterInterface::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
-    double noDataValue() const;
+    //double noDataValue() const;
     int xBlockSize() const;
     int yBlockSize() const;
     int xSize() const;
     int ySize() const;
     QString metadata();
-    bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
+    //bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
+    QMap<int, void *> identify( const QgsPoint & thePoint );
     QString identifyAsHtml( const QgsPoint& point );
     QString identifyAsText( const QgsPoint& point );
     QString lastErrorTitle();
@@ -302,7 +303,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QList<int>mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
-    QList<double> mNoDataValue;
+    //QList<double> mNoDataValue;
 
     /** Color tables indexed from 0 */
     QList< QList<QgsColorRampShader::ColorRampItem> > mColorTables;
@@ -421,7 +422,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Fix for rasters rotated by GeoServer
     bool mFixRotate;
 
-    QNetworkRequest::CacheLoadControl mGetCoverageCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl;
 };
 
 

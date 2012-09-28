@@ -1,0 +1,12 @@
+DSFuzzyModelEstimation
+otbcli_DSFuzzyModelEstimation
+Fuzzy Model estimation
+Feature Extraction
+ParameterVector|-psin|Input Positive Vector Data|-1|False
+ParameterVector|-nsin|Input Negative Vector Data|-1|False
+ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)
+ParameterNumber|-wgt|Weighting|None|None|0.5
+ParameterFile|-initmod|initialization model||
+ParameterNumber|-maxnbit|Maximum number of iterations|None|None|200
+ParameterBoolean|-optobs|Optimizer Observer|
+OutputFile|-out|Output filename

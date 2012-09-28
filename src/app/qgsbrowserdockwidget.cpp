@@ -19,6 +19,7 @@
 #include <QMenu>
 #include <QSettings>
 #include <QToolButton>
+#include <QFileDialog>
 
 #include "qgsbrowsermodel.h"
 #include "qgsdataitem.h"
@@ -170,7 +171,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
   if ( !item )
     return;
 
-  QMenu* menu = new QMenu( this );
+  QMenu *menu = new QMenu( this );
 
   if ( item->type() == QgsDataItem::Directory )
   {
@@ -188,13 +189,19 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       // only favourites can be removed
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
-  }
 
+  }
   else if ( item->type() == QgsDataItem::Layer )
   {
     menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer( ) ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
     menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
+
+  }
+  else if ( item->type() == QgsDataItem::Favourites )
+  {
+    menu->addAction( tr( "Add a directory" ), this, SLOT( addFavouriteDirectory() ) );
+
   }
 
   QList<QAction*> actions = item->actions();
@@ -220,14 +227,27 @@ void QgsBrowserDockWidget::addFavourite()
   QgsDataItem* item = mModel->dataItem( mBrowserView->currentIndex() );
   if ( !item )
     return;
+
   if ( item->type() != QgsDataItem::Directory )
     return;
 
-  QString newFavDir = item->path();
+  addFavouriteDirectory( item->path() );
+}
 
+void QgsBrowserDockWidget::addFavouriteDirectory()
+{
+  QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favourites" ) );
+  if ( !directory.isEmpty() )
+  {
+    addFavouriteDirectory( directory );
+  }
+}
+
+void QgsBrowserDockWidget::addFavouriteDirectory( QString favDir )
+{
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-  favDirs.append( newFavDir );
+  favDirs.append( favDir );
   settings.setValue( "/browser/favourites", favDirs );
 
   // reload the browser model so that the newly added favourite directory is shown

@@ -28,6 +28,7 @@
 
 #include <QStringList>
 #include <QPushButton>
+#include <QNetworkRequest>
 
 class QgisApp;
 class QgsDataProvider;
@@ -36,12 +37,6 @@ class QgsNumericSortTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
-/** Formats supported by provider */
-struct QgsOWSSupportedFormat
-{
-  QString format;
-  QString label;
-};
 
 /*!
  * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
@@ -57,6 +52,13 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     Q_OBJECT
 
   public:
+    /** Formats supported by provider */
+    struct SupportedFormat
+    {
+      QString format;
+      QString label;
+    };
+
     //! Constructor
     QgsOWSSourceSelect( QString service, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
@@ -92,10 +94,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual void on_mLayersTreeWidget_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( QString const &theMessage );
+    void showStatusMessage( const QString &theMessage );
 
     //! show whatever error is exposed.
-    void showError( QString const &theTitle, QString const &theFormat, QString const &theError );
+    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
 
     //! Stores the selected datasource whenerver it is changed
     void on_mConnectionsComboBox_activated( int );
@@ -106,9 +108,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
+    void addRasterLayer( const QString & rasterLayerPath,
+                         const QString & baseName,
+                         const QString & providerKey );
     void connectionsChanged();
 
   protected:
@@ -116,7 +118,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs
      */
-    virtual QList<QgsOWSSupportedFormat> providerFormats();
+    virtual QList<SupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
     virtual QStringList selectedLayersFormats();
@@ -174,6 +176,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual void populateLayerList( );
 
     //! create an item including possible parents
+    //! @note not available in python bindings
     QgsNumericSortTreeWidgetItem *createItem( int id,
         const QStringList &names,
         QMap<int, QgsNumericSortTreeWidgetItem *> &items,
@@ -208,13 +211,16 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Returns currently selected time
     QString selectedTime();
 
+    //! Returns currently selected cache load control
+    QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
+
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;
 
     //! Name for selected connection
     QString mConnName;
 
-    //! Cnnection info for selected connection
+    //! Connection info for selected connection
     QString mConnectionInfo;
 
     //! URI for selected connection
@@ -228,7 +234,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QSet<QString> mSelectedLayersCRSs;
 
     //! Supported formats
-    QList<QgsOWSSupportedFormat> mProviderFormats;
+    QList<SupportedFormat> mProviderFormats;
 
     //! Map mime type labels to supported formats
     QMap<QString, QString> mMimeLabelMap;

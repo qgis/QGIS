@@ -1,0 +1,374 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmsedisk</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmsecross.html"><tt>mmsecross</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmseline.html"><tt>mmseline</tt></a>]
+              </td>
+        <td class="title">Structuring Elements</td>
+      </tr>
+    </table>
+    <h1>mmsedisk
+      <br>
+      <span class="subtitle">Create a disk or a semi-sphere structuring element.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">B = 
+          <span class="fun">mmsedisk</span>(
+                  
+          <span class="par">r</span> = 3, 
+          <span class="par">DIM</span> = "2D", 
+          <span class="par">METRIC</span> = "EUCLIDEAN", 
+          <span class="par">FLAT</span> = "FLAT", 
+          <span class="par">h</span> = 0
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">r</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span>      Non-negative integer.
+                          <p>Disk radius.</p><p>Default: 
+                      <code>3</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">DIM</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'1D', '2D, or '3D'.</p><p>Default: 
+                      <code>"2D"</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">METRIC</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'EUCLIDEAN', ' CITY-BLOCK', 'OCTAGON', or ' CHESSBOARD'.</p><p>Default: 
+                      <code>"EUCLIDEAN"</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">FLAT</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'FLAT' or 'NON-FLAT'.</p><p>Default: 
+                      <code>"FLAT"</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">h</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Elevation of the center of the semi-sphere.</p><p>Default: 
+                      <code>0</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">B</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmsedisk</span> creates a flat structuring element 
+          <code>B</code> that is disk under the metric METRIC , centered at the origin and with radius 
+          <code>r</code> or a non-flat structuring element that is a semi-sphere under the metric METRIC, centered at 
+          <code>(0, h)</code> and with radius 
+          <code>r</code>. This structuring element can be created on the 1D, 2D or 3D space.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Examples of flat structuring elements.</div>
+          <br>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a=mmseshow(mmsedisk(10,'2D','CITY-BLOCK'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b=mmseshow(mmsedisk(10,'2D','EUCLIDEAN'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; c=mmseshow(mmsedisk(10,'2D','OCTAGON'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(b)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(c)
+        </pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="21" src="../images/img_mmsedisk_001.jpg"></td>
+                  <td><img width="21" src="../images/img_mmsedisk_002.jpg"></td>
+                  <td><img width="21" src="../images/img_mmsedisk_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmsedisk_001.jpg">a</a></td>
+                  <td><a href="../images/img_mmsedisk_002.jpg">b</a></td>
+                  <td><a href="../images/img_mmsedisk_003.jpg">c</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br>
+          <div class="bridge">Examples of non flat structuring elements.</div>
+          <br>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; d=mmseshow(mmsedisk(10,'2D','CITY-BLOCK','NON-FLAT'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; e=mmseshow(mmsedisk(10,'2D','EUCLIDEAN','NON-FLAT'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f=mmseshow(mmsedisk(10,'2D','OCTAGON','NON-FLAT'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(d)</pre>
+              <pre class="computer">Warning: Converting input image from int32 to uint16.</pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(e)</pre>
+              <pre class="computer">Warning: Converting input image from int32 to uint16.</pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)
+        </pre>
+              <pre class="computer">Warning: Converting input image from int32 to uint16.</pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="21" src="../images/img_mmsedisk_004.jpg"></td>
+                  <td><img width="21" src="../images/img_mmsedisk_005.jpg"></td>
+                  <td><img width="21" src="../images/img_mmsedisk_006.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmsedisk_004.jpg">d</a></td>
+                  <td><a href="../images/img_mmsedisk_005.jpg">e</a></td>
+                  <td><a href="../images/img_mmsedisk_006.jpg">f</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; g=mmsedisk(3,'2D','EUCLIDEAN','NON-FLAT')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmseshow(g)</pre>
+              <pre class="computer">array([[-2147483647, -2147483647,           1,           1,           1, -2147483647,
+             -2147483647],
+       [-2147483647,           2,           2,           2,           2,           2,
+             -2147483647],
+       [          1,           2,           3,           3,           3,           2,
+                       1],
+       [          1,           2,           3,           3,           3,           2,
+                       1],
+       [          1,           2,           3,           3,           3,           2,
+                       1],
+       [-2147483647,           2,           2,           2,           2,           2,
+             -2147483647],
+       [-2147483647, -2147483647,           1,           1,           1, -2147483647,
+             -2147483647]],'i')</pre>
+              <pre class="user">&gt;&gt;&gt; h=mmsedisk(3,'2D','EUCLIDEAN','NON-FLAT',5)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmseshow(h)
+        </pre>
+              <pre class="computer">array([[-2147483647, -2147483647,           6,           6,           6, -2147483647,
+             -2147483647],
+       [-2147483647,           7,           7,           7,           7,           7,
+             -2147483647],
+       [          6,           7,           8,           8,           8,           7,
+                       6],
+       [          6,           7,           8,           8,           8,           7,
+                       6],
+       [          6,           7,           8,           8,           8,           7,
+                       6],
+       [-2147483647,           7,           7,           7,           7,           7,
+             -2147483647],
+       [-2147483647, -2147483647,           6,           6,           6, -2147483647,
+             -2147483647]],'i')</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Flat structuring element:</div>
+          <div class="bridge">Euclidean distance:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk001.png">
+          </div>
+          <div class="bridge">City block distance (4-connectivity):</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk002.png">
+          </div>
+          <div class="bridge">Chess board distance (8-connectivity):</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk003.png">
+          </div>
+          <div class="bridge">Octagon distance:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk004.png">
+          </div>
+          <div class="bridge">Non-flat structuring element:</div>
+          <div class="bridge">Euclidean distance:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk005.png">
+          </div>
+          <div class="bridge">city block distance:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk006.png">
+          </div>
+          <div class="bridge">chess board distance:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmsedisk007.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmsedisk(r=3, DIM="2D", METRIC="EUCLIDEAN", FLAT="FLAT", h=0):
+    from string import upper
+    from Numeric import resize, transpose, arange
+    from Numeric import sqrt, arange, transpose, maximum
+    METRIC = upper(METRIC)
+    FLAT   = upper(FLAT)            
+    assert DIM=='2D','Supports only 2D structuring elements'
+    if FLAT=='FLAT': y = mmbinary([1])
+    else:            y = int32([h])
+    if r==0: return y
+    if METRIC == 'CITY-BLOCK':
+        if FLAT == 'FLAT':
+            b = mmsecross(1)
+        else:
+            b = int32([[-2147483647, 0,-2147483647],
+                       [          0, 1,          0],
+                       [-2147483647, 0,-2147483647]])
+        return mmsedil(y,mmsesum(b,r))
+    elif METRIC == 'CHESSBOARD':
+        if FLAT == 'FLAT':
+            b = mmsebox(1)
+        else:
+            b = int32([[1,1,1],
+                       [1,1,1],
+                       [1,1,1]])
+        return mmsedil(y,mmsesum(b,r))
+    elif METRIC == 'OCTAGON':
+        if FLAT == 'FLAT':
+            b1,b2 = mmsebox(1),mmsecross(1)
+        else:
+            b1 = int32([[1,1,1],[1,1,1],[1,1,1]])
+            b2 = int32([[-2147483647, 0,-2147483647],
+                        [          0, 1,          0],
+                        [-2147483647, 0,-2147483647]])
+        if r==1: return b1
+        else:    return mmsedil( mmsedil(y,mmsesum(b1,r/2)) ,mmsesum(b2,(r+1)/2))
+    elif METRIC == 'EUCLIDEAN':
+        v = arange(-r,r+1)
+        x = resize(v, (len(v), len(v)))
+        y = transpose(x)
+        Be = mmbinary(sqrt(x*x + y*y) &lt;= (r+0.5))
+        if FLAT=='FLAT':
+            return Be
+        be = h + int32( sqrt( maximum((r+0.5)*(r+0.5) - (x*x) - (y*y),0)))
+        be = mmintersec(mmgray(Be,'int32'),be)
+        return be
+    else:
+        assert 0,'Non valid metric'
+    return B
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmseline.html">mmseline</a></td>
+              <td class="def">Create a line structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmimg2se.html">mmimg2se</a></td>
+              <td class="def">Create a structuring element from a pair of images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmseshow.html">mmseshow</a></td>
+              <td class="def">Display a structuring element as an image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmdil.html">mmdil</a></td>
+              <td class="def">Dilate an image by a structuring element.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmsecross.html"><tt>mmsecross</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmseline.html"><tt>mmseline</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

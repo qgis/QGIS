@@ -24,7 +24,7 @@
 #include "qgscoordinatetransform.h"
 
 class QgsHighlight;
-struct QgsLabelPosition;
+class QgsLabelPosition;
 
 /**A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
 class QgsMapToolPinLabels: public QgsMapToolLabel

@@ -1,0 +1,122 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>GDAL: Import Raster</h1>
+<div class='author'>(c) 2007 by O.Conrad (A.Ringeler)</div>
+<div class='description'>The "GDAL Raster Import" module imports grid data from various file formats using the "Geospatial Data Abstraction Library" (GDAL) by Frank Warmerdam. For more information have a look at the GDAL homepage:<br/>
+  <a target="_blank" href="http://www.gdal.org/">  http://www.gdal.org</a><br/>
+<br/>
+GDAL Version:1.8.1<br/>
+<br/>
+Following raster formats are currently supported:<br/>
+<table border="1"><tr><th>ID</th><th>Name</th></tr><br/>
+<tr><td>VRT</td><td>Virtual Raster</td></tr><br/>
+<tr><td>GTiff</td><td>GeoTIFF</td></tr><br/>
+<tr><td>NITF</td><td>National Imagery Transmission Format</td></tr><br/>
+<tr><td>RPFTOC</td><td>Raster Product Format TOC format</td></tr><br/>
+<tr><td>HFA</td><td>Erdas Imagine Images (.img)</td></tr><br/>
+<tr><td>SAR_CEOS</td><td>CEOS SAR Image</td></tr><br/>
+<tr><td>CEOS</td><td>CEOS Image</td></tr><br/>
+<tr><td>JAXAPALSAR</td><td>JAXA PALSAR Product Reader (Level 1.1/1.5)</td></tr><br/>
+<tr><td>GFF</td><td>Ground-based SAR Applications Testbed File Format (.gff)</td></tr><br/>
+<tr><td>ELAS</td><td>ELAS</td></tr><br/>
+<tr><td>AIG</td><td>Arc/Info Binary Grid</td></tr><br/>
+<tr><td>AAIGrid</td><td>Arc/Info ASCII Grid</td></tr><br/>
+<tr><td>SDTS</td><td>SDTS Raster</td></tr><br/>
+<tr><td>OGDI</td><td>OGDI Bridge</td></tr><br/>
+<tr><td>DTED</td><td>DTED Elevation Raster</td></tr><br/>
+<tr><td>PNG</td><td>Portable Network Graphics</td></tr><br/>
+<tr><td>JPEG</td><td>JPEG JFIF</td></tr><br/>
+<tr><td>MEM</td><td>In Memory Raster</td></tr><br/>
+<tr><td>JDEM</td><td>Japanese DEM (.mem)</td></tr><br/>
+<tr><td>GIF</td><td>Graphics Interchange Format (.gif)</td></tr><br/>
+<tr><td>BIGGIF</td><td>Graphics Interchange Format (.gif)</td></tr><br/>
+<tr><td>ESAT</td><td>Envisat Image Format</td></tr><br/>
+<tr><td>BSB</td><td>Maptech BSB Nautical Charts</td></tr><br/>
+<tr><td>XPM</td><td>X11 PixMap Format</td></tr><br/>
+<tr><td>BMP</td><td>MS Windows Device Independent Bitmap</td></tr><br/>
+<tr><td>DIMAP</td><td>SPOT DIMAP</td></tr><br/>
+<tr><td>AirSAR</td><td>AirSAR Polarimetric Image</td></tr><br/>
+<tr><td>RS2</td><td>RadarSat 2 XML Product</td></tr><br/>
+<tr><td>PCIDSK</td><td>PCIDSK Database File</td></tr><br/>
+<tr><td>PCRaster</td><td>PCRaster Raster File</td></tr><br/>
+<tr><td>ILWIS</td><td>ILWIS Raster Map</td></tr><br/>
+<tr><td>SGI</td><td>SGI Image File Format 1.0</td></tr><br/>
+<tr><td>SRTMHGT</td><td>SRTMHGT File Format</td></tr><br/>
+<tr><td>Leveller</td><td>Leveller heightfield</td></tr><br/>
+<tr><td>Terragen</td><td>Terragen heightfield</td></tr><br/>
+<tr><td>GMT</td><td>GMT NetCDF Grid Format</td></tr><br/>
+<tr><td>netCDF</td><td>Network Common Data Format</td></tr><br/>
+<tr><td>HDF4</td><td>Hierarchical Data Format Release 4</td></tr><br/>
+<tr><td>HDF4Image</td><td>HDF4 Dataset</td></tr><br/>
+<tr><td>ISIS3</td><td>USGS Astrogeology ISIS cube (Version 3)</td></tr><br/>
+<tr><td>ISIS2</td><td>USGS Astrogeology ISIS cube (Version 2)</td></tr><br/>
+<tr><td>PDS</td><td>NASA Planetary Data System</td></tr><br/>
+<tr><td>TIL</td><td>EarthWatch .TIL</td></tr><br/>
+<tr><td>ERS</td><td>ERMapper .ers Labelled</td></tr><br/>
+<tr><td>JPEG2000</td><td>JPEG-2000 part 1 (ISO/IEC 15444-1)</td></tr><br/>
+<tr><td>L1B</td><td>NOAA Polar Orbiter Level 1b Data Set</td></tr><br/>
+<tr><td>FIT</td><td>FIT Image</td></tr><br/>
+<tr><td>GRIB</td><td>GRIdded Binary (.grb)</td></tr><br/>
+<tr><td>RMF</td><td>Raster Matrix Format</td></tr><br/>
+<tr><td>WCS</td><td>OGC Web Coverage Service</td></tr><br/>
+<tr><td>WMS</td><td>OGC Web Map Service</td></tr><br/>
+<tr><td>MSGN</td><td>EUMETSAT Archive native (.nat)</td></tr><br/>
+<tr><td>RST</td><td>Idrisi Raster A.1</td></tr><br/>
+<tr><td>INGR</td><td>Intergraph Raster</td></tr><br/>
+<tr><td>GSAG</td><td>Golden Software ASCII Grid (.grd)</td></tr><br/>
+<tr><td>GSBG</td><td>Golden Software Binary Grid (.grd)</td></tr><br/>
+<tr><td>GS7BG</td><td>Golden Software 7 Binary Grid (.grd)</td></tr><br/>
+<tr><td>COSAR</td><td>COSAR Annotated Binary Matrix (TerraSAR-X)</td></tr><br/>
+<tr><td>TSX</td><td>TerraSAR-X Product</td></tr><br/>
+<tr><td>COASP</td><td>DRDC COASP SAR Processor Raster</td></tr><br/>
+<tr><td>R</td><td>R Object Data Store</td></tr><br/>
+<tr><td>PNM</td><td>Portable Pixmap Format (netpbm)</td></tr><br/>
+<tr><td>DOQ1</td><td>USGS DOQ (Old Style)</td></tr><br/>
+<tr><td>DOQ2</td><td>USGS DOQ (New Style)</td></tr><br/>
+<tr><td>ENVI</td><td>ENVI .hdr Labelled</td></tr><br/>
+<tr><td>EHdr</td><td>ESRI .hdr Labelled</td></tr><br/>
+<tr><td>GenBin</td><td>Generic Binary (.hdr Labelled)</td></tr><br/>
+<tr><td>PAux</td><td>PCI .aux Labelled</td></tr><br/>
+<tr><td>MFF</td><td>Vexcel MFF Raster</td></tr><br/>
+<tr><td>MFF2</td><td>Vexcel MFF2 (HKV) Raster</td></tr><br/>
+<tr><td>FujiBAS</td><td>Fuji BAS Scanner Image</td></tr><br/>
+<tr><td>GSC</td><td>GSC Geogrid</td></tr><br/>
+<tr><td>FAST</td><td>EOSAT FAST Format</td></tr><br/>
+<tr><td>BT</td><td>VTP .bt (Binary Terrain) 1.3 Format</td></tr><br/>
+<tr><td>LAN</td><td>Erdas .LAN/.GIS</td></tr><br/>
+<tr><td>CPG</td><td>Convair PolGASP</td></tr><br/>
+<tr><td>IDA</td><td>Image Data and Analysis</td></tr><br/>
+<tr><td>NDF</td><td>NLAPS Data Format</td></tr><br/>
+<tr><td>EIR</td><td>Erdas Imagine Raw</td></tr><br/>
+<tr><td>DIPEx</td><td>DIPEx</td></tr><br/>
+<tr><td>LCP</td><td>FARSITE v.4 Landscape File (.lcp)</td></tr><br/>
+<tr><td>GTX</td><td>NOAA Vertical Datum .GTX</td></tr><br/>
+<tr><td>LOSLAS</td><td>NADCON .los/.las Datum Grid Shift</td></tr><br/>
+<tr><td>NTv2</td><td>NTv2 Datum Grid Shift</td></tr><br/>
+<tr><td>RIK</td><td>Swedish Grid RIK (.rik)</td></tr><br/>
+<tr><td>USGSDEM</td><td>USGS Optional ASCII DEM (and CDED)</td></tr><br/>
+<tr><td>GXF</td><td>GeoSoft Grid Exchange Format</td></tr><br/>
+<tr><td>HTTP</td><td>HTTP Fetching Wrapper</td></tr><br/>
+<tr><td>BAG</td><td>Bathymetry Attributed Grid</td></tr><br/>
+<tr><td>HDF5</td><td>Hierarchical Data Format Release 5</td></tr><br/>
+<tr><td>HDF5Image</td><td>HDF5 Dataset</td></tr><br/>
+<tr><td>NWT_GRD</td><td>Northwood Numeric Grid Format .grd/.tab</td></tr><br/>
+<tr><td>NWT_GRC</td><td>Northwood Classified Grid Format .grc/.tab</td></tr><br/>
+<tr><td>ADRG</td><td>ARC Digitized Raster Graphics</td></tr><br/>
+<tr><td>SRP</td><td>Standard Raster Product (ASRP/USRP)</td></tr><br/>
+<tr><td>BLX</td><td>Magellan topo (.blx)</td></tr><br/>
+<tr><td>Rasterlite</td><td>Rasterlite</td></tr><br/>
+<tr><td>PostGISRaster</td><td>PostGIS Raster driver</td></tr><br/>
+<tr><td>SAGA</td><td>SAGA GIS Binary Grid (.sdat)</td></tr><br/>
+<tr><td>KMLSUPEROVERLAY</td><td>Kml Super Overlay</td></tr><br/>
+<tr><td>XYZ</td><td>ASCII Gridded XYZ</td></tr><br/>
+<tr><td>HF2</td><td>HF2/HFZ heightfield raster</td></tr><br/>
+<tr><td>OZI</td><td>OZI</td></tr><br/>
+</table></div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grids <div class='type'>Output Grid list</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Files <div class='type'>File path</div></dt><dd> <div class='constraints'></div></dd>
+</dl>
+</body></html>

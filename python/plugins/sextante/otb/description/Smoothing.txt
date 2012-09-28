@@ -1,0 +1,13 @@
+Smoothing
+otbcli_Smoothing
+Smoothing
+Image Filtering
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterSelection|-type|Smoothing Type|mean;gaussian;anidif|2
+ParameterNumber|-type.mean.radius|Radius|None|None|2
+ParameterNumber|-type.gaussian.radius|Radius|None|None|2
+ParameterNumber|-type.anidif.timestep|Time Step|None|None|0.125
+ParameterNumber|-type.anidif.nbiter|Nb Iterations|None|None|10
+Extent

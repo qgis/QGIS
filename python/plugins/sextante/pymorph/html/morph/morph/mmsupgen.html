@@ -1,0 +1,223 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmsupgen</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmsupcanon.html"><tt>mmsupcanon</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmcthick.html"><tt>mmcthick</tt></a>]
+              </td>
+        <td class="title">Sup-generating And Inf-generating</td>
+      </tr>
+    </table>
+    <h1>mmsupgen
+      <br>
+      <span class="subtitle">Sup-generating (hit-miss).
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmsupgen</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">INTER</span>
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">INTER</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmInterval.html">Interval</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmsupgen</span> creates the binary image 
+          <code>y</code> by computing the transformation of the image 
+          <code>f</code> by the sup-generating operator characterized by the interval 
+          <code>Iab</code>.  The sup-generating operator is just a relaxed template matching, where the criterion to keep a shape is that it be inside the interval 
+          <code>Iab</code>. Note that we have the classical template matching when 
+          <code>a=b</code>. Note yet that the sup-generating operator is equivalent to the classical hit-miss operator.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmbinary([
+   [0,0,1,0,0,1,1],
+   [0,1,0,0,1,0,0],
+   [0,0,0,1,1,0,0]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; i=mmendpoints()</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmintershow(i)</pre>
+              <pre class="computer">. . . 
+0 1 0 
+0 0 0</pre>
+              <pre class="user">&gt;&gt;&gt; g=mmsupgen(f,i)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print g</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]</pre>
+            </div>
+          </div>
+          <div class="bridge">Image example</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a=mmreadgray('gear.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b=mmsupgen(a,mmendpoints())</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmdil(b))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="139" src="../images/img_mmsupgen_001.jpg"></td>
+                  <td><img width="139" src="../images/img_mmsupgen_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmsupgen_001.jpg">a</a></td>
+                  <td><a href="../images/img_mmsupgen_002.jpg">mmdil(b)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmsupgen001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmsupgen(f, INTER):
+    A,Bc = INTER
+    y = mmintersec(mmero( f, A),
+                   mmero( mmneg(f), Bc))
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mminfgen.html">mminfgen</a></td>
+              <td class="def">Inf-generating.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmintershow.html">mmintershow</a></td>
+              <td class="def">Visualize an interval.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmse2hmt.html">mmse2hmt</a></td>
+              <td class="def">Create a Hit-or-Miss Template (or interval) from a pair of structuring elements.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmendpoints.html">mmendpoints</a></td>
+              <td class="def">Interval to detect end-points.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhomothick.html">mmhomothick</a></td>
+              <td class="def">Interval for homotopic thickening.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhomothin.html">mmhomothin</a></td>
+              <td class="def">Interval for homotopic thinning.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsupcanon.html">mmsupcanon</a></td>
+              <td class="def">Union of sup-generating or hit-miss operators.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmsupcanon.html"><tt>mmsupcanon</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmcthick.html"><tt>mmcthick</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

@@ -4226,10 +4226,10 @@ QString QgsGeometry::exportToGeoJSON()
     {
       mWkt += "{ \"type\": \"Point\", \"coordinates\": [";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 6 );
+      mWkt += QString::number( *x, 'f' );
       mWkt += ", ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 6 );
+      mWkt += QString::number( *y, 'f' );
       mWkt += "] }";
       return mWkt;
     }
@@ -4256,11 +4256,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += QString::number( *x, 'f' );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 6 );
+        mWkt += QString::number( *y, 'f' );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4313,11 +4313,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 );
+          mWkt += QString::number( *x, 'f' );
           mWkt += ", ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 );
+          mWkt += QString::number( *y, 'f' );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4353,11 +4353,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += QString::number( *x, 'f' );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 6 );
+        mWkt += QString::number( *y, 'f' );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4399,11 +4399,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 );
+          mWkt += QString::number( *x, 'f' );
           ptr += sizeof( double );
           mWkt += ", ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 );
+          mWkt += QString::number( *y, 'f' );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4457,11 +4457,11 @@ QString QgsGeometry::exportToGeoJSON()
             }
             mWkt += "[";
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 6 );
+            mWkt += QString::number( *x, 'f' );
             ptr += sizeof( double );
             mWkt += ", ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 6 );
+            mWkt += QString::number( *y, 'f' );
             ptr += sizeof( double );
             if ( hasZValue )
             {
@@ -6696,7 +6696,7 @@ bool QgsGeometry::deletePart( int partNum )
   return true;
 }
 
-int QgsGeometry::avoidIntersections()
+int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet<qint64> > ignoreFeatures )
 {
   int returnValue = 0;
 
@@ -6724,7 +6724,14 @@ int QgsGeometry::avoidIntersections()
     currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
     if ( currentLayer )
     {
-      if ( currentLayer->removePolygonIntersections( this ) != 0 )
+      QgsFeatureIds ignoreIds;
+      QMap<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+      if ( ignoreIt != ignoreFeatures.constEnd() )
+      {
+        ignoreIds = ignoreIt.value();
+      }
+
+      if ( currentLayer->removePolygonIntersections( this, ignoreIds ) != 0 )
       {
         returnValue = 3;
       }

@@ -1,0 +1,10 @@
+r.carve
+r.carve - Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.
+Raster (r.*)
+ParameterRaster|rast|Name of input raster elevation map|False
+ParameterVector|vect|Name of vector input map containing stream(s)|1|False
+ParameterNumber|width|Stream width (in meters). Default is raster cell width|None|None|1
+ParameterNumber|depth|Additional stream depth (in meters)|None|None|1
+ParameterBoolean|-n|No flat areas allowed in flow direction|False
+OutputRaster|output|Name for output raster map
+OutputVector|points|Name for output vector map for adjusted stream points

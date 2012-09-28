@@ -77,6 +77,11 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
   mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
 
+  mCacheComboBox->addItem( tr( "Always cache" ), QNetworkRequest::AlwaysCache );
+  mCacheComboBox->addItem( tr( "Prefer cache" ), QNetworkRequest::PreferCache );
+  mCacheComboBox->addItem( tr( "Prefer network" ), QNetworkRequest::PreferNetwork );
+  mCacheComboBox->addItem( tr( "Always network" ), QNetworkRequest::AlwaysNetwork );
+
   mImageFormatGroup = new QButtonGroup;
 
   if ( !mManagerMode )
@@ -538,6 +543,12 @@ QString QgsOWSSourceSelect::selectedFormat()
   }
 }
 
+QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
+{
+  int cache = mCacheComboBox->itemData( mCacheComboBox->currentIndex() ).toInt();
+  return static_cast<QNetworkRequest::CacheLoadControl>( cache );
+}
+
 QString QgsOWSSourceSelect::selectedCRS()
 {
   return mSelectedCRS;
@@ -803,9 +814,9 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
   selectedItem->setSelected( true );
 }
 
-QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats()
+QList<QgsOWSSourceSelect::SupportedFormat> QgsOWSSourceSelect::providerFormats()
 {
-  return QList<QgsOWSSupportedFormat>();
+  return QList<SupportedFormat>();
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersFormats()

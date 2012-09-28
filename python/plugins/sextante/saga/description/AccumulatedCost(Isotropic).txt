@@ -1,0 +1,7 @@
+Accumulated Cost (Isotropic)
+grid_analysis
+ParameterRaster|COST|Cost Grid|False
+ParameterRaster|POINTS|Destination Points|False
+ParameterNumber|THRESHOLD|Threshold for different route|None|None|0.0
+OutputRaster|ACCCOST|Accumulated Cost
+OutputRaster|CLOSESTPT|Closest Point

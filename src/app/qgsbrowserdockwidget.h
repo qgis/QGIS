@@ -35,6 +35,7 @@ class QgsBrowserDockWidget : public QDockWidget
     void showContextMenu( const QPoint & );
 
     void addFavourite();
+    void addFavouriteDirectory();
     void removeFavourite();
 
     void refresh();
@@ -45,6 +46,7 @@ class QgsBrowserDockWidget : public QDockWidget
     void showProperties();
 
   protected:
+    void addFavouriteDirectory( QString favDir );
 
     void refreshModel( const QModelIndex& index );
 

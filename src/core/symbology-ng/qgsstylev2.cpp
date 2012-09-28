@@ -187,8 +187,8 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bo
   if ( !colorRamp || name.isEmpty() )
     return false;
 
-  // delete previous symbol (if any)
-  if ( mSymbols.contains( name ) )
+  // delete previous color ramps (if any)
+  if ( mColorRamps.contains( name ) )
   {
     // TODO remove groups and tags?
     delete mColorRamps.value( name );

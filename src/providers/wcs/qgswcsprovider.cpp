@@ -91,12 +91,12 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mPassword( QString::null )
     , mFixBox( false )
     , mFixRotate( false )
-    // TODO: optional
-    , mGetCoverageCacheLoadControl( QNetworkRequest::PreferCache )
+    , mCacheLoadControl( QNetworkRequest::PreferCache )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
   mValid = false;
+  mCachedMemFilename = QString( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
 
   if ( !parseUri( uri ) ) return;
 
@@ -171,19 +171,20 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // in that case we continue without CRS and user is asked for it
   //if ( mCoverageCrs.isEmpty() ) return;
 
+  // Native size
   mWidth = mCoverageSummary.width;
   mHeight = mCoverageSummary.height;
   mHasSize = mCoverageSummary.hasSize;
 
-  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) ) ;
+  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) );
+
+  // TODO: Consider if/how to recalculate mWidth, mHeight if non native CRS is used
 
   if ( !calculateExtent() )
   {
     QgsMessageLog::logMessage( tr( "Cannot calculate extent" ), tr( "WCS" ) );
     return;
   }
-
-  mCachedMemFilename = QString( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
 
   // Get small piece of coverage to find GDAL data type and nubmer of bands
   int bandNo = 0; // All bands
@@ -277,56 +278,62 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
     QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
     mSrcGdalDataType.append( myGdalDataType );
-    // TODO: This could be shared with GDAL provider
-    int isValid = false;
 
     // UMN Mapserver does not automaticaly set null value, METADATA wcs_rangeset_nullvalue must be used
     // http://lists.osgeo.org/pipermail/mapserver-users/2010-April/065328.html
 
-    // TODO:
-
+    // TODO: This could be shared with GDAL provider
+    int isValid = false;
     double myNoDataValue = GDALGetRasterNoDataValue( gdalBand, &isValid );
     if ( isValid )
     {
       QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
-      mGdalDataType.append( myGdalDataType );
+      mSrcNoDataValue.append( myNoDataValue );
+      mSrcHasNoDataValue.append( true );
+      mUseSrcNoDataValue.append( true );
     }
     else
     {
-      // But we need a null value in case of reprojection and BTW also for
-      // aligned margines
-      switch ( dataTypeFromGdal( myGdalDataType ) )
-      {
-
-        case QgsRasterDataProvider::Byte:
-          // Use longer data type to avoid conflict with real data
-          myNoDataValue = -32768.0;
-          mGdalDataType.append( GDT_Int16 );
-          break;
-        case QgsRasterDataProvider::Int16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::UInt16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::Int32:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        case QgsRasterDataProvider::UInt32:
-          myNoDataValue = 4294967295.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        default:
-          myNoDataValue = std::numeric_limits<int>::max();
-          // Would NaN work well?
-          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
-          mGdalDataType.append( myGdalDataType );
-      }
+      mSrcNoDataValue.append( std::numeric_limits<double>::quiet_NaN() );
+      mSrcHasNoDataValue.append( false );
+      mUseSrcNoDataValue.append( false );
     }
-    mNoDataValue.append( myNoDataValue );
+    // It may happen that nodata value given by GDAL is wrong and it has to be
+    // disabled by user, in that case we need another value to be used for nodata
+    // (for reprojection for example) -> always internaly represent as wider type
+    // with mInternalNoDataValue in reserve.
+    int myInternalGdalDataType = myGdalDataType;
+    double myInternalNoDataValue;
+    switch ( srcDataType( i ) )
+    {
+      case QgsRasterDataProvider::Byte:
+        myInternalNoDataValue = -32768.0;
+        myInternalGdalDataType = GDT_Int16;
+        break;
+      case QgsRasterDataProvider::Int16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::UInt16:
+        myInternalNoDataValue = -2147483648.0;
+        myInternalGdalDataType = GDT_Int32;
+        break;
+      case QgsRasterDataProvider::Int32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = -2147483648.0;
+        break;
+      case QgsRasterDataProvider::UInt32:
+        // We believe that such values is no used in real data
+        myInternalNoDataValue = 4294967295.0;
+        break;
+      default: // Float32, Float64
+        //myNoDataValue = std::numeric_limits<int>::max();
+        // NaN should work well
+        myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
+    }
+    mGdalDataType.append( myInternalGdalDataType );
+    mInternalNoDataValue.append( myInternalNoDataValue );
+    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
 
     // TODO: what to do if null values from DescribeCoverage differ?
     if ( !mCoverageSummary.nullValues.contains( myNoDataValue ) )
@@ -334,11 +341,9 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
       QgsDebugMsg( QString( "noDataValue %1 is missing in nullValues from CoverageDescription" ).arg( myNoDataValue ) );
     }
 
-    mValidNoDataValue = true;
-
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+    QgsDebugMsg( QString( "mSrcNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mSrcNoDataValue[i-1] ) );
 
     // Create and store color table
     // TODO: never tested because mapserver (6.0.3) does not support color tables
@@ -397,6 +402,28 @@ bool QgsWcsProvider::parseUri( QString uriString )
   {
     setCoverageCrs( uri.param( "crs" ) );
   }
+
+  QString cache = uri.param( "cache" );
+  if ( !cache.isEmpty() )
+  {
+    if ( cache.compare( "AlwaysCache", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::AlwaysCache;
+    }
+    else if ( cache.compare( "PreferCache", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::PreferCache;
+    }
+    else if ( cache.compare( "PreferNetwork", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::PreferNetwork;
+    }
+    else if ( cache.compare( "AlwaysNetwork", Qt::CaseInsensitive ) == 0 )
+    {
+      mCacheLoadControl = QNetworkRequest::AlwaysNetwork;
+    }
+  }
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) ) ;
 
   return true;
 }
@@ -519,9 +546,31 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
   if ( mCachedGdalDataset )
   {
-    // TODO band
     int width = GDALGetRasterXSize( mCachedGdalDataset );
     int height = GDALGetRasterYSize( mCachedGdalDataset );
+
+    // It may happen (Geoserver) that if requested BBOX is larger than coverage
+    // extent, the returned data cover intersection of requested BBOX and coverage
+    // extent scaled to requested WIDTH/HEIGHT => check extent
+    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
+    QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
+    QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
+    // using doubleNear is too precise, example accetable difference:
+    // 179.9999999306699863 x 179.9999999306700431
+    if ( !doubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
+    {
+      QgsDebugMsg( "cacheExtent and viewExtent differ" );
+      QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
+      // We are doing all possible to avoid this situation,
+      // If it happens, it would be possible to rescale the portion we get
+      // to only part of the data block, but it is better to left it
+      // blank, so that the problem may be discovered in its origin.
+      return;
+    }
+
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
     QgsDebugMsg( QString( "cached data width = %1 height = %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ) );
     // TODO: check type? , check band count?
@@ -534,6 +583,11 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
+      if ( ! tmpData )
+      {
+        QgsDebugMsg( QString( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
+        return;
+      }
       GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType[bandNo-1], 0, 0 );
       for ( int i = 0; i < pixelHeight; i++ )
       {
@@ -705,7 +759,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   QNetworkRequest request( url );
   setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mGetCoverageCacheLoadControl );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   mCacheReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
@@ -756,6 +810,7 @@ void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *blo
 
 void QgsWcsProvider::cacheReplyFinished()
 {
+  QgsDebugMsg( QString( "mCacheReply->error() = %1" ).arg( mCacheReply->error() ) );
   if ( mCacheReply->error() == QNetworkReply::NoError )
   {
     QVariant redirect = mCacheReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
@@ -766,6 +821,7 @@ void QgsWcsProvider::cacheReplyFinished()
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
       mCacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
       return;
     }
 
@@ -792,11 +848,17 @@ void QgsWcsProvider::cacheReplyFinished()
     QgsDebugMsg( "contentType: " + contentType );
 
     // Exception
+    // Content type examples: text/xml
+    //                        application/vnd.ogc.se_xml;charset=UTF-8
+    //                        application/xml
     if ( contentType.startsWith( "text/", Qt::CaseInsensitive ) ||
-         contentType.toLower() == "application/vnd.ogc.se_xml" )
+         contentType.toLower() == "application/xml" ||
+         contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
     {
       QByteArray text = mCacheReply->readAll();
-      if (( contentType.toLower() == "text/xml" || contentType.toLower() == "application/vnd.ogc.se_xml" )
+      if (( contentType.toLower() == "text/xml" ||
+            contentType.toLower() == "application/xml" ||
+            contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
           && parseServiceExceptionReportDom( text ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
@@ -1025,6 +1087,21 @@ void QgsWcsProvider::cacheReplyFinished()
   }
   else
   {
+    // Resend request if AlwaysCache
+    QNetworkRequest request = mCacheReply->request();
+    if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+    {
+      QgsDebugMsg( "Resend request with PreferCache" );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+
+      mCacheReply->deleteLater();
+
+      mCacheReply = QgsNetworkAccessManager::instance()->get( request );
+      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+      return;
+    }
+
     mErrors++;
     if ( mErrors < 100 )
     {
@@ -1064,15 +1141,6 @@ QgsRasterInterface::DataType QgsWcsProvider::dataType( int bandNo ) const
 int QgsWcsProvider::bandCount() const
 {
   return mBandCount;
-}
-
-double  QgsWcsProvider::noDataValue() const
-{
-  if ( mNoDataValue.size() > 0 )
-  {
-    return mNoDataValue[0];
-  }
-  return std::numeric_limits<int>::max(); // should not happen or be used
 }
 
 // this is only called once when statistics are calculated
@@ -1286,49 +1354,87 @@ bool QgsWcsProvider::calculateExtent()
   }
 
   // Prefer to use extent from capabilities / coverage description because
-  // transformation from WGS84 increases the extent
+  // transformation from WGS84 enlarges the extent
   mCoverageExtent = mCoverageSummary.boundingBoxes.value( mCoverageCrs );
-  if ( !mCoverageExtent.isEmpty() && !mCoverageExtent.isFinite() )
+  QgsDebugMsg( "mCoverageCrs = " + mCoverageCrs + " mCoverageExtent = " + mCoverageExtent.toString() );
+  if ( !mCoverageExtent.isEmpty() && mCoverageExtent.isFinite() )
   {
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
-    return true;
+    //return true;
   }
-
-  // Set up the coordinate transform from the WCS standard CRS:84 bounding
-  // box to the user's selected CRS
-  if ( !mCoordinateTransform )
+  else
   {
-    QgsCoordinateReferenceSystem qgisSrsSource;
-    QgsCoordinateReferenceSystem qgisSrsDest;
+    // Set up the coordinate transform from the WCS standard CRS:84 bounding
+    // box to the user's selected CRS
+    if ( !mCoordinateTransform )
+    {
+      QgsCoordinateReferenceSystem qgisSrsSource;
+      QgsCoordinateReferenceSystem qgisSrsDest;
 
-    //qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
-    qgisSrsSource.createFromOgcWmsCrs( "EPSG:4326" );
-    //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
-    qgisSrsDest.createFromOgcWmsCrs( mCoverageCrs );
-    //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
+      //qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+      qgisSrsSource.createFromOgcWmsCrs( "EPSG:4326" );
+      //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
+      qgisSrsDest.createFromOgcWmsCrs( mCoverageCrs );
+      //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
-    mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
-  }
+      mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
 
-  QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
-  // Convert to the user's CRS as required
-  try
-  {
-    mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse );
-    return false;
-  }
+    }
 
-  //make sure extent does not contain 'inf' or 'nan'
-  if ( !mCoverageExtent.isFinite() )
-  {
-    return false;
+    QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
+
+    // Convert to the user's CRS as required
+    try
+    {
+      mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      return false;
+    }
+
+    //make sure extent does not contain 'inf' or 'nan'
+    if ( !mCoverageExtent.isFinite() )
+    {
+      return false;
+    }
   }
 
   QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
+
+  // It may happen (GeoServer) that extent reported in spatialDomain.Envelope is larger  // than the coverage. Then if that larger BBOX is requested, the server returns
+  // request BBOX intersected with coverage box scaled to requested WIDTH and HEIGHT.
+  // GDAL WCS client does not suffer from this probably because it probably takes
+  // extent from lonLatEnvelope (it probably does not calculate it from
+  // spatialDomain.RectifiedGrid because calculated value is slightly different).
+
+  // To get the true extent (it can also be smaller than real if reported Envelope is
+  // than real smaller, but smaller is safer because data cannot be shifted) we make
+  // request of the whole extent cut the extent from spatialDomain.Envelope if
+  // necessary
+
+  getCache( 1, mCoverageExtent, 10, 10 );
+  if ( mCachedGdalDataset )
+  {
+    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
+    QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
+    QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
+    if ( !doubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
+         !doubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
+         !doubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
+    {
+      QgsDebugMsg( "cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent" );
+      mCoverageExtent = cacheExtent;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "Cannot get cache to verify extent" );
+    return false;
+  }
+
   return true;
 }
 
@@ -1503,19 +1609,21 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
 {
   QgsDebugMsg( "Entered" );
-  theResults.clear();
+  QMap<int, void *> results;
 
   if ( !extent().contains( thePoint ) )
   {
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      theResults[ generateBandName( i )] = tr( "out of extent" );
+      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+      writeValue( data, dataType( i ), 0, noDataValue( i ) );
+      results.insert( i, data );
     }
-    return true;
+    return results;
   }
 
   // It would be nice to use last cached block if possible, unfortunately we don't know
@@ -1556,7 +1664,7 @@ bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   if ( !mCachedGdalDataset ||
        !mCachedViewExtent.contains( thePoint ) )
   {
-    return false; // should not happen
+    return results; // should not happen
   }
 
   double x = thePoint.x();
@@ -1575,31 +1683,20 @@ bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   for ( int i = 1; i <= GDALGetRasterCount( mCachedGdalDataset ); i++ )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
-    double value;
 
+    void * data = VSIMalloc( dataTypeSize( i ) / 8 );
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                               &value, 1, 1, GDT_Float64, 0, 0 );
+                               data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
 
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     }
 
-    QString v;
-
-    if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
-    {
-      v = tr( "null (no data)" );
-    }
-    else
-    {
-      v.setNum( value );
-    }
-
-    theResults[ generateBandName( i )] = v;
+    results.insert( i, data );
   }
 
-  return true;
+  return results;
 }
 
 QString QgsWcsProvider::identifyAsText( const QgsPoint &point )

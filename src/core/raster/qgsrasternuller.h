@@ -41,12 +41,19 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     QgsRasterInterface::DataType dataType( int bandNo ) const;
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
 
     void setNoData( QList<QgsRasterNuller::NoData> noData ) { mNoData = noData; }
 
+    QList<QgsRasterNuller::NoData> noData() const { return mNoData; }
+
+    /** \brief Set output no data value. */
+    void setOutputNoData( double noData ) { mOutputNoData = noData; }
+
   private:
     QList<QgsRasterNuller::NoData> mNoData;
+    // no data to be set in output
+    double mOutputNoData;
 };
 
 #endif // QGSRASTERNULLER_H

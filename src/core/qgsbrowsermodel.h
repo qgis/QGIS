@@ -89,13 +89,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     void connectItem( QgsDataItem *item );
 
-  signals:
-
   public slots:
-    //void removeItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void addItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void refreshItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );

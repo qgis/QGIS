@@ -108,6 +108,11 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showMouseCoords( const QgsPoint pt );
     void updateMouseCoordinatePrecision();
 
+    // Histogram stretch
+    void localHistogramStretch();
+    void fullHistogramStretch();
+
+
     // when one Layer is removed
     void layerWillBeRemoved( QString theLayerId );
     void extentsChanged(); // Use for need add again Raster (case above)
@@ -131,6 +136,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void createMapCanvas();
     void createMenus();
     void createDockWidgets();
+    QLabel* createBaseLabelStatus();
     void createStatusBar();
     void setupConnections();
     void removeOldLayer();
@@ -165,7 +171,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // utils
     bool checkReadyGeoref();
-    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, const QgsGeorefTransform &t,
+    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
@@ -202,6 +208,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QLabel *mScaleLabel;
     QLabel *mCoordsLabel;
     QLabel *mTransformParamLabel;
+    QLabel *mEPSG;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;

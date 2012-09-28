@@ -75,6 +75,7 @@ namespace pal
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
+      bool getDisplayAll() const { return displayAll; }
 
     protected:
       char *name; /* unique */
@@ -92,6 +93,7 @@ namespace pal
       bool obstacle;
       bool active;
       bool toLabel;
+      bool displayAll;
 
       Units label_unit;
 
@@ -126,9 +128,10 @@ namespace pal
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled whether toLablel is true
        * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal );
+      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /**
        * \brief Delete the layer
@@ -292,7 +295,8 @@ namespace pal
        * @return true on success (i.e. valid geometry)
        */
       bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0, bool fixedPos = false, double angle = 0.0, bool fixedAngle = false );
+                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0, bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
+                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0 );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );

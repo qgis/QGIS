@@ -1,0 +1,199 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdbrain</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdblob.html"><tt>mmdblob</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdcalc.html"><tt>mmdcalc</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdbrain
+      <br>
+      <span class="subtitle">Extract the lateral ventricle from an MRI image of the brain.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      This procedure extracts the lateral ventricle from an MRI image of the brain.
+          This example was kindly provided by Prof. John Goutsias from The Johns Hopkins University and appears in Goutsias and S. Batman,  Morphological Methods for Biomedical Image Analysis, In the Handbook of Medical Imaging: Volume 3. Progress in Medical Image Processing and Analysis, J. M. Fitzpatrick and M. Sonka (Eds.)(To Appear). SPIE Optical Engineering Press, May 2000.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The MRI image of a brain slice is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('mribrain.tif');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdbrain_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdbrain_001.jpg">a</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ventricle detection I</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The ventricle is enhanced using an opening with a disk of radius 10  followed by a reconstruction.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmopen(a,mmsedisk(10));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; c = mminfrec(b,a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(c);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdbrain_002.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdbrain_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdbrain_002.jpg">b</a></td>
+                      <td><a href="../images/img_mmdbrain_003.jpg">c</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Ventricle detection II</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The result of the open by reconstruction is subtracted from the original image.  Note that the three operations: open, reconstruction and the subtraction could be done at once using the 
+                <span class="fun">mmopenrecth</span> (open by reconstruction top-hat) function. On the right, the enhanced ventricle is thresholded.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; d = mmsubm(a,c);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e = mmcmp(d,'&gt;=',uint8(50));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdbrain_004.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdbrain_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdbrain_004.jpg">d</a></td>
+                      <td><a href="../images/img_mmdbrain_005.jpg">e</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Selecting the ventricle</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Finally, the ventricle is selected as the connected object with area larger than 70 pixels. For visualization purposes, the result of the segmentation is overlayed on the  original brain image.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; f= mmareaopen(e,70);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a,f);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="256" src="../images/img_mmdbrain_006.jpg"></td>
+                      <td><img width="256" src="../images/img_mmdbrain_007.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdbrain_006.jpg">f</a></td>
+                      <td><a href="../images/img_mmdbrain_007.jpg">a,f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdblob.html"><tt>mmdblob</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdcalc.html"><tt>mmdcalc</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

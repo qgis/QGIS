@@ -104,7 +104,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != QgsRasterInterface::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;

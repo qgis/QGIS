@@ -1,0 +1,7 @@
+v.hull
+v.hull - Produces a convex hull for a given vector map.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|0|False
+ParameterBoolean|-a|Use all vector points (do not limit to current region)|False
+OutputVector|output|Name for output vector map
+

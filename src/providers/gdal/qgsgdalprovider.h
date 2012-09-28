@@ -122,9 +122,11 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool isValid();
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
-    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
+    QMap<int, void *> identify( const QgsPoint & point );
 
     /**
      * \brief Identify details from a GDAL layer from the last screen update
@@ -196,8 +198,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
-    bool srcHasNoDataValue( int bandNo ) const;
-    double noDataValue() const;
+    //bool srcHasNoDataValue( int bandNo ) const;
+    //double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;
@@ -282,6 +284,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /**Remove dataset*/
     bool remove();
+
+    QString validateCreationOptions( const QStringList& createOptions, QString format );
 
   signals:
     void statusChanged( QString );

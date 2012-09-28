@@ -1,0 +1,353 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmopentransf</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmgdist.html"><tt>mmgdist</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmclohole.html"><tt>mmclohole</tt></a>]
+              </td>
+        <td class="title">Image Transforms</td>
+      </tr>
+    </table>
+    <h1>mmopentransf
+      <br>
+      <span class="subtitle">Open transform.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmopentransf</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">type</span> = 'OCTAGON', 
+          <span class="par">n</span> = 65535, 
+          <span class="par">Bc</span> = None, 
+          <span class="par">Buser</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">type</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Disk family: 'OCTAGON', 'CHESSBOARD', 'CITY-BLOCK', 'LINEAR-V', 'LINEAR-H', 'LINEAR-45R', 'LINEAR-45L', 'USER'.</p><p>Default: 
+                      <code>'OCTAGON'</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">n</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Maximum disk radii.</p><p>Default: 
+                      <code>65535</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Connectivity for the reconstructive opening. Used if '-REC' suffix is appended in the 'type' string.</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Buser</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>User disk, used if 'type' is 'USER'.</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Compute the open transform of a binary image. The value of the pixels in the open transform gives the largest radii of the disk plus 1, where the open by it is not empty at that pixel. The disk sequence must satisfy the following: if r &gt; s, rB is sB-open, i.e. rB open by sB is equal rB. Note that the Euclidean disk does not satisfy this property in the discrete grid. This function also computes the reconstructive open transform by adding the suffix '-REC' in the 'type' parameter.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f = mmbinary([
+              [0,0,0,0,0,0,0,0],
+              [0,0,1,1,1,1,0,0],
+              [0,0,1,1,1,1,1,0],
+              [0,1,0,1,1,1,0,0],
+              [1,1,0,0,0,0,0,0]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmopentransf( f, 'city-block')</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+[[0 0 0 0 0 0 0 0]
+ [0 0 1 2 2 2 0 0]
+ [0 0 2 2 2 2 2 0]
+ [0 1 0 2 2 2 0 0]
+ [1 1 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmopentransf( f, 'linear-h')</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+processing r= 3
+[[0 0 0 0 0 0 0 0]
+ [0 0 2 2 2 2 0 0]
+ [0 0 3 3 3 3 3 0]
+ [0 1 0 2 2 2 0 0]
+ [2 2 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmopentransf( f, 'linear-45r')</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+processing r= 3
+processing r= 4
+[[0 0 0 0 0 0 0 0]
+ [0 0 1 4 1 2 0 0]
+ [0 0 4 1 2 1 1 0]
+ [0 4 0 2 1 1 0 0]
+ [4 1 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmopentransf( f, 'user',10,mmsecross(),mmbinary([0,1,1]))</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+processing r= 3
+processing r= 4
+[[0 0 0 0 0 0 0 0]
+ [0 0 4 4 4 4 0 0]
+ [0 0 5 5 5 5 5 0]
+ [0 1 0 3 3 3 0 0]
+ [2 2 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmopentransf( f, 'city-block-rec')</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+[[0 0 0 0 0 0 0 0]
+ [0 0 2 2 2 2 0 0]
+ [0 0 2 2 2 2 2 0]
+ [0 1 0 2 2 2 0 0]
+ [1 1 0 0 0 0 0 0]]</pre>
+            </div>
+          </div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('numbers.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmopentransf(f,'OCTAGON')</pre>
+              <pre class="computer">processing r= 0
+processing r= 1
+processing r= 2
+processing r= 3
+processing r= 4</pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="126" src="../images/img_mmopentransf_001.jpg"></td>
+                  <td><img width="126" src="../images/img_mmopentransf_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmopentransf_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmopentransf_002.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br>
+          <div class="bridge">The open transform stores all the openings by the disk with radii r</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; b=mmsedisk(3,'2D','OCTAGON')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g1=mmopen(f,b)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g2=mmcmp(g,'&gt;',3)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmis(g1,'==',g2)</pre>
+              <pre class="computer">1.0</pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="126" src="../images/img_mmopentransf_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmopentransf_003.jpg">g1</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Sequence of convex structuring elements of increasing size</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmopentransf001.png">
+          </div>
+          <div class="bridge">Algorithm implemented</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmopentransf002.png">
+          </div>
+          <br>
+          <div class="bridge">Interpretation</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmopentransf003.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Limitations</H2>
+      <div class="H2">
+        <p>
+                      As this function may take a long time to execute, there is a printout notifying the status of the execution. The radii of the disk is informed for each open executed. Due to the behavior of the structuring element in the frame of the image, one may want to insert a zero border around the image.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmopentransf(f, type='OCTAGON', n=65535, Bc=None, Buser=None):
+    from Numeric import zeros
+    from string import find, upper
+    if Bc is None: Bc = mmsecross()
+    if Buser is None: Buser = mmsecross()
+    assert mmisbinary(f),'Error: input image is not binary'
+    type = upper(type)
+    rec_flag = find(type,'-REC')
+    if rec_flag != -1:
+        type = type[:rec_flag] # remove the -rec suffix
+    flag = not ((type == 'OCTAGON')  or
+                (type == 'CHESSBOARD') or
+                (type == 'CITY-BLOCK'))
+    if not flag:
+        n  = min(n,min(f.shape))
+    elif  type == 'LINEAR-H':
+        se = mmbinary([1, 1, 1])
+        n  = min(n,f.shape[1])
+    elif  type =='LINEAR-V':
+        se = mmbinary([[1],[1],[1]])
+        n  = min(n,f.shape[0])
+    elif  type == 'LINEAR-45R':
+        se = mmbinary([[0, 0, 1],[0, 1, 0],[1, 0, 0]])
+        n  = min(n,min(f.shape))
+    elif  type == 'LINEAR-45L':
+        se = mmbinary([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
+        n  = min(n,min(f.shape))
+    elif  type == 'USER':
+        se = Buser
+        n  = min(n,min(f.shape))
+    else:
+        print 'Error: only accepts OCTAGON, CHESSBOARD, CITY-BLOCK, LINEAR-H, LINEAR-V, LINEAR-45R, LINEAR-45L, or USER as type, or with suffix -REC.'
+        return []
+    k = 0
+    y = uint16(zeros(f.shape))
+    a = mmbinary([1])
+    z = mmbinary([0])
+    while not (mmisequal(a,z) or (k&gt;=n)):
+        print 'processing r=',k
+        if flag:
+            a = mmopen(f,mmsesum(se,k))
+        else:
+            a = mmopen(f,mmsedisk(k,'2D',type))
+        y = mmaddm(y, mmgray(a,'uint16',1))
+        k = k+1
+    if rec_flag != -1:
+        y = mmgrain(mmlabel(f,Bc),y,'max')
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmopen.html">mmopen</a></td>
+              <td class="def">Morphological opening.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsedisk.html">mmsedisk</a></td>
+              <td class="def">Create a disk or a semi-sphere structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmpatspec.html">mmpatspec</a></td>
+              <td class="def">Pattern spectrum (also known as granulometric size density).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmgdist.html"><tt>mmgdist</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmclohole.html"><tt>mmclohole</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

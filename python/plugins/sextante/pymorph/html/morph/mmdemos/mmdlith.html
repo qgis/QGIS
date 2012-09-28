@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdlith</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdleaf.html"><tt>mmdleaf</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdpcb.html"><tt>mmdpcb</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdlith
+      <br>
+      <span class="subtitle">Detect defects in a microelectronic circuit.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      The input image is a gray-scale image of a microelectronic circuit. The relevant objects in this image are vertical metal stripes. These stripes have some irregularities that should be detected. Our procedure takes the residues of a gray-scale closing and filter (by size) the threshold of the residues.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The input image is read. The image is also displayed as a surface model.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('r4x2_256.tif');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(a));</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="254" src="../images/img_mmdlith_001.jpg"></td>
+                      <td><img width="254" src="../images/img_mmdlith_002.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdlith_001.jpg">a</a></td>
+                      <td><a href="../images/img_mmdlith_002.jpg">mmsurf(a)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Closing </H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Closing of the image by a vertical line of length 25 pixels. Then subtract it from the original. The sequence closing-subtraction is called closing top-hat. (This could be executed in a single command: c=
+                <span class="fun">mmcloseth</span>(a,
+                <span class="fun">mmseline</span>(25,90));).
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmclose(a,mmseline(25,90));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(b));</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="254" src="../images/img_mmdlith_003.jpg"></td>
+                      <td><img width="254" src="../images/img_mmdlith_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdlith_003.jpg">b</a></td>
+                      <td><a href="../images/img_mmdlith_004.jpg">mmsurf(b)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Subtraction</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Subtraction of the closing from the original is called closing top-hat. It shows the discrepancies of the image where the structuring element cannot fit the surface. In this case, it highlights vertical depression with length longer than 25 pixels.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c = mmsubm(b,a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(c);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(c));</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="254" src="../images/img_mmdlith_005.jpg"></td>
+                      <td><img width="254" src="../images/img_mmdlith_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdlith_005.jpg">c</a></td>
+                      <td><a href="../images/img_mmdlith_006.jpg">mmsurf(c)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Thresholding and Area Open</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Threshold on the residues image. Elimination of the small objects by area open.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; d = mmcmp(c,'&gt;=',50);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; e = mmareaopen(d,5);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="254" src="../images/img_mmdlith_007.jpg"></td>
+                      <td><img width="254" src="../images/img_mmdlith_008.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdlith_007.jpg">d</a></td>
+                      <td><a href="../images/img_mmdlith_008.jpg">e</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Final display</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Overlay the detected defects over the original image, and over the surface display.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; mmshow(a,e);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(a),e);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="254" src="../images/img_mmdlith_009.jpg"></td>
+                      <td><img width="254" src="../images/img_mmdlith_010.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdlith_009.jpg">a,e</a></td>
+                      <td><a href="../images/img_mmdlith_010.jpg">mmsurf(a),e</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdleaf.html"><tt>mmdleaf</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdpcb.html"><tt>mmdpcb</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

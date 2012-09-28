@@ -1,0 +1,8 @@
+v.extract
+v.extract - Selects vector objects from an existing vector map and creates a new map containing only the selected objects.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
+ParameterBoolean|-d|Dissolve common boundaries|True
+OutputVector|Name for output vector map|output
+

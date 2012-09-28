@@ -24,6 +24,8 @@
 #include "qgslogger.h"
 #include "qgsrasterinterface.h"
 
+#include "cpl_conv.h"
+
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
     , mOn( true )
@@ -210,3 +212,55 @@ double QgsRasterInterface::time( bool cumulative )
   return t;
 }
 
+QString QgsRasterInterface::printValue( double value )
+{
+  /*
+   *  IEEE 754 double has 15-17 significant digits. It specifies:
+   *
+   * "If a decimal string with at most 15 significant decimal is converted to
+   *  IEEE 754 double precision and then converted back to the same number of
+   *  significant decimal, then the final string should match the original;
+   *  and if an IEEE 754 double precision is converted to a decimal string with at
+   *  least 17 significant decimal and then converted back to double, then the final
+   *  number must match the original."
+   *
+   * If printing only 15 digits, some precision could be lost. Printing 17 digits may
+   * add some confusing digits.
+   *
+   * Default 'g' precision on linux is 6 digits, not all significant digits like
+   * some sprintf manuals say.
+   *
+   * We need to ensure that the number printed and used in QLineEdit or XML will
+   * give the same number when parsed.
+   *
+   * Is there a better solution?
+   */
+
+  QString s;
+
+  for ( int i = 15; i <= 17; i++ )
+  {
+    s.setNum( value, 'g', i );
+    if ( s.toDouble() == value )
+    {
+      return s;
+    }
+  }
+  // Should not happen
+  QgsDebugMsg( "Cannot correctly parse printed value" );
+  return s;
+}
+
+void * QgsRasterInterface::convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size )
+{
+  int destDataTypeSize = typeSize( destDataType ) / 8;
+  void *destData = VSIMalloc( destDataTypeSize * size );
+  for ( int i = 0; i < size; i++ )
+  {
+    double value = readValue( srcData, srcDataType, i );
+    writeValue( destData, destDataType, i, value );
+    //double newValue = readValue( destData, destDataType, i );
+    //QgsDebugMsg( QString("convert type %1 to %2: %3 -> %4").arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
+  }
+  return destData;
+}

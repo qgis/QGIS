@@ -60,6 +60,7 @@ class CORE_EXPORT QgsDataSourceURI
 
     //! set complete encoded uri (generic mode)
     // \note added in 1.9
+    // \note not available in python bindings
     void setEncodedUri( const QByteArray & uri );
 
     //! set complete encoded uri (generic mode)
@@ -166,6 +167,7 @@ class CORE_EXPORT QgsDataSourceURI
     QGis::WkbType wkbType() const;
     void setWkbType( QGis::WkbType type );
 
+    // added in 1.9
     QString srid() const;
     void setSrid( QString srid );
 

@@ -1,0 +1,739 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>Functions</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../index.html">Up</a>] 
+                  
+                      [<a href="../mmdemos/index.html">Demonstrations</a>]
+                  
+                      [<a href="../mminfo/index.html">Basic Concepts</a>]
+                  
+                      [<a href="../morph/index.html">Functions</a>]
+                  
+                      [<a href="../mmtypes/index.html">Data Types</a>]
+                  </td>
+        <td class="title">pymorph Morphology Toolbox V0.8 01Aug03</td>
+      </tr>
+    </table>
+    <h1>Functions
+      <br>
+      <span class="subtitle">List of all morphological processing functions
+</span>
+    </h1>
+    <h2 class="categories">Data Type Conversion</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmbinary.html">mmbinary</a></td>
+            <td class="def">Convert a gray-scale image into a binary image
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+            <td class="def">Control automatic data type conversion.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmgray.html">mmgray</a></td>
+            <td class="def">Convert a binary image into a gray-scale image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/int32.html">int32</a></td>
+            <td class="def">Convert an image to an int32 image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/uint8.html">uint8</a></td>
+            <td class="def">Convert an image to an uint8 image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/uint16.html">uint16</a></td>
+            <td class="def">Convert an image to a uint16 image.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Image Creation</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmframe.html">mmframe</a></td>
+            <td class="def">Create a frame image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmdrawv.html">mmdrawv</a></td>
+            <td class="def">Superpose points, rectangles and lines on an image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmtext.html">mmtext</a></td>
+            <td class="def">Create a binary image of a text.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Image Information and Manipulation</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmconcat.html">mmconcat</a></td>
+            <td class="def">Concatenate two or more images along width, height or depth.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmlimits.html">mmlimits</a></td>
+            <td class="def">Get the possible minimum and maximum of an image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmmaxleveltype.html">mmmaxleveltype</a></td>
+            <td class="def">Returns the maximum value associated to an image datatype
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmdatatype.html">mmdatatype</a></td>
+            <td class="def">Return the image datatype string
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmmat2set.html">mmmat2set</a></td>
+            <td class="def">Converts image representation from matrix to set
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmset2mat.html">mmset2mat</a></td>
+            <td class="def">Converts image representation from set to matrix
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Image file I/O</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmreadgray.html">mmreadgray</a></td>
+            <td class="def">Read an image from a commercial file format and stores it as a gray-scale image.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Relations</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmcmp.html">mmcmp</a></td>
+            <td class="def">Compare two images pixelwisely.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmis.html">mmis</a></td>
+            <td class="def">Verify if a relationship among images is true or false.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmisbinary.html">mmisbinary</a></td>
+            <td class="def">Check for binary image
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmisequal.html">mmisequal</a></td>
+            <td class="def">Verify if two images are equal
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmislesseq.html">mmislesseq</a></td>
+            <td class="def">Verify if one image is less or equal another (is beneath)
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Operations</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmneg.html">mmneg</a></td>
+            <td class="def">Negate an image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmtoggle.html">mmtoggle</a></td>
+            <td class="def">Image contrast enhancement or classification by the toggle operator.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmaddm.html">mmaddm</a></td>
+            <td class="def">Addition of two images, with saturation.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmintersec.html">mmintersec</a></td>
+            <td class="def">Intersection of images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsubm.html">mmsubm</a></td>
+            <td class="def">Subtraction of two images, with saturation.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsymdif.html">mmsymdif</a></td>
+            <td class="def">Symmetric difference between two images
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmunion.html">mmunion</a></td>
+            <td class="def">Union of images.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Structuring Elements</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmimg2se.html">mmimg2se</a></td>
+            <td class="def">Create a structuring element from a pair of images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+            <td class="def">Create a box structuring element.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+            <td class="def">Diamond structuring element and elementary 3x3 cross.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsedisk.html">mmsedisk</a></td>
+            <td class="def">Create a disk or a semi-sphere structuring element.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmseline.html">mmseline</a></td>
+            <td class="def">Create a line structuring element.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmserot.html">mmserot</a></td>
+            <td class="def">Rotate a structuring element.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmseshow.html">mmseshow</a></td>
+            <td class="def">Display a structuring element as an image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsesum.html">mmsesum</a></td>
+            <td class="def">N-1 iterative Minkowski  additions
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsetrans.html">mmsetrans</a></td>
+            <td class="def">Translate a structuring element
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsereflect.html">mmsereflect</a></td>
+            <td class="def">Reflect a structuring element
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsedil.html">mmsedil</a></td>
+            <td class="def">Dilate one structuring element by another
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmseunion.html">mmseunion</a></td>
+            <td class="def">Union of structuring elements
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Dilations And Erosions</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmcdil.html">mmcdil</a></td>
+            <td class="def">Dilate an image conditionally.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcero.html">mmcero</a></td>
+            <td class="def">Erode an image conditionally.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmdil.html">mmdil</a></td>
+            <td class="def">Dilate an image by a structuring element.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmero.html">mmero</a></td>
+            <td class="def">Erode an image by a structuring element.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Morphological Filters</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmcenter.html">mmcenter</a></td>
+            <td class="def">Center filter.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmasf.html">mmasf</a></td>
+            <td class="def">Alternating Sequential Filtering
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmclose.html">mmclose</a></td>
+            <td class="def">Morphological closing.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmopen.html">mmopen</a></td>
+            <td class="def">Morphological opening.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Image Transforms</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmdist.html">mmdist</a></td>
+            <td class="def">Distance transform.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmgdist.html">mmgdist</a></td>
+            <td class="def">Geodesic Distance Transform.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmopentransf.html">mmopentransf</a></td>
+            <td class="def">Open transform.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Connected Operators</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmclohole.html">mmclohole</a></td>
+            <td class="def">Close holes of binary and gray-scale images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmareaclose.html">mmareaclose</a></td>
+            <td class="def">Area closing
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmareaopen.html">mmareaopen</a></td>
+            <td class="def">Area opening
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmasfrec.html">mmasfrec</a></td>
+            <td class="def">Reconstructive Alternating Sequential Filtering
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcloserec.html">mmcloserec</a></td>
+            <td class="def">Closing by reconstruction.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmhmin.html">mmhmin</a></td>
+            <td class="def">Remove basins with contrast less than h.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmvmax.html">mmvmax</a></td>
+            <td class="def">Remove domes with volume less than v.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmhmax.html">mmhmax</a></td>
+            <td class="def">Remove peaks with contrast less than h.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mminfrec.html">mminfrec</a></td>
+            <td class="def">Inf-reconstruction.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mminpos.html">mminpos</a></td>
+            <td class="def">Minima imposition.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmopenrec.html">mmopenrec</a></td>
+            <td class="def">Opening by reconstruction.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmregmax.html">mmregmax</a></td>
+            <td class="def">Regional Maximum.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmregmin.html">mmregmin</a></td>
+            <td class="def">Regional Minimum (with generalized dynamics).
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsuprec.html">mmsuprec</a></td>
+            <td class="def">Sup-reconstruction.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Residues</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmedgeoff.html">mmedgeoff</a></td>
+            <td class="def">Eliminate the objects that hit the image frame.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcbisector.html">mmcbisector</a></td>
+            <td class="def">N-Conditional bisector.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcloserecth.html">mmcloserecth</a></td>
+            <td class="def">Close-by-Reconstruction Top-Hat.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcloseth.html">mmcloseth</a></td>
+            <td class="def">Closing Top Hat.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmgradm.html">mmgradm</a></td>
+            <td class="def">Morphological gradient.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmopenrecth.html">mmopenrecth</a></td>
+            <td class="def">Open-by-Reconstruction Top-Hat.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmopenth.html">mmopenth</a></td>
+            <td class="def">Opening Top Hat.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmskelm.html">mmskelm</a></td>
+            <td class="def">Morphological skeleton (Medial Axis Transform).
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmskelmrec.html">mmskelmrec</a></td>
+            <td class="def">Morphological skeleton reconstruction (Inverse Medial Axis Transform).
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Intervals (hit-or-miss templates)</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmendpoints.html">mmendpoints</a></td>
+            <td class="def">Interval to detect end-points.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmhomothick.html">mmhomothick</a></td>
+            <td class="def">Interval for homotopic thickening.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmhomothin.html">mmhomothin</a></td>
+            <td class="def">Interval for homotopic thinning.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mminterot.html">mminterot</a></td>
+            <td class="def">Rotate an interval
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmintershow.html">mmintershow</a></td>
+            <td class="def">Visualize an interval.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmse2interval.html">mmse2interval</a></td>
+            <td class="def">Create an interval from a pair of structuring elements.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmse2hmt.html">mmse2hmt</a></td>
+            <td class="def">Create a Hit-or-Miss Template (or interval) from a pair of structuring elements.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Sup-generating And Inf-generating</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmthreshad.html">mmthreshad</a></td>
+            <td class="def">Threshold (adaptive)
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mminfcanon.html">mminfcanon</a></td>
+            <td class="def">Intersection of inf-generating operators.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mminfgen.html">mminfgen</a></td>
+            <td class="def">Inf-generating.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsupcanon.html">mmsupcanon</a></td>
+            <td class="def">Union of sup-generating or hit-miss operators.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmsupgen.html">mmsupgen</a></td>
+            <td class="def">Sup-generating (hit-miss).
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Thinning And Thickening</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmcthick.html">mmcthick</a></td>
+            <td class="def">Image transformation by conditional thickening.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcthin.html">mmcthin</a></td>
+            <td class="def">Image transformation by conditional thinning.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmcwatershed.html">mmcwatershed</a></td>
+            <td class="def">Detection of watershed from markers.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmskiz.html">mmskiz</a></td>
+            <td class="def">Skeleton of Influence Zone - also know as Generalized Voronoi Diagram
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmswatershed.html">mmswatershed</a></td>
+            <td class="def">Detection of similarity-based watershed from markers.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmthick.html">mmthick</a></td>
+            <td class="def">Image transformation by thickening.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmthin.html">mmthin</a></td>
+            <td class="def">Image transformation by thinning.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmwatershed.html">mmwatershed</a></td>
+            <td class="def">Watershed detection.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Measurements</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmhistogram.html">mmhistogram</a></td>
+            <td class="def">Find the histogram of the image f.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmlabel.html">mmlabel</a></td>
+            <td class="def">Label a binary image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmblob.html">mmblob</a></td>
+            <td class="def">Blob measurements from a labeled image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmgrain.html">mmgrain</a></td>
+            <td class="def">Gray-scale statistics for each labeled region.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmlabelflat.html">mmlabelflat</a></td>
+            <td class="def">Label the flat zones of gray-scale images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmpatspec.html">mmpatspec</a></td>
+            <td class="def">Pattern spectrum (also known as granulometric size density).
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmstats.html">mmstats</a></td>
+            <td class="def">Find global image statistics.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Visualization</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmglblshow.html">mmglblshow</a></td>
+            <td class="def">Apply a random color table to a gray-scale image.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmgshow.html">mmgshow</a></td>
+            <td class="def">Apply binary overlays as color layers on a binary or gray-scale image
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmdtshow.html">mmdtshow</a></td>
+            <td class="def">Display a distance transform image with an iso-line color table.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmlblshow.html">mmlblshow</a></td>
+            <td class="def">Display a labeled image assigning a random color for each label.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmshow.html">mmshow</a></td>
+            <td class="def">Display binary or gray-scale images and optionally overlay it with binary images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmbshow.html">mmbshow</a></td>
+            <td class="def">Generate a graphical representation of overlaid binary images.
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmplot.html">mmplot</a></td>
+            <td class="def">Plot a function.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Obsolete</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmvdome.html">mmvdome</a></td>
+            <td class="def">Obsolete, use mmvmax.
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 class="categories">Python functions</h2>
+    <div class="h2">
+      <table class="deflist">
+        <tbody valign="baseline">
+          <tr>
+            <td class="term"><a href="../morph/mmadd4dil.html">mmadd4dil</a></td>
+            <td class="def">Addition for dilation
+</td>
+          </tr>
+          <tr>
+            <td class="term"><a href="../morph/mmpad4n.html">mmpad4n</a></td>
+            <td class="def">mmpad4n
+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../index.html">Up</a>] 
+                    
+                        [<a href="../mmdemos/index.html">Demonstrations</a>]
+                    
+                        [<a href="../mminfo/index.html">Basic Concepts</a>]
+                    
+                        [<a href="../morph/index.html">Functions</a>]
+                    
+                        [<a href="../mmtypes/index.html">Data Types</a>]
+                    </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

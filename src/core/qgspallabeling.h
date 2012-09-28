@@ -28,7 +28,7 @@ class QgsMapRenderer;
 class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
-struct QgsDiagramLayerSettings;
+class QgsDiagramLayerSettings;
 
 #include <QString>
 #include <QFont>
@@ -103,7 +103,8 @@ class CORE_EXPORT QgsPalLayerSettings
       MinScale,
       MaxScale,
       FontTransp,
-      BufferTransp
+      BufferTransp,
+      PropertyCount, // keep last entry
     };
 
     QString fieldName;
@@ -118,6 +119,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     Placement placement;
     unsigned int placementFlags;
+    // offset labels of point/centroid features default to center
+    // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
+    int xQuadOffset;
+    int yQuadOffset;
+
+    // offset from point in mm or map units
+    double xOffset;
+    double yOffset;
+    double angleOffset; // rotation applied to offset labels
+    bool centroidWhole; // whether centroid calculated from whole or visible polygon
     QFont textFont;
     QString textNamedStyle;
     QColor textColor;
@@ -129,7 +140,10 @@ class CORE_EXPORT QgsPalLayerSettings
     double dist; // distance from the feature (in mm)
     double vectorScaleFactor; //scale factor painter units->pixels
     double rasterCompressFactor; //pixel resolution scale factor
-    int scaleMin, scaleMax; // disabled if both are zero
+
+    // disabled if both are zero
+    int scaleMin;
+    int scaleMax;
     double bufferSize; //buffer size (in mm)
     QColor bufferColor;
     int bufferTransp;
@@ -139,6 +153,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int decimals;
     bool plusSign;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
+    bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
@@ -146,6 +161,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool addDirectionSymbol;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
+    bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QString wrapChar;
     // called from register feature hook
@@ -162,17 +178,8 @@ class CORE_EXPORT QgsPalLayerSettings
     /**Set a property to static instead data defined*/
     void removeDataDefinedProperty( DataDefinedProperties p );
 
-    // temporary stuff: set when layer gets prepared
-    pal::Layer* palLayer;
-    int fieldIndex;
-    QFontMetricsF* fontMetrics;
-    const QgsMapToPixel* xform;
-    const QgsCoordinateTransform* ct;
-    QgsPoint ptZero, ptOne;
-    QList<QgsPalGeometry*> geometries;
-    QgsGeometry* extentGeom;
-
     /**Stores field indices for data defined layer properties*/
+    //! @note not available in python bindings
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
@@ -183,6 +190,16 @@ class CORE_EXPORT QgsPalLayerSettings
      @param buffer whether it buffer size being calculated
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+
+    // temporary stuff: set when layer gets prepared
+    pal::Layer* palLayer;
+    int fieldIndex;
+    QFontMetricsF* fontMetrics;
+    const QgsMapToPixel* xform;
+    const QgsCoordinateTransform* ct;
+    QgsPoint ptZero, ptOne;
+    QList<QgsPalGeometry*> geometries;
+    QgsGeometry* extentGeom;
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)
@@ -252,15 +269,13 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
 
+    //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
+    //! @note not available in python bindings
     void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
                     const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
-
-  protected:
-
-    void initPal();
 
   protected:
     // hashtable of layer settings, being filled during labeling

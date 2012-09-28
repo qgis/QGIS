@@ -12,9 +12,12 @@ DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 
 DEB_TEST_TARGET ?= Experimental
 
-DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+ifeq (,$(DISTRIBUTION))
+	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+endif
+
 ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
-DISTRIBUTION := sid
+	DISTRIBUTION := sid
 endif
 
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
@@ -23,6 +26,10 @@ ifeq (,$(DISPLAY))
 TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
 else
 TESTMAKE=$(MAKE)
+endif
+ifneq (,$(findstring $(DISTRIBUTION),"lucid"))
+# excludes tests requiring unittest2 not available on lucid
+TESTMAKE += ARGS="-E PyQgsRectangle"
 endif
 
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -44,6 +51,11 @@ CMAKE_OPTS := \
 	-D WITH_APIDOC=TRUE
 
 MAKEFLAGS += VERBOSE=YES
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+         NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+         MAKEFLAGS += -j$(NUMJOBS)
+endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
@@ -79,7 +91,11 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TESTS=TRUE
+	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug
+endif
+
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -D ENABLE_TESTS=TRUE
 endif
 
 ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
@@ -95,17 +111,16 @@ $(2): $(1)
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
 
+templates:: $(2)
+
 templateclean::
 	rm -f $(2)
 endef
 
-TEMPLATES := $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(basename $(t)))
-TEMPLATES += $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))
-
 $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(eval $(call gentemplate,$(t),$(basename $(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
 
-debian/build/CMakeCache.txt: $(TEMPLATES) CMakeLists.txt
+debian/build/CMakeCache.txt: templates CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	[ -d debian/build ] || mkdir debian/build
@@ -122,9 +137,9 @@ build-stamp: debian/build/CMakeCache.txt
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
-	LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET) || true
+	-LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
 else
-	echo Skipping tests.
+	@echo Skipping tests.
 endif
 
 	touch $@

@@ -262,6 +262,11 @@ QWidget * QgisAppInterface::mainWindow()
   return qgis;
 }
 
+QgsMessageBar * QgisAppInterface::messageBar()
+{
+  return qgis->messageBar();
+}
+
 QList<QgsComposerView*> QgisAppInterface::activeComposers()
 {
   QList<QgsComposerView*> composerViewList;

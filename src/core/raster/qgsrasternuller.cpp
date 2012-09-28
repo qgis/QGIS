@@ -56,24 +56,25 @@ void * QgsRasterNuller::readBlock( int bandNo, QgsRectangle  const & extent, int
 
   void * rasterData = mInput->block( bandNo, extent, width, height );
 
-  QgsRasterInterface::DataType dataType =  mInput->dataType( bandNo ); 
-  int pixelSize = mInput->typeSize( dataType ) / 8; 
+  QgsRasterInterface::DataType dataType =  mInput->dataType( bandNo );
 
-  double noDataValue = mInput->noDataValue ( bandNo );
+  // Input may be without no data value
+  //double noDataValue = mInput->noDataValue( bandNo );
+  double noDataValue = mOutputNoData;
 
-  for ( int i = 0; i < height; ++i )
+  for ( int i = 0; i < height; i++ )
   {
-    for ( int j = 0; j < width; ++j )
+    for ( int j = 0; j < width; j++ )
     {
-      int index = pixelSize * ( i * width + j );
+      int index = i * width + j;
 
       double value = readValue( rasterData, dataType, index );
-  
+
       foreach ( NoData noData, mNoData )
       {
-        if ( ( value >= noData.min && value <= noData.max ) ||
-             doubleNear( value, noData.min ) ||
-             doubleNear( value, noData.max ) )
+        if (( value >= noData.min && value <= noData.max ) ||
+            doubleNear( value, noData.min ) ||
+            doubleNear( value, noData.max ) )
         {
           writeValue( rasterData, dataType, index, noDataValue );
         }

@@ -66,6 +66,13 @@ void QgsBrowserModel::addRootItems()
     mRootItems << item;
   }
 
+#ifdef Q_WS_MAC
+  QString path = QString( "/Volumes" );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( NULL, path, path );
+  connectItem( vols );
+  mRootItems << vols;
+#endif
+
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
   providersList.sort();

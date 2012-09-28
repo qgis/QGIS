@@ -67,7 +67,7 @@ void TestQgsComposerMap::initTestCase()
   mComposition = new QgsComposition( mMapRenderer );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-  mComposerMap->setFrame( true );
+  mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 }
 
@@ -122,7 +122,7 @@ void TestQgsComposerMap::grid()
 void TestQgsComposerMap::overviewMap()
 {
   QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
-  overviewMap->setFrame( true );
+  overviewMap->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMap );
   mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
   overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );

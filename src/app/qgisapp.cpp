@@ -124,6 +124,7 @@
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgslabelinggui.h"
@@ -139,6 +140,7 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -190,6 +192,7 @@
 // GDAL/OGR includes
 //
 #include <ogr_api.h>
+#include <proj_api.h>
 
 //
 // Other includes
@@ -216,6 +219,7 @@
 #include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
+#include "qgsmaptoolhtmlannotation.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
@@ -287,7 +291,7 @@ const int AFTER_RECENT_PATHS = 321;
   if the project file is null then
   set title text to just application name and version
   else
-  set set title text to the the project file name
+  set set title text to the project file name
   else
   set the title text to project title
   */
@@ -455,16 +459,29 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QSettings settings;
   setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
+  QWidget *centralWidget = this->centralWidget();
+  QGridLayout *centralLayout = new QGridLayout( centralWidget );
+  centralWidget->setLayout( centralLayout );
+  centralLayout->setContentsMargins( 0, 0, 0, 0 );
+
   // "theMapCanvas" used to find this canonical instance later
-  mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas( centralWidget, "theMapCanvas" );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+
   // set canvas color right away
   int myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
-  setCentralWidget( mMapCanvas );
+
+  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
+
+  // a bar to warn the user with non-blocking messages
+  mInfoBar = new QgsMessageBar( centralWidget );
+  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -492,6 +509,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateRecentProjectPaths();
   updateProjectFromTemplates();
   activateDeactivateLayerRelatedActions( NULL );
+
+  // create the notification widget for macros
+  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
+                tr( "macros have been disabled." ),
+                QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                mInfoBar );
+
+  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
+  btnEnableMacros->setText( tr( "Enable" ) );
+  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  btnEnableMacros->setCursor( Qt::PointingHandCursor );
+  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
+  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
+  mMacrosWarn->layout()->addWidget( btnEnableMacros );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
@@ -628,6 +659,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
 
   mMapTipsVisible = false;
+  mTrustedMacros = false;
 
   // setup drag drop
   setAcceptDrops( true );
@@ -699,6 +731,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMeasureAngle;
   delete mMapTools.mTextAnnotation;
   delete mMapTools.mFormAnnotation;
+  delete mMapTools.mHtmlAnnotation;
   delete mMapTools.mAnnotation;
   delete mMapTools.mAddFeature;
   delete mMapTools.mMoveFeature;
@@ -813,6 +846,13 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+
+  // this is a new session! reset enable macros value to "ask"
+  // whether set to "just for this session"
+  if ( settings.value( "/qgis/enableMacros", 1 ).toInt() == 2 )
+  {
+    settings.setValue( "/qgis/enableMacros", 1 );
+  }
 }
 
 
@@ -895,6 +935,7 @@ void QgisApp::createActions()
   connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
   connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
   connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
+  connect( mActionHtmlAnnotation, SIGNAL( triggered() ), this, SLOT( addHtmlAnnotation() ) );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
   connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
 
@@ -1205,13 +1246,16 @@ void QgisApp::createMenus()
 
   // Database Menu
   // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ), this );
+  mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
+  mDatabaseMenu->setObjectName( "mDatabaseMenu" );
   // Vector Menu
   // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ), this );
+  mVectorMenu = new QMenu( tr( "Vect&or" ), menuBar() );
+  mVectorMenu->setObjectName( "mVectorMenu" );
   // Web Menu
   // don't add it yet, wait for a plugin
-  mWebMenu = new QMenu( tr( "&Web" ), this );
+  mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
+  mWebMenu->setObjectName( "mWebMenu" );
 
   // Help menu
   // add What's this button to it
@@ -1318,6 +1362,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
+  bt->addAction( mActionHtmlAnnotation );
   bt->addAction( mActionAnnotation );
 
   QAction* defAnnotationAction = mActionTextAnnotation;
@@ -1326,6 +1371,7 @@ void QgisApp::createToolBars()
     case 0: defAnnotationAction = mActionTextAnnotation; break;
     case 1: defAnnotationAction = mActionFormAnnotation; break;
     case 2: defAnnotationAction =  mActionAnnotation; break;
+    case 3: defAnnotationAction =  mActionHtmlAnnotation; break;
   }
   bt->setDefaultAction( defAnnotationAction );
   QAction* annotationAction = mAttributesToolBar->addWidget( bt );
@@ -1424,16 +1470,11 @@ void QgisApp::createStatusBar()
   mScaleEdit->setMaximumWidth( 100 );
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
-  // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
-  QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
-  mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
-  mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
-  connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
@@ -1629,6 +1670,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
+  mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
@@ -1757,6 +1799,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mTextAnnotation->setAction( mActionTextAnnotation );
   mMapTools.mFormAnnotation = new QgsMapToolFormAnnotation( mMapCanvas );
   mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
+  mMapTools.mHtmlAnnotation = new QgsMapToolHtmlAnnotation( mMapCanvas );
+  mMapTools.mHtmlAnnotation->setAction( mActionHtmlAnnotation );
   mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
   mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas );
@@ -1898,6 +1942,12 @@ QgsPalLabeling *QgisApp::palLabeling()
   return mLBL;
 }
 
+QgsMessageBar* QgisApp::messageBar()
+{
+  Q_ASSERT( mInfoBar );
+  return mInfoBar;
+}
+
 void QgisApp::initLegend()
 {
   mMapLegend->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
@@ -1930,7 +1980,7 @@ void QgisApp::initLegend()
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
-  mLayerOrderDock->setObjectName( "Legend" );
+  mLayerOrderDock->setObjectName( "LayerOrder" );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   w = new QWidget( this );
@@ -2269,8 +2319,11 @@ void QgisApp::about()
 #endif
     versionString += "</td>";
 
-
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
 
 #ifdef QGISDEBUG
     versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
@@ -2456,7 +2509,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     return false;
 
   zipItem->populate();
-  QgsDebugMsg( QString( "Got zipitem with %1 children" ).arg( zipItem->rowCount() ) );
+  QgsDebugMsg( QString( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
@@ -2487,7 +2540,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     {
       QgsDataItem *item = zipItem->children()[i];
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+      QgsDebugMsgLevel( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
         layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
@@ -2507,6 +2560,12 @@ bool QgisApp::askUserForZipItemLayers( QString path )
         childItems << zipItem->children()[i];
       }
     }
+  }
+
+  if ( childItems.isEmpty() )
+  {
+    // return true so dialog doesn't popup again (#6225) - hopefully this doesn't create other trouble
+    ok = true;
   }
 
   // add childItems
@@ -2943,10 +3002,7 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
-    deletePrintComposers();
-    removeAnnotationItems();
-    mMapCanvas->freeze( true );
-    removeAllLayers();
+    closeProject();
     qApp->exit( 0 );
   }
 }
@@ -2993,11 +3049,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
-  deletePrintComposers();
-  removeAnnotationItems();
-
-  mMapCanvas->freeze( true );
-  removeAllLayers();
+  closeProject();
   mMapCanvas->clear();
 
   QgsProject* prj = QgsProject::instance();
@@ -3179,6 +3231,8 @@ void QgisApp::fileOpen()
       return;
     }
 
+    closeProject();
+
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -3186,12 +3240,6 @@ void QgisApp::fileOpen()
     QString myPath = myFI.path();
     // Persist last used project dir
     settings.setValue( "/UI/lastProjectDir", myPath );
-
-    deletePrintComposers();
-    removeAnnotationItems();
-    // clear out any stuff from previous project
-    mMapCanvas->freeze( true );
-    removeAllLayers();
 
     QgsProject::instance()->setFileName( fullPath );
 
@@ -3213,6 +3261,26 @@ void QgisApp::fileOpen()
       mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
     }
 
+    // does the project have any macros?
+    if ( mPythonUtils && mPythonUtils->isEnabled() )
+    {
+      if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
+      {
+        int enableMacros = settings.value( "/qgis/enableMacros", 1 ).toInt();
+        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+
+        if ( enableMacros == 3 || enableMacros == 2 )
+        {
+          enableProjectMacros();
+        }
+        else if ( enableMacros == 1 ) // ask
+        {
+          // display the macros notification widget
+          mInfoBar->pushWidget( mMacrosWarn, 1 );
+        }
+      }
+    }
+
     emit projectRead();     // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
@@ -3224,6 +3292,14 @@ void QgisApp::fileOpen()
     mMapCanvas->refresh();
   }
 } // QgisApp::fileOpen
+
+void QgisApp::enableProjectMacros()
+{
+  mTrustedMacros = true;
+
+  // load macros
+  QgsPythonRunner::run( "qgis.utils.reloadProjectMacros()" );
+}
 
 
 /**
@@ -3364,6 +3440,13 @@ bool QgisApp::fileSave()
                            QgsProject::instance()->error() );
     return false;
   }
+
+  // run the saved project macro
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.saveProjectMacro();" );
+  }
+
   return true;
 } // QgisApp::fileSave
 
@@ -3838,6 +3921,11 @@ void QgisApp::addFormAnnotation()
   mMapCanvas->setMapTool( mMapTools.mFormAnnotation );
 }
 
+void QgisApp::addHtmlAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mHtmlAnnotation );
+}
+
 void QgisApp::addTextAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
@@ -3925,7 +4013,10 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),
+                                mMapCanvas->extent(), rasterLayer->crs(),
+                                mMapCanvas->mapRenderer()->destinationCrs(),
+                                this );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
@@ -3937,6 +4028,9 @@ void QgisApp::saveAsRasterFile()
     }
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
+    // Show the dialo immediately because cloning pipe can take some time (WCS)
+    pd.setLabelText( QObject::tr( "Reading raster" ) );
+    pd.show();
     pd.setWindowModality( Qt::WindowModal );
 
     // TODO: show error dialogs
@@ -4364,6 +4458,13 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   {
     QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
+  }
+
+  QDomNodeList htmlItemList = doc.elementsByTagName( "HtmlAnnotationItem" );
+  for ( int i = 0; i < htmlItemList.size(); ++i )
+  {
+    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
+    newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
   }
   return true;
 }
@@ -5146,15 +5247,10 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
 
 void QgisApp::showScale( double theScale )
 {
-  if ( theScale >= 1.0 )
-    mScaleEdit->setEditText( "1:" + QString::number( theScale, 'f', 0 ) );
-  else if ( theScale > 0.0 )
-    mScaleEdit->setEditText( QString::number( 1.0 / theScale, 'f', 0 ) + ":1" );
-  else
-    mScaleEdit->setEditText( tr( "Invalid scale" ) );
+  // Why has MapCanvas the scale inverted?
+  mScaleEdit->setScale( 1.0 / theScale );
 
-  mOldScale = mScaleEdit->currentText();
-
+  // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
     mScaleEdit->setMinimumWidth( mScaleEdit->width() );
@@ -5163,31 +5259,8 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  if ( mOldScale == mScaleEdit->currentText() )
-  {
-    return;
-  }
-
-  QStringList parts = mScaleEdit->currentText().split( ':' );
-  if ( parts.size() == 2 )
-  {
-    bool leftOk, rightOk;
-    double leftSide = parts.at( 0 ).toDouble( &leftOk );
-    double rightSide = parts.at( 1 ).toDouble( &rightOk );
-    if ( leftSide > 0.0 && leftOk && rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide / leftSide );
-    }
-  }
-  else
-  {
-    bool rightOk;
-    double rightSide = parts.at( 0 ).toDouble( &rightOk );
-    if ( rightOk )
-    {
-      mMapCanvas->zoomScale( rightSide );
-    }
-  }
+  // Why has MapCanvas the scale inverted?
+  mMapCanvas->zoomScale( 1.0 / mScaleEdit->scale() );
 }
 
 void QgisApp::userCenter()
@@ -5568,6 +5641,10 @@ void QgisApp::options()
     {
       mScaleEdit->updateScales();
     }
+
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+    qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
   }
 
   delete optionsDialog;
@@ -5866,6 +5943,26 @@ bool QgisApp::saveDirty()
 
   return answer != QMessageBox::Cancel;
 } // QgisApp::saveDirty()
+
+void QgisApp::closeProject()
+{
+  // unload the project macros before changing anything
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.unloadProjectMacros();" );
+  }
+
+  // remove the warning message from the bar if present
+  mInfoBar->popWidget( mMacrosWarn );
+
+  mTrustedMacros = false;
+
+  deletePrintComposers();
+  removeAnnotationItems();
+  // clear out any stuff from project
+  mMapCanvas->freeze( true );
+  removeAllLayers();
+}
 
 
 void QgisApp::changeEvent( QEvent* event )
@@ -6700,6 +6797,10 @@ void QgisApp::projectProperties()
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
+
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+  qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
 
   // Set the window title.
   setTitleBarText_( *this );
@@ -7859,6 +7960,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 1 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 2 );
+  else if ( action == mActionHtmlAnnotation )
+    settings.setValue( "/UI/annotationTool", 3 );
 
   bt->setDefaultAction( action );
 }

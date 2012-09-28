@@ -1,0 +1,11 @@
+v.buffer
+v.buffer.column - Creates a buffer around features of given type.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterTableField|bufcolumn|Name of column to use for buffer distances|input
+ParameterNumber|scale|Scaling factor for attribute column values|None|None|1.0
+ParameterString|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|0.01
+ParameterBoolean|-s|Make outside corners straight|False
+ParameterBoolean|-c|Don't make caps at the ends of polylines|False
+OutputVector|output|Name for output vector map
+

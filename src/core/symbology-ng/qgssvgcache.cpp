@@ -222,7 +222,17 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 
   QPainter p( image );
   QSvgRenderer r( entry->svgContent );
-  r.render( &p );
+  if ( r.viewBox().width() == r.viewBox().height() )
+  {
+    r.render( &p );
+  }
+  else
+  {
+    QSize s( r.viewBox().size() );
+    s.scale( imageSize, imageSize, Qt::KeepAspectRatio );
+    QRect rect(( imageSize - s.width() ) / 2, ( imageSize - s.height() ) / 2, s.width(), s.height() );
+    r.render( &p, rect );
+  }
 
   entry->image = image;
   mTotalSize += ( image->width() * image->height() * 32 );

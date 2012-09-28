@@ -1,0 +1,6 @@
+r.surf.idw2
+r.surf.idw2 - Surface generation program.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|npoints|Number of interpolation points|1.0|None|12
+OutputRaster|output|Name for output raster map

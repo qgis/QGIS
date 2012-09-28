@@ -26,7 +26,6 @@ class QDomElement;
 class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 {
   public:
-
     QgsComposerLegendItem();
     QgsComposerLegendItem( const QString& text );
     QgsComposerLegendItem( const QIcon& icon, const QString& text );

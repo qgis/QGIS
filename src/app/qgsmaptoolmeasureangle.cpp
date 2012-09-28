@@ -27,6 +27,9 @@
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mRubberBand( 0 ), mResultDisplay( 0 )
 {
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
@@ -85,10 +88,8 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
   {
     if ( mResultDisplay == NULL )
     {
-      mResultDisplay = new QgsDisplayAngle( mCanvas->topLevelWidget() );
+      mResultDisplay = new QgsDisplayAngle( this );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
-      QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
-                        this, SLOT( changeProjectionEnabledState() ) );
     }
     configureDistanceArea();
     createRubberBand();
@@ -147,10 +148,11 @@ QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
   }
 }
 
-void QgsMapToolMeasureAngle::changeProjectionEnabledState()
+void QgsMapToolMeasureAngle::updateSettings()
 {
   if ( mAnglePoints.size() != 3 )
     return;
+
   if ( !mResultDisplay )
     return;
 
@@ -173,18 +175,23 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
       resultAngle = -M_PI + ( resultAngle - M_PI );
     }
   }
-  mResultDisplay->setValueInRadians( resultAngle );
 
+  mResultDisplay->setValueInRadians( resultAngle );
 }
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
   mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setEllipsoidalMode( mResultDisplay->projectionEnabled() ); // FIXME (not when proj is turned off)
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    mDa.setEllipsoidalMode( true );
+  }
+  else
+  {
+    mDa.setEllipsoidalMode( false );
+  }
 }
-
-
-

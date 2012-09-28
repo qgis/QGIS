@@ -30,7 +30,7 @@ class QgsComposerMap;
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
  */
-class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
+class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
     Q_OBJECT
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     QStringList layerIdList() const;
 
   private:
-    /** Splits a string using the the wrap char taking into account handling empty
+    /** Splits a string using the wrap char taking into account handling empty
       wrap char which means no wrapping */
     QStringList splitStringForWrapping( QString stringToSplt );
 };

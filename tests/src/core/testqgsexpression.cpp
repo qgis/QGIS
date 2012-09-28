@@ -295,6 +295,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
       QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();
       QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
+      QTest::newRow( "coalesce null" ) << "coalesce(NULL)" << false << QVariant( );
+      QTest::newRow( "coalesce mid-null" ) << "coalesce(1, NULL, 3)" << false << QVariant( 1 );
+      QTest::newRow( "coalesce exp" ) << "coalesce(NULL, 1+1)" << false << QVariant( 2 );
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
@@ -408,6 +411,17 @@ class TestQgsExpression: public QObject
       exp.setCurrentRowNumber( 100 );
       QVariant v2 = exp.evaluate();
       QCOMPARE( v2.toInt(), 101 );
+    }
+
+    void eval_scale()
+    {
+      QgsExpression exp( "$scale" );
+      QVariant v1 = exp.evaluate();
+      QCOMPARE( v1.toInt(), 0 );
+
+      exp.setScale( 100.00 );
+      QVariant v2 = exp.evaluate();
+      QCOMPARE( v2.toDouble(), 100.00 );
     }
 
     void eval_feature_id()

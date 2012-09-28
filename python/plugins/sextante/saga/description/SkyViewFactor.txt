@@ -1,0 +1,11 @@
+Sky View Factor
+ta_lighting
+ParameterRaster|DEM|Elevation|False
+ParameterNumber|MAXRADIUS|Maximum Search Radius|0.0|None|10000
+ParameterSelection|METHOD|Method|[0] multi scale;[1] sectors
+ParameterNumber|LEVEL_INC|Multi Scale Factor|None|None|3
+ParameterNumber|NDIRS|Number of Sectors|1.0|None|8
+OutputRaster|VISIBLE|Visible Sky
+OutputRaster|SVF|Sky View Factor
+OutputRaster|SIMPLE|Sky View Factor (Simplified)
+OutputRaster|TERRAIN|Terrain View Factor

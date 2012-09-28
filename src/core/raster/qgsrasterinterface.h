@@ -18,8 +18,11 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
+#include <limits>
+
 #include <QImage>
 
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 
 #include "gdal.h"
@@ -57,11 +60,21 @@ class CORE_EXPORT QgsRasterInterface
       TypeCount = 14          /* maximum type # + 1 */
     };
 
+    struct Range
+    {
+      double min;
+      double max;
+      inline bool operator==( const Range &o ) const
+      {
+        return min == o.min && max == o.max;
+      }
+    };
+
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
 
-    int typeSize( int dataType ) const
+    static int typeSize( int dataType )
     {
       // Modified and extended copy from GDAL
       switch ( dataType )
@@ -114,6 +127,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual DataType dataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
+      QgsDebugMsg( "Entered" );
       return UnknownDataType;
     }
 
@@ -126,35 +140,31 @@ class CORE_EXPORT QgsRasterInterface
       return 1;
     }
 
-    /** Retruns value representing 'no data' (NULL) */
-    // TODO: Q_DECL_DEPRECATED
-    virtual double noDataValue() const { return 0; }
-
     /** Return no data value for specific band. Each band/provider must have
      * no data value, if there is no one set in original data, provider decides one
      * possibly using wider data type.
      * @param bandNo band number
      * @return No data value */
-    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return noDataValue(); }
+    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
 
     /** Test if value is nodata for specific band
      * @param bandNo band number
      * @param value tested value
      * @return true if value is nodata */
-    virtual bool isNoDataValue( int bandNo, double value ) const ;
+    virtual bool isNoDataValue( int bandNo, double value ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    void *block( int bandNo, const QgsRectangle &extent, int width, int height );
 
     /** Read block of data using given extent and size.
      *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
@@ -164,8 +174,11 @@ class CORE_EXPORT QgsRasterInterface
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
+    /** Current input */
+    virtual QgsRasterInterface * input() const { return mInput; }
+
     /** Is on/off */
-    virtual bool on( ) { return mOn; }
+    virtual bool on() { return mOn; }
 
     /** Set on/off */
     virtual void setOn( bool on ) { mOn = on; }
@@ -174,8 +187,16 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface * srcInput() const { return mInput ? mInput->srcInput() : this; }
-    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : this; }
+    virtual const QgsRasterInterface *srcInput() const
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
+    virtual QgsRasterInterface * srcInput()
+    {
+      QgsDebugMsg( "Entered" );
+      return mInput ? mInput->srcInput() : this;
+    }
 
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
@@ -191,6 +212,25 @@ class CORE_EXPORT QgsRasterInterface
      * returned. */
     double time( bool cumulative = false );
 
+    inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
+
+    inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+
+    /** \brief Print double value with all necessary significant digits.
+     *         It is ensured that conversion back to double gives the same number.
+     *  @param value the value to be printed
+     *  @return string representing the value*/
+    static QString printValue( double value );
+
+    /** \brief Convert block of data from one type to another. Original block memory
+     *         is not release.
+     *  @param srcData source data
+     *  @param srcDataType source data type
+     *  @param destDataType dest data type
+     *  @param size block size (width * height)
+     *  @return block of data in destDataType */
+    static void * convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size );
+
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
@@ -198,8 +238,13 @@ class CORE_EXPORT QgsRasterInterface
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
-    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
-    inline void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+    /** \brief Test if value is within the list of ranges
+     *  @param value value
+     *  @param rangeList list of ranges
+     *  @return true if value is in at least one of ranges
+     *  @note not available in python bindings
+     */
+    inline static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
 
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
@@ -211,6 +256,7 @@ class CORE_EXPORT QgsRasterInterface
 
 inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::DataType type, int index )
 {
+#if 0
   if ( !mInput )
   {
     return 0;
@@ -220,6 +266,7 @@ inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::Dat
   {
     return mInput->noDataValue();
   }
+#endif
 
   switch ( type )
   {
@@ -250,12 +297,12 @@ inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::Dat
   }
 
   // TODO: noDataValue is per band
-  return mInput->noDataValue();
+  //return mInput->noDataValue();
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::DataType type, int index, double value )
 {
-  if ( !mInput ) return;
   if ( !data ) return;
 
   switch ( type )
@@ -285,6 +332,20 @@ inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::Data
       //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
       break;
   }
+}
+
+inline bool QgsRasterInterface::valueInRange( double value, QList<QgsRasterInterface::Range> rangeList )
+{
+  foreach ( QgsRasterInterface::Range range, rangeList )
+  {
+    if (( value >= range.min && value <= range.max ) ||
+        doubleNear( value, range.min ) ||
+        doubleNear( value, range.max ) )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif

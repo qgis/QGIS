@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmpad4n</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmadd4dil.html"><tt>mmadd4dil</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  </td>
+        <td class="title">Python functions</td>
+      </tr>
+    </table>
+    <h1>mmpad4n
+      <br>
+      <span class="subtitle">mmpad4n
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmpad4n</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">Bc</span>, 
+          <span class="par">value</span>, 
+          <span class="par">scale</span> = 1
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>( connectivity).</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">value</span></td>
+                  <td class="def"><span class="type"><span class="type">int.</span></span></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">scale</span></td>
+                  <td class="def"><span class="type"><span class="type">int.</span></span><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"></span><p>The converted image</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmpad4n(f, Bc, value, scale=1):
+    from Numeric import ones, array
+    if type(Bc) is not array:
+      Bc = mmseshow(Bc)            
+    Bh, Bw = Bc.shape
+    assert Bh%2 and Bw%2, 'structuring element must be odd sized'
+    ch, cw = scale * Bh/2, scale * Bw/2
+    g = value * ones( f.shape + scale * (array(Bc.shape) - 1))
+    g[ ch: -ch, cw: -cw] = f
+    y = g.astype( f.typecode())
+    return y
+    </pre>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmadd4dil.html"><tt>mmadd4dil</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

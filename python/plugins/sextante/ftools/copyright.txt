@@ -1,0 +1,9 @@
+Copyright notice
+-------------------
+
+Algorithms in this folder have been adapted from the original fTools QGis plugin
+source code, by Carson Farmer, licensed under the terms of GNU GPL 2
+
+For more info, please check http://www.ftools.ca/fTools.html
+or write to  carson.farmer (at) gmail.com
+

@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(plugins)
+ADD_SUBDIRECTORY(api)
 
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -27,17 +28,32 @@ INCLUDE_DIRECTORIES(
     ${QT_QTXML_INCLUDE_DIR}
     ${GDAL_INCLUDE_DIR}
     ${GEOS_INCLUDE_DIR}
+    ${QWT_INCLUDE_DIR}
 
     ../src/core
+    ../src/core/pal
     ../src/core/composer
+    ../src/core/diagram
     ../src/core/gps
     ../src/core/gps/qextserialport
     ../src/core/raster
     ../src/core/renderer
     ../src/core/symbology
     ../src/core/symbology-ng
+
+    ../src/gui/raster
+    ../src/gui/attributetable
+
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
+
+IF(NOT WITH_TOUCH)
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_TOUCH)
+ENDIF(NOT WITH_TOUCH)
+
+IF(NOT QT_MOBILITY_LOCATION_FOUND)
+  SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
+ENDIF(NOT QT_MOBILITY_LOCATION_FOUND)
 
 IF(PYQT4_VERSION_NUM LESS 263680)	# 0x040600
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} PROXY_FACTORY)
@@ -76,9 +92,13 @@ ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
 # additional analysis includes
 INCLUDE_DIRECTORIES(
     ../src/analysis/vector
+    ../src/analysis/raster
     ../src/analysis/network
+    ../src/analysis/interpolation
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/network
+    ${CMAKE_BINARY_DIR}/src/analysis/raster
+    ${CMAKE_BINARY_DIR}/src/analysis/interpolation
 )
 
 # analysis module
@@ -97,13 +117,16 @@ SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
 
+ADD_SUBDIRECTORY(iconConsole)
+ADD_SUBDIRECTORY(helpConsole)
+
 ADD_CUSTOM_COMMAND(TARGET compile_python_files
        POST_BUILD
        COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}
        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-FOREACH(file __init__.py utils.py console.py)
+FOREACH(file __init__.py utils.py console.py console_sci.py help.py)
   ADD_CUSTOM_COMMAND(TARGET compile_python_files
          POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy ${file} ${QGIS_PYTHON_OUTPUT_DIRECTORY}
@@ -115,3 +138,6 @@ ENDFOREACH(file)
 PYTHON_INSTALL(__init__.py ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(utils.py    ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console.py  ${QGIS_PYTHON_DIR})
+PYTHON_INSTALL(console_sci.py  ${QGIS_PYTHON_DIR})
+PYTHON_INSTALL(help.py  ${QGIS_PYTHON_DIR})
+

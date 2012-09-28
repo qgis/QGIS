@@ -41,11 +41,14 @@ class CORE_EXPORT QgsOverlayObject
 
 
     /**Returns the feature geometry in geos format. The calling function does _not_ take
-     ownership of the generated object. The geometry is in map coordinates
-     @deprecated Please use geometry() and QgsGeometry::asGeos instead*/
+     * ownership of the generated object. The geometry is in map coordinates
+     * @deprecated Please use geometry() and QgsGeometry::asGeos instead
+     * @note not available in python bindings
+     */
     Q_DECL_DEPRECATED GEOSGeometry* getGeosGeometry();
     /**Feature geometry is released when object is destructed so this function is empty.
      * @deprecated nop
+     * @note not available in python bindings
      */
     Q_DECL_DEPRECATED void releaseGeosGeometry( GEOSGeometry *the_geom ) { Q_UNUSED( the_geom ); }
 

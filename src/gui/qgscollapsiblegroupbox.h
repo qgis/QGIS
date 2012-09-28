@@ -21,11 +21,14 @@
 #include "qgisgui.h"
 
 /** \ingroup gui
- * A groupbox that collapses/expands when toggled and draws an expand/collapse icon in lieu of checkbox.
- * Widget must be checkable for expand/collapse icon to appear.
+ * A groupbox that collapses/expands when toggled.
+ * @note Collapsible function not shown in promoted QtDesigner widgets.
  */
 
 #include <QGroupBox>
+
+class QToolButton;
+class QScrollArea;
 
 class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
 {
@@ -34,25 +37,61 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
   public:
     QgsCollapsibleGroupBox( QWidget *parent = 0 );
     QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0 );
+    ~QgsCollapsibleGroupBox();
 
     bool isCollapsed() const { return mCollapsed; }
-
-  signals:
-    void collapsed( QWidget* );
-    void expanded( QWidget* );
-
-  public slots:
-    void setToggled( bool toggled ) { setCollapsed( ! toggled ); }
     void setCollapsed( bool collapse );
 
-  protected:
-    void paintEvent( QPaintEvent * );
-    void showEvent( QShowEvent * event );
+    //! set this to false to not save/restore collapsed state
+    void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
+    /** set this to true to save/restore checked state
+     * @note only turn on mSaveCheckedState for groupboxes NOT used
+     * in multiple places or used as options for different parent objects */
+    void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
+    bool saveCollapsedState() { return mSaveCollapsedState; }
+    bool saveCheckedState() { return mSaveCheckedState; }
 
-  private:
+    //! set this to a defined string to share save/restore collapsed state across dialogs
+    void setSettingGroup( const QString &group ) { mSettingGroup = group; }
+    QString settingGroup() const { return mSettingGroup; }
+
+    //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
+
+  signals:
+    /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
+    void collapsedStateChanged( QgsCollapsibleGroupBox* );
+
+  public slots:
+    void checkToggled( bool ckd );
+    void toggleCollapsed();
+
+  protected slots:
+    void loadState();
+    void saveState();
+
+  protected:
+    void init();
+    void showEvent( QShowEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event );
+    void changeEvent( QEvent *event );
+
+    void updateStyle();
+    QRect titleRect() const;
+    QString saveKey() const;
+
     bool mCollapsed;
-    QMargins mMargins;
-    QList< QWidget* > mHiddenWidgets;
+    bool mSaveCollapsedState;
+    bool mSaveCheckedState;
+    QString mSettingGroup;
+    bool mInitFlat;
+    bool mScrollOnExpand;
+    bool mShown;
+    QScrollArea* mParentScrollArea;
+    QToolButton* mCollapseButton;
+
+    static QIcon mCollapseIcon;
+    static QIcon mExpandIcon;
 };
 
 #endif

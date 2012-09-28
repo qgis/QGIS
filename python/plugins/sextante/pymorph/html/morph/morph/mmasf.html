@@ -1,0 +1,266 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmasf</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmcenter.html"><tt>mmcenter</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmclose.html"><tt>mmclose</tt></a>]
+              </td>
+        <td class="title">Morphological Filters</td>
+      </tr>
+    </table>
+    <h1>mmasf
+      <br>
+      <span class="subtitle">Alternating Sequential Filtering
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmasf</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">SEQ</span> = "OC", 
+          <span class="par">b</span> = None, 
+          <span class="par">n</span> = 1
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">SEQ</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'OC', 'CO', 'OCO', 'COC'.</p><p>Default: 
+                      <code>"OC"</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">b</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">n</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span>      Non-negative integer.
+                          <p>(number of iterations).</p><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmasf</span> creates the image 
+          <code>y</code> by filtering the image 
+          <code>f</code> by 
+          <code>n</code> iterations of the close and open alternating sequential filter characterized by the structuring element 
+          <code>b</code>. The sequence of opening and closing is controlled by the parameter 
+          <code>SEQ</code>. 'OC' performs opening after closing, 'CO' performs closing after opening, 'OCO' performs opening after closing after opening, and 'COC' performs closing after opening after closing.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Binary image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('gear.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmasf(f,'oc',mmsecross(),2)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="139" src="../images/img_mmasf_001.jpg"></td>
+                  <td><img width="139" src="../images/img_mmasf_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmasf_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmasf_002.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Gray-scale image:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('fabric.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmasf(f,'oc',mmsecross(),3)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="273" src="../images/img_mmasf_003.jpg"></td>
+                  <td><img width="273" src="../images/img_mmasf_004.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmasf_003.jpg">f</a></td>
+                  <td><a href="../images/img_mmasf_004.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Case oc, close-open filter:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmasf001.png">
+          </div>
+          <div class="bridge">Case co, open-close filter:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmasf002.png">
+          </div>
+          <div class="bridge">Case oco:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmasf003.png">
+          </div>
+          <div class="bridge">Case coc:</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmasf004.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmasf(f, SEQ="OC", b=None, n=1):
+    from string import upper
+    if b is None: b = mmsecross()
+    SEQ=upper(SEQ)
+    y = f
+    if SEQ == 'OC':
+        for i in range(1,n+1):
+            nb = mmsesum(b,i)
+            y = mmopen(mmclose(y,nb),nb)
+    elif SEQ == 'CO':
+        for i in range(1,n+1):
+            nb = mmsesum(b,i)
+            y = mmclose(mmopen(y,nb),nb)
+    elif SEQ == 'OCO':
+        for i in range(1,n+1):
+            nb = mmsesum(b,i)
+            y = mmopen(mmclose(mmopen(y,nb),nb),nb)
+    elif SEQ == 'COC':
+        for i in range(1,n+1):
+            nb = mmsesum(b,i)
+            y = mmclose(mmopen(mmclose(y,nb),nb),nb)
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmopen.html">mmopen</a></td>
+              <td class="def">Morphological opening.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmclose.html">mmclose</a></td>
+              <td class="def">Morphological closing.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmasfrec.html">mmasfrec</a></td>
+              <td class="def">Reconstructive Alternating Sequential Filtering</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmcenter.html"><tt>mmcenter</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmclose.html"><tt>mmclose</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

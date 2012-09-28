@@ -27,7 +27,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     Q_OBJECT
 
   public:
-
     static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
     QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
@@ -51,6 +50,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
+    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 
@@ -61,8 +61,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     //! populate column combos in categorized and graduated page
     void populateColumns();
-
-    void populateColorRamps();
 
     //! populate ranges of graduated symbol renderer
     void populateRanges();

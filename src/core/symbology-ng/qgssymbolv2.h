@@ -56,6 +56,12 @@ class CORE_EXPORT QgsSymbolV2
       Fill
     };
 
+    enum ScaleMethod
+    {
+      ScaleArea,
+      ScaleDiameter
+    };
+
     //! @note added in 1.5
     enum RenderHint
     {
@@ -90,7 +96,6 @@ class CORE_EXPORT QgsSymbolV2
 
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
-
 
     void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
     void stopRender( QgsRenderContext& context );
@@ -218,6 +223,9 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
     void setSize( double size );
     double size();
+
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    ScaleMethod scaleMethod();
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
