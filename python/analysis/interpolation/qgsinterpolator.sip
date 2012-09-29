@@ -22,7 +22,7 @@ class QgsInterpolator
       QgsVectorLayer* vectorLayer;
       bool zCoordInterpolation;
       int interpolationAttribute;
-      int mInputType;
+      QgsInterpolator::InputType mInputType;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData>& layerData );
