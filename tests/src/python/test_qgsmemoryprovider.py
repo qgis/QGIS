@@ -78,9 +78,9 @@ class TestQgsMemoryProvider(unittest.TestCase):
           geom = f.geometry()
 
           myMessage = ('Expected: %s\nGot: %s\n' %
-                        ("POINT(10.000000 10.000000)", str(geom.exportToWkt())))
+                        ("POINT(10.0 10.0)", str(geom.exportToWkt())))
 
-          assert str(geom.exportToWkt()) == "POINT(10.000000 10.000000)", myMessage
+          assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
 
 if __name__ == '__main__':
     unittest.main()
