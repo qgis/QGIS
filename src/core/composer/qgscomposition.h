@@ -55,29 +55,30 @@ class QgsVectorLayer;
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
  * */
-class QgsAtlasRendering
+class CORE_EXPORT QgsAtlasRendering
 {
- public:
-  QgsAtlasRendering( QgsComposition* composition );
+  public:
+    QgsAtlasRendering( QgsComposition* composition );
+    ~QgsAtlasRendering();
 
-  /** Begins the rendering. Sets an optional output filename pattern */
-  void begin( const QString& filenamePattern = "" );
-  /** Ends the rendering. Restores original extent*/
-  void end();
+    /** Begins the rendering. Sets an optional output filename pattern */
+    void begin( const QString& filenamePattern = "" );
+    /** Ends the rendering. Restores original extent*/
+    void end();
 
-  /** Returns the number of features in the coverage layer */
-  size_t numFeatures() const;
+    /** Returns the number of features in the coverage layer */
+    size_t numFeatures() const;
 
-  /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-  void prepareForFeature( size_t i );
+    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
+    void prepareForFeature( size_t i );
 
-  /** Returns the current filename. Must be called after prepareForFeature( i ) */
-  const QString& currentFilename() const;
+    /** Returns the current filename. Must be called after prepareForFeature( i ) */
+    const QString& currentFilename() const;
 
- private:
-  // Use the PImpl idiom for private members.
-  struct QgsAtlasRenderingImpl;
-  std::auto_ptr<QgsAtlasRenderingImpl> impl;
+  private:
+    struct QgsAtlasRenderingImpl;
+    // Use the PImpl idiom for private members.
+    QgsAtlasRenderingImpl *impl;
 };
 
 /** \ingroup MapComposer
@@ -159,7 +160,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QList<QgsComposerItem*> selectedComposerItems();
 
     /**Returns pointers to all composer maps in the scene
-      @note not available in python bindings
      */
     QList<const QgsComposerMap*> composerMapItems() const;
 
