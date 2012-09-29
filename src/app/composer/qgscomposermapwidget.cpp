@@ -422,13 +422,13 @@ void QgsComposerMapWidget::updateGuiElements()
     {
       mIsAtlasCheckBox->setCheckState( Qt::Checked );
 
-      int idx = mAtlasCoverageLayerComboBox->findData( qVariantFromValue( (void*)mComposerMap->atlasCoverageLayer() ));
+      int idx = mAtlasCoverageLayerComboBox->findData( qVariantFromValue(( void* )mComposerMap->atlasCoverageLayer() ) );
       if ( idx != -1 )
       {
-	mAtlasCoverageLayerComboBox->setCurrentIndex( idx );
+        mAtlasCoverageLayerComboBox->setCurrentIndex( idx );
       }
-      
-      mAtlasMarginSpinBox->setValue( static_cast<int>(mComposerMap->atlasMargin() * 100) );
+
+      mAtlasMarginSpinBox->setValue( static_cast<int>( mComposerMap->atlasMargin() * 100 ) );
       mAtlasFilenamePatternEdit->setText( mComposerMap->atlasFilenamePattern() );
       mAtlasFixedScaleCheckBox->setCheckState( mComposerMap->atlasFixedScale() ? Qt::Checked : Qt::Unchecked );
       mAtlasHideCoverageCheckBox->setCheckState( mComposerMap->atlasHideCoverage() ? Qt::Checked : Qt::Unchecked );
@@ -438,7 +438,7 @@ void QgsComposerMapWidget::updateGuiElements()
     {
       mIsAtlasCheckBox->setCheckState( Qt::Unchecked );
     }
-    
+
     blockAllSignals( false );
   }
 }
@@ -940,14 +940,14 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
     if ( composition->atlasMap() != 0 && composition->atlasMap() != mComposerMap )
     {
       QMessageBox msgBox;
-      msgBox.setText(tr("An atlas map already exists."));
-      msgBox.setInformativeText("Are you sure to define this map as the new atlas map ?");
-      msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No );
-      msgBox.setDefaultButton(QMessageBox::No);
+      msgBox.setText( tr( "An atlas map already exists." ) );
+      msgBox.setInformativeText( "Are you sure to define this map as the new atlas map ?" );
+      msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+      msgBox.setDefaultButton( QMessageBox::No );
       if ( msgBox.exec() != QMessageBox::Yes )
       {
-	mIsAtlasCheckBox->setCheckState( Qt::Unchecked );
-	return;
+        mIsAtlasCheckBox->setCheckState( Qt::Unchecked );
+        return;
       }
     }
     composition->setAtlasMap( mComposerMap );
@@ -959,9 +959,9 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
     for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
     {
       // Only consider vector layers
-      if ( dynamic_cast<QgsVectorLayer*>(it.value()) )
+      if ( dynamic_cast<QgsVectorLayer*>( it.value() ) )
       {
-	mAtlasCoverageLayerComboBox->insertItem( idx++, it.key(), /* userdata */ qVariantFromValue( (void*)it.value() ) );
+        mAtlasCoverageLayerComboBox->insertItem( idx++, it.key(), /* userdata */ qVariantFromValue(( void* )it.value() ) );
       }
     }
 
@@ -987,7 +987,7 @@ void QgsComposerMapWidget::on_mAtlasCoverageLayerComboBox_currentIndexChanged( i
     return;
   }
 
-  QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>(mAtlasCoverageLayerComboBox->itemData( index ).value<void*>());
+  QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>( mAtlasCoverageLayerComboBox->itemData( index ).value<void*>() );
   mComposerMap->setAtlasCoverageLayer( layer );
 }
 
@@ -1026,7 +1026,7 @@ void QgsComposerMapWidget::on_mAtlasFilenameExpressionButton_clicked()
 
 void QgsComposerMapWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
-  if (!mComposerMap)
+  if ( !mComposerMap )
   {
     return;
   }
@@ -1035,7 +1035,7 @@ void QgsComposerMapWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int state
 
 void QgsComposerMapWidget::on_mAtlasFixedScaleCheckBox_stateChanged( int state )
 {
-  if (!mComposerMap)
+  if ( !mComposerMap )
   {
     return;
   }
@@ -1054,7 +1054,7 @@ void QgsComposerMapWidget::on_mAtlasFixedScaleCheckBox_stateChanged( int state )
 
 void QgsComposerMapWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
 {
-  if (!mComposerMap)
+  if ( !mComposerMap )
   {
     return;
   }
