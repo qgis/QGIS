@@ -13,8 +13,8 @@ if sys.version_info[0:2] < (2,7):
     try:
         from unittest2 import TestCase, expectedFailure
     except ImportError:
-        print "You need to install unittest2 to run the salt tests"
-        sys.exit(1)
+        print "You should install unittest2 to run the salt tests"
+        sys.exit(0)
 else:
     from unittest import TestCase, expectedFailure
 
