@@ -1,4 +1,4 @@
-<h3>ln() function</h3>
+<h3>Funktion ln()</h3>
 Returns the value of the natural logarithm of the passed expression.
 <br>
 This function takes one argument.
@@ -12,4 +12,4 @@ This function takes one argument.
 <h4>Example</h4>
 <!-- Show example of function.-->
 <code>ln(1) &rarr; 0</code><br>
-<code>ln(e) &rarr; 1</code><br>
+<code>ln(2.7182818284590452354) &rarr; 1</code><br>
