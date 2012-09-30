@@ -1,0 +1,8 @@
+You can contribute at translate this help by creating an file *.properties named like
+*.ts files (only the locale suffix) which found in Quantum-GIS\i18n directory. 
+For example: for Italian translation copy and paste a *.properties file and rename it to "it.js".
+The only thing what you have to do is translate the values of the keys in dictionary.
+
+i18n_dict = {
+"key" : "value"
+}

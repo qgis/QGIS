@@ -2,6 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Help Python Console</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.i18n.min.js"></script>
+<script  type="text/javascript">
+	$(document).ready(function(){
+		var parameter =  window.location.search.replace( "?", "" );
+		var locale = parameter.split("=");
+		var lang = locale[1]
+		var js = document.createElement("script");
+		js.type = "text/javascript";
+		js.src = "i18n/" + lang + ".properties";
+		document.body.appendChild(js);
+		//alert(js.src);
+
+		var encode = document.createElement("script");
+		encode.type = "text/javascript";
+		encode.src = "js/encoding.js";
+		document.body.appendChild(encode);
+	});
+</script>
 	<style>
 		body{
     		font-family: verdana,arial,helvetica,sans-serif;
@@ -25,28 +45,28 @@
 			<img src="../iconConsole/imgHelpDialog.png" />
 		</td>
 		<td>
-			<h2>Python Console for QGIS</h2>
+			<h2 id="headerTitle">Python Console for QGIS</h2>
 		</td>
 		</tr>
 	</table>
 	<p align="justify">
-		Python Console based on pyScintilla. (Developed by Salvatore Larosa)
+		<span id="headerSubject">Python Console based on PyQScintilla2. (Developed by Salvatore Larosa)</span>
 		<br><br>
-		To access Quantum GIS environment from this console
+		<span id="headerSubjectMain">To access Quantum GIS environment from this console
 		use qgis.utils.iface object (instance of QgisInterface class).
 		To import the class QgisInterface can also use the dedicated 
-		button on the toolbar on the left.
+		button on the toolbar on the left.</span>
 	</p>
 	<table id="header">
 		<tr>
 		<td>
-			<h4>Features</h4>
+			<h4 id="features">Features</h4>
 		</td>
 		</tr>
 	</table>
 	<p align="justify">
 		<ul>
-		<li>Auto-completion and highlighting syntax for the following APIs:
+		<li><span id="featuresTitle">Auto-completion and highlighting syntax for the following APIs:</span>
 			<ol>
 				<li>Python</li>
 				<li>PyQGIS-master</li>
@@ -56,75 +76,75 @@
 			</ol>
 		</li>
 		<br>
-		<li>CTRL+SPACE to view the auto-completion list.</li>
+		<li><span id="featuresA">CTRL+SPACE to view the auto-completion list.</span></li>
 		<br>
-		<li>CTRL+ALT+SPACE to view the command history list.</li>
+		<li><span id="featuresB">CTRL+ALT+SPACE to view the command history list.</span></li>
 		<br>
-		<li>Saves the command history by typing <b>_save</b> or closing the widget.<br>
-			This command saves the history command in the file ~/.qgis/console_history.txt
+		<li><span id="featuresC">Saves the command history by typing <b>_save</b> or closing the widget.<br>
+			This command saves the history command in the file ~/.qgis/console_history.txt</span>
 		</li>
 		<br>
-		<li>Clears the command history  by typing <b>_clear</b>.<br>
-			This command clears the command history from file ~/.qgis/console_history.txt
+		<li><span id="featuresD">Clears the command history  by typing <b>_clear</b>.<br>
+			This command clears the command history from file ~/.qgis/console_history.txt</span>
 		</li>
 		<br>
-		<li>Clears completely command history  by typing <b>_clearAll</b>.<br>
-			This command clears completely the command history. It has an irreversible effect.
+		<li><span id="featuresE">Clears completely command history  by typing <b>_clearAll</b>.<br>
+			This command clears completely the command history. It has an irreversible effect.</span>
 		</li>
 		</ul>
 	</p>
 	<table id="header">
 		<tr>
 		<td>
-			<h4>Toolbar</h4>
+			<h4 id="toolbar">Toolbar</h4>
 		</td>
 		</tr>
 	</table>
-	<p>The following is a description of the tools in the toolbar:</p>		
+	<p><span id="toolbarTitle">The following is a description of the tools in the toolbar:</span></p>		
 	<table width="100%" border="0" id="headerTool">
 		<tr>
 			<td><img src="../iconConsole/iconClearConsole.png" /></td>
-			<td colspan="2">Tool to clear python console</td>
+			<td colspan="2"><span id="toolbarClear">Tool to clear python console</span></td>
 		</tr>
 		<tr>
 			<td><img src="../iconConsole/iconClassConsole.png" /></td>
 			<td><img src="../iconConsole/iconIfaceConsole.png" /></td>
-			<td>Tool to import iface class</td>
+			<td><span id="toolbarIfaceClass">Tool to import iface class</span></td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><img src="../iconConsole/iconSextanteConsole.png" /></td>
-			<td>Tool to import Sextante class</td>
+			<td><span id="toolbarSextClass">Tool to import Sextante class</span></td>
 		</tr>
 		<tr>
 			<td><img src="../iconConsole/iconScriptConsole.png" /></td>
 			<td><img src="../iconConsole/iconOpenConsole.png" /></td>
-			<td>Tool to open a python script and load in console</td>
+			<td><span id="toolbarScriptOpen">Tool to open a python script and load in console</span></td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><img src="../iconConsole/iconSaveConsole.png" /></td>
-			<td>Tool to save a python script</td>
+			<td><span id="toolbarScriptSave">Tool to save a python script</span></td>
 		</tr>
 		<tr>
 			<td><img src="../iconConsole/iconHelpConsole.png" /></td>
-			<td colspan="2">Help</td>
+			<td colspan="2"><span id="toolbarHelp">Help</span></td>
 		</tr>
 		<tr>
 			<td><img src="../iconConsole/iconRunConsole.png" /></td>
-			<td colspan="2">Run command (like Enter key pressed)</td>
+			<td colspan="2"><span id="toolbarRun">Run command (like Enter key pressed)</span></td>
 		</tr>
 	</table>
 	<br>
 	<table id="header">
 		<tr>
 		<td>
-			<h4>Acknowledgments</h4>
+			<h4 id="thanks">Acknowledgments</h4>
 		</td>
 		</tr>
 	</table>
 	<p>
-		Thanks to Larry Shaffer who provided the API files.
+		<span id="thanksText">Thanks to Larry Shaffer who provided the API files.</span>
 	</p>
 </body>
 </html>
