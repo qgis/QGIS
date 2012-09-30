@@ -22,6 +22,7 @@ which are not wrapped by PyQt:
 
 %Feature QSETINT_CONVERSION
 %Feature QSETTYPE_CONVERSION
+%Feature QLISTCONSTPTR_CONVERSION
 
 %ModuleHeaderCode
 

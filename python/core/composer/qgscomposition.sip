@@ -35,6 +35,7 @@ class QgsComposition : QGraphicsScene
 %TypeHeaderCode
 #include <qgscomposition.h>
 %End
+
   public:
 
     /** \brief Plot type */
@@ -105,7 +106,9 @@ class QgsComposition : QGraphicsScene
     QList<QgsComposerItem*> selectedComposerItems();
 
     /**Returns pointers to all composer maps in the scene*/
+%If (QLISTCONSTPTR_CONVERSION)
     QList<const QgsComposerMap*> composerMapItems() const;
+%End
 
     /**Return composer items of a specific type*/
     // template<class T> void composerItems( QList<T*>& itemList );
@@ -174,8 +177,13 @@ class QgsComposition : QGraphicsScene
       @param doc xml document
       @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
-      @param pos item position. Optional, take position from xml if 0*/
-    //void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore, bool addUndoCommands = false, QPointF* pos = 0 );
+      @param pos item position. Optional, take position from xml if 0
+      @note not available in python bindings
+     */
+    /*
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
+                          bool addUndoCommands = false, QPointF* pos = 0 );
+    */
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -226,7 +234,7 @@ class QgsComposition : QGraphicsScene
     /**Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
-    //void addComposerArrow( QgsComposerArrow* arrow );
+    void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
