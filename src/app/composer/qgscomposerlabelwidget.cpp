@@ -18,8 +18,6 @@
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposeritemwidget.h"
-#include "qgsexpressionbuilderdialog.h"
-
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
@@ -98,33 +96,6 @@ void QgsComposerLabelWidget::on_mFontColorButton_clicked()
   mComposerLabel->beginCommand( tr( "Label font changed" ) );
   mComposerLabel->setFontColor( newColor );
   mComposerLabel->endCommand();
-}
-
-void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
-{
-  if ( !mComposerLabel)
-  {
-    return;
-  }
-
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
-    selText = selText.mid( 2, selText.size() - 4 );
-
-  QgsExpressionBuilderDialog exprDlg( /* layer = */ 0, selText, this );
-  exprDlg.setWindowTitle( tr( "Insert expression" ) );
-  if ( exprDlg.exec() == QDialog::Accepted )
-  {
-    QString expression =  exprDlg.expressionText();
-    if ( !expression.isEmpty() )
-    {
-      mComposerLabel->beginCommand( tr( "Insert expression" ) );
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
-      mComposerLabel->endCommand();
-    }
-  }
 }
 
 void QgsComposerLabelWidget::on_mCenterRadioButton_clicked()

@@ -190,7 +190,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void removeItems() {}
 
     const QgsComposition* composition() const {return mComposition;}
-    QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
 

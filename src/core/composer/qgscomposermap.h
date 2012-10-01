@@ -30,7 +30,6 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
-class QgsVectorLayer;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -46,7 +45,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
     /** Constructor. Settings are read from project. */
     QgsComposerMap( QgsComposition *composition );
-    virtual ~QgsComposerMap();
+    ~QgsComposerMap();
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const { return ComposerMap; }
@@ -317,28 +316,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
 
-    bool atlasHideCoverage() const { return mAtlasHideCoverage; }
-    void setAtlasHideCoverage( bool hide ) { mAtlasHideCoverage = hide; }
-
-    bool atlasFixedScale() const { return mAtlasFixedScale; }
-    void setAtlasFixedScale( bool fixed ) { mAtlasFixedScale = fixed; }
-
-    float atlasMargin() const { return mAtlasMargin; }
-    void setAtlasMargin( float margin ) { mAtlasMargin = margin; }
-
-    QString atlasFilenamePattern() const { return mAtlasFilenamePattern; }
-    void setAtlasFilenamePattern( const QString& pattern ) { mAtlasFilenamePattern = pattern; }
-
-    QgsVectorLayer* atlasCoverageLayer() const { return mAtlasCoverageLayer; }
-    void setAtlasCoverageLayer( QgsVectorLayer* lmap );
-
-    bool atlasSingleFile() const { return mAtlasSingleFile; }
-    void setAtlasSingleFile( bool single ) { mAtlasSingleFile = single; }
-
   signals:
     void extentChanged();
-
-    void atlasCoverageLayerChanged( QgsVectorLayer* );
 
   public slots:
 
@@ -346,9 +325,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateCachedImage( );
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
-
-  private slots:
-    void syncAtlasCoverageLayer( QString );
 
   private:
 
@@ -461,13 +437,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QGraphicsView* mMapCanvas;
     /**True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
-
-    bool mAtlasHideCoverage;
-    bool mAtlasFixedScale;
-    double mAtlasMargin;
-    QString mAtlasFilenamePattern;
-    QgsVectorLayer* mAtlasCoverageLayer;
-    bool mAtlasSingleFile;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );

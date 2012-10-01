@@ -16,15 +16,11 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
-#include <memory>
-
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
 #include <QSet>
 #include <QUndoStack>
-#include <QPrinter>
-#include <QPainter>
 
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
@@ -48,37 +44,6 @@ class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
-class QgsVectorLayer;
-
-/** \ingroup MapComposer
- * Class used to render an Atlas, iterating over geometry features.
- * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
- * This class is used for printing, exporting to PDF and images.
- * */
-class QgsAtlasRendering
-{
- public:
-  QgsAtlasRendering( QgsComposition* composition );
-
-  /** Begins the rendering. Sets an optional output filename pattern */
-  void begin( const QString& filenamePattern = "" );
-  /** Ends the rendering. Restores original extent*/
-  void end();
-
-  /** Returns the number of features in the coverage layer */
-  size_t numFeatures() const;
-
-  /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-  void prepareForFeature( size_t i );
-
-  /** Returns the current filename. Must be called after prepareForFeature( i ) */
-  const QString& currentFilename() const;
-
- private:
-  // Use the PImpl idiom for private members.
-  struct QgsAtlasRenderingImpl;
-  std::auto_ptr<QgsAtlasRenderingImpl> impl;
-};
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -150,12 +115,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
-    /** Returns the page number (0-bsaed) given a coordinate */
-    int pageNumberAt( const QPointF& position ) const;
-
-    /** Returns on which page number (0-based) is displayed an item */
-    int itemPageNumber( const QgsComposerItem* ) const;
-
     QList<QgsComposerItem*> selectedComposerItems();
 
     /**Returns pointers to all composer maps in the scene
@@ -199,9 +158,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
-
-    QgsComposerMap* atlasMap() { return mAtlasMap; }
-    void setAtlasMap( QgsComposerMap* map );
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -315,18 +271,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     //printing
 
-    /** Prepare the printer for printing */
-    void beginPrint( QPrinter& printer );
-    /** Prepare the printer for printing in a PDF */
-    void beginPrintAsPDF( QPrinter& printer, const QString& file );
-    /** Print on a preconfigured printer */
-    void doPrint( QPrinter& printer, QPainter& painter );
-
-    /** Convenience function that prepares the printer and prints */
-    void print( QPrinter &printer );
-
-    /** Convenience function that prepares the printer for printing in PDF and prints */
     void exportAsPDF( const QString& file );
+
+    void print( QPrinter &printer );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned
@@ -339,9 +286,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
-
-  private slots:
-    void onAtlasCoverageChanged( QgsVectorLayer* );
 
   private:
     /**Pointer to map renderer of QGIS main map*/
@@ -379,8 +323,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QgsComposerItemCommand* mActiveItemCommand;
     QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
-
-    QgsComposerMap* mAtlasMap;
 
     QgsComposition(); //default constructor is forbidden
 

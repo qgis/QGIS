@@ -193,23 +193,11 @@ expression:
           int fnIndex = QgsExpression::functionIndex(*$1);
           if (fnIndex == -1)
           {
-	    QVariant userVar = QgsExpression::specialColumn( *$1 );
-	    if ( userVar.isNull() )
-	    {
-	      exp_error("Special column is not known");
-	      YYERROR;
-	    }
-	    // $var is equivalent to _specialcol_( "$var" )
-	    QgsExpression::NodeList* args = new QgsExpression::NodeList();
-	    QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
-	    args->append( literal );
-	    $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
+            exp_error("Special column is not known");
+            YYERROR;
           }
-	  else
-	  {
-	    $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
-	    delete $1;
-	  }
+          $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
+          delete $1;
         }
 
     //  literals

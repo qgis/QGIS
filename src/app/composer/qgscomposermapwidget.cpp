@@ -23,15 +23,8 @@
 //#include "qgssymbolv2propertiesdialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
-#include "qgscomposershape.h"
-#include "qgspaperitem.h"
-#include "qgsexpressionbuilderdialog.h"
 #include <QColorDialog>
 #include <QFontDialog>
-#include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
@@ -416,29 +409,6 @@ void QgsComposerMapWidget::updateGuiElements()
     mLineWidthSpinBox->setValue( gridPen.widthF() );
     mLineColorButton->setColor( gridPen.color() );
 
-    // special processing for atlas
-    QgsComposition* composition = mComposerMap->composition();
-    if ( composition->atlasMap() && composition->atlasMap() == mComposerMap )
-    {
-      mIsAtlasCheckBox->setCheckState( Qt::Checked );
-
-      int idx = mAtlasCoverageLayerComboBox->findData( qVariantFromValue( (void*)mComposerMap->atlasCoverageLayer() ));
-      if ( idx != -1 )
-      {
-	mAtlasCoverageLayerComboBox->setCurrentIndex( idx );
-      }
-      
-      mAtlasMarginSpinBox->setValue( static_cast<int>(mComposerMap->atlasMargin() * 100) );
-      mAtlasFilenamePatternEdit->setText( mComposerMap->atlasFilenamePattern() );
-      mAtlasFixedScaleCheckBox->setCheckState( mComposerMap->atlasFixedScale() ? Qt::Checked : Qt::Unchecked );
-      mAtlasHideCoverageCheckBox->setCheckState( mComposerMap->atlasHideCoverage() ? Qt::Checked : Qt::Unchecked );
-      mAtlasSingleFileCheckBox->setCheckState( mComposerMap->atlasSingleFile() ? Qt::Checked : Qt::Unchecked );
-    }
-    else
-    {
-      mIsAtlasCheckBox->setCheckState( Qt::Unchecked );
-    }
-    
     blockAllSignals( false );
   }
 }
@@ -927,149 +897,10 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  QgsComposition* composition = mComposerMap->composition();
-  if ( state == Qt::Checked )
-  {
-    if ( composition->atlasMap() != 0 && composition->atlasMap() != mComposerMap )
-    {
-      QMessageBox msgBox;
-      msgBox.setText(tr("An atlas map already exists."));
-      msgBox.setInformativeText("Are you sure to define this map as the new atlas map ?");
-      msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No );
-      msgBox.setDefaultButton(QMessageBox::No);
-      if ( msgBox.exec() != QMessageBox::Yes )
-      {
-	mIsAtlasCheckBox->setCheckState( Qt::Unchecked );
-	return;
-      }
-    }
-    composition->setAtlasMap( mComposerMap );
-
-    // repopulate the layer list
-    mAtlasCoverageLayerComboBox->clear();
-    QMap< QString, QgsMapLayer * >& layers = QgsMapLayerRegistry::instance()->mapLayers();
-    int idx = 0;
-    for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
-    {
-      // Only consider vector layers
-      if ( dynamic_cast<QgsVectorLayer*>(it.value()) )
-      {
-	mAtlasCoverageLayerComboBox->insertItem( idx++, it.key(), /* userdata */ qVariantFromValue( (void*)it.value() ) );
-      }
-    }
-
-    mAtlasFrame->setEnabled( true );
-    updateGuiElements();
-  }
-  else
-  {
-    mAtlasFrame->setEnabled( false );
-
-    // If the current atlas map was this one and a uncheck is requested, set the atlas map to null
-    if ( composition->atlasMap() == mComposerMap )
-    {
-      composition->setAtlasMap( 0 );
-    }
-  }
-}
-
-void QgsComposerMapWidget::on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>(mAtlasCoverageLayerComboBox->itemData( index ).value<void*>());
-  mComposerMap->setAtlasCoverageLayer( layer );
-}
-
-void QgsComposerMapWidget::on_mAtlasFilenamePatternEdit_textChanged( const QString& text )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  mComposerMap->setAtlasFilenamePattern( text );
-}
-
-void QgsComposerMapWidget::on_mAtlasFilenameExpressionButton_clicked()
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-  if ( !mComposerMap->atlasCoverageLayer() )
-  {
-    return;
-  }
-  QgsExpressionBuilderDialog exprDlg( mComposerMap->atlasCoverageLayer(), mAtlasFilenamePatternEdit->text(), this );
-  exprDlg.setWindowTitle( tr( "Expression based filename" ) );
-  if ( exprDlg.exec() == QDialog::Accepted )
-  {
-    QString expression =  exprDlg.expressionText();
-    if ( !expression.isEmpty() )
-    {
-      // will emit a textChanged signal
-      mAtlasFilenamePatternEdit->setText( expression );
-    }
-  }
-}
-
-void QgsComposerMapWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int state )
-{
-  if (!mComposerMap)
-  {
-    return;
-  }
-  mComposerMap->setAtlasHideCoverage( state == Qt::Checked );
-}
-
-void QgsComposerMapWidget::on_mAtlasFixedScaleCheckBox_stateChanged( int state )
-{
-  if (!mComposerMap)
-  {
-    return;
-  }
-  mComposerMap->setAtlasFixedScale( state == Qt::Checked );
-
-  // in fixed scale mode, the margin is meaningless
-  if ( state == Qt::Checked )
-  {
-    mAtlasMarginSpinBox->setEnabled( false );
-  }
-  else
-  {
-    mAtlasMarginSpinBox->setEnabled( true );
-  }
-}
-
-void QgsComposerMapWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
-{
-  if (!mComposerMap)
-  {
-    return;
-  }
-  mComposerMap->setAtlasSingleFile( state == Qt::Checked );
-}
-
 void QgsComposerMapWidget::showEvent( QShowEvent * event )
 {
   refreshMapComboBox();
   QWidget::showEvent( event );
-}
-
-void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
-{
-  toolBox->addItem( widget, name );
 }
 
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )

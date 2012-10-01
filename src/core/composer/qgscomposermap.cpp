@@ -38,14 +38,12 @@
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
-      mOverviewFrameMapId( -1 ), mGridEnabled( false ), mGridStyle( Solid ),
+    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ),
-      mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true ),
-      mAtlasHideCoverage( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0), mAtlasSingleFile( false )
+    mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
@@ -86,8 +84,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
-      mMapCanvas( 0 ), mDrawCanvasItems( true ),
-      mAtlasHideCoverage( false ), mAtlasFixedScale( false ), mAtlasMargin( 0.10 ), mAtlasFilenamePattern("'output_'||$feature"), mAtlasCoverageLayer(0), mAtlasSingleFile( false )
+    mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mOverviewFrameMapSymbol = 0;
   createDefaultOverviewFrameSymbol();
@@ -620,24 +617,8 @@ void QgsComposerMap::connectUpdateSlot()
   if ( layerRegistry )
   {
     connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateCachedImage() ) );
-    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( syncAtlasCoverageLayer( QString ) ) );
     connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateCachedImage() ) );
   }
-}
-
-void QgsComposerMap::syncAtlasCoverageLayer( QString lname )
-{
-  if ( mAtlasCoverageLayer && mAtlasCoverageLayer->id() == lname )
-  {
-    mAtlasCoverageLayer = 0;
-  }
-}
-
-void QgsComposerMap::setAtlasCoverageLayer( QgsVectorLayer* map )
-{
-  mAtlasCoverageLayer = map;
-
-  emit atlasCoverageLayerChanged( map );
 }
 
 bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
@@ -746,27 +727,6 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
-
-  // atlas
-  if ( mComposition->atlasMap() == this )
-  {
-    QDomElement atlasElem = doc.createElement( "Atlas" );
-    if ( mAtlasCoverageLayer )
-    {
-      atlasElem.setAttribute( "coverageLayer", mAtlasCoverageLayer->id() );
-    }
-    else
-    {
-      atlasElem.setAttribute( "coverageLayer", "" );
-    }
-    atlasElem.setAttribute( "hideCoverage", mAtlasHideCoverage ? "true" : "false" );
-    atlasElem.setAttribute( "fixedScale", mAtlasFixedScale ? "true" : "false" );
-    atlasElem.setAttribute( "singleFile", mAtlasSingleFile ? "true" : "false" );
-    atlasElem.setAttribute( "margin", QString::number(mAtlasMargin) );
-    atlasElem.setAttribute( "filenamePattern", mAtlasFilenamePattern );
-
-    composerMapElem.appendChild( atlasElem );
-  }
 
   elem.appendChild( composerMapElem );
   return _writeXML( composerMapElem, doc );
@@ -903,32 +863,6 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
       mGridAnnotationPrecision = annotationElem.attribute( "precision", "3" ).toInt();
     }
-  }
-
-  // atlas
-  QDomNodeList atlasNodeList = itemElem.elementsByTagName( "Atlas" );
-  if ( atlasNodeList.size() > 0 )
-  {
-    mComposition->setAtlasMap( this );
-
-    QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
-
-    // look for stored layer name
-    mAtlasCoverageLayer = 0;
-    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-    for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
-    {
-      if ( it.key() == atlasElem.attribute("coverageLayer") )
-      {
-	mAtlasCoverageLayer = dynamic_cast<QgsVectorLayer*>(it.value());
-	break;
-      }
-    }
-    mAtlasMargin = atlasElem.attribute( "margin", "0.0" ).toDouble();
-    mAtlasHideCoverage = atlasElem.attribute( "hideCoverage", "false" ) == "true" ? true : false;
-    mAtlasFixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
-    mAtlasSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
-    mAtlasFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
   }
 
   //restore general composer item properties

@@ -50,9 +50,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>374</width>
-            <height>549</height>
+            <y>-109</y>
+            <width>370</width>
+            <height>523</height>
            </rect>
           </property>
           <attribute name="label">
@@ -220,8 +220,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
-            <height>162</height>
+            <width>367</width>
+            <height>170</height>
            </rect>
           </property>
           <attribute name="label">

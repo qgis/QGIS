@@ -544,33 +544,6 @@ class TestQgsExpression: public QObject
       QVariant vPerimeter = exp3.evaluate( &fPolygon );
       QCOMPARE( vPerimeter.toDouble(), 20. );
     }
-
-  void eval_special_columns()
-  {
-    QTest::addColumn<QString>( "string" );
-    QTest::addColumn<QVariant>( "result" );
-
-    QgsExpression::setSpecialColumn( "$var1", QVariant((int)42) );
-
-    QgsExpression exp( "$var1 + 1" );
-    QVariant v1 = exp.evaluate();
-    QCOMPARE( v1.toInt(), 43 );
-    
-    QgsExpression::setSpecialColumn( "$var1", QVariant((int)100) );
-    QVariant v2 = exp.evaluate();
-    QCOMPARE( v2.toInt(), 101 );
-
-    QgsExpression exp2( "_specialcol_('$var1')+1" );
-    QVariant v3 = exp2.evaluate();
-    QCOMPARE( v3.toInt(), 101 );
-
-    QgsExpression exp3( "_specialcol_('undefined')");
-    QVariant v4 = exp3.evaluate();
-    QCOMPARE( v4, QVariant() );
-
-    QgsExpression::unsetSpecialColumn( "$var1" );
-  }
-
 };
 
 QTEST_MAIN( TestQgsExpression )
