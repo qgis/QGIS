@@ -69,8 +69,9 @@ QString QgsSimpleFillSymbolLayerV2::layerType() const
 
 void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mColor.setAlphaF( context.alpha() );
-  mBrush = QBrush( mColor, mBrushStyle );
+  QColor fillColor = mColor;
+  fillColor.setAlphaF( context.alpha() * mColor.alphaF() );
+  mBrush = QBrush( fillColor, mBrushStyle );
 
   // scale brush content for printout
   double rasterScaleFactor = context.renderContext().rasterScaleFactor();
@@ -87,8 +88,10 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   // this would mean symbols with "no fill" look the same whether or not they are selected
   if ( selectFillStyle )
     mSelBrush.setStyle( mBrushStyle );
-  mBorderColor.setAlphaF( context.alpha() );
-  mPen = QPen( mBorderColor );
+
+  QColor borderColor = mBorderColor;
+  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF());
+  mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
