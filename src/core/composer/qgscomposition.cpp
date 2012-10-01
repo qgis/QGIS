@@ -67,14 +67,9 @@ struct QgsAtlasRendering::QgsAtlasRenderingImpl
 
 QgsAtlasRendering::QgsAtlasRendering( QgsComposition* composition )
 {
-  impl = new QgsAtlasRendering::QgsAtlasRenderingImpl();
+  impl = std::auto_ptr<QgsAtlasRendering::QgsAtlasRenderingImpl>( new QgsAtlasRendering::QgsAtlasRenderingImpl() );
   impl->composition = composition;
   impl->nFeatures = 0;
-}
-
-QgsAtlasRendering::~QgsAtlasRendering()
-{
-  delete impl;
 }
 
 void QgsAtlasRendering::begin( const QString& filenamePattern )
@@ -136,7 +131,7 @@ void QgsAtlasRendering::begin( const QString& filenamePattern )
   }
 
   // special columns for expressions
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )impl->nFeatures ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)impl->nFeatures ) );
 }
 
 void QgsAtlasRendering::prepareForFeature( size_t featureI )
@@ -145,24 +140,24 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
     return;
 
   QgsFeature* fit = &impl->features[featureI];
-
+  
   if ( impl->filenamePattern.size() > 0 )
   {
-    QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
+    QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
     QVariant filenameRes = impl->filenameExpr->evaluate( &*fit );
     if ( impl->filenameExpr->hasEvalError() )
     {
       throw std::runtime_error( "Filename eval error: " + impl->filenameExpr->evalErrorString().toStdString() );
     }
-
+    
     impl->currentFilename = filenameRes.toString();
   }
-
+  
   //
   // compute the new extent
   // keep the original aspect ratio
   // and apply a margin
-
+  
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
@@ -176,63 +171,63 @@ void QgsAtlasRendering::prepareForFeature( size_t featureI )
   double ya1 = geom_rect.yMinimum();
   double ya2 = geom_rect.yMaximum();
   QgsRectangle new_extent = geom_rect;
-
+  
   // restore the original extent
   // (successive calls to setNewExtent tend to deform the original rectangle)
   impl->composition->atlasMap()->setNewExtent( impl->origExtent );
-
+  
   if ( impl->composition->atlasMap()->atlasFixedScale() )
   {
     // only translate, keep the original scale (i.e. width x height)
-
-    double geom_center_x = ( xa1 + xa2 ) / 2.0;
-    double geom_center_y = ( ya1 + ya2 ) / 2.0;
+    
+    double geom_center_x = (xa1 + xa2) / 2.0;
+    double geom_center_y = (ya1 + ya2) / 2.0;
     double xx = geom_center_x - impl->origExtent.width() / 2.0;
     double yy = geom_center_y - impl->origExtent.height() / 2.0;
     new_extent = QgsRectangle( xx,
-                               yy,
-                               xx + impl->origExtent.width(),
-                               yy + impl->origExtent.height() );
+			       yy,
+			       xx + impl->origExtent.width(),
+			       yy + impl->origExtent.height() );
   }
   else
   {
     // auto scale
-
+    
     double geom_ratio = geom_rect.width() / geom_rect.height();
     double map_ratio = impl->origExtent.width() / impl->origExtent.height();
-
+    
     // geometry height is too big
     if ( geom_ratio < map_ratio )
     {
-      new_extent = QgsRectangle(( xa1 + xa2 + map_ratio * ( ya1 - ya2 ) ) / 2.0,
-                                ya1,
-                                xa1 + map_ratio * ( ya2 - ya1 ),
-                                ya2 );
+      new_extent = QgsRectangle( (xa1 + xa2 + map_ratio * (ya1 - ya2)) / 2.0,
+				 ya1,
+				 xa1 + map_ratio * (ya2 - ya1),
+				 ya2);
     }
     // geometry width is too big
     else if ( geom_ratio > map_ratio )
     {
       new_extent = QgsRectangle( xa1,
-                                 ( ya1 + ya2 + ( xa1 - xa2 ) / map_ratio ) / 2.0,
-                                 xa2,
-                                 ya1 + ( xa2 - xa1 ) / map_ratio );
+				 (ya1 + ya2 + (xa1 - xa2) / map_ratio) / 2.0,
+				 xa2,
+				 ya1 + (xa2 - xa1) / map_ratio);
     }
     if ( impl->composition->atlasMap()->atlasMargin() > 0.0 )
     {
       new_extent.scale( 1 + impl->composition->atlasMap()->atlasMargin() );
     }
   }
-
+  
   // evaluate label expressions
   QList<QgsComposerLabel*> labels;
   impl->composition->composerItems( labels );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
-
+  QgsExpression::setSpecialColumn( "$feature", QVariant( (int)featureI + 1 ) );
+  
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
-    ( *lit )->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer() );
+    (*lit)->setExpressionContext( fit, impl->composition->atlasMap()->atlasCoverageLayer() );
   }
-
+  
   // set the new extent (and render)
   impl->composition->atlasMap()->setNewExtent( new_extent );
 }
@@ -257,7 +252,7 @@ void QgsAtlasRendering::end()
   impl->composition->composerItems( labels );
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
-    ( *lit )->setExpressionContext( 0, 0 );
+    (*lit)->setExpressionContext( 0, 0 );
   }
 
   // restore the coverage visibility
@@ -274,9 +269,9 @@ void QgsAtlasRendering::end()
 }
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
-    mAtlasMap( 0 )
+  QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+  mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+  mAtlasMap( 0 )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -285,23 +280,23 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
   loadSettings();
 
   // declare special columns with a default value
-  QgsExpression::setSpecialColumn( "$page", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$page", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant((int)0) );
 }
 
 QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
-    mAtlasMap( 0 )
+  QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
+  mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+  mAtlasMap( 0 )
 {
   loadSettings();
 
-  QgsExpression::setSpecialColumn( "$page", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$feature", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$page", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$feature", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant((int)0) );
 }
 
 QgsComposition::~QgsComposition()
@@ -361,7 +356,7 @@ void QgsComposition::setNumPages( int pages )
   }
 
   // update the corresponding variable
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)numPages()) );
 
   emit nPagesChanged();
 }
@@ -399,12 +394,12 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 
 int QgsComposition::pageNumberAt( const QPointF& position ) const
 {
-  return position.y() / ( paperHeight() + spaceBetweenPages() );
+  return position.y() / (paperHeight() + spaceBetweenPages() );
 }
 
 int QgsComposition::itemPageNumber( const QgsComposerItem* item ) const
 {
-  return pageNumberAt( QPointF( item->transform().dx(), item->transform().dy() ) );
+  return pageNumberAt( QPointF( item->transform().dx(), item->transform().dy()) );
 }
 
 QList<QgsComposerItem*> QgsComposition::selectedComposerItems()
@@ -1720,7 +1715,7 @@ void QgsComposition::addPaperItem()
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
 
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )mPages.size() ) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)mPages.size()) );
 }
 
 void QgsComposition::removePaperItems()
@@ -1730,7 +1725,7 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
+  QgsExpression::setSpecialColumn( "$numpages", QVariant((int)0) );
 }
 
 void QgsComposition::deleteAndRemoveMultiFrames()
@@ -1761,7 +1756,7 @@ void QgsComposition::exportAsPDF( const QString& file )
 
 void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
 {
-//QgsComposition starts page numbering at 0
+ //QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
@@ -1864,11 +1859,11 @@ void QgsComposition::setAtlasMap( QgsComposerMap* map )
   mAtlasMap = map;
   if ( map != 0 )
   {
-    QObject::connect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
+    QObject::connect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* )), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
   }
   else
   {
-    QObject::disconnect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
+    QObject::disconnect( map, SIGNAL( atlasCoverageLayerChanged( QgsVectorLayer* )), this, SLOT( onAtlasCoverageChanged( QgsVectorLayer* ) ) );
   }
 }
 
@@ -1878,14 +1873,14 @@ void QgsComposition::onAtlasCoverageChanged( QgsVectorLayer* )
   if ( mAtlasMap != 0 && mAtlasMap->atlasCoverageLayer() != 0 )
   {
     QgsVectorDataProvider* provider = mAtlasMap->atlasCoverageLayer()->dataProvider();
-    QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )provider->featureCount() ) );
+    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)provider->featureCount() ) );
   }
   else
   {
-    QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )0 ) );
+    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)0 ) );
   }
-  //
-  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
+  // 
+  QgsExpression::setSpecialColumn( "$numpages", QVariant( (int)numPages() ) );
 }
 
 QString QgsComposition::encodeStringForXML( const QString& str )
