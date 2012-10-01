@@ -60,7 +60,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Klicka för att följa musen. Klicka kartbladet för att avsluta.</translation>
+        <translation>Klicka för att följa musen. Klicka kartbladet för att avsluta</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -768,7 +768,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassa utsräckning och upplösning till valt rasterlager</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -887,42 +887,47 @@ p, li { white-space: pre-wrap; }
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>identiskt referenskoordinatsystem valt
+
+Vill du verkligen fortsätta?</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Linjeskärning</translation>
+        <translation>Linjeskärning</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera linjelager med indata</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera linjelager för skärning</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera fält med unikt ID</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera unikt ID fält för skärning</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapade shapefil med punkter:
+%1
+
+Vill du lägga till det nya lagret till innehållsförteckningen?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget inlager valt</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj referenskoordinatsystem</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
@@ -934,94 +939,101 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera vektorlager för utdata</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specificera linjelager för sammanslagning</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="unfinished"></translation>
+        <translation>Felaktiga fältnamn</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen udata kommer att skapas.
+Följande fältnamn är längre än 10 tecken:
+%1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid borttagning av shape-fil</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte ta bort befintlig shape-fil
+%1</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd bara valda objekt</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj katalog med shape-filer att slå ihop</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga shape-filer hittade</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det finns inga shape-filler i den här katalogone. Välj en annan.</translation>
     </message>
     <message>
         <source>Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>Indata-filer</translation>
     </message>
     <message>
         <source>No output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen utdatafil</translation>
     </message>
     <message>
         <source>Please specify output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj utdatafil.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>Borttagningsfel</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte ta bort filen %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="unfinished"></translation>
+        <translation>Slår ihop</translation>
     </message>
     <message>
         <source>Simplify results</source>
-        <translation type="unfinished"></translation>
+        <translation>Förenkla resultat</translation>
     </message>
     <message>
         <source>There were %1 vertices in original dataset which
 were reduced to %2 vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Det fanns %1 noder i ursprungliga datamängden,
+vilket förenklades till %2 noder</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapade shapefil:
+%1
+
+Vill du lägga till det nya lagret till innehållsförteckningen?</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Genomsnittliga koordinater</translation>
     </message>
     <message>
         <source>Standard distance</source>
@@ -1856,7 +1868,7 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="45"/>
         <source>Add column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lägg till kolumn</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="52"/>
@@ -3884,7 +3896,12 @@ Please choose another field...</source>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skapade shapefil:
+%1
+
+Vill du lägga till det nya lagret till innehållsförteckningen? {1
+%2
+?}</translation>
     </message>
     <message>
         <source>Layer &apos;%1&apos; updated</source>
@@ -7811,6 +7828,7 @@ Error(%2): %3</source>
         <comment>number of duplicate nodes</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -8673,7 +8691,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="832"/>
         <source>Conditionals</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Villkor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="834"/>
@@ -10465,7 +10483,7 @@ Ignorera alltid dessa fel?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2921"/>
         <source>Cannot get WMS select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan inte få WMS-dialogen från datakällan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2942"/>
@@ -11904,6 +11922,7 @@ Användaredatabas-sökväg:	%8
         <comment>feature count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -11911,6 +11930,7 @@ Användaredatabas-sökväg:	%8
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -11929,6 +11949,7 @@ Användaredatabas-sökväg:	%8
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -13782,42 +13803,42 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="14"/>
         <source>Use existing frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd befintliga ramar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="15"/>
         <source>Extend to next page</source>
-        <translation type="unfinished"></translation>
+        <translation>Sträck ut till nästa sida</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="16"/>
         <source>Repeat on every page</source>
-        <translation type="unfinished"></translation>
+        <translation>Upprepa på varje sida</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="17"/>
         <source>Repeat until finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Upprepa tills klart</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished">Allmänna alternativ</translation>
+        <translation>Allmänna alternativ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="63"/>
         <source>Change html url</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra HTML-url</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="75"/>
         <source>Select HTML document</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj HTML-dokument</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="96"/>
         <source>Change resize mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj sätt att ändra storlek</translation>
     </message>
 </context>
 <context>
@@ -13825,27 +13846,27 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulär</translation>
+        <translation>Formulär</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="32"/>
         <source>HTML</source>
-        <translation type="unfinished">HTML</translation>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="38"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="48"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="55"/>
         <source>Resize mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt att ändra storlek</translation>
     </message>
 </context>
 <context>
@@ -13853,7 +13874,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/core/composer/qgscomposeritem.cpp" line="384"/>
         <source>Change item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändra elementets position</translation>
     </message>
 </context>
 <context>
@@ -13861,37 +13882,37 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="55"/>
         <source>Frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ramfärg ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="78"/>
         <source>Background color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Bakgrundsfärg ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="120"/>
         <source>Item opacity changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementets ogenomskinlighet ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="136"/>
         <source>Item outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementets kant ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="150"/>
         <source>Item frame toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementets ram togglad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="203"/>
         <source>Item position changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementets position ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="219"/>
         <source>Item id changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementets ID ändrad</translation>
     </message>
 </context>
 <context>
@@ -13904,37 +13925,37 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ramfärg...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bakgrundsfärg...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="36"/>
         <source>Opacity</source>
-        <translation type="unfinished">Ogenomskinlighet</translation>
+        <translation>Ogenomskinlighet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="68"/>
         <source>Outline width</source>
-        <translation type="unfinished">Kantbredd</translation>
+        <translation>Kantbredd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="84"/>
         <source>Position and size...</source>
-        <translation type="unfinished"></translation>
+        <translation>Position och storlek...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="91"/>
         <source>Show frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa ram</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="98"/>
         <source>Item ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Element-ID</translation>
     </message>
     <message>
         <source>Position...</source>
@@ -13946,23 +13967,23 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished">Allmänna alternativ</translation>
+        <translation>Allmänna alternativ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="44"/>
         <source>Label text changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikettext ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="66"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="96"/>
         <source>Label font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikettypsnitt ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="78"/>
         <source>Label margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikettmarginal ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="105"/>
@@ -13972,17 +13993,17 @@ Skall existerande klasser tas bort före klassificering?</translation>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="149"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="160"/>
         <source>Label alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikettjustering ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="171"/>
         <source>Label id changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikett-ID ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="181"/>
         <source>Label rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Etikettrotation ändrad</translation>
     </message>
 </context>
 <context>
@@ -13995,12 +14016,12 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished">Etikett</translation>
+        <translation>Etikett</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="163"/>
         <source>Rotation</source>
-        <translation type="unfinished">Rotation</translation>
+        <translation>Rotation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="189"/>
@@ -14010,57 +14031,57 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="51"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Typsnittsfärg...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="58"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Horistontell justering:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="67"/>
         <source>Left</source>
-        <translation type="unfinished">Vänster</translation>
+        <translation>Vänster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="74"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="81"/>
         <source>Right</source>
-        <translation type="unfinished">Höger</translation>
+        <translation>Höger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="104"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikal justering:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="110"/>
         <source>Top</source>
-        <translation type="unfinished">Uppe</translation>
+        <translation>Uppe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="124"/>
         <source>Bottom</source>
-        <translation type="unfinished">Nere</translation>
+        <translation>Nere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="147"/>
         <source>Margin </source>
-        <translation type="unfinished"></translation>
+        <translation>Marginal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="150"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
 </context>
 <context>
@@ -14122,7 +14143,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="161"/>
         <source>Legend group space</source>
-        <translation type="unfinished">Innehållsförteckningens</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="173"/>
@@ -14201,7 +14222,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="20"/>
         <source>Barscale Options</source>
-        <translation>Skalval</translation>
+        <translation>Skalstrecksval</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="59"/>
@@ -14211,32 +14232,32 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="185"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Titel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="74"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Titeltypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Group Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupptypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagertypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementtypsnitt...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolbredd </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -14247,52 +14268,52 @@ Skall existerande klasser tas bort före klassificering?</translation>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="155"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="198"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolhöjd </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation>Lagerseparation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolseparation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Ikonetikettseparation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Lådseparation </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="178"/>
         <source>Map</source>
-        <translation type="unfinished">Karta</translation>
+        <translation>Karta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="195"/>
         <source>Group Space </source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppseparation </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="205"/>
         <source>Wrap text on</source>
-        <translation type="unfinished"></translation>
+        <translation>Bryt text på</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="240"/>
         <source>Auto Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera automatiskt</translation>
     </message>
     <message>
         <source>X</source>
@@ -14305,17 +14326,17 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="356"/>
         <source>All</source>
-        <translation type="unfinished">Alla</translation>
+        <translation>Alla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="376"/>
         <source>Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till grupp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="343"/>
         <source>Update</source>
-        <translation type="unfinished">Uppdatera</translation>
+        <translation>Uppdatera</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="228"/>
@@ -14328,42 +14349,42 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="39"/>
         <source>&amp;Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Vi&amp;sa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="43"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Radera</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="47"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">&amp;Döp om</translation>
+        <translation>Byt &amp;namn</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="71"/>
         <source>Empty composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tom komponerare</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="141"/>
         <source>Remove composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort komponerare</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="141"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du verkligen ta bort den här kartkomponeraren &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="243"/>
         <source>Change title</source>
-        <translation type="unfinished"></translation>
+        <translation>Byt titel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="243"/>
         <source>Title</source>
-        <translation type="unfinished">Titel</translation>
+        <translation>Titel</translation>
     </message>
 </context>
 <context>
@@ -14371,12 +14392,12 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Komponeringshanterare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="36"/>
         <source>Add</source>
-        <translation type="unfinished">Lägg till</translation>
+        <translation>Lägg till</translation>
     </message>
 </context>
 <context>
@@ -14767,7 +14788,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="548"/>
         <source>Frame width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rambredd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="590"/>
@@ -15050,7 +15071,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="46"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mitten</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="47"/>
@@ -15218,7 +15239,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="218"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lådseparation </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="163"/>
@@ -16743,7 +16764,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="63"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verktygsrad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="90"/>
@@ -20983,7 +21004,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="169"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verktygsrad</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="182"/>
@@ -21439,7 +21460,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="103"/>
         <source>Symbol levels...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symbolnivåer...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="191"/>
@@ -21466,7 +21487,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ändra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
@@ -21487,7 +21508,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="87"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Färgramp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="100"/>
@@ -21697,6 +21718,7 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -24180,6 +24202,7 @@ at line %2 column %3</source>
         <comment>unhandled layers</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -25440,7 +25463,7 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="597"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mitten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="602"/>
@@ -34735,7 +34758,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="259"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="266"/>
@@ -34745,7 +34768,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="273"/>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="280"/>
@@ -37269,6 +37292,7 @@ p, li { white-space: pre-wrap; }
         <comment>number of filtered features</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -38042,6 +38066,7 @@ p, li { white-space: pre-wrap; }
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -38370,7 +38395,7 @@ Felet var:
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="199"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Färgramp</translation>
     </message>
 </context>
 <context>
@@ -38475,7 +38500,7 @@ Felet var:
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="66"/>
         <source>Symbol levels...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symbolnivåer...</translation>
     </message>
 </context>
 <context>
@@ -38950,6 +38975,7 @@ SQL: %1</translation>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -40421,7 +40447,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="231"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Färgramp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="315"/>
@@ -44374,6 +44400,7 @@ Response was:
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -44382,6 +44409,7 @@ Response was:
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -44392,6 +44420,7 @@ Response was:
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -44400,6 +44429,7 @@ Response was:
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
