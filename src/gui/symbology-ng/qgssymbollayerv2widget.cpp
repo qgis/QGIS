@@ -110,9 +110,9 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel);
 #endif
   if ( !color.isValid() )
     return;
@@ -259,9 +259,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this );
+  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !borderColor.isValid() )
     return;
@@ -276,9 +276,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !color.isValid() )
     return;
@@ -357,9 +357,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setColor()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel);
 #endif
   if ( !color.isValid() )
     return;
@@ -374,9 +374,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel);
 #else
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this );
+  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel);
 #endif
   if ( !color.isValid() )
     return;

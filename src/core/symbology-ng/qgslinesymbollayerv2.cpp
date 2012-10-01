@@ -76,7 +76,7 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   QColor penColor = mColor;
-  penColor.setAlphaF( context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   mPen.setColor( penColor );
   double scaledWidth = context.outputLineWidth( mWidth );
   mPen.setWidthF( scaledWidth );
