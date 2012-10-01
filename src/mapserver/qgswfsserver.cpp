@@ -442,10 +442,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     if ( bboxOk )
       searchRect.set( minx, miny, maxx, maxy );
     else
-      searchRect.set( searchRect.xMinimum() - 0.000001
-                      , searchRect.yMinimum() - 0.000001
-                      , searchRect.xMaximum() + 0.000001
-                      , searchRect.yMaximum() + 0.000001 );
+      searchRect.set( searchRect.xMinimum()-0.000001
+                    , searchRect.yMinimum()-0.000001
+                    , searchRect.xMaximum()+0.000001
+                    , searchRect.yMaximum()+0.000001 );
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
     startGetFeature( request, format, layerCrs, &searchRect );
@@ -516,7 +516,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   if ( format == "GeoJSON" )
   {
     fcString = "{\"type\": \"FeatureCollection\",\n";
-    fcString += " \"bbox\": [ " + QString::number( rect->xMinimum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( rect->yMinimum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( rect->xMaximum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( rect->yMaximum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + "],\n";
+    fcString += " \"bbox\": [ " + QString::number( rect->xMinimum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( rect->yMinimum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( rect->xMaximum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( rect->yMaximum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + "],\n";
     fcString += " \"features\": [\n";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
@@ -696,7 +696,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   {
     QgsRectangle box = geom->boundingBox();
 
-    fStr += " \"bbox\": [ " + QString::number( box.xMinimum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( box.yMinimum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( box.xMaximum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + ", " + QString::number( box.yMaximum(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) ) + "],\n";
+    fStr += " \"bbox\": [ " + QString::number( box.xMinimum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( box.yMinimum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( box.xMaximum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + ", " + QString::number( box.yMaximum(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") ) + "],\n";
 
     fStr += "  \"geometry\": ";
     fStr += geom->exportToGeoJSON();
@@ -1025,9 +1025,9 @@ QDomElement QgsWFSServer::createCoordinateElem( const QVector<QgsPoint> points, 
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+    coordString += QString::number( pointIt->x(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
     coordString += ",";
-    coordString += QString::number( pointIt->y(), 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+    coordString += QString::number( pointIt->y(), 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
   }
 
   QDomText coordText = doc.createTextNode( coordString );

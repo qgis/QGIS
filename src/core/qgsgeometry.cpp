@@ -3946,10 +3946,10 @@ QString QgsGeometry::exportToWkt()
     {
       mWkt += "POINT(";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+      mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
       mWkt += " ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+      mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
       mWkt += ")";
       return mWkt;
     }
@@ -3975,11 +3975,11 @@ QString QgsGeometry::exportToWkt()
           mWkt += ", ";
         }
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         mWkt += " ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4030,11 +4030,11 @@ QString QgsGeometry::exportToWkt()
             mWkt += ",";
           }
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           mWkt += " ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4068,11 +4068,11 @@ QString QgsGeometry::exportToWkt()
           mWkt += ", ";
         }
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         mWkt += " ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4112,11 +4112,11 @@ QString QgsGeometry::exportToWkt()
             mWkt += ", ";
           }
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           mWkt += " ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4168,11 +4168,11 @@ QString QgsGeometry::exportToWkt()
               mWkt += ",";
             }
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+            mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
             ptr += sizeof( double );
             mWkt += " ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+            mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
             ptr += sizeof( double );
             if ( hasZValue )
             {
@@ -4226,10 +4226,10 @@ QString QgsGeometry::exportToGeoJSON()
     {
       mWkt += "{ \"type\": \"Point\", \"coordinates\": [";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+      mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
       mWkt += ", ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+      mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
       mWkt += "] }";
       return mWkt;
     }
@@ -4256,11 +4256,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4313,11 +4313,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           mWkt += ", ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4353,11 +4353,11 @@ QString QgsGeometry::exportToGeoJSON()
         }
         mWkt += "[";
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+        mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4399,11 +4399,11 @@ QString QgsGeometry::exportToGeoJSON()
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           mWkt += ", ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+          mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4457,11 +4457,11 @@ QString QgsGeometry::exportToGeoJSON()
             }
             mWkt += "[";
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+            mWkt += QString::number( *x, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
             ptr += sizeof( double );
             mWkt += ", ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp( "[0]{1,5}$" ) );
+            mWkt += QString::number( *y, 'f', 6 ).remove( QRegExp("[0]{1,5}$") );
             ptr += sizeof( double );
             if ( hasZValue )
             {

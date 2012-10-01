@@ -102,7 +102,7 @@ void QgsComposerLabelWidget::on_mFontColorButton_clicked()
 
 void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
 {
-  if ( !mComposerLabel )
+  if ( !mComposerLabel)
   {
     return;
   }
