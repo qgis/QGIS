@@ -65,6 +65,11 @@
        </item>
        <item>
         <property name="text">
+         <string>cubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>average_mp</string>
         </property>
        </item>
