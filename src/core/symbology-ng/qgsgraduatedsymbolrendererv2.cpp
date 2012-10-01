@@ -553,8 +553,8 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     divisions = k;
   }
   double minimumBreak = start * unit;
-  double maximumBreak = end * unit;
-  int count = ceil( maximumBreak - minimumBreak ) / unit;
+  //double maximumBreak = end * unit;
+  int count = end - start;
 
   for ( int i = 1; i < count + 1; i++ )
   {
