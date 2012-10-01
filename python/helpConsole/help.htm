@@ -3,25 +3,9 @@
 <head>
 	<title>Help Python Console</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="js/jquery.i18n.min.js"></script>
-<script  type="text/javascript">
-	$(document).ready(function(){
-		var parameter =  window.location.search.replace( "?", "" );
-		var locale = parameter.split("=");
-		var lang = locale[1]
-		var js = document.createElement("script");
-		js.type = "text/javascript";
-		js.src = "i18n/" + lang + ".properties";
-		document.body.appendChild(js);
-		//alert(js.src);
-
-		var encode = document.createElement("script");
-		encode.type = "text/javascript";
-		encode.src = "js/encoding.js";
-		document.body.appendChild(encode);
-	});
-</script>
+	<!--<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.i18n.min.js"></script>-->
+	
 	<style>
 		body{
     		font-family: verdana,arial,helvetica,sans-serif;
@@ -147,4 +131,28 @@
 		<span id="thanksText">Thanks to Larry Shaffer who provided the API files.</span>
 	</p>
 </body>
+<script type="text/javascript">
+	var parameter =  window.location.search.replace( "?", "" );
+	var langPathParameters =  parameter.split("&");
+	var locale = langPathParameters[0].split("=");
+	var jQueryPath = langPathParameters[1].split("=");
+	var pathJs = jQueryPath[1];
+	var lang = locale[1];
+	var jquery = document.createElement("script");
+	jquery.type = "text/javascript";
+	jquery.src = pathJs + "/resources/jQuery/jquery-1.8.2.min.js";
+	document.body.appendChild(jquery);
+	var jqueryi18n = document.createElement("script");
+	jqueryi18n.type = "text/javascript";
+	jqueryi18n.src = pathJs + "/resources/jQuery/jquery.i18n.min.js";
+	document.body.appendChild(jqueryi18n);
+	var properties = document.createElement("script");
+	properties.type = "text/javascript";
+	properties.src = "i18n/" + lang + ".properties";
+	document.body.appendChild(properties);
+	var encode = document.createElement("script");
+	encode.type = "text/javascript";
+	encode.src = "js/encoding.js";
+	document.body.appendChild(encode);
+</script>
 </html>
