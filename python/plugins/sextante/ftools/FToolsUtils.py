@@ -7,8 +7,8 @@ def createSpatialIndex(provider):
     idx = QgsSpatialIndex()
     provider.rewind()
     provider.select()
-    while provider.nextFeature( ft ):
-        idx.insertFeature( ft )
+    while provider.nextFeature(ft):
+        idx.insertFeature(ft)
     return idx
 
 def createUniqueFieldName(fieldName, fieldList):
@@ -37,7 +37,7 @@ def createUniqueFieldName(fieldName, fieldList):
 
     return shortName
 
-def findOrCreateField(layer, fieldList, fieldName, fieldLen = 24, fieldPrec = 15):
+def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
     if idx == -1:
         idx = len(fieldList)
