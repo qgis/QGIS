@@ -205,10 +205,25 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
 
-  //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
   if ( mConfigParser && fullProjectInformation )
   {
+    //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
+
+    //WFS layers
+    QStringList wfsLayers = mConfigParser->wfsLayerNames();
+    if ( wfsLayers.size() > 0 )
+    {
+      QDomElement wfsLayersElem = doc.createElement( "WFSLayers" );
+      QStringList::const_iterator wfsIt = wfsLayers.constBegin();
+      for ( ; wfsIt != wfsLayers.constEnd(); ++wfsIt )
+      {
+        QDomElement wfsLayerElem = doc.createElement( "WFSLayer" );
+        wfsLayerElem.setAttribute( "name", *wfsIt );
+        wfsLayersElem.appendChild( wfsLayerElem );
+      }
+      capabilityElement.appendChild( wfsLayersElem );
+    }
   }
 
   //add the xml content for the individual layers/styles

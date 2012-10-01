@@ -59,6 +59,9 @@ class QgsConfigParser
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
 
+    /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
+    virtual QStringList wfsLayerNames() const { return QStringList(); }
+
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
     { Q_UNUSED( parameterMap ); }

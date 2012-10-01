@@ -110,6 +110,9 @@ class QgsProjectParser: public QgsConfigParser
 
     QString serviceUrl() const;
 
+    /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
+    QStringList wfsLayerNames() const;
+
   private:
 
     //forbidden
@@ -179,6 +182,8 @@ class QgsProjectParser: public QgsConfigParser
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+    /**Returns project layers by id*/
+    void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
     static QString editTypeString( QgsVectorLayer::EditType type );
 };

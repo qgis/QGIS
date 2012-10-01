@@ -101,25 +101,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   }
 
   QMap<QString, QgsMapLayer *> layerMap;
-
-  foreach ( const QDomElement &elem, mProjectLayerElements )
-  {
-    QgsMapLayer *layer = createLayerFromElement( elem );
-    if ( layer )
-    {
-      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-      layerMap.insert( layer->id(), layer );
-    }
-#if QGSMSDEBUG
-    else
-    {
-      QString buf;
-      QTextStream s( &buf );
-      elem.save( s, 0 );
-      QgsDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
-    }
-#endif
-  }
+  projectLayerMap( layerMap );
 
   //According to the WMS spec, there can be only one toplevel layer.
   //So we create an artificial one here to be in accordance with the schema
@@ -1554,6 +1536,32 @@ QString QgsProjectParser::serviceUrl() const
   return url;
 }
 
+QStringList QgsProjectParser::wfsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wfsIdList = wfsLayers();
+  QStringList::const_iterator wfsIdIt = wfsIdList.constBegin();
+  for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wfsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )
@@ -1802,4 +1810,18 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
   QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
   layerDrawingOrderElem.appendChild( drawingOrderText );
   parentElem.appendChild( layerDrawingOrderElem );
+}
+
+void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
+{
+  layerMap.clear();
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QgsMapLayer *layer = createLayerFromElement( elem );
+    if ( layer )
+    {
+      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+      layerMap.insert( layer->id(), layer );
+    }
+  }
 }
