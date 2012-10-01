@@ -902,8 +902,8 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 {
   char *oldlocale = setlocale( LC_NUMERIC, NULL );
   /* the next setlocale() invalides the return of previous setlocale() */
-  if (oldlocale != NULL)
-    oldlocale = strdup(oldlocale);
+  if ( oldlocale )
+    oldlocale = strdup( oldlocale );
 
   setlocale( LC_NUMERIC, "C" );
   OSRDestroySpatialReference( mCRS );
@@ -919,7 +919,7 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 #endif
 
   setlocale( LC_NUMERIC, oldlocale );
-  free(oldlocale);
+  free( oldlocale );
 }
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool theGeoFlag )
 {

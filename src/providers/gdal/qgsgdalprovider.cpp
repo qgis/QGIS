@@ -1377,7 +1377,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   }
 
   // are we using Erdas Imagine external overviews?
-  char* myConfigUseRRD = strdup(CPLGetConfigOption( "USE_RRD", "NO" ));
+  char* myConfigUseRRD = strdup( CPLGetConfigOption( "USE_RRD", "NO" ) );
   if ( theFormat == PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
@@ -1471,7 +1471,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       //emit drawingProgress( 0, 0 );
       // restore former USE_RRD config (Erdas)
       CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-      free(myConfigUseRRD);
+      free( myConfigUseRRD );
       return "FAILED_NOT_SUPPORTED";
     }
     else
@@ -1488,7 +1488,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   // restore former USE_RRD config (Erdas)
   CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-  free(myConfigUseRRD);
+  free( myConfigUseRRD );
 
   QgsDebugMsg( "Pyramid overviews built" );
 

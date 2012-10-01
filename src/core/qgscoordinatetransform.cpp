@@ -319,8 +319,8 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
 }
 
 void QgsCoordinateTransform::transformInPlace(
-    QVector<double>& x, QVector<double>& y, QVector<double>& z,
-    TransformDirection direction ) const
+  QVector<double>& x, QVector<double>& y, QVector<double>& z,
+  TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return;
@@ -373,8 +373,8 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
 }
 
 void QgsCoordinateTransform::transformInPlace(
-    QVector<float>& x, QVector<float>& y, QVector<float>& z,
-    TransformDirection direction ) const
+  QVector<float>& x, QVector<float>& y, QVector<float>& z,
+  TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return;
