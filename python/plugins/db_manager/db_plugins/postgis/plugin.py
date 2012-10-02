@@ -302,16 +302,14 @@ class PGTableField(TableField):
 		self.num, self.name, self.dataType, self.charMaxLen, self.modifier, self.notNull, self.hasDefault, self.default, typeStr = row
 		self.primaryKey = False
 
-		# convert the modifier to string (e.g. "precision,scale")
-		if self.modifier != None and self.modifier != -1:
-			trimmedTypeStr = QString(typeStr).trimmed()
-			if trimmedTypeStr.startsWith(self.dataType):
-				regex = QRegExp( "%s\s*\((.+)\)$" % QRegExp.escape(self.dataType) )
-				startpos = regex.indexIn( trimmedTypeStr )
-				if startpos >= 0:
-					self.modifier = regex.cap(1).trimmed()
-				else:
-					self.modifier = None
+		# get modifier (e.g. "precision,scale") from formatted type string
+		trimmedTypeStr = QString(typeStr).trimmed()
+		regex = QRegExp( "\((.+)\)$" )
+		startpos = regex.indexIn( trimmedTypeStr )
+		if startpos >= 0:
+			self.modifier = regex.cap(1).trimmed()
+		else:
+			self.modifier = None
 
 		# find out whether fields are part of primary key
 		for con in self.table().constraints():
