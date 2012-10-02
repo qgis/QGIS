@@ -259,8 +259,9 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     mFixBox = true;
     QgsDebugMsg( "Test response size is smaller by pixel, using mFixBox" );
   }
-  // Geoserver is sometimes giving rotated raster (probably for geographic CRS,
-  // switched axis?)
+  // Geoserver is giving rotated raster for geographic CRS - switched axis,
+  // Geoserver developers argue that changed axis order applies also to
+  // returned raster, that is exagerated IMO but we have to handle that.
   if (( responseWidth == requestHeight && responseHeight == requestWidth ) ||
       ( responseWidth == requestHeight - 1 && responseHeight == requestWidth - 1 ) )
   {
@@ -546,33 +547,47 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
   if ( mCachedGdalDataset )
   {
-    int width = GDALGetRasterXSize( mCachedGdalDataset );
-    int height = GDALGetRasterYSize( mCachedGdalDataset );
-
     // It may happen (Geoserver) that if requested BBOX is larger than coverage
     // extent, the returned data cover intersection of requested BBOX and coverage
     // extent scaled to requested WIDTH/HEIGHT => check extent
+    // Unfortunately if received raster does not hac CRS, the extent is raster size
+    // and in that case it cannot be used to verify extent
+    QgsCoordinateReferenceSystem cacheCrs;
+    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset ) ) &&
+         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset ) ) )
+    {
+      QgsDebugMsg( "Cached does not have CRS" );
+    }
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + " " + cacheCrs.description() );
+
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
-    // using doubleNear is too precise, example accetable difference:
-    // 179.9999999306699863 x 179.9999999306700431
-    if ( !doubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
-         !doubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
-         !doubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
-         !doubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
+    // TODO: check also rotated
+    if ( cacheCrs.isValid() && !mFixRotate )
     {
-      QgsDebugMsg( "cacheExtent and viewExtent differ" );
-      QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
-      // We are doing all possible to avoid this situation,
-      // If it happens, it would be possible to rescale the portion we get
-      // to only part of the data block, but it is better to left it
-      // blank, so that the problem may be discovered in its origin.
-      return;
+      // using doubleNear is too precise, example accetable difference:
+      // 179.9999999306699863 x 179.9999999306700431
+      if ( !doubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
+           !doubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
+           !doubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
+           !doubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
+      {
+        QgsDebugMsg( "cacheExtent and viewExtent differ" );
+        QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
+        // We are doing all possible to avoid this situation,
+        // If it happens, it would be possible to rescale the portion we get
+        // to only part of the data block, but it is better to left it
+        // blank, so that the problem may be discovered in its origin.
+        return;
+      }
     }
 
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
+    int width = GDALGetRasterXSize( mCachedGdalDataset );
+    int height = GDALGetRasterYSize( mCachedGdalDataset );
     QgsDebugMsg( QString( "cached data width = %1 height = %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ) );
+
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
     // TODO: check type? , check band count?
     if ( mFixRotate && width == pixelHeight && height == pixelWidth )
     {
@@ -742,12 +757,16 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     // GridOffsets WCS 1.1:
     // GridType urn:ogc:def:method:WCS:1.1:2dSimpleGrid : 2 values
     // GridType urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs : 4 values, the center two of these offsets will be zero when the GridCRS is not rotated or skewed in the GridBaseCRS.
-    // The second offset must be negative because origin is in upper corner
+    // The yOff must be negative because origin is in upper corner
     // WCS 1.1.2: BaseX = origin(1) + offsets(1) * GridX
     //            BaseY = origin(2) + offsets(2) * GridY
     // otherwise GeoServer gives mirrored result, however
     // Mapserver works OK with both positive and negative
-    double yOff = mFixRotate ? yRes : -yRes;
+    // OTOH, the yOff offset must not be negative with mFixRotate and Geoserver 2.1-SNAPSHOT
+    // but it must be negative with GeoServer 2.1.3 and mFixRotate. I am not sure
+    // at this moment 100% -> disabling positive yOff for now - TODO: try other servers
+    //double yOff = mFixRotate ? yRes : -yRes; // this was working with some servers I think
+    double yOff = -yRes;
     QString gridOffsets = QString( changeXY ? "%2,%1" : "%1,%2" )
                           //setQueryItem( url, "GRIDTYPE", "urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs" );
                           //QString gridOffsets = QString( changeXY ? "%2,0,0,%1" : "%1,0,0,%2" )
@@ -1426,13 +1445,27 @@ bool QgsWcsProvider::calculateExtent()
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
-    if ( !doubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
-         !doubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
-         !doubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
-         !doubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
+    QgsCoordinateReferenceSystem cacheCrs;
+    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset ) ) &&
+         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset ) ) )
     {
-      QgsDebugMsg( "cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent" );
-      mCoverageExtent = cacheExtent;
+      QgsDebugMsg( "Cached does not have CRS" );
+    }
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + " " + cacheCrs.description() );
+
+    // We can only verify extent if CRS is set
+    // If dataset comes rotated, GDAL probably cuts latitude extend, disable
+    // extent check for rotated, TODO: verify
+    if ( cacheCrs.isValid() && !mFixRotate )
+    {
+      if ( !doubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
+           !doubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
+           !doubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
+           !doubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
+      {
+        QgsDebugMsg( "cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent" );
+        mCoverageExtent = cacheExtent;
+      }
     }
   }
   else

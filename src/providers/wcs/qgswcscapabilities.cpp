@@ -919,8 +919,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     }
     else
     {
-      QgsRectangle box( low[0], low[1], high[0], high[1] ) ;
+      QgsRectangle box;
+      QgsCoordinateReferenceSystem crs;
+      if ( crs.createFromOgcWmsCrs( authid ) && crs.axisInverted() )
+      {
+        box = QgsRectangle( low[1], low[0], high[1], high[0] );
+      }
+      else
+      {
+        box = QgsRectangle( low[0], low[1], high[0], high[1] );
+      }
       coverage->boundingBoxes.insert( authid, box );
+      QgsDebugMsg( "crs: " + crs.authid() + " " + crs.description() + QString( " axisInverted = %1" ).arg( crs.axisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
