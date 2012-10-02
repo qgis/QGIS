@@ -11920,24 +11920,24 @@ Användaredatabas-sökväg:	%8
         <location filename="../src/app/qgsattributetabledialog.cpp" line="80"/>
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Attributtabell - %1 (%n objekt)</numerusform>
+            <numerusform>Attributtabell - %1 (%n objekt)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledialog.cpp" line="156"/>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Attributtabell - %1 :: %n / %2 objekt valda</numerusform>
+            <numerusform>Attributtabell - %1 :: %n / %2 objekt valda</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="543"/>
         <source>Parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolkningsfel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="549"/>
@@ -11948,77 +11948,78 @@ Användaredatabas-sökväg:	%8
         <location filename="../src/app/qgsattributetabledialog.cpp" line="603"/>
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Attributtabell - %1 (%n matchande objekt)</numerusform>
+            <numerusform>Attributtabell - %1 (%n matchande objekt)</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="607"/>
         <source>Attribute table - %1 (No matching features)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Attributtabell - %1 (inga matchande objekt)</translatorcomment>
+        <translation>Attributtabell - %1 (inga matchande objekt)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="699"/>
         <source>Attribute added</source>
-        <translation type="unfinished"></translation>
+        <translation>La till attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="706"/>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="748"/>
         <source>Attribute Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributfel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="706"/>
         <source>The attribute could not be added to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributet kunde inte läggas till lagret</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="731"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished">Tog bort attribut</translation>
+        <translation>Tog bort attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="748"/>
         <source>The attribute(s) could not be deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributet/-en kunde inte tas bort</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="779"/>
         <source>Geometryless feature added</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt utan geometri lades till</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="793"/>
         <source>Run action</source>
-        <translation type="unfinished">Kör kommando</translation>
+        <translation>Kör kommando</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="808"/>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="809"/>
         <source>Open form</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna formulär</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="816"/>
         <source>Loading feature attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Läser in objektattribut...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="816"/>
         <source>Abort</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="817"/>
         <source>Attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributtabell</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="823"/>
         <source>%1 features loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 objekt lästes in.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="14"/>
@@ -12028,128 +12029,128 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="38"/>
         <source>Show selected only</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa endast valda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="45"/>
         <source>Search selected only</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök endast valda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="52"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Skilj på gemener/VERSALER</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="97"/>
         <source>?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="104"/>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="121"/>
         <source>Unselect all (Ctrl+U)</source>
-        <translation type="unfinished"></translation>
+        <translation>Avmarkera alla (Ctrl+U)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="137"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="144"/>
         <source>Move selection to top (Ctrl+T)</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytta markerat överst (Ctrl+T)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="167"/>
         <source>Invert selection (Ctrl+R)</source>
-        <translation type="unfinished"></translation>
+        <translation>Invertera markerat (Ctrl+R)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="216"/>
         <source>Zoom map to the selected rows (Ctrl+J)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zooma kartan till valda rader (Ctrl+J)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="242"/>
         <source>Pan map to the selected rows (Ctrl+P)</source>
-        <translation type="unfinished"></translation>
+        <translation>Panorera kartan till valda rader (Ctrl+P)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="261"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="268"/>
         <source>Toggle editing mode (Ctrl+E)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggla redigeringsläge (Ctrl+E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="287"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="316"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="297"/>
         <source>Save Edits (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara redigeringar (Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="326"/>
         <source>Delete selected features (Ctrl+D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort valda objekt (Ctrl+D)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="342"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished">Ctrl+D</translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="349"/>
         <source>New column (Ctrl+W)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ny kolumn (Ctrl+W)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="365"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="372"/>
         <source>Delete column (Ctrl+L)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort kolumn (Ctrl+L)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="388"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="398"/>
         <source>Add feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till objekt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="401"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="408"/>
         <source>Open field calculator (Ctrl+I)</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna fältkalkylator (Ctrl+I)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="424"/>
         <source>Ctrl+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="160"/>
@@ -12209,7 +12210,7 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="451"/>
         <source>Looks for the given value in the given attribute column</source>
-        <translation type="unfinished"></translation>
+        <translation>Söker efter värdet i attributkolumnen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="454"/>
@@ -12223,7 +12224,7 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="75"/>
         <source>Opens the search query builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna sökfrågebyggaren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="78"/>
@@ -12253,7 +12254,7 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="403"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>objekt-id</translation>
     </message>
 </context>
 <context>
@@ -12268,50 +12269,51 @@ Användaredatabas-sökväg:	%8
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="139"/>
         <source>Select a file</source>
-        <translation type="unfinished">Välj en fil</translation>
+        <translation>Välj fil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="148"/>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="149"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte öppna fil %1
+felet var: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="321"/>
         <source>Dial</source>
-        <translation type="unfinished"></translation>
+        <translation>Snurra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="335"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="356"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuvarand minimum för det här värdet är %1 och nuvarande maximu är %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="361"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributet är varken heltal eller reellt tal, intervall är ej användbart.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="497"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppräkning är ej användbart för det här attributet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="645"/>
         <source>No filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget filter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="631"/>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributredigeringsdialog</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
@@ -12356,47 +12358,47 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="61"/>
         <source>Hidden</source>
-        <translation type="unfinished">Gömd</translation>
+        <translation>Gömd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="66"/>
         <source>Checkbox</source>
-        <translation type="unfinished">Kryssruta</translation>
+        <translation>Kryssruta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Text edit</source>
-        <translation type="unfinished">Textredigering</translation>
+        <translation>Textredigering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
         <source>Calendar</source>
-        <translation type="unfinished">Kalender</translation>
+        <translation>Kalender</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="81"/>
         <source>Value relation</source>
-        <translation type="unfinished">Värderelation</translation>
+        <translation>Värderelation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="86"/>
         <source>UUID generator</source>
-        <translation type="unfinished">UUID-generator</translation>
+        <translation>UUID-generator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="107"/>
         <source>Simple edit box. This is the default editation widget.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelt redigeringsruta. Detta är standard redigeringsfunktion.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="131"/>
         <source>Displays combo box containing values of attribute used for classification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Visar meny med attributevärden som används för klassificering.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="160"/>
         <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gör det möjligt att ställa in numeriska värden från ett intervall. Redigeringsfunktionen kan vara antingen ett dragreglage eller en snurra.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="175"/>
@@ -12411,100 +12413,100 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="189"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Steg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="585"/>
         <source>A calendar widget to enter a date.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalenderfunktion för att ange ett datum.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="609"/>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="622"/>
         <source>Key column</source>
-        <translation type="unfinished">Nyckelkolumn</translation>
+        <translation>Nyckelkolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="691"/>
         <source>Value column</source>
-        <translation type="unfinished"></translation>
+        <translation>Värdekolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="651"/>
         <source>Select layer, key column and value column</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj lager, nyckelkolum och värdekolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="661"/>
         <source>Allow null value</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillåt noll-värde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="671"/>
         <source>Order by value</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortera efter värde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="681"/>
         <source>Allow multiple selections</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillåt flera markeringar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="701"/>
         <source>Filter column</source>
-        <translation type="unfinished"></translation>
+        <translation>Filterkolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="711"/>
         <source>Filter value</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtervärde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="728"/>
         <source>Read-only field that generates a UUID if empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrivskyddat fält som skapar ett UUID om det lämnas tomt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="321"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="344"/>
         <source>Slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Dragreglage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="295"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="321"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="344"/>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigerbart</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="267"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalt minimum/maximum = 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="285"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anävndaren kan välja ett av värden som redan används i attributet. Om redigerbart så visas en linjeredigeringsfunktion som kan ge förslag, annars används en meny.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="321"/>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Förenklar val av filer genom att lägga till en filväljare.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="348"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meny med förutbestämda värden. Värdet sparas i attributet, beskrivningen syns i menyn.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="358"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in data från lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="379"/>
@@ -12519,17 +12521,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="392"/>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort valda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="412"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in data från CVS-fil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="423"/>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meny med värden som kan användas för kolumnens typ. Måste stödjas av datakällan.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="457"/>
@@ -12539,22 +12541,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="484"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett gömt attribut är osynligt, användaren kan inte se dess värde.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="522"/>
         <source>Representation for checked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Representerar markerat tillstånd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="529"/>
         <source>Representation for unchecked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Representerar avmarkerat tillstånd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="558"/>
         <source>A text edit field that accepts multiple lines will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ett redigeringsfält som tillåter flera rader kommer att användas.</translation>
     </message>
 </context>
 <context>
@@ -13022,12 +13024,12 @@ Databas: %2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="302"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Finns inga tillgängliga färgramper. Du kan lägga till dem i Stilhanteraren.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="304"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vald färgramp är inte tillgänglig.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="318"/>
@@ -14143,78 +14145,78 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="161"/>
         <source>Legend group space</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens gruppseparation</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="173"/>
         <source>Legend layer space</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens lagerseparation</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="185"/>
         <source>Legend symbol space</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens symbolseparation</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="197"/>
         <source>Legend icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens ikonetikettseparation</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="218"/>
         <source>Title font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Titeltypsnitt ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="240"/>
         <source>Legend group font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens grupptypsnitt ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="262"/>
         <source>Legend layer font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens lagertypsnitt ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="284"/>
         <source>Legend item font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens elementtypsnitt ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="298"/>
         <source>Legend box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens lådseparation</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="461"/>
         <source>Legend map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens karta ändrad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="572"/>
         <source>Legend item edited</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningens element redigerad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="605"/>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="635"/>
         <source>Legend updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningen uppdaterad</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="624"/>
         <source>Legend group added</source>
-        <translation type="unfinished"></translation>
+        <translation>Innehållsförteckningsgrupp tillagd</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="698"/>
         <source>Map %1</source>
-        <translation type="unfinished">Karta %1</translation>
+        <translation>Karta %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="700"/>
         <source>None</source>
-        <translation type="unfinished">Ingen</translation>
+        <translation>Ingen</translation>
     </message>
 </context>
 <context>
@@ -21144,7 +21146,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="333"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+L</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="338"/>
@@ -21472,12 +21474,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="191"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finns inga tillgängliga färgramper. Du kan lägga till dem i Stilhanteraren.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="193"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vald färgramp är inte tillgänglig.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="216"/>
@@ -26981,7 +26983,7 @@ Y:</translation>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="304"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">objekt-id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="304"/>
