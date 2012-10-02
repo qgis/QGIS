@@ -687,6 +687,12 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     setQueryItem( url, "COVERAGE", mIdentifier );
     if ( !mTime.isEmpty() )
     {
+      // It seems that Mmapserver (6.0.3) WCS 1.1 completely ignores
+      // TemporalDomain. Some code (copy-pasted from 1.0) is commented in
+      // msWCSDescribeCoverage_CoverageDescription11() and GetCoverage
+      // TimeSequence param is not supported at all. If a coverage is defined
+      // with timeposition in mapfile, the result of GetCoverage is empty
+      // raster (all values 0).
       setQueryItem( url, "TIME", mTime );
     }
     setQueryItem( url, "BBOX", bbox );

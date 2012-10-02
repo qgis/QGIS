@@ -1448,11 +1448,6 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsGdalProgress myProg;
     myProg.type = ProgressPyramids;
     myProg.provider = this;
-    // Observed problem: if a *.rrd file exists and GDALBuildOverviews() is called,
-    // the *.rrd is deleted and no overviews are created, if GDALBuildOverviews()
-    // is called next time, it crashes somewhere in GDAL:
-    // https://trac.osgeo.org/gdal/ticket/4831
-    // Crash can be avoided if dataset is reopened
     myError = GDALBuildOverviews( mGdalBaseDataset, theMethod,
                                   myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
                                   0, NULL,
@@ -1492,8 +1487,16 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   QgsDebugMsg( "Pyramid overviews built" );
 
-  // For now always reopen to avoid crash described above
-  if ( true || theFormat == PyramidsInternal )
+  // Observed problem: if a *.rrd file exists and GDALBuildOverviews() is called,
+  // the *.rrd is deleted and no overviews are created, if GDALBuildOverviews()
+  // is called next time, it crashes somewhere in GDAL:
+  // https://trac.osgeo.org/gdal/ticket/4831
+  // Crash can be avoided if dataset is reopened, fixed in GDAL 1.9.2
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1920
+  if ( theFormat == PyramidsInternal )
+#else
+  if ( true ) // GDAL #4831 fix
+#endif
   {
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
