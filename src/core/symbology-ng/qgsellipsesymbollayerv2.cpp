@@ -274,7 +274,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     return NULL;
 
   QString name = "circle";
-  QColor color, borderColor;
+  QColor fillColor, borderColor;
   double borderWidth, size;
   double widthHeightFactor = 1.0;
 
@@ -290,7 +290,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     }
   }
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, color, borderColor, borderWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
     return NULL;
 
   double angle = 0.0;
@@ -305,7 +305,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
 
   QgsEllipseSymbolLayerV2 *m = new QgsEllipseSymbolLayerV2();
   m->setSymbolName( name );
-  m->setColor( color );
+  m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
   m->setOutlineWidth( borderWidth );
   m->setSymbolWidth( size );
