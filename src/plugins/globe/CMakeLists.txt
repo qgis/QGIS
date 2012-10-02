@@ -14,9 +14,10 @@ ENDIF(HAVE_OSGEARTH_CHILD_SPACING)
 
 SET (globe_plugin_SRCS
      globe_plugin.cpp
-     qgsosgviewer.cpp
      qgsosgearthtilesource.cpp
      globe_plugin_dialog.cpp
+     osgEarthQt/ViewerWidget.cpp
+     osgEarthUtil/Controls.cpp
 )
 
 SET (globe_plugin_UIS
@@ -26,7 +27,9 @@ SET (globe_plugin_UIS
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_dialog.h
-     qgsosgviewer.h
+     osgEarthQt/Common
+     osgEarthQt/ViewerWidget
+     osgEarthUtil/Controls
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)
@@ -58,6 +61,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
   ${OSG_LIBRARY}
+  ${OSGQT_LIBRARY}
   ${OSGVIEWER_LIBRARY}
   ${OSGEARTH_LIBRARY}
   ${OSGEARTHFEATURES_LIBRARY}

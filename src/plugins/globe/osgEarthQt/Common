@@ -1,0 +1,92 @@
+/* -*-c++-*- */
+/* osgEarth - Dynamic map generation toolkit for OpenSceneGraph
+ * Copyright 2008-2012 Pelican Mapping
+ * http://osgearth.org
+ *
+ * osgEarth is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+#ifndef OSGEARTHQT_COMMON_H
+#define OSGEARTHQT_COMMON_H 1
+
+#include <osgEarth/Common>
+//#include <osgEarthAnnotation/AnnotationNode>
+#include <osgViewer/Viewer>
+
+// define USE_DEPRECATED_API is used to include in API which is being phased out
+// if you can compile your apps with this turned off you are
+// well placed for compatibility with future versions.
+#define USE_DEPRECATED_API
+
+#if defined(_MSC_VER)
+    #pragma warning( disable : 4244 )
+    #pragma warning( disable : 4251 )
+    #pragma warning( disable : 4267 )
+    #pragma warning( disable : 4275 )
+    #pragma warning( disable : 4290 )
+    #pragma warning( disable : 4786 )
+    #pragma warning( disable : 4305 )
+    #pragma warning( disable : 4996 )
+#endif
+
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
+    #  if defined( OSGEARTHQT_LIBRARY_STATIC )
+    #    define OSGEARTHQT_EXPORT
+    #  elif defined( OSGEARTHQT_LIBRARY )
+    #    define OSGEARTHQT_EXPORT   __declspec(dllexport)
+    #  else
+    #    define OSGEARTHQT_EXPORT   __declspec(dllimport)
+    #  endif
+#else
+    #  define OSGEARTHQT_EXPORT
+#endif  
+
+// set up define for whether member templates are supported by VisualStudio compilers.
+#ifdef _MSC_VER
+# if (_MSC_VER >= 1300)
+#  define __STL_MEMBER_TEMPLATES
+# endif
+#endif
+
+/* Define NULL pointer value */
+
+#ifndef NULL
+    #ifdef  __cplusplus
+        #define NULL    0
+    #else
+        #define NULL    ((void *)0)
+    #endif
+#endif
+
+#ifndef OSG_MIN_VERSION_REQUIRED
+    #define OSG_MIN_VERSION_REQUIRED(MAJOR, MINOR, PATCH) ((OPENSCENEGRAPH_MAJOR_VERSION>MAJOR) || (OPENSCENEGRAPH_MAJOR_VERSION==MAJOR && (OPENSCENEGRAPH_MINOR_VERSION>MINOR || (OPENSCENEGRAPH_MINOR_VERSION==MINOR && OPENSCENEGRAPH_PATCH_VERSION>=PATCH))))
+#endif
+
+#ifndef OSG_VERSION_LESS_THAN
+    #define OSG_VERSION_LESS_THAN(MAJOR, MINOR, PATCH) ((OPENSCENEGRAPH_MAJOR_VERSION<MAJOR) || (OPENSCENEGRAPH_MAJOR_VERSION==MAJOR && (OPENSCENEGRAPH_MINOR_VERSION<MINOR || (OPENSCENEGRAPH_MINOR_VERSION==MINOR && OPENSCENEGRAPH_PATCH_VERSION<PATCH))))
+#endif
+
+/**
+\namespace osgEarthQt
+*/
+
+namespace osgEarth { namespace QtGui {
+
+  //typedef std::vector< osg::ref_ptr<osgEarth::Annotation::AnnotationNode> > AnnotationVector;
+  typedef std::vector< osg::ref_ptr<osgViewer::View> > ViewVector;
+    
+} }
+
+#endif // OSGEARTHQT_COMMON_H
+
