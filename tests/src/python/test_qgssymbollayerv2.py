@@ -171,7 +171,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsSimpleFillSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -183,7 +183,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = Qt.SolidPattern
         mValue = mSymbolLayer.brushStyle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -198,19 +198,19 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.borderStyle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = 0.26
         mValue = mSymbolLayer.borderWidth()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
     def testQgsCentroidFillSymbolLayerV2(self):
         '''
         Create a new style from a .sld file and match test
         '''
         mTestName = QString ('QgsCentroidFillSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -222,7 +222,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'regular_star')
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -244,7 +244,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsLinePatternFillSymbolLayer')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -256,7 +256,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'#ff55ff')
         mValue = mSymbolLayer.color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -281,11 +281,11 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         Create a new style from a .sld file and match test
         '''
-        # at the moment there is an empty createFromSld implementation that return null 
+        # at the moment there is an empty createFromSld implementation that return null
         return
         mTestName = QString ('QgsPointPatternFillSymbolLayer')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -297,7 +297,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'triangle')
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -329,7 +329,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsSVGFillSymbolLayer')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -341,7 +341,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = 'accommodation_camping.svg'
         mValue = os.path.basename (str (mSymbolLayer.svgFilePath()))
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -358,7 +358,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsMarkerLineSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -370,7 +370,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QgsMarkerLineSymbolLayerV2.CentralPoint
         mValue = mSymbolLayer.placement()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -380,7 +380,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'#000000')
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -397,7 +397,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsSimpleLineSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -409,7 +409,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'#aa007f')
         mValue = mSymbolLayer.color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -419,7 +419,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.width()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = Qt.RoundCap
         mValue = mSymbolLayer.penCapStyle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -438,7 +438,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mExpectedValue = [5.0, 2.0]
         mValue = mSymbolLayer.customDashVector()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
-        assert mExpectedValue == mValue, mMessage        
+        assert mExpectedValue == mValue, mMessage
 
     def testQgsEllipseSymbolLayerV2(self):
         '''
@@ -446,7 +446,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsEllipseSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -458,7 +458,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'circle')
         mValue = mSymbolLayer.symbolName()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -483,14 +483,14 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = mSymbolLayer.symbolHeight()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-   
+
     def testQgsFontMarkerSymbolLayerV2(self):
         '''
         Create a new style from a .sld file and match test
         '''
         mTestName = QString ('QgsFontMarkerSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -502,7 +502,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'Arial')
         mValue = mSymbolLayer.fontFamily()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -529,7 +529,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         '''
         mTestName = QString ('QgsSvgMarkerSymbolLayerV2')
         mFilePath = QDir.toNativeSeparators (QString ('%1/symbol_layer/%2.sld').arg (unitTestDataPath(), mTestName))
-        
+
         mDoc = QDomDocument(mTestName)
         mFile = QFile (mFilePath)
         mFile.open(QIODevice.ReadOnly)
@@ -541,7 +541,7 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mValue = type (mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
-        
+
         mExpectedValue = QString(u'skull.svg')
         mValue = os.path.basename (str(mSymbolLayer.path()))
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
@@ -557,6 +557,6 @@ class TestQgsSymbolLayerV2(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue,mValue)
         assert mExpectedValue == mValue, mMessage
 
-                                   
+
 if __name__ == '__main__':
     unittest.main()
