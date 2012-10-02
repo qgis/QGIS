@@ -55,7 +55,7 @@ class QgsVectorLayer;
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
  * */
-class QgsAtlasRendering
+class CORE_EXPORT QgsAtlasRendering
 {
  public:
   QgsAtlasRendering( QgsComposition* composition );
