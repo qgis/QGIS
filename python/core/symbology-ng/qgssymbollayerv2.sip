@@ -8,18 +8,54 @@ class QgsSymbolLayerV2
   switch (sipCpp->type())
   {
     case QgsSymbolV2::Marker:
-      if( sipCpp->layerType() == "VectorField" )
-      {
-        sipClass = sipClass_QgsVectorFieldSymbolLayer;
-      }
+      if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsEllipseSymbolLayerV2;
+      else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsFontMarkerSymbolLayerV2;
+      else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsSimpleMarkerSymbolLayerV2;
+      else if (dynamic_cast<QgsSvgMarkerSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsSvgMarkerSymbolLayerV2;
+      else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsVectorFieldSymbolLayer;
       else
-      {
-        sipClass = sipClass_QgsMarkerSymbolLayerV2;
-      }
+	sipClass = sipClass_QgsMarkerSymbolLayerV2;
       break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolLayerV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolLayerV2; break;
-    default: sipClass = 0; break;
+
+    case QgsSymbolV2::Line:
+      if (dynamic_cast<QgsLineDecorationSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsLineDecorationSymbolLayerV2;
+      else if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsMarkerLineSymbolLayerV2;
+      else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsSimpleLineSymbolLayerV2;
+      else
+	sipClass = sipClass_QgsLineSymbolLayerV2;
+      break;
+
+    case QgsSymbolV2::Fill:
+      if (dynamic_cast<QgsSimpleFillSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsSimpleFillSymbolLayerV2;
+      else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
+      {
+	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
+	  sipClass = sipClass_QgsLinePatternFillSymbolLayer;
+	else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
+	  sipClass = sipClass_QgsPointPatternFillSymbolLayer;
+	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
+	  sipClass = sipClass_QgsSVGFillSymbolLayer;
+	else
+	  sipClass = sipClass_QgsImageFillSymbolLayer;
+      }
+      else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsCentroidFillSymbolLayerV2;
+      else
+	sipClass = sipClass_QgsFillSymbolLayerV2;
+      break;
+
+    default:
+      sipClass = 0;
+      break;
   }
 %End
 

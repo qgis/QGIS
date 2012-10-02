@@ -19,6 +19,11 @@
 #define QGSHTTPREQUESTHANDLER_H
 
 #include "qgsrequesthandler.h"
+#include <QColor>
+#include <QPair>
+
+typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
+typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**Base class for request handler using HTTP.
 It provides a method to send data to the client*/
@@ -47,6 +52,19 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
     /**Read CONTENT_LENGTH characters from stdin*/
     QString readPostBody() const;
+
+  private:
+    static void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
+    static void imageColors( QHash<QRgb, int>& colors, const QImage& image );
+    static void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+                               QMap<int, QgsColorBox>::iterator colorBoxMapIt );
+    static bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange );
+    static bool redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
+    /**Calculates a representative color for a box (pixel weighted average)*/
+    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
 };
 
 #endif

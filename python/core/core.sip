@@ -8,8 +8,6 @@
 %Include conversions.sip
 %Include qgsexception.sip
 
-// TODO: more files to wrap
-
 %Include qgis.sip
 
 %Include qgsapplication.sip
