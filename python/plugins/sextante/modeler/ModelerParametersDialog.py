@@ -428,12 +428,13 @@ class ModelerParametersDialog(QtGui.QDialog):
                 return False
         for output in outputs:
             if output.hidden:
-                continue
-            name= unicode(self.valueItems[output.name].text())
-            if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
-                self.outputs[output.name]=name
+               self.outputs[output.name] = None
             else:
-                self.outputs[output.name] = None
+                name= unicode(self.valueItems[output.name].text())
+                if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
+                    self.outputs[output.name]=name
+                else:
+                    self.outputs[output.name] = None
         return True
 
 
