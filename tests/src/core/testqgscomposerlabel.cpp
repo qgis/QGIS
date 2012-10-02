@@ -109,7 +109,7 @@ void TestQgsComposerLabel::evaluation()
     QDate now = QDate::currentDate();
     int dd = now.day();
     
-    QString expected = "__" + QString("%1").arg(dd+1, 2, 10, QChar('0')) + "(ok)__";
+    QString expected = "__" + QString("%1").arg(dd+1) + "(ok)__";
     mComposerLabel->setText( "__[%$CURRENT_DATE(dd) + 1%](ok)__" );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
