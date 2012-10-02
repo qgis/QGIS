@@ -1,4 +1,32 @@
 /** \ingroup MapComposer
+ * Class used to render an Atlas, iterating over geometry features.
+ * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
+ * This class is used for printing, exporting to PDF and images.
+ * */
+class QgsAtlasRendering
+{
+%TypeHeaderCode
+#include <qgscomposition.h>
+%End
+ public:
+  QgsAtlasRendering( QgsComposition* composition );
+
+  /** Begins the rendering. Sets an optional output filename pattern */
+  void begin( const QString& filenamePattern = "" );
+  /** Ends the rendering. Restores original extent*/
+  void end();
+
+  /** Returns the number of features in the coverage layer */
+  size_t numFeatures() const;
+
+  /** Prepare the atlas map for the given feature. Sets the extent and context variables */
+  void prepareForFeature( size_t i );
+
+  /** Returns the current filename. Must be called after prepareForFeature( i ) */
+  const QString& currentFilename() const;
+};
+
+/** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
@@ -70,6 +98,12 @@ class QgsComposition: QGraphicsScene
     /**Returns the topmose composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
+    /** Returns the page number (0-bsaed) given a coordinate */
+    int pageNumberAt( const QPointF& position ) const;
+
+    /** Returns on which page number (0-based) is displayed an item */
+    int itemPageNumber( const QgsComposerItem* ) const;
+
     QList<QgsComposerItem*> selectedComposerItems();
 
     /**Returns pointers to all composer maps in the scene*/
@@ -110,6 +144,9 @@ class QgsComposition: QGraphicsScene
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
+
+    QgsComposerMap* atlasMap();
+    void setAtlasMap( QgsComposerMap* map );
 
     QgsComposition::PlotStyle plotStyle();
     void setPlotStyle( QgsComposition::PlotStyle style );
@@ -219,9 +256,18 @@ class QgsComposition: QGraphicsScene
 
     //printing
 
-    void exportAsPDF( const QString& file );
+    /** Prepare the printer for printing */
+    void beginPrint( QPrinter& printer );
+    /** Prepare the printer for printing in a PDF */
+    void beginPrintAsPDF( QPrinter& printer, const QString& file );
+    /** Print on a preconfigured printer */
+    void doPrint( QPrinter& printer, QPainter& painter );
 
+    /** Convenience function that prepares the printer and prints */
     void print( QPrinter &printer );
+
+    /** Convenience function that prepares the printer for printing in PDF and prints */
+    void exportAsPDF( const QString& file );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned

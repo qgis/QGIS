@@ -285,8 +285,28 @@ class QgsComposerMap : QgsComposerItem
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
 
+    bool atlasHideCoverage() const;
+    void setAtlasHideCoverage( bool hide );
+
+    bool atlasFixedScale() const;
+    void setAtlasFixedScale( bool fixed );
+
+    float atlasMargin() const;
+    void setAtlasMargin( float margin );
+
+    QString atlasFilenamePattern() const;
+    void setAtlasFilenamePattern( const QString& pattern );
+
+    QgsVectorLayer* atlasCoverageLayer() const;
+    void setAtlasCoverageLayer( QgsVectorLayer* lmap );
+
+    bool atlasSingleFile() const;
+    void setAtlasSingleFile( bool single );
+
   signals:
     void extentChanged();
+
+    void atlasCoverageLayerChanged( QgsVectorLayer* );
 
   public slots:
 
