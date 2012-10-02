@@ -22,6 +22,7 @@ import time
 class ModelerAlgorithm(GeoAlgorithm):
 
     CANVAS_SIZE = 4000
+    LINE_BREAK_STRING="%%%"
 
     def getCopy(self):
         newone = ModelerAlgorithm()
@@ -89,8 +90,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                     self.paramPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
-                    tokens = valueLine.split("=")
-                    self.paramValues[tokens[0]] = tokens[1]
+                    tokens = valueLine.split("===")
+                    
+                    self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
                 elif line.startswith("GROUP:"):
@@ -289,7 +291,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             s +=  str(pt.x()) + "," + str(pt.y()) + "\n"
             i+=1
         for key in self.paramValues.keys():
-            s += "VALUE:" + key + "=" + str(self.paramValues[key]) + "\n"
+            s += "VALUE:" + key + "===" + str(self.paramValues[key]).replace('\n', ModelerAlgorithm.LINE_BREAK_STRING) + "\n"
         for i in range(len(self.algs)):
             alg = self.algs[i]
             s+="ALGORITHM:" + alg.commandLineName()+"\n"
