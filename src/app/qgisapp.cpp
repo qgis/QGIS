@@ -3225,8 +3225,6 @@ void QgisApp::fileOpen()
       return;
     }
 
-    closeProject();
-
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -3235,55 +3233,8 @@ void QgisApp::fileOpen()
     // Persist last used project dir
     settings.setValue( "/UI/lastProjectDir", myPath );
 
-    QgsProject::instance()->setFileName( fullPath );
-
-    if ( ! QgsProject::instance()->read() )
-    {
-      QMessageBox::critical( this,
-                             tr( "QGIS Project Read Error" ),
-                             QgsProject::instance()->error() );
-      mMapCanvas->freeze( false );
-      mMapCanvas->refresh();
-      return;
-    }
-
-    setTitleBarText_( *this );
-
-    bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
-    if ( projectScales )
-    {
-      mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
-    }
-
-    // does the project have any macros?
-    if ( mPythonUtils && mPythonUtils->isEnabled() )
-    {
-      if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
-      {
-        int enableMacros = settings.value( "/qgis/enableMacros", 1 ).toInt();
-        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
-
-        if ( enableMacros == 3 || enableMacros == 2 )
-        {
-          enableProjectMacros();
-        }
-        else if ( enableMacros == 1 ) // ask
-        {
-          // display the macros notification widget
-          mInfoBar->pushWidget( mMacrosWarn, 1 );
-        }
-      }
-    }
-
-    emit projectRead();     // let plug-ins know that we've read in a new
-    // project so that they can check any project
-    // specific plug-in state
-
-    // add this to the list of recently used project files
-    saveRecentProjectPath( fullPath, settings );
-
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    // open the selected project
+    addProject( fullPath );
   }
 } // QgisApp::fileOpen
 
@@ -3302,15 +3253,10 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( QString projectFile )
 {
-  mMapCanvas->freeze( true );
-
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  deletePrintComposers();
-  removeAnnotationItems();
-
-  // clear the map canvas
-  removeAllLayers();
+  // close the previous opened project if any
+  closeProject();
 
   if ( ! QgsProject::instance()->read( projectFile ) )
   {
@@ -3354,6 +3300,26 @@ bool QgisApp::addProject( QString projectFile )
 
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
+
+  // does the project have any macros?
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
+    {
+      int enableMacros = settings.value( "/qgis/enableMacros", 1 ).toInt();
+      // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+
+      if ( enableMacros == 3 || enableMacros == 2 )
+      {
+        enableProjectMacros();
+      }
+      else if ( enableMacros == 1 ) // ask
+      {
+        // display the macros notification widget
+        mInfoBar->pushWidget( mMacrosWarn, 1 );
+      }
+    }
+  }
 
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
