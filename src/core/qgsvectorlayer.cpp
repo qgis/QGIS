@@ -106,6 +106,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mTabDisplayOn( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -3643,6 +3644,30 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
   QString name = pendingFields()[ attIndex ].name();
 
   mAttributeAliasMap.insert( name, aliasString );
+  emit layerModified( false );
+}
+
+void QgsVectorLayer::enableTabDisplay( bool onoff )
+{
+  mTabDisplayOn = onoff;
+}
+
+bool QgsVectorLayer::hasTabDisplayEnabled( void ) const
+{
+  return mTabDisplayOn;
+}
+
+void QgsVectorLayer::addTab( QString tabTitle )
+{
+  QList<QString> fields;
+  QList<GroupData> groups;
+  mTabs.append( TabData( tabTitle , fields , groups ) );
+  emit layerModified( false );
+}
+
+void QgsVectorLayer::addTab( TabData data )
+{
+  mTabs.append( data );
   emit layerModified( false );
 }
 

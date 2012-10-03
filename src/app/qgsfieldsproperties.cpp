@@ -31,6 +31,220 @@
 #include <QTableWidgetItem>
 #include <QMessageBox>
 
+
+
+
+
+
+
+
+/*
+void QgsAttributesList::dragMoveEvent( QDragMoveEvent *event )
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+   QgsDebugMsg( "kflfkglf");
+  QList<QTableWidgetItem*> items = selectedItems();
+  for ( QList<QTableWidgetItem*>::const_iterator item = items.begin(); item != items.end(); item++ )
+  {
+    QgsDebugMsg( "kflfkglf   " + QString::number((*item)->column() ));
+    if ( (*item)->column() != 1 ) // !!! 1 = QgsVectorLayerProperties::attrNameCol
+      continue;
+
+    QMap<int,  QVariant> roleDataMap;
+    roleDataMap.insert( Qt::DisplayRole , (*item)->data( Qt::DisplayRole ).toString() );
+    roleDataMap.insert( Qt::UserRole , "field" );
+    stream << (*item)->row() << 0 << roleDataMap; // this will be first column in tab group tree
+
+    QgsDebugMsg( "mime: " + QString::number((*item)->row()) + " "  + (*item)->data( Qt::DisplayRole ).toString() );
+  }
+  mimeData->setData(QString("application/x-qabstractitemmodeldatalist"), encodedData );
+
+  QDragMoveEvent* newEvent = new QDragMoveEvent( event->pos(), Qt::CopyAction, mimeData, event->mouseButtons(), event->keyboardModifiers() );
+
+  QTableWidget::dragMoveEvent( newEvent );
+}
+*/
+
+/*
+QMimeData *QgsAttributesList::mimeData( const QList<QTableWidgetItem *> items ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+  int i = 0;
+
+  foreach( const QTableWidgetItem * item , items )
+  {
+    // each item consists of several columns - let's add it with just first one
+    if ( item->column() != 1 ) // !!! 1 = QgsVectorLayerProperties::attrNameCol
+      continue;
+
+    QMap<int,  QVariant> roleDataMap;
+    roleDataMap.insert( Qt::DisplayRole , item->data( Qt::DisplayRole ).toString() );
+    roleDataMap.insert( Qt::UserRole , "field" );
+    stream << item->row() << 0 << roleDataMap; // this will be first column in tab group tree
+    //stream << i << 0 << roleDataMap; // this will be first column in tab group tree
+    i++;
+
+    QgsDebugMsg( "mime: " + QString::number(item->row()) + " "  + item->data( Qt::DisplayRole ).toString() );
+  }
+  mimeData->setData(QString("application/x-qabstractitemmodeldatalist"), encodedData );
+  return mimeData;
+}
+*/
+
+/*
+Qt::DropActions QgsAttributesTree::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
+*/
+
+QTreeWidgetItem* QgsAttributesTree::addTab(QString tabTitle)
+{
+  QList<QString> text;
+  text << tabTitle;
+  QTreeWidgetItem *tabItem = new QTreeWidgetItem( text );
+  tabItem->setBackground( 0 , QBrush( Qt::lightGray ) );
+  tabItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+  tabItem->setData( 0 , Qt::UserRole , "tab" );
+  tabItem->setExpanded( true );
+  invisibleRootItem()->addChild( tabItem );
+  return tabItem;
+}
+
+QTreeWidgetItem* QgsAttributesTree::addGroup(QTreeWidgetItem* tabItem , QString groupTitle)
+{
+  if ( tabItem == 0 )
+    return 0;
+  QList<QString> text;
+  text << groupTitle;
+  QTreeWidgetItem *groupItem = new QTreeWidgetItem( text );
+  groupItem->setBackground( 0 , QBrush( Qt::lightGray ) );
+  groupItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+  groupItem->setData( 0 , Qt::UserRole , "group" );
+  groupItem->setExpanded( true );
+  tabItem->addChild( groupItem );
+  return groupItem ;
+}
+
+void QgsAttributesTree::addItem( QTreeWidgetItem* parent , QString fieldName )
+{
+  QList<QString> text;
+  text << fieldName;
+  QTreeWidgetItem* attributeItem = new QTreeWidgetItem( text );
+  attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+  attributeItem->setData( 0 , Qt::UserRole , "field" );
+  parent->addChild( attributeItem );
+}
+
+bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
+{
+  if ( action == Qt::IgnoreAction )
+  {
+    QgsDebugMsg("ignore");
+    return true;
+  }
+  if ( !data->hasFormat("application/x-qabstractitemmodeldatalist"))
+  {
+    QgsDebugMsg("wrong format");
+      return false;
+    }
+
+  QByteArray itemData = data->data("application/x-qabstractitemmodeldatalist");
+  QDataStream stream(&itemData, QIODevice::ReadOnly);
+  int r, c;
+  QMap<int, QVariant> roleDataMap;
+  stream >> r >> c >> roleDataMap;
+
+  QString itemType = roleDataMap.value( Qt::UserRole ).toString();
+  QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+
+  if ( itemType == "field")
+  {
+    addItem( parent , itemName );
+  }
+  else
+  {
+    QTreeWidget::dropMimeData( parent , index , data , Qt::MoveAction );
+  }
+
+  if ( action == Qt::CopyAction )
+  {
+    QgsDebugMsg("copy");
+    return true;
+  }
+
+  if ( action == Qt::MoveAction )
+  {
+      QgsDebugMsg("move");
+    return true;
+  }
+
+  QgsDebugMsg("ouch");
+  return false;
+}
+
+/*
+void QgsAttributesTree::dragEnterEvent( QDragEnterEvent *event)
+{
+  event->setDropAction( Qt::MoveAction );
+  QTreeWidget::dragEnterEvent(event);
+}
+*/
+
+void QgsAttributesTree::dropEvent( QDropEvent *event)
+{
+  QgsDebugMsg("dropped");
+  if ( !event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist"))
+    return;
+
+  if (event->source()==this)
+  {
+    QgsDebugMsg(" self drop");
+    event->setDropAction( Qt::MoveAction );
+    QTreeWidget::dropEvent( event );
+  }
+  else
+  {
+    QgsDebugMsg(" extern ");
+    Qt::DropAction dropAction;
+    QByteArray itemData = event->mimeData()->data("application/x-qabstractitemmodeldatalist");
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    int r, c, rDummy, cDummy;
+    QMap<int, QVariant> roleDataMap,newRoleDataMap,roleDataMapDummy;
+    stream >> rDummy >> cDummy >> roleDataMapDummy >> r >> c >> roleDataMap; // fieldName is in second column
+
+    QString fieldName = roleDataMap.value( Qt::DisplayRole ).toString();
+    newRoleDataMap.insert( Qt::UserRole , "field" );
+    newRoleDataMap.insert( Qt::DisplayRole , fieldName );
+
+    QgsDebugMsg(QString::number(r) + " " + QString::number(c) + " " + fieldName);
+
+    QMimeData * mimeData = new QMimeData;
+    QByteArray mdata;
+    QDataStream newStream(&mdata, QIODevice::WriteOnly);
+    newStream << r << c << newRoleDataMap;
+    mimeData->setData(QString("application/x-qabstractitemmodeldatalist"),   mdata);
+    QDropEvent newEvent = QDropEvent( event->pos(), Qt::CopyAction , mimeData, event->mouseButtons(), event->keyboardModifiers() );
+
+    QTreeWidget::dropEvent( &newEvent );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
   : QWidget( parent ), mLayer ( layer )
 {
@@ -51,8 +265,41 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
+  QVBoxLayout *attrTreeLayout = new QVBoxLayout( mAttributesTreeFrame );
+  QVBoxLayout *attrListLayout = new QVBoxLayout( mAttributesListFrame );
+
+  attrTreeLayout->setMargin( 0 );
+  attrListLayout->setMargin( 0 );
+  mAttributesTree = new QgsAttributesTree( mAttributesTreeFrame );
+  mAttributesList = new QgsAttributesList( mAttributesListFrame );
+  attrTreeLayout->addWidget( mAttributesTree );
+  attrListLayout->addWidget( mAttributesList );
+  mAttributesTreeFrame->setLayout( attrTreeLayout );
+  mAttributesListFrame->setLayout( attrListLayout );
+
+  mTabDisplayCheckbox->setChecked( layer->hasTabDisplayEnabled() );
+  mAttributesTreeButtonFrame->setEnabled( layer->hasTabDisplayEnabled() );
+  mAttributesTreeFrame->setEnabled( layer->hasTabDisplayEnabled() );
+
+  connect( mTabDisplayCheckbox, SIGNAL( toggled( bool ) ), mAttributesTreeButtonFrame, SLOT( setEnabled( bool ) ) );
+  connect( mTabDisplayCheckbox, SIGNAL( toggled( bool ) ), mAttributesTreeFrame, SLOT( setEnabled( bool ) ) );
+  connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
+  connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
+
+
   updateButtons();
 }
+
+void QgsFieldsProperties::on_attributeSelectionChanged()
+{
+  bool isAddPossible = false;
+  if ( mAttributesTree->selectedItems().count() == 1 && mAttributesList->selectedItems().count() > 0 )
+    if ( mAttributesTree->selectedItems()[0]->data( 0, Qt::UserRole ) != "field" )
+      isAddPossible = true;
+  mAddItemButton->setEnabled ( isAddPossible );
+}
+
+
 
 void QgsFieldsProperties::toggleEditing()
 {
@@ -62,68 +309,67 @@ void QgsFieldsProperties::toggleEditing()
 
 void QgsFieldsProperties::loadRows()
 {
-  disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
+  disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
   const QgsFieldMap &fields = mLayer->pendingFields();
 
-  tblAttributes->clear();
+  mAttributesList->clear();
 
-  tblAttributes->setColumnCount( attrColCount );
-  tblAttributes->setRowCount( fields.size() );
-  tblAttributes->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( "WMS" ) );
-  tblAttributes->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
-  tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
+  mAttributesList->setColumnCount( attrColCount );
+  mAttributesList->setRowCount( fields.size() );
+  mAttributesList->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( "WMS" ) );
+  mAttributesList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
+  mAttributesList->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
-  tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  tblAttributes->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
-  tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tblAttributes->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  tblAttributes->verticalHeader()->hide();
+  mAttributesList->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
+  mAttributesList->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
+  mAttributesList->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mAttributesList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mAttributesList->verticalHeader()->hide();
 
   int row = 0;
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
     setRow( row, it.key(), it.value() );
 
-  tblAttributes->resizeColumnsToContents();
-  connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
+  mAttributesList->resizeColumnsToContents();
+  connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
 }
 
 void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
 {
-  tblAttributes->setItem( row, attrIdCol, new QTableWidgetItem( QString::number( idx ) ) );
-  tblAttributes->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
-  tblAttributes->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
-  tblAttributes->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
-  tblAttributes->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  tblAttributes->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+  mAttributesList->setItem( row, attrIdCol, new QTableWidgetItem( QString::number( idx ) ) );
+  mAttributesList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
+  mAttributesList->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
+  mAttributesList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
+  mAttributesList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
+  mAttributesList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
 
   for ( int i = 0; i < attrEditTypeCol; i++ )
-    tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
+    mAttributesList->item( row, i )->setFlags( mAttributesList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   QPushButton *pb = new QPushButton( editTypeButtonText( mLayer->editType( idx ) ) );
-  tblAttributes->setCellWidget( row, attrEditTypeCol, pb );
+  mAttributesList->setCellWidget( row, attrEditTypeCol, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
   mButtonMap.insert( idx, pb );
 
   //set the alias for the attribute
-  tblAttributes->setItem( row, attrAliasCol, new QTableWidgetItem( mLayer->attributeAlias( idx ) ) );
+  mAttributesList->setItem( row, attrAliasCol, new QTableWidgetItem( mLayer->attributeAlias( idx ) ) );
 
   //published WMS/WFS attributes
   QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
   wmsAttrItem->setCheckState( mLayer->excludeAttributesWMS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  tblAttributes->setItem( row, attrWMSCol, wmsAttrItem );
+  mAttributesList->setItem( row, attrWMSCol, wmsAttrItem );
   QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWFS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  tblAttributes->setItem( row, attrWFSCol, wfsAttrItem );
-
+  mAttributesList->setItem( row, attrWFSCol, wfsAttrItem );
 }
 
 void QgsFieldsProperties::attributeTypeDialog( )
@@ -192,20 +438,20 @@ void QgsFieldsProperties::attributeTypeDialog( )
 void QgsFieldsProperties::attributeAdded( int idx )
 {
   const QgsFieldMap &fields = mLayer->pendingFields();
-  int row = tblAttributes->rowCount();
-  tblAttributes->insertRow( row );
+  int row = mAttributesList->rowCount();
+  mAttributesList->insertRow( row );
   setRow( row, idx, fields[idx] );
-  tblAttributes->setCurrentCell( row, idx );
+  mAttributesList->setCurrentCell( row, idx );
 }
 
 
 void QgsFieldsProperties::attributeDeleted( int idx )
 {
-  for ( int i = 0; i < tblAttributes->rowCount(); i++ )
+  for ( int i = 0; i < mAttributesList->rowCount(); i++ )
   {
-    if ( tblAttributes->item( i, 0 )->text().toInt() == idx )
+    if ( mAttributesList->item( i, 0 )->text().toInt() == idx )
     {
-      tblAttributes->removeRow( i );
+      mAttributesList->removeRow( i );
       break;
     }
   }
@@ -247,7 +493,7 @@ bool QgsFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsFieldsProperties::deleteAttribute()
 {
-  QList<QTableWidgetItem*> items = tblAttributes->selectedItems();
+  QList<QTableWidgetItem*> items = mAttributesList->selectedItems();
   QList<int> idxs;
 
   for ( QList<QTableWidgetItem*>::const_iterator it = items.begin(); it != items.end(); it++ )
@@ -291,7 +537,7 @@ void QgsFieldsProperties::on_mAddAttributeButton_clicked()
 
 void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
 {
-  QList<QTableWidgetItem*> items = tblAttributes->selectedItems();
+  QList<QTableWidgetItem*> items = mAttributesList->selectedItems();
   QList<int> idxs;
 
   for ( QList<QTableWidgetItem*>::const_iterator it = items.begin(); it != items.end(); it++ )
@@ -328,11 +574,11 @@ void QgsFieldsProperties::updateButtons()
 }
 
 
-void QgsFieldsProperties::on_tblAttributes_cellChanged( int row, int column )
+void QgsFieldsProperties::on_mAttributesList_cellChanged( int row, int column )
 {
   if ( column == attrAliasCol && mLayer ) //only consider attribute aliases in this function
   {
-    int idx = tblAttributes->item( row, attrIdCol )->text().toInt();
+    int idx = mAttributesList->item( row, attrIdCol )->text().toInt();
 
     const QgsFieldMap &fields = mLayer->pendingFields();
 
@@ -341,7 +587,7 @@ void QgsFieldsProperties::on_tblAttributes_cellChanged( int row, int column )
       return; // index must be wrong
     }
 
-    QTableWidgetItem *aliasItem = tblAttributes->item( row, column );
+    QTableWidgetItem *aliasItem = mAttributesList->item( row, column );
     if ( aliasItem )
     {
       mLayer->addAttributeAlias( idx, aliasItem->text() );
@@ -403,19 +649,19 @@ QgsVectorLayer::EditType QgsFieldsProperties::editTypeFromButtonText( QString te
 
 void QgsFieldsProperties::reset()
 {
-/*  QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
+/*  QObject::disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
 
-  QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );*/
+  QObject::connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );*/
 }
 
 
 void QgsFieldsProperties::apply()
 {
-  for ( int i = 0; i < tblAttributes->rowCount(); i++ )
+  for ( int i = 0; i < mAttributesList->rowCount(); i++ )
   {
-    int idx = tblAttributes->item( i, attrIdCol )->text().toInt();
+    int idx = mAttributesList->item( i, attrIdCol )->text().toInt();
 
-    QPushButton *pb = qobject_cast<QPushButton *>( tblAttributes->cellWidget( i, attrEditTypeCol ) );
+    QPushButton *pb = qobject_cast<QPushButton *>( mAttributesList->cellWidget( i, attrEditTypeCol ) );
     if ( !pb )
       continue;
 

@@ -18,9 +18,44 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QTreeWidget>
+#include <QTableWidget>
 
 #include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
+
+class QgsAttributesList : public QTableWidget
+{
+    Q_OBJECT
+  public:
+    QgsAttributesList(QWidget* parent = 0)
+        : QTableWidget( parent )
+    {}
+
+  protected:
+    //virtual void dragMoveEvent( QDragMoveEvent *event );
+    //QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
+    //Qt::DropActions supportedDropActions() const;
+};
+
+class QgsAttributesTree : public QTreeWidget
+{
+    Q_OBJECT
+  public:
+    QgsAttributesTree(QWidget* parent = 0)
+        : QTreeWidget( parent )
+    {}
+    QTreeWidgetItem* addTab( QString tabTitle );
+    QTreeWidgetItem* addGroup(QTreeWidgetItem* tabItem , QString groupTitle);
+    void addItem( QTreeWidgetItem* parent , QString fieldName );
+
+  protected:
+    virtual void dropEvent( QDropEvent *event );
+    //virtual void dragEnterEvent( QDragEnterEvent *event );
+    bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
+   /* Qt::DropActions supportedDropActions() const;*/
+};
+
 
 class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
@@ -52,8 +87,9 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
   public slots:
     void on_mAddAttributeButton_clicked();
     void on_mDeleteAttributeButton_clicked();
-    void on_tblAttributes_cellChanged( int row, int column );
     void on_mCalculateFieldButton_clicked();
+    void on_attributeSelectionChanged();
+    void on_mAttributesList_cellChanged( int row, int column );
     void addAttribute();
     void deleteAttribute();
 
@@ -64,7 +100,9 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 
 
   protected:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer* mLayer;
+    QgsAttributesTree* mAttributesTree;
+    QgsAttributesList* mAttributesList;
 
     /** toggle editing of layer */
     void toggleEditing();

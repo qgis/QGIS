@@ -148,6 +148,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */
     };
 
+    struct GroupData
+    {
+      GroupData() {}
+      GroupData( QString name , QList<QString> fields )
+         : mName ( name ), mFields( fields ) {}
+      QString mName;
+      QList<QString> mFields;
+    };
+
+    struct TabData
+    {
+      TabData() {}
+      TabData( QString name , QList<QString> fields , QList<GroupData> groups)
+         : mName ( name ), mFields( fields ), mGroups( groups ) {}
+      QString mName;
+      QList<QString> mFields;
+      QList<GroupData> mGroups;
+    };
+
     /** Constructor */
     QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,
                     QString providerLib = QString::null, bool loadDefaultStyleFlag = true );
@@ -564,6 +583,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     void addAttributeAlias( int attIndex, QString aliasString );
 
+    /** displays the edit form with tabs and groups */
+    void enableTabDisplay( bool onoff );
+
+    /** displays the edit form with tabs and groups */
+    bool hasTabDisplayEnabled( void ) const;
+
+    /**Sets a tab (for the dit form) for attributes to display in dialogs
+      @note added in version 1.9*/
+    void addTab( QString tabTitle );
+    void addTab( TabData data );
+
     /**Returns the alias of an attribute name or an empty string if there is no alias
       @note added in version 1.2*/
     QString attributeAlias( int attributeIndex ) const;
@@ -979,6 +1009,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Attributes which are not published in WFS*/
     QSet<QString> mExcludeAttributesWFS;
 
+    /**Map that stores the tab for attributes in the edit form. Key is the tab order and value the tab name*/
+    QList< TabData > mTabs;
+
     /** max field index */
     int mMaxUpdatedIndex;
 
@@ -1046,6 +1079,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
+
+    /** defines if edit form uses tabs and groups to display fields */
+    bool mTabDisplayOn;
 };
 
 #endif
