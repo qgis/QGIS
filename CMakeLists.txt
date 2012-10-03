@@ -76,6 +76,8 @@ IF (WITH_BINDINGS)
   # as otherwise user has to use PYTHONPATH environemnt variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+  # concatenate QScintilla2 API files
+  SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it

@@ -1,5 +1,5 @@
 ADD_SUBDIRECTORY(plugins)
-ADD_SUBDIRECTORY(api)
+ADD_SUBDIRECTORY(qsci_apis)
 
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -125,7 +125,23 @@ SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.n
 ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
 ADD_DEPENDENCIES(python_module_qgis_networkanalysis python_module_qgis_core ${sip_files_network_analysis})
 
-SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+
+IF(WITH_QSCIAPI)
+  # wait until after python module builds for api files to be available
+  SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
+  # create empty destination api file
+  FILE(WRITE "${QGIS_PYTHON_API_FILE}" "")
+
+  # run update/concatenate command after last python module is built (currently python_module_qgis_gui)
+  ADD_CUSTOM_COMMAND(TARGET python_module_qgis_gui
+    POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMENT "Generating pyqgis api file" VERBATIM)
+
+  INSTALL(FILES ${QGIS_PYTHON_API_FILE} DESTINATION "${PYTHON_SITE_PACKAGES_DIR}/qsci_apis")
+ENDIF(WITH_QSCIAPI)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
 
