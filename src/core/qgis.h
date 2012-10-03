@@ -169,7 +169,7 @@ inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
   double br = frexp( b, &bexp );
 
   return aexp == bexp &&
-         ceil( ar * pow( 10.0, significantDigits ) ) == ceil( br * pow( 10.0, significantDigits ) ) ;
+         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
 }
 
 /** Wkt string that represents a geographic coord sys

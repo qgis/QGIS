@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
@@ -61,7 +62,12 @@ void QgsWCSSourceSelect::populateLayerList( )
 
   mLayersTreeWidget->clear();
 
-  mCapabilities.setUri( mUri );
+
+  QgsDataSourceURI uri = mUri;
+  QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
+  uri.setParam( "cache", cache );
+
+  mCapabilities.setUri( uri );
 
   if ( !mCapabilities.lastError().isEmpty() )
   {
@@ -152,24 +158,7 @@ void QgsWCSSourceSelect::addClicked( )
 
   QString cache;
   QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
-  switch ( selectedCacheLoadControl() )
-  {
-    case QNetworkRequest::AlwaysCache:
-      cache = "AlwaysCache";
-      break;
-    case QNetworkRequest::PreferCache:
-      cache = "PreferCache";
-      break;
-    case QNetworkRequest::PreferNetwork:
-      cache = "PreferNetwork";
-      break;
-    case QNetworkRequest::AlwaysNetwork:
-      cache = "AlwaysNetwork";
-      break;
-    default:
-      cache = "PreferCache";
-      break;
-  }
+  cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( "cache", cache );
 
   emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
