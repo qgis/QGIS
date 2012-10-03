@@ -33,6 +33,7 @@
 #include <osgText/Text>
 #include <vector>
 #include <queue>
+#include <qglobal.h>
 
 #undef OSGEARTHUTIL_EXPORT
 #define OSGEARTHUTIL_EXPORT
@@ -100,25 +101,25 @@ namespace osgEarth { namespace Util { namespace Controls21
     {
     public:
         /** Click event. */
-        virtual void onClick( class Control* control ) { }
+        virtual void onClick( class Control* control ) { Q_UNUSED(control); }
 
         /** Click event with mouse button mask (see osgGA::GUIEventAdapter::MouseButtonMask) */
-        virtual void onClick( class Control* control, int mouseButtonMask ) { onClick(control); }
+        virtual void onClick( class Control* control, int mouseButtonMask ) { Q_UNUSED( mouseButtonMask ); onClick(control); }
 
         /** Click event with click position (negative values mean you're in the left/top padding) */
-        virtual void onClick( class Control* control, const osg::Vec2f& pos, int mouseButtonMask ) { onClick(control, mouseButtonMask); }
+        virtual void onClick( class Control* control, const osg::Vec2f& pos, int mouseButtonMask ) { Q_UNUSED( pos); onClick(control, mouseButtonMask); }
 
         /** Value events */
-        virtual void onValueChanged( class Control* control, bool value ) { }
-        virtual void onValueChanged( class Control* control, double value ) { }
-        virtual void onValueChanged( class Control* control, float value ) { }
-        virtual void onValueChanged( class Control* control, int value ) { }
-        virtual void onValueChanged( class Control* control, const osg::Vec3f& value ) { }
-        virtual void onValueChanged( class Control* control, const osg::Vec2f& value ) { }
-        virtual void onValueChanged( class Control* control, const osg::Vec3d& value ) { }
-        virtual void onValueChanged( class Control* control, const osg::Vec2d& value ) { }
-        virtual void onValueChanged( class Control* control, const std::string& value ) { }
-        virtual void onValueChanged( class Control* control, void* value ) { }
+        virtual void onValueChanged( class Control* control, bool value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, double value ) {  Q_UNUSED( control ); Q_UNUSED( value );}
+        virtual void onValueChanged( class Control* control, float value ) {  Q_UNUSED( control ); Q_UNUSED( value );}
+        virtual void onValueChanged( class Control* control, int value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, const osg::Vec3f& value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, const osg::Vec2f& value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, const osg::Vec3d& value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, const osg::Vec2d& value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, const std::string& value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
+        virtual void onValueChanged( class Control* control, void* value ) { Q_UNUSED( control ); Q_UNUSED( value ); }
     };
 
     typedef std::list< osg::ref_ptr<ControlEventHandler> > ControlEventHandlerList;
@@ -181,10 +182,10 @@ namespace osgEarth { namespace Util { namespace Controls21
         bool horizFill() const { return _hfill; }
 
         void setVertFill( bool value, float minHeight =0.0f );
-        const bool vertFill() const { return _vfill; }
+        bool vertFill() const { return _vfill; }
 
         void setVisible( bool value );
-        const bool visible() const { return _visible; }
+        bool visible() const { return _visible; }
 
         void setForeColor( const osg::Vec4f& value );
         void setForeColor( float r, float g, float b, float a ) { setForeColor( osg::Vec4f(r,g,b,a) ); }
@@ -218,7 +219,7 @@ namespace osgEarth { namespace Util { namespace Controls21
         bool isDirty() const { return _dirty; }
 
         virtual void calcSize( const ControlContext& context, osg::Vec2f& out_size );
-        virtual void calcFill( const ControlContext& context ) { }
+        virtual void calcFill( const ControlContext& context ) { Q_UNUSED( context ); }
         virtual void calcPos ( const ControlContext& context, const osg::Vec2f& cursor, const osg::Vec2f& parentSize );
         virtual void draw    ( const ControlContext& context, DrawableList& out_drawables );
 
@@ -248,15 +249,15 @@ namespace osgEarth { namespace Util { namespace Controls21
 
     private:
         osgEarth::optional<float> _x, _y, _width, _height;
-        bool _hfill, _vfill;
         Gutter _margin;
         Gutter _padding;
         bool _visible;
         optional<Alignment> _valign, _halign;
         optional<osg::Vec4f> _backColor, _foreColor, _activeColor;
-        osg::observer_ptr<Control> _parent;
         bool _active;
         bool _absorbEvents;
+        bool _hfill, _vfill;
+        osg::observer_ptr<Control> _parent;
         osg::ref_ptr<osg::Geometry> _geom;
     };
 
@@ -561,8 +562,8 @@ namespace osgEarth { namespace Util { namespace Controls21
         {
             PerViewData();
             bool                              _obscured;
-            osg::Vec3f                        _screenPos;
             float                             _visibleTime;
+            osg::Vec3f                        _screenPos;
             unsigned                          _visitFrame;
             osg::ref_ptr<osg::Uniform>        _uniform;
             osg::observer_ptr<osg::Camera>    _canvas;
@@ -609,9 +610,9 @@ namespace osgEarth { namespace Util { namespace Controls21
 
         osg::ref_ptr<osg::Group>      _group;
         std::vector<osg::BoundingBox> _taken;
+        bool                          _sortingEnabled;
         bool                          _sortByDistance;
         bool                          _fading;
-        bool                          _sortingEnabled;
 
         friend class ControlCanvas;
         friend class ControlNode;

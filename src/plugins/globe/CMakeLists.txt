@@ -27,8 +27,6 @@ SET (globe_plugin_UIS
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_dialog.h
-     osgEarthQt/Common
-     osgEarthQt/ViewerWidget
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)
