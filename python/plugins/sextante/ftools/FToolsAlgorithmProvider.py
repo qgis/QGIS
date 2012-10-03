@@ -24,6 +24,7 @@ from sextante.ftools.ExtractNodes import ExtractNodes
 from sextante.ftools.VoronoiPolygons import VoronoiPolygons
 from sextante.ftools.LinesToPolygons import LinesToPolygons
 from sextante.ftools.PolygonsToLines import PolygonsToLines
+from sextante.ftools.DensifyGeometries import DensifyGeometries
 from sextante.ftools.SimplifyGeometries import SimplifyGeometries
 from sextante.ftools.ExportGeometryInfo import ExportGeometryInfo
 from sextante.ftools.MultipartToSingleparts import MultipartToSingleparts
@@ -55,8 +56,9 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                         # data management
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
-                        SimplifyGeometries(), MultipartToSingleparts(), SinglePartsToMultiparts(),
-                        PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+                        SimplifyGeometries(), DensifyGeometries(), MultipartToSingleparts(),
+                        SinglePartsToMultiparts(), PolygonsToLines(), LinesToPolygons(),
+                        ExtractNodes(),
                         # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                         Dissolve(), Difference(), Intersection(), Union(), Clip(),
