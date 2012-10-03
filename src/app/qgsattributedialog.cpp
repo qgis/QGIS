@@ -179,19 +179,22 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   {
     for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
     {
-      QWidget *myWidget = mDialog->findChild<QWidget*>( it->name() );
-      if ( !myWidget )
+      QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( it->name() );
+      if ( !myWidgets.size() )
         continue;
 
-      QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
-
-      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
       {
-        myWidget->setEnabled( vl->isEditable() );
-      }
+        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
 
-      mpIndizes << it.key();
-      mpWidgets << myWidget;
+        if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+        {
+          (*itw)->setEnabled( vl->isEditable() );
+        }
+
+        mpIndizes << it.key();
+        mpWidgets << *itw;
+      }
     }
 
     foreach ( QLineEdit *le, mDialog->findChildren<QLineEdit*>() )
