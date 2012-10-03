@@ -110,7 +110,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( layer->hasGeometryType() )
   {
     // Create the Labeling dialog tab
-    layout= new QVBoxLayout( labelingFrame );
+    layout = new QVBoxLayout( labelingFrame );
     layout->setMargin( 0 );
     labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
     layout->addWidget( labelingDialog );
@@ -470,10 +470,12 @@ void QgsVectorLayerProperties::updateButtons()
   }
   else
   {
+    int cap = layer->dataProvider()->capabilities();
+    bool canChangeAttributes = cap & QgsVectorDataProvider::ChangeAttributeValues;
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
-    mToggleEditingButton->setEnabled( false );
+    mToggleEditingButton->setEnabled( canChangeAttributes && !layer->isReadOnly() );
     mCalculateFieldButton->setEnabled( false );
   }
 }
