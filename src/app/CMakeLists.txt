@@ -34,6 +34,7 @@ SET(QGIS_APP_SRCS
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
+  qgsfieldsproperties.cpp
   qgsgraduatedsymboldialog.cpp
   qgsidentifyresults.cpp
   qgsfeatureaction.cpp
@@ -191,6 +192,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdisplayangle.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
+  qgsfieldsproperties.h
   qgsformannotationdialog.h
   qgshtmlannotationdialog.h
   qgsgraduatedsymboldialog.h
