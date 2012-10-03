@@ -1,14 +1,17 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
 import os.path
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
 from qgis.core import *
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
-from sextante.core.QGisLayers import QGisLayers
-from sextante.ftools import ftools_utils
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+
 from sextante.outputs.OutputVector import OutputVector
 
 class SinglePartsToMultiparts(GeoAlgorithm):
@@ -20,97 +23,110 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/single_to_multi.png")
 
+    def defineCharacteristics(self):
+        self.name = "Singleparts to multipart"
+        self.group = "Geometry tools"
+
+        self.addParameter(ParameterVector(self.INPUT, "Input layer"))
+        self.addParameter(ParameterTableField(self.FIELD, "Unique ID field", self.INPUT))
+
+        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SinglePartsToMultiparts.INPUT))
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
-        fields = vprovider.fields()
-        geomType = self.singleToMultiGeom(vprovider.geometryType())
-        writer = self.getOutputFromName(SinglePartsToMultiparts.OUTPUT).getVectorWriter(fields, geomType, vprovider.crs() )
+        settings = QSettings()
+        encoding = settings.value( "/UI/encoding", "System" ).toString()
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        output = self.getOutputValue(self.OUTPUT)
+        fieldName = self.getParameterValue(self.FIELD)
+
+        provider = layer.dataProvider()
+        allAttrs = layer.pendingAllAttributesList()
+        layer.select(allAttrs)
+        geomType = self.singleToMultiGeom(provider.geometryType())
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+                     geomType, provider.crs())
+
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
-        field = self.getParameterValue(SinglePartsToMultiparts.FIELD)
-        index = vprovider.fieldNameIndex(field)
-        unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
-        nFeat = vprovider.featureCount() * len( unique )
-        nElement = 0
-        if not len( unique ) == vlayer.featureCount():
-          for i in unique:
-            vprovider.rewind()
-            multi_feature= []
-            first = True
-            vprovider.select(allAttrs)
-            while vprovider.nextFeature( inFeat ):
-              atMap = inFeat.attributeMap()
-              idVar = atMap[ index ]
-              if idVar.toString().trimmed() == i.toString().trimmed():
-                if first:
-                  atts = atMap
-                  first = False
-                inGeom = QgsGeometry( inFeat.geometry() )
-                vType = inGeom.type()
-                feature_list = self.extractAsMulti( inGeom )
-                multi_feature.extend( feature_list )
-              nElement += 1
-            outFeat.setAttributeMap( atts )
-            outGeom = QgsGeometry( self.convertGeometry(multi_feature, vType) )
-            outFeat.setGeometry(outGeom)
-            writer.addFeature(outFeat)
-          del writer
-        else:
-          raise GeoAlgorithmExecutionException("Invalid unique ID Field")
 
-    def extractAsMulti( self, geom ):
-        temp_geom = []
-        if geom.type() == 0:
-          if geom.isMultipart():
-            return geom.asMultiPoint()
-          else:
-            return [ geom.asPoint() ]
-        elif geom.type() == 1:
-          if geom.isMultipart():
-            return geom.asMultiPolyline()
-          else:
-            return [ geom.asPolyline() ]
+        index = layer.fieldNameIndex(fieldName)
+        unique = layer.uniqueValues(index)
+
+        current = 0
+        total = 100.0 / float(provider.featureCount() * len(unique))
+
+        if not len(unique) == layer.featureCount():
+            for i in unique:
+                provider.rewind()
+                multi_feature= []
+                first = True
+                layer.select(allAttrs)
+                while layer.nextFeature(inFeat):
+                    atMap = inFeat.attributeMap()
+                    idVar = atMap[index]
+                    if idVar.toString().trimmed() == i.toString().trimmed():
+                        if first:
+                            attrs = atMap
+                            print attrs
+                            first = False
+                        inGeom = QgsGeometry(inFeat.geometry())
+                        vType = inGeom.type()
+                        feature_list = self.extractAsMulti(inGeom)
+                        multi_feature.extend(feature_list)
+
+                    current += 1
+                    progress.setPercentage(int(current * total))
+
+                outFeat.setAttributeMap(attrs)
+                outGeom = QgsGeometry(self.convertGeometry(multi_feature, vType))
+                outFeat.setGeometry(outGeom)
+                writer.addFeature(outFeat)
+
+            del writer
         else:
-          if geom.isMultipart():
-            return geom.asMultiPolygon()
-          else:
-            return [ geom.asPolygon() ]
+            raise GeoAlgorithmExecutionException("Invalid unique ID field")
 
     def singleToMultiGeom(self, wkbType):
-        try:
+      try:
           if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                         QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
+                          QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
               return QGis.WKBMultiPoint
           elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                           QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
+                            QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
               return QGis.WKBMultiLineString
           elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                           QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+                            QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
               return QGis.WKBMultiPolygon
           else:
               return QGis.WKBUnknown
-        except Exception, err:
-          print str(err)
+      except Exception, err:
+          print unicode(err)
 
-    def convertGeometry( self, geom_list, vType ):
-        if vType == 0:
-          return QgsGeometry().fromMultiPoint( geom_list )
-        elif vType == 1:
-          return QgsGeometry().fromMultiPolyline( geom_list )
-        else:
-          return QgsGeometry().fromMultiPolygon( geom_list )
+    def extractAsMulti(self, geom):
+      if geom.type() == QGis.Point:
+          if geom.isMultipart():
+              return geom.asMultiPoint()
+          else:
+              return [geom.asPoint()]
+      elif geom.type() == QGis.Line:
+          if geom.isMultipart():
+              return geom.asMultiPolyline()
+          else:
+              return [geom.asPolyline()]
+      else:
+          if geom.isMultipart():
+              return geom.asMultiPolygon()
+          else:
+              return [geom.asPolygon()]
 
-
-    def defineCharacteristics(self):
-        self.name = "Singleparts to multipart"
-        self.group = "Geometry tools"
-        self.addParameter(ParameterVector(SinglePartsToMultiparts.INPUT, "Input layer"))
-        self.addParameter(ParameterTableField(SinglePartsToMultiparts.FIELD,
-                                              "Unique ID field", SinglePartsToMultiparts.INPUT))
-        self.addOutput(OutputVector(SinglePartsToMultiparts.OUTPUT, "Output layer"))
-    #=========================================================
+    def convertGeometry(self, geom_list, vType):
+      if vType == QGis.Point:
+          return QgsGeometry().fromMultiPoint(geom_list)
+      elif vType == QGis.Line:
+          return QgsGeometry().fromMultiPolyline(geom_list)
+      else:
+          return QgsGeometry().fromMultiPolygon(geom_list)
