@@ -1,6 +1,7 @@
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
 import os
 
 class HelpDialog(QtGui.QDialog):
@@ -13,7 +14,7 @@ class HelpDialog(QtGui.QDialog):
     def setupUi(self):
         self.setMaximumSize(500, 300)
         self.webView = QtWebKit.QWebView()
-        self.setWindowTitle("Help Python Console")
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole","Help Python Console"))
         self.verticalLayout= QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
@@ -29,7 +30,12 @@ class HelpDialog(QtGui.QDialog):
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.setLayout(self.verticalLayout)
-        filename = os.path.dirname(__file__) + "/helpConsole/help.htm"
+        jQueryPath = QgsApplication.pkgDataPath()
+        localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
+        filename = os.path.dirname(__file__) + "/helpConsole/help.htm? \
+                                                lang=" + localeFullName \
+                                                + "&pkgDir=" + jQueryPath
+                                                
         url = QtCore.QUrl(filename)
         self.webView.load(url)
 
