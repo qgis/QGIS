@@ -1955,22 +1955,16 @@ void QgisApp::initLegend()
   mLegendDock->setObjectName( "Legend" );
   mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
-  QCheckBox *legendCb = new QCheckBox( tr( "Control rendering order" ) );
-  legendCb->setChecked( true );
-
   QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
   orderCb->setChecked( false );
 
-  connect( legendCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( setUpdateDrawingOrder( bool ) ) );
   connect( orderCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( unsetUpdateDrawingOrder( bool ) ) );
-  connect( mMapLegend, SIGNAL( updateDrawingOrderChecked( bool ) ), legendCb, SLOT( setChecked( bool ) ) );
   connect( mMapLegend, SIGNAL( updateDrawingOrderUnchecked( bool ) ), orderCb, SLOT( setChecked( bool ) ) );
 
   QWidget *w = new QWidget( this );
   QLayout *l = new QVBoxLayout;
   l->setMargin( 0 );
   l->addWidget( mMapLegend );
-  l->addWidget( legendCb );
   w->setLayout( l );
   mLegendDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLegendDock );
