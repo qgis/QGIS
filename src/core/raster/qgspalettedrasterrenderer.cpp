@@ -37,6 +37,10 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBandNumber, colors(), mNColors );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setInvertColor( mInvertColor );
+  renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
 

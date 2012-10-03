@@ -34,6 +34,10 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setInvertColor( mInvertColor );
+  renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
 
