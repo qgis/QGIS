@@ -2,9 +2,6 @@ import os
 import sys
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
-                      QgsVectorLayer,
-                      QgsRasterLayer,
-                      QgsRectangle,
                       QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
@@ -68,7 +65,8 @@ def getQgisTestApp():
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
 
-        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication - no need to mess with it here.
+        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
+        # no need to mess with it here.
         QGISAPP = QgsApplication(sys.argv, myGuiFlag)
 
         QGISAPP.initQgis()
