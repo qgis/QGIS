@@ -34,6 +34,9 @@
 #include <vector>
 #include <queue>
 
+#undef OSGEARTHUTIL_EXPORT
+#define OSGEARTHUTIL_EXPORT
+
 /**
  * Controls - A simple 2D UI toolkit.
  *

@@ -29,6 +29,9 @@
 
 #include <QtCore/QTimer>
 
+#undef OSGEARTHQT_EXPORT
+#define OSGEARTHQT_EXPORT
+
 namespace osgEarth { namespace QtGui 
 {
     using namespace osgEarth;

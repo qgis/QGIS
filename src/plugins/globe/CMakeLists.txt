@@ -29,7 +29,6 @@ SET (globe_plugin_MOC_HDRS
      globe_plugin_dialog.h
      osgEarthQt/Common
      osgEarthQt/ViewerWidget
-     osgEarthUtil/Controls
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)
@@ -60,6 +59,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${QT_QTOPENGL_LIBRARY}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
+  ${OSGUTIL_LIBRARY}
   ${OSG_LIBRARY}
   ${OSGQT_LIBRARY}
   ${OSGVIEWER_LIBRARY}
