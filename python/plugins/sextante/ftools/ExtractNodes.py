@@ -1,13 +1,18 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
 import os.path
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
 from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
+from sextante.parameters.ParameterVector import ParameterVector
+
 from sextante.outputs.OutputVector import OutputVector
-from sextante.ftools import ftools_utils
+
+from sextante.ftools import FToolsUtils as utils
 
 class ExtractNodes(GeoAlgorithm):
 
@@ -17,34 +22,47 @@ class ExtractNodes(GeoAlgorithm):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/extract_nodes.png")
 
+    def defineCharacteristics(self):
+        self.name = "Extract nodes"
+        self.group = "Geometry tools"
+
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+
+        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExtractNodes.INPUT))
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
-        fields = vprovider.fields()
-        writer = self.getOutputFromName(ExtractNodes.OUTPUT).getVectorWriter(fields, QGis.WKBPoint, vprovider.crs() )
+        settings = QSettings()
+        encoding = settings.value("/UI/encoding", "System").toString()
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        output = self.getOutputValue(self.OUTPUT)
+
+        provider = layer.dataProvider()
+        layer.select(layer.pendingAllAttributesList())
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+                     QGis.WKBPoint, provider.crs())
+
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
-        nElement = 0
-        while vprovider.nextFeature( inFeat ):
-          nElement += 1
-          progress.setPercentage(int(nElement/nFeat * 100))
-          inGeom = inFeat.geometry()
-          atMap = inFeat.attributeMap()
-          pointList = ftools_utils.extractPoints( inGeom )
-          outFeat.setAttributeMap( atMap )
-          for i in pointList:
-            outFeat.setGeometry( outGeom.fromPoint( i ) )
-            writer.addFeature( outFeat )
-        del writer
 
-    def defineCharacteristics(self):
-        self.name = "Extract nodes"
-        self.group = "Geometry tools"
-        self.addParameter(ParameterVector(ExtractNodes.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addOutput(OutputVector(ExtractNodes.OUTPUT, "Output layer"))
-    #=========================================================
+        current = 0
+        total = 100.0 / float(provider.featureCount())
+
+        while layer.nextFeature(inFeat):
+            inGeom = inFeat.geometry()
+            atMap = inFeat.attributeMap()
+
+            points = utils.extractPoints(inGeom)
+            outFeat.setAttributeMap(atMap)
+
+            for i in points:
+                outFeat.setGeometry(outGeom.fromPoint(i))
+                writer.addFeature(outFeat)
+
+            current += 1
+            progress.setPercentage(int(current * total))
+
+        del writer
