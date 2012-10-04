@@ -798,7 +798,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
   QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
 
-  if (mWKBType != QGis::WKBNoGeometry)
+  if ( mWKBType != QGis::WKBNoGeometry )
   {
     for ( QMap<QgsFeatureId, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
     {
@@ -832,7 +832,7 @@ int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryA
 
   QDomElement featureCollectionElement = gmlDoc.documentElement();
   //get and set Extent
-  if ( mWKBType != QGis::WKBNoGeometry && QGis::WKBNoGeometry && getExtentFromGML2( &mExtent, featureCollectionElement ) != 0 )
+  if ( mWKBType != QGis::WKBNoGeometry && getExtentFromGML2( &mExtent, featureCollectionElement ) != 0 )
   {
     return 3;
   }
@@ -1036,7 +1036,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
   }
   if ( !foundGeometryAttribute )
   {
-      geomType = QGis::WKBNoGeometry;
+    geomType = QGis::WKBNoGeometry;
   }
 
   return 0;
@@ -1106,7 +1106,7 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
 
   if ( !foundGeometryAttribute )
   {
-      geomType = QGis::WKBNoGeometry;
+    geomType = QGis::WKBNoGeometry;
   }
 
   return 0;
