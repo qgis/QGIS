@@ -475,10 +475,13 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
     void thumbnailAsPixmap( QPixmap * theQPixmap );
 
+    /** \brief Draws a preview of the rasterlayer into a pixmap */
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
+
     /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */
-    void thumbnailAsImage( QImage * thepImage );
+    /* void thumbnailAsImage( QImage * thepImage ); */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

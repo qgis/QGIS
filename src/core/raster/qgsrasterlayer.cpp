@@ -2321,7 +2321,7 @@ QStringList QgsRasterLayer::subLayers() const
 
 void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
 {
-  //TODO: This should be depreciated and a new function written that just returns a new QPixmap, it will be safer
+  //deprecated, use previewAsPixmap() instead
   if ( !theQPixmap )
     return;
 
@@ -2372,9 +2372,64 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
   delete myQPainter;
 }
 
+QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
+{
+  QPixmap myQPixmap( size );
+
+  myQPixmap.fill( bgColor );  //defaults to white, set to transparent for rendering on a map
+
+  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
+
+  double myMapUnitsPerPixel;
+  double myX = 0.0;
+  double myY = 0.0;
+  QgsRectangle myExtent = mDataProvider->extent();
+  if ( myExtent.width() / myExtent.height() >=  myQPixmap.width() / myQPixmap.height() )
+  {
+    myMapUnitsPerPixel = myExtent.width() / myQPixmap.width();
+    myY = ( myQPixmap.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
+  }
+  else
+  {
+    myMapUnitsPerPixel = myExtent.height() / myQPixmap.height();
+    myX = ( myQPixmap.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
+  }
+
+  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
+  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
+
+  //myRasterViewPort->topLeftPoint = QgsPoint( 0, 0 );
+  myRasterViewPort->topLeftPoint = QgsPoint( myX, myY );
+
+  //myRasterViewPort->bottomRightPoint = QgsPoint( myQPixmap.width(), myQPixmap.height() );
+
+  myRasterViewPort->bottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->drawableAreaXDim = myQPixmap.width();
+  myRasterViewPort->drawableAreaYDim = myQPixmap.height();
+  //myRasterViewPort->drawableAreaXDim = myPixelWidth;
+  //myRasterViewPort->drawableAreaYDim = myPixelHeight;
+
+  myRasterViewPort->mDrawnExtent = myExtent;
+  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
+  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
+
+  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
+
+  QPainter * myQPainter = new QPainter( &myQPixmap );
+  draw( myQPainter, myRasterViewPort, myMapToPixel );
+  delete myRasterViewPort;
+  delete myMapToPixel;
+  myQPainter->end();
+  delete myQPainter;
+
+  return myQPixmap;
+}
+
+#if 0
 void QgsRasterLayer::thumbnailAsImage( QImage * thepImage )
 {
   //TODO: This should be depreciated and a new function written that just returns a new QImage, it will be safer
+  // removed as it's not used anywhere, use previewAsPixmap() instead
   if ( !thepImage )
     return;
 
@@ -2398,6 +2453,7 @@ void QgsRasterLayer::thumbnailAsImage( QImage * thepImage )
   }
 
 }
+#endif
 
 void QgsRasterLayer::triggerRepaint()
 {
