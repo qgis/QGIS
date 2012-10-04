@@ -20,6 +20,7 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
@@ -103,6 +104,10 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
+
+    /** Updates atlas' coverage layer combobox on layer addition / removal */
+    void onLayerRemoved( QString );
+    void onLayerAdded( QgsMapLayer* );
 
   private:
     QgsComposerMap* mComposerMap;

@@ -965,6 +965,14 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
       }
     }
 
+    // Connect to addition / removal of layers
+    QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
+    if ( layerRegistry )
+    {
+      connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( onLayerRemoved( QString ) ) );
+      connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerAdded( QgsMapLayer* ) ) );
+    }
+
     mAtlasFrame->setEnabled( true );
     updateGuiElements();
   }
@@ -976,7 +984,37 @@ void QgsComposerMapWidget::on_mIsAtlasCheckBox_stateChanged( int state )
     if ( composition->atlasMap() == mComposerMap )
     {
       composition->setAtlasMap( 0 );
+
+      QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
+      if ( layerRegistry )
+      {
+	disconnect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( onLayerRemoved( QString ) ) );
+	disconnect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( onLayerAdded( QgsMapLayer* ) ) );
+      }
     }
+  }
+}
+
+void QgsComposerMapWidget::onLayerRemoved( QString layerName )
+{
+  // update the atlas coverage layer combo box
+  for ( int i = 0; i < mAtlasCoverageLayerComboBox->count(); ++i )
+  {
+    if ( mAtlasCoverageLayerComboBox->itemText( i ) == layerName )
+    {
+      mAtlasCoverageLayerComboBox->removeItem( i );
+      break;
+    }
+  }
+}
+
+void QgsComposerMapWidget::onLayerAdded( QgsMapLayer* map )
+{
+  // update the atlas coverage layer combo box
+  QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( map );
+  if ( vectorLayer )
+  {
+    mAtlasCoverageLayerComboBox->addItem( map->id(), qVariantFromValue( (void*)map ) );
   }
 }
 
