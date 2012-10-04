@@ -27,6 +27,9 @@ class QgsMapToPixel;
 struct QgsRasterViewPort;
 class QgsRasterIterator;
 
+/** \ingroup core
+ * The drawing pipe for raster layers.
+ */
 class QgsRasterDrawer
 {
   public:

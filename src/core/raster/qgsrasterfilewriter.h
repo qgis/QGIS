@@ -26,6 +26,9 @@
 class QProgressDialog;
 class QgsRasterIterator;
 
+/** \ingroup core
+ * The raster file writer which allows you to save a raster to a new file.
+ */
 class CORE_EXPORT QgsRasterFileWriter
 {
   public:
