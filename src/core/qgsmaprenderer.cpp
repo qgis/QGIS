@@ -43,6 +43,7 @@
 
 QgsMapRenderer::QgsMapRenderer()
 {
+  mScale = 1;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
   mCachedTrForLayer = 0;
