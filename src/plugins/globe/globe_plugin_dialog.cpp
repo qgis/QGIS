@@ -514,20 +514,21 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::setStereoConfig()
 {
-  if (mViewer) {
-      mViewer->getDatabasePager()->clear();
-      //SETTING THE VALUES IN THE OEGearth instance
-      setStereoMode();
-      osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
-      osg::DisplaySettings::instance()->setScreenWidth( screenWidth->value() );
-      osg::DisplaySettings::instance()->setScreenHeight( screenHeight->value() );
-      osg::DisplaySettings::instance()->setEyeSeparation( eyeSeparation->value() );
-      osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
-      osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
-      osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
-        ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) splitStereoHorizontalEyeMapping->currentIndex() );
-      osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
-        ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) splitStereoVerticalEyeMapping->currentIndex() );
+  if ( mViewer )
+  {
+    mViewer->getDatabasePager()->clear();
+    //SETTING THE VALUES IN THE OEGearth instance
+    setStereoMode();
+    osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
+    osg::DisplaySettings::instance()->setScreenWidth( screenWidth->value() );
+    osg::DisplaySettings::instance()->setScreenHeight( screenHeight->value() );
+    osg::DisplaySettings::instance()->setEyeSeparation( eyeSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
+      ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) splitStereoHorizontalEyeMapping->currentIndex() );
+    osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
+      ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) splitStereoVerticalEyeMapping->currentIndex() );
   }
 }
 

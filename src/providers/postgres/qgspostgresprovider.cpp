@@ -2778,7 +2778,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   if ( QgsPostgresConn::wkbTypeFromPostgis( detectedType ) == QGis::WKBUnknown )
   {
     QgsPostgresLayerProperty layerProperty;
-    if( !mIsQuery )
+    if ( !mIsQuery )
     {
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
