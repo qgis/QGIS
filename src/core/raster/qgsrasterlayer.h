@@ -446,7 +446,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner */
+    /** Returns the data provider in a const-correct manner
+      @note available in python bindings as constDataProvider()
+     */
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource

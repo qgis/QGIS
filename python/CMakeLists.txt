@@ -72,10 +72,11 @@ IF(PYQT4_VERSION_NUM LESS 264196)       # 0x040804
 ENDIF(PYQT4_VERSION_NUM LESS 264196)
 
 # core module
-FILE(GLOB sip_files_core core/*.sip)
+FILE(GLOB_RECURSE sip_files_core core/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
 ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
+ADD_DEPENDENCIES(python_module_qgis_core ${sip_files_core})
 
 # additional gui includes
 INCLUDE_DIRECTORIES(
@@ -87,10 +88,11 @@ INCLUDE_DIRECTORIES(
 )
 
 # gui module
-FILE(GLOB sip_files_gui gui/*.sip)
+FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
 ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
+ADD_DEPENDENCIES(python_module_qgis_gui python_module_qgis_core ${sip_files_gui})
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(
@@ -105,16 +107,23 @@ INCLUDE_DIRECTORIES(
 )
 
 # analysis module
-FILE(GLOB sip_files_analysis analysis/*.sip)
+FILE(GLOB sip_files_analysis
+	analysis/*.sip
+	analysis/raster/*.sip
+	analysis/vector/*.sip
+	analysis/interpolation/*.sip
+)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
 ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
+ADD_DEPENDENCIES(python_module_qgis_analysis python_module_qgis_core ${sip_files_analysis})
 
 # network-analysis module
-FILE(GLOB sip_files_network_analysis analysis/network/*.sip)
+FILE(GLOB_RECURSE sip_files_network_analysis analysis/network/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_network_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
 ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
+ADD_DEPENDENCIES(python_module_qgis_networkanalysis python_module_qgis_core ${sip_files_network_analysis})
 
 SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
@@ -143,4 +152,3 @@ PYTHON_INSTALL(utils.py    ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console_sci.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(help.py  ${QGIS_PYTHON_DIR})
-

@@ -473,7 +473,7 @@ class QgsRasterLayer : QgsMapLayer
     virtual QStringList subLayers() const;
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
-    void thumbnailAsPixmap( QPixmap * theQPixmap );
+    void thumbnailAsPixmap( QPixmap * theQPixmap ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a pixmap */
     QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
