@@ -1847,6 +1847,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     setDrawingStyle( SingleBandGray );  //sensible default
   }
 
+  // Auto set alpha band
+  for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
+  {
+    if ( mDataProvider->colorInterpretation( bandNo ) == QgsRasterDataProvider::AlphaBand )
+    {
+      if ( mPipe.renderer() )
+      {
+        mPipe.renderer()->setAlphaBand( bandNo );
+      }
+      break;
+    }
+  }
+
   //resampler (must be after renderer)
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
