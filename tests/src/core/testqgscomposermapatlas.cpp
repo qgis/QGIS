@@ -102,6 +102,12 @@ void TestQgsComposerMapAtlas::initTestCase()
   mComposition->addComposerMap( mOverview );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
+  // set the fill symbol of the overview map
+  QgsStringMap props2;
+  props2.insert( "color", "127,0,0,127" );
+  QgsFillSymbolV2* fillSymbol2 = QgsFillSymbolV2::createSimple( props2 );
+  mOverview->setOverviewFrameMapSymbol( fillSymbol2 );
+
   // header label
   mLabel1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mLabel1 );

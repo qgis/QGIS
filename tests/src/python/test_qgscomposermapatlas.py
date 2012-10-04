@@ -69,6 +69,12 @@ class TestQgsComposerMapAtlas(unittest.TestCase):
         nextent = QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 )
         mOverview.setNewExtent( nextent )
 
+        # set the fill symbol of the overview map
+        props2 = { "color": "127,0,0,127" }
+        fillSymbol2 = QgsFillSymbolV2.createSimple( props2 )
+        mOverview.setOverviewFrameMapSymbol( fillSymbol2 );
+        
+
         # header label
         mLabel1 = QgsComposerLabel( mComposition )
         mComposition.addComposerLabel( mLabel1 )
