@@ -192,9 +192,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
     case QgsVectorLayer::ValueRelation:
     {
-      QSettings settings;
-      QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-
       const QgsVectorLayer::ValueRelationData &data = vl->valueRelation( idx );
 
       QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( data.mLayer ) );
@@ -208,9 +205,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
         if ( !data.mFilterAttributeColumn.isNull() )
           fi = layer->fieldNameIndex( data.mFilterAttributeColumn );
-
-        if ( data.mAllowNull )
-          map.insert( nullValue, tr( "(no selection)" ) );
 
         if ( ki >= 0 && vi >= 0 )
         {
@@ -236,6 +230,12 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         QComboBox *cb = comboBox( editor, parent );
         if ( cb )
         {
+          if ( data.mAllowNull )
+          {
+            QSettings settings;
+            cb->addItem( tr( "(no selection)" ), settings.value( "qgis/nullValue", "NULL" ).toString() );
+          }
+
           for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
           {
             if ( data.mOrderByValue )
