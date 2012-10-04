@@ -51,337 +51,356 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_25">
        <item row="0" column="0">
-        <widget class="QGroupBox" name="titleBox">
-         <property name="title">
-          <string>General settings</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_26">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Project title</string>
-            </property>
-            <property name="buddy">
-             <cstring>titleEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="3">
-           <widget class="QLineEdit" name="titleEdit">
-            <property name="toolTip">
-             <string>Descriptive project name</string>
-            </property>
-            <property name="text">
-             <string>Default project title</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="textLabel1">
-            <property name="text">
-             <string>Selection color</string>
-            </property>
-            <property name="buddy">
-             <cstring>pbnSelectionColor</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="3">
-           <widget class="QgsColorButton" name="pbnSelectionColor">
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Background color</string>
-            </property>
-            <property name="buddy">
-             <cstring>pbnCanvasColor</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="3">
-           <widget class="QgsColorButton" name="pbnCanvasColor">
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QComboBox" name="cbxAbsolutePath">
-            <item>
-             <property name="text">
-              <string>absolute</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>relative</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Save paths</string>
-            </property>
-            <property name="buddy">
-             <cstring>cbxAbsolutePath</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="btnGrpMapUnits">
-         <property name="toolTip">
-          <string>Used when CRS transformation is turned off</string>
-         </property>
-         <property name="title">
-          <string>Canvas units</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_27">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="radMeters">
-            <property name="text">
-             <string>Meters</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="radFeet">
-            <property name="text">
-             <string>Feet</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="radDegrees">
-            <property name="text">
-             <string>Degree</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QGroupBox" name="btnGrpDegreeDisplay">
-         <property name="title">
-          <string>Degree display</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_30">
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="radD">
-            <property name="text">
-             <string>Decimal degrees</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="radDM">
-            <property name="text">
-             <string>Degrees, Minutes</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QRadioButton" name="radDMS">
-            <property name="text">
-             <string>Degrees, Minutes, Seconds</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QGroupBox" name="btnGrpPrecision">
-         <property name="title">
-          <string>Precision</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_28">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="radAutomatic">
-            <property name="toolTip">
-             <string>Automatically sets the number of decimal places in the mouse position display</string>
-            </property>
-            <property name="whatsThis">
-             <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
-            </property>
-            <property name="text">
-             <string>Automatic</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="radManual">
-            <property name="toolTip">
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="whatsThis">
-             <string>Sets the number of decimal places to use for the mouse position display</string>
-            </property>
-            <property name="text">
-             <string>Manual</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QSpinBox" name="spinBoxDP">
-            <property name="toolTip">
-             <string>The number of decimal places for the manual option</string>
-            </property>
-            <property name="whatsThis">
-             <string>The number of decimal places for the manual option</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="labelDP">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>decimal places</string>
-            </property>
-            <property name="buddy">
-             <cstring>spinBoxDP</cstring>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QGroupBox" name="grpProjectScales">
-         <property name="title">
-          <string>Project scales</string>
-         </property>
-         <property name="checkable">
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <widget class="QListWidget" name="lstScales"/>
-          </item>
-          <item row="0" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QToolButton" name="pbnAddScale">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnRemoveScale">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnImportScales">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionFolder.png</normaloff>:/images/themes/default/mActionFolder.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnExportScales">
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>602</width>
+            <height>552</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_13">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="titleBox">
+             <property name="title">
+              <string>General settings</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_26">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Project title</string>
+                </property>
+                <property name="buddy">
+                 <cstring>titleEdit</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="3">
+               <widget class="QLineEdit" name="titleEdit">
+                <property name="toolTip">
+                 <string>Descriptive project name</string>
+                </property>
+                <property name="text">
+                 <string>Default project title</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="textLabel1">
+                <property name="text">
+                 <string>Selection color</string>
+                </property>
+                <property name="buddy">
+                 <cstring>pbnSelectionColor</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="3">
+               <widget class="QgsColorButton" name="pbnSelectionColor">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Background color</string>
+                </property>
+                <property name="buddy">
+                 <cstring>pbnCanvasColor</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="3">
+               <widget class="QgsColorButton" name="pbnCanvasColor">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QComboBox" name="cbxAbsolutePath">
+                <item>
+                 <property name="text">
+                  <string>absolute</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>relative</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Save paths</string>
+                </property>
+                <property name="buddy">
+                 <cstring>cbxAbsolutePath</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="btnGrpMapUnits">
+             <property name="toolTip">
+              <string>Used when CRS transformation is turned off</string>
+             </property>
+             <property name="title">
+              <string>Canvas units</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_27">
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radMeters">
+                <property name="text">
+                 <string>Meters</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QRadioButton" name="radFeet">
+                <property name="text">
+                 <string>Feet</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QRadioButton" name="radDegrees">
+                <property name="text">
+                 <string>Degree</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="btnGrpDegreeDisplay">
+             <property name="title">
+              <string>Degree display</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_30">
+              <item row="0" column="1">
+               <widget class="QRadioButton" name="radD">
+                <property name="text">
+                 <string>Decimal degrees</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QRadioButton" name="radDM">
+                <property name="text">
+                 <string>Degrees, Minutes</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QRadioButton" name="radDMS">
+                <property name="text">
+                 <string>Degrees, Minutes, Seconds</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="btnGrpPrecision">
+             <property name="title">
+              <string>Precision</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radAutomatic">
+                <property name="toolTip">
+                 <string>Automatically sets the number of decimal places in the mouse position display</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
+                </property>
+                <property name="text">
+                 <string>Automatic</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QRadioButton" name="radManual">
+                <property name="toolTip">
+                 <string>Sets the number of decimal places to use for the mouse position display</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Sets the number of decimal places to use for the mouse position display</string>
+                </property>
+                <property name="text">
+                 <string>Manual</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QSpinBox" name="spinBoxDP">
+                <property name="toolTip">
+                 <string>The number of decimal places for the manual option</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The number of decimal places for the manual option</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="labelDP">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>decimal places</string>
+                </property>
+                <property name="buddy">
+                 <cstring>spinBoxDP</cstring>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QGroupBox" name="grpProjectScales">
+             <property name="title">
+              <string>Project scales</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <widget class="QListWidget" name="lstScales"/>
+              </item>
+              <item row="0" column="1">
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="QToolButton" name="pbnAddScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnRemoveScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnImportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFolder.png</normaloff>:/images/themes/default/mActionFolder.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnExportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -784,7 +803,7 @@
             <x>0</x>
             <y>0</y>
             <width>670</width>
-            <height>812</height>
+            <height>926</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -1088,6 +1107,12 @@
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="0">
                <widget class="QTableWidget" name="twWFSLayers">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <column>
                  <property name="text">
                   <string>Layer</string>
