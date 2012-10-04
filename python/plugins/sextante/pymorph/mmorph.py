@@ -17,6 +17,8 @@
 ***************************************************************************
 """
 
+from __future__ import division
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -138,7 +140,6 @@ pattern recognition and image analysis.
 - `to_uint8()`     : Convert an image to an uint8 image.
 
 """
-from __future__ import division
 from pymorph_version import __version__, __version_info__
 
 import sys, os
