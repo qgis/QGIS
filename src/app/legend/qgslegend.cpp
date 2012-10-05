@@ -44,6 +44,8 @@
 #include <QPixmap>
 #include <QTreeWidgetItem>
 #include <QClipboard>
+#include <QDomElement>
+#include <QDomDocument>
 
 const int AUTOSCROLL_MARGIN = 16;
 
@@ -1807,6 +1809,68 @@ QStringList QgsLegend::groups()
   }
 
   return groupList;
+}
+
+QDomDocument QgsLegend::groupLayerHierarchy()
+{
+  
+  QTreeWidgetItem *startItem = invisibleRootItem();
+
+  if (!startItem) 
+  {
+    return QDomDocument();
+  }
+  
+  QDomDocument legendDocument = QDomDocument("Group Layer Hierarchy");
+  QDomElement legendElement = legendDocument.createElement("Legend");
+  legendDocument.appendChild (legendElement);
+
+  // first "group" is the invisibleRootItem node that contains all the legend items
+  int groupIndex = -1;
+  int layerIndex = 0;
+
+  extractGroupHierarchy (&legendDocument, &legendElement, &groupIndex, &layerIndex, startItem);
+  return legendDocument;
+}
+
+void QgsLegend::extractGroupHierarchy ( QDomDocument * legendDocument, QDomElement *legendElement, int *groupIndex,int *layerIndex, QTreeWidgetItem *startItem )
+{
+  // preserve the group index to be associed to any layer inside the group
+  int currentGroupIndex = *groupIndex;
+
+  for (int i = 0; i< startItem->childCount(); i++) 
+  {
+    QgsLegendGroup* legendGroup = dynamic_cast<QgsLegendGroup *>( startItem->child(i) );
+    if (legendGroup) 
+    {
+      // each group is sequentially indexed starting from zero
+      *groupIndex = *groupIndex + 1;
+
+      QDomElement childElement = legendDocument->createElement ("Group");
+      childElement.setAttribute ("Name",startItem->child(i)->text(0));
+      childElement.setAttribute ("Index",*groupIndex);
+      legendElement->appendChild (childElement);
+  
+      // recursively extract Hierarchy for this group
+      extractGroupHierarchy (legendDocument, &childElement, groupIndex, layerIndex, startItem->child(i));
+    }
+    else 
+    {
+      QgsLegendLayer* legendLayer = dynamic_cast<QgsLegendLayer *>( startItem->child(i) );
+      if (legendLayer) 
+      {
+        QDomElement childElement = legendDocument->createElement ("Layer");
+        childElement.setAttribute ("Name",startItem->child(i)->text(0));
+        childElement.setAttribute ("Id",legendLayer->layer()->id());
+        childElement.setAttribute ("Index",*layerIndex);
+        childElement.setAttribute ("GroupIndex",currentGroupIndex);
+        legendElement->appendChild (childElement);
+
+        // each layer is sequentially indexed starting from zero
+        *layerIndex = *layerIndex + 1;
+      }
+    }
+  }
 }
 
 QList< GroupLayerInfo > QgsLegend::groupLayerRelationship()

@@ -140,6 +140,9 @@ class QgsLegend : public QTreeWidget
     /**Returns a string list of groups*/
     QStringList groups();
 
+    //! Return the groups and layers hierarchy in the legend
+    QDomDocument QgsLegend::groupLayerHierarchy();
+
     //! Return the relationship between groups and layers in the legend
     QList< GroupLayerInfo > groupLayerRelationship();
 
@@ -449,6 +452,9 @@ class QgsLegend : public QTreeWidget
     void makeToTopLevelItem();
 
   private:
+
+    void QgsLegend::extractGroupHierarchy ( QDomDocument *legendDocument, QDomElement *legendElement, int *groupIndex, int *layerIndex, QTreeWidgetItem *startItem );
+
     bool readXML( QgsLegendGroup *parent, const QDomNode &node );
     bool writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document );
 

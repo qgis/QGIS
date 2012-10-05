@@ -118,6 +118,15 @@ QStringList QgsAppLegendInterface::groups()
   return mLegend->groups();
 }
 
+QDomDocument QgsAppLegendInterface::groupLayerHierarchy()
+{
+  if ( mLegend )
+  {
+    return mLegend->groupLayerHierarchy();
+  }
+  return QDomDocument();
+}
+
 QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
 {
   if ( mLegend )
