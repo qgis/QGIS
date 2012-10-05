@@ -424,6 +424,18 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             else:
                 QsciScintilla.keyPressEvent(self, e)
                 
+    def mousePressEvent(self, e):
+        """
+        Re-implemented to handle the mouse press event.
+        event: the mouse press event (QMouseEvent)
+        """
+        if e.button() == Qt.MidButton:
+            self.setFocus()
+            self.paste()
+            e.accept()
+        else:
+            QsciScintilla.mousePressEvent(self, e)
+                
     def paste(self):
         """Reimplement QScintilla method"""
         stringPaste = unicode(QApplication.clipboard().text())
