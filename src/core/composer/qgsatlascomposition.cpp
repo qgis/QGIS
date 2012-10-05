@@ -48,9 +48,12 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 {
   mCoverageLayer = layer;
 
-  // update the number of features
-  QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)provider->featureCount() ) );
+  if ( mCoverageLayer != 0 )
+  {
+    // update the number of features
+    QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
+    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)provider->featureCount() ) );
+  }
 }
 
 void QgsAtlasComposition::beginRender()

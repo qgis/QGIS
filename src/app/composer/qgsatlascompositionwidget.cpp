@@ -98,6 +98,10 @@ void QgsAtlasCompositionWidget::onLayerRemoved( QString layerName )
       break;
     }
   }
+  if ( mAtlasCoverageLayerComboBox->count() == 0 )
+  {
+    mAtlas->setCoverageLayer( 0 );
+  }
 }
 
 void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
@@ -108,11 +112,19 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
   {
     mAtlasCoverageLayerComboBox->addItem( map->id(), qVariantFromValue( (void*)map ) );
   }
+  if ( mAtlasCoverageLayerComboBox->count() == 1 )
+  {
+    mAtlas->setCoverageLayer( vectorLayer );
+  }
 }
 
 void QgsAtlasCompositionWidget::onComposerMapAdded( QgsComposerMap* map )
 {
-  mComposerMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), map->id() );  
+  mComposerMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), qVariantFromValue( (void*)map ) );  
+  if ( mComposerMapComboBox->count() == 1 )
+  {
+    mAtlas->setComposerMap( map );
+  }
 }
 
 void QgsAtlasCompositionWidget::onItemRemoved( QgsComposerItem* item )
@@ -120,11 +132,15 @@ void QgsAtlasCompositionWidget::onItemRemoved( QgsComposerItem* item )
   QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
   if ( map )
   {
-    int idx = mComposerMapComboBox->findData( map->id() );
+    int idx = mComposerMapComboBox->findData( qVariantFromValue( (void*)map ) );
     if ( idx != -1 )
     {
       mComposerMapComboBox->removeItem( idx );
     }
+  }
+  if ( mComposerMapComboBox->count() == 0 )
+  {
+    mAtlas->setComposerMap( 0 );
   }
 }
 
@@ -135,8 +151,15 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
   {
     return;
   }
-  QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>(mAtlasCoverageLayerComboBox->itemData( index ).value<void*>());
-  atlasMap->setCoverageLayer( layer );
+  if ( index == -1 )
+  {
+    atlasMap->setCoverageLayer( 0 );
+  }
+  else
+  {
+    QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>(mAtlasCoverageLayerComboBox->itemData( index ).value<void*>());
+    atlasMap->setCoverageLayer( layer );
+  }
 }
 
 void QgsAtlasCompositionWidget::on_mComposerMapComboBox_currentIndexChanged( int index )
@@ -146,8 +169,15 @@ void QgsAtlasCompositionWidget::on_mComposerMapComboBox_currentIndexChanged( int
   {
     return;
   }
-  QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>(mComposerMapComboBox->itemData( index ).value<void*>());
-  atlasMap->setComposerMap( map );
+  if ( index == -1 )
+  {
+    atlasMap->setComposerMap( 0 );
+  }
+  else
+  {
+    QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>(mComposerMapComboBox->itemData( index ).value<void*>());
+    atlasMap->setComposerMap( map );
+  }
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_textChanged( const QString& text )
