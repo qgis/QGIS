@@ -148,12 +148,13 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.append('from sextante.core.Sextante import Sextante')
             self.move_cursor_to_end()
         elif command == "cLayer":
-            """Retrive current Layer from map camvas"""
+            """Retrieve current Layer from map camvas"""
             self.append('cLayer = iface.mapCanvas().currentLayer()')
             self.move_cursor_to_end()
         self.setFocus()
         
     def setLexers(self, lexer):
+	from qgis.core import QgsApplication
         if lexer:
             font = QFont()
             font.setFamily('Mono') ## Courier New
@@ -174,7 +175,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 3)
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
-            self.api.loadPrepared(QString(os.path.dirname(os.path.dirname(__file__)) + "/qsci_apis/pyqgis_master.pap"))
+            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
+
             self.setLexer(self.lexer)
             
     ## TODO: show completion list for file and directory

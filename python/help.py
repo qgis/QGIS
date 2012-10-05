@@ -57,7 +57,7 @@ class HelpDialog(QtGui.QDialog):
         self.setLayout(self.verticalLayout)
         jQueryPath = QgsApplication.pkgDataPath()
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
-        filename = os.path.dirname(__file__) + "/helpConsole/help.htm? \
+        filename = QgsApplication.pkgDataPath() + "/python/helpConsole/help.htm? \
                                                 lang=" + localeFullName \
                                                 + "&pkgDir=" + jQueryPath
                                                 
