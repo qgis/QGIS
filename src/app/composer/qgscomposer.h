@@ -34,6 +34,7 @@ class QgsComposerAttributeTable;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
+class QgsAtlasComposition;
 
 class QGridLayout;
 class QDomNode;
@@ -311,6 +312,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Current composition
     QgsComposition *mComposition;
 
+    //! Atlas map
+    QgsAtlasComposition* mAtlasComposition;
+
     //! Pointer to QGIS application
     QgisApp *mQgis;
 
@@ -341,6 +345,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;
     QDockWidget* mGeneralDock;
+    QDockWidget* mAtlasDock;
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;

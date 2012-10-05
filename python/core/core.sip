@@ -98,6 +98,7 @@
 %Include composer/qgscomposershape.sip
 %Include composer/qgscomposertable.sip
 %Include composer/qgscomposition.sip
+%Include composer/qgsatlascomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
 %Include composer/qgslegendmodel.sip
 %Include composer/qgsnumericscalebarstyle.sip
