@@ -6420,7 +6420,7 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     </message>
     <message>
         <source>Help Python Console</source>
-        <translation type="obsolete">Aiuto Console Python</translation>
+        <translation>Aiuto Console Python</translation>
     </message>
     <message>
         <source>Import Class</source>
