@@ -626,19 +626,19 @@ void QgsRasterLayerProperties::sync()
   }
 
   //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
-  mRasterLayer->thumbnailAsPixmap( &myQPixmap );
-  pixmapThumbnail->setPixmap( myQPixmap );
+  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
+
+  // TODO fix legend + palette pixmap
 
   //update the legend pixmap on this dialog
   //pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
 
   //set the palette pixmap
-  //pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
-  pixmapPalette->setScaledContents( true );
-  pixmapPalette->repaint();
+  // pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
+  // pixmapPalette->setScaledContents( true );
+  // pixmapPalette->repaint();
 
   QgsDebugMsg( "populate metadata tab" );
   /*
@@ -761,9 +761,9 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
 
   //update the legend pixmap
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
 
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
 
@@ -803,9 +803,7 @@ void QgsRasterLayerProperties::apply()
 
 
   //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
-  mRasterLayer->thumbnailAsPixmap( &myQPixmap );
-  pixmapThumbnail->setPixmap( myQPixmap );
+  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
 
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
@@ -914,9 +912,10 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     }
   }
   //update the legend pixmap
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
+
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->setHtml( mRasterLayer->metadata() );

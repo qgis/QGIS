@@ -71,7 +71,7 @@ class AlgorithmProvider():
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
         extensions = ["shp"]#shp is the default, should be the first
         for extension in formats.keys():
-            extension = str(extension)
+            extension = unicode(extension)
             extension = extension[extension.find('*.') + 2:]
             extension = extension[:extension.find(" ")]
             if extension.lower() != "shp":

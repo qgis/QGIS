@@ -702,7 +702,9 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
             QgsSymbolV2* subSymbol = loadSymbol( s );
             bool res = layer->setSubSymbol( subSymbol );
             if ( !res )
+            {
               QgsDebugMsg( "symbol layer refused subsymbol: " + s.attribute( "name" ) );
+            }
           }
           layers.append( layer );
         }

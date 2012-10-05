@@ -90,7 +90,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     mSelBrush.setStyle( mBrushStyle );
 
   QColor borderColor = mBorderColor;
-  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF());
+  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF() );
   mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );

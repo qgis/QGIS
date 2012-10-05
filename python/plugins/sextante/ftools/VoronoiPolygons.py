@@ -1,65 +1,120 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    VoronoiPolygons.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import os.path
+from sets import Set
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
 from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
+from sextante.parameters.ParameterVector import ParameterVector
+
 from sextante.outputs.OutputVector import OutputVector
-import voronoi
-from sets import Set
+
+from sextante.ftools import voronoi
 
 class VoronoiPolygons(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/icons/voronoi.png")
+
+    def defineCharacteristics(self):
+        self.name = "Voronoi polygons"
+        self.group = "Geometry tools"
+
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+
+        self.addOutput(OutputVector(self.OUTPUT, "Voronoi polygons"))
+
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(VoronoiPolygons.INPUT))
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
-        writer = self.getOutputFromName(VoronoiPolygons.OUTPUT).getVectorWriter(vprovider.fields(), QGis.WKBPolygon, vprovider.crs() )
+        settings = QSettings()
+        encoding = settings.value( "/UI/encoding", "System" ).toString()
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+
+        output = self.getOutputValue(self.OUTPUT)
+
+        provider = layer.dataProvider()
+        layer.select(layer.pendingAllAttributesList())
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+                     QGis.WKBPolygon, provider.crs())
+
         inFeat = QgsFeature()
         outFeat = QgsFeature()
-        extent = vlayer.extent()
+        extent = layer.extent()
         height = extent.height()
         width = extent.width()
         c = voronoi.Context()
         pts = []
         ptDict = {}
         ptNdx = -1
-        while vprovider.nextFeature(inFeat):
-          geom = QgsGeometry(inFeat.geometry())
-          point = geom.asPoint()
-          x = point.x()-extent.xMinimum()
-          y = point.y()-extent.yMinimum()
-          pts.append((x, y))
-          ptNdx +=1
-          ptDict[ptNdx] = inFeat.id()
-        #self.vlayer = None
+
+        while layer.nextFeature(inFeat):
+            geom = QgsGeometry(inFeat.geometry())
+            point = geom.asPoint()
+            x = point.x()-extent.xMinimum()
+            y = point.y()-extent.yMinimum()
+            pts.append((x, y))
+            ptNdx +=1
+            ptDict[ptNdx] = inFeat.id()
+
         if len(pts) < 3:
-          return False
+            raise GeoAlgorithmExecutionException("Input file should contain at least 3 points. Choose another file and try again.")
+
         uniqueSet = Set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j) for j, i in enumerate(uniqueSet)])
         voronoi.voronoi(sl, c)
         inFeat = QgsFeature()
-        nFeat = len(c.polygons)
-        nElement = 0
-        for site, edges in c.polygons.iteritems():
-          vprovider.featureAtId(ptDict[ids[site]], inFeat, True,  allAttrs)
-          lines = self.clip_voronoi(edges, c, width, height, extent, 0, 0)
-          geom = QgsGeometry.fromMultiPoint(lines)
-          geom = QgsGeometry(geom.convexHull())
-          outFeat.setGeometry(geom)
-          outFeat.setAttributeMap(inFeat.attributeMap())
-          writer.addFeature(outFeat)
-          nElement += 1
-          progress.setPercentage(nElement/nFeat * 100)
-        del writer
-        return True
 
+        current = 0
+        total = 100.0 / float(len(c.polygons))
+
+        for site, edges in c.polygons.iteritems():
+            layer.featureAtId(ptDict[ids[site]], inFeat)
+            lines = self.clip_voronoi(edges, c, width, height, extent, 0, 0)
+
+            geom = QgsGeometry.fromMultiPoint(lines)
+            geom = QgsGeometry(geom.convexHull())
+            outFeat.setGeometry(geom)
+            outFeat.setAttributeMap(inFeat.attributeMap())
+            writer.addFeature(outFeat)
+
+            current += 1
+            progress.setPercentage(int(current * total))
+
+        del writer
 
     def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
         """ Clip voronoi function based on code written for Inkscape
@@ -153,10 +208,3 @@ class VoronoiPolygons(GeoAlgorithm):
           if hasYMin:
             lines.append(QgsPoint(width+extent.xMinimum()+exX, extent.yMinimum()-exY))
         return lines
-
-    def defineCharacteristics(self):
-        self.name = "Voronoi polygons"
-        self.group = "Geometry tools"
-        self.addParameter(ParameterVector(VoronoiPolygons.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addOutput(OutputVector(VoronoiPolygons.OUTPUT, "Voronoi polygons"))
-

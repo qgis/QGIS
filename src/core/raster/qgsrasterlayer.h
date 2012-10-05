@@ -446,7 +446,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner */
+    /** Returns the data provider in a const-correct manner
+      @note available in python bindings as constDataProvider()
+     */
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource
@@ -501,7 +503,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /** \brief Get a legend image for this layer */
-    QPixmap legendAsPixmap();
+    Q_DECL_DEPRECATED QPixmap legendAsPixmap();
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
     //! @deprecated
@@ -639,12 +641,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual QStringList subLayers() const;
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
-    void thumbnailAsPixmap( QPixmap * theQPixmap );
+    Q_DECL_DEPRECATED void thumbnailAsPixmap( QPixmap * theQPixmap );
+
+    /** \brief Draws a preview of the rasterlayer into a pixmap */
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */
-    void thumbnailAsImage( QImage * thepImage );
+    /* Q_DECL_DEPRECATED void thumbnailAsImage( QImage * thepImage ); */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

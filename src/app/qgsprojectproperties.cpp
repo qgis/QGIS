@@ -744,6 +744,24 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   mWMSList->addItems( crsList.values() );
 }
 
+void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( true );
+  }
+}
+
+void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( false );
+  }
+}
+
 void QgsProjectProperties::on_pbnAddScale_clicked()
 {
   int myScale = QInputDialog::getInt(

@@ -33,6 +33,9 @@ struct QgsRasterViewPort;
 
 class QDomElement;
 
+/** \ingroup core
+  * Raster renderer pipe that applies colours to a raster.
+  */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
   public:

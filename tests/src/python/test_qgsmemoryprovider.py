@@ -1,4 +1,18 @@
-import unittest
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsMemoryProvider.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Alexander Bruy'
+__date__ = '20/08/2012'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+from PyQt4.QtCore import QVariant
 
 from qgis.core import (QGis,
                         QgsVectorLayer,
@@ -7,12 +21,14 @@ from qgis.core import (QGis,
                         QgsGeometry,
                         QgsPoint)
 
-from PyQt4.QtCore import QVariant
-
-from utilities import getQgisTestApp
+from utilities import (getQgisTestApp,
+                       TestCase,
+                       unittest
+                       #expectedFailure
+                       )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-class TestQgsMemoryProvider(unittest.TestCase):
+class TestQgsMemoryProvider(TestCase):
 
     def testPointCtor(self):
         layer = QgsVectorLayer("Point", "test", "memory")

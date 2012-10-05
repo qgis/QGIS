@@ -1,12 +1,41 @@
-from sextante.core.GeoAlgorithm import GeoAlgorithm
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    MultipartToSingleparts.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os.path
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
 from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.core.QGisLayers import QGisLayers
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.QGisLayers import QGisLayers
+
+from sextante.parameters.ParameterVector import ParameterVector
+
 from sextante.outputs.OutputVector import OutputVector
 
 class MultipartToSingleparts(GeoAlgorithm):
@@ -17,79 +46,90 @@ class MultipartToSingleparts(GeoAlgorithm):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/multi_to_single.png")
 
+    def defineCharacteristics(self):
+        self.name = "Multipart to singleparts"
+        self.group = "Geometry tools"
+
+        self.addParameter(ParameterVector(self.INPUT, "Input layer"))
+        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
-        fields = vprovider.fields()
-        geomType = self.multiToSingleGeom(vprovider.geometryType())
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vprovider.crs() )
+        settings = QSettings()
+        encoding = settings.value( "/UI/encoding", "System" ).toString()
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        output = self.getOutputValue(self.OUTPUT)
+
+        provider = layer.dataProvider()
+        layer.select(layer.pendingAllAttributesList())
+
+        geomType = self.multiToSingleGeom(provider.geometryType())
+
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+                     geomType, provider.crs())
+
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
-        nElement = 0
-        while vprovider.nextFeature( inFeat ):
-            nElement += 1
-            progress.setPercentage((nElement*100)/nFeat)
+
+        current = 0
+        total = 100.0 / float(provider.featureCount())
+
+        while layer.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
-            featList = self.extractAsSingle( inGeom )
-            outFeat.setAttributeMap( atMap )
-            for i in featList:
-                outFeat.setGeometry( i )
-                writer.addFeature( outFeat )
+
+            features = self.extractAsSingle(inGeom)
+            outFeat.setAttributeMap(atMap)
+
+            for f in features:
+                outFeat.setGeometry(f)
+                writer.addFeature(outFeat)
+
+            current += 1
+            progress.setPercentage(int(current * total))
+
         del writer
 
 
     def multiToSingleGeom(self, wkbType):
         try:
             if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                         QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
+                            QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
                 return QGis.WKBPoint
             elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                           QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
+                              QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
                 return QGis.WKBLineString
             elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                           QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+                              QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
                 return QGis.WKBPolygon
             else:
                 return QGis.WKBUnknown
         except Exception, err:
-            raise GeoAlgorithmExecutionException(str(err))
+            raise GeoAlgorithmExecutionException(unicode(err))
 
-
-    def extractAsSingle( self, geom ):
-        multi_geom = QgsGeometry()
-        temp_geom = []
-        if geom.type() == 0:
+    def extractAsSingle(self, geom):
+        multiGeom = QgsGeometry()
+        geometries = []
+        if geom.type() == QGis.Point:
             if geom.isMultipart():
-                multi_geom = geom.asMultiPoint()
-                for i in multi_geom:
-                    temp_geom.append( QgsGeometry().fromPoint ( i ) )
+                multiGeom = geom.asMultiPoint()
+                for i in multiGeom:
+                    geometries.append(QgsGeometry().fromPoint(i))
             else:
-                temp_geom.append( geom )
-        elif geom.type() == 1:
+                geometries.append(geom)
+        elif geom.type() == QGis.Line:
             if geom.isMultipart():
-                multi_geom = geom.asMultiPolyline()
-                for i in multi_geom:
-                    temp_geom.append( QgsGeometry().fromPolyline( i ) )
+                multiGeom = geom.asMultiPolyline()
+                for i in multiGeom:
+                    geometries.append(QgsGeometry().fromPolyline(i))
             else:
-                temp_geom.append( geom )
-        elif geom.type() == 2:
+                geometries.append(geom)
+        elif geom.type() == QGis.Polygon:
             if geom.isMultipart():
-                multi_geom = geom.asMultiPolygon()
-                for i in multi_geom:
-                    temp_geom.append( QgsGeometry().fromPolygon( i ) )
+                multiGeom = geom.asMultiPolygon()
+                for i in multiGeom:
+                    geometries.append(QgsGeometry().fromPolygon(i))
             else:
-                temp_geom.append( geom )
-        return temp_geom
-
-
-    def defineCharacteristics(self):
-        self.name = "Multipart to singleparts"
-        self.group = "Geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer"))
-        self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
-
+                geometries.append(geom)
+        return geometries

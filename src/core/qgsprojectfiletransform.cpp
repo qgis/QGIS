@@ -38,7 +38,9 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 0, 8, 1 ), PFV( 0, 9, 0 ), &QgsProjectFileTransform::transform081to090},
   {PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transform091to0100},
-  {PFV( 0, 9, 2 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transformNull},
+  // Following line is a hack that takes us straight from 0.9.2 to 0.11.0
+  // due to an unknown bug in migrating 0.9.2 files which we didnt pursue (TS & GS)
+  {PFV( 0, 9, 2 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110},
   {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &QgsProjectFileTransform::transform0110to1000},
   {PFV( 1, 0, 0 ), PFV( 1, 1, 0 ), &QgsProjectFileTransform::transformNull},

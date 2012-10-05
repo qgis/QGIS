@@ -2778,8 +2778,16 @@ bool QgsPostgresProvider::getGeometryDetails()
   if ( QgsPostgresConn::wkbTypeFromPostgis( detectedType ) == QGis::WKBUnknown )
   {
     QgsPostgresLayerProperty layerProperty;
-    layerProperty.schemaName = schemaName;
-    layerProperty.tableName = tableName;
+    if ( !mIsQuery )
+    {
+      layerProperty.schemaName = schemaName;
+      layerProperty.tableName = tableName;
+    }
+    else
+    {
+      layerProperty.schemaName = "";
+      layerProperty.tableName = mQuery;
+    }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.isGeography = mIsGeography;
 

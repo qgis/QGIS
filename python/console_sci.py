@@ -174,7 +174,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 3)
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
-            self.api.loadPrepared(QString(os.path.dirname(__file__) + "/api/pyqgis_master.pap"))
+            self.api.loadPrepared(QString(os.path.dirname(os.path.dirname(__file__)) + "/qsci_apis/pyqgis_master.pap"))
             self.setLexer(self.lexer)
             
     ## TODO: show completion list for file and directory

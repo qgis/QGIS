@@ -62,7 +62,22 @@
         offender: 'server',
         coverages: [ 'modis-001' ],
         versions: [ '1.0.0' ],
-        description: "The server DescribeCoverage advertises temporalDomain.timePosition 2002-001, but GetCoverages fails with 'msWCSGetCoverage(): WCS server error. Underlying layer is not tiled, unable to do temporal subsetting.' if TIME=2002-001 is used."
+        description: "The server DescribeCoverage advertises temporalDomain.timePosition 2002-001, but GetCoverage fails with 'msWCSGetCoverage(): WCS server error. Underlying layer is not tiled, unable to do temporal subsetting.' if TIME=2002-001 is used."
+      }
+    ]
+  }, {
+    url: 'http://geoserver-dev-1.irradiare.com:8080/geoserver/ows',
+    issues: [
+      {
+        offender: 'server',
+        versions: [ '1.0.0' ],
+        description: "The server fails in GetCapabilities with 'java.io.IOException 
+null Translator error No input stream for the provided source...'"
+      },{
+        offender: 'server',
+        coverages: [ 'Arc_Sample' ],
+        versions: [ '1.1.1' ],
+        description: "The problem seems to be that some versions of Geoserver (2.1.3) require latitude in GRIDOFFSETS to be negative and other versions (2.1-SNAPSHOT) positive. BTW: GetCoverage returns raster without CRS and thues the extent means raster size and cannot be used to verify extent"
       }
     ]
   }, {

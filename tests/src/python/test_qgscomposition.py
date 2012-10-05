@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-test_qgscomposerhtml.py
-                     --------------------------------------
-               Date                 : September 2012
-               Copyright            : (C) 2012 by Tim Sutton
-               email                : tim@linfiniti.com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-'''
-import unittest
-import sys
+"""QGIS Unit tests for QgsComposition.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = '(C) 2012 by Tim Sutton'
+__date__ = '20/08/2012'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
-from utilities import unitTestDataPath, getQgisTestApp
+
 from PyQt4.QtCore import QFileInfo, QDir, QStringList
 from PyQt4.QtXml import QDomDocument
+
 from qgis.core import (QgsComposition,
                        QgsPoint,
                        QgsRasterLayer,
@@ -28,16 +25,12 @@ from qgis.core import (QgsComposition,
                        QgsMapRenderer
                        )
 
-# support python < 2.7 via unittest2
-# needed for expected failure decorator
-if sys.version_info[0:2] < (2,7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-    except ImportError:
-        print "You should install unittest2 to run the salt tests"
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
+from utilities import (unitTestDataPath,
+                       getQgisTestApp,
+                       TestCase,
+                       unittest
+                       #expectedFailure
+                       )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
@@ -148,9 +141,6 @@ class TestQgsComposition(TestCase):
         myMessage = ('Expected file size to be greater than %s, got %s' %
                      (myExpectedFileSize, myFileSize))
         assert myFileSize > myExpectedFileSize, myMessage
-
-
-
 
 if __name__ == '__main__':
     unittest.main()

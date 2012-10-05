@@ -15,7 +15,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def __init__( self, iface ):
       QWidget.__init__( self )
       self.iface = iface
-      self.resampling_method = ('nearest', 'average', 'gauss', 'average_mp', 'average_magphase', 'mode')
+      self.resampling_method = ('nearest', 'average', 'gauss', 'cubic', 'average_mp', 'average_magphase', 'mode')
 
       self.setupUi( self )
       BaseBatchWidget.__init__( self, self.iface, "gdaladdo" )
