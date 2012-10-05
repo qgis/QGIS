@@ -15,6 +15,8 @@ $('span#toolbarTitle').text($.i18n._('toolbar.title'));
 $('span#toolbarClear').text($.i18n._('toolbar.clear'));
 $('span#toolbarIfaceClass').text($.i18n._('toolbar.iface'));
 $('span#toolbarSextClass').text($.i18n._('toolbar.sextante'));
+$('span#toolbarQtCoreClass').text($.i18n._('toolbar.qtcore'));
+$('span#toolbarQtGuiClass').text($.i18n._('toolbar.qtgui'));
 $('span#toolbarScriptOpen').text($.i18n._('toolbar.script.open'));
 $('span#toolbarScriptSave').text($.i18n._('toolbar.script.save'));
 $('span#toolbarHelp').text($.i18n._('toolbar.help'));

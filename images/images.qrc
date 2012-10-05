@@ -475,6 +475,8 @@
     <file>console/iconSextanteConsole.png</file>
     <file>console/iconScriptConsole.png</file>
     <file>console/iconIfaceConsole.png</file>
+    <file>console/iconQtCoreConsole.png</file>
+    <file>console/iconQtGuiConsole.png</file>
     <file>console/iconRunConsole.png</file>
   </qresource>
   <qresource prefix="/images/tips">
