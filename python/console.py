@@ -134,7 +134,7 @@ class PythonConsole(QDockWidget):
         self.actionScript.setToolTip(actionScriptBt)
         self.actionScript.setText(actionScriptBt)
         ## Import Sextante class
-        loadSextanteBt = QCoreApplication.translate("PythonConsole", "Import sextante class")
+        loadSextanteBt = QCoreApplication.translate("PythonConsole", "Import Sextante class")
         self.loadSextanteButton = QAction(parent)
         self.loadSextanteButton.setCheckable(False)
         self.loadSextanteButton.setEnabled(True)
@@ -144,7 +144,7 @@ class PythonConsole(QDockWidget):
         self.loadSextanteButton.setToolTip(loadSextanteBt)
         self.loadSextanteButton.setText(loadSextanteBt)
         ## Import QgisInterface class
-        loadIfaceBt = QCoreApplication.translate("PythonConsole", "Import iface class")
+        loadIfaceBt = QCoreApplication.translate("PythonConsole", "Import QgisInterface class")
         self.loadIfaceButton = QAction(parent)
         self.loadIfaceButton.setCheckable(False)
         self.loadIfaceButton.setEnabled(True)
@@ -153,6 +153,26 @@ class PythonConsole(QDockWidget):
         self.loadIfaceButton.setIconVisibleInMenu(True)
         self.loadIfaceButton.setToolTip(loadIfaceBt)
         self.loadIfaceButton.setText(loadIfaceBt)
+        ## Import QtCore class
+        loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore class")
+        self.loadQtCoreButton = QAction(parent)
+        self.loadQtCoreButton.setCheckable(False)
+        self.loadQtCoreButton.setEnabled(True)
+        self.loadQtCoreButton.setIcon(QIcon(":/images/console/iconQtCoreConsole.png"))
+        self.loadQtCoreButton.setMenuRole(QAction.PreferencesRole)
+        self.loadQtCoreButton.setIconVisibleInMenu(True)
+        self.loadQtCoreButton.setToolTip(loadQtCoreBt)
+        self.loadQtCoreButton.setText(loadQtCoreBt)
+        ## Import QtGui class
+        loadQtGuiBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui class")
+        self.loadQtGuiButton = QAction(parent)
+        self.loadQtGuiButton.setCheckable(False)
+        self.loadQtGuiButton.setEnabled(True)
+        self.loadQtGuiButton.setIcon(QIcon(":/images/console/iconQtGuiConsole.png"))
+        self.loadQtGuiButton.setMenuRole(QAction.PreferencesRole)
+        self.loadQtGuiButton.setIconVisibleInMenu(True)
+        self.loadQtGuiButton.setToolTip(loadQtGuiBt)
+        self.loadQtGuiButton.setText(loadQtGuiBt)
         ## Action for Open File
         openFileBt = QCoreApplication.translate("PythonConsole", "Open script file")
         self.openFileButton = QAction(parent)
@@ -203,6 +223,8 @@ class PythonConsole(QDockWidget):
         self.classMenu = QMenu(self)
         self.classMenu.addAction(self.loadIfaceButton)
         self.classMenu.addAction(self.loadSextanteButton)
+        self.classMenu.addAction(self.loadQtCoreButton)
+        self.classMenu.addAction(self.loadQtGuiButton)
         cM = self.toolBar.widgetForAction(self.actionClass)
         cM.setMenu(self.classMenu)
         cM.setPopupMode(QToolButton.InstantPopup)
@@ -229,6 +251,8 @@ class PythonConsole(QDockWidget):
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
+        self.loadQtCoreButton.triggered.connect(self.qtCore)
+        self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.edit.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
@@ -245,6 +269,12 @@ class PythonConsole(QDockWidget):
 
     def iface(self):
        self.edit.commandConsole('iface')
+       
+    def qtCore(self):
+       self.edit.commandConsole('qtCore')
+    
+    def qtGui(self):
+       self.edit.commandConsole('qtGui')
 
     def openScriptFile(self):
         settings = QSettings()
