@@ -136,29 +136,29 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
 
     //snapping on intersection on?
-    int intersectionSnapping = QgsProject::instance()->readNumEntry(  "Digitizing", "/IntersectionSnapping", 0 );
+    int intersectionSnapping = QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 );
 
     if ( topologicalEditing == 0 )
     {
-        if ( intersectionSnapping == 0 )
-        {
-          mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
-        }
-        else
-        {
-          mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
-        }
+      if ( intersectionSnapping == 0 )
+      {
+        mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
+      }
+      else
+      {
+        mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
+      }
     }
     else
     {
-        if ( intersectionSnapping == 0 )
-        {
-          mSnapper->setSnapMode( QgsSnapper::SnapWithResultsForSamePosition );
-        }
-        else
-        {
-          mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
-        }
+      if ( intersectionSnapping == 0 )
+      {
+        mSnapper->setSnapMode( QgsSnapper::SnapWithResultsForSamePosition );
+      }
+      else
+      {
+        mSnapper->setSnapMode( QgsSnapper::SnapWithResultsWithinTolerances );
+      }
     }
 
 
@@ -279,60 +279,59 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       return 4;
     }
 
-    if( intersectionSnapping == 1 )
+    if ( intersectionSnapping == 1 )
     {
       QList<QgsSnappingResult>::const_iterator it = results.constBegin();
       QList<QgsSnappingResult> segments;
       QList<QgsSnappingResult> points;
       for ( ; it != results.constEnd(); ++it )
       {
-        if(it->snappedVertexNr==-1)
+        if ( it->snappedVertexNr == -1 )
         {
-          QgsDebugMsg("segment");
-          segments.push_back(*it);
+          QgsDebugMsg( "segment" );
+          segments.push_back( *it );
         }
         else
         {
-          QgsDebugMsg("no segment");
-          points.push_back(*it);
+          QgsDebugMsg( "no segment" );
+          points.push_back( *it );
         }
       }
 
-      if(segments.length() >=2 )
+      if ( segments.length() >= 2 )
       {
 
-        QgsGeometry* intersectionPoint;
         QList<QgsSnappingResult> myResults;
 
         QList<QgsSnappingResult>::const_iterator oSegIt = segments.constBegin();
         QList<QgsSnappingResult>::iterator iSegIt;
-        for( ; oSegIt != segments.constEnd(); ++oSegIt)
+        for ( ; oSegIt != segments.constEnd(); ++oSegIt )
         {
-            QgsDebugMsg( QString::number(oSegIt->beforeVertexNr) );
+          QgsDebugMsg( QString::number( oSegIt->beforeVertexNr ) );
 
+          QVector<QgsPoint> vertexPoints;
+          vertexPoints.append( oSegIt->beforeVertex );
+          vertexPoints.append( oSegIt->afterVertex );
+          QgsGeometry* lineA = QgsGeometry::fromPolyline( vertexPoints );
+
+          for ( iSegIt = segments.begin(); iSegIt != segments.end(); ++iSegIt )
+          {
             QVector<QgsPoint> vertexPoints;
-            vertexPoints.append( oSegIt->beforeVertex );
-            vertexPoints.append( oSegIt->afterVertex );
-            QgsGeometry* lineA = QgsGeometry::fromPolyline( vertexPoints );
+            vertexPoints.append( iSegIt->beforeVertex );
+            vertexPoints.append( iSegIt->afterVertex );
+            QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
 
-            for( iSegIt = segments.begin(); iSegIt != segments.end(); ++iSegIt)
+            QgsGeometry* intersectionPoint = lineA->intersection( lineB );
+            if ( intersectionPoint->type()  == QGis::Point )
             {
-                QVector<QgsPoint> vertexPoints;
-                vertexPoints.append( iSegIt->beforeVertex );
-                vertexPoints.append( iSegIt->afterVertex );
-                QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
-
-                intersectionPoint = lineA->intersection(lineB);
-                if( intersectionPoint->type()  == QGis::Point)
-                {
-                    iSegIt->snappedVertex = intersectionPoint->asPoint();
-                    myResults.append(*iSegIt);
-                }
+              iSegIt->snappedVertex = intersectionPoint->asPoint();
+              myResults.append( *iSegIt );
             }
+          }
 
         }
 
-        if( myResults.length() > 0 )
+        if ( myResults.length() > 0 )
         {
           results.clear();
           results = myResults;

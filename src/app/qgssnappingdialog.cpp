@@ -114,20 +114,18 @@ void QgsSnappingDialog::reload()
   }
 
   setTopologicalEditingState();
-  setIntersectionSnapppingState();
+  setIntersectionSnappingState();
 }
 
 void QgsSnappingDialog::on_cbxEnableTopologicalEditingCheckBox_stateChanged( int state )
 {
-  int topologicalEditingEnabled = ( state == Qt::Checked ) ? 1 : 0;
-  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", state == Qt::Checked );
   setTopologicalEditingState();
 }
 
 void QgsSnappingDialog::on_cbxEnableIntersectionSnappingCheckBox_stateChanged( int state )
 {
-  int intersectionSnappingEnabled = ( state == Qt::Checked ) ? 1 : 0;
-  QgsProject::instance()->writeEntry( "Digitizing", "/IntersectionSnapping", intersectionSnappingEnabled );
+  QgsProject::instance()->writeEntry( "Digitizing", "/IntersectionSnapping", state == Qt::Checked );
 }
 
 void QgsSnappingDialog::closeEvent( QCloseEvent* event )
@@ -197,7 +195,7 @@ void QgsSnappingDialog::apply()
 void QgsSnappingDialog::show()
 {
   setTopologicalEditingState();
-  setIntersectionSnapppingState();
+  setIntersectionSnappingState();
   if ( mDock )
     mDock->setVisible( true );
   else
@@ -329,7 +327,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
     }
 
     setTopologicalEditingState();
-    setIntersectionSnapppingState();
+    setIntersectionSnappingState();
   }
 }
 
@@ -357,29 +355,15 @@ void QgsSnappingDialog::setTopologicalEditingState()
   // read the digitizing settings
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   cbxEnableTopologicalEditingCheckBox->blockSignals( true );
-  if ( topologicalEditing != 0 )
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
-  }
+  cbxEnableTopologicalEditingCheckBox->setChecked( topologicalEditing );
   cbxEnableTopologicalEditingCheckBox->blockSignals( false );
 }
 
-void QgsSnappingDialog::setIntersectionSnapppingState()
+void QgsSnappingDialog::setIntersectionSnappingState()
 {
   // read the digitizing settings
   int intersectionSnapping = QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 );
   cbxEnableIntersectionSnappingCheckBox->blockSignals( true );
-  if ( intersectionSnapping != 0 )
-  {
-    cbxEnableIntersectionSnappingCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    cbxEnableIntersectionSnappingCheckBox->setCheckState( Qt::Unchecked );
-  }
+  cbxEnableIntersectionSnappingCheckBox->setChecked( intersectionSnapping );
   cbxEnableIntersectionSnappingCheckBox->blockSignals( false );
 }

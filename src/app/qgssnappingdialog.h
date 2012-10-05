@@ -89,7 +89,7 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     void setTopologicalEditingState();
 
     /**Set checkbox value based on project setting*/
-    void setIntersectionSnapppingState();
+    void setIntersectionSnappingState();
 };
 
 #endif
