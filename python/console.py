@@ -23,7 +23,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 from console_sci import PythonEdit
-from help import HelpDialog
+from console_help import HelpDialog
 
 import sys
 import os
