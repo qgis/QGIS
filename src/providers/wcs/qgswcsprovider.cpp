@@ -91,7 +91,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mPassword( QString::null )
     , mFixBox( false )
     , mFixRotate( false )
-    , mCacheLoadControl( QNetworkRequest::PreferCache )
+    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -407,22 +407,7 @@ bool QgsWcsProvider::parseUri( QString uriString )
   QString cache = uri.param( "cache" );
   if ( !cache.isEmpty() )
   {
-    if ( cache.compare( "AlwaysCache", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::AlwaysCache;
-    }
-    else if ( cache.compare( "PreferCache", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::PreferCache;
-    }
-    else if ( cache.compare( "PreferNetwork", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::PreferNetwork;
-    }
-    else if ( cache.compare( "AlwaysNetwork", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::AlwaysNetwork;
-    }
+    mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
   }
   QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) ) ;
 

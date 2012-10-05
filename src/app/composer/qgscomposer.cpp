@@ -88,12 +88,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   QSettings settings;
+  setAppStyleSheet();
+
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
-
-#ifndef Q_WS_MAC
-  setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
-#endif
 
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -389,7 +387,14 @@ void QgsComposer::setIconSizes( int size )
 
 void QgsComposer::setFontSize( int fontSize )
 {
-  setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
+  //Convenience method for backwards compatibility
+  //Should set directly for QgisApp instead
+  QgisApp::instance()->setFontSize( fontSize );
+}
+
+void QgsComposer::setAppStyleSheet()
+{
+  setStyleSheet( QgisApp::instance()->styleSheet() );
 }
 
 void QgsComposer::connectSlots()

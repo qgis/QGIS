@@ -65,13 +65,21 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void on_pbnEditPyramidsOptions_pressed();
     void editGdalDriver( const QString& driverName );
     void saveOptions();
+    /*!
+    * Slot to reset any temporarily applied options on dialog close/cancel
+    * @note added in QGIS 2.0
+    */
+    void rejectOptions();
     //! Slot to change the theme this is handled when the user
     // activates or highlights a theme name in the drop-down list
     void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
-
-    void fontSizeChanged( const QString &fontSize );
+    /*!
+    * Slot to temporarily apply settings to app stylesheet
+    * @note added in QGIS 2.0
+    */
+    void updateAppStyleSheet();
 
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox

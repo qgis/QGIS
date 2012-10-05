@@ -1,25 +1,19 @@
 # -*- coding: utf-8 -*-
-'''
-test_qgscomposerhtml.py
-                     --------------------------------------
-               Date                 : August 2012
-               Copyright            : (C) 2012 by Dr. Horst Düster /
-                                                  Dr. Marco Hugentobler
-                                                  Tim Sutton
-               email                : marco@sourcepole.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-'''
+"""QGIS Unit tests for QgsApplication.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Dr. Horst Düster, Dr. Marco Hugentobler, Tim Sutton'
+__date__ = '20/01/2011'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import unittest
-import sys
 import os
-from utilities import unitTestDataPath, getQgisTestApp
 from PyQt4.QtCore import QUrl, QString, qDebug
 from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
@@ -28,22 +22,16 @@ from qgis.core import (QgsComposition,
                        QgsComposerMultiFrame)
 
 from qgscompositionchecker import QgsCompositionChecker
-# support python < 2.7 via unittest2
-# needed for expected failure decorator
-if sys.version_info[0:2] < (2,7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-    except ImportError:
-        print "You should install unittest2 to run the salt tests"
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
 
+from utilities import (unitTestDataPath,
+                       getQgisTestApp,
+                       TestCase,
+                       expectedFailure)
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerHtml(unittest.TestCase):
+class TestQgsComposerHtml(TestCase):
 
     def setUp(self):
         """Run before each test."""

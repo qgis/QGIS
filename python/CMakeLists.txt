@@ -1,5 +1,5 @@
 ADD_SUBDIRECTORY(plugins)
-ADD_SUBDIRECTORY(api)
+ADD_SUBDIRECTORY(qsci_apis)
 
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -72,7 +72,7 @@ IF(PYQT4_VERSION_NUM LESS 264196)       # 0x040804
 ENDIF(PYQT4_VERSION_NUM LESS 264196)
 
 # core module
-FILE(GLOB sip_files_core core/*.sip)
+FILE(GLOB_RECURSE sip_files_core core/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
 ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
@@ -87,7 +87,7 @@ INCLUDE_DIRECTORIES(
 )
 
 # gui module
-FILE(GLOB sip_files_gui gui/*.sip)
+FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
 ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
@@ -105,18 +105,39 @@ INCLUDE_DIRECTORIES(
 )
 
 # analysis module
-FILE(GLOB sip_files_analysis analysis/*.sip)
+FILE(GLOB sip_files_analysis
+	analysis/*.sip
+	analysis/raster/*.sip
+	analysis/vector/*.sip
+	analysis/interpolation/*.sip
+)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
 ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 # network-analysis module
-FILE(GLOB sip_files_network_analysis analysis/network/*.sip)
+FILE(GLOB_RECURSE sip_files_network_analysis analysis/network/*.sip)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_network_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.networkanalysis.api)
 ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip qgis_core qgis_networkanalysis)
 
-SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+
+IF(WITH_QSCIAPI)
+  # wait until after python module builds for api files to be available
+  SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
+  # create empty destination api file
+  FILE(WRITE "${QGIS_PYTHON_API_FILE}" "")
+
+  # run update/concatenate command after last python module is built (currently python_module_qgis_gui)
+  ADD_CUSTOM_COMMAND(TARGET python_module_qgis_gui
+    POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMENT "Generating pyqgis api file" VERBATIM)
+
+  INSTALL(FILES ${QGIS_PYTHON_API_FILE} DESTINATION "${PYTHON_SITE_PACKAGES_DIR}/qsci_apis")
+ENDIF(WITH_QSCIAPI)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
 
@@ -143,4 +164,3 @@ PYTHON_INSTALL(utils.py    ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console_sci.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(help.py  ${QGIS_PYTHON_DIR})
-

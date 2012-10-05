@@ -43,7 +43,7 @@ namespace
 {
     // ControlNodeBin shaders.
 
-    char* s_controlVertexShader =
+    const char* s_controlVertexShader =
         "void main() \n"
         "{ \n"
         "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; \n"
@@ -51,7 +51,7 @@ namespace
         "    gl_FrontColor = gl_Color; \n"
         "} \n";
 
-    char* s_imageControlFragmentShader =
+    const char* s_imageControlFragmentShader =
         "uniform sampler2D tex0; \n"
         "uniform float visibleTime; \n"
         "uniform float osg_FrameTime; \n"
@@ -62,7 +62,7 @@ namespace
         "    gl_FragColor = vec4(texel.rgb, texel.a * opacity); \n"
         "} \n";
 
-    char* s_labelControlFragmentShader =
+    const char* s_labelControlFragmentShader =
         "uniform sampler2D tex0; \n"
         "uniform float visibleTime; \n"
         "uniform float osg_FrameTime; \n"
@@ -318,6 +318,7 @@ Control::dirty()
 void
 Control::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
+    Q_UNUSED( cx );
     if ( visible() == true )
     {
         _renderSize.set( 
@@ -337,6 +338,7 @@ Control::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 void
 Control::calcPos(const ControlContext& cx, const osg::Vec2f& cursor, const osg::Vec2f& parentSize)
 {
+    Q_UNUSED( cx );
     if ( _x.isSet() )
     {
         _renderPos.x() = cursor.x() + margin().left() + padding().left() + *x();
@@ -426,6 +428,7 @@ Control::draw(const ControlContext& cx, DrawableList& out )
 bool
 Control::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
 {
+    Q_UNUSED( aa );
     bool handled = false;    
 
     if ( _eventHandlers.size() > 0 )
@@ -495,6 +498,7 @@ ImageControl::setFixSizeForRotation( bool value )
 void
 ImageControl::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
+    Q_UNUSED( cx );
     if ( visible() == true )
     {
         _renderSize.set( 0, 0 );
@@ -862,6 +866,8 @@ Frame::Frame()
 void
 Frame::calcPos(const ControlContext& context, const osg::Vec2f& cursor, const osg::Vec2f& parentSize)
 {
+    Q_UNUSED( context );
+    Q_UNUSED( parentSize );
     _renderPos = cursor;
 }
 
@@ -1009,6 +1015,7 @@ Container::applyChildAligns()
 void
 Container::calcSize(const ControlContext& cx, osg::Vec2f& out_size)
 {
+    Q_UNUSED( out_size );
     if ( visible() == true )
     {
         if ( _frame.valid() )
@@ -1412,6 +1419,7 @@ Grid::expandToInclude( int col, int row )
 void
 Grid::addControl( Control* control, int index )
 {
+    Q_UNUSED( index );
     // creates a new row and puts the control in its first column
     setControl( 0, _rows.size(), control );
 }
@@ -1628,6 +1636,7 @@ namespace osgEarth { namespace Util { namespace Controls21
         
         void operator()( osg::Node* node, osg::NodeVisitor* nv )
         {
+            Q_UNUSED( nv );
             osg::Camera* camera = static_cast<osg::Camera*>(node);
             osgViewer::View* view2 = dynamic_cast<osgViewer::View*>(camera->getView());
             install( view2, _canvas.get() );
@@ -1778,6 +1787,7 @@ void
 ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
 {
     const osg::Viewport* vp = context._vp.get();
+    Q_UNUSED( vp );
     osg::Vec2f surfaceSize( context._vp->width(), context._vp->height() );
 
     // we don't really need to keep this list in the object, but that prevents it from having to

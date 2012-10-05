@@ -114,6 +114,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSSetUsedSRS_clicked();
 
     /*!
+     * Slots to select/unselect all the WFS layers
+     */
+    void on_pbnWFSLayersSelectAll_clicked();
+    void on_pbnWFSLayersUnselectAll_clicked();
+
+    /*!
      * Slots for Styles
      */
     void on_pbtnStyleManager_clicked();

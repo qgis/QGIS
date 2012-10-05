@@ -32,6 +32,7 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
+#include "qgscomposer.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -76,7 +77,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
-  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
+  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( updateAppStyleSheet() ) );
+  connect( mFontFamilyRadioQt, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
+  connect( mFontFamilyRadioCustom, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
+  connect( mFontFamilyComboBox, SIGNAL( currentFontChanged( const QFont& ) ), this, SLOT( updateAppStyleSheet() ) );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
 
@@ -85,6 +89,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 #endif
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
+  connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
   foreach ( QString style, styles )
@@ -373,7 +378,26 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
+
+  // set font size and family
+  blockSignals( true );
   spinFontSize->setValue( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
+  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
+  bool isQtDefault = ( fontFamily == QString( "QtDefault" ) );
+  mFontFamilyRadioQt->setChecked( isQtDefault );
+  mFontFamilyRadioCustom->setChecked( !isQtDefault );
+  if ( !isQtDefault )
+  {
+    QFont *tempFont = new QFont( fontFamily );
+    // is exact family match returned from system?
+    if ( tempFont->family() == fontFamily )
+    {
+      mFontFamilyComboBox->setCurrentFont( *tempFont );
+    }
+    delete tempFont;
+  }
+  blockSignals( false );
+
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
@@ -741,9 +765,23 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
-void QgsOptions::fontSizeChanged( const QString &fontSize )
+void QgsOptions::updateAppStyleSheet()
 {
-  QgisApp::instance()->setFontSize( fontSize.toInt() );
+  int fontSize = spinFontSize->value();
+
+  QString family = QString( "" ); // use default Qt font family
+  if ( mFontFamilyRadioCustom->isChecked() )
+  {
+    family = QString( " \"%1\";" ).arg( mFontFamilyComboBox->currentFont().family() );
+  }
+
+  QString stylesheet = QString( "font: %1pt%2" ).arg( fontSize ).arg( family );
+  QgisApp::instance()->setStyleSheet( stylesheet );
+
+  foreach ( QgsComposer* c, QgisApp::instance()->printComposers() )
+  {
+    c->setAppStyleSheet();
+  }
 }
 
 void QgsOptions::toggleEnableBackbuffer( int state )
@@ -910,7 +948,16 @@ void QgsOptions::saveOptions()
   }
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
+
+  // application stylesheet settings
   settings.setValue( "/fontPointSize", spinFontSize->value() );
+  QString fontFamily = QString( "QtDefault" );
+  if ( mFontFamilyRadioCustom->isChecked() )
+  {
+    fontFamily = mFontFamilyComboBox->currentFont().family();
+  }
+  settings.setValue( "/fontFamily", fontFamily );
+  QgisApp::instance()->setAppStyleSheet();
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );
@@ -1086,6 +1133,10 @@ void QgsOptions::saveOptions()
     saveGdalDriverList();
 }
 
+void QgsOptions::rejectOptions()
+{
+  QgisApp::instance()->setAppStyleSheet();
+}
 
 void QgsOptions::on_pbnSelectProjection_clicked()
 {

@@ -153,11 +153,14 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
 
   //copy the geometry
   QgsGeometry* geometry = f->geometry();
-  unsigned char *geom = geometry->asWkb();
-  int geomSize = geometry->wkbSize();
-  unsigned char* copiedGeom = new unsigned char[geomSize];
-  memcpy( copiedGeom, geom, geomSize );
-  feature.setGeometryAndOwnership( copiedGeom, geomSize );
+  if ( geometry )
+  {
+    unsigned char *geom = geometry->asWkb();
+    int geomSize = geometry->wkbSize();
+    unsigned char* copiedGeom = new unsigned char[geomSize];
+    memcpy( copiedGeom, geom, geomSize );
+    feature.setGeometryAndOwnership( copiedGeom, geomSize );
+  }
 
   //and the attributes
   const QgsAttributeMap& attributes = f->attributeMap();
@@ -210,7 +213,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
       continue;
     }
 
-    copyFeature( f, feature, true, mAttributesToFetch );
+    copyFeature( f, feature, mFetchGeom, mAttributesToFetch );
 
     if ( mUseIntersect )
     {
@@ -277,6 +280,12 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
                              bool fetchGeometry,
                              bool useIntersect )
 {
+
+  if ( geometryType() == QGis::WKBNoGeometry )
+  {
+    fetchGeometry = false;
+  }
+
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
@@ -789,10 +798,13 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
   QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
 
-  for ( QMap<QgsFeatureId, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+  if ( mWKBType != QGis::WKBNoGeometry )
   {
-    QgsDebugMsg( "feature " + FID_TO_STRING(( *it )->id() ) );
-    mSpatialIndex->insertFeature( *( it.value() ) );
+    for ( QMap<QgsFeatureId, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+    {
+      QgsDebugMsg( "feature " + FID_TO_STRING(( *it )->id() ) );
+      mSpatialIndex->insertFeature( *( it.value() ) );
+    }
   }
 
   mFeatureCount = mFeatures.size();
@@ -820,7 +832,7 @@ int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryA
 
   QDomElement featureCollectionElement = gmlDoc.documentElement();
   //get and set Extent
-  if ( getExtentFromGML2( &mExtent, featureCollectionElement ) != 0 )
+  if ( mWKBType != QGis::WKBNoGeometry && getExtentFromGML2( &mExtent, featureCollectionElement ) != 0 )
   {
     return 3;
   }
@@ -905,7 +917,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
   std::list<QString> thematicAttributes;
 
   //if this fails (e.g. no schema file), try to guess the geometry attribute and the names of the thematic attributes from the .gml file
-  if ( guessAttributesFromFile( uri, geometryAttribute, thematicAttributes ) != 0 )
+  if ( guessAttributesFromFile( uri, geometryAttribute, thematicAttributes, geomType ) != 0 )
   {
     return 1;
   }
@@ -985,6 +997,8 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     return 5;
   }
 
+  bool foundGeometryAttribute = false;
+
   for ( uint i = 0; i < attributeNodeList.length(); ++i )
   {
     QDomElement attributeElement = attributeNodeList.at( i ).toElement();
@@ -998,6 +1012,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     QRegExp gmlPT( "gml:(.*)PropertyType" );
     if ( type.indexOf( gmlPT ) == 0 || name.isEmpty() )
     {
+      foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
@@ -1019,10 +1034,15 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
       fields[fields.size()] = QgsField( name, attributeType, type );
     }
   }
+  if ( !foundGeometryAttribute )
+  {
+    geomType = QGis::WKBNoGeometry;
+  }
+
   return 0;
 }
 
-int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const
+int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const
 {
   QFile gmlFile( uri );
   if ( !gmlFile.open( QIODevice::ReadOnly ) )
@@ -1056,6 +1076,7 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
   QString attributeText;
   QDomElement attributeChildElement;
   QString attributeChildLocalName;
+  bool foundGeometryAttribute = false;
 
   while ( !attributeNode.isNull() )//loop over attributes
   {
@@ -1081,6 +1102,11 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
       thematicAttributes.push_back( attributeNode.toElement().localName() ); //a thematic attribute
     }
     attributeNode = attributeNode.nextSibling();
+  }
+
+  if ( !foundGeometryAttribute )
+  {
+    geomType = QGis::WKBNoGeometry;
   }
 
   return 0;
@@ -1232,7 +1258,6 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QDomElement layerNameElem;
   QDomNode currentAttributeChild;
   QDomElement currentAttributeElement;
-  int counter = 0;
   QgsFeature* f = 0;
   unsigned char* wkb = 0;
   int wkbSize = 0;
@@ -1241,7 +1266,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
   {
-    f = new QgsFeature( counter );
+    f = new QgsFeature( mFeatureCount );
     currentFeatureMemberElem = featureTypeNodeList.at( i ).toElement();
     //the first child element is always <namespace:layer>
     layerNameElem = currentFeatureMemberElem.firstChild().toElement();
@@ -1281,10 +1306,10 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );
-      mFeatures.insert( f->id(), f );
-      ++mFeatureCount;
     }
-    ++counter;
+
+    mFeatures.insert( f->id(), f );
+    ++mFeatureCount;
   }
   return 0;
 }

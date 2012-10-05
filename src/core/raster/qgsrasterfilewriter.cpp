@@ -418,8 +418,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
 
   const QgsRasterInterface* iface = iter->input();
-  if ( !iface || ( iface->dataType( 1 ) != QgsRasterInterface::ARGB32 &&
-                   iface->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied ) )
+  QgsRasterInterface::DataType inputDataType = iface->dataType( 1 );
+  if ( !iface || ( inputDataType != QgsRasterInterface::ARGB32 &&
+                   inputDataType != QgsRasterInterface::ARGB32_Premultiplied ) )
   {
     return SourceProviderError;
   }
@@ -434,7 +435,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  void* data = VSIMalloc( iface->typeSize( iface->dataType( 1 ) ) / 8 * mMaxTileWidth * mMaxTileHeight );
+  void* data = VSIMalloc( iface->typeSize( inputDataType ) / 8 * mMaxTileWidth * mMaxTileHeight );
   void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* greenData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
@@ -488,6 +489,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     //fill into red/green/blue/alpha channels
     uint* p = ( uint* ) data;
     int nPixels = iterCols * iterRows;
+    // TODO: should be char not int? we are then copying 1 byte
     int red = 0;
     int green = 0;
     int blue = 0;
@@ -495,7 +497,17 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     for ( int i = 0; i < nPixels; ++i )
     {
       QRgb c( *p++ );
-      red = qRed( c ); green = qGreen( c ); blue = qBlue( c ); alpha = qAlpha( c );
+      alpha = qAlpha( c );
+      red = qRed( c ); green = qGreen( c ); blue = qBlue( c );
+
+      if ( inputDataType == QgsRasterInterface::ARGB32_Premultiplied )
+      {
+        double a = alpha / 255.;
+        QgsDebugMsg( QString( "red = %1 green = %2 blue = %3 alpha = %4 p = %5 a = %6" ).arg( red ).arg( green ).arg( blue ).arg( alpha ).arg(( int )*p, 0, 16 ).arg( a ) );
+        red /= a;
+        green /= a;
+        blue /= a;
+      }
       memcpy(( char* )redData + i, &red, 1 );
       memcpy(( char* )greenData + i, &green, 1 );
       memcpy(( char* )blueData + i, &blue, 1 );

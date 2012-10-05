@@ -23,6 +23,9 @@
 class QColor;
 class QDomElement;
 
+/** \ingroup core
+  * Renderer for paletted raster images.
+*/
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:

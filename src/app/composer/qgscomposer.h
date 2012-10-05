@@ -61,6 +61,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void setIconSizes( int size );
     void setFontSize( int size );
+    //! Set app stylesheet from main app
+    //! @note added in 2.0
+    void setAppStyleSheet();
 
     //! Open and show, set defaults if first time
     void open();

@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    OsmDownloadDlg.py
+    ---------------------
+    Date                 : August 2009
+    Copyright            : (C) 2009 by Martin Dobias
+    Email                : wonder.sk at gmail.com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Dobias'
+__date__ = 'August 2009'
+__copyright__ = '(C) 2009, Martin Dobias'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+# -*- coding: utf-8 -*-
 """@package OsmDownloadDlg
 Module provides simple way how to download OSM data.
 First user is asked to choose download region, output file etc.

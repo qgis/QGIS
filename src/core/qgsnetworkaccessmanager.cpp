@@ -153,3 +153,46 @@ void QgsNetworkAccessManager::abortRequest()
 
   reply->abort();
 }
+
+QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
+{
+  switch ( theControl )
+  {
+    case QNetworkRequest::AlwaysNetwork:
+      return "AlwaysNetwork";
+      break;
+    case QNetworkRequest::PreferNetwork:
+      return "PreferNetwork";
+      break;
+    case QNetworkRequest::PreferCache:
+      return "PreferCache";
+      break;
+    case QNetworkRequest::AlwaysCache:
+      return "AlwaysCache";
+      break;
+    default:
+      break;
+  }
+  return "PreferNetwork";
+}
+
+QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &theName )
+{
+  if ( theName == "AlwaysNetwork" )
+  {
+    return QNetworkRequest::AlwaysNetwork;
+  }
+  else if ( theName == "PreferNetwork" )
+  {
+    return QNetworkRequest::PreferNetwork;
+  }
+  else if ( theName == "PreferCache" )
+  {
+    return QNetworkRequest::PreferCache;
+  }
+  else if ( theName == "AlwaysCache" )
+  {
+    return QNetworkRequest::AlwaysCache;
+  }
+  return QNetworkRequest::PreferNetwork;
+}

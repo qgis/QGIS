@@ -282,9 +282,9 @@ void QgsLabelDialog::changeFont( void )
   bool resultFlag;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  mFont = QFontDialog::getFont( &resultFlag, mFont, this, QString(), QFontDialog::DontUseNativeDialog );
+  mFont = QFontDialog::getFont( &resultFlag, mFont, 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  mFont = QFontDialog::getFont( &resultFlag, mFont, this );
+  mFont = QFontDialog::getFont( &resultFlag, mFont );
 #endif
   if ( !resultFlag )
     return;

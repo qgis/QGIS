@@ -34,7 +34,7 @@ class SextanteVectorWriter:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}
             for key, value in formats.items():
-                extension = str(key)
+                extension = unicode(key)
                 extension = extension[extension.find('*.') + 2:]
                 extension = extension[:extension.find(" ")]
                 OGRCodes[extension] = value

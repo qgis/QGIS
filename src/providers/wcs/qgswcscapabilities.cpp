@@ -67,9 +67,12 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
     mUri( theUri ),
-    mCoverageCount( 0 )
+    mCoverageCount( 0 ),
+    mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
+
+  parseUri();
 
   retrieveServerCapabilities();
 }
@@ -84,12 +87,29 @@ QgsWcsCapabilities::~QgsWcsCapabilities()
   QgsDebugMsg( "deconstructing." );
 }
 
+void QgsWcsCapabilities::parseUri()
+{
+  mCacheLoadControl = QNetworkRequest::PreferNetwork;
+
+  QString cache = mUri.param( "cache" );
+  QgsDebugMsg( "cache = " + cache );
+
+  if ( !cache.isEmpty() )
+  {
+    mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
+  }
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+}
+
 // TODO: return if successful
 void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
 {
   mUri = theUri;
 
   clear();
+
+  parseUri();
+
   retrieveServerCapabilities( );
 }
 
@@ -116,12 +136,6 @@ bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &cov
 {
   QgsDebugMsg( "Entering." );
 
-  // Allow the provider to collect the capabilities first.
-  if ( !retrieveServerCapabilities() )
-  {
-    return false;
-  }
-
   coverageSummary = mCoveragesSupported;
 
   QgsDebugMsg( "Exiting." );
@@ -145,8 +159,9 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   mError = "";
   QNetworkRequest request( url );
   setAuthorization( request );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
@@ -181,6 +196,7 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
 
 void QgsWcsCapabilities::clear()
 {
+  QgsDebugMsg( "Entered" );
   mCoverageCount = 0;
   mCoveragesSupported.clear();
   QgsWcsCapabilitiesProperty c;
@@ -216,6 +232,7 @@ QString QgsWcsCapabilities::getCapabilitiesUrl( ) const
 bool QgsWcsCapabilities::retrieveServerCapabilities( )
 {
   clear();
+
   QStringList versions;
 
   QString preferredVersion = mUri.param( "version" );
@@ -365,6 +382,21 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   }
   else
   {
+    // Resend request if AlwaysCache
+    QNetworkRequest request = mCapabilitiesReply->request();
+    if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+    {
+      QgsDebugMsg( "Resend request with PreferCache" );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+
+      mCapabilitiesReply->deleteLater();
+
+      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+      return;
+    }
+
     mErrorFormat = "text/plain";
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
     QgsMessageLog::logMessage( mError, tr( "WCS" ) );

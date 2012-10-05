@@ -69,6 +69,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     case QGis::Polygon:
       stackedPlacement->setCurrentWidget( pagePolygon );
       break;
+    case QGis::NoGeometry:
+      break;
     default:
       Q_ASSERT( 0 && "NOOOO!" );
   }

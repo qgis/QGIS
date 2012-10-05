@@ -158,6 +158,7 @@ void ViewerWidget::reconfigure( osgViewer::View* view )
       
 void ViewerWidget::paintEvent(QPaintEvent* e)
 {
+    Q_UNUSED( e );
     if (_viewer->getRunFrameScheme() == osgViewer::ViewerBase::CONTINUOUS || 
         _viewer->checkNeedToDoFrame() )
     {
