@@ -314,7 +314,7 @@ void QgsSearchQueryBuilder::setSearchString( QString searchString )
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( mModelFields->data( index ).toString() );
+  txtSQL->insertPlainText( "\"" + mModelFields->data( index ).toString() + "\"" );
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
