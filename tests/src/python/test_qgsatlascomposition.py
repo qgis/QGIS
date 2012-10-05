@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-test_qgscomposermapatlas.py 
+test_qgsatlascomposition.py 
                      --------------------------------------
                Date                 : Oct 2012
                Copyright            : (C) 2012 by Dr. Hugo Mercier
@@ -24,11 +24,11 @@ from qgscompositionchecker import QgsCompositionChecker
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-class TestQgsComposerMapAtlas(unittest.TestCase):
+class TestQgsAtlasComposition(unittest.TestCase):
         
     def testCase(self):
-        TEST_DATA_DIR = unitTestDataPath()        
-        vectorFileInfo = QFileInfo( TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
+        self.TEST_DATA_DIR = unitTestDataPath()        
+        vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
         QgsMapLayerRegistry.instance().addMapLayer( mVectorLayer )
@@ -45,8 +45,8 @@ class TestQgsComposerMapAtlas(unittest.TestCase):
         crs.createFromSrid( 2154 )
         mMapRenderer.setDestinationCrs( crs )
 
-        mComposition = QgsComposition( mMapRenderer )
-        mComposition.setPaperSize( 297, 210 )
+        self.mComposition = QgsComposition( mMapRenderer )
+        self.mComposition.setPaperSize( 297, 210 )
 
         # fix the renderer, fill with green
         props = { "color": "0,127,0" }
@@ -55,17 +55,20 @@ class TestQgsComposerMapAtlas(unittest.TestCase):
         mVectorLayer.setRendererV2( renderer )
 
         # the atlas map
-        mAtlasMap = QgsComposerMap( mComposition, 20, 20, 130, 130 )
-        mAtlasMap.setFrameEnabled( True )
-        mAtlasMap.setAtlasCoverageLayer( mVectorLayer )
-        mComposition.addComposerMap( mAtlasMap )
-        mComposition.setAtlasMap( mAtlasMap )
+        self.mAtlasMap = QgsComposerMap( self.mComposition, 20, 20, 130, 130 )
+        self.mAtlasMap.setFrameEnabled( True )
+        self.mComposition.addComposerMap( self.mAtlasMap )
+
+        # the atlas
+        self.mAtlas = QgsAtlasComposition( self.mComposition )
+        self.mAtlas.setCoverageLayer( mVectorLayer )
+        self.mAtlas.setComposerMap( self.mAtlasMap )
 
         # an overview
-        mOverview = QgsComposerMap( mComposition, 180, 20, 50, 50 )
+        mOverview = QgsComposerMap( self.mComposition, 180, 20, 50, 50 )
         mOverview.setFrameEnabled( True )
-        mOverview.setOverviewFrameMap( mAtlasMap.id() )
-        mComposition.addComposerMap( mOverview )
+        mOverview.setOverviewFrameMap( self.mAtlasMap.id() )
+        self.mComposition.addComposerMap( mOverview )
         nextent = QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 )
         mOverview.setNewExtent( nextent )
 
@@ -73,103 +76,93 @@ class TestQgsComposerMapAtlas(unittest.TestCase):
         props2 = { "color": "127,0,0,127" }
         fillSymbol2 = QgsFillSymbolV2.createSimple( props2 )
         mOverview.setOverviewFrameMapSymbol( fillSymbol2 );
-        
 
         # header label
-        mLabel1 = QgsComposerLabel( mComposition )
-        mComposition.addComposerLabel( mLabel1 )
-        mLabel1.setText( "[% \"NAME_1\" %] area" )
-        mLabel1.adjustSizeToText()
-        mLabel1.setItemPosition( 150, 5 )
+        self.mLabel1 = QgsComposerLabel( self.mComposition )
+        self.mComposition.addComposerLabel( self.mLabel1 )
+        self.mLabel1.setText( "[% \"NAME_1\" %] area" )
+        self.mLabel1.adjustSizeToText()
+        self.mLabel1.setItemPosition( 150, 5 )
 
         # feature number label
-        mLabel2 = QgsComposerLabel( mComposition )
-        mComposition.addComposerLabel( mLabel2 )
-        mLabel2.setText( "# [%$feature || ' / ' || $numfeatures%]" )
-        mLabel2.adjustSizeToText()
-        mLabel2.setItemPosition( 150, 200 )
+        self.mLabel2 = QgsComposerLabel( self.mComposition )
+        self.mComposition.addComposerLabel( self.mLabel2 )
+        self.mLabel2.setText( "# [%$feature || ' / ' || $numfeatures%]" )
+        self.mLabel2.adjustSizeToText()
+        self.mLabel2.setItemPosition( 150, 200 )
 
-        self.filename_test( mComposition )
-        self.autoscale_render_test( mComposition, mLabel1, TEST_DATA_DIR )
-        self.fixedscale_render_test( mComposition, mLabel1, TEST_DATA_DIR )
-        self.hidden_render_test( mComposition, mLabel1, TEST_DATA_DIR )
+        self.filename_test()
+        self.autoscale_render_test()
+        self.fixedscale_render_test()
+        self.hidden_render_test()
         
-    def filename_test( self, mComposition ):
-        atlasRender = QgsAtlasRendering( mComposition )
-        atlasRender.begin( "'output_' || $feature" )
-        for i in range(0, atlasRender.numFeatures()):
-            atlasRender.prepareForFeature( i )
+    def filename_test( self ):
+
+        self.mAtlas.setFilenamePattern( "'output_' || $feature" )
+        self.mAtlas.beginRender()
+        for i in range(0, self.mAtlas.numFeatures()):
+            self.mAtlas.prepareForFeature( i )
             expected = QString( "output_%1" ).arg(i+1)
-            print atlasRender.currentFilename()
-            assert atlasRender.currentFilename() == expected
-        atlasRender.end()
+            assert self.mAtlas.currentFilename() == expected
+        self.mAtlas.endRender()
 
-    def autoscale_render_test( self, mComposition, mLabel1, TEST_DATA_DIR ):
-        atlasMap = mComposition.atlasMap()
-        atlasMap.setAtlasFixedScale( False )
-        atlasMap.setAtlasMargin( 0.10 )
+    def autoscale_render_test( self ):
+        self.mAtlas.setFixedScale( False )
+        self.mAtlas.setMargin( 0.10 )
 
-        atlasRender = QgsAtlasRendering( mComposition )
-
-        atlasRender.begin()
+        self.mAtlas.beginRender()
 
         for i in range(0, 2):
-            atlasRender.prepareForFeature( i )
-            mLabel1.adjustSizeToText()
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas autoscale test", mComposition, \
-                                               QString( TEST_DATA_DIR ) + QDir.separator() + \
+            res = checker.testComposition( "Atlas autoscale test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
                                                "control_images" + QDir.separator() + \
                                                "expected_composermapatlas" + QDir.separator() + \
                                                QString( "autoscale_%1.png" ).arg( i ) )
             assert res[0] == True
-        atlasRender.end()
+        self.mAtlas.endRender()
         
-    def fixedscale_render_test( self, mComposition, mLabel1, TEST_DATA_DIR ):
-        atlasMap = mComposition.atlasMap()
-        atlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-        atlasMap.setAtlasFixedScale( True )
+    def fixedscale_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
 
-        atlasRender = QgsAtlasRendering( mComposition )
-
-        atlasRender.begin()
+        self.mAtlas.beginRender()
 
         for i in range(0, 2):
-            atlasRender.prepareForFeature( i )
-            mLabel1.adjustSizeToText()
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas fixed scale test", mComposition, \
-                                               QString( TEST_DATA_DIR ) + QDir.separator() + \
+            res = checker.testComposition( "Atlas fixed scale test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
                                                "control_images" + QDir.separator() + \
                                                "expected_composermapatlas" + QDir.separator() + \
                                                QString( "fixedscale_%1.png" ).arg( i ) )
             assert res[0] == True
-        atlasRender.end()
+        self.mAtlas.endRender()
 
-    def hidden_render_test( self, mComposition, mLabel1, TEST_DATA_DIR ):
-        atlasMap = mComposition.atlasMap()
-        atlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-        atlasMap.setAtlasFixedScale( True )
-        atlasMap.setAtlasHideCoverage( True )
+    def hidden_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
+        self.mAtlas.setHideCoverage( True )
 
-        atlasRender = QgsAtlasRendering( mComposition )
-
-        atlasRender.begin()
+        self.mAtlas.beginRender()
 
         for i in range(0, 2):
-            atlasRender.prepareForFeature( i )
-            mLabel1.adjustSizeToText()
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
 
             checker = QgsCompositionChecker()
-            res = checker.testComposition( "Atlas hidden test", mComposition, \
-                                               QString( TEST_DATA_DIR ) + QDir.separator() + \
+            res = checker.testComposition( "Atlas hidden test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
                                                "control_images" + QDir.separator() + \
                                                "expected_composermapatlas" + QDir.separator() + \
                                                QString( "hiding_%1.png" ).arg( i ) )
             assert res[0] == True
-        atlasRender.end()
+        self.mAtlas.endRender()
 
 if __name__ == '__main__':
     unittest.main()
