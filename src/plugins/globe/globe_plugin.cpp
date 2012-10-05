@@ -338,14 +338,6 @@ void GlobePlugin::setupMap()
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
 
-  //prefill cache
-  /*
-  if ( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
-  {
-    copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
-  }
-  */
-
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
 
