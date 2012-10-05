@@ -43,7 +43,7 @@
 
 QgsMapRenderer::QgsMapRenderer()
 {
-  mScale = 1;
+  mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
   mCachedTrForLayer = 0;
@@ -164,7 +164,7 @@ void QgsMapRenderer::adjustExtentToSize()
 
   if ( !myWidth || !myHeight )
   {
-    mScale = 1;
+    mScale = 1.0;
     newCoordXForm.setParameters( 0, 0, 0, 0 );
     return;
   }

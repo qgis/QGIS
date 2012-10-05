@@ -53,7 +53,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
     , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
-    , mAxisInverted( false)
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
 }
@@ -65,7 +65,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theDefinitio
     , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
-    , mAxisInverted( false)
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromString( theDefinition );
@@ -79,7 +79,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, Cr
     , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
-    , mAxisInverted( false)
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromId( theId, theType );
