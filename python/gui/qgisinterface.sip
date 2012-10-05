@@ -32,6 +32,7 @@ class QgisInterface : QObject
 
   public slots: // TODO: do these functions really need to be slots?
 
+    /* Exposed functions */
     /** Set the app font size
      * @param fontSize point size of font
      * @note added in 2.0

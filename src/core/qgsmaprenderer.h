@@ -288,7 +288,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! map units per pixel
     double mMapUnitsPerPixel;
 
-    //! Map scale at its current zool level
+    //! Map scale at its current zoom level
     double mScale;
 
     //! scale calculator

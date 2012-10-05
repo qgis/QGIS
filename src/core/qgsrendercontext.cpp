@@ -26,6 +26,7 @@ QgsRenderContext::QgsRenderContext()
     mRenderingStopped( false ),
     mScaleFactor( 1.0 ),
     mRasterScaleFactor( 1.0 ),
+    mRendererScale( 1.0 ),
     mLabelingEngine( NULL )
 {
 

@@ -465,6 +465,17 @@
     <file>themes/default/text.png</file>
     <file>themes/default/histogram.png</file>
     <file>themes/default/pie-chart.png</file>
+    <file>console/iconClassConsole.png</file>
+    <file>console/iconSaveConsole.png</file>
+    <file>console/iconHelpConsole.png</file>
+    <file>console/iconTempConsole.png</file>
+    <file>console/iconOpenConsole.png</file>
+    <file>console/iconClearConsole.png</file>
+    <file>console/imgHelpDialog.png</file>
+    <file>console/iconSextanteConsole.png</file>
+    <file>console/iconScriptConsole.png</file>
+    <file>console/iconIfaceConsole.png</file>
+    <file>console/iconRunConsole.png</file>
   </qresource>
   <qresource prefix="/images/tips">
     <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
