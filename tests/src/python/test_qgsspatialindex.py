@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
-'''
-                           test_qgsspatialindex.py
-                     --------------------------------------
-               Date                 : 07 Sep 2012
-               Copyright            : (C) 2012 by Alexander Bruy
-               email                : alexander dot bruy at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 3 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-'''
+"""QGIS Unit tests for QgsSpatialIndex.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+"""
+__author__ = 'Alexander Bruy'
+__date__ = '20/01/2011'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
 
 import unittest
 
@@ -61,6 +58,3 @@ class TestQgsSpatialIndex(unittest.TestCase):
         myMessage = ('Expected: %s\nGot: %s\n' %
                      ([0, 1, 5], fids))
         assert fids == [0, 1, 5], myMessage
-
-if __name__ == '__main__':
-    unittest.main()

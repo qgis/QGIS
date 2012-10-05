@@ -1,11 +1,38 @@
+"""Helper utilities for QGIS python unit tests.
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Tim Sutton (tim@linfiniti.com)'
+__date__ = '20/01/2011'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
 import sys
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
-                      QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
+
+# Support python < 2.7 via unittest2 needed for expected failure decorator.
+# Note that you should ignore unused import warnings here as these are imported
+# from this module by other tests.
+if sys.version_info[0:2] < (2, 7):
+    try:
+        from unittest2 import TestCase, expectedFailure
+        import unittest2 as unittest
+    except ImportError:
+        print "You should install unittest2 to run the salt tests"
+        sys.exit(0)
+else:
+    from unittest import TestCase, expectedFailure
+    import unittest
 
 QGISAPP = None  # Static variable used to hold hand to running QGis app
 CANVAS = None
@@ -24,7 +51,7 @@ def assertHashesForFile(theHashes, theFilename):
                  '\nPlease check graphics %s visually '
                  'and add to list of expected hashes '
                  'if it is OK on this platform.'
-                  % (myHash, theHashes, theFilename))
+                 % (myHash, theHashes, theFilename))
     assert myHash in theHashes, myMessage
 
 
@@ -112,6 +139,7 @@ def unitTestDataPath(theSubdir=None):
         myPath = os.path.abspath(os.path.join(myPath[0], 'testdata'))
     return myPath
 
+
 def setCanvasCrs(theEpsgId, theOtfpFlag=False):
     """Helper to set the crs for the CANVAS before a test is run.
 
@@ -121,7 +149,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
         * theOtfpFlag - whether on the fly projections should be enabled
                         on the CANVAS. Default to False.
     """
-        # Enable on-the-fly reprojection
+    # Enable on-the-fly reprojection
     CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)
 
     # Create CRS Instance

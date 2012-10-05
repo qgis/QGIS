@@ -1,39 +1,26 @@
 # -*- coding: utf-8 -*-
-'''
-                             test_qgsrectangle.py
-                     --------------------------------------
-               Date                 : 07 Sep 2012
-               Copyright            : (C) 2012 by Alexander Bruy
-               email                : alexander dot bruy at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 3 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-'''
+"""QGIS Unit tests for QgsComposition.
 
-import unittest
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Tim Sutton'
+__date__ = '20/08/2012'
+__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
 
-from qgis.core import (QGis,
-                       QgsRectangle,
+from qgis.core import (QgsRectangle,
                        QgsPoint)
 
-from utilities import getQgisTestApp
-import sys
-
-# support python < 2.7 via unittest2
-# needed for expected failure decorator
-if sys.version_info[0:2] < (2,7):
-    try:
-        from unittest2 import TestCase, expectedFailure
-    except ImportError:
-        print "You should install unittest2 to run the salt tests"
-        sys.exit(0)
-else:
-    from unittest import TestCase, expectedFailure
+from utilities import (unitTestDataPath,
+                       getQgisTestApp,
+                       TestCase,
+                       unittest,
+                       expectedFailure
+                       )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -166,7 +153,8 @@ class TestQgsRectangle(TestCase):
         assert rect1.contains(rect2), myMessage
 
         print rect1.toString()
-        assert rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0), "Wrong combine with rectangle result"
+        assert (rect1 == QgsRectangle(0.0, 0.0, 7.0, 7.0),
+                       'Wrong combine with rectangle result')
 
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
         rect1.combineExtentWith(6.0, 2.0)
@@ -191,14 +179,15 @@ class TestQgsRectangle(TestCase):
     def testAsWktCoordinates(self):
         """Test that we can get a proper wkt representation fo the rect"""
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = '0.0000000000000000 0.0000000000000000, 5.0000000000000000 5.0000000000000000'
+        myExpectedWkt = ('0.0000000000000000 0.0000000000000000, '
+                         '5.0000000000000000 5.0000000000000000')
         myWkt = rect1.asWktCoordinates()
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (myExpectedWkt, myWkt))
         self.assertEquals(myWkt, myExpectedWkt, myMessage)
 
     def testAsWktPolygon(self):
-        """Test that we can get a proper wkt polygon representation fo the rect"""
+        """Test that we can get a proper rect wkt polygon representation for rect"""
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
         myExpectedWkt = ('POLYGON((0.0000000000000000 0.0000000000000000, '
                          '5.0000000000000000 0.0000000000000000, '
