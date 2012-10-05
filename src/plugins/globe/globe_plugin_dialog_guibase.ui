@@ -73,11 +73,6 @@
              <string>TMS</string>
             </property>
            </item>
-           <item>
-            <property name="text">
-             <string>Worldwind</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>

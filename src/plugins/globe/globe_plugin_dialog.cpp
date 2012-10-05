@@ -155,7 +155,7 @@ void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged( QString type )
   else if ( "TMS" == type )
   {
     elevationActions->setCurrentIndex( 1 );
-    elevationPath->setText( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
+    elevationPath->setText( "http://readymap.org/readymap/tiles/1.0.0/9/" );
   }
 }
 
@@ -251,11 +251,22 @@ void QgsGlobePluginDialog::setRow( QTableWidget* widget, int row, const QList<QT
   }
 }
 
+void QgsGlobePluginDialog::resetElevationDatasources()
+{
+  elevationDatasourcesWidget->clearContents();
+  elevationDatasourcesWidget->setRowCount( 1 );
+  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem("TMS") );
+  elevationDatasourcesWidget->setItem( 0, 1, new QTableWidgetItem() );
+  elevationDatasourcesWidget->item( 0, 1 )->setCheckState( Qt::Unchecked );
+  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem("http://readymap.org/readymap/tiles/1.0.0/9/") );
+}
+
 void QgsGlobePluginDialog::readElevationDatasources()
 {
   //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
+  elevationDatasourcesWidget->setRowCount( 0 );
   int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
   for ( int i = 0; i < keysCount; ++i )
   {

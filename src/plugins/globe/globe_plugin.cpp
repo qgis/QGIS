@@ -54,7 +54,6 @@
 #include <osgEarth/TileSource>
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
-#include "WorldWindOptions"
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
@@ -165,7 +164,7 @@ struct RefreshControlHandler : public ControlEventHandler
   RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
   {
-    mGlobe->layersChanged();
+    mGlobe->imageLayersChanged();
   }
 private:
   GlobePlugin* mGlobe;
@@ -203,9 +202,9 @@ void GlobePlugin::initGui()
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
-           this, SLOT( layersChanged() ) );
+           this, SLOT( imageLayersChanged() ) );
   connect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
-           this, SLOT( layersChanged() ) );
+           this, SLOT( elevationLayersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this,
@@ -325,13 +324,6 @@ void GlobePlugin::setupMap()
   imagery.url() = "http://readymap.org/readymap/tiles/1.0.0/7/";
   map->addImageLayer( new ImageLayer( "Imagery", imagery ) );
 
-  // add a TMS elevation layer:
-  /*
-  TMSOptions elevation;
-  elevation.url() = "http://readymap.org/readymap/tiles/1.0.0/9/";
-  map->addElevationLayer( new ElevationLayer("Elevation", elevation) );
-  */
-
   MapNodeOptions nodeOptions;
   //nodeOptions.proxySettings() =
   //nodeOptions.enableLighting() = false;
@@ -340,22 +332,26 @@ void GlobePlugin::setupMap()
   TerrainOptions terrainOptions;
   //terrainOptions.loadingPolicy() = loadingPolicy;
   terrainOptions.compositingTechnique() = TerrainOptions::COMPOSITING_MULTITEXTURE_FFP;
+  //terrainOptions.lodFallOff() = 6.0;
   nodeOptions.setTerrainOptions( terrainOptions );
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
 
   //prefill cache
+  /*
   if ( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
   {
     copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
   }
+  */
 
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
 
   // Add layers to the map
-  layersChanged();
+  imageLayersChanged();
+  elevationLayersChanged();
 
   // model placement utils
   mElevationManager = new osgEarth::Util::ElevationManager( mMapNode->getMap() );
@@ -392,8 +388,7 @@ void GlobePlugin::projectReady()
 
 void GlobePlugin::blankProjectReady()
 { //needs at least http://trac.osgeo.org/qgis/changeset/14452
-  mSettingsDialog->elevationDatasources()->clearContents();
-  mSettingsDialog->elevationDatasources()->setRowCount( 0 );
+  mSettingsDialog->resetElevationDatasources();
 }
 
 void GlobePlugin::showCurrentCoordinates( double lon, double lat )
@@ -714,14 +709,50 @@ void GlobePlugin::extentsChanged()
   QgsDebugMsg( "extentsChanged: " + mQGisIface->mapCanvas()->extent().toString() );
 }
 
-void GlobePlugin::layersChanged()
+void GlobePlugin::imageLayersChanged()
 {
   if ( mIsGlobeRunning )
   {
-    QgsDebugMsg( "layersChanged: Globe Running, executing" );
+    QgsDebugMsg( "imageLayersChanged: Globe Running, executing" );
     osg::ref_ptr<Map> map = mMapNode->getMap();
 
-    if ( map->getNumImageLayers() > 1 || map->getNumElevationLayers() > 1 )
+    if ( map->getNumImageLayers() > 1 )
+    {
+      mOsgViewer->getDatabasePager()->clear();
+    }
+
+    //remove QGIS layer
+    if ( mQgisMapLayer )
+    {
+      QgsDebugMsg( "removeMapLayer" );
+      map->removeImageLayer( mQgisMapLayer );
+    }
+
+    //add QGIS layer
+    QgsDebugMsg( "addMapLayer" );
+    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
+    mTileSource->initialize( "", 0 );
+    ImageLayerOptions options( "QGIS" );
+    mQgisMapLayer = new ImageLayer( options, mTileSource );
+    map->addImageLayer( mQgisMapLayer );
+    mQgisMapLayer->setCache( 0 ); //disable caching
+  }
+  else
+  {
+    QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
+    return;
+  }
+}
+
+
+void GlobePlugin::elevationLayersChanged()
+{
+  if ( mIsGlobeRunning )
+  {
+    QgsDebugMsg( "elevationLayersChanged: Globe Running, executing" );
+    osg::ref_ptr<Map> map = mMapNode->getMap();
+
+    if ( map->getNumElevationLayers() > 1 )
     {
       mOsgViewer->getDatabasePager()->clear();
     }
@@ -751,15 +782,6 @@ void GlobePlugin::layersChanged()
         options.url() = uri.toStdString();
         layer = new osgEarth::ElevationLayer( uri.toStdString(), options );
       }
-      else if ( "Worldwind" == type )
-      {
-        WorldWindOptions options;
-        options.elevationCachePath() = cacheDirectory.toStdString() + "/globe/worldwind_srtm";
-        layer = new osgEarth::ElevationLayer( "WorldWind bil", options );
-        TerrainEngineNode* terrainEngineNode = mMapNode->getTerrainEngine();
-        terrainEngineNode->setVerticalScale( 2 );
-        terrainEngineNode->setElevationSamplingRatio( 0.25 );
-      }
       else if ( "TMS" == type )
       {
         TMSOptions options;
@@ -770,22 +792,6 @@ void GlobePlugin::layersChanged()
 
       if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
-
-    //remove QGIS layer
-    if ( mQgisMapLayer )
-    {
-      QgsDebugMsg( "removeMapLayer" );
-      map->removeImageLayer( mQgisMapLayer );
-    }
-
-    //add QGIS layer
-    QgsDebugMsg( "addMapLayer" );
-    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
-    mTileSource->initialize( "", 0 );
-    ImageLayerOptions options( "QGIS" );
-    mQgisMapLayer = new ImageLayer( options, mTileSource );
-    map->addImageLayer( mQgisMapLayer );
-    mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {

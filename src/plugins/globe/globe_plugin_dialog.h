@@ -32,6 +32,7 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
     void setViewer( osgViewer::Viewer* viewer ) { mViewer = viewer; }
+    void resetElevationDatasources();
     void readElevationDatasources();
     QTableWidget *elevationDatasources() { return elevationDatasourcesWidget; }
     void updatePointLayers();
