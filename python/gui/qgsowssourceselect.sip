@@ -106,8 +106,14 @@ class QgsOWSSourceSelect : QDialog
     //! Set supported CRSs
     void populateCRS();
 
+    //! Clear CRSs
+    void clearCRS();
+
     //! Populate times
     void populateTimes();
+
+    //! Clear times
+    void clearTimes();
 
     //! Connection name
     QString connName();
@@ -154,4 +160,8 @@ class QgsOWSSourceSelect : QDialog
 
     //! Returns currently selected time
     QString selectedTime();
+
+    //! Returns currently selected cache load control
+    QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
+
 };

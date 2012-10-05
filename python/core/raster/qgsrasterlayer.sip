@@ -335,7 +335,7 @@ class QgsRasterLayer : QgsMapLayer
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /** \brief Get a legend image for this layer */
-    QPixmap legendAsPixmap();
+    QPixmap legendAsPixmap() /Deprecated/;
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
     QPixmap legendAsPixmapBool( bool ) /Deprecated/;
@@ -481,7 +481,7 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */
-    /* void thumbnailAsImage( QImage * thepImage ); */
+    /* void thumbnailAsImage( QImage * thepImage ) /Deprecated/; */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
