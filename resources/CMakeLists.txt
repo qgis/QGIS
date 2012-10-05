@@ -5,3 +5,4 @@ INSTALL(DIRECTORY jQuery DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ADD_SUBDIRECTORY(context_help)
 ADD_SUBDIRECTORY(function_help)
+ADD_SUBDIRECTORY(console_help)
