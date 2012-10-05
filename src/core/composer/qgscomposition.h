@@ -51,37 +51,6 @@ class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 
 /** \ingroup MapComposer
- * Class used to render an Atlas, iterating over geometry features.
- * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
- * This class is used for printing, exporting to PDF and images.
- * */
-class CORE_EXPORT QgsAtlasRendering
-{
-  public:
-    QgsAtlasRendering( QgsComposition* composition );
-    ~QgsAtlasRendering();
-
-    /** Begins the rendering. Sets an optional output filename pattern */
-    void begin( const QString& filenamePattern = "" );
-    /** Ends the rendering. Restores original extent*/
-    void end();
-
-    /** Returns the number of features in the coverage layer */
-    size_t numFeatures() const;
-
-    /** Prepare the atlas map for the given feature. Sets the extent and context variables */
-    void prepareForFeature( size_t i );
-
-    /** Returns the current filename. Must be called after prepareForFeature( i ) */
-    const QString& currentFilename() const;
-
-  private:
-    struct QgsAtlasRenderingImpl;
-    // Use the PImpl idiom for private members.
-    QgsAtlasRenderingImpl *impl;
-};
-
-/** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
@@ -200,9 +169,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
-
-    QgsComposerMap* atlasMap() { return mAtlasMap; }
-    void setAtlasMap( QgsComposerMap* map );
 
     QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
     void setPlotStyle( QgsComposition::PlotStyle style ) {mPlotStyle = style;}
@@ -341,9 +307,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
 
-  private slots:
-    void onAtlasCoverageChanged( QgsVectorLayer* );
-
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
@@ -380,8 +343,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QgsComposerItemCommand* mActiveItemCommand;
     QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
-
-    QgsComposerMap* mAtlasMap;
 
     QgsComposition(); //default constructor is forbidden
 

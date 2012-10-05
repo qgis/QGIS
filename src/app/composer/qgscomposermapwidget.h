@@ -84,14 +84,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
     void on_mFrameWidthSpinBox_valueChanged( double d );
 
-    void on_mIsAtlasCheckBox_stateChanged( int state );
-    void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
-    void on_mAtlasFilenamePatternEdit_textChanged( const QString& );
-    void on_mAtlasFilenameExpressionButton_clicked();
-    void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
-    void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
-    void on_mAtlasSingleFileCheckBox_stateChanged( int state );
-
   protected:
     void showEvent( QShowEvent * event );
 
@@ -104,10 +96,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
-
-    /** Updates atlas' coverage layer combobox on layer addition / removal */
-    void onLayerRemoved( QString );
-    void onLayerAdded( QgsMapLayer* );
 
   private:
     QgsComposerMap* mComposerMap;
