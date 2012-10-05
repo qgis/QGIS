@@ -10269,18 +10269,8 @@ Aktueller Themenname:	%5
 Aktueller Themenpfad:	%6
 Voreingestellter-Themenpfad:	%7
 SVG-Suchpfads:		%8
-Benutzer-DB-Pfad:		%9 {1
-?} {2
-?} {3
-?} {4
-?} {5
-?} {6
-?} {7
-?} {8
-?} {9
-?} {2
- or 3
-?}</translation>
+Benutzer-DB-Pfad:		%9
+</translation>
     </message>
     <message>
         <source>Application state:
