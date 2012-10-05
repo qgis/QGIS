@@ -23,7 +23,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 from console_sci import PythonEdit
-from help import HelpDialog
+from console_help import HelpDialog
+from qgis.core import QgsApplication
 
 import sys
 import os
@@ -95,13 +96,14 @@ class PythonConsole(QDockWidget):
         self.e.setMargin(0)
         self.e.setSpacing(0)
         self.b.setMargin(0)
-
+        
+        pkgPath = QgsApplication.pkgDataPath()
         ## Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear console")
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconClearConsole.png"))
+        self.clearButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconClearConsole.png"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
@@ -118,7 +120,7 @@ class PythonConsole(QDockWidget):
         self.actionClass = QAction(parent)
         self.actionClass.setCheckable(False)
         self.actionClass.setEnabled(True)
-        self.actionClass.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconClassConsole.png"))
+        self.actionClass.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconClassConsole.png"))
         self.actionClass.setMenuRole(QAction.PreferencesRole)
         self.actionClass.setIconVisibleInMenu(True)
         self.actionClass.setToolTip(actionClassBt)
@@ -128,7 +130,7 @@ class PythonConsole(QDockWidget):
         self.actionScript = QAction(parent)
         self.actionScript.setCheckable(False)
         self.actionScript.setEnabled(True)
-        self.actionScript.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconScriptConsole.png"))
+        self.actionScript.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconScriptConsole.png"))
         self.actionScript.setMenuRole(QAction.PreferencesRole)
         self.actionScript.setIconVisibleInMenu(True)
         self.actionScript.setToolTip(actionScriptBt)
@@ -138,7 +140,7 @@ class PythonConsole(QDockWidget):
         self.loadSextanteButton = QAction(parent)
         self.loadSextanteButton.setCheckable(False)
         self.loadSextanteButton.setEnabled(True)
-        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSextanteConsole.png"))
+        self.loadSextanteButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconSextanteConsole.png"))
         self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
         self.loadSextanteButton.setIconVisibleInMenu(True)
         self.loadSextanteButton.setToolTip(loadSextanteBt)
@@ -148,7 +150,7 @@ class PythonConsole(QDockWidget):
         self.loadIfaceButton = QAction(parent)
         self.loadIfaceButton.setCheckable(False)
         self.loadIfaceButton.setEnabled(True)
-        self.loadIfaceButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconIfaceConsole.png"))
+        self.loadIfaceButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconIfaceConsole.png"))
         self.loadIfaceButton.setMenuRole(QAction.PreferencesRole)
         self.loadIfaceButton.setIconVisibleInMenu(True)
         self.loadIfaceButton.setToolTip(loadIfaceBt)
@@ -158,7 +160,7 @@ class PythonConsole(QDockWidget):
         self.openFileButton = QAction(parent)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconOpenConsole.png"))
+        self.openFileButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconOpenConsole.png"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)
@@ -168,7 +170,7 @@ class PythonConsole(QDockWidget):
         self.saveFileButton = QAction(parent)
         self.saveFileButton.setCheckable(False)
         self.saveFileButton.setEnabled(True)
-        self.saveFileButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSaveConsole.png"))
+        self.saveFileButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
         self.saveFileButton.setToolTip(saveFileBt)
@@ -178,7 +180,7 @@ class PythonConsole(QDockWidget):
         self.runButton = QAction(parent)
         self.runButton.setCheckable(False)
         self.runButton.setEnabled(True)
-        self.runButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconRunConsole.png"))
+        self.runButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconRunConsole.png"))
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip(runBt)
@@ -188,7 +190,7 @@ class PythonConsole(QDockWidget):
         self.helpButton = QAction(parent)
         self.helpButton.setCheckable(False)
         self.helpButton.setEnabled(True)
-        self.helpButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconHelpConsole.png"))
+        self.helpButton.setIcon(QIcon(pkgPath + "/resources/console_help/img/iconHelpConsole.png"))
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
         self.helpButton.setToolTip(helpBt)
