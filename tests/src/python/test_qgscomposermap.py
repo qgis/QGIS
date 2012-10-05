@@ -150,6 +150,18 @@ class TestQgsComposerMap(TestCase):
 #        print "new "+str(newId)
 #        assert oldId != newId
 
+    def zebraStyle(self):
+        mComposerMap.setGridFrameStyle( QgsComposerMap.Zebra )
+        mComposerMap.setGridEnabled( True )
+        myPngPath = os.path.join(TEST_DATA_DIR,
+                                 "control_images",
+                                 "expected_composermap",
+                                 "composermap_zebra_style.png")
+        testResult = checker.testComposition("Composer map zebra",
+                                             self.mComposition,
+                                             myPngPath)
+        assert testResult == True
+
 if __name__ == '__main__':
     unittest.main()
 

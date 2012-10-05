@@ -83,7 +83,9 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
 
   //top left position in device coords
   QPoint tlPoint = QPoint( viewPort->topLeftPoint.x() + topLeftCol, viewPort->topLeftPoint.y() + topLeftRow );
-
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing, false );
   p->drawImage( tlPoint, img );
+  p->restore();
 }
 
