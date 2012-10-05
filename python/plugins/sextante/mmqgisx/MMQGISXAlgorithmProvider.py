@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # --------------------------------------------------------
 #    MMQGISX - MMQGIS Wrapper for Sextante
 #

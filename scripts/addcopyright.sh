@@ -173,7 +173,7 @@ $shebang########################################################################
 EOF
 		;;
 	*.py)
-		cat - $src >$dst <<EOF
+		eval cat - $src >$dst <<EOF
 $shebang# -*- coding: utf-8 -*-
 
 """
