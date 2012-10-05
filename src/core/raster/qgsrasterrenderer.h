@@ -39,6 +39,23 @@ class QDomElement;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
   public:
+    // Origin of min / max values
+    enum MinMaxOrigin
+    {
+      MinMaxUnknown         = 0,
+      MinMaxUser            = 1, // entered by user
+      // method
+      MinMaxMinMax          = 1 << 1,
+      MinMaxCumulativeCut   = 1 << 2,
+      MinMaxStdDev          = 1 << 3,
+      // Extent
+      MinMaxFullExtent      = 1 << 4,
+      MinMaxSubExtent       = 1 << 5,
+      // Precision
+      MinMaxEstimated       = 1 << 6,
+      MinMaxExact           = 1 << 7
+    };
+
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
@@ -81,6 +98,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
+
+    static QString minMaxOriginName( int theOrigin );
+    static QString minMaxOriginLabel( int theOrigin );
+    static int minMaxOriginFromName( QString theName );
 
   protected:
 

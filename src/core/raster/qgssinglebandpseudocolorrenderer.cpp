@@ -24,7 +24,12 @@
 #include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
-    QgsRasterRenderer( input, "singlebandpseudocolor" ), mShader( shader ), mBand( band )
+    QgsRasterRenderer( input, "singlebandpseudocolor" )
+    , mShader( shader )
+    , mBand( band )
+    , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
+    , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
+    , mClassificationMinMaxOrigin( QgsRasterRenderer::MinMaxUnknown )
 {
 }
 
@@ -85,8 +90,16 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
     shader = new QgsRasterShader();
     shader->readXML( rasterShaderElem );
   }
-  QgsRasterRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
+
+  //QgsRasterRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
+  QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
   r->readXML( elem );
+
+  // TODO: add _readXML in superclass?
+  r->setClassificationMin( elem.attribute( "classificationMin", "NaN" ).toDouble() );
+  r->setClassificationMax( elem.attribute( "classificationMax", "NaN" ).toDouble() );
+  r->setClassificationMinMaxOrigin( QgsRasterRenderer::minMaxOriginFromName( elem.attribute( "classificationMinMaxOrigin", "Unknown" ) ) );
+
   return r;
 }
 
@@ -210,6 +223,10 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   {
     mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
+  rasterRendererElem.setAttribute( "classificationMin", QString::number( mClassificationMin ) );
+  rasterRendererElem.setAttribute( "classificationMax", QString::number( mClassificationMax ) );
+  rasterRendererElem.setAttribute( "classificationMinMaxOrigin", QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
+
   parentElem.appendChild( rasterRendererElem );
 }
 

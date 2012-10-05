@@ -42,7 +42,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     int selectedBand( int index = 0 ) { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
   private slots:
     void on_mGrayBandComboBox_currentIndexChanged( int index );

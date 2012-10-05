@@ -26,10 +26,13 @@
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 
+#include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
 #include <QPainter>
+
+#define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
     : QgsRasterInterface( input )
@@ -139,4 +142,147 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
     mRasterTransparency = new QgsRasterTransparency();
     mRasterTransparency->readXML( rasterTransparencyElem );
   }
+}
+
+QString QgsRasterRenderer::minMaxOriginName( int theOrigin )
+{
+  if ( theOrigin == MinMaxUnknown )
+  {
+    return "Unknown";
+  }
+  else if ( theOrigin == MinMaxUser )
+  {
+    return "User";
+  }
+
+  QString name;
+  if ( theOrigin & MinMaxMinMax )
+  {
+    name += "MinMax";
+  }
+  else if ( theOrigin & MinMaxCumulativeCut )
+  {
+    name += "CumulativeCut";
+  }
+  else if ( theOrigin & MinMaxStdDev )
+  {
+    name += "StdDev";
+  }
+
+  if ( theOrigin & MinMaxFullExtent )
+  {
+    name += "FullExtent";
+  }
+  else if ( theOrigin & MinMaxSubExtent )
+  {
+    name += "SubExtent";
+  }
+
+  if ( theOrigin & MinMaxEstimated )
+  {
+    name += "Estimated";
+  }
+  else if ( theOrigin & MinMaxExact )
+  {
+    name += "Exact";
+  }
+  return name;
+}
+
+QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
+{
+  if ( theOrigin == MinMaxUnknown )
+  {
+    return tr( "Unknown" );
+  }
+  else if ( theOrigin == MinMaxUser )
+  {
+    return tr( "User defined" );
+  }
+
+  QString name;
+  if ( theOrigin & MinMaxEstimated )
+  {
+    name += tr( "Estimated" );
+  }
+  else if ( theOrigin & MinMaxExact )
+  {
+    name += tr( "Exact" );
+  }
+
+  name += " ";
+
+  if ( theOrigin & MinMaxMinMax )
+  {
+    name += tr( "min / max" );
+  }
+  else if ( theOrigin & MinMaxCumulativeCut )
+  {
+    name += "cumulative cut";
+  }
+  else if ( theOrigin & MinMaxStdDev )
+  {
+    name += "standard deviation";
+  }
+
+  name += " " + tr( " of " ) + " ";
+
+  if ( theOrigin & MinMaxFullExtent )
+  {
+    name += "full extent";
+  }
+  else if ( theOrigin & MinMaxSubExtent )
+  {
+    name += "sub extent";
+  }
+
+  name += ".";
+
+  return name;
+}
+
+int QgsRasterRenderer::minMaxOriginFromName( QString theName )
+{
+  if ( theName.contains( "Unknown" ) )
+  {
+    return MinMaxUnknown;
+  }
+  else if ( theName.contains( "User" ) )
+  {
+    return MinMaxUser;
+  }
+
+  int origin = 0;
+
+  if ( theName.contains( "MinMax" ) )
+  {
+    origin |= MinMaxMinMax;
+  }
+  else if ( theName.contains( "CumulativeCut" ) )
+  {
+    origin |= MinMaxCumulativeCut;
+  }
+  else if ( theName.contains( "StdDev" ) )
+  {
+    origin |= MinMaxStdDev;
+  }
+
+  if ( theName.contains( "FullExtent" ) )
+  {
+    origin |= MinMaxFullExtent;
+  }
+  else if ( theName.contains( "SubExtent" ) )
+  {
+    origin |= MinMaxSubExtent;
+  }
+
+  if ( theName.contains( "Estimated" ) )
+  {
+    origin |= MinMaxEstimated;
+  }
+  else if ( theName.contains( "Exact" ) )
+  {
+    origin |= MinMaxExact;
+  }
+  return origin;
 }
