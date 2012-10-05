@@ -103,7 +103,8 @@ public:
 
     QgsCoordinateTransform mTransform;
     QString mCurrentFilename;
-    std::vector<QgsFeature> mFeatures;
+    std::vector<QgsFeatureId> mFeatureIds;
+    QgsFeature mCurrentFeature;
     QgsRectangle mOrigExtent;
     bool mRestoreLayer;
     std::auto_ptr<QgsExpression> mFilenameExpr;

@@ -90,12 +90,12 @@ void QgsAtlasComposition::beginRender()
   // select all features with all attributes
   provider->select( provider->attributeIndexes() );
 
-  // features must be stored in a list, since modifying the layer's extent rewinds nextFeature()
-  mFeatures.clear();
-  QgsFeature feature;
-  while ( provider->nextFeature( feature ) )
+  // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
+  // We thus store the feature ids for future extraction
+  QgsFeature feat;
+  while ( provider->nextFeature( feat ) )
   {
-    mFeatures.push_back( feature );
+    mFeatureIds.push_back( feat.id() );
   }
 
   mOrigExtent = mComposerMap->extent();
@@ -115,7 +115,7 @@ void QgsAtlasComposition::beginRender()
 
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatures.size() ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )provider->featureCount() ) );
 }
 
 void QgsAtlasComposition::endRender()
@@ -147,7 +147,11 @@ void QgsAtlasComposition::endRender()
 
 size_t QgsAtlasComposition::numFeatures() const
 {
-  return mFeatures.size();
+  if ( mCoverageLayer )
+  {
+    return mCoverageLayer->dataProvider()->featureCount();
+  }
+  return 0;
 }
 
 void QgsAtlasComposition::prepareForFeature( size_t featureI )
@@ -157,12 +161,14 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
     return;
   }
 
-  QgsFeature* fit = &mFeatures[featureI];
+  QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
+  // retrieve the next feature, based on its id
+  provider->featureAtId( mFeatureIds[ featureI ], mCurrentFeature, /* fetchGeometry = */ true, provider->attributeIndexes() );
 
   if ( mFilenamePattern.size() > 0 )
   {
     QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
-    QVariant filenameRes = mFilenameExpr->evaluate( &*fit );
+    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature );
     if ( mFilenameExpr->hasEvalError() )
     {
       throw std::runtime_error( "Filename eval error: " + mFilenameExpr->evalErrorString().toStdString() );
@@ -180,7 +186,7 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
 
-  QgsGeometry tgeom( *fit->geometry() );
+  QgsGeometry tgeom( *mCurrentFeature.geometry() );
   tgeom.transform( mTransform );
   QgsRectangle geom_rect = tgeom.boundingBox();
 
@@ -243,7 +249,7 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
 
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
-    ( *lit )->setExpressionContext( fit, mCoverageLayer );
+    ( *lit )->setExpressionContext( &mCurrentFeature, mCoverageLayer );
   }
 
   // set the new extent (and render)
