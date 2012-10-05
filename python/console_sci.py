@@ -152,11 +152,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.append('cLayer = iface.mapCanvas().currentLayer()')
             self.move_cursor_to_end()
         elif command == "qtCore":
-            """Retrieve current Layer from map camvas"""
+            """Import QtCore class"""
             self.append('from PyQt4.QtCore import *')
             self.move_cursor_to_end()
         elif command == "qtGui":
-            """Retrieve current Layer from map camvas"""
+            """Import QtGui class"""
             self.append('from PyQt4.QtGui import *')
             self.move_cursor_to_end()
         self.setFocus()
