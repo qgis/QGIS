@@ -153,10 +153,16 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mCategorizedSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
-    return;
+  QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  if ( !dlg.exec() )
+  {
+    delete newSymbol;
+    return;
+  }
+
+  mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
 }
 
