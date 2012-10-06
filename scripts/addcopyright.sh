@@ -113,7 +113,7 @@ for i in $(<files); do
 
 	pcav)
 		authorname="Paolo Cavallini"
-                authoremail="cavallini@faunalia.it"
+                authoremail="cavallini at faunalia dot it"
 		;;
 
 	"cfarmer")
@@ -133,7 +133,7 @@ for i in $(<files); do
 
 	timlinux|"Tim Sutton")
 		authorname="Tim Sutton"
-		authoremail="tim dot linfiniti at com"
+		authoremail="tim at linfiniti dot com"
 		;;
 
 	*)
