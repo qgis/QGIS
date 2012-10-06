@@ -1,4 +1,29 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    r.external.all.py
+    ---------------------
+    Date                 : July 2009
+    Copyright            : (C) 2009 by Lorenzo Masini
+    Email                : rugginoso at develer dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Lorenzo Masini'
+__date__ = 'July 2009'
+__copyright__ = '(C) 2009, Lorenzo Masini'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 ############################################################################
 #

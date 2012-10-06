@@ -111,6 +111,11 @@ for i in $(<files); do
                 authoremail="brush dot tyler at gmail dot com"
 		;;
 
+	pcav)
+		authorname="Paolo Cavallini"
+                authoremail="cavallini@faunalia.it"
+		;;
+
 	"cfarmer")
 		authorname="Carson J. Q. Farmer"
 		authoremail="carson dot farmer at gmail dot com"
@@ -119,6 +124,11 @@ for i in $(<files); do
 	rblazek|"Radim Blazek")
 		authorname="Radim Blazek"
 		authoremail="radim dot blazek at gmail dot com"
+		;;
+
+	marcopx)
+		authorname="Marco Pasetti"
+		authoremail="marco.pasetti at alice dot it"
 		;;
 
 	timlinux|"Tim Sutton")
@@ -218,6 +228,44 @@ EOF
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+EOF
+		;;
+
+	*.pl)
+		eval cat - $src >$dst <<EOF
+$shebang###########################################################################
+#    $basename
+#    ---------------------
+#    begin                : $authordate
+#    copyright            : (C) $authoryear by $authorname
+#    email                : $authoremail
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+EOF
+		;;
+
+	*.bat|*.cmd)
+		cat - $src >$dst <<EOF
+REM ***************************************************************************
+REM    $basename
+REM    ---------------------
+REM    begin                : $authordate
+REM    copyright            : (C) $authoryear by $authorname
+REM    email                : $authoremail
+REM ***************************************************************************
+REM *                                                                         *
+REM *   This program is free software; you can redistribute it and/or modify  *
+REM *   it under the terms of the GNU General Public License as published by  *
+REM *   the Free Software Foundation; either version 2 of the License, or     *
+REM *   (at your option) any later version.                                   *
+REM *                                                                         *
+REM ***************************************************************************
 EOF
 		;;
 

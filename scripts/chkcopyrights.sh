@@ -1,9 +1,9 @@
 #!/bin/bash
 ###########################################################################
-#    astyle-rollback.sh
+#    chkcopyrights.sh
 #    ---------------------
-#    Date                 : August 2008
-#    Copyright            : (C) 2008 by Juergen E. Fischer
+#    Date                 : October 2012
+#    Copyright            : (C) 2012 by Juergen E. Fischer
 #    Email                : jef at norbit dot de
 ###########################################################################
 #                                                                         #
@@ -15,13 +15,6 @@
 ###########################################################################
 
 
-set -e
-
-find . \( -name "*.astyle" -o -name "*.iostream" \) -exec rm {} \;
-svn revert -R .
-svn update
-patch -p0 --dry-run <qgslogger-before.diff
-patch -p0 <qgslogger-before.diff
-mv qgslogger-before.diff qgslogger-before.diff.orig
-svn diff >qgslogger-before.diff
-diff -u qgslogger-before.diff.orig qgslogger-before.diff
+licensecheck -r . |
+	egrep -v "\/debian\/|.\/src\/plugins\/dxf2shp_converter\/dxflib|.\/src\/core\/spatialite\/|\.\/ms-windows\/osgeo4w\/untgz\/|\.\/src\/app\/gps\/qwtpolar-0.1|\.\/src\/app\/gps\/qwtpolar-1.0|: BSD \(3 clause\)|: GPL \(v[23] or later\)$|: LGPL \(v2 or later\)$|: MIT\/X11 \(BSD like\)$|: Apache \(v2\.0\) GPL \(v2 or later\)$|: LGPL$|: Apache \(v2\.0\)$|: zlib\/libpng$|: GPL LGPL$|GENERATED FILE" |
+	sed -e "s/:.*$//"
