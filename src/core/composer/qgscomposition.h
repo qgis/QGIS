@@ -28,6 +28,7 @@
 
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
+#include "qgsatlascomposition.h"
 
 class QgsComposerFrame;
 class QgsComposerItem;
@@ -303,6 +304,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
         @note added in version 1.9*/
     void renderPage( QPainter* p, int page );
 
+    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -343,6 +346,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QgsComposerItemCommand* mActiveItemCommand;
     QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
+
+    /** The atlas composition object. It is held by the QgsComposition */
+    QgsAtlasComposition mAtlasComposition;
 
     QgsComposition(); //default constructor is forbidden
 

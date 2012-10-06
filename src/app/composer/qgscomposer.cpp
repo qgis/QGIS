@@ -286,8 +286,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
   addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
 
-  mAtlasComposition = new QgsAtlasComposition( mComposition );
-  QgsAtlasCompositionWidget* atlasWidget = new QgsAtlasCompositionWidget( mGeneralDock, mAtlasComposition, mComposition );
+  QgsAtlasCompositionWidget* atlasWidget = new QgsAtlasCompositionWidget( mGeneralDock, mComposition );
   mAtlasDock->setWidget( atlasWidget );
 
   mItemDock->show();
@@ -325,7 +324,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 QgsComposer::~QgsComposer()
 {
   deleteItemWidgets();
-  delete mAtlasComposition;
 }
 
 void QgsComposer::setupTheme()
@@ -581,9 +579,9 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     showWMSPrintingWarning();
   }
 
-  bool hasAnAtlas = mAtlasComposition->enabled();
-  bool atlasOnASingleFile = hasAnAtlas && mAtlasComposition->singleFile();
-  QgsAtlasComposition* atlasMap = mAtlasComposition;
+  bool hasAnAtlas = mComposition->atlasComposition().enabled();
+  bool atlasOnASingleFile = hasAnAtlas && mComposition->atlasComposition().singleFile();
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
 
   QString outputFileName;
   QString outputDir;
@@ -747,7 +745,7 @@ void QgsComposer::on_mActionPrint_triggered()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   mView->setPaintingEnabled( false );
 
-  QgsAtlasComposition* atlasMap = mAtlasComposition;
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( atlasMap == 0 )
   {
     mComposition->print( mPrinter );
@@ -831,7 +829,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       return;
   }
 
-  QgsAtlasComposition* atlasMap = mAtlasComposition;
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( 0 == atlasMap )
   {
     QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
@@ -1027,7 +1025,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     m->exec();
   }
 
-  QgsAtlasComposition* atlasMap = mAtlasComposition;
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   bool hasAnAtlas = atlasMap->enabled();
 
   QString outputFileName;
@@ -1561,7 +1559,7 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   }
 
   // store atlas
-  mAtlasComposition->writeXML( composerElem, doc );
+  mComposition->atlasComposition().writeXML( composerElem, doc );
 }
 
 void QgsComposer::readXML( const QDomDocument& doc )
@@ -1647,16 +1645,12 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   // atlas properties reading
   QDomNodeList atlasNodeList = composerElem.elementsByTagName( "Atlas" );
 
-  // delete the old atlas object
-  delete mAtlasComposition;
-  mAtlasComposition = new QgsAtlasComposition( mComposition );
-
   //delete old atlas composition widget
   QgsAtlasCompositionWidget* oldAtlasWidget = qobject_cast<QgsAtlasCompositionWidget *>( mAtlasDock->widget() );
   delete oldAtlasWidget;
-  mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mAtlasComposition, mComposition ) );
+  mAtlasDock->setWidget( new QgsAtlasCompositionWidget( mAtlasDock, mComposition ) );
 
-  mAtlasComposition->readXML( atlasNodeList.at( 0 ).toElement(), doc );
+  mComposition->atlasComposition().readXML( atlasNodeList.at( 0 ).toElement(), doc );
 
   setSelectionTool();
 }

@@ -312,9 +312,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Current composition
     QgsComposition *mComposition;
 
-    //! Atlas map
-    QgsAtlasComposition* mAtlasComposition;
-
     //! Pointer to QGIS application
     QgisApp *mQgis;
 

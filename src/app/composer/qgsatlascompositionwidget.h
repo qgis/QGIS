@@ -17,7 +17,6 @@
 #include "ui_qgsatlascompositionwidgetbase.h"
 
 class QgsComposition;
-class QgsAtlasComposition;
 class QgsMapLayer;
 class QgsComposerMap;
 class QgsComposerItem;
@@ -31,7 +30,7 @@ class QgsAtlasCompositionWidget:
 {
     Q_OBJECT
     public:
-    QgsAtlasCompositionWidget( QWidget* parent, QgsAtlasComposition* atlas, QgsComposition* c );
+    QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c );
     ~QgsAtlasCompositionWidget();
 				
 public slots:
@@ -53,7 +52,6 @@ private slots:
     void updateGuiElements();
     
 private:
-    QgsAtlasComposition* mAtlas;
     QgsComposition* mComposition;
     
     void blockAllSignals( bool b );

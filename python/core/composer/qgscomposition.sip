@@ -253,6 +253,8 @@ class QgsComposition : QGraphicsScene
         @note added in version 1.9*/
     void renderPage( QPainter* p, int page );
 
+    QgsAtlasComposition& atlasComposition();
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
