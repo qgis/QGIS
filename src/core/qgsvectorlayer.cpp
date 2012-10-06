@@ -3270,15 +3270,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   {
     QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
-    QgsAttributeEditorWidget *attributeEditorWidget = attributeEditorWidgetFromDomElement( elem, this );
+    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorWidgetFromDomElement( elem, this );
     mAttributeEditorWidgets.append( attributeEditorWidget );
   }
   return true;
 }
 
-QgsAttributeEditorWidget* QgsVectorLayer::attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent )
+QgsAttributeEditorElement* QgsVectorLayer::attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent )
 {
-  QgsAttributeEditorWidget* newWidget = NULL;
+  QgsAttributeEditorElement* newWidget = NULL;
 
   if ( elem.tagName() == "attributeEditorContainer" )
   {
@@ -3544,7 +3544,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
-    for ( QList< QgsAttributeEditorWidget* >::const_iterator it = mAttributeEditorWidgets.begin(); it != mAttributeEditorWidgets.end(); it++ )
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorWidgets.begin(); it != mAttributeEditorWidgets.end(); it++ )
     {
       QDomElement attributeEditorWidgetElem = ( *it )->getDomElement( doc );
       tabsElem.appendChild( attributeEditorWidgetElem );
@@ -3712,7 +3712,7 @@ bool QgsVectorLayer::hasTabDisplayEnabled( void ) const
   return mTabDisplayOn;
 }
 
-void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorWidget* data )
+void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
 {
   mAttributeEditorWidgets.append( data );
 }
@@ -5870,7 +5870,7 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   return mValueRelations[ fields[idx].name()];
 }
 
-QList<QgsAttributeEditorWidget*> &QgsVectorLayer::attributeEditorWidgets()
+QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorWidgets()
 {
   return mAttributeEditorWidgets;
 }

@@ -77,7 +77,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
      * @param item The tree widget item to process
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorWidget* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
 
     void reset();
     void apply();
@@ -87,7 +87,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void setRow( int row, int idx, const QgsField &field );
 
     void loadAttributeEditorTree();
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorWidget* const widgetDef, QTreeWidgetItem* parent );
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
   signals:
     void toggleEditing( QgsMapLayer * );

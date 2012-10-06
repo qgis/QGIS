@@ -54,7 +54,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsAttributeEditorWidget : public QObject
+class QgsAttributeEditorElement : public QObject
 {
     Q_OBJECT
   public:
@@ -66,9 +66,9 @@ class QgsAttributeEditorWidget : public QObject
       AeTypeInvalid
     };
 
-    QgsAttributeEditorWidget( AttributeEditorType type, QString name, QObject *parent = NULL )
+    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
         : QObject( parent ), mType( type ), mName( name ) {}
-    virtual ~QgsAttributeEditorWidget() {}
+    virtual ~QgsAttributeEditorElement() {}
 
     AttributeEditorType mType;
     QString mName;
@@ -80,15 +80,15 @@ class QgsAttributeEditorWidget : public QObject
     }
 };
 
-class QgsAttributeEditorContainer : public QgsAttributeEditorWidget
+class QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent )
-        : QgsAttributeEditorWidget( AeTypeContainer, name, parent ) {}
+        : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
 
     ~QgsAttributeEditorContainer()
     {
-      for ( QList< QgsAttributeEditorWidget* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+      for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
       {
         delete( *it );
       }
@@ -98,26 +98,26 @@ class QgsAttributeEditorContainer : public QgsAttributeEditorWidget
     {
       QDomElement elem = doc.createElement( "attributeEditorContainer" );
       elem.setAttribute( "name", mName );
-      for ( QList< QgsAttributeEditorWidget* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+      for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
       {
         elem.appendChild(( *it )->getDomElement( doc ) );
       }
       return elem;
     }
 
-    virtual void addWidget( QgsAttributeEditorWidget *widget )
+    virtual void addWidget( QgsAttributeEditorElement *widget )
     {
       mChildren.append( widget );
     }
 
-    QList<QgsAttributeEditorWidget*> mChildren;
+    QList<QgsAttributeEditorElement*> mChildren;
 };
 
-class QgsAttributeEditorField : public QgsAttributeEditorWidget
+class QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent )
-        : QgsAttributeEditorWidget( AeTypeField, name, parent ), mIdx( idx ) {}
+        : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
 
     int mIdx;
     virtual QDomElement getDomElement( QDomDocument& doc ) const
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
-    static QgsAttributeEditorWidget* attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent );
+    static QgsAttributeEditorElement* attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -669,8 +669,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Sets a tab (for the dit form) for attributes to display in dialogs
       @note added in version 1.9*/
-    void addAttributeEditorWidget( QgsAttributeEditorWidget* data );
-    QList< QgsAttributeEditorWidget* > &attributeEditorWidgets();
+    void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+    QList< QgsAttributeEditorElement* > &attributeEditorWidgets();
     void clearAttributeEditorWidgets();
 
     /**Returns the alias of an attribute name or an empty string if there is no alias
@@ -1084,7 +1084,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QString > mAttributeAliasMap;
 
     /**Map that stores the widgets (groups and fields) for attributes in the edit form*/
-    QList< QgsAttributeEditorWidget* > mAttributeEditorWidgets;
+    QList< QgsAttributeEditorElement* > mAttributeEditorWidgets;
 
     /**Attributes which are not published in WMS*/
     QSet<QString> mExcludeAttributesWMS;

@@ -329,21 +329,21 @@ void QgsFieldsProperties::toggleEditing()
   emit toggleEditing( mLayer );
 }
 
-QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorWidget* const widgetDef, QTreeWidgetItem* parent )
+QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
 {
   QTreeWidgetItem* newWidget = 0;
   switch ( widgetDef->mType )
   {
-    case QgsAttributeEditorWidget::AeTypeField:
+    case QgsAttributeEditorElement::AeTypeField:
       newWidget = mAttributesTree->addItem( parent, widgetDef->mName );
       break;
 
-    case QgsAttributeEditorWidget::AeTypeContainer:
+    case QgsAttributeEditorElement::AeTypeContainer:
     {
       newWidget = mAttributesTree->addContainer( parent, widgetDef->mName );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>(widgetDef);
-      for ( QList<QgsAttributeEditorWidget*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
       {
         loadAttributeEditorTreeItem( *it, newWidget );
       }
@@ -374,9 +374,9 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mAttributesTree->setAcceptDrops( true );
   mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  QList<QgsAttributeEditorWidget*> widgets = mLayer->attributeEditorWidgets();
+  QList<QgsAttributeEditorElement*> widgets = mLayer->attributeEditorWidgets();
 
-  for ( QList<QgsAttributeEditorWidget*>::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
+  for ( QList<QgsAttributeEditorElement*>::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
   {
     loadAttributeEditorTreeItem( *it, mAttributesTree->invisibleRootItem () );
   }
@@ -826,9 +826,9 @@ void QgsFieldsProperties::reset()
     QObject::connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );*/
 }
 
-QgsAttributeEditorWidget* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
+QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )
 {
-  QgsAttributeEditorWidget* widgetDef;
+  QgsAttributeEditorElement* widgetDef;
 
   if ( item->data( 0, Qt::UserRole ) == "field" )
   {

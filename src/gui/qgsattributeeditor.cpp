@@ -880,20 +880,20 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   return true;
 }
 
-QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorWidget* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs )
+QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs )
 {
   QWidget *newWidget = 0;
 
   switch ( widgetDef->mType )
   {
-    case QgsAttributeEditorWidget::AeTypeField:
+    case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
       newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ) );
       break;
     }
 
-    case QgsAttributeEditorWidget::AeTypeContainer:
+    case QgsAttributeEditorElement::AeTypeContainer:
     {
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
 
@@ -903,12 +903,12 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorWidget
 
       int index = 0;
 
-      for ( QList<QgsAttributeEditorWidget*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
       {
-        QgsAttributeEditorWidget* childDef = *it;
+        QgsAttributeEditorElement* childDef = *it;
         QWidget* editor = createWidgetFromDef( childDef, groupBox, vl, attrs );
 
-        if ( childDef->mType == QgsAttributeEditorWidget::AeTypeContainer )
+        if ( childDef->mType == QgsAttributeEditorElement::AeTypeContainer )
         {
           gbLayout->addWidget( editor, index, 0, 1, 2 );
         }
@@ -922,6 +922,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorWidget
 
         ++index;
       }
+      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
 
       newWidget = groupBox;
       break;

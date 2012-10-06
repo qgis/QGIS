@@ -96,15 +96,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       tabWidget = new QTabWidget( mDialog );
       gridLayout->addWidget( tabWidget );
 
-      for ( QList<QgsAttributeEditorWidget*>::const_iterator tIt = vl->attributeEditorWidgets().begin(); tIt != vl->attributeEditorWidgets().end(); ++tIt )
+      for ( QList<QgsAttributeEditorElement*>::const_iterator tIt = vl->attributeEditorWidgets().begin(); tIt != vl->attributeEditorWidgets().end(); ++tIt )
       {
-        QgsAttributeEditorWidget* widg = *tIt;
+        QgsAttributeEditorElement* widg = *tIt;
 
         QWidget* tabPage = new QWidget( tabWidget );
         tabWidget->addTab( tabPage, widg->mName );
         QGridLayout *tabPageLayout = new QGridLayout( tabPage );
 
-        if ( widg->mType == QgsAttributeEditorWidget::AeTypeContainer )
+        if ( widg->mType == QgsAttributeEditorElement::AeTypeContainer )
         {
           tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef ( widg, tabPage, vl, myAttributes ) );
         }
