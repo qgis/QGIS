@@ -437,13 +437,18 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         Re-implemented to handle the mouse press event.
         e: the mouse press event (QMouseEvent)
         """
-        if e.button() == Qt.MidButton:
-            stringSel = unicode(QApplication.clipboard().text(QClipboard.Selection))
-            self.insertFromDropPaste(stringSel)
-            self.setFocus()
-            e.accept()
+        linenr, index = self.getCurLine()
+        ## Prevents paste text if cursor is not in edition zone
+        if not self.is_cursor_on_last_line() or index < 4:
+                self.move_cursor_to_end()
         else:
-            QsciScintilla.mousePressEvent(self, e)
+            if e.button() == Qt.MidButton:
+                stringSel = unicode(QApplication.clipboard().text(QClipboard.Selection))
+                self.insertFromDropPaste(stringSel)
+                self.setFocus()
+                e.accept()
+            else:
+                QsciScintilla.mousePressEvent(self, e)
                 
     def paste(self):
         """Reimplement QScintilla method"""
