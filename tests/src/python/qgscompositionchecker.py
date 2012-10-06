@@ -97,6 +97,4 @@ class QgsCompositionChecker:
 
           #allow pixel deviation of 1 percent
           pixelCount = imageWidth * imageHeight;
-          print "MismatchCount: "+str(mismatchCount)
-          print "PixelCount: "+str(pixelCount)
           return (float(mismatchCount) / float(pixelCount) ) < 0.01
