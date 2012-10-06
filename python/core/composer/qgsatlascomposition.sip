@@ -3,7 +3,7 @@
  * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
  * This class is used for printing, exporting to PDF and images.
  * */
-class QgsAtlasComposition : public QObject
+class QgsAtlasComposition : QObject
 {
 %TypeHeaderCode
 #include <qgsatlascomposition.h>
@@ -12,32 +12,32 @@ class QgsAtlasComposition : public QObject
 public:
     QgsAtlasComposition( QgsComposition* composition );
     ~QgsAtlasComposition();
-    
+
     /** Is the atlas generation enabled ? */
     bool enabled() const;
     void setEnabled( bool e );
 
     QgsComposerMap* composerMap() const;
     void setComposerMap( QgsComposerMap* map );
-    
+
     bool hideCoverage() const;
     void setHideCoverage( bool hide );
-    
+
     bool fixedScale() const;
     void setFixedScale( bool fixed );
-    
+
     float margin() const;
     void setMargin( float margin );
-    
+
     QString filenamePattern() const;
     void setFilenamePattern( const QString& pattern );
-    
+
     QgsVectorLayer* coverageLayer() const;
     void setCoverageLayer( QgsVectorLayer* lmap );
-    
+
     bool singleFile() const;
     void setSingleFile( bool single );
-    
+
     /** Begins the rendering. */
     void beginRender();
     /** Ends the rendering. Restores original extent */
