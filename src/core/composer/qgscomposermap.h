@@ -320,8 +320,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
   signals:
     void extentChanged();
 
-    void atlasCoverageLayerChanged( QgsVectorLayer* );
-
   public slots:
 
     /**Called if map canvas has changed*/
