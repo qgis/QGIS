@@ -142,7 +142,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
     QString id = it.key();
     myList << id;
   }
-  removeMapLayers( myList, false );
+  removeMapLayers( myList, true );
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
