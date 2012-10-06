@@ -43,6 +43,8 @@
 #include <QSettings>
 #include <QDir>
 #include <QUuid>
+#include <QGroupBox>
+#include <QLabel>
 
 void QgsAttributeEditor::selectFileName()
 {
@@ -876,4 +878,59 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   }
 
   return true;
+}
+
+QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorWidget* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs )
+{
+  QWidget *newWidget = 0;
+
+  switch ( widgetDef->mType )
+  {
+    case QgsAttributeEditorWidget::AeTypeField:
+    {
+      const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
+      newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ) );
+      break;
+    }
+
+    case QgsAttributeEditorWidget::AeTypeContainer:
+    {
+      const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
+
+      QGroupBox* groupBox = new QGroupBox( parent );
+      groupBox->setTitle ( container->mName );
+      QGridLayout* gbLayout = new QGridLayout( groupBox );
+
+      int index = 0;
+
+      for ( QList<QgsAttributeEditorWidget*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
+      {
+        QgsAttributeEditorWidget* childDef = *it;
+        QWidget* editor = createWidgetFromDef( childDef, groupBox, vl, attrs );
+
+        if ( childDef->mType == QgsAttributeEditorWidget::AeTypeContainer )
+        {
+          gbLayout->addWidget( editor, index, 0, 1, 2 );
+        }
+        else
+        {
+          QLabel * mypLabel = new QLabel( groupBox );
+          gbLayout->addWidget( mypLabel, index, 0 );
+          mypLabel->setText( childDef->mName );
+          gbLayout->addWidget( editor, index, 1 );
+        }
+
+        ++index;
+      }
+
+      newWidget = groupBox;
+      break;
+    }
+
+    default:
+      QgsDebugMsg("Unknown attribute editor widget type encountered...");
+      break;
+  }
+
+  return newWidget;
 }

@@ -3237,6 +3237,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
   QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
@@ -3259,7 +3260,47 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
     }
   }
+
+  // tabs and groups display info
+  mAttributeEditorWidgets.clear();
+  QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
+  QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
+
+  for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
+  {
+    QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
+
+    QgsAttributeEditorWidget *attributeEditorWidget = attributeEditorWidgetFromDomElement( elem, this );
+    mAttributeEditorWidgets.append( attributeEditorWidget );
+  }
   return true;
+}
+
+QgsAttributeEditorWidget* QgsVectorLayer::attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent )
+{
+  QgsAttributeEditorWidget* newWidget = NULL;
+
+  if ( elem.tagName() == "attributeEditorContainer" )
+  {
+    QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( "name" ), parent );
+
+    QDomNodeList childNodeList = elem.childNodes();
+
+    for ( int i = 0; i < childNodeList.size(); i++ )
+    {
+      QDomElement childElem = childNodeList.at( i ).toElement();
+
+      container->addWidget( attributeEditorWidgetFromDomElement( childElem, parent ) );
+    }
+
+    newWidget = container;
+  }
+  else if ( elem.tagName() == "attributeEditorField" )
+  {
+    newWidget = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+  }
+
+  return newWidget;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
@@ -3498,6 +3539,20 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   }
   node.appendChild( excludeWFSElem );
 
+  // tabs and groups of edit form
+  if ( mAttributeEditorWidgets.size() > 0 )
+  {
+    QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
+
+    for ( QList< QgsAttributeEditorWidget* >::const_iterator it = mAttributeEditorWidgets.begin(); it != mAttributeEditorWidgets.end(); it++ )
+    {
+      QDomElement attributeEditorWidgetElem = ( *it )->getDomElement( doc );
+      tabsElem.appendChild( attributeEditorWidgetElem );
+    }
+
+    node.appendChild( tabsElem );
+  }
+
   // add attribute actions
   mActions->writeXML( node, doc );
 
@@ -3657,18 +3712,9 @@ bool QgsVectorLayer::hasTabDisplayEnabled( void ) const
   return mTabDisplayOn;
 }
 
-void QgsVectorLayer::addTab( QString tabTitle )
+void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorWidget* data )
 {
-  QList<QString> fields;
-  QList<GroupData> groups;
-  mTabs.append( TabData( tabTitle , fields , groups ) );
-  emit layerModified( false );
-}
-
-void QgsVectorLayer::addTab( TabData data )
-{
-  mTabs.append( data );
-  emit layerModified( false );
+  mAttributeEditorWidgets.append( data );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -5822,4 +5868,14 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   }
 
   return mValueRelations[ fields[idx].name()];
+}
+
+QList<QgsAttributeEditorWidget*> &QgsVectorLayer::attributeEditorWidgets()
+{
+  return mAttributeEditorWidgets;
+}
+
+void QgsVectorLayer::clearAttributeEditorWidgets()
+{
+  mAttributeEditorWidgets.clear();
 }

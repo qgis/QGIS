@@ -81,6 +81,39 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mDialog = qobject_cast<QDialog*>( myWidget );
       buttonBox = myWidget->findChild<QDialogButtonBox*>();
     }
+    // Tab display
+    else if ( vl->hasTabDisplayEnabled() )
+    {
+      mDialog = new QDialog( QgisApp::instance() );
+
+      QGridLayout *gridLayout;
+      QTabWidget *tabWidget;
+
+      mDialog->resize( 447, 343 );
+      gridLayout = new QGridLayout( mDialog );
+      gridLayout->setObjectName( QString::fromUtf8( "gridLayout" ) );
+
+      tabWidget = new QTabWidget( mDialog );
+      gridLayout->addWidget( tabWidget );
+
+      for ( QList<QgsAttributeEditorWidget*>::const_iterator tIt = vl->attributeEditorWidgets().begin(); tIt != vl->attributeEditorWidgets().end(); ++tIt )
+      {
+        QgsAttributeEditorWidget* widg = *tIt;
+
+        QWidget* tabPage = new QWidget( tabWidget );
+        tabWidget->addTab( tabPage, widg->mName );
+        QGridLayout *tabPageLayout = new QGridLayout( tabPage );
+
+        if ( widg->mType == QgsAttributeEditorWidget::AeTypeContainer )
+        {
+          tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef ( widg, tabPage, vl, myAttributes ) );
+        }
+        else
+        {
+          QgsDebugMsg( "No support for fields in attribute editor on top level" );
+        }
+      }
+    }
   }
 
   if ( !mDialog )
@@ -189,7 +222,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
         if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
         {
-          (*itw)->setEnabled( vl->isEditable() );
+          ( *itw )->setEnabled( vl->isEditable() );
         }
 
         mpIndizes << it.key();

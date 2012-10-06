@@ -28,7 +28,7 @@ class QgsAttributesList : public QTableWidget
 {
     Q_OBJECT
   public:
-    QgsAttributesList(QWidget* parent = 0)
+    QgsAttributesList( QWidget* parent = 0 )
         : QTableWidget( parent )
     {}
 
@@ -42,24 +42,23 @@ class QgsAttributesTree : public QTreeWidget
 {
     Q_OBJECT
   public:
-    QgsAttributesTree(QWidget* parent = 0)
+    QgsAttributesTree( QWidget* parent = 0 )
         : QTreeWidget( parent )
     {}
-    QTreeWidgetItem* addTab( QString tabTitle );
-    QTreeWidgetItem* addGroup(QTreeWidgetItem* tabItem , QString groupTitle);
-    void addItem( QTreeWidgetItem* parent , QString fieldName );
+    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent , QString title );
+    QTreeWidgetItem* addItem( QTreeWidgetItem* parent , QString fieldName );
 
   protected:
     virtual void dropEvent( QDropEvent *event );
-    //virtual void dragEnterEvent( QDragEnterEvent *event );
+    virtual void dragEnterEvent( QDragEnterEvent *event );
     bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
-   /* Qt::DropActions supportedDropActions() const;*/
+    /* Qt::DropActions supportedDropActions() const;*/
 };
 
 
 class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = 0 );
@@ -74,12 +73,21 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
       @return false in case of a non-existing attribute.*/
     bool deleteAttribute( int attr );
 
+    /**Creates the a proper item to save from the tree
+     * @param item The tree widget item to process
+     * @return A widget definition. Containing another container or the final field
+     */
+    QgsAttributeEditorWidget* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
+
     void reset();
     void apply();
 
     void updateButtons();
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
+
+    void loadAttributeEditorTree();
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorWidget* const widgetDef, QTreeWidgetItem* parent );
 
   signals:
     void toggleEditing( QgsMapLayer * );
@@ -96,6 +104,12 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
+
+    void addTabOrGroup();
+    void addItemInTabOrGroup();
+    void removeTabGroupItem();
+    void moveDownItem();
+    void moveUpItem();
 
 
 
