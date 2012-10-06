@@ -16,11 +16,15 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include <memory>
+
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
 #include <QSet>
 #include <QUndoStack>
+#include <QPrinter>
+#include <QPainter>
 
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritemcommand.h"
@@ -44,6 +48,7 @@ class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -115,11 +120,17 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
+    /** Returns the page number (0-bsaed) given a coordinate */
+    int pageNumberAt( const QPointF& position ) const;
+
+    /** Returns on which page number (0-based) is displayed an item */
+    int itemPageNumber( const QgsComposerItem* ) const;
+
     QList<QgsComposerItem*> selectedComposerItems();
 
     /**Returns pointers to all composer maps in the scene
-      @note not available in python bindings
-     */
+      @note available in python bindings only with PyQt >= 4.8.4
+      */
     QList<const QgsComposerMap*> composerMapItems() const;
 
     /**Return composer items of a specific type
@@ -271,9 +282,18 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     //printing
 
-    void exportAsPDF( const QString& file );
+    /** Prepare the printer for printing */
+    void beginPrint( QPrinter& printer );
+    /** Prepare the printer for printing in a PDF */
+    void beginPrintAsPDF( QPrinter& printer, const QString& file );
+    /** Print on a preconfigured printer */
+    void doPrint( QPrinter& printer, QPainter& painter );
 
+    /** Convenience function that prepares the printer and prints */
     void print( QPrinter &printer );
+
+    /** Convenience function that prepares the printer for printing in PDF and prints */
+    void exportAsPDF( const QString& file );
 
     //! print composer page to image
     //! If the image does not fit into memory, a null image is returned
