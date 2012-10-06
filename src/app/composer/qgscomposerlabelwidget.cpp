@@ -113,7 +113,13 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
-  QgsExpressionBuilderDialog exprDlg( /* layer = */ 0, selText, this );
+  QgsVectorLayer* coverageLayer = 0;
+  // use the atlas coverage layer, if any
+  if ( mComposerLabel->composition()->atlasComposition().enabled() )
+  {
+    coverageLayer = mComposerLabel->composition()->atlasComposition().coverageLayer();
+  }
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
