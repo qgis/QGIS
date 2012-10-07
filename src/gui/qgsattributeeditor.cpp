@@ -911,6 +911,13 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
       newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ), referenceWidgets );
+
+
+      if ( vl->editType( fieldDef->mIdx ) != QgsVectorLayer::Immutable )
+      {
+        newWidget->setEnabled( vl->isEditable() );
+      }
+
       break;
     }
 
