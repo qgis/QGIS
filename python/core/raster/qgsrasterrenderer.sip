@@ -64,4 +64,14 @@ class QgsRasterRenderer : QgsRasterInterface
 
     /**Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const;
+
+    static QString minMaxOriginName( int theOrigin );
+    static QString minMaxOriginLabel( int theOrigin );
+    static int minMaxOriginFromName( QString theName );
+
+  protected:
+
+    /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
+    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+
 };

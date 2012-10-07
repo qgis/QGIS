@@ -49,9 +49,9 @@ class TestQgsComposerMap(TestCase):
                                       rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer(
             mRasterLayer.dataProvider(), 2, 3, 4)
-        #mRasterLayer.setRenderer( rasterRenderer )
-        pipe = mRasterLayer.pipe()
-        assert pipe.set(rasterRenderer), "Cannot set pipe renderer"
+        mRasterLayer.setRenderer( rasterRenderer )
+        #pipe = mRasterLayer.pipe()
+        #assert pipe.set(rasterRenderer), "Cannot set pipe renderer"
         QgsMapLayerRegistry.instance().addMapLayer(mRasterLayer)
 
         # create composition with composer map
@@ -101,7 +101,8 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setGridEnabled(False)
         self.mComposerMap.setShowGridAnnotation(False)
 
-        assert testResult == True
+        print testResult
+        assert testResult[0] == True
 
     def testOverviewMap(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
@@ -124,31 +125,43 @@ class TestQgsComposerMap(TestCase):
                                              self.mComposition,
                                              myPngPath)
         self.mComposition.removeComposerItem(overviewMap)
-        assert testResult == True
+        assert testResult[0] == True
 
 
-#    def uniqueId(self,  mComposerMap,  mComposition):
-#        doc = QDomDocument()
-#        documentElement = doc.createElement( "ComposerItemClipboard" )
-#        mComposerMap.writeXML( documentElement, doc )
-#        mComposition.addItemsFromXML( documentElement, doc, 0, false )
-#
-#        #test if both composer maps have different ids
-#        newMap = QgsComposerMap()
-#        mapList = mComposition.composerMapItems()
-#
-#        for mapIt in mapList:
-#            if mapIt != mComposerMap:
-#              newMap = mapIt
-#              break
-#
-#        oldId = mComposerMap.id()
-#        newId = newMap.id()
-#
-#        mComposition.removeComposerItem( newMap );
-#        print "old: "+str(oldId)
-#        print "new "+str(newId)
-#        assert oldId != newId
+    def uniqueId(self,  mComposerMap,  mComposition):
+        doc = QDomDocument()
+        documentElement = doc.createElement( "ComposerItemClipboard" )
+        mComposerMap.writeXML( documentElement, doc )
+        mComposition.addItemsFromXML( documentElement, doc, 0, false )
+
+        #test if both composer maps have different ids
+        newMap = QgsComposerMap()
+        mapList = mComposition.composerMapItems()
+
+        for mapIt in mapList:
+            if mapIt != mComposerMap:
+              newMap = mapIt
+              break
+
+        oldId = mComposerMap.id()
+        newId = newMap.id()
+
+        mComposition.removeComposerItem( newMap );
+        print "old: "+str(oldId)
+        print "new "+str(newId)
+        assert oldId != newId
+
+    def zebraStyle(self):
+        mComposerMap.setGridFrameStyle( QgsComposerMap.Zebra )
+        mComposerMap.setGridEnabled( True )
+        myPngPath = os.path.join(TEST_DATA_DIR,
+                                 "control_images",
+                                 "expected_composermap",
+                                 "composermap_zebra_style.png")
+        testResult = checker.testComposition("Composer map zebra",
+                                             self.mComposition,
+                                             myPngPath)
+        assert testResult[0] == True
 
 if __name__ == '__main__':
     unittest.main()

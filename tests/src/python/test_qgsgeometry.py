@@ -23,6 +23,7 @@ from utilities import (getQgisTestApp,
                        unittest)
 # Convenience instances in case you may need them
 # not used in this test
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsGeometry(TestCase):

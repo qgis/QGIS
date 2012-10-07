@@ -50,9 +50,5 @@ static const ColorEntry blackonlightyellow_color_table[TABLE_COLORS] =
   ColorEntry( QColor( 84, 255, 255 ),  0, 0 ),  ColorEntry( QColor( 255, 255, 255 ),  0, 0 )
 };
 
-
-
-
-
 #endif
 

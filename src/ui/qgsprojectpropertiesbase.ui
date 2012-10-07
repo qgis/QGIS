@@ -1214,6 +1214,7 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
+  <tabstop>mWMSOnlineResourceLineEdit</tabstop>
   <tabstop>mWMSContactPerson</tabstop>
   <tabstop>mWMSContactMail</tabstop>
   <tabstop>mWMSContactPhone</tabstop>

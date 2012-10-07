@@ -36,11 +36,11 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
-  private:
-    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
-
   public slots:
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+
+  private:
+    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
 
   private slots:
     void on_mAddEntryButton_clicked();
