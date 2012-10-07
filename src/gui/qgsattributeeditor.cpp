@@ -127,6 +127,12 @@ QListWidget *QgsAttributeEditor::listWidget( QWidget *editor, QWidget *parent )
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {
+  QMap<int, QWidget*> dummyReferenceWidgets;
+  return createAttributeEditor ( parent, editor, vl, idx, value, dummyReferenceWidgets );
+}
+
+QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value, QMap<int, QWidget*> &referenceWidgets )
+{
   if ( !vl )
     return 0;
 
@@ -470,6 +476,21 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         }
 
         le->setValidator( new QgsFieldValidator( le, field ) );
+
+        QMap<int, QWidget*>::const_iterator it = referenceWidgets.find( idx );
+        if ( it != referenceWidgets.end() )
+        {
+          QLineEdit *referenceLe = qobject_cast<QLineEdit*>( *it );
+          if ( referenceLe )
+          {
+            connect( referenceLe, SIGNAL( textEdited(QString) ), le, SLOT( setText(QString) )  );
+            connect( le, SIGNAL( textEdited(QString) ), referenceLe, SLOT( setText(QString) )  );
+          }
+        }
+        else
+        {
+          referenceWidgets.insert( idx, le );
+        }
         myWidget = le;
       }
 
@@ -880,7 +901,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   return true;
 }
 
-QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs )
+QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &referenceWidgets )
 {
   QWidget *newWidget = 0;
 
@@ -889,7 +910,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
-      newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ) );
+      newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ), referenceWidgets );
       break;
     }
 
@@ -906,7 +927,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
       {
         QgsAttributeEditorElement* childDef = *it;
-        QWidget* editor = createWidgetFromDef( childDef, groupBox, vl, attrs );
+        QWidget* editor = createWidgetFromDef( childDef, groupBox, vl, attrs, referenceWidgets );
 
         if ( childDef->mType == QgsAttributeEditorElement::AeTypeContainer )
         {

@@ -57,6 +57,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( !mFeature || !vl->dataProvider() )
     return;
 
+  // Used to sync multiple widgets for the same field
+  QMap<int, QWidget*> referenceWidgets = QMap<int, QWidget*>();
+
   const QgsFieldMap &theFieldMap = vl->pendingFields();
   if ( theFieldMap.isEmpty() )
     return;
@@ -106,13 +109,17 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
         if ( widg->mType == QgsAttributeEditorElement::AeTypeContainer )
         {
-          tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef ( widg, tabPage, vl, myAttributes ) );
+          tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef ( widg, tabPage, vl, myAttributes, referenceWidgets ) );
         }
         else
         {
           QgsDebugMsg( "No support for fields in attribute editor on top level" );
         }
       }
+
+      buttonBox = new QDialogButtonBox( mDialog );
+      buttonBox->setObjectName( QString::fromUtf8( "buttonBox" ) );
+      gridLayout->addWidget( buttonBox );
     }
   }
 
@@ -167,7 +174,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QString myFieldName = vl->attributeDisplayName( it.key() );
       int myFieldType = it->type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ), referenceWidgets );
       if ( !myWidget )
         continue;
 
@@ -218,7 +225,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
+        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ), referenceWidgets );
 
         if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
         {

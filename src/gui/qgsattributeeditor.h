@@ -35,8 +35,9 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
 
   public:
     QgsAttributeEditor( QObject *parent ) : QObject( parent ) {};
+    static QWidget *createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value, QMap<int, QWidget*> &referenceWidgets );
     static QWidget *createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value );
-    static QWidget *createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs );
+    static QWidget *createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &referenceWidgets );
     static bool retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value );
     static bool setValue( QWidget *widget, QgsVectorLayer *vl, int idx, const QVariant &value );
 
