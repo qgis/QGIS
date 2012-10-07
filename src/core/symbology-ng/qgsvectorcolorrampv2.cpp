@@ -407,8 +407,10 @@ QgsVectorGradientColorRampV2* QgsCptCityColorRampV2::cloneGradientRamp() const
   // add author and copyright information
   // TODO also add COPYING.xml file/link?
   QgsStringMap info = copyingInfo();
-  info["source"] = "cpt-city archive - " + mSchemeName + mVariantName + ".svg";
-  info["license/file"] = copyingFileName();
+  info["cpt-city-gradient"] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
+  QString copyingFilename = copyingFileName();
+  copyingFilename.remove( QgsCptCityArchive::defaultBaseDir() );
+  info["cpt-city-license"] = "<cpt-city>" + copyingFilename;
   ramp->setInfo( info );
   return ramp;
 }

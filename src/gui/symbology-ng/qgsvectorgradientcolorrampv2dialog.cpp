@@ -17,6 +17,7 @@
 
 #include "qgsvectorcolorrampv2.h"
 #include "qgsdialog.h"
+#include "qgscptcityarchive.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
@@ -75,18 +76,20 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
+  QLabel *label = 0;
 
   // information table
   QTableWidget *tableInfo = new QTableWidget( dlg );
   tableInfo->verticalHeader()->hide();
   tableInfo->horizontalHeader()->hide();
-  tableInfo->setColumnCount( 2 );
   tableInfo->setRowCount( mRamp->info().count() );
+  tableInfo->setColumnCount( 2 );
   int i = 0;
   for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
         it != mRamp->info().constEnd(); ++it )
   {
-    QgsDebugMsg( it.key() + "-" + it.value() );
+    if ( it.key().startsWith( "cpt-city" ) )
+      continue;
     tableInfo->setItem( i, 0, new QTableWidgetItem( it.key() ) );
     tableInfo->setItem( i, 1, new QTableWidgetItem( it.value() ) );
     tableInfo->resizeRowToContents( i );
@@ -94,26 +97,58 @@ void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
   }
   tableInfo->resizeColumnToContents( 0 );
   tableInfo->horizontalHeader()->setStretchLastSection( true );
+  tableInfo->setRowCount( i );
   tableInfo->setFixedHeight( tableInfo->rowHeight( 0 ) * i + 5 );
   dlg->layout()->addWidget( tableInfo );
   dlg->resize( 600, 250 );
 
-  // license file
-  QString licenseFile = mRamp->info().value( "license/file" );
-  if ( !licenseFile.isNull() && QFile::exists( licenseFile ) )
+  dlg->layout()->addSpacing( 5 );
+
+  // gradient file
+  QString gradientFile = mRamp->info().value( "cpt-city-gradient" );
+  if ( ! gradientFile.isNull() )
   {
-    QTextEdit *textEdit = new QTextEdit( dlg );
-    textEdit->setReadOnly( true );
-    QFile file( licenseFile );
-    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    QString fileName = gradientFile;
+    fileName.replace( "<cpt-city>", QgsCptCityArchive::defaultBaseDir() );
+    if ( ! QFile::exists( fileName ) )
     {
-      textEdit->setText( file.readAll() );
-      file.close();
-      dlg->layout()->addSpacing( 10 );
-      dlg->layout()->addWidget( new QLabel( tr( "License file : %1" ).arg( licenseFile ), dlg ) );
-      dlg->layout()->addSpacing( 5 );
-      dlg->layout()->addWidget( textEdit );
-      dlg->resize( 600, 500 );
+      fileName = gradientFile;
+      fileName.replace( "<cpt-city>", "http://soliton.vm.bytemark.co.uk/pub/cpt-city" );
+    }
+    label = new QLabel( tr( "Gradient file : %1" ).arg( fileName ), dlg );
+    label->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    dlg->layout()->addSpacing( 5 );
+    dlg->layout()->addWidget( label );
+  }
+
+  // license file
+  QString licenseFile = mRamp->info().value( "cpt-city-license" );
+  if ( !licenseFile.isNull() )
+  {
+    QString fileName = licenseFile;
+    fileName.replace( "<cpt-city>", QgsCptCityArchive::defaultBaseDir() );
+    if ( ! QFile::exists( fileName ) )
+    {
+      fileName = licenseFile;
+      fileName.replace( "<cpt-city>", "http://soliton.vm.bytemark.co.uk/pub/cpt-city" );
+    }
+    label = new QLabel( tr( "License file : %1" ).arg( fileName ), dlg );
+    label->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    dlg->layout()->addSpacing( 5 );
+    dlg->layout()->addWidget( label );
+    if ( QFile::exists( fileName ) )
+    {
+      QTextEdit *textEdit = new QTextEdit( dlg );
+      textEdit->setReadOnly( true );
+      QFile file( fileName );
+      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        textEdit->setText( file.readAll() );
+        file.close();
+        dlg->layout()->addSpacing( 5 );
+        dlg->layout()->addWidget( textEdit );
+        dlg->resize( 600, 500 );
+      }
     }
   }
 
