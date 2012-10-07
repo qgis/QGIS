@@ -75,6 +75,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mQActionPointer( NULL )
     , mQActionSettingsPointer( NULL )
     , mOsgViewer( 0 )
+    , mViewerWidget( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
     , mElevationManager( NULL )
@@ -215,81 +216,88 @@ void GlobePlugin::initGui()
 
 void GlobePlugin::run()
 {
+  if ( mViewerWidget == 0 )
+  {
 #ifdef QGISDEBUG
-  if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
+    if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
 
-  if ( mOsgViewer == 0 ) mOsgViewer = new osgViewer::Viewer();
+    mOsgViewer = new osgViewer::Viewer();
 
-  // install the programmable manipulator.
-  osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
-  mOsgViewer->setCameraManipulator( manip );
+    // install the programmable manipulator.
+    osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
+    mOsgViewer->setCameraManipulator( manip );
 
-  mIsGlobeRunning = true;
-  setupProxy();
+    mIsGlobeRunning = true;
+    setupProxy();
 
-  if ( getenv( "MAPXML" ) )
-  {
-    char* mapxml = getenv( "MAPXML" );
-    QgsDebugMsg( mapxml );
-    osg::Node* node = osgDB::readNodeFile( mapxml );
-    if ( !node )
+    if ( getenv( "MAPXML" ) )
     {
-      QgsDebugMsg( "Failed to load earth file " );
-      return;
+      char* mapxml = getenv( "MAPXML" );
+      QgsDebugMsg( mapxml );
+      osg::Node* node = osgDB::readNodeFile( mapxml );
+      if ( !node )
+      {
+        QgsDebugMsg( "Failed to load earth file " );
+        return;
+      }
+      mMapNode = MapNode::findMapNode( node );
+      mRootNode = new osg::Group();
+      mRootNode->addChild( node );
     }
-    mMapNode = MapNode::findMapNode( node );
-    mRootNode = new osg::Group();
-    mRootNode->addChild( node );
+    else
+    {
+      setupMap();
+    }
+
+    // create a surface to house the controls
+    mControlCanvas = ControlCanvas::get( mOsgViewer );
+    mRootNode->addChild( mControlCanvas );
+
+    mOsgViewer->setSceneData( mRootNode );
+
+    mOsgViewer->setThreadingModel( osgViewer::Viewer::SingleThreaded );
+
+    mOsgViewer->addEventHandler( new osgViewer::StatsHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::WindowSizeHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::ThreadingHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::LODScaleHandler() );
+    mOsgViewer->addEventHandler( new osgGA::StateSetManipulator( mOsgViewer->getCamera()->getOrCreateStateSet() ) );
+    // add a handler that will automatically calculate good clipping planes
+    //mOsgViewer->addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
+    // osgEarth benefits from pre-compilation of GL objects in the pager. In newer versions of
+    // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
+    mOsgViewer->getDatabasePager()->setDoPreCompile( true );
+
+    mSettingsDialog->setViewer( mOsgViewer );
+
+#ifdef GLOBE_OSG_STANDALONE_VIEWER
+    mOsgViewer->run();
+#endif
+
+    mViewerWidget = new osgEarth::QtGui::ViewerWidget( mOsgViewer );
+    mViewerWidget->setGeometry( 100, 100, 1024, 800 );
+    mViewerWidget->show();
+
+    // Set a home viewpoint
+    manip->setHomeViewpoint(
+      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+      1.0 );
+
+    setupControls();
+
+    // add our handlers
+    mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
+    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
+
+    mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
+                                 mMapNode->getMap()->getProfile()->getSRS() )
+                               );
   }
   else
   {
-    setupMap();
+    mViewerWidget->show();
   }
-
-  // create a surface to house the controls
-  mControlCanvas = ControlCanvas::get( mOsgViewer );
-  mRootNode->addChild( mControlCanvas );
-
-  mOsgViewer->setSceneData( mRootNode );
-
-  mOsgViewer->setThreadingModel( osgViewer::Viewer::SingleThreaded );
-
-  mOsgViewer->addEventHandler( new osgViewer::StatsHandler() );
-  mOsgViewer->addEventHandler( new osgViewer::WindowSizeHandler() );
-  mOsgViewer->addEventHandler( new osgViewer::ThreadingHandler() );
-  mOsgViewer->addEventHandler( new osgViewer::LODScaleHandler() );
-  mOsgViewer->addEventHandler( new osgGA::StateSetManipulator( mOsgViewer->getCamera()->getOrCreateStateSet() ) );
-  // add a handler that will automatically calculate good clipping planes
-  //mOsgViewer->addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
-  // osgEarth benefits from pre-compilation of GL objects in the pager. In newer versions of
-  // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
-  mOsgViewer->getDatabasePager()->setDoPreCompile( true );
-
-  mSettingsDialog->setViewer( mOsgViewer );
-
-#ifdef GLOBE_OSG_STANDALONE_VIEWER
-  mOsgViewer->run();
-#endif
-
-  QWidget* viewerWidget = new osgEarth::QtGui::ViewerWidget( mOsgViewer );
-  viewerWidget->setGeometry( 100, 100, 1024, 800 );
-  viewerWidget->show();
-
-  // Set a home viewpoint
-  manip->setHomeViewpoint(
-    osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
-    1.0 );
-
-  setupControls();
-
-  // add our handlers
-  mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
-  mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
-
-  mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
-                               mMapNode->getMap()->getProfile()->getSRS() )
-                             );
 }
 
 void GlobePlugin::settings()
@@ -878,7 +886,8 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
       _mouse_down_event = NULL;
       break;
     default:
-      /* ignore */;
+      /* ignore */
+      ;
   }
   if ( _mouse_down_event )
   {

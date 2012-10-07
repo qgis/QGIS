@@ -112,6 +112,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     QAction * mQActionSettingsPointer;
     //! OSG Viewer
     osgViewer::Viewer* mOsgViewer;
+    //! QT viewer widget
+    QWidget* mViewerWidget;
     //! Settings Dialog
     QgsGlobePluginDialog *mSettingsDialog;
     //! OSG root node
