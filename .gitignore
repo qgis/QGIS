@@ -44,4 +44,5 @@ scripts/RelWithDebInfo
 qgis-test.ctest
 i18n/*.qm
 .project
+.pydevproject
 .idea
