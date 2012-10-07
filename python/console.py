@@ -116,7 +116,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QIcon( ":/images/console/iconClearConsole.png"))
+        self.clearButton.setIcon(QIcon(":/images/console/iconClearConsole.png"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)

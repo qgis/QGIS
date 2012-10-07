@@ -377,7 +377,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 else:
                     self.setCursorPosition(line, 4)
 
-        elif e.key() == Qt.Key_Backspace:
+        elif e.key() in (Qt.Key_Backspace, Qt.Key_Delete):
             QsciScintilla.keyPressEvent(self, e)
             # check whether the cursor is moved out of the edition zone
             _, newindex = self.getCursorPosition()

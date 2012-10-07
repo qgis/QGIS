@@ -141,7 +141,7 @@ ENDIF(WITH_QSCIAPI)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
 
-ADD_SUBDIRECTORY(helpConsole)
+ADD_SUBDIRECTORY(console_help)
 
 ADD_CUSTOM_COMMAND(TARGET compile_python_files
        POST_BUILD
