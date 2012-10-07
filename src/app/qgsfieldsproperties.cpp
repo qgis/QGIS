@@ -39,35 +39,33 @@
 
 
 
-/*
-void QgsAttributesList::dragMoveEvent( QDragMoveEvent *event )
+void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 {
-  QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+  QTreeWidgetItem* targetItem = itemAt( event->pos() );
+  const QMimeData* data = event->mimeData();
 
-   QgsDebugMsg( "kflfkglf");
-  QList<QTableWidgetItem*> items = selectedItems();
-  for ( QList<QTableWidgetItem*>::const_iterator item = items.begin(); item != items.end(); item++ )
+  if ( data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
   {
-    QgsDebugMsg( "kflfkglf   " + QString::number((*item)->column() ));
-    if ( (*item)->column() != 1 ) // !!! 1 = QgsVectorLayerProperties::attrNameCol
-      continue;
+    QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
+    QDataStream stream( &itemData, QIODevice::ReadOnly );
+    int r, c;
+    QMap<int, QVariant> roleDataMap;
+    stream >> r >> c >> roleDataMap;
 
-    QMap<int,  QVariant> roleDataMap;
-    roleDataMap.insert( Qt::DisplayRole , (*item)->data( Qt::DisplayRole ).toString() );
-    roleDataMap.insert( Qt::UserRole , "field" );
-    stream << (*item)->row() << 0 << roleDataMap; // this will be first column in tab group tree
+    QString itemType = roleDataMap.value( Qt::UserRole ).toString();
+    QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
 
-    QgsDebugMsg( "mime: " + QString::number((*item)->row()) + " "  + (*item)->data( Qt::DisplayRole ).toString() );
+    // Forbid dropping fields on top level item
+    if ( ( itemType == "field" && !targetItem ) || ( event->source() != this && !targetItem ) )
+    {
+      event->ignore ();
+      return;
+    }
   }
-  mimeData->setData(QString("application/x-qabstractitemmodeldatalist"), encodedData );
 
-  QDragMoveEvent* newEvent = new QDragMoveEvent( event->pos(), Qt::CopyAction, mimeData, event->mouseButtons(), event->keyboardModifiers() );
-
-  QTableWidget::dragMoveEvent( newEvent );
+  QTreeWidget::dragMoveEvent( event );
 }
-*/
+
 
 /*
 QMimeData *QgsAttributesList::mimeData( const QList<QTableWidgetItem *> items ) const
@@ -127,84 +125,45 @@ QTreeWidgetItem* QgsAttributesTree::addItem( QTreeWidgetItem* parent , QString f
   return attributeItem;
 }
 
-void QgsAttributesTree::dragEnterEvent( QDragEnterEvent *event )
-{
-//  QgsDebugMsg( QString( "dragEnterEvent " ) + event->mimeData()->text() + " source : " + event->source()->objectName() );
-  // event->setDropAction( Qt::MoveAction );
-  QTreeWidget::dragEnterEvent( event );
-}
-
-
-
-
 
 
 
 bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
 {
+  bool bDropSuccessful = false;
+
   if ( action == Qt::IgnoreAction )
   {
-    QgsDebugMsg( "ignore" );
-    return true;
+    bDropSuccessful = true;
   }
-  if ( !data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
+  else if ( !data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
   {
-    QgsDebugMsg( "wrong format" );
-    return false;
-  }
-
-  QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
-  QDataStream stream( &itemData, QIODevice::ReadOnly );
-  int r, c;
-  QMap<int, QVariant> roleDataMap;
-  stream >> r >> c >> roleDataMap;
-
-  QString itemType = roleDataMap.value( Qt::UserRole ).toString();
-  QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
-
-  if ( itemType == "field" )
-  {
-    if ( parent )
-      addItem( parent, itemName );
-    else
-      addItem( invisibleRootItem(), itemName );
+    bDropSuccessful = false;
   }
   else
   {
-    int depth = 0;
-    QTreeWidgetItem* tmp = parent;
-    while ( tmp )
+    QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
+    QDataStream stream( &itemData, QIODevice::ReadOnly );
+    int r, c;
+    QMap<int, QVariant> roleDataMap;
+    stream >> r >> c >> roleDataMap;
+
+    QString itemType = roleDataMap.value( Qt::UserRole ).toString();
+    QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+
+    if ( itemType == "field" )
     {
-      tmp = tmp->parent();
-      depth++;
+      if ( parent )
+        addItem( parent, itemName );
+      else
+        addItem( invisibleRootItem(), itemName );
     }
 
-    if ( depth > 1 )
-    {
-      parent->setFlags( Qt::ItemIsDropEnabled );
-    }
-
-    return QTreeWidget::dropMimeData( parent , index , data , action );
+    bDropSuccessful = QTreeWidget::dropMimeData( parent , index , data , action );
   }
 
-  if ( action == Qt::CopyAction )
-  {
-    QgsDebugMsg( "copy" );
-    return true;
-  }
-
-  if ( action == Qt::MoveAction )
-  {
-    QgsDebugMsg( "move" );
-    return true;
-  }
-
-  QgsDebugMsg( "ouch" );
-  return false;
+  return bDropSuccessful;
 }
-
-
-
 
 void QgsAttributesTree::dropEvent( QDropEvent *event )
 {

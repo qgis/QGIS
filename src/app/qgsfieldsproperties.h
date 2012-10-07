@@ -33,7 +33,7 @@ class QgsAttributesList : public QTableWidget
     {}
 
   protected:
-    //virtual void dragMoveEvent( QDragMoveEvent *event );
+    // virtual void dragMoveEvent( QDragMoveEvent *event );
     //QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
     //Qt::DropActions supportedDropActions() const;
 };
@@ -49,9 +49,9 @@ class QgsAttributesTree : public QTreeWidget
     QTreeWidgetItem* addItem( QTreeWidgetItem* parent , QString fieldName );
 
   protected:
+    virtual void dragMoveEvent( QDragMoveEvent *event );
     virtual void dropEvent( QDropEvent *event );
-    virtual void dragEnterEvent( QDragEnterEvent *event );
-    bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
+    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action );
     /* Qt::DropActions supportedDropActions() const;*/
 };
 
