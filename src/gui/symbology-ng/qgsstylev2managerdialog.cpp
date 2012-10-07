@@ -466,9 +466,17 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       delete cptCityRamp;
       return QString();
     }
-    ramp = cptCityRamp;
     // name = dlg.selectedName();
     name = QFileInfo( cptCityRamp->schemeName() ).baseName() + cptCityRamp->variantName();
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
+    }
+    else
+    {
+      ramp = cptCityRamp;
+    }
   }
   else
   {
@@ -631,6 +639,11 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
     {
       delete ramp;
       return false;
+    }
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
     }
   }
   else

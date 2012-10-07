@@ -68,20 +68,24 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     QColor color1() const { return mColor1; }
     QColor color2() const { return mColor2; }
-
     void setColor1( QColor color ) { mColor1 = color; }
     void setColor2( QColor color ) { mColor2 = color; }
 
     bool isDiscrete() const { return mDiscrete; }
     void setDiscrete( bool discrete ) { mDiscrete = discrete; }
+    void convertToDiscrete( bool discrete );
 
     void setStops( const QgsGradientStopsList& stops ) { mStops = stops; }
     const QgsGradientStopsList& stops() const { return mStops; }
+
+    QgsStringMap info() const { return mInfo; }
+    void setInfo( const QgsStringMap& info ) { mInfo = info; }
 
   protected:
     QColor mColor1, mColor2;
     bool mDiscrete;
     QgsGradientStopsList mStops;
+    QgsStringMap mInfo;
 };
 
 #define DEFAULT_RANDOM_COUNT   10
@@ -191,6 +195,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 
     virtual QgsVectorColorRampV2* clone() const;
     void copy( const QgsCptCityColorRampV2* other );
+    QgsVectorGradientColorRampV2* cloneGradientRamp() const;
 
     virtual QgsStringMap properties() const;
 
@@ -215,7 +220,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 
     QString copyingFileName() const;
     QString descFileName() const;
-    QMap< QString, QString > copyingInfo() const;
+    QgsStringMap copyingInfo() const;
 
   protected:
 

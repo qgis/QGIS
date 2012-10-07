@@ -157,9 +157,9 @@ QString QgsCptCityArchive::descFileName( const QString& path ) const
                                           baseDir() + QDir::separator() + path, baseDir() );
 }
 
-QMap< QString, QString > QgsCptCityArchive::copyingInfo( const QString& fileName )
+QgsStringMap QgsCptCityArchive::copyingInfo( const QString& fileName )
 {
-  QMap< QString, QString > copyingMap;
+  QgsStringMap copyingMap;
 
   if ( fileName.isNull() )
     return copyingMap;
@@ -258,9 +258,9 @@ QMap< QString, QString > QgsCptCityArchive::copyingInfo( const QString& fileName
   return copyingMap;
 }
 
-QMap< QString, QString > QgsCptCityArchive::description( const QString& fileName )
+QgsStringMap QgsCptCityArchive::description( const QString& fileName )
 {
-  QMap< QString, QString > descMap;
+  QgsStringMap descMap;
 
   QgsDebugMsg( "description fileName = " + fileName );
 
@@ -435,7 +435,7 @@ void QgsCptCityArchive::initDefaultArchive()
 
 void QgsCptCityArchive::initArchives( bool loadAll )
 {
-  QMap< QString, QString > archivesMap;
+  QgsStringMap archivesMap;
   QString baseDir, defArchiveName;
   QSettings settings;
 
@@ -460,7 +460,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
     archivesMap[ defArchiveName ] = baseDir + QDir::separator() + defArchiveName;
   }
 
-  for ( QMap< QString, QString >::iterator it = archivesMap.begin();
+  for ( QgsStringMap::iterator it = archivesMap.begin();
         it != archivesMap.end(); ++it )
   {
     if ( QDir( it.value() ).exists() )
@@ -871,7 +871,7 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
   mInfo = "";
   QString fileName = QgsCptCityArchive::defaultBaseDir() + QDir::separator() + \
                      mPath + QDir::separator() + "DESC.xml";
-  QMap< QString, QString > descMap = QgsCptCityArchive::description( fileName );
+  QgsStringMap descMap = QgsCptCityArchive::description( fileName );
   if ( descMap.contains( "name" ) )
     mInfo = descMap.value( "name" );
 

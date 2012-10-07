@@ -46,6 +46,7 @@ QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColo
 
 QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& props )
 {
+  // color1 and color2
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
   if ( props.contains( "color1" ) )
@@ -53,6 +54,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   if ( props.contains( "color2" ) )
     color2 = QgsSymbolLayerV2Utils::decodeColor( props["color2"] );
 
+  //stops
   QgsGradientStopsList stops;
   if ( props.contains( "stops" ) )
   {
@@ -66,6 +68,8 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
       stops.append( QgsGradientStop( stop.left( i ).toDouble(), c ) );
     }
   }
+
+  // discrete vs. continuous
   bool discrete = false;
   if ( props.contains( "discrete" ) )
   {
@@ -73,7 +77,17 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
       discrete = true;
   }
 
+  // search for information keys starting with "info_"
+  QgsStringMap info;
+  for ( QgsStringMap::const_iterator it = props.constBegin();
+        it != props.constEnd(); ++it )
+  {
+    if ( it.key().startsWith( "info_" ) )
+      info[ it.key().mid( 5 )] = it.value();
+  }
+
   QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( color1, color2, discrete, stops );
+  r->setInfo( info );
   return r;
 }
 
@@ -118,6 +132,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::clone() const
 {
   QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2,
       mDiscrete, mStops );
+  r->setInfo( mInfo );
   return r;
 }
 
@@ -135,10 +150,58 @@ QgsStringMap QgsVectorGradientColorRampV2::properties() const
     }
     map["stops"] = lst.join( ":" );
   }
+
   map["discrete"] = mDiscrete ? "1" : "0";
+
+  for ( QgsStringMap::const_iterator it = mInfo.constBegin();
+        it != mInfo.constEnd(); ++it )
+  {
+    map["info_" + it.key()] = it.value();
+  }
+
   return map;
 }
+void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
+{
+  if ( discrete == mDiscrete )
+    return;
 
+  // if going to/from Discrete, re-arrange stops
+  // this will only work when stops are equally-spaced
+  QgsGradientStopsList newStops;
+  if ( discrete )
+  {
+    // re-arrange stops offset
+    int numStops = mStops.count() + 2;
+    int i = 1;
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
+          it != mStops.end(); ++it )
+    {
+      newStops.append( QgsGradientStop(( double ) i / numStops, it->color ) );
+      if ( i == numStops - 1 )
+        break;
+      i++;
+    }
+    // replicate last color
+    newStops.append( QgsGradientStop(( double ) i / numStops, mColor2 ) );
+  }
+  else
+  {
+    // re-arrange stops offset, remove duplicate last color
+    int numStops = mStops.count() + 2;
+    int i = 1;
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
+          it != mStops.end(); ++it )
+    {
+      newStops.append( QgsGradientStop(( double ) i / ( numStops - 2 ), it->color ) );
+      if ( i == numStops - 3 )
+        break;
+      i++;
+    }
+  }
+  mStops = newStops;
+  mDiscrete = discrete;
+}
 
 //////////////
 
@@ -337,6 +400,20 @@ void QgsCptCityColorRampV2::copy( const QgsCptCityColorRampV2* other )
   mFileLoaded = other->mFileLoaded;
 }
 
+QgsVectorGradientColorRampV2* QgsCptCityColorRampV2::cloneGradientRamp() const
+{
+  QgsVectorGradientColorRampV2* ramp =
+    new QgsVectorGradientColorRampV2( mColor1, mColor2, mDiscrete, mStops );
+  // add author and copyright information
+  // TODO also add COPYING.xml file/link?
+  QgsStringMap info = copyingInfo();
+  info["source"] = "cpt-city archive - " + mSchemeName + mVariantName + ".svg";
+  info["license/file"] = copyingFileName();
+  ramp->setInfo( info );
+  return ramp;
+}
+
+
 QgsStringMap QgsCptCityColorRampV2::properties() const
 {
   QgsStringMap map;
@@ -368,7 +445,7 @@ QString QgsCptCityColorRampV2::descFileName() const
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
-QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo( ) const
+QgsStringMap QgsCptCityColorRampV2::copyingInfo( ) const
 {
   return QgsCptCityArchive::copyingInfo( copyingFileName() );
 }
@@ -425,6 +502,7 @@ bool QgsCptCityColorRampV2::loadFile()
     ++it;
   }
 
+  // fill all stops
   it = prev = colorMap.constBegin();
   while ( it != colorMap.constEnd() )
   {
@@ -446,6 +524,12 @@ bool QgsCptCityColorRampV2::loadFile()
     prev = it;
     ++it;
   }
+
+  // remove first and last items (mColor1 and mColor2)
+  if ( ! mStops.isEmpty() && mStops.first().offset == 0.0 )
+    mColor1 = mStops.takeFirst().color;
+  if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
+    mColor2 = mStops.takeLast().color;
 
   mFileLoaded = true;
   return true;

@@ -16,10 +16,13 @@
 #include "qgsvectorgradientcolorrampv2dialog.h"
 
 #include "qgsvectorcolorrampv2.h"
+#include "qgsdialog.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QPainter>
+#include <QTableWidget>
+#include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
     : QDialog( parent ), mRamp( ramp )
@@ -30,15 +33,105 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   connect( btnColor2, SIGNAL( clicked() ), this, SLOT( setColor2() ) );
 
   // handle stops
-  QgsGradientStopsList stops = ramp->stops();
+  updateStops();
+  connect( groupStops, SIGNAL( toggled( bool ) ), this, SLOT( toggledStops( bool ) ) );
+  connect( btnAddStop, SIGNAL( clicked() ), this, SLOT( addStop() ) );
+  connect( btnRemoveStop, SIGNAL( clicked() ), this, SLOT( removeStop() ) );
+  connect( treeStops, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( stopDoubleClicked( QTreeWidgetItem*, int ) ) );
+
+  // fill type combobox
+  cboType->blockSignals( true );
+  cboType->addItem( tr( "Discrete" ) );
+  cboType->addItem( tr( "Continous" ) );
+  if ( mRamp->isDiscrete() )
+    cboType->setCurrentIndex( 0 );
+  else
+    cboType->setCurrentIndex( 1 );
+  cboType->blockSignals( false );
+
+  // information button if needed
+  // QPushButton* button = buttonBox->addButton( tr( "Information" ), QDialogButtonBox::ActionRole );
+  if ( mRamp->info().isEmpty() )
+    btnInformation->setEnabled( false );
+  // else
+  //   connect( button, SIGNAL( pressed() ), this, SLOT( showInformation() ) );
+
+  updatePreview();
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_cboType_currentIndexChanged( int index )
+{
+  if (( index == 0 && mRamp->isDiscrete() ) ||
+      ( index == 1 && !mRamp->isDiscrete() ) )
+    return;
+  mRamp->convertToDiscrete( index == 0 );
+  updateStops();
+  updatePreview();
+}
+
+void QgsVectorGradientColorRampV2Dialog::on_btnInformation_pressed()
+{
+  if ( mRamp->info().isEmpty() )
+    return;
+
+  QgsDialog *dlg = new QgsDialog( this );
+
+  // information table
+  QTableWidget *tableInfo = new QTableWidget( dlg );
+  tableInfo->verticalHeader()->hide();
+  tableInfo->horizontalHeader()->hide();
+  tableInfo->setColumnCount( 2 );
+  tableInfo->setRowCount( mRamp->info().count() );
+  int i = 0;
+  for ( QgsStringMap::const_iterator it = mRamp->info().constBegin();
+        it != mRamp->info().constEnd(); ++it )
+  {
+    QgsDebugMsg( it.key() + "-" + it.value() );
+    tableInfo->setItem( i, 0, new QTableWidgetItem( it.key() ) );
+    tableInfo->setItem( i, 1, new QTableWidgetItem( it.value() ) );
+    tableInfo->resizeRowToContents( i );
+    i++;
+  }
+  tableInfo->resizeColumnToContents( 0 );
+  tableInfo->horizontalHeader()->setStretchLastSection( true );
+  tableInfo->setFixedHeight( tableInfo->rowHeight( 0 ) * i + 5 );
+  dlg->layout()->addWidget( tableInfo );
+  dlg->resize( 600, 250 );
+
+  // license file
+  QString licenseFile = mRamp->info().value( "license/file" );
+  if ( !licenseFile.isNull() && QFile::exists( licenseFile ) )
+  {
+    QTextEdit *textEdit = new QTextEdit( dlg );
+    textEdit->setReadOnly( true );
+    QFile file( licenseFile );
+    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      textEdit->setText( file.readAll() );
+      file.close();
+      dlg->layout()->addSpacing( 10 );
+      dlg->layout()->addWidget( new QLabel( tr( "License file : %1" ).arg( licenseFile ), dlg ) );
+      dlg->layout()->addSpacing( 5 );
+      dlg->layout()->addWidget( textEdit );
+      dlg->resize( 600, 500 );
+    }
+  }
+
+  dlg->show(); //non modal
+}
+
+void QgsVectorGradientColorRampV2Dialog::updateStops()
+{
+  QgsGradientStopsList stops = mRamp->stops();
   groupStops->setChecked( !stops.isEmpty() );
 
   QList<QTreeWidgetItem *> items;
   for ( QgsGradientStopsList::iterator it = stops.begin();
         it != stops.end(); ++it )
   {
+    double val = it->offset * 100.0;
     QStringList lst;
-    lst << "." << QString::number( it->offset*100, 'f', 0 );
+    lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
     QTreeWidgetItem* item = new QTreeWidgetItem( lst );
 
     setStopColor( item, it->color );
@@ -49,15 +142,9 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   treeStops->clear();
   treeStops->insertTopLevelItems( 0, items );
   treeStops->resizeColumnToContents( 0 );
+  treeStops->setColumnWidth( 0, treeStops->columnWidth( 0 ) + 20 );
   treeStops->sortByColumn( 1, Qt::AscendingOrder );
   treeStops->setSortingEnabled( true );
-
-  connect( groupStops, SIGNAL( toggled( bool ) ), this, SLOT( toggledStops( bool ) ) );
-  connect( btnAddStop, SIGNAL( clicked() ), this, SLOT( addStop() ) );
-  connect( btnRemoveStop, SIGNAL( clicked() ), this, SLOT( removeStop() ) );
-  connect( treeStops, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( stopDoubleClicked( QTreeWidgetItem*, int ) ) );
-
-  updatePreview();
 }
 
 void QgsVectorGradientColorRampV2Dialog::updatePreview()
@@ -160,17 +247,18 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
   {
     bool ok;
     double key = item->data( 0, StopOffsetRole ).toDouble();
-    int val = ( int )( key * 100 );
+    // allow for floating-point values
+    double val = key * 100;
 #if QT_VERSION >= 0x40500
-    val = QInputDialog::getInt( this, tr( "Offset of the stop" ),
-                                tr( "Please enter offset in percents (%) of the new stop" ),
-                                val, 0, 100, 1, &ok );
+    val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
+                                   tr( "Please enter offset in percents (%) of the new stop" ),
+                                   val, 0, 100, 2, &ok );
 #else
     QString res = QInputDialog::getText( this, tr( "Offset of the stop" ),
                                          tr( "Please enter offset in percents (%) of the new stop" ),
                                          QLineEdit::Normal, QString::number( val ), &ok );
     if ( ok )
-      val = res.toInt( &ok );
+      val = res.toDouble( &ok );
     if ( ok )
       ok = val >= 0 && val <= 100;
 #endif
@@ -178,8 +266,7 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
       return;
 
     double newkey = val / 100.0;
-    item->setText( 1, QString::number( val ) );
-
+    item->setText( 1, ( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
     item->setData( 0, StopOffsetRole, newkey );
 
     updatePreview();
@@ -203,17 +290,17 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
     return;
 
   bool ok;
-  int val = 50;
+  double val = 50.0;
 #if QT_VERSION >= 0x40500
-  val = QInputDialog::getInt( this, tr( "Offset of the stop" ),
-                              tr( "Please enter offset in percents (%) of the new stop" ),
-                              val, 0, 100, 1, &ok );
+  val = QInputDialog::getDouble( this, tr( "Offset of the stop" ),
+                                 tr( "Please enter offset in percents (%) of the new stop" ),
+                                 val, 0, 100, 2, &ok );
 #else
   QString res = QInputDialog::getText( this, tr( "Offset of the stop" ),
                                        tr( "Please enter offset in percents (%) of the new stop" ),
                                        QLineEdit::Normal, QString::number( val ), &ok );
   if ( ok )
-    val = res.toInt( &ok );
+    val = res.toDouble( &ok );
   if ( ok )
     ok = val >= 0 && val <= 100;
 #endif
@@ -222,7 +309,8 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 
   double key = val / 100.0;
   QStringList lst;
-  lst << "." << QString::number( val, 'f', 0 );
+  lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
+
   QTreeWidgetItem* item = new QTreeWidgetItem( lst );
 
   setStopColor( item, color );
@@ -231,6 +319,7 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
   treeStops->addTopLevelItem( item );
 
   treeStops->resizeColumnToContents( 0 );
+  treeStops->setColumnWidth( 0, treeStops->columnWidth( 0 ) + 20 );
 
   updatePreview();
 }
