@@ -32,12 +32,26 @@
 #include <QTableWidgetItem>
 #include <QMessageBox>
 
+QTreeWidgetItem* QgsAttributesTree::addContainer( QTreeWidgetItem* parent, QString title )
+{
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( QList<QString>() << title );
+  newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
+  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+  newItem->setData( 0 , Qt::UserRole , "container" );
+  newItem->setExpanded( true );
+  parent->addChild( newItem );
+  return newItem;
+}
 
+QTreeWidgetItem* QgsAttributesTree::addItem( QTreeWidgetItem* parent , QString fieldName )
+{
+  QTreeWidgetItem* attributeItem = new QTreeWidgetItem( QList<QString>() << fieldName );
+  attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+  attributeItem->setData( 0 , Qt::UserRole , "field" );
+  parent->addChild( attributeItem );
 
-
-
-
-
+  return attributeItem;
+}
 
 void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 {
@@ -53,7 +67,6 @@ void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
     stream >> r >> c >> roleDataMap;
 
     QString itemType = roleDataMap.value( Qt::UserRole ).toString();
-    QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
 
     // Forbid dropping fields on top level item
     if ( ( itemType == "field" && !targetItem ) || ( event->source() != this && !targetItem ) )
@@ -65,68 +78,6 @@ void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 
   QTreeWidget::dragMoveEvent( event );
 }
-
-
-/*
-QMimeData *QgsAttributesList::mimeData( const QList<QTableWidgetItem *> items ) const
-{
-  QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  int i = 0;
-
-  foreach( const QTableWidgetItem * item , items )
-  {
-    // each item consists of several columns - let's add it with just first one
-    if ( item->column() != 1 ) // !!! 1 = QgsVectorLayerProperties::attrNameCol
-      continue;
-
-    QMap<int,  QVariant> roleDataMap;
-    roleDataMap.insert( Qt::DisplayRole , item->data( Qt::DisplayRole ).toString() );
-    roleDataMap.insert( Qt::UserRole , "field" );
-    stream << item->row() << 0 << roleDataMap; // this will be first column in tab group tree
-    //stream << i << 0 << roleDataMap; // this will be first column in tab group tree
-    i++;
-
-    QgsDebugMsg( "mime: " + QString::number(item->row()) + " "  + item->data( Qt::DisplayRole ).toString() );
-  }
-  mimeData->setData(QString("application/x-qabstractitemmodeldatalist"), encodedData );
-  return mimeData;
-}
-*/
-
-/*
-Qt::DropActions QgsAttributesTree::supportedDropActions() const
-{
-  return Qt::MoveAction;
-}
-*/
-
-QTreeWidgetItem* QgsAttributesTree::addContainer( QTreeWidgetItem* parent, QString title )
-{
-  QTreeWidgetItem *newItem = new QTreeWidgetItem( QList<QString>() << title );
-  newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
-  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-  newItem->setData( 0 , Qt::UserRole , "container" );
-  newItem->setExpanded( true );
-  parent->addChild( newItem );
-  return newItem;
-}
-
-QTreeWidgetItem* QgsAttributesTree::addItem( QTreeWidgetItem* parent , QString fieldName )
-{
-  QList<QString> text;
-  text << fieldName;
-  QTreeWidgetItem* attributeItem = new QTreeWidgetItem( text );
-  attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-  attributeItem->setData( 0 , Qt::UserRole , "field" );
-  parent->addChild( attributeItem );
-
-  return attributeItem;
-}
-
-
-
 
 bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
 {
@@ -155,7 +106,7 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
     {
       if ( parent )
         addItem( parent, itemName );
-      else
+      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent
         addItem( invisibleRootItem(), itemName );
     }
 
@@ -178,7 +129,6 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
   }
   else
   {
-    QgsDebugMsg( " extern " );
     // Qt::DropAction dropAction;
     QByteArray itemData = event->mimeData()->data( "application/x-qabstractitemmodeldatalist" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
@@ -190,13 +140,11 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
     newRoleDataMap.insert( Qt::UserRole , "field" );
     newRoleDataMap.insert( Qt::DisplayRole , fieldName );
 
-    QgsDebugMsg( QString::number( r ) + " " + QString::number( c ) + " " + fieldName );
-
-    QMimeData * mimeData = new QMimeData;
+    QMimeData * mimeData = new QMimeData();
     QByteArray mdata;
     QDataStream newStream( &mdata, QIODevice::WriteOnly );
     newStream << r << c << newRoleDataMap;
-    mimeData->setData( QString( "application/x-qabstractitemmodeldatalist" ),   mdata );
+    mimeData->setData( QString( "application/x-qabstractitemmodeldatalist" ), mdata );
     QDropEvent newEvent = QDropEvent( event->pos(), Qt::CopyAction , mimeData, event->mouseButtons(), event->keyboardModifiers() );
 
     QTreeWidget::dropEvent( &newEvent );
