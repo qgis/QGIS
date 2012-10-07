@@ -239,9 +239,17 @@ void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
+
+  QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
+
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
+  {
+    delete newSymbol;
     return;
+  }
+
+  mGraduatedSymbol = newSymbol;
 
   updateGraduatedSymbolIcon();
   mRenderer->updateSymbols( mGraduatedSymbol );
