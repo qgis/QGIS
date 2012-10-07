@@ -34,14 +34,16 @@ def show_console():
   """ called from QGIS to open the console """
   global _console
   if _console is None:
-    _console = PythonConsole(iface.mainWindow())
+    parent = iface.mainWindow() if iface else None
+    _console = PythonConsole( parent )
     _console.show() # force show even if it was restored as hidden
   else:
     _console.setVisible(not _console.isVisible())
+
   # set focus to the edit box so the user can start typing
   if _console.isVisible():
     _console.activateWindow()
-    _console.edit.setFocus()
+    _console.setFocus()
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -70,10 +72,23 @@ class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
-        #self.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+        #self.setAllowedAreas(Qt.BottomDockWidgetArea) 
+
+        self.console = PythonConsoleWidget(self)
+        self.setWidget( self.console )
+
+        # try to restore position from stored main window state
+        if iface and not iface.mainWindow().restoreDockWidget(self):
+            iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+
+
+class PythonConsoleWidget(QWidget):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
         self.widgetButton = QWidget()
-        self.widgetEdit = QWidget()
 
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
@@ -90,7 +105,7 @@ class PythonConsole(QDockWidget):
         #self.toolBar.setObjectName(_fromUtf8("toolMappa"))
 
         self.b = QVBoxLayout(self.widgetButton)
-        self.e = QHBoxLayout(self.widgetEdit)
+        self.e = QHBoxLayout(self)
 
         self.e.setMargin(0)
         self.e.setSpacing(0)
@@ -238,15 +253,13 @@ class PythonConsole(QDockWidget):
 
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit()
-
-        self.setWidget(self.widgetEdit)
+        self.setFocusProxy( self.edit )
 
         self.e.addWidget(self.widgetButton)
         self.e.addWidget(self.edit)
 
         self.edit.setFocus()
         
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
         self.clearButton.triggered.connect(self.edit.clearConsole)
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
@@ -257,9 +270,6 @@ class PythonConsole(QDockWidget):
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        # try to restore position from stored main window state
-        if not iface.mainWindow().restoreDockWidget(self):
-            iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
 
     def cLayer(self):
         self.edit.commandConsole('cLayer')
@@ -327,5 +337,6 @@ class PythonConsole(QDockWidget):
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
-    show_console()
+    console = PythonConsoleWidget()
+    console.show()
     a.exec_()
