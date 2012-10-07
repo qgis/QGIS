@@ -164,6 +164,9 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 
   mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
+
+  mRenderer->updateSymbols( mCategorizedSymbol );
+  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()

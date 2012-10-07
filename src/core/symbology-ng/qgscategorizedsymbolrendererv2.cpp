@@ -596,3 +596,15 @@ void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* r
   delete mSourceColorRamp;
   mSourceColorRamp = ramp;
 }
+
+void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
+{
+  int i = 0;
+  foreach( QgsRendererCategoryV2 cat, mCategories )
+  {
+    QgsSymbolV2* symbol = sym->clone();
+    symbol->setColor( cat.symbol()->color() );
+    updateCategorySymbol( i, symbol );
+    ++i;
+  }
+}
