@@ -7,7 +7,7 @@
     ---------------------
     Date                 : May 2011
     Copyright            : (C) 2011 by Martin Dobias
-    Email                : wonder.sk at gmail.com
+    Email                : wonder dot sk at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *

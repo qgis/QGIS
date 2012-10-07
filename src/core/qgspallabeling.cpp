@@ -4,7 +4,7 @@
   -------------------
          begin                : June 2009
          copyright            : (C) Martin Dobias
-         email                : wonder.sk at gmail.com
+         email                : wonder dot sk at gmail dot com
 
  ***************************************************************************
  *                                                                         *

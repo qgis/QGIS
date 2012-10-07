@@ -88,7 +88,7 @@ for i in $(<files); do
 
 	wonder|"Martin Dobias")
 		authorname="Martin Dobias"
-		authoremail="wonder.sk at gmail.com"
+		authoremail="wonder dot sk at gmail dot com"
 		;;
 
 	"Marco Hugentobler"|mhugent)
@@ -128,7 +128,7 @@ for i in $(<files); do
 
 	marcopx)
 		authorname="Marco Pasetti"
-		authoremail="marco.pasetti at alice dot it"
+		authoremail="marco dot pasetti at alice dot it"
 		;;
 
 	timlinux|"Tim Sutton")

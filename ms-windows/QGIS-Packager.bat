@@ -3,7 +3,7 @@ REM    QGIS-Packager.bat
 REM    ---------------------
 REM    begin                : September 2008
 REM    copyright            : (C) 2008 by Marco Pasetti
-REM    email                : marco.pasetti at alice dot it
+REM    email                : marco dot pasetti at alice dot it
 REM ***************************************************************************
 REM *                                                                         *
 REM *   This program is free software; you can redistribute it and/or modify  *
