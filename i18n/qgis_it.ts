@@ -6461,23 +6461,23 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     <message>
         <source>Are you sure you want to completely
 delete the command history ?</source>
-        <translation type="obsolete">Sei sicuro di voler concellare completamente
+        <translation>Sei sicuro di voler concellare completamente
 la cronologia dei comandi ?</translation>
     </message>
     <message>
         <source>## History saved successfully ##</source>
-        <translation type="obsolete">## Storia comandi salvata con successo ##</translation>
+        <translation>## Storia comandi salvata con successo ##</translation>
     </message>
     <message>
         <source>## History cleared successfully ##</source>
-        <translation type="obsolete">## Storia comandi cancellata con successo ##</translation>
+        <translation>## Storia comandi cancellata con successo ##</translation>
     </message>
     <message>
         <source>## To access Quantum GIS environment from this console
 ## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.
 
 </source>
-        <translation type="obsolete">## Per accedere all&apos;ambiente Quantum GIS da questa console
+        <translation>## Per accedere all&apos;ambiente Quantum GIS da questa console
 ## usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface). Consulta l&apos;aiuto per ottenere più informazioni.
 
 </translation>
