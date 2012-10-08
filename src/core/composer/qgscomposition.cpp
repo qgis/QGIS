@@ -431,6 +431,11 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
+
+  // read atlas parameters
+  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
+  atlasComposition().readXML( atlasElem, importDoc );
+
   return true;
 }
 
@@ -1629,13 +1634,3 @@ QString QgsComposition::encodeStringForXML( const QString& str )
   return modifiedStr;
 }
 
-#if 0
-void QgsComposition::setAtlasComposerMap( QgsAtlasComposerMap* map )
-{
-  if ( mAtlasComposerMap != 0 )
-  {
-    delete mAtlasComposerMap;
-  }
-  mAtlasComposerMap = map;
-}
-#endif
