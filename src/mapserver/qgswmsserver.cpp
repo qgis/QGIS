@@ -205,7 +205,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
 
-  if ( mConfigParser && fullProjectInformation )
+  if ( mConfigParser /*&& fullProjectInformation*/ ) //remove composer templates from GetCapabilities in the long term
   {
     //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
