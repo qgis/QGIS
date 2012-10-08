@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QgsApplication
 import os
 
 class HelpDialog(QtGui.QDialog):
@@ -57,7 +57,7 @@ class HelpDialog(QtGui.QDialog):
         self.setLayout(self.verticalLayout)
         jQueryPath = QgsApplication.pkgDataPath()
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
-        filename = QgsApplication.pkgDataPath() + "/python/helpConsole/help.htm? \
+        filename = QgsApplication.pkgDataPath() + "/python/console_help/help.htm? \
                                                 lang=" + localeFullName \
                                                 + "&pkgDir=" + jQueryPath
                                                 
