@@ -646,7 +646,7 @@ void GlobePlugin::setupControls()
 #endif
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
-  extraControls->setPosition( 5, 220 );
+  extraControls->setPosition( 5, 231 );
   extraControls->setPadding( 6 );
 
   //Sync Extent
