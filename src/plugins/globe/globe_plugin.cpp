@@ -52,12 +52,14 @@
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarth/TileSource>
+#include <osgEarthUtil/SkyNode>
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util::Controls21;
+using namespace osgEarth::Util;
 
 #define MOVE_OFFSET 0.05
 
@@ -231,9 +233,9 @@ void GlobePlugin::run()
     mIsGlobeRunning = true;
     setupProxy();
 
-    if ( getenv( "MAPXML" ) )
+    if ( getenv( "GLOBE_MAPXML" ) )
     {
-      char* mapxml = getenv( "MAPXML" );
+      char* mapxml = getenv( "GLOBE_MAPXML" );
       QgsDebugMsg( mapxml );
       osg::Node* node = osgDB::readNodeFile( mapxml );
       if ( !node )
@@ -248,6 +250,14 @@ void GlobePlugin::run()
     else
     {
       setupMap();
+    }
+
+    if ( getenv( "GLOBE_SKY" ) ) {
+      SkyNode* sky = new SkyNode( mMapNode->getMap() );
+      sky->setDateTime( 2011, 1, 6, 17.0 );
+      //sky->setSunPosition( osg::Vec3(0,-1,0) );
+      sky->attach( mOsgViewer );
+      mRootNode->addChild( sky );
     }
 
     // create a surface to house the controls
