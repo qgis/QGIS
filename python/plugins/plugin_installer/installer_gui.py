@@ -592,7 +592,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def installPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.installPlugin(key)
 
 
@@ -600,7 +600,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def uninstallPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.uninstallPlugin(key)
 
 
