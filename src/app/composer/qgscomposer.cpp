@@ -746,7 +746,7 @@ void QgsComposer::on_mActionPrint_triggered()
   mView->setPaintingEnabled( false );
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( atlasMap == 0 )
+  if ( !atlasMap->enabled() )
   {
     mComposition->print( mPrinter );
   }
@@ -830,7 +830,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   }
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( 0 == atlasMap )
+  if ( !atlasMap->enabled() )
   {
     QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
     
