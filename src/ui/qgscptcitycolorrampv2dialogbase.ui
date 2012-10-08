@@ -468,7 +468,6 @@
             <zorder>lblLicenseName</zorder>
             <zorder>lblAuthorName</zorder>
             <zorder>pbtnLicenseDetails</zorder>
-            <zorder>horizontalSpacer_5</zorder>
             <zorder>label_3</zorder>
            </widget>
           </widget>
