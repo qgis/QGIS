@@ -291,6 +291,7 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
 
   QDomDocument myDoc( "QgsWidgets" );
   QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
+
   if ( !myFile.open( QIODevice::ReadOnly ) )
   {
     return NULL;
@@ -307,8 +308,13 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
   {
     return NULL;
   }
-  QTreeWidgetItem *myItem = readWidgetsXmlNode( myRoot );
+
+  QDomElement myCustom = myRoot.firstChildElement ("qgistoolswidgets");
+
+  QTreeWidgetItem *myItem = readWidgetsXmlNode( myCustom );
   myItem->setData( 0, Qt::DisplayRole, tr( "Widgets" ) );
+
+
 
   return myItem;
 }
@@ -550,24 +556,88 @@ void QgsCustomization::createTreeItemDocks( )
       QDockWidget* dw = qobject_cast<QDockWidget*> ( obj );
       QStringList dwstrs;
 	  QString st = dw->objectName();
-      dwstrs << dw->objectName() << dw->windowTitle();
-      QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
-      dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      dwItem->setCheckState( 0, Qt::Checked );
-
 	  if ( st == "Legend" )
 	  {
-		QStringList legenddwstrs;
-		legenddwstrs << "ZoomToLayer" << "ZoomToLayer";
-		QTreeWidgetItem* legenddwItem = new QTreeWidgetItem( dwItem, legenddwstrs );
-		legenddwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-		legenddwItem->setCheckState( 0, Qt::Checked );
+		QgsDebugMsg( "Entered" );
+
+		QDomDocument myDoc( "QgsWidgets" );
+		QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
+
+		if ( !myFile.open( QIODevice::ReadOnly ) )
+		{
+			continue ;
+		}
+		if ( !myDoc.setContent( &myFile ) )
+		{
+			myFile.close();
+			continue ;
+		}
+		myFile.close();
+
+		QDomElement myRoot = myDoc.documentElement();
+		if ( myRoot.tagName() != "qgiswidgets" )
+		{
+			continue ;
+		}
+		
+		QDomElement myCustom = myRoot.firstChildElement ("qgisdocklegendwidget");
+
+		QTreeWidgetItem* myItem = readDockXmlNode( topItem, myCustom);
+		myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+		myItem->setCheckState( 0, Qt::Checked );
+		myItem->setData( 0, Qt::DisplayRole, tr( "Legend" ) );
+	  }
+	  else
+	  {
+		dwstrs << dw->objectName() << dw->windowTitle();
+		QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
+		dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+		dwItem->setCheckState( 0, Qt::Checked );
 	  }
 
     }
   }
 
   mMainWindowItems << topItem;
+}
+
+QTreeWidgetItem * QgsCustomization::readDockXmlNode( QTreeWidgetItem * topItem, QDomNode theNode )
+{
+  QgsDebugMsg( "Entered" );
+  QDomElement myElement = theNode.toElement();
+
+  QString name = myElement.attribute( "objectName", "" );
+  QStringList data( name );
+
+  data << myElement.attribute( "label", name );
+  data << myElement.attribute( "description", "" );
+
+  QTreeWidgetItem *myItem = new QTreeWidgetItem( topItem, data );
+
+  // It is nice to have icons for each Qt widget class, is it too heavy?
+  // There are 47 png files, total 196K in qt/tools/designer/src/components/formeditor/images/
+  QString iconName = myElement.attribute( "class", "" ).toLower().mid( 1 ) + ".png";
+  QString iconPath = QgsApplication::iconPath( "/customization/" + iconName );
+  QgsDebugMsg( "iconPath = " + iconPath );
+  if ( QFile::exists( iconPath ) )
+  {
+    myItem->setIcon( 0, QIcon( iconPath ) );
+  }
+  myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+  myItem->setCheckState( 0, Qt::Checked );
+
+  QDomNode n = theNode.firstChild();
+  while ( !n.isNull() )
+  {
+    QDomElement e = n.toElement();
+    if ( !e.isNull() )
+    {
+      QTreeWidgetItem *wi = readDockXmlNode( myItem, n );
+      myItem->insertChild( 0, wi );
+    }
+    n = n.nextSibling();
+  }
+  return myItem;
 }
 
 void QgsCustomization::createTreeItemStatus( )
