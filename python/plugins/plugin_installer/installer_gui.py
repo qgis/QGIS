@@ -569,7 +569,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     item = self.treePlugins.currentItem()
     if not item:
       return
-    key = plugins.keyByUrl(item.toolTip(5))
+    key = plugins.keyByUrl(item.toolTip(6))
     if not key:
       return
     plugin = plugins.all()[key]
