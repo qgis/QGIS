@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QString displayText() const;
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = QMap<QString, QVariant>() );
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
 
     QFont font() const;
     void setFont( const QFont& f );
