@@ -53,6 +53,11 @@ QTreeWidgetItem* QgsAttributesTree::addItem( QTreeWidgetItem* parent , QString f
   return attributeItem;
 }
 
+/*
+ * Is called when mouse is moved over attributes tree before a
+ * drop event. Used to inhibit dropping fields onto the root item.
+ */
+
 void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 {
   QTreeWidgetItem* targetItem = itemAt( event->pos() );
@@ -60,24 +65,39 @@ void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 
   if ( data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
   {
-    QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
-    QDataStream stream( &itemData, QIODevice::ReadOnly );
-    int r, c;
-    QMap<int, QVariant> roleDataMap;
-    stream >> r >> c >> roleDataMap;
-
-    QString itemType = roleDataMap.value( Qt::UserRole ).toString();
-
-    // Forbid dropping fields on top level item
-    if ( ( itemType == "field" && !targetItem ) || ( event->source() != this && !targetItem ) )
+    QString itemType;
+    if ( event->source() == this )
     {
-      event->ignore ();
+      QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
+      QDataStream stream( &itemData, QIODevice::ReadOnly );
+      int r, c;
+      QMap<int, QVariant> roleDataMap;
+      stream >> r >> c >> roleDataMap;
+
+      itemType = roleDataMap.value( Qt::UserRole ).toString();
+    }
+    else
+    {
+      itemType = "field";
+    }
+
+    // Forbid dropping fields on root item
+    if ( itemType == "field" && !targetItem )
+    {
+      event->ignore();
       return;
+    }
+
+    // Inner drag and drop actions are always MoveAction
+    if ( event->source() == this )
+    {
+      event->setDropAction( Qt::MoveAction );
     }
   }
 
   QTreeWidget::dragMoveEvent( event );
 }
+
 
 bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
 {
@@ -102,15 +122,23 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
     QString itemType = roleDataMap.value( Qt::UserRole ).toString();
     QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
 
-    if ( itemType == "field" )
+    if ( itemType == "field" ) //
     {
       if ( parent )
+      {
         addItem( parent, itemName );
+        bDropSuccessful = true;
+      }
       else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent
+      {
         addItem( invisibleRootItem(), itemName );
+        bDropSuccessful = true;
+      }
     }
-
-    bDropSuccessful = QTreeWidget::dropMimeData( parent , index , data , action );
+    else
+    {
+      bDropSuccessful = QTreeWidget::dropMimeData( parent, index, data, Qt::MoveAction );
+    }
   }
 
   return bDropSuccessful;
@@ -123,7 +151,6 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
 
   if ( event->source() == this )
   {
-    QgsDebugMsg( " self drop" );
     event->setDropAction( Qt::MoveAction );
     QTreeWidget::dropEvent( event );
   }
@@ -216,7 +243,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
   connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
 
-  loadAttributeEditorTree ();
+  loadAttributeEditorTree();
   updateButtons();
 }
 
@@ -249,16 +276,16 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
     {
       newWidget = mAttributesTree->addContainer( parent, widgetDef->mName );
 
-      const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>(widgetDef);
+      const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
       for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
       {
         loadAttributeEditorTreeItem( *it, newWidget );
       }
     }
-      break;
+    break;
 
     default:
-      QgsDebugMsg("Unknown attribute editor widget type encountered...");
+      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
       break;
   }
   return newWidget;
@@ -285,7 +312,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
 
   for ( QList<QgsAttributeEditorElement*>::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
   {
-    loadAttributeEditorTreeItem( *it, mAttributesTree->invisibleRootItem () );
+    loadAttributeEditorTreeItem( *it, mAttributesTree->invisibleRootItem() );
   }
 }
 
@@ -395,7 +422,7 @@ void QgsFieldsProperties::addTabOrGroup()
   QString name = addTabOrGroup.name();
   if ( addTabOrGroup.tabButtonIsChecked() )
   {
-    mAttributesTree->addContainer( mAttributesTree->invisibleRootItem (), name );
+    mAttributesTree->addContainer( mAttributesTree->invisibleRootItem(), name );
   }
   else
   {
@@ -739,7 +766,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
   if ( item->data( 0, Qt::UserRole ) == "field" )
   {
-    int idx = *mLayer->dataProvider()->fieldNameMap().find( item->text(0) );
+    int idx = *mLayer->dataProvider()->fieldNameMap().find( item->text( 0 ) );
     widgetDef = new QgsAttributeEditorField( item->text( 0 ), idx, parent );
   }
   else
