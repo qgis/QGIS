@@ -36,7 +36,7 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
     // Only consider vector layers
     if ( dynamic_cast<QgsVectorLayer*>(it.value()) )
     {
-      mAtlasCoverageLayerComboBox->insertItem( idx++, it.key(), /* userdata */ qVariantFromValue( (void*)it.value() ) );
+      mAtlasCoverageLayerComboBox->insertItem( idx++, it.value()->name(), /* userdata */ qVariantFromValue( (void*)it.value() ) );
     }
   }
   
@@ -93,7 +93,8 @@ void QgsAtlasCompositionWidget::onLayerRemoved( QString layerName )
   // update the atlas coverage layer combo box
   for ( int i = 0; i < mAtlasCoverageLayerComboBox->count(); ++i )
   {
-    if ( mAtlasCoverageLayerComboBox->itemText( i ) == layerName )
+    const QgsMapLayer* layer = reinterpret_cast<const QgsMapLayer*>( mAtlasCoverageLayerComboBox->itemData( i ).value<void*>() );
+    if ( layer->id() == layerName )
     {
       mAtlasCoverageLayerComboBox->removeItem( i );
       break;
@@ -112,7 +113,7 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
   QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( map );
   if ( vectorLayer )
   {
-    mAtlasCoverageLayerComboBox->addItem( map->id(), qVariantFromValue( (void*)map ) );
+    mAtlasCoverageLayerComboBox->addItem( map->name(), qVariantFromValue( (void*)map ) );
   }
   if ( mAtlasCoverageLayerComboBox->count() == 1 )
   {
