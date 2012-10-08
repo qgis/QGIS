@@ -76,7 +76,7 @@
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="obsolete">Coordonnées du système de coordonnées de référence du caneva de la carte</translation>
+        <translation type="obsolete">Coordonnées du système de coordonnées de référence du canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Cliquez pour activer le suivi du curseur. Cliquez sur le caneva pour arrêter</translation>
+        <translation>Cliquez pour activer le suivi du curseur. Cliquez sur le canevas pour arrêter</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -2853,7 +2853,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation>Ce raster dse trouve déjà dans le caneva de la carte</translation>
+        <translation>Ce raster se trouve déjà dans le canevas de la carte</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="14"/>
@@ -28850,7 +28850,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialog.cpp" line="31"/>
         <source>From map canvas</source>
-        <translation>Depuis le caneva de la carte</translation>
+        <translation>Depuis le canevas de la carte</translation>
     </message>
 </context>
 <context>
@@ -32778,12 +32778,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="209"/>
         <source>Show selected features</source>
-        <translation>Montrer que les entités sélectionnés</translation>
+        <translation>Ne montrer que les entités sélectionnés</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="210"/>
         <source>Show features in current canvas</source>
-        <translation>Montrer les entités dans le caneva actuel</translation>
+        <translation>Montrer les entités dans le canevas actuel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="221"/>
