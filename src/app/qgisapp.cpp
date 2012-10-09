@@ -4422,6 +4422,7 @@ void QgisApp::deletePrintComposers()
   for ( ; it != mPrintComposers.end(); ++it )
   {
     emit composerWillBeRemoved(( *it )->view() );
+    delete ( (*it)->composition() );
     delete( *it );
   }
   mPrintComposers.clear();

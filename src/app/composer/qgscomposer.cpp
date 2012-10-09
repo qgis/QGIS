@@ -505,11 +505,6 @@ QgsComposerView *QgsComposer::view( void )
   return mView;
 }
 
-/*QgsComposition *QgsComposer::composition(void)
-{
-  return mComposition;
-  }*/
-
 void QgsComposer::zoomFull( void )
 {
   if ( mView )
