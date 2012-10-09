@@ -173,6 +173,24 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
+
+  // upside-down labels
+  switch ( lyr.upsidedownLabels )
+  {
+    case QgsPalLayerSettings::Upright:
+      mUpsidedownRadioOff->setChecked( true );
+      break;
+    case QgsPalLayerSettings::ShowDefined:
+      mUpsidedownRadioDefined->setChecked( true );
+      break;
+    case QgsPalLayerSettings::ShowAll:
+      mUpsidedownRadioAll->setChecked( true );
+      break;
+    default:
+      mUpsidedownRadioOff->setChecked( true );
+      break;
+  }
+
   wrapCharacterEdit->setText( lyr.wrapChar );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
@@ -427,6 +445,18 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   else
   {
     lyr.addDirectionSymbol = false;
+  }
+  if ( mUpsidedownRadioOff->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::Upright;
+  }
+  else if ( mUpsidedownRadioDefined->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::ShowDefined;
+  }
+  else if ( mUpsidedownRadioAll->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::ShowAll;
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );

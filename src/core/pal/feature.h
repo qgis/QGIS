@@ -276,6 +276,10 @@ namespace pal
       double getLabelDistance() const { return f->distlabel; }
       void setLabelInfo( LabelInfo* info ) { f->labelInfo = info; }
 
+      bool getFixedRotation() { return f->fixedRotation; }
+      double getLabelAngle() { return f->fixedAngle; }
+      bool getFixedPosition() { return f->fixedPos; }
+
       int getNumSelfObstacles() const { return nbHoles; }
       PointSet* getSelfObstacle( int i ) { return holes[i]; }
 
