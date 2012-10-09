@@ -165,9 +165,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 
-  leEditForm->setText( layer->editForm() );
-  leEditFormInit->setText( layer->editFormInit() );
-
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
   //insert existing join info
@@ -456,9 +453,6 @@ void QgsVectorLayerProperties::apply()
   {
     layer->setDisplayField( displayFieldComboBox->currentText() );
   }
-
-  layer->setEditForm( leEditForm->text() );
-  layer->setEditFormInit( leEditFormInit->text() );
 
   actionDialog->apply();
 
@@ -757,18 +751,6 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   QString myPath = myFI.path();
   // Persist last used dir
   myQSettings.setValue( "style/lastStyleDir", myPath );
-}
-
-void QgsVectorLayerProperties::on_pbnSelectEditForm_clicked()
-{
-  QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
-  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
-
-  if ( uifilename.isNull() )
-    return;
-
-  leEditForm->setText( uifilename );
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

@@ -31,6 +31,8 @@
 #include <QPushButton>
 #include <QTableWidgetItem>
 #include <QMessageBox>
+#include <QSettings>
+#include <QFileDialog>
 
 QTreeWidgetItem* QgsAttributesTree::addContainer( QTreeWidgetItem* parent, QString title )
 {
@@ -230,16 +232,13 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mAttributesTreeFrame->setLayout( attrTreeLayout );
   mAttributesListFrame->setLayout( attrListLayout );
 
-  mTabDisplayCheckbox->setChecked( layer->hasTabDisplayEnabled() );
-  mAttributesTreeButtonFrame->setEnabled( layer->hasTabDisplayEnabled() );
-  mAttributesTreeFrame->setEnabled( layer->hasTabDisplayEnabled() );
-
-  connect( mTabDisplayCheckbox, SIGNAL( toggled( bool ) ), mAttributesTreeButtonFrame, SLOT( setEnabled( bool ) ) );
-  connect( mTabDisplayCheckbox, SIGNAL( toggled( bool ) ), mAttributesTreeFrame, SLOT( setEnabled( bool ) ) );
   connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
   connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
 
   mAttributesTree->setHeaderLabels( QStringList() << tr("Label") );
+
+  leEditForm->setText( layer->editForm() );
+  leEditFormInit->setText( layer->editFormInit() );
 
   loadAttributeEditorTree();
   updateButtons();
@@ -792,6 +791,38 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
   return widgetDef;
 }
 
+void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
+{
+  QSettings myQSettings;
+  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
+  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
+
+  if ( uifilename.isNull() )
+    return;
+
+  leEditForm->setText( uifilename );
+}
+
+void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged ( int index )
+{
+  switch( index )
+  {
+    case 0:
+      mAttributeEditorOptionsWidget->setVisible( false );
+      break;
+
+    case 1:
+      mAttributeEditorOptionsWidget->setVisible( true );
+      mAttributeEditorOptionsWidget->setCurrentIndex( 1 );
+      break;
+
+    case 2:
+      mAttributeEditorOptionsWidget->setVisible( true );
+      mAttributeEditorOptionsWidget->setCurrentIndex( 0 );
+      break;
+  }
+}
+
 void QgsFieldsProperties::apply()
 {
   for ( int i = 0; i < mAttributesList->rowCount(); i++ )
@@ -855,8 +886,6 @@ void QgsFieldsProperties::apply()
   }
 
   //tabs and groups
-  mLayer->enableTabDisplay( mTabDisplayCheckbox->isChecked() );
-
   mLayer->clearAttributeEditorWidgets();
   for ( int t = 0; t < mAttributesTree->invisibleRootItem()->childCount(); t++ )
   {
@@ -864,4 +893,7 @@ void QgsFieldsProperties::apply()
 
     mLayer->addAttributeEditorWidget( createAttributeEditorWidget( tabItem, mLayer ) );
   }
+
+  mLayer->setEditForm( leEditForm->text() );
+  mLayer->setEditFormInit( leEditFormInit->text() );
 }

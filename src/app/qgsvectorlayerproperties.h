@@ -108,7 +108,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSaveDefaultStyle_clicked();
     void on_pbnLoadStyle_clicked();
     void on_pbnSaveStyleAs_clicked();
-    void on_pbnSelectEditForm_clicked();
     void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_pbnUpdateExtents_clicked();

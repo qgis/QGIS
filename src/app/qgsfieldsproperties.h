@@ -98,6 +98,8 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void on_mCalculateFieldButton_clicked();
     void on_attributeSelectionChanged();
     void on_mAttributesList_cellChanged( int row, int column );
+    void on_pbnSelectEditForm_clicked();
+    void on_mEditorLayoutComboBox_currentIndexChanged ( int index );
     void addAttribute();
     void deleteAttribute();
 
