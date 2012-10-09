@@ -23,6 +23,7 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
 
 import os
 current_path = os.path.dirname(__file__)
@@ -58,6 +59,7 @@ def run(item, action, mainwindow):
 	db = item.database()
 	uri = db.uri()
 	conninfo = uri.connectionInfo()
+	iface = mainwindow.iface
 
 	# check if the selected item is a topology schema
 	isTopoSchema = False
@@ -72,40 +74,62 @@ def run(item, action, mainwindow):
 		QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
 		return False
 
-	# create the new project from the template one
-	tpl_name = u'topoview_template.qgs'
+	# load layers into the current project 
 	toponame = item.schema().name
-	project_name = u'topoview_%s_%s.qgs' % (uri.database(), toponame)
+	template_dir = os.path.join(current_path, 'templates')
+	registry = QgsMapLayerRegistry.instance()
+	legend = iface.legendInterface()
 
-	template_file = os.path.join(current_path, tpl_name)
-	inf = QFile( template_file )
-	if not inf.exists():
-		QMessageBox.critical(mainwindow, "Error", u'Template "%s" not found!' % template_file)
-		return False
+	group = legend.addGroup(toponame + ' topology')
 
-	project_file = os.path.join(current_path, project_name)
-	outf = QFile( project_file )
-	if not outf.open( QIODevice.WriteOnly ):
-		QMessageBox.critical(mainwindow, "Error", u'Unable to open "%s"' % project_file)
-		return False
+  # node
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".node', 'geom', 'node_id', toponame + '.nodes') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
+	registry.addMapLayer(layer)
+	legend.moveLayer(layer, group)
 
-	if not inf.open( QIODevice.ReadOnly ):
-		QMessageBox.critical(mainwindow, "Error", u'Unable to open "%s"' % template_file)
-		return False
+  # edge
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.edges') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
+	registry.addMapLayer(layer)
+	legend.moveLayer(layer, group)
 
-	while not inf.atEnd():
-		l = inf.readLine()
-		l = l.replace( u"dbname='@@DBNAME@@'", conninfo.toUtf8() )
-		l = l.replace( u'@@TOPONAME@@', toponame )
-		outf.write( l )
+  # face_left
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.face_left') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
+	registry.addMapLayer(layer)
+	legend.moveLayer(layer, group)
 
-	inf.close()
-	outf.close()
+  # face_right
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.face_right') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
+	registry.addMapLayer(layer)
+	legend.moveLayer(layer, group)
 
-	# load the project on QGis canvas
-	iface = mainwindow.iface
-	iface.newProject( True )
-	if iface.mapCanvas().layerCount() == 0:
-		iface.addProject( project_file )
+  # next_left
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.next_left') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
+	registry.addMapLayer(layer)
+	legend.setLayerVisible(layer, False)
+	legend.moveLayer(layer, group)
+
+  # next_right
+	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.next_right') 
+	layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
+	registry.addMapLayer(layer)
+	legend.setLayerVisible(layer, False)
+	legend.moveLayer(layer, group)
+
+  # face_seed
+	layer = db.toSqlLayer('SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(\'' + toponame + '\', face_id)) as geom FROM "' + toponame + '".face WHERE face_id > 0', 'geom', 'face_id', toponame + '.face_seed')
+	layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
+	registry.addMapLayer(layer)
+	legend.setLayerVisible(layer, False)
+	legend.moveLayer(layer, group)
+
+  # TODO: add full faces ?
+  # TODO: add polygon0, polygon1 and polygon2 ? 
+  # TODO: disable signals while adding all layers, then send a single one
+
 	return True
 
