@@ -285,6 +285,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.radioPluginType0, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType1, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType2, SIGNAL("toggled (bool)"), self.changePluginPolicy)
+    # increase default icon size
+    self.treePlugins.setIconSize(QSize(22, 22))
     if repositories.checkingOnStart():
       self.checkUpdates.setChecked(Qt.Checked)
     else:
@@ -485,6 +487,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           a.setToolTip(0, self.tr("Experimental plugin. Use at own risk"))
           a.setData(0, Qt.UserRole, QVariant(0))
         else:
+          # set empty icon to keep row height same for all plugins
+          a.setIcon(0, QIcon(":/plugins/installer/pluginStable.png"))
           a.setData(0, Qt.UserRole, QVariant(1))
         if p["error"]:
           a.setText(1,statuses[p["error"]])
