@@ -243,6 +243,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
   connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
 
+  mAttributesTree->setHeaderLabels( QStringList() << tr("Label") );
+
   loadAttributeEditorTree();
   updateButtons();
 }
