@@ -409,7 +409,7 @@ void QgsFieldsProperties::addTabOrGroup()
   QTreeWidgetItemIterator it( mAttributesTree );
   while ( *it )
   {
-    if (( *it )->data( 0 , Qt::UserRole ) == "tab" )
+    if (( *it )->data( 0 , Qt::UserRole ) == "container" )
       tabList.append(( *it )->text( 0 ) );
     tabWidgetList.append( *it );
     ++it;

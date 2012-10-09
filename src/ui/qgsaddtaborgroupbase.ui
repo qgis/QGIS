@@ -59,7 +59,7 @@
      <item row="2" column="0" colspan="2">
       <widget class="QRadioButton" name="mGroupButton">
        <property name="text">
-        <string>a group in tab</string>
+        <string>a group in container</string>
        </property>
        <property name="checked">
         <bool>false</bool>
