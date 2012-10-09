@@ -5879,3 +5879,36 @@ void QgsVectorLayer::clearAttributeEditorWidgets()
 {
   mAttributeEditorWidgets.clear();
 }
+
+QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
+{
+  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    delete( *it );
+  }
+}
+
+QDomElement QgsAttributeEditorContainer::getDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorContainer" );
+  elem.setAttribute( "name", mName );
+  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    elem.appendChild(( *it )->getDomElement( doc ) );
+  }
+  return elem;
+}
+
+
+void QgsAttributeEditorContainer::addWidget( QgsAttributeEditorElement *widget )
+{
+  mChildren.append( widget );
+}
+
+QDomElement QgsAttributeEditorField::getDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorField" );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "index", mIdx );
+  return elem;
+}

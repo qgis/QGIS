@@ -73,11 +73,7 @@ class QgsAttributeEditorElement : public QObject
     AttributeEditorType mType;
     QString mName;
 
-    virtual QDomElement getDomElement( QDomDocument& doc ) const
-    {
-      Q_UNUSED( doc );
-      return QDomElement();
-    }
+    virtual QDomElement getDomElement( QDomDocument& doc ) const = 0;
 };
 
 class QgsAttributeEditorContainer : public QgsAttributeEditorElement
@@ -86,29 +82,10 @@ class QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QgsAttributeEditorContainer( QString name, QObject *parent )
         : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
 
-    ~QgsAttributeEditorContainer()
-    {
-      for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
-      {
-        delete( *it );
-      }
-    }
+    ~QgsAttributeEditorContainer();
 
-    virtual QDomElement getDomElement( QDomDocument& doc ) const
-    {
-      QDomElement elem = doc.createElement( "attributeEditorContainer" );
-      elem.setAttribute( "name", mName );
-      for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
-      {
-        elem.appendChild(( *it )->getDomElement( doc ) );
-      }
-      return elem;
-    }
-
-    virtual void addWidget( QgsAttributeEditorElement *widget )
-    {
-      mChildren.append( widget );
-    }
+    virtual QDomElement getDomElement( QDomDocument& doc ) const;
+    virtual void addWidget( QgsAttributeEditorElement *widget );
 
     QList<QgsAttributeEditorElement*> mChildren;
 };
@@ -120,13 +97,7 @@ class QgsAttributeEditorField : public QgsAttributeEditorElement
         : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
 
     int mIdx;
-    virtual QDomElement getDomElement( QDomDocument& doc ) const
-    {
-      QDomElement elem = doc.createElement( "attributeEditorField" );
-      elem.setAttribute( "name", mName );
-      elem.setAttribute( "index", mIdx );
-      return elem;
-    }
+    virtual QDomElement getDomElement( QDomDocument& doc ) const;
 };
 
 /** @note added in 1.7 */
