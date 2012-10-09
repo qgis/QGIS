@@ -107,11 +107,7 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
   {
     bDropSuccessful = true;
   }
-  else if ( !data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
-  {
-    bDropSuccessful = false;
-  }
-  else
+  else if ( data->hasFormat( "application/x-qabstractitemmodeldatalist" ) )
   {
     QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
@@ -129,10 +125,10 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
         addItem( parent, itemName );
         bDropSuccessful = true;
       }
-      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent
+      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
       {
-        addItem( invisibleRootItem(), itemName );
-        bDropSuccessful = true;
+        // addItem( invisibleRootItem(), itemName );
+        // bDropSuccessful = true;
       }
     }
     else
