@@ -258,8 +258,6 @@ void QgsFieldsProperties::on_attributeSelectionChanged()
   mAddItemButton->setEnabled( isAddPossible );
 }
 
-
-
 void QgsFieldsProperties::toggleEditing()
 {
   emit toggleEditing( mLayer );
@@ -449,34 +447,46 @@ void QgsFieldsProperties::moveDownItem()
   if ( itemList.count() != 1 )
     return;
 
-  QTreeWidgetItem* itemToMoveDown = itemList[0];
+  QTreeWidgetItem* itemToMoveDown = itemList.first();
   QTreeWidgetItem* parent = itemToMoveDown->parent();
+  if ( !parent )
+  {
+    parent = mAttributesTree->invisibleRootItem();
+  }
+  int itemIndex = parent->indexOfChild( itemToMoveDown );
 
+  if ( itemIndex < parent->childCount()-1 )
+  {
+    parent->takeChild( itemIndex );
+    parent->insertChild( itemIndex + 1, itemToMoveDown );
 
-  if ( parent->childCount() < 2 )
-    return;
-
-
-  int row = parent->indexOfChild( itemToMoveDown );
-
-  QTreeWidgetItem* itemToMoveUp = mAttributesTree->itemBelow( itemToMoveDown );
-
-  QgsDebugMsg( "row: " + QString::number( row ) );
-
-  if ( itemToMoveUp == 0 || row > parent->childCount() - 1 )
-    return;
-
-  QgsDebugMsg( " d " );
-
-
-  parent->insertChild( row - 1, itemToMoveUp );
-
-
+    itemToMoveDown->setSelected( true );
+    parent->child( itemIndex )->setSelected( false );
+  }
 }
 
 void QgsFieldsProperties::moveUpItem()
 {
+  QList<QTreeWidgetItem*> itemList = mAttributesTree->selectedItems();
+  if ( itemList.count() != 1 )
+    return;
 
+  QTreeWidgetItem* itemToMoveUp = itemList.first();
+  QTreeWidgetItem* parent = itemToMoveUp->parent();
+  if ( !parent )
+  {
+    parent = mAttributesTree->invisibleRootItem();
+  }
+  int itemIndex = parent->indexOfChild( itemToMoveUp );
+
+  if ( itemIndex > 0 )
+  {
+    parent->takeChild( itemIndex );
+    parent->insertChild( itemIndex - 1, itemToMoveUp );
+
+    itemToMoveUp->setSelected( true );
+    parent->child( itemIndex )->setSelected( false );
+  }
 }
 
 void QgsFieldsProperties::attributeTypeDialog( )
