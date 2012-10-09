@@ -2088,7 +2088,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Information</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
@@ -8465,7 +8465,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1803"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1966"/>
@@ -16023,7 +16023,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="62"/>
         <source>Paper and quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Papper och kvalitet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="77"/>
@@ -16033,62 +16033,62 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="209"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="212"/>
         <source>Quality </source>
-        <translation type="unfinished"></translation>
+        <translation>Kvalitet </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="111"/>
         <source>Width </source>
-        <translation type="unfinished"></translation>
+        <translation>Bredd </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="130"/>
         <source>Height </source>
-        <translation type="unfinished">Höjd </translation>
+        <translation>Höjd </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="225"/>
         <source>Number of pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Antal sidor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="346"/>
         <source>Spacing </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="272"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>X-offset </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="282"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Y-offset </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="365"/>
         <source>Pen width </source>
-        <translation type="unfinished"></translation>
+        <translation>Pennbredd </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="291"/>
         <source>Grid color</source>
-        <translation type="unfinished">Rutnätets färg</translation>
+        <translation>Rutnätets färg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="317"/>
         <source>Grid style</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutnätets stil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="333"/>
         <source>Selection tolerance (mm) </source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerans för val [mm] </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="254"/>
@@ -16111,35 +16111,36 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="101"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara genvägar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="101"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>XML fil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="101"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla filer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="115"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sparar genvägar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="116"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte skriva fil %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in genvägar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="163"/>
@@ -16147,29 +16148,31 @@ Skall existerande klasser tas bort före klassificering?</translation>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="188"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="208"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Läser in genvägar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="164"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte läsa fil %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="178"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolkningsfel på rad %1, kolumn %2:
+%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="189"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen innehåller inte genvägar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="209"/>
         <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen innehåller genvägar skapade med en annan locale, så den kan ej användas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="276"/>
@@ -16230,12 +16233,12 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara...</translation>
     </message>
 </context>
 <context>
@@ -16248,22 +16251,22 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="91"/>
         <source>Maximum value</source>
-        <translation type="unfinished">Maximalt värde</translation>
+        <translation>Maximalt värde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="117"/>
         <source>Outline width</source>
-        <translation type="unfinished">Kantbredd</translation>
+        <translation>Kantbredd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="65"/>
         <source>Minimum value</source>
-        <translation type="unfinished">Minimalt värde</translation>
+        <translation>Minimalt värde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="26"/>
         <source>Classification field</source>
-        <translation type="unfinished">Klassifikationsfält</translation>
+        <translation>Klassifikationsfält</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="130"/>
@@ -16281,34 +16284,36 @@ Skall existerande klasser tas bort före klassificering?</translation>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="515"/>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="521"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>Referenskoordinatsystem</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="513"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ursprungligt referenskoordinatsystem (CRS) är ogiltigt. Koordinaterna kan ej transformeras. Referenskoordinatsystemet är: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="520"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Målets referenskoordinatsystem (CRS) är ogiltigt. Koordinaterna kan ej transformeras. Referenskoordinatsystemet är: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="550"/>
         <source>inverse transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Invers transform</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="557"/>
         <source>forward transform</source>
-        <translation type="unfinished"></translation>
+        <translation>normal transform</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="577"/>
         <source>%1 of
 %2PROJ.4: %3 +to %4
 Error: %5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 av
+%2PROJ.4: %3 +to %4
+Fel: %5</translation>
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. </source>
@@ -16390,12 +16395,12 @@ Error: %5</source>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1355"/>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1357"/>
         <source>Info</source>
-        <translation type="unfinished">Info</translation>
+        <translation>Info</translation>
     </message>
 </context>
 <context>
@@ -16403,27 +16408,27 @@ Error: %5</source>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="728"/>
         <source>colors</source>
-        <translation type="unfinished"></translation>
+        <translation>färger</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="730"/>
         <source>continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>kontinuerlig</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="732"/>
         <source>continuous (multi)</source>
-        <translation type="unfinished"></translation>
+        <translation>kontinuerlig (multipel</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="734"/>
         <source>discrete</source>
-        <translation type="unfinished"></translation>
+        <translation>diskret</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="739"/>
         <source>variants</source>
-        <translation type="unfinished"></translation>
+        <translation>varianter</translation>
     </message>
 </context>
 <context>
@@ -16431,12 +16436,12 @@ Error: %5</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="350"/>
         <source>%1 directory details</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 katalogdetaljer</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="354"/>
         <source>%1 gradient details</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 gradientdetaljer</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="80"/>
@@ -16456,12 +16461,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="134"/>
         <source>Selections by theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj efter tema</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="135"/>
         <source>All by author</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla av författare</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="171"/>
@@ -16476,7 +16481,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="20"/>
         <source>cpt-city color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;cpt-city&apos;-färggradient</translation>
     </message>
     <message>
         <source>Name</source>
@@ -16489,43 +16494,43 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="185"/>
         <source>Selection and preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Val och förhandsgranskning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="230"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökväg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="204"/>
         <source>Palette</source>
-        <translation type="unfinished">Palett</translation>
+        <translation>Palett</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="372"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="191"/>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="434"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licens</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="417"/>
         <source>Source</source>
-        <translation type="unfinished">Källa</translation>
+        <translation>Källa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="384"/>
         <source>Author(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Författare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="460"/>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detaljer</translation>
     </message>
 </context>
 <context>
@@ -16533,28 +16538,28 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="14"/>
         <source>Enter Credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv in autentiseringsuppgifter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="23"/>
         <source>Username</source>
-        <translation type="unfinished">Användarnamn</translation>
+        <translation>Användarnamn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="33"/>
         <source>Password</source>
-        <translation type="unfinished">Lösenord</translation>
+        <translation>Lösenord</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="57"/>
         <location filename="../src/ui/qgscredentialdialog.ui" line="64"/>
         <source>TextLabel</source>
-        <translation type="unfinished">TextEtikett</translation>
+        <translation>TextEtikett</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="71"/>
         <source>Realm</source>
-        <translation type="unfinished"></translation>
+        <translation>Område</translation>
     </message>
 </context>
 <context>
@@ -16575,7 +16580,7 @@ and current file is [%3]</source>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="496"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="565"/>
         <source>%1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 av %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="594"/>
@@ -16594,7 +16599,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="627"/>
         <source>* of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>* av %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="644"/>
@@ -16631,7 +16636,7 @@ and current file is [%3]</source>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="905"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="906"/>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="646"/>
@@ -16769,34 +16774,34 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="51"/>
         <source>Object name</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektnamn</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="51"/>
         <source>Label</source>
-        <translation type="unfinished">Etikett</translation>
+        <translation>Etikett</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="51"/>
         <source>Description</source>
-        <translation type="unfinished">Beskrivning</translation>
+        <translation>Beskrivning</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="211"/>
         <location filename="../src/app/qgscustomization.cpp" line="230"/>
         <source>Choose a customization INI file</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj en INI-fil för anpassning</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="212"/>
         <location filename="../src/app/qgscustomization.cpp" line="231"/>
         <source>Customization files (*.ini)</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassningsfiler (*.ini)</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="311"/>
         <source>Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol</translation>
     </message>
 </context>
 <context>
@@ -16804,57 +16809,57 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="14"/>
         <source>Customization</source>
-        <translation type="unfinished"></translation>
+        <translation>Anpassning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="63"/>
         <source>toolBar</source>
-        <translation type="unfinished">Verktygsrad</translation>
+        <translation>Verktygsrad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="90"/>
         <source>Catch</source>
-        <translation type="unfinished"></translation>
+        <translation>Fånga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="93"/>
         <source>Switch to catching widgets in main application</source>
-        <translation type="unfinished"></translation>
+        <translation>Byt till att fånga symboler i huvudapplikationen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="102"/>
         <source>Save</source>
-        <translation type="unfinished">Spara</translation>
+        <translation>Spara</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="105"/>
         <source>Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara till fil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="114"/>
         <source>Load</source>
-        <translation type="unfinished">Läs in</translation>
+        <translation>Läs in</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="117"/>
         <source>Load from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in från fil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="122"/>
         <source>Expand All</source>
-        <translation type="unfinished"></translation>
+        <translation>Expandera alla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="127"/>
         <source>Collapse All</source>
-        <translation type="unfinished">Slå ihop alla</translation>
+        <translation>Slå ihop alla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="132"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj alla</translation>
     </message>
 </context>
 <context>
@@ -16862,17 +16867,17 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="14"/>
         <source>Dash space pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck-mellanrumsstil</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="51"/>
         <source>Dash</source>
-        <translation type="unfinished"></translation>
+        <translation>Streck</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="56"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Mellanrum</translation>
     </message>
 </context>
 <context>
@@ -17779,7 +17784,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="452"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
 </context>
 <context>
@@ -17869,7 +17874,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="174"/>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mellanrum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="184"/>
@@ -21249,7 +21254,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="63"/>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="379"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="65"/>
@@ -21354,7 +21359,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="291"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sökväg</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="306"/>
@@ -21746,7 +21751,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="421"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Information</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
@@ -25039,12 +25044,12 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X-offset </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="275"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y-offset </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
@@ -26302,7 +26307,8 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="123"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan inte skriva fil %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="137"/>
@@ -26330,14 +26336,16 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="227"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan inte läsa fil %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="152"/>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="241"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tolkningsfel på rad %1, kolumn %2:
+%3</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="255"/>
@@ -29697,7 +29705,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="103"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="128"/>
@@ -38109,7 +38117,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="406"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="415"/>
@@ -38905,7 +38913,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="232"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="392"/>
@@ -39077,7 +39085,7 @@ SQL: %1</translation>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="322"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="348"/>
         <source>%1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 av %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="323"/>
@@ -39688,7 +39696,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alla filer</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
