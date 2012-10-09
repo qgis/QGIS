@@ -19,6 +19,7 @@
 #define QGSPROJECTPARSER_H
 
 #include "qgsconfigparser.h"
+#include "qgsvectorlayer.h"
 #include <QList>
 #include <QPair>
 
@@ -35,8 +36,9 @@ class QgsProjectParser: public QgsConfigParser
     QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     virtual ~QgsProjectParser();
 
-    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
+        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -110,6 +112,9 @@ class QgsProjectParser: public QgsConfigParser
 
     QString serviceUrl() const;
 
+    /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
+    QStringList wfsLayerNames() const;
+
   private:
 
     //forbidden
@@ -153,7 +158,11 @@ class QgsProjectParser: public QgsConfigParser
                     QDomElement &parentLayer,
                     const QDomElement &legendElem,
                     const QMap<QString, QgsMapLayer *> &layerMap,
-                    const QStringList &nonIdentifiableLayers ) const;
+                    const QStringList &nonIdentifiableLayers,
+                    QString version, //1.1.1 or 1.3.0
+                    bool fullProjectSettings = false ) const;
+
+    static void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer );
 
     void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc ) const;
 
@@ -173,6 +182,12 @@ class QgsProjectParser: public QgsConfigParser
     void setSelectionColor();
     /**Reads maxWidth / maxHeight from project and sets it to QgsConfigParser::mMaxWidth / mMaxHeight*/
     void setMaxWidthHeight();
+    /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
+    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+    /**Returns project layers by id*/
+    void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
+
+    static QString editTypeString( QgsVectorLayer::EditType type );
 };
 
 #endif // QGSPROJECTPARSER_H

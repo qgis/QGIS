@@ -39,8 +39,9 @@ class QgsConfigParser
 
     virtual ~QgsConfigParser();
 
-    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
+        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
@@ -59,6 +60,9 @@ class QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
+
+    /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
+    virtual QStringList wfsLayerNames() const { return QStringList(); }
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
