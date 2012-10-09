@@ -61,10 +61,18 @@ def run(item, action, mainwindow):
 	conninfo = uri.connectionInfo()
 	iface = mainwindow.iface
 
+	quoteId = db.connector.quoteId
+	quoteStr = db.connector.quoteString
+
 	# check if the selected item is a topology schema
 	isTopoSchema = False
-	if hasattr(item, 'schema') and item.schema() != None:
-		sql = u"SELECT count(*) FROM topology.topology WHERE name = '%s'" % item.schema().name
+
+	if not hasattr(item, 'schema'):
+		QMessageBox.critical(mainwindow, "Invalid topology", u'Select a topology schema to continue.')
+		return False
+
+	if item.schema() != None:
+		sql = u"SELECT count(*) FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
 		c = db.connector._get_cursor()	
 		db.connector._execute( c, sql )
 		res = db.connector._fetchone( c )
@@ -80,56 +88,71 @@ def run(item, action, mainwindow):
 	registry = QgsMapLayerRegistry.instance()
 	legend = iface.legendInterface()
 
-	group = legend.addGroup(toponame + ' topology')
+	# do not refresh the canvas until all the layers are added
+	prevRenderFlagState = iface.mapCanvas().renderFlag()
+	iface.mapCanvas().setRenderFlag( False )
+	try:
+		group = legend.addGroup(u'%s topology' % toponame)
 
-  # node
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".node', 'geom', 'node_id', toponame + '.nodes') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
-	registry.addMapLayer(layer)
-	legend.moveLayer(layer, group)
+	  # node
+		layer = db.toSqlLayer(u'SELECT * FROM %s.node' % quoteId(toponame),
+								'geom', 'node_id', u'%s.nodes' % toponame)
+		layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
+		registry.addMapLayer(layer)
+		legend.moveLayer(layer, group)
 
-  # edge
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.edges') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
-	registry.addMapLayer(layer)
-	legend.moveLayer(layer, group)
+	  # edge
+		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
+								'geom', 'edge_id', u'%s.edges' % toponame) 
+		layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
+		registry.addMapLayer(layer)
+		legend.moveLayer(layer, group)
 
-  # face_left
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.face_left') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
-	registry.addMapLayer(layer)
-	legend.moveLayer(layer, group)
+	  # face_left
+		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
+								'geom', 'edge_id', u'%s.face_left' % toponame) 
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
+		registry.addMapLayer(layer)
+		legend.moveLayer(layer, group)
 
-  # face_right
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.face_right') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
-	registry.addMapLayer(layer)
-	legend.moveLayer(layer, group)
+	  # face_right
+		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
+								'geom', 'edge_id', u'%s.face_right' % toponame) 
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
+		registry.addMapLayer(layer)
+		legend.moveLayer(layer, group)
 
-  # next_left
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.next_left') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
-	registry.addMapLayer(layer)
-	legend.setLayerVisible(layer, False)
-	legend.moveLayer(layer, group)
+	  # next_left
+		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
+								'geom', 'edge_id', u'%s.next_left' % toponame) 
+		layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-  # next_right
-	layer = db.toSqlLayer('SELECT * FROM "' + toponame + '".edge_data', 'geom', 'edge_id', toponame + '.next_right') 
-	layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
-	registry.addMapLayer(layer)
-	legend.setLayerVisible(layer, False)
-	legend.moveLayer(layer, group)
+	  # next_right
+		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % toponame,
+								'geom', 'edge_id', u'%s.next_right' % toponame) 
+		layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-  # face_seed
-	layer = db.toSqlLayer('SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(\'' + toponame + '\', face_id)) as geom FROM "' + toponame + '".face WHERE face_id > 0', 'geom', 'face_id', toponame + '.face_seed')
-	layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
-	registry.addMapLayer(layer)
-	legend.setLayerVisible(layer, False)
-	legend.moveLayer(layer, group)
+	  # face_seed
+		layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
+								'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)), 
+								'geom', 'face_id', u'%s.face_seed' % toponame)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-  # TODO: add full faces ?
-  # TODO: add polygon0, polygon1 and polygon2 ? 
-  # TODO: disable signals while adding all layers, then send a single one
+	  # TODO: add full faces ?
+	  # TODO: add polygon0, polygon1 and polygon2 ?
+
+	finally:
+		# restore canvas render flag
+		iface.mapCanvas().setRenderFlag( prevRenderFlagState )
 
 	return True
 
