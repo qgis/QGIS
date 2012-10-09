@@ -68,7 +68,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   QDialogButtonBox *buttonBox = NULL;
 
-  if ( !vl->editForm().isEmpty() )
+  if ( !vl->editorLayout() == QgsVectorLayer::UiFileLayout && !vl->editForm().isEmpty() )
   {
     QFile file( vl->editForm() );
 
@@ -86,7 +86,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     }
   }
   // Tab display
-  if ( !mDialog && vl->hasTabDisplayEnabled() )
+  if ( vl->editorLayout() == QgsVectorLayer::TabLayout )
   {
     mDialog = new QDialog( QgisApp::instance() );
 

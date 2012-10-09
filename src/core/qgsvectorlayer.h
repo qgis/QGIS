@@ -136,6 +136,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
+    enum EditorLayout
+    {
+      GeneratedLayout = 0,
+      TabLayout = 1,
+      UiFileLayout = 2
+    };
+
     enum EditType
     {
       LineEdit,
@@ -632,12 +639,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     void addAttributeAlias( int attIndex, QString aliasString );
 
-    /** displays the edit form with tabs and groups */
-    void enableTabDisplay( bool onoff );
-
-    /** displays the edit form with tabs and groups */
-    bool hasTabDisplayEnabled( void ) const;
-
     /**Sets a tab (for the dit form) for attributes to display in dialogs
       @note added in version 1.9*/
     void addAttributeEditorWidget( QgsAttributeEditorElement* data );
@@ -695,6 +696,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**set edit type*/
     void setEditType( int idx, EditType edit );
+
+    /** get the active layout for the attribute editor for this layer (added in 1.9) */
+    EditorLayout editorLayout();
+
+    /** set the active layout for the attribute editor for this layer (added in 1.9) */
+    void setEditorLayout( EditorLayout editorLayout );
 
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
@@ -1108,6 +1115,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
 
+    EditorLayout mEditorLayout;
+
     QString mEditForm, mEditFormInit;
     //annotation form for this layer
     QString mAnnotationForm;
@@ -1132,9 +1141,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
-
-    /** defines if edit form uses tabs and groups to display fields */
-    bool mTabDisplayOn;
 };
 
 #endif

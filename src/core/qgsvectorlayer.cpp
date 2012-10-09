@@ -106,7 +106,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
-    , mTabDisplayOn( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -3058,6 +3057,28 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
+    // tab display
+    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+    if ( editorLayoutNode.isNull() )
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+    else
+    {
+      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+      {
+        mEditorLayout = UiFileLayout;
+      }
+      else if ( editorLayoutNode.toElement().text() == "tablayout" )
+      {
+        mEditorLayout = TabLayout;
+      }
+      else
+      {
+        mEditorLayout = GeneratedLayout;
+      }
+    }
+
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -3352,6 +3373,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
+
+    // tab display
+    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+    switch ( mEditorLayout )
+    {
+      case UiFileLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+        break;
+
+      case TabLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+        break;
+
+      case GeneratedLayout:
+      default:
+        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+        break;
+    }
+
+    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3700,16 +3741,6 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified( false );
-}
-
-void QgsVectorLayer::enableTabDisplay( bool onoff )
-{
-  mTabDisplayOn = onoff;
-}
-
-bool QgsVectorLayer::hasTabDisplayEnabled( void ) const
-{
-  return mTabDisplayOn;
 }
 
 void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
@@ -4775,6 +4806,16 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
   const QgsFieldMap &fields = pendingFields();
   if ( fields.contains( idx ) )
     mEditTypes[ fields[idx].name()] = type;
+}
+
+QgsVectorLayer::EditorLayout QgsVectorLayer::editorLayout()
+{
+  return mEditorLayout;
+}
+
+void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
+{
+  mEditorLayout = editorLayout;
 }
 
 QString QgsVectorLayer::editForm()

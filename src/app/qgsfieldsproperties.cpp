@@ -195,6 +195,9 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   setupUi( this );
   setupEditTypes();
 
+  // Init as hidden by default, it will be enabled if project is set to
+  mAttributeEditorOptionsWidget->setVisible( false );
+
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
@@ -208,17 +211,6 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
   // tab and group display
   mAddItemButton->setEnabled( false );
-  mAddItemButton->setIcon( QgsApplication::getThemeIcon( "/mActionArrowRight.png" ) );
-  mAddTabOrGroupButton->setIcon( QgsApplication::getThemeIcon( "/mActionSignPlus.png" ) );
-  mRemoveTabGroupItemButton->setIcon( QgsApplication::getThemeIcon( "/mActionSignMinus.png" ) );
-  mMoveUpItem->setIcon( QgsApplication::getThemeIcon( "/mActionArrowUp.png" ) );
-  mMoveDownItem->setIcon( QgsApplication::getThemeIcon( "/mActionArrowDown.png" ) );
-
-  connect( mAddItemButton, SIGNAL( pressed() ), this, SLOT( addItemInTabOrGroup( ) ) );
-  connect( mAddTabOrGroupButton, SIGNAL( pressed() ), this, SLOT( addTabOrGroup( ) ) );
-  connect( mRemoveTabGroupItemButton, SIGNAL( pressed() ), this, SLOT( removeTabGroupItem( ) ) );
-  connect( mMoveUpItem, SIGNAL( pressed() ), this, SLOT( moveUpItem( ) ) );
-  connect( mMoveDownItem, SIGNAL( pressed() ), this, SLOT( moveDownItem( ) ) );
 
   QVBoxLayout *attrTreeLayout = new QVBoxLayout( mAttributesTreeFrame );
   QVBoxLayout *attrListLayout = new QVBoxLayout( mAttributesListFrame );
@@ -239,6 +231,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
+
+  mEditorLayoutComboBox->setCurrentIndex( layer->editorLayout() );
 
   loadAttributeEditorTree();
   updateButtons();
@@ -378,7 +372,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
   mAttributesList->setItem( row, attrWFSCol, wfsAttrItem );
 }
 
-void QgsFieldsProperties::addItemInTabOrGroup()
+void QgsFieldsProperties::on_mAddItemButton_clicked()
 {
   QList<QTableWidgetItem*> listItems = mAttributesList->selectedItems();
   QList<QTreeWidgetItem*> treeItems = mAttributesTree->selectedItems();
@@ -397,7 +391,7 @@ void QgsFieldsProperties::addItemInTabOrGroup()
   }
 }
 
-void QgsFieldsProperties::addTabOrGroup()
+void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
 {
   QList<QString> tabList;
   QList<QTreeWidgetItem*> tabWidgetList;
@@ -427,7 +421,7 @@ void QgsFieldsProperties::addTabOrGroup()
   }
 }
 
-void QgsFieldsProperties::removeTabGroupItem()
+void QgsFieldsProperties::on_mRemoveTabGroupItemButton_clicked()
 {
   QList<QTreeWidgetItem*> items = mAttributesTree->selectedItems();
   for ( QList<QTreeWidgetItem*>::const_iterator it = items.begin(); it != items.end(); it++ )
@@ -436,7 +430,7 @@ void QgsFieldsProperties::removeTabGroupItem()
   }
 }
 
-void QgsFieldsProperties::moveDownItem()
+void QgsFieldsProperties::on_mMoveDownItem_clicked()
 {
   QList<QTreeWidgetItem*> itemList = mAttributesTree->selectedItems();
   if ( itemList.count() != 1 )
@@ -460,7 +454,7 @@ void QgsFieldsProperties::moveDownItem()
   }
 }
 
-void QgsFieldsProperties::moveUpItem()
+void QgsFieldsProperties::on_mMoveUpItem_clicked()
 {
   QList<QTreeWidgetItem*> itemList = mAttributesTree->selectedItems();
   if ( itemList.count() != 1 )
@@ -894,6 +888,7 @@ void QgsFieldsProperties::apply()
     mLayer->addAttributeEditorWidget( createAttributeEditorWidget( tabItem, mLayer ) );
   }
 
+  mLayer->setEditorLayout( (QgsVectorLayer::EditorLayout)mEditorLayoutComboBox->currentIndex() );
   mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
 }

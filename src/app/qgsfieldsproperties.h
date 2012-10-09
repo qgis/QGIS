@@ -107,11 +107,11 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void attributeDeleted( int idx );
     void attributeTypeDialog();
 
-    void addTabOrGroup();
-    void addItemInTabOrGroup();
-    void removeTabGroupItem();
-    void moveDownItem();
-    void moveUpItem();
+    void on_mAddTabOrGroupButton_clicked();
+    void on_mAddItemButton_clicked();
+    void on_mRemoveTabGroupItemButton_clicked();
+    void on_mMoveDownItem_clicked();
+    void on_mMoveUpItem_clicked();
 
 
 
