@@ -174,6 +174,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
+  upsidedownLabels = Upright;
   fontSizeInMapUnits = false;
   bufferSizeInMapUnits = false;
   labelOffsetInMapUnits = true;
@@ -221,6 +222,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
+  upsidedownLabels = s.upsidedownLabels;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   bufferSizeInMapUnits = s.bufferSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
@@ -400,6 +402,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   displayAll = layer->customProperty( "labeling/displayAll", QVariant( false ) ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
+  upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
@@ -458,6 +461,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/displayAll", displayAll );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
+  layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
@@ -1063,6 +1067,17 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
+
+  // set how to show upside-down labels
+  Layer::UpsideDownLabels upsdnlabels;
+  switch ( lyr.upsidedownLabels )
+  {
+    case QgsPalLayerSettings::Upright:     upsdnlabels = Layer::Upright; break;
+    case QgsPalLayerSettings::ShowDefined: upsdnlabels = Layer::ShowDefined; break;
+    case QgsPalLayerSettings::ShowAll:     upsdnlabels = Layer::ShowAll; break;
+    default: Q_ASSERT( "unsupported upside-down label setting" && 0 ); return 0;
+  }
+  l->setUpsidedownLabels( upsdnlabels );
 
   // fix for font size in map units causing font to show pointsize at small map scales
   int pixelFontSize = lyr.sizeToPixel( lyr.textFont.pointSizeF(), ctx );

@@ -81,6 +81,13 @@ class CORE_EXPORT QgsPalLayerSettings
       MapOrientation = 8
     };
 
+    enum UpsideDownLabels
+    {
+      Upright, // upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, // show upside down when rotation is layer- or data-defined
+      ShowAll // show upside down for all labels, including dynamic ones
+    };
+
     // increment iterator in _writeDataDefinedPropertyMap() when adding more
     enum DataDefinedProperties
     {
@@ -159,6 +166,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
