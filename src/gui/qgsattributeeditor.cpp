@@ -136,6 +136,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
   if ( !vl )
     return 0;
 
+  bool synchronized = false;
   QWidget *myWidget = 0;
   QgsVectorLayer::EditType editType = vl->editType( idx );
   const QgsField &field = vl->pendingFields()[idx];
@@ -455,7 +456,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
       if ( le )
       {
-
         if ( editType == QgsVectorLayer::UniqueValuesEditable )
         {
           QList<QVariant> values;
@@ -477,20 +477,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
         le->setValidator( new QgsFieldValidator( le, field ) );
 
-        QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
-        if ( it != proxyWidgets.end() )
-        {
-          QLineEdit *proxyLe = qobject_cast<QLineEdit*>( *it );
-          if ( proxyLe )
-          {
-            connect( proxyLe, SIGNAL( textEdited(QString) ), le, SLOT( setText(QString) )  );
-            connect( le, SIGNAL( textEdited(QString) ), proxyLe, SLOT( setText(QString) )  );
-          }
-        }
-        else
-        {
-          proxyWidgets.insert( idx, le );
-        }
         myWidget = le;
       }
 
@@ -508,6 +494,13 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       if ( myWidget )
       {
         myWidget->setDisabled( editType == QgsVectorLayer::Immutable );
+
+        QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
+        if ( it != proxyWidgets.end() )
+        {
+          synchronized =  connect( *it, SIGNAL( textChanged(QString) ), myWidget, SLOT( setText(QString) )  );
+          synchronized &= connect( myWidget, SIGNAL( textChanged(QString) ), *it, SLOT( setText(QString) )  );
+        }
       }
     }
     break;
@@ -556,6 +549,19 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
     }
     break;
+  }
+
+  QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
+  if ( it != proxyWidgets.end() )
+  {
+    if ( !synchronized )
+    {
+      myWidget->setEnabled( false );
+    }
+  }
+  else
+  {
+    proxyWidgets.insert( idx, myWidget );
   }
 
   setValue( myWidget, vl, idx, value );
@@ -915,7 +921,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 
       if ( vl->editType( fieldDef->mIdx ) != QgsVectorLayer::Immutable )
       {
-        newWidget->setEnabled( vl->isEditable() );
+        newWidget->setEnabled( newWidget->isEnabled() && vl->isEditable() );
       }
 
       break;

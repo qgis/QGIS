@@ -229,7 +229,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
         if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
         {
-          ( *itw )->setEnabled( vl->isEditable() );
+          ( *itw )->setEnabled( ( *itw )->isEnabled() && vl->isEditable() );
         }
 
         mpIndizes << it.key();
