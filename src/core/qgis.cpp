@@ -21,6 +21,7 @@
 #endif
 #include <QCoreApplication>
 #include "qgsconfig.h"
+#include "qgslogger.h"
 
 #include <ogr_api.h>
 
@@ -103,4 +104,39 @@ QString QGis::toLiteral( QGis::UnitType unit )
 QString QGis::tr( QGis::UnitType unit )
 {
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
+}
+
+void *QgsMalloc( size_t size )
+{
+  if ( size == 0 || long( size ) < 0 )
+  {
+    QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
+    return NULL;
+  }
+  void *p = malloc( size );
+  if ( p == NULL )
+  {
+    QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
+  }
+  return p;
+}
+
+void *QgsCalloc( size_t nmemb, size_t size )
+{
+  if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
+  {
+    QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
+    return NULL;
+  }
+  void *p = QgsMalloc( nmemb * size );
+  if ( p != NULL )
+  {
+    memset( p, 0, nmemb * size );
+  }
+  return p;
+}
+
+void QgsFree( void *ptr )
+{
+  free( ptr );
 }
