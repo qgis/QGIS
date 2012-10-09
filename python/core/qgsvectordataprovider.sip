@@ -49,46 +49,22 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     * @param fetchAttributes list of attributes which should be fetched
-     * @param rect spatial filter
-     * @param fetchGeometry true if the feature geometry should be fetched
-     * @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
+    /**
+     * Query the provider for features specified in request.
      */
-    virtual void select( QList<int> fetchAttributes = QList<int>(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
+
+    // temporary
+    QgsFeatureIterator select( QList<int> fetchAttributes = QList<int>(),
+                               QgsRectangle rect = QgsRectangle(),
+                               bool fetchGeometry = true,
+                               bool useIntersect = false ) /Deprecated/;
 
     /**
      * This function does nothing useful, it's kept only for compatibility.
      * @todo to be removed
      */
     virtual long updateFeatureCount() /Deprecated/;
-
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeometry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     *
-     * Default implementation traverses all features until it finds the one with correct ID.
-     * In case the provider supports reading the feature directly, override this function.
-     */
-    virtual bool featureAtId( qint64 featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QList<int> fetchAttributes = QList<int>());
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature ) = 0;
 
     /**
      * Get feature type.
@@ -119,9 +95,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * providing access to (e.g. the comment for postgres table).
      */
     virtual QString dataComment() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind() = 0;
 
     /**
      * Returns the minimum value of an attribute
