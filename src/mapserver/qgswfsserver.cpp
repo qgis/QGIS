@@ -245,6 +245,8 @@ QDomDocument QgsWFSServer::describeFeatureType()
   schemaElement.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
   schemaElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/gml" );
   schemaElement.setAttribute( "targetNamespace", "http://www.qgis.org/gml" );
+  schemaElement.setAttribute( "elementFromDefault", "qualified" );
+  schemaElement.setAttribute( "version", "1.0" );
   doc.appendChild( schemaElement );
 
   //xsd:import
@@ -601,15 +603,14 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 
     //wfs:FeatureCollection
     fcString = "<wfs:FeatureCollection";
-    fcString += " xmlns=\"http://www.opengis.net/wfs\"";
     fcString += " xmlns:wfs=\"http://www.opengis.net/wfs\"";
-    fcString += " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.opengis.net/gml " + hrefString.replace( "&", "&amp;" ) + "\"";
     fcString += " xmlns:ogc=\"http://www.opengis.net/ogc\"";
     fcString += " xmlns:gml=\"http://www.opengis.net/gml\"";
     fcString += " xmlns:ows=\"http://www.opengis.net/ows\"";
     fcString += " xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
     fcString += " xmlns:qgs=\"http://www.qgis.org/gml\"";
+    fcString += " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+    fcString += " xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml " + hrefString.replace( "&", "&amp;" ) + "\"";
     fcString += ">";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
