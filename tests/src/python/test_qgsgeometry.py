@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2012, The Quantum GIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
                        QgsFeature,
@@ -20,7 +21,9 @@ from qgis.core import (QgsGeometry,
 
 from utilities import (getQgisTestApp,
                        TestCase,
-                       unittest)
+                       unittest,
+                       expectedFailure,
+                       unitTestDataPath)
 # Convenience instances in case you may need them
 # not used in this test
 
@@ -202,6 +205,41 @@ class TestQgsGeometry(TestCase):
                       ("True", crossesGeom))
         assert crossesGeom == True, myMessage
 
+    @expectedFailure
+    def testSimplifyIssue4189(self):
+        """Test we can simplify a complex geometry.
+
+        Note: there is a ticket related to this issue here:
+        http://hub.qgis.org/issues/4189
+
+        Backstory: Ole Nielson pointed out an issue to me
+        (Tim Sutton) where simplify ftools was dropping
+        features. This test replicates that issues.
+
+        Interestingly we could replicate the issue in PostGIS too:
+         - doing straight simplify returned no feature
+         - transforming to UTM49, then simplify with e.g. 200 threshold is ok
+         - as above with 500 threshold drops the feature
+
+         pgsql2shp -f /tmp/dissolve500.shp gis 'select *,
+           transform(simplify(transform(geom,32649),500), 4326) as
+           simplegeom from dissolve;'
+        """
+        myWKTFile = file(os.path.join(unitTestDataPath('wkt'),
+                                       'simplify_error.wkt'), 'rt')
+        myWKT = myWKTFile.readline()
+        myWKTFile.close()
+        print myWKT
+        myGeometry = QgsGeometry().fromWkt(myWKT)
+        assert myGeometry is not None
+        myStartLength = len(myWKT)
+        myTolerance = 0.00001
+        mySimpleGeometry = myGeometry.simplify(myTolerance)
+        myEndLength = len(mySimpleGeometry.exportToWkt())
+        myMessage = 'Before simplify: %i\nAfter simplify: %i\n : Tolerance %e' % (
+            myStartLength, myEndLength, myTolerance)
+        myMinimumLength = len('POLYGON(())')
+        assert myEndLength > myMinimumLength, myMessage
 
 if __name__ == '__main__':
     unittest.main()
