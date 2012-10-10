@@ -27,6 +27,10 @@ class QgsDataSourceURI
     //! return complete uri
     QString uri() const;
 
+    //! return complete encoded uri (generic mode)
+    // \note added in 1.9
+    QByteArray encodedUri() const;
+
     //! set complete encoded uri (generic mode)
     // \note added in 1.9
     void setEncodedUri( const QString & uri );
