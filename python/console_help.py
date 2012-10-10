@@ -55,11 +55,17 @@ class HelpDialog(QtGui.QDialog):
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.setLayout(self.verticalLayout)
-        jQueryPath = QgsApplication.pkgDataPath()
+        qgisDataDir = QgsApplication.pkgDataPath()
+        listFile = os.listdir(qgisDataDir + "/python/console_help/i18n")
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
-        filename = QgsApplication.pkgDataPath() + "/python/console_help/help.htm? \
-                                                lang=" + localeFullName \
-                                                + "&pkgDir=" + jQueryPath
+        for i in listFile:
+            lang = i[0:5]
+            if localeFullName in (lang[0:2], lang):
+                locale = lang
+                
+        filename = qgisDataDir + "/python/console_help/help.htm? \
+                                                lang=" + locale \
+                                                + "&pkgDir=" + qgisDataDir
                                                 
         url = QtCore.QUrl(filename)
         self.webView.load(url)
