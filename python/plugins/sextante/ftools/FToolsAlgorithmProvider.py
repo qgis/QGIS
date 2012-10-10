@@ -41,6 +41,7 @@ from sextante.ftools.LinesIntersection import LinesIntersection
 from sextante.ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
 
 # data management tools
+from sextante.ftools.ReprojectLayer import ReprojectLayer
 
 # geometry tools
 from sextante.ftools.Delaunay import Delaunay
@@ -79,6 +80,7 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                         BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
                         # data management
+                        ReprojectLayer(),
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), MultipartToSingleparts(),
