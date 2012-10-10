@@ -295,7 +295,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
       case QVariant::String:
         ogrType = OFTString;
-        if ( ogrWidth < 0 || ogrWidth > 255 )
+        if ( ogrWidth <= 0 || ogrWidth > 255 )
           ogrWidth = 255;
         break;
 

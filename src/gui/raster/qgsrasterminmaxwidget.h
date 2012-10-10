@@ -34,7 +34,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     void setBands( const QList<int> & theBands ) { mBands = theBands; }
 
   signals:
-    void load( int theBandNo, double theMin, double theMax );
+    void load( int theBandNo, double theMin, double theMax, int origin );
 
   private slots:
     void on_mLoadPushButton_clicked();

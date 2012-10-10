@@ -12,28 +12,49 @@ class QgsProviderRegistry
   public:
 
     /** means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance(QString pluginPath = QString::null);
-    
+    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
+
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
 
-    QString library(const QString & providerKey) const;
+    /** Return path for the library of the provider */
+    QString library( const QString & providerKey ) const;
 
-    QString pluginList(bool asHtml = false) const;
+    /** Return list of provider plugins found */
+    QString pluginList( bool asHtml = false ) const;
 
     /** return library directory where plugins are found */
     const QDir & libraryDirectory() const;
 
-    void setLibraryDirectory(const QDir & path);
- 
+    /** Set library directory where to search for plugins */
+    void setLibraryDirectory( const QDir & path );
+
+    /** Create an instance of the provider
+        @param providerKey identificator of the provider
+        @param dataSource  string containing data source for the provider
+        @return instance of provider or NULL on error
+     */
     QgsDataProvider *provider( const QString & providerKey,
-                                   const QString & dataSource );
+                               const QString & dataSource );
+
+    QWidget *selectWidget( const QString & providerKey,
+                           QWidget * parent = 0, Qt::WFlags fl = 0 );
+
+    /** Get pointer to provider function
+        @param providerKey identificator of the provider
+        @param functionName name of function
+        @return pointer to function or NULL on error
+     */
+    void *function( const QString & providerKey,
+                    const QString & functionName );
+
+    QLibrary *providerLibrary( const QString & providerKey ) const;
 
     /** Return list of available providers by their keys */
     QStringList providerList() const;
 
     /** Return metadata of the provider or NULL if not found */
-    const QgsProviderMetadata* providerMetadata(const QString& providerKey) const;
+    const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
 
     /** return vector file filter string
 
@@ -53,7 +74,7 @@ class QgsProviderRegistry
     */
     virtual QString databaseDrivers() const;
     /** return a string containing the available directory drivers
-     * @note this method was added in QGIS 1.1   
+     * @note this method was added in QGIS 1.1
      */
     virtual QString directoryDrivers() const;
     /** return a string containing the available protocol drivers
@@ -61,10 +82,10 @@ class QgsProviderRegistry
      */
     virtual QString protocolDrivers() const;
 
+    void registerGuis( QWidget *widget );
+
   private:
-
-        /** ctor private since instance() creates it */
-        QgsProviderRegistry(QString pluginPath) /Default/ ;
-
+    /** ctor private since instance() creates it */
+    QgsProviderRegistry( QString pluginPath );
 }; // class QgsProviderRegistry
 

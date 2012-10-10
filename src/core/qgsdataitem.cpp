@@ -176,10 +176,9 @@ void QgsDataItem::emitEndRemoveItems()
   emit endRemoveItems();
 }
 
-QVector<QgsDataItem*> QgsDataItem::createChildren( )
+QVector<QgsDataItem*> QgsDataItem::createChildren()
 {
-  QVector<QgsDataItem*> children;
-  return children;
+  return QVector<QgsDataItem*>();
 }
 
 void QgsDataItem::populate()

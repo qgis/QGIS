@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -97,11 +97,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 {
   QColor brushColor = mColor;
   QColor penColor = mBorderColor;
-  if ( context.alpha() < 1 )
-  {
-    penColor.setAlphaF( context.alpha() );
-    brushColor.setAlphaF( context.alpha() );
-  }
+
+  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( mBorderColor.alphaF() * context.alpha() );
+
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );

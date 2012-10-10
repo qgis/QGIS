@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -553,8 +553,8 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     divisions = k;
   }
   double minimumBreak = start * unit;
-  double maximumBreak = end * unit;
-  int count = ceil( maximumBreak - minimumBreak ) / unit;
+  //double maximumBreak = end * unit;
+  int count = end - start;
 
   for ( int i = 1; i < count + 1; i++ )
   {

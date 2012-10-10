@@ -1,4 +1,19 @@
 #!/bin/sh
+###########################################################################
+#    qgis_srs.sh
+#    ---------------------
+#    Date                 : August 2009
+#    Copyright            : (C) 2009 by Magnus Homann
+#    Email                : magnus at homann dot se
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 # AUTHOR:       Maciej Sieczka, msieczka@sieczka.org, http://www.sieczka.org
 #

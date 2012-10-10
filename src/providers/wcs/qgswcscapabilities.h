@@ -27,12 +27,12 @@
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QNetworkRequest>
 #include <QVector>
 #include <QUrl>
 
 class QNetworkAccessManager;
 class QNetworkReply;
-class QNetworkRequest;
 
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
@@ -125,8 +125,17 @@ class QgsWcsCapabilities : public QObject
      */
     static QString prepareUri( QString uri );
 
-    /**Returns the GetCoverage url
-     */
+    /** \brief Returns the GetCoverage full url
+     *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
+    QString getCapabilitiesUrl( const QString version ) const;
+
+    /** \brief Returns the GetCoverage full url using current version  */
+    QString getCapabilitiesUrl() const;
+
+    /** \brief Returns the GetCoverage full full url using current version  */
+    QString getDescribeCoverageUrl( QString const &identifier ) const;
+
+    /** Returns the GetCoverage base url */
     QString getCoverageUrl() const;
 
     //! Send request to server
@@ -207,6 +216,8 @@ class QgsWcsCapabilities : public QObject
     void capabilitiesReplyProgress( qint64, qint64 );
 
   private:
+    void parseUri();
+
     //! Get coverage summary for identifier
     QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
 
@@ -225,7 +236,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
-     * \param preferredVersion - optional version KVP
+     * \param preferredVersion - optional version, e.g. 1.0.0, 1.1.0
      *
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
@@ -317,6 +328,9 @@ class QgsWcsCapabilities : public QObject
 
     //! Password for basic http authentication
     QString mPassword;
+
+    //! Cache load control
+    QNetworkRequest::CacheLoadControl mCacheLoadControl;
 };
 
 

@@ -26,6 +26,9 @@
 class QProgressDialog;
 class QgsRasterIterator;
 
+/** \ingroup core
+ * The raster file writer which allows you to save a raster to a new file.
+ */
 class CORE_EXPORT QgsRasterFileWriter
 {
   public:
@@ -50,7 +53,6 @@ class CORE_EXPORT QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    //WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
     WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 

@@ -25,6 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -87,29 +88,21 @@ int QgsProjectParser::numberOfLayers() const
   return mProjectLayerElements.size();
 }
 
-void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-  QMap<QString, QgsMapLayer *> layerMap;
-
-  foreach ( const QDomElement &elem, mProjectLayerElements )
+  if ( mProjectLayerElements.size() < 1 )
   {
-    QgsMapLayer *layer = createLayerFromElement( elem );
-    if ( layer )
-    {
-      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-      layerMap.insert( layer->id(), layer );
-    }
-#if QGSMSDEBUG
-    else
-    {
-      QString buf;
-      QTextStream s( &buf );
-      elem.save( s, 0 );
-      QgsDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
-    }
-#endif
+    return;
   }
+
+  if ( fullProjectSettings )
+  {
+    addDrawingOrder( parentElement, doc );
+  }
+
+  QMap<QString, QgsMapLayer *> layerMap;
+  projectLayerMap( layerMap );
 
   //According to the WMS spec, there can be only one toplevel layer.
   //So we create an artificial one here to be in accordance with the schema
@@ -127,7 +120,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers );
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
   combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
@@ -206,18 +199,169 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
   return;
 }
 
+void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QStringList wfsLayersId = wfsLayers();
+  QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
+  QMap< QString, QSet<QString> > hiddenAttrs = hiddenAttributes();
+
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      QgsMapLayer *mLayer = createLayerFromElement( elem );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || layer->name() == aTypeName ) )
+      {
+        //do a select with searchRect and go through all the features
+        QgsVectorDataProvider* provider = layer->dataProvider();
+        if ( !provider )
+        {
+          continue;
+        }
+
+        //is there alias info for this vector layer?
+        QMap< int, QString > layerAliasInfo;
+        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( mLayer->id() );
+        if ( aliasIt != aliasInfo.constEnd() )
+        {
+          layerAliasInfo = aliasIt.value();
+        }
+
+        //hidden attributes for this layer
+        QSet<QString> layerHiddenAttributes;
+        QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttrs.find( mLayer->id() );
+        if ( hiddenIt != hiddenAttrs.constEnd() )
+        {
+          layerHiddenAttributes = hiddenIt.value();
+        }
+
+        QString typeName = layer->name();
+        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+
+        //xsd:element
+        QDomElement elementElem = doc.createElement( "element"/*xsd:element*/ );
+        elementElem.setAttribute( "name", typeName );
+        elementElem.setAttribute( "type", "qgs:" + typeName + "Type" );
+        elementElem.setAttribute( "substitutionGroup", "gml:_Feature" );
+        parentElement.appendChild( elementElem );
+
+        //xsd:complexType
+        QDomElement complexTypeElem = doc.createElement( "complexType"/*xsd:complexType*/ );
+        complexTypeElem.setAttribute( "name", typeName + "Type" );
+        parentElement.appendChild( complexTypeElem );
+
+        //xsd:complexType
+        QDomElement complexContentElem = doc.createElement( "complexContent"/*xsd:complexContent*/ );
+        complexTypeElem.appendChild( complexContentElem );
+
+        //xsd:extension
+        QDomElement extensionElem = doc.createElement( "extension"/*xsd:extension*/ );
+        extensionElem.setAttribute( "base", "gml:AbstractFeatureType" );
+        complexContentElem.appendChild( extensionElem );
+
+        //xsd:sequence
+        QDomElement sequenceElem = doc.createElement( "sequence"/*xsd:sequence*/ );
+        extensionElem.appendChild( sequenceElem );
+
+        //xsd:element
+        QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+        geomElem.setAttribute( "name", "geometry" );
+        QGis::WkbType wkbType = layer->wkbType();
+        switch ( wkbType )
+        {
+          case QGis::WKBPoint25D:
+          case QGis::WKBPoint:
+            geomElem.setAttribute( "type", "gml:PointPropertyType" );
+            break;
+          case QGis::WKBLineString25D:
+          case QGis::WKBLineString:
+            geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+            break;
+          case QGis::WKBPolygon25D:
+          case QGis::WKBPolygon:
+            geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+            break;
+          case QGis::WKBMultiPoint25D:
+          case QGis::WKBMultiPoint:
+            geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+            break;
+          case QGis::WKBMultiLineString25D:
+          case QGis::WKBMultiLineString:
+            geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+            break;
+          case QGis::WKBMultiPolygon25D:
+          case QGis::WKBMultiPolygon:
+            geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+            break;
+          default:
+            geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+            break;
+        }
+        geomElem.setAttribute( "minOccurs", "0" );
+        geomElem.setAttribute( "maxOccurs", "1" );
+        sequenceElem.appendChild( geomElem );
+
+        const QgsFieldMap& fields = provider->fields();
+        for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+        {
+
+          QString attributeName = it.value().name();
+          //skip attribute if it has edit type 'hidden'
+          if ( layerHiddenAttributes.contains( attributeName ) )
+          {
+            continue;
+          }
+
+          //xsd:element
+          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+          geomElem.setAttribute( "name", attributeName );
+          if ( it.value().type() == 2 )
+            geomElem.setAttribute( "type", "integer" );
+          else if ( it.value().type() == 6 )
+            geomElem.setAttribute( "type", "double" );
+          else
+            geomElem.setAttribute( "type", "string" );
+
+          sequenceElem.appendChild( geomElem );
+
+          //check if the attribute name should be replaced with an alias
+          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
+          if ( aliasIt != layerAliasInfo.constEnd() )
+          {
+            geomElem.setAttribute( "alias", aliasIt.value() );
+          }
+        }
+      }
+    }
+  }
+  return;
+}
+
 void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,
                                   const QMap<QString, QgsMapLayer *> &layerMap,
-                                  const QStringList &nonIdentifiableLayers ) const
+                                  const QStringList &nonIdentifiableLayers,
+                                  QString version,
+                                  bool fullProjectSettings ) const
 {
   QDomNodeList legendChildren = legendElem.childNodes();
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
     QDomElement currentChildElem = legendChildren.at( i ).toElement();
-
     QDomElement layerElem = doc.createElement( "Layer" );
+    if ( fullProjectSettings )
+    {
+      layerElem.setAttribute( "visible", !( currentChildElem.attribute( "checked" ) == "Qt::Unchecked" ) );
+    }
+
 
     if ( currentChildElem.tagName() == "legendgroup" )
     {
@@ -262,12 +406,12 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
 
-          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled );
+          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, version, fullProjectSettings );
         }
       }
       else //normal (not embedded) legend group
       {
-        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers );
+        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
       }
 
       // combine bounding boxes of children (groups/layers)
@@ -343,6 +487,37 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       styleElem.appendChild( styleNameElem );
       styleElem.appendChild( styleTitleElem );
       layerElem.appendChild( styleElem );
+
+      //min/max scale denominatormScaleBasedVisibility
+      if ( currentLayer->hasScaleBasedVisibility() )
+      {
+        QString minScaleString = QString::number( currentLayer->minimumScale() );
+        QString maxScaleString = QString::number( currentLayer->maximumScale() );
+
+        if ( version == "1.3.0" )
+        {
+          QDomElement minScaleElem = doc.createElement( "MinScaleDenominator" );
+          QDomText minScaleText = doc.createTextNode( minScaleString );
+          minScaleElem.appendChild( minScaleText );
+          layerElem.appendChild( minScaleElem );
+          QDomElement maxScaleElem = doc.createElement( "MaxScaleDenominator" );
+          QDomText maxScaleText = doc.createTextNode( maxScaleString );
+          maxScaleElem.appendChild( maxScaleText );
+          layerElem.appendChild( maxScaleElem );
+        }
+        else if ( version == "1.1.1" )
+        {
+          QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
+          scaleHintElem.setAttribute( "min", minScaleString );
+          scaleHintElem.setAttribute( "max", maxScaleString );
+          layerElem.appendChild( scaleHintElem );
+        }
+      }
+
+      if ( fullProjectSettings )
+      {
+        addLayerProjectSettings( layerElem, doc, currentLayer );
+      }
     }
     else
     {
@@ -351,6 +526,86 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     }
 
     parentElem.appendChild( layerElem );
+  }
+}
+
+void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer )
+{
+  if ( !currentLayer )
+  {
+    return;
+  }
+
+  if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+  {
+    QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+
+    //displayfield
+    layerElem.setAttribute( "displayField", vLayer->displayField() );
+
+    //attributes
+    QDomElement attributesElem = doc.createElement( "Attributes" );
+    const QgsFieldMap& layerFields = vLayer->pendingFields();
+    QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
+    for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
+    {
+      QDomElement attributeElem = doc.createElement( "Attribute" );
+      attributeElem.setAttribute( "name", fieldIt->name() );
+      attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
+
+      //edit type to text
+      QgsVectorLayer::EditType typeEnum = vLayer->editType( fieldIt.key() );
+      attributeElem.setAttribute( "editType", editTypeString( typeEnum ) );
+      attributeElem.setAttribute( "comment", fieldIt->comment() );
+      attributeElem.setAttribute( "length", fieldIt->length() );
+      attributeElem.setAttribute( "precision", fieldIt->precision() );
+      attributesElem.appendChild( attributeElem );
+    }
+    layerElem.appendChild( attributesElem );
+  }
+}
+
+//not very nice, needs to be kept in sync with QgsVectorLayer class...
+QString QgsProjectParser::editTypeString( QgsVectorLayer::EditType type )
+{
+  switch ( type )
+  {
+    case QgsVectorLayer::LineEdit:
+      return "LineEdit";
+    case QgsVectorLayer::UniqueValues:
+      return "UniqueValues";
+    case QgsVectorLayer::UniqueValuesEditable:
+      return "UniqueValuesEditable";
+    case QgsVectorLayer::ValueMap:
+      return "ValueMap";
+    case QgsVectorLayer::Classification:
+      return "Classification";
+    case QgsVectorLayer::EditRange:
+      return "EditRange";
+    case QgsVectorLayer::SliderRange:
+      return "SliderRange";
+    case QgsVectorLayer::CheckBox:
+      return "CheckBox";
+    case QgsVectorLayer::FileName:
+      return "FileName";
+    case QgsVectorLayer::Enumeration:
+      return "Enumeration";
+    case QgsVectorLayer::Immutable:
+      return "Immutable";
+    case QgsVectorLayer::Hidden:
+      return "Hidden";
+    case QgsVectorLayer::TextEdit:
+      return "TextEdit";
+    case QgsVectorLayer::Calendar:
+      return "Calendar";
+    case QgsVectorLayer::DialRange:
+      return "DialRange";
+    case QgsVectorLayer::ValueRelation:
+      return "ValueRelation";
+    case QgsVectorLayer::UuidGenerator:
+      return "UuidGenerator";
+    default:
+      return "Unknown";
   }
 }
 
@@ -1192,9 +1447,6 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
   }
 
   QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
-  composerTemplatesElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
-  composerTemplatesElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  composerTemplatesElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
 
   for ( int i = 0; i < composerNodeList.size(); ++i )
   {
@@ -1430,6 +1682,32 @@ QString QgsProjectParser::serviceUrl() const
   return url;
 }
 
+QStringList QgsProjectParser::wfsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wfsIdList = wfsLayers();
+  QStringList::const_iterator wfsIdIt = wfsIdList.constBegin();
+  for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wfsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )
@@ -1631,4 +1909,65 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   //transform
   BBox = t.transformBoundingBox( BBox );
   return BBox;
+}
+
+void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
+{
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  //find legend section
+  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElement.isNull() )
+  {
+    return;
+  }
+
+  QStringList layerList;
+
+  bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
+  QDomNodeList layerNodeList = legendElement.elementsByTagName( "legendlayer" );
+  if ( !useDrawingOrder ) //bottom to top
+  {
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      layerList.prepend( layerNodeList.at( i ).toElement().attribute( "name" ) );
+    }
+  }
+  else
+  {
+    QMap<int, QString> orderedLayerNames;
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      QString layerName = layerNodeList.at( i ).toElement().attribute( "name" );
+      int order = layerNodeList.at( i ).toElement().attribute( "drawingOrder" ).toInt();
+      orderedLayerNames.insert( order, layerName );
+    }
+
+    QMap<int, QString>::const_iterator orderIt = orderedLayerNames.constBegin();
+    for ( ; orderIt != orderedLayerNames.constEnd(); ++orderIt )
+    {
+      layerList.prepend( *orderIt );
+    }
+  }
+  QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );
+  QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
+  layerDrawingOrderElem.appendChild( drawingOrderText );
+  parentElem.appendChild( layerDrawingOrderElem );
+}
+
+void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
+{
+  layerMap.clear();
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QgsMapLayer *layer = createLayerFromElement( elem );
+    if ( layer )
+    {
+      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+      layerMap.insert( layer->id(), layer );
+    }
+  }
 }

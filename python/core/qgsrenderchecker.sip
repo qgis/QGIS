@@ -10,6 +10,7 @@ class QgsRenderChecker
 
     QgsRenderChecker();
 
+    //! Destructor
     ~QgsRenderChecker();
 
     QString controlImagePath() const;
@@ -31,13 +32,10 @@ class QgsRenderChecker
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName );
-
     void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
-
     bool runTest( QString theTestName, unsigned int theMismatchCount = 0 );
 
     bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
 
     bool isKnownAnomaly( QString theDiffImageFile );
 };
-

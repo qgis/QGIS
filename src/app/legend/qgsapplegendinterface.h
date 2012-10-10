@@ -61,6 +61,13 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Check if a layer is visible
     bool isLayerVisible( QgsMapLayer * ml );
 
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type );
+    bool removeLegendLayerAction( QAction* action );
+
+    QgsMapLayer* currentLayer();
+    bool setCurrentLayer( QgsMapLayer *layer );
+
   public slots:
 
     //! Add a new group
@@ -94,7 +101,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Pointer to QgsLegend object
     QgsLegend *mLegend;
-		QTreeWidgetItem *getItem(int itemIndex);
+    QTreeWidgetItem *getItem( int itemIndex );
 };
 
 #endif //QGSLEGENDAPPIFACE_H

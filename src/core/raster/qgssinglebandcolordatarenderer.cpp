@@ -34,6 +34,10 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setInvertColor( mInvertColor );
+  renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
 
@@ -64,7 +68,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   void* rasterData = mInput->block( bandNo, extent, width, height );
   if ( ! rasterData )
   {
-    QgsDebugMsg("No raster data!" );
+    QgsDebugMsg( "No raster data!" );
     return 0;
   }
 

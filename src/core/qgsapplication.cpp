@@ -592,15 +592,18 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::showSettings()
 {
+  QString myEnvironmentVar( getenv( "QGIS_PREFIX_PATH" ) );
   QString myState = tr( "Application state:\n"
-                        "Prefix:\t\t%1\n"
-                        "Plugin Path:\t\t%2\n"
-                        "Package Data Path:\t%3\n"
-                        "Active Theme Name:\t%4\n"
-                        "Active Theme Path:\t%5\n"
-                        "Default Theme Path:\t%6\n"
-                        "SVG Search Paths:\t%7\n"
-                        "User DB Path:\t%8\n" )
+                        "QGIS_PREFIX_PATH env var:\t\t%1\n"
+                        "Prefix:\t\t%2\n"
+                        "Plugin Path:\t\t%3\n"
+                        "Package Data Path:\t%4\n"
+                        "Active Theme Name:\t%5\n"
+                        "Active Theme Path:\t%6\n"
+                        "Default Theme Path:\t%7\n"
+                        "SVG Search Paths:\t%8\n"
+                        "User DB Path:\t%9\n" )
+                    .arg( myEnvironmentVar )
                     .arg( prefixPath() )
                     .arg( pluginPath() )
                     .arg( pkgDataPath() )

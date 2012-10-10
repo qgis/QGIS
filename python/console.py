@@ -23,7 +23,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 from console_sci import PythonEdit
-from help import HelpDialog
+from console_help import HelpDialog
 
 import sys
 import os
@@ -34,14 +34,16 @@ def show_console():
   """ called from QGIS to open the console """
   global _console
   if _console is None:
-    _console = PythonConsole(iface.mainWindow())
+    parent = iface.mainWindow() if iface else None
+    _console = PythonConsole( parent )
     _console.show() # force show even if it was restored as hidden
   else:
     _console.setVisible(not _console.isVisible())
+
   # set focus to the edit box so the user can start typing
   if _console.isVisible():
     _console.activateWindow()
-    _console.edit.setFocus()
+    _console.setFocus()
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -70,10 +72,23 @@ class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
-        #self.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+        #self.setAllowedAreas(Qt.BottomDockWidgetArea) 
+
+        self.console = PythonConsoleWidget(self)
+        self.setWidget( self.console )
+
+        # try to restore position from stored main window state
+        if iface and not iface.mainWindow().restoreDockWidget(self):
+            iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+
+
+class PythonConsoleWidget(QWidget):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
         self.widgetButton = QWidget()
-        self.widgetEdit = QWidget()
 
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
@@ -90,21 +105,22 @@ class PythonConsole(QDockWidget):
         #self.toolBar.setObjectName(_fromUtf8("toolMappa"))
 
         self.b = QVBoxLayout(self.widgetButton)
-        self.e = QHBoxLayout(self.widgetEdit)
+        self.e = QHBoxLayout(self)
 
         self.e.setMargin(0)
         self.e.setSpacing(0)
         self.b.setMargin(0)
 
         ## Action for Clear button
+        clearBt = QCoreApplication.translate("PythonConsole", "Clear console")
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconClearConsole.png"))
+        self.clearButton.setIcon(QIcon(":/images/console/iconClearConsole.png"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
-        self.clearButton.setToolTip('Clear console')
-        self.clearButton.setText('Clear console')
+        self.clearButton.setToolTip(clearBt)
+        self.clearButton.setText(clearBt)
         ## Action for paste snippets code
 #        self.currentLayerButton = QAction(parent)
 #        self.currentLayerButton.setCheckable(False)
@@ -112,92 +128,148 @@ class PythonConsole(QDockWidget):
 #        self.currentLayerButton.setIcon(QIcon("icon/iconTempConsole.png"))
 #        self.currentLayerButton.setMenuRole(QAction.PreferencesRole)
 #        self.currentLayerButton.setIconVisibleInMenu(True)
+        ## Action menu for class
+        actionClassBt = QCoreApplication.translate("PythonConsole", "Import Class")
+        self.actionClass = QAction(parent)
+        self.actionClass.setCheckable(False)
+        self.actionClass.setEnabled(True)
+        self.actionClass.setIcon(QIcon(":/images/console/iconClassConsole.png"))
+        self.actionClass.setMenuRole(QAction.PreferencesRole)
+        self.actionClass.setIconVisibleInMenu(True)
+        self.actionClass.setToolTip(actionClassBt)
+        self.actionClass.setText(actionClassBt)
+        ## Action menu Open/Save script
+        actionScriptBt = QCoreApplication.translate("PythonConsole", "Manage Script")
+        self.actionScript = QAction(parent)
+        self.actionScript.setCheckable(False)
+        self.actionScript.setEnabled(True)
+        self.actionScript.setIcon(QIcon(":/images/console/iconScriptConsole.png"))
+        self.actionScript.setMenuRole(QAction.PreferencesRole)
+        self.actionScript.setIconVisibleInMenu(True)
+        self.actionScript.setToolTip(actionScriptBt)
+        self.actionScript.setText(actionScriptBt)
         ## Import Sextante class
+        loadSextanteBt = QCoreApplication.translate("PythonConsole", "Import Sextante class")
         self.loadSextanteButton = QAction(parent)
         self.loadSextanteButton.setCheckable(False)
         self.loadSextanteButton.setEnabled(True)
-        self.loadSextanteButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSextanteConsole.png"))
+        self.loadSextanteButton.setIcon(QIcon(":/images/console/iconSextanteConsole.png"))
         self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
         self.loadSextanteButton.setIconVisibleInMenu(True)
-        self.loadSextanteButton.setToolTip('Import sextante class')
-        self.loadSextanteButton.setText('Import sextante class')
+        self.loadSextanteButton.setToolTip(loadSextanteBt)
+        self.loadSextanteButton.setText(loadSextanteBt)
         ## Import QgisInterface class
+        loadIfaceBt = QCoreApplication.translate("PythonConsole", "Import QgisInterface class")
         self.loadIfaceButton = QAction(parent)
         self.loadIfaceButton.setCheckable(False)
         self.loadIfaceButton.setEnabled(True)
-        self.loadIfaceButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconTempConsole.png"))
+        self.loadIfaceButton.setIcon(QIcon(":/images/console/iconIfaceConsole.png"))
         self.loadIfaceButton.setMenuRole(QAction.PreferencesRole)
         self.loadIfaceButton.setIconVisibleInMenu(True)
-        self.loadIfaceButton.setToolTip('Import iface class')
-        self.loadIfaceButton.setText('Import iface class')
+        self.loadIfaceButton.setToolTip(loadIfaceBt)
+        self.loadIfaceButton.setText(loadIfaceBt)
+        ## Import QtCore class
+        loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore class")
+        self.loadQtCoreButton = QAction(parent)
+        self.loadQtCoreButton.setCheckable(False)
+        self.loadQtCoreButton.setEnabled(True)
+        self.loadQtCoreButton.setIcon(QIcon(":/images/console/iconQtCoreConsole.png"))
+        self.loadQtCoreButton.setMenuRole(QAction.PreferencesRole)
+        self.loadQtCoreButton.setIconVisibleInMenu(True)
+        self.loadQtCoreButton.setToolTip(loadQtCoreBt)
+        self.loadQtCoreButton.setText(loadQtCoreBt)
+        ## Import QtGui class
+        loadQtGuiBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtGui class")
+        self.loadQtGuiButton = QAction(parent)
+        self.loadQtGuiButton.setCheckable(False)
+        self.loadQtGuiButton.setEnabled(True)
+        self.loadQtGuiButton.setIcon(QIcon(":/images/console/iconQtGuiConsole.png"))
+        self.loadQtGuiButton.setMenuRole(QAction.PreferencesRole)
+        self.loadQtGuiButton.setIconVisibleInMenu(True)
+        self.loadQtGuiButton.setToolTip(loadQtGuiBt)
+        self.loadQtGuiButton.setText(loadQtGuiBt)
         ## Action for Open File
+        openFileBt = QCoreApplication.translate("PythonConsole", "Open script file")
         self.openFileButton = QAction(parent)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconOpenConsole.png"))
+        self.openFileButton.setIcon(QIcon(":/images/console/iconOpenConsole.png"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
-        self.openFileButton.setToolTip('Open script file')
-        self.openFileButton.setText('Open script file')
+        self.openFileButton.setToolTip(openFileBt)
+        self.openFileButton.setText(openFileBt)
         ## Action for Save File
+        saveFileBt = QCoreApplication.translate("PythonConsole", "Save to script file")
         self.saveFileButton = QAction(parent)
         self.saveFileButton.setCheckable(False)
         self.saveFileButton.setEnabled(True)
-        self.saveFileButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconSaveConsole.png"))
+        self.saveFileButton.setIcon(QIcon(":/images/console/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
-        self.saveFileButton.setToolTip('Save to script file')
-        self.saveFileButton.setText('Save to script file')
+        self.saveFileButton.setToolTip(saveFileBt)
+        self.saveFileButton.setText(saveFileBt)
         ## Action for Run script
+        runBt = QCoreApplication.translate("PythonConsole", "Run command")
         self.runButton = QAction(parent)
         self.runButton.setCheckable(False)
         self.runButton.setEnabled(True)
-        self.runButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconRunConsole.png"))
+        self.runButton.setIcon(QIcon(":/images/console/iconRunConsole.png"))
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
-        self.runButton.setToolTip('Run command')
-        self.runButton.setText('Run')
+        self.runButton.setToolTip(runBt)
+        self.runButton.setText(runBt)
         ## Help action
+        helpBt = QCoreApplication.translate("PythonConsole", "Help")
         self.helpButton = QAction(parent)
         self.helpButton.setCheckable(False)
         self.helpButton.setEnabled(True)
-        self.helpButton.setIcon(QIcon(os.path.dirname(__file__) + "/iconConsole/iconHelpConsole.png"))
+        self.helpButton.setIcon(QIcon(":/images/console/iconHelpConsole.png"))
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
-        self.helpButton.setToolTip('Help')
-        self.helpButton.setText('Help')
+        self.helpButton.setToolTip(helpBt)
+        self.helpButton.setText(helpBt)
 
         self.toolBar.addAction(self.clearButton)
-        #self.toolBar.addAction(self.currentLayerButton)
-        self.toolBar.addAction(self.loadIfaceButton)
-        self.toolBar.addAction(self.loadSextanteButton)
-        self.toolBar.addAction(self.openFileButton)
-        self.toolBar.addAction(self.saveFileButton)
+        self.toolBar.addAction(self.actionClass)
+        self.toolBar.addAction(self.actionScript)
         self.toolBar.addAction(self.helpButton)
         self.toolBar.addAction(self.runButton)
+        ## Menu Import Class
+        self.classMenu = QMenu(self)
+        self.classMenu.addAction(self.loadIfaceButton)
+        self.classMenu.addAction(self.loadSextanteButton)
+        self.classMenu.addAction(self.loadQtCoreButton)
+        self.classMenu.addAction(self.loadQtGuiButton)
+        cM = self.toolBar.widgetForAction(self.actionClass)
+        cM.setMenu(self.classMenu)
+        cM.setPopupMode(QToolButton.InstantPopup)
+        ## Menu Manage Script
+        self.scriptMenu = QMenu(self)
+        self.scriptMenu.addAction(self.openFileButton)
+        self.scriptMenu.addAction(self.saveFileButton)
+        sM = self.toolBar.widgetForAction(self.actionScript)
+        sM.setMenu(self.scriptMenu)
+        sM.setPopupMode(QToolButton.InstantPopup)
 
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit()
-
-        self.setWidget(self.widgetEdit)
+        self.setFocusProxy( self.edit )
 
         self.e.addWidget(self.widgetButton)
         self.e.addWidget(self.edit)
 
         self.edit.setFocus()
-
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+        
         self.clearButton.triggered.connect(self.edit.clearConsole)
         #self.currentLayerButton.triggered.connect(self.cLayer)
         self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
+        self.loadQtCoreButton.triggered.connect(self.qtCore)
+        self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.edit.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        # try to restore position from stored main window state
-        if not iface.mainWindow().restoreDockWidget(self):
-            iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
 
     def cLayer(self):
         self.edit.commandConsole('cLayer')
@@ -207,6 +279,12 @@ class PythonConsole(QDockWidget):
 
     def iface(self):
        self.edit.commandConsole('iface')
+       
+    def qtCore(self):
+       self.edit.commandConsole('qtCore')
+    
+    def qtGui(self):
+       self.edit.commandConsole('qtGui')
 
     def openScriptFile(self):
         settings = QSettings()
@@ -253,10 +331,12 @@ class PythonConsole(QDockWidget):
         dlg.exec_()
 
     def closeEvent(self, event):
+        self.edit.writeHistoryFile()
         QWidget.closeEvent(self, event)
 
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
-    show_console()
+    console = PythonConsoleWidget()
+    console.show()
     a.exec_()

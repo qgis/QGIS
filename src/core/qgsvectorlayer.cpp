@@ -398,17 +398,17 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   QPainter *p = renderContext.painter();
   unsigned char *ptr = feature + 5;
   unsigned int wkbType = *(( int* )( feature + 1 ) );
-  unsigned int nPoints = *(( int* )ptr );
+  int nPoints = *(( int* )ptr );
   ptr = feature + 9;
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
 
-  std::vector<double> x( nPoints );
-  std::vector<double> y( nPoints );
-  std::vector<double> z( nPoints, 0.0 );
+  QVector<double> x( nPoints );
+  QVector<double> y( nPoints );
+  QVector<double> z( nPoints, 0.0 );
 
   // Extract the points from the WKB format into the x and y vectors.
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
     x[i] = *(( double * ) ptr );
     ptr += sizeof( double );
@@ -428,10 +428,10 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
   // the rest of them so end the loop at that point.
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    if ( qAbs( x[i] ) > QgsClipper::MAX_X ||
-         qAbs( y[i] ) > QgsClipper::MAX_Y )
+    if ( qAbs( x.at( i ) ) > QgsClipper::MAX_X ||
+         qAbs( y.at( i ) ) > QgsClipper::MAX_Y )
     {
       QgsClipper::trimFeature( x, y, true ); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -441,10 +441,10 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
 
   // set up QPolygonF class with transformed points
   QPolygonF pa( nPoints );
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    pa[i].setX( x[i] );
-    pa[i].setY( y[i] );
+    pa[i].setX( x.at( i ) );
+    pa[i].setY( y.at( i ) );
   }
 
   // The default pen gives bevelled joins between segements of the
@@ -472,8 +472,8 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   if ( mEditable && renderContext.drawEditingInformation() )
   {
 
-    std::vector<double>::const_iterator xIt;
-    std::vector<double>::const_iterator yIt;
+    QVector<double>::const_iterator xIt;
+    QVector<double>::const_iterator yIt;
     for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
     {
       drawVertexMarker( *xIt, *yIt, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
@@ -489,9 +489,9 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
 unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderContext &renderContext )
 {
   QPainter *p = renderContext.painter();
-  typedef std::pair<std::vector<double>, std::vector<double> > ringType;
+  typedef QPair<QVector<double>, QVector<double> > ringType;
   typedef ringType* ringTypePtr;
-  typedef std::vector<ringTypePtr> ringsType;
+  typedef QVector<ringTypePtr> ringsType;
 
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
@@ -515,16 +515,16 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
   for ( register unsigned int idx = 0; idx < numRings; idx++ )
   {
-    unsigned int nPoints = *(( int* )ptr );
+    int nPoints = *(( int* )ptr );
 
-    ringTypePtr ring = new ringType( std::vector<double>( nPoints ), std::vector<double>( nPoints ) );
+    ringTypePtr ring = new ringType( QVector<double>( nPoints ), QVector<double>( nPoints ) );
     ptr += 4;
 
     // create a dummy vector for the z coordinate
-    std::vector<double> zVector( nPoints, 0.0 );
+    QVector<double> zVector( nPoints, 0.0 );
     // Extract the points from the WKB and store in a pair of
     // vectors.
-    for ( register unsigned int jdx = 0; jdx < nPoints; jdx++ )
+    for ( int jdx = 0; jdx < nPoints; jdx++ )
     {
       ring->first[jdx] = *(( double * ) ptr );
       ptr += sizeof( double );
@@ -548,7 +548,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point.
-    for ( register unsigned int i = 0; i < nPoints; ++i )
+    for ( int i = 0; i < nPoints; ++i )
     {
       if ( qAbs( ring->first[i] ) > QgsClipper::MAX_X ||
            qAbs( ring->second[i] ) > QgsClipper::MAX_Y )
@@ -2489,7 +2489,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   return returnCode;
 }
 
-int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
+int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures )
 {
   if ( !hasGeometryType() )
     return 1;
@@ -2511,6 +2511,11 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
   QgsFeature f;
   while ( nextFeature( f ) )
   {
+    if ( ignoreFeatures.contains( f.id() ) )
+    {
+      continue;
+    }
+
     //call geometry->makeDifference for each feature
     QgsGeometry *currentGeom = f.geometry();
     if ( currentGeom )
@@ -4590,7 +4595,7 @@ inline void QgsVectorLayer::transformPoint(
 }
 
 inline void QgsVectorLayer::transformPoints(
-  std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
+  QVector<double>& x, QVector<double>& y, QVector<double>& z,
   QgsRenderContext &renderContext )
 {
   // transform the point

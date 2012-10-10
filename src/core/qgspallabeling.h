@@ -4,7 +4,7 @@
   -------------------
          begin                : June 2009
          copyright            : (C) Martin Dobias
-         email                : wonder.sk at gmail.com
+         email                : wonder dot sk at gmail dot com
 
  ***************************************************************************
  *                                                                         *
@@ -79,6 +79,13 @@ class CORE_EXPORT QgsPalLayerSettings
       AboveLine = 2,
       BelowLine = 4,
       MapOrientation = 8
+    };
+
+    enum UpsideDownLabels
+    {
+      Upright, // upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, // show upside down when rotation is layer- or data-defined
+      ShowAll // show upside down for all labels, including dynamic ones
     };
 
     // increment iterator in _writeDataDefinedPropertyMap() when adding more
@@ -159,6 +166,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
@@ -179,6 +187,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void removeDataDefinedProperty( DataDefinedProperties p );
 
     /**Stores field indices for data defined layer properties*/
+    //! @note not available in python bindings
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
@@ -268,15 +277,13 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
 
+    //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
+    //! @note not available in python bindings
     void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
                     const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
-
-  protected:
-
-    void initPal();
 
   protected:
     // hashtable of layer settings, being filled during labeling

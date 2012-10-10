@@ -412,7 +412,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
 
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
-    mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
+    //mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
     mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000

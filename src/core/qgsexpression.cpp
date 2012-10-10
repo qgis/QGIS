@@ -799,6 +799,19 @@ static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExp
   return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 
+static QVariant fcnFormatDate( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QDateTime dt = getDateTimeValue( values.at( 0 ), parent );
+  QString format = getStringValue( values.at( 1 ), parent );  
+  return dt.toString( format );
+}
+
+static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
+{
+  QString varName = getStringValue( values.at( 0 ), parent );
+  return QgsExpression::specialColumn( varName );
+}
+
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
 const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
@@ -855,6 +868,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
     << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
     << FunctionDef( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
+    << FunctionDef( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
 
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
@@ -868,12 +882,61 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
     << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
+      // private functions
+    << FunctionDef( "_specialcol_", 1, fcnSpecialColumn, QObject::tr( "Special" ) )
     ;
   }
 
   return gmBuiltinFunctions;
 }
 
+QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
+
+void QgsExpression::setSpecialColumn( const QString& name, QVariant variant )
+{
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    // function of the same name already exists
+    return;
+  }
+  gmSpecialColumns[ name ] = variant;
+}
+
+void QgsExpression::unsetSpecialColumn( const QString& name )
+{
+  QMap<QString, QVariant>::iterator fit = gmSpecialColumns.find( name );
+  if ( fit != gmSpecialColumns.end() )
+  {
+    gmSpecialColumns.erase( fit );
+  }
+}
+
+QVariant QgsExpression::specialColumn( const QString& name )
+{
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    // function of the same name already exists
+    return QVariant();
+  }
+  QMap<QString, QVariant>::iterator it = gmSpecialColumns.find( name );
+  if ( it == gmSpecialColumns.end() )
+  {
+    return QVariant();
+  }
+  return it.value();
+}
+
+QList<QgsExpression::FunctionDef> QgsExpression::specialColumns()
+{
+  QList<FunctionDef> defs;
+  for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
+  {
+    defs << FunctionDef( it.key(), 0, 0, QObject::tr( "Record" ));
+  }
+  return defs;
+}
 
 bool QgsExpression::isFunctionName( QString name )
 {
@@ -1049,11 +1112,26 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
+QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
     QgsVectorLayer* layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
   QString expr_action;
+
+  QMap<QString, QVariant> savedValues;
+  if ( substitutionMap )
+  {
+    // variables with a local scope (must be restored after evaluation)
+    for ( QMap<QString, QVariant>::const_iterator sit = substitutionMap->begin(); sit != substitutionMap->end(); ++sit )
+    {
+      QVariant oldValue = QgsExpression::specialColumn( sit.key() );
+      if ( !oldValue.isNull() )
+	savedValues.insert( sit.key(), oldValue );
+
+      // set the new value
+      QgsExpression::setSpecialColumn( sit.key(), sit.value() );
+    }
+  }
 
   int index = 0;
   while ( index < action.size() )
@@ -1070,12 +1148,6 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
     QString to_replace = rx.cap( 1 ).trimmed();
     QgsDebugMsg( "Found expression: " + to_replace );
 
-    if ( substitutionMap && substitutionMap->contains( to_replace ) )
-    {
-      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
-      continue;
-    }
-
     QgsExpression exp( to_replace );
     if ( exp.hasParserError() )
     {
@@ -1084,7 +1156,15 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
       continue;
     }
 
-    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
+    QVariant result;
+    if ( layer )
+    {
+      result = exp.evaluate( feat, layer->pendingFields() );
+    }
+    else
+    {
+      result = exp.evaluate( feat );
+    }
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
@@ -1097,9 +1177,23 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
   }
 
   expr_action += action.mid( index );
+
+  // restore overwritten local values
+  for ( QMap<QString, QVariant>::const_iterator sit = savedValues.begin(); sit != savedValues.end(); ++sit )
+  {
+    QgsExpression::setSpecialColumn( sit.key(), sit.value() );
+  }
+
   return expr_action;
 }
 
+
+QString QgsExpression::replaceExpressionText( QString action, QgsFeature& feat,
+    QgsVectorLayer* layer,
+    const QMap<QString, QVariant> *substitutionMap )
+{
+  return replaceExpressionText( action, &feat, layer, substitutionMap );
+}
 
 QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
@@ -2048,7 +2142,11 @@ QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElemen
 
 QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeature* f )
 {
-  return f->attributeMap()[mIndex];
+  if ( f )
+  {
+    return f->attributeMap()[mIndex];
+  }
+  return QVariant("[" + mName + "]");
 }
 
 bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFieldMap& fields )

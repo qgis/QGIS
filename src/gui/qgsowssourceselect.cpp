@@ -73,11 +73,16 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
 
+  clearCRS();
+
   mTileWidthLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
 
-  mImageFormatGroup = new QButtonGroup;
+  mCacheComboBox->addItem( tr( "Always cache" ), QNetworkRequest::AlwaysCache );
+  mCacheComboBox->addItem( tr( "Prefer cache" ), QNetworkRequest::PreferCache );
+  mCacheComboBox->addItem( tr( "Prefer network" ), QNetworkRequest::PreferNetwork );
+  mCacheComboBox->addItem( tr( "Always network" ), QNetworkRequest::AlwaysNetwork );
 
   if ( !mManagerMode )
   {
@@ -98,11 +103,11 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
   {
     mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
     mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
-    mImageFormatsGroupBox->hide();
-    mLayersTab->layout()->removeWidget( mImageFormatsGroupBox );
-    mCRSGroupBox->hide();
-    mLayersTab->layout()->removeWidget( mCRSGroupBox );
+    mTimeWidget->hide();
+    mFormatWidget->hide();
+    mCRSWidget->hide();
     mAddButton->hide();
+    mCacheWidget->hide();
   }
 
   // set up the WMS connections we already know about
@@ -122,11 +127,8 @@ QgsOWSSourceSelect::~QgsOWSSourceSelect()
 
 void QgsOWSSourceSelect::clearFormats()
 {
-  int i = 0;
-  while ( QRadioButton *btn = dynamic_cast<QRadioButton*>( mImageFormatGroup->button( i++ ) ) )
-  {
-    btn->setVisible( false );
-  }
+  mFormatComboBox->clear();
+  mFormatComboBox->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::populateFormats()
@@ -138,14 +140,6 @@ void QgsOWSSourceSelect::populateFormats()
   // -> recreate always buttons for all available formats, enable supported
 
   clearFormats();
-
-  QHBoxLayout *layout = dynamic_cast<QHBoxLayout*>( mImageFormatsGroupBox->layout() );
-  if ( !layout )
-  {
-    layout = new QHBoxLayout;
-    mImageFormatsGroupBox->setLayout( layout );
-    layout->addStretch();
-  }
 
   if ( mProviderFormats.size() == 0 )
   {
@@ -178,7 +172,6 @@ void QgsOWSSourceSelect::populateFormats()
   formatsMap.insert( "png", "png" );
 
   int preferred = -1;
-  int firstEnabled = -1;
   QStringList layersFormats = selectedLayersFormats();
   for ( int i = 0; i < layersFormats.size(); i++ )
   {
@@ -190,27 +183,15 @@ void QgsOWSSourceSelect::populateFormats()
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );
 
     QString label = format;
-    QString tip = tr( "Server format" ) + " " + format;
-
-    QRadioButton *btn;
-    btn = dynamic_cast<QRadioButton*>( mImageFormatGroup->button( i ) );
-    if ( !btn )
-    {
-      btn = new QRadioButton( label );
-      mImageFormatGroup->addButton( btn, i );
-      layout->insertWidget( layout->count() - 1, btn ); // before stretch
-    }
-    btn->setVisible( true );
 
     if ( mMimeLabelMap.contains( mimeFormat ) )
     {
-      btn->setEnabled( true );
       if ( format != mMimeLabelMap.value( mimeFormat ) )
       {
+        // Append name of GDAL driver
         label += " / " + mMimeLabelMap.value( mimeFormat );
       }
-      tip += " " + tr( "is supported by GDAL %1 driver." ).arg( mMimeLabelMap.value( mimeFormat ) );
-      if ( firstEnabled < 0 ) { firstEnabled = i; }
+
       if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
       {
         if ( preferred < 0 || simpleFormat.startsWith( "g" ) ) // prefer geotiff
@@ -221,24 +202,19 @@ void QgsOWSSourceSelect::populateFormats()
     }
     else
     {
-      QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
-      //btn->setEnabled( false );
-      btn->setEnabled( true );
-      if ( firstEnabled < 0 ) { firstEnabled = i; }
-      tip += " " + tr( "is not supported by GDAL" );
+      // We cannot always say that the format is not supported by GDAL because
+      // server can use strange names, but format itself is supported
+      QgsDebugMsg( QString( "format %1 unknown" ).arg( format ) );
     }
-    btn->setText( label );
-    btn->setToolTip( tip );
+
+    mFormatComboBox->insertItem( i, label );
   }
   // Set preferred
   // TODO: all enabled for now, see above
-  preferred = preferred >= 0 ? preferred : firstEnabled;
-  if ( preferred >= 0 )
-  {
-    mImageFormatGroup->button( preferred )->setChecked( true );
-  }
+  preferred = preferred >= 0 ? preferred : 0;
+  mFormatComboBox->setCurrentIndex( preferred );
 
-  mImageFormatsGroupBox->setEnabled( true );
+  mFormatComboBox->setEnabled( true );
 }
 
 void QgsOWSSourceSelect::populateTimes()
@@ -247,6 +223,12 @@ void QgsOWSSourceSelect::populateTimes()
   mTimeComboBox->clear();
   mTimeComboBox->insertItems( 0, selectedLayersTimes() );
   mTimeComboBox->setEnabled( !selectedLayersTimes().isEmpty() );
+}
+
+void QgsOWSSourceSelect::clearTimes()
+{
+  mTimeComboBox->clear();
+  mTimeComboBox->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::populateConnectionList()
@@ -376,6 +358,8 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
 
   mLayersTreeWidget->clear();
   clearFormats();
+  clearTimes();
+  clearCRS();
 
   mConnName = mConnectionsComboBox->currentText();
 
@@ -445,8 +429,9 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::populateCRS()
 {
   QgsDebugMsg( "Entered" );
+  clearCRS();
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
-  mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) );
+  mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ":" );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
 
@@ -476,14 +461,17 @@ void QgsOWSSourceSelect::populateCRS()
       mSelectedCRS = defaultCRS;
     }
     mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
-  }
-  else
-  {
-    mSelectedCRS = "";
-    mSelectedCRSLabel->setText( "" );
+    mChangeCRSButton->setEnabled( true );
   }
   QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
-  mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() );
+}
+
+void QgsOWSSourceSelect::clearCRS()
+{
+  mCRSLabel->setText( tr( "Coordinate Reference System" ) + ":" );
+  mSelectedCRS = "";
+  mSelectedCRSLabel->setText( "" );
+  mChangeCRSButton->setEnabled( false );
 }
 
 void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
@@ -524,18 +512,13 @@ QString QgsOWSSourceSelect::connectionInfo()
 
 QString QgsOWSSourceSelect::selectedFormat()
 {
-  // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
-  int id = mImageFormatGroup->checkedId();
-  if ( id < 0 )
-  {
-    return "";
-  }
-  else
-  {
-    // TODO: do format in subclass (WMS)
-    //return QUrl::toPercentEncoding( mProviderFormats[ id ].format );
-    return selectedLayersFormats().value( id );
-  }
+  return selectedLayersFormats().value( mFormatComboBox->currentIndex() );
+}
+
+QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
+{
+  int cache = mCacheComboBox->itemData( mCacheComboBox->currentIndex() ).toInt();
+  return static_cast<QNetworkRequest::CacheLoadControl>( cache );
 }
 
 QString QgsOWSSourceSelect::selectedCRS()
@@ -803,9 +786,9 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
   selectedItem->setSelected( true );
 }
 
-QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats()
+QList<QgsOWSSourceSelect::SupportedFormat> QgsOWSSourceSelect::providerFormats()
 {
-  return QList<QgsOWSSupportedFormat>();
+  return QList<SupportedFormat>();
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersFormats()

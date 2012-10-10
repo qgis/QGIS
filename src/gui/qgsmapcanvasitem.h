@@ -54,7 +54,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     @note added in version 1.5*/
     bool setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const;
 
-
   public:
 
     //! called on changed extent or resize event to update position of the item

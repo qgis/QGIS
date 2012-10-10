@@ -54,9 +54,11 @@ class QgsSLDParser: public QgsConfigParser
     virtual ~QgsSLDParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
 
-    void featureTypeList( QDomElement &, QDomDocument & ) const {};
+    void featureTypeList( QDomElement &, QDomDocument & ) const {}
+
+    void describeFeatureType( const QString& , QDomElement& , QDomDocument& ) const {}
 
     /**Returns number of layers in configuration*/
     int numberOfLayers() const;

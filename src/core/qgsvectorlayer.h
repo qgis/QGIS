@@ -442,9 +442,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Changes the specified geometry such that it has no intersections with other
      *  polygon (or multipolygon) geometries in this vector layer
      *  @param geom geometry to modify
+     *  @param ignoreFeatures list of feature ids where intersections should be ignored
      *  @return 0 in case of success
      */
-    int removePolygonIntersections( QgsGeometry* geom );
+    int removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures = QgsFeatureIds() );
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -807,7 +808,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void transformPoint( double& x, double& y,
                          const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
 
-    void transformPoints( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, QgsRenderContext &renderContext );
+    void transformPoints( QVector<double>& x, QVector<double>& y, QVector<double>& z, QgsRenderContext &renderContext );
 
     /** Draw the linestring as given in the WKB format. Returns a pointer
      * to the byte after the end of the line string binary data stream (WKB).

@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -437,29 +437,71 @@
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <layout class="QHBoxLayout" name="horizontalLayout_27">
                 <item>
-                 <widget class="QLabel" name="label_20">
+                 <widget class="QLabel" name="label_43">
                   <property name="text">
-                   <string>Menu size</string>
+                   <string>Font</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_9">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QRadioButton" name="mFontFamilyRadioQt">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
+                  <property name="text">
+                   <string>Qt default</string>
                   </property>
-                 </spacer>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="mFontFamilyRadioCustom">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFontComboBox" name="mFontFamilyComboBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_20">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Size</string>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QSpinBox" name="spinFontSize">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimum">
                    <number>4</number>
                   </property>
@@ -2993,8 +3035,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>194</x>
-     <y>465</y>
+     <x>200</x>
+     <y>669</y>
     </hint>
     <hint type="destinationlabel">
      <x>730</x>
@@ -3009,12 +3051,28 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>194</x>
-     <y>465</y>
+     <x>200</x>
+     <y>669</y>
     </hint>
     <hint type="destinationlabel">
      <x>731</x>
      <y>353</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mFontFamilyRadioCustom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mFontFamilyComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>450</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>518</x>
+     <y>508</y>
     </hint>
    </hints>
   </connection>

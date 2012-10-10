@@ -66,11 +66,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QGis::UnitType myUnit = myRenderer->mapUnits();
   setMapUnits( myUnit );
 
+  // we need to initialize it, since the on_cbxProjectionEnabled_stateChanged()
+  // callback triggered by setChecked() might use it.
+  mProjectSrsId = myRenderer->destinationCrs().srsid();
+
   //see if the user wants on the fly projection enabled
   bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
-  mProjectSrsId = myRenderer->destinationCrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
   projectionSelector->setEnabled( myProjectionEnabled );
@@ -742,6 +745,24 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
+}
+
+void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( true );
+  }
+}
+
+void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( false );
+  }
 }
 
 void QgsProjectProperties::on_pbnAddScale_clicked()

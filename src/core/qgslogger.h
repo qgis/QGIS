@@ -67,9 +67,11 @@ class CORE_EXPORT QgsLogger
     static void debug( const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
     /**Similar to the previous method, but prints a variable double-value pair*/
+    // @note not available in python bindings
     static void debug( const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
     /**Prints out a variable/value pair for types with overloaded operator<<*/
+    // @note not available in python bindings
     template <typename T> static void debug( const QString& var, T val, const char* file = 0, const char* function = 0,
         int line = -1, int debuglevel = 1 )
     {

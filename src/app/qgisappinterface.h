@@ -50,6 +50,18 @@ class QgisAppInterface : public QgisInterface
     QgsLegendInterface* legendInterface();
 
     /* Exposed functions */
+    /** Set the app font size
+     * @param fontSize point size of font
+     * @note added in 2.0
+     */
+    void setFontSize( int fontSize );
+
+    /** Set the app font family
+     * @param fontFamily family of font (not including any style)
+     * @note added in 2.0
+     */
+    void setFontFamily( QString fontFamily );
+
     //! Zoom map to full extent
     void zoomFull();
     //! Zoom map to previous extent

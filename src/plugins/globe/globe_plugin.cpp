@@ -19,6 +19,7 @@
 #include "globe_plugin.h"
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
+#include "osgEarthQt/ViewerWidget"
 
 #include <cmath>
 
@@ -53,11 +54,10 @@
 #include <osgEarth/TileSource>
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
-#include "WorldWindOptions"
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
-using namespace osgEarth::Util::Controls;
+using namespace osgEarth::Util::Controls21;
 
 #define MOVE_OFFSET 0.05
 
@@ -74,7 +74,8 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mQGisIface( theQgisInterface )
     , mQActionPointer( NULL )
     , mQActionSettingsPointer( NULL )
-    , viewer()
+    , mOsgViewer( 0 )
+    , mViewerWidget( 0 )
     , mQgisMapLayer( 0 )
     , mTileSource( 0 )
     , mElevationManager( NULL )
@@ -94,8 +95,7 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
 #endif
 #endif
 
-  mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
-  mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );
+  mSettingsDialog = new QgsGlobePluginDialog( theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
 }
 
 //destructor
@@ -165,7 +165,7 @@ struct RefreshControlHandler : public ControlEventHandler
   RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
   virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
   {
-    mGlobe->layersChanged();
+    mGlobe->imageLayersChanged();
   }
 private:
   GlobePlugin* mGlobe;
@@ -199,78 +199,105 @@ void GlobePlugin::initGui()
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
-  mQDockWidget->setWidget( &viewer );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
-           this, SLOT( layersChanged() ) );
+           this, SLOT( imageLayersChanged() ) );
   connect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
-           this, SLOT( layersChanged() ) );
+           this, SLOT( elevationLayersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
-  connect( mQDockWidget, SIGNAL( globeClosed() ), this,
-           SLOT( setGlobeNotRunning() ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
            mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
 }
 
 void GlobePlugin::run()
 {
+  if ( mViewerWidget == 0 )
+  {
 #ifdef QGISDEBUG
-  if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
+    if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
 
-  mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mQDockWidget );
+    mOsgViewer = new osgViewer::Viewer();
 
-  viewer.show();
+    // install the programmable manipulator.
+    osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
+    mOsgViewer->setCameraManipulator( manip );
+
+    mIsGlobeRunning = true;
+    setupProxy();
+
+    if ( getenv( "MAPXML" ) )
+    {
+      char* mapxml = getenv( "MAPXML" );
+      QgsDebugMsg( mapxml );
+      osg::Node* node = osgDB::readNodeFile( mapxml );
+      if ( !node )
+      {
+        QgsDebugMsg( "Failed to load earth file " );
+        return;
+      }
+      mMapNode = MapNode::findMapNode( node );
+      mRootNode = new osg::Group();
+      mRootNode->addChild( node );
+    }
+    else
+    {
+      setupMap();
+    }
+
+    // create a surface to house the controls
+    mControlCanvas = ControlCanvas::get( mOsgViewer );
+    mRootNode->addChild( mControlCanvas );
+
+    mOsgViewer->setSceneData( mRootNode );
+
+    mOsgViewer->setThreadingModel( osgViewer::Viewer::SingleThreaded );
+
+    mOsgViewer->addEventHandler( new osgViewer::StatsHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::WindowSizeHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::ThreadingHandler() );
+    mOsgViewer->addEventHandler( new osgViewer::LODScaleHandler() );
+    mOsgViewer->addEventHandler( new osgGA::StateSetManipulator( mOsgViewer->getCamera()->getOrCreateStateSet() ) );
+    // add a handler that will automatically calculate good clipping planes
+    //mOsgViewer->addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
+    // osgEarth benefits from pre-compilation of GL objects in the pager. In newer versions of
+    // OSG, this activates OSG's IncrementalCompileOpeartion in order to avoid frame breaks.
+    mOsgViewer->getDatabasePager()->setDoPreCompile( true );
+
+    mSettingsDialog->setViewer( mOsgViewer );
 
 #ifdef GLOBE_OSG_STANDALONE_VIEWER
-  osgViewer::Viewer viewer;
+    mOsgViewer->run();
 #endif
 
-  mIsGlobeRunning = true;
-  setupProxy();
+    mViewerWidget = new osgEarth::QtGui::ViewerWidget( mOsgViewer );
+    mViewerWidget->setGeometry( 100, 100, 1024, 800 );
+    mViewerWidget->show();
 
-  // install the programmable manipulator.
-  osgEarth::Util::EarthManipulator* manip = new osgEarth::Util::EarthManipulator();
-  viewer.setCameraManipulator( manip );
-  // add a handler that will automatically calculate good clipping planes
-  //viewer.addEventHandler( new osgEarth::Util::AutoClipPlaneHandler() );
+    // Set a home viewpoint
+    manip->setHomeViewpoint(
+      osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
+      1.0 );
 
-  setupMap();
+    setupControls();
 
-  viewer.setSceneData( mRootNode );
+    // add our handlers
+    mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
+    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
 
-  // Set a home viewpoint
-  manip->setHomeViewpoint(
-    osgEarth::Util::Viewpoint( osg::Vec3d( -90, 0, 0 ), 0.0, -90.0, 4e7 ),
-    1.0 );
-
-  // create a surface to house the controls
-  mControlCanvas = new ControlCanvas( &viewer );
-  mRootNode->addChild( mControlCanvas );
-  setupControls();
-
-  // add our handlers
-  viewer.addEventHandler( new FlyToExtentHandler( this ) );
-  viewer.addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
-
-  viewer.addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
-                          mMapNode->getMap()->getProfile()->getSRS() )
-                        );
-
-  // add some stock OSG handlers:
-  viewer.addEventHandler( new osgViewer::StatsHandler() );
-  viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
-  viewer.addEventHandler( new osgGA::StateSetManipulator( viewer.getCamera()->getOrCreateStateSet() ) );
-
-#ifdef GLOBE_OSG_STANDALONE_VIEWER
-  viewer.run();
-#endif
-
+    mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
+                                 mMapNode->getMap()->getProfile()->getSRS() )
+                               );
+  }
+  else
+  {
+    mViewerWidget->show();
+  }
 }
 
 void GlobePlugin::settings()
@@ -294,11 +321,16 @@ void GlobePlugin::setupMap()
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
+  /*
   GDALOptions driverOptions;
   driverOptions.url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
   ImageLayerOptions layerOptions( "world", driverOptions );
   layerOptions.cacheEnabled() = false;
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
+  */
+  TMSOptions imagery;
+  imagery.url() = "http://readymap.org/readymap/tiles/1.0.0/7/";
+  map->addImageLayer( new ImageLayer( "Imagery", imagery ) );
 
   MapNodeOptions nodeOptions;
   //nodeOptions.proxySettings() =
@@ -308,22 +340,18 @@ void GlobePlugin::setupMap()
   TerrainOptions terrainOptions;
   //terrainOptions.loadingPolicy() = loadingPolicy;
   terrainOptions.compositingTechnique() = TerrainOptions::COMPOSITING_MULTITEXTURE_FFP;
+  //terrainOptions.lodFallOff() = 6.0;
   nodeOptions.setTerrainOptions( terrainOptions );
 
   // The MapNode will render the Map object in the scene graph.
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
 
-  //prefill cache
-  if ( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
-  {
-    copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
-  }
-
   mRootNode = new osg::Group();
   mRootNode->addChild( mMapNode );
 
   // Add layers to the map
-  layersChanged();
+  imageLayersChanged();
+  elevationLayersChanged();
 
   // model placement utils
   mElevationManager = new osgEarth::Util::ElevationManager( mMapNode->getMap() );
@@ -360,8 +388,7 @@ void GlobePlugin::projectReady()
 
 void GlobePlugin::blankProjectReady()
 { //needs at least http://trac.osgeo.org/qgis/changeset/14452
-  mSettingsDialog->elevationDatasources()->clearContents();
-  mSettingsDialog->elevationDatasources()->setRowCount( 0 );
+  mSettingsDialog->resetElevationDatasources();
 }
 
 void GlobePlugin::showCurrentCoordinates( double lon, double lat )
@@ -415,7 +442,7 @@ double GlobePlugin::getSelectedElevation()
 
 void GlobePlugin::syncExtent()
 {
-  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( viewer.getCameraManipulator() );
+  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
@@ -423,6 +450,7 @@ void GlobePlugin::syncExtent()
   QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
   dist.setEllipsoidalMode( true );
+  //dist.setProjectionsEnabled( true );
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );
@@ -459,7 +487,7 @@ void GlobePlugin::setupControls()
   moveHControls->setPosition( 5, 30 );
   moveHControls->setPadding( 6 );
 
-  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( viewer.getCameraManipulator() );
+  osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //Move Left
   osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
   ImageControl* moveLeft = new NavigationControl( moveLeftImg );
@@ -650,7 +678,6 @@ void GlobePlugin::setupControls()
   mControlCanvas->addControl( rotateControls );
   mControlCanvas->addControl( zoomControls );
   mControlCanvas->addControl( extraControls );
-
 }
 
 void GlobePlugin::setupProxy()
@@ -682,16 +709,52 @@ void GlobePlugin::extentsChanged()
   QgsDebugMsg( "extentsChanged: " + mQGisIface->mapCanvas()->extent().toString() );
 }
 
-void GlobePlugin::layersChanged()
+void GlobePlugin::imageLayersChanged()
 {
   if ( mIsGlobeRunning )
   {
-    QgsDebugMsg( "layersChanged: Globe Running, executing" );
+    QgsDebugMsg( "imageLayersChanged: Globe Running, executing" );
     osg::ref_ptr<Map> map = mMapNode->getMap();
 
-    if ( map->getNumImageLayers() > 1 || map->getNumElevationLayers() > 1 )
+    if ( map->getNumImageLayers() > 1 )
     {
-      viewer.getDatabasePager()->clear();
+      mOsgViewer->getDatabasePager()->clear();
+    }
+
+    //remove QGIS layer
+    if ( mQgisMapLayer )
+    {
+      QgsDebugMsg( "removeMapLayer" );
+      map->removeImageLayer( mQgisMapLayer );
+    }
+
+    //add QGIS layer
+    QgsDebugMsg( "addMapLayer" );
+    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
+    mTileSource->initialize( "", 0 );
+    ImageLayerOptions options( "QGIS" );
+    mQgisMapLayer = new ImageLayer( options, mTileSource );
+    map->addImageLayer( mQgisMapLayer );
+    mQgisMapLayer->setCache( 0 ); //disable caching
+  }
+  else
+  {
+    QgsDebugMsg( "layersChanged: Globe NOT running, skipping" );
+    return;
+  }
+}
+
+
+void GlobePlugin::elevationLayersChanged()
+{
+  if ( mIsGlobeRunning )
+  {
+    QgsDebugMsg( "elevationLayersChanged: Globe Running, executing" );
+    osg::ref_ptr<Map> map = mMapNode->getMap();
+
+    if ( map->getNumElevationLayers() > 1 )
+    {
+      mOsgViewer->getDatabasePager()->clear();
     }
 
     // Remove elevation layers
@@ -719,15 +782,6 @@ void GlobePlugin::layersChanged()
         options.url() = uri.toStdString();
         layer = new osgEarth::ElevationLayer( uri.toStdString(), options );
       }
-      else if ( "Worldwind" == type )
-      {
-        WorldWindOptions options;
-        options.elevationCachePath() = cacheDirectory.toStdString() + "/globe/worldwind_srtm";
-        layer = new osgEarth::ElevationLayer( "WorldWind bil", options );
-        TerrainEngineNode* terrainEngineNode = mMapNode->getTerrainEngine();
-        terrainEngineNode->setVerticalScale( 2 );
-        terrainEngineNode->setElevationSamplingRatio( 0.25 );
-      }
       else if ( "TMS" == type )
       {
         TMSOptions options;
@@ -738,22 +792,6 @@ void GlobePlugin::layersChanged()
 
       if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
-
-    //remove QGIS layer
-    if ( mQgisMapLayer )
-    {
-      QgsDebugMsg( "removeMapLayer" );
-      map->removeImageLayer( mQgisMapLayer );
-    }
-
-    //add QGIS layer
-    QgsDebugMsg( "addMapLayer" );
-    mTileSource = new QgsOsgEarthTileSource( mQGisIface );
-    mTileSource->initialize( "", 0 );
-    ImageLayerOptions options( "QGIS" );
-    mQgisMapLayer = new ImageLayer( options, mTileSource );
-    map->addImageLayer( mQgisMapLayer );
-    mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
@@ -848,7 +886,8 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
       _mouse_down_event = NULL;
       break;
     default:
-      /* ignore */;
+      /* ignore */
+      ;
   }
   if ( _mouse_down_event )
   {

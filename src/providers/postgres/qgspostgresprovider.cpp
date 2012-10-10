@@ -1029,7 +1029,7 @@ bool QgsPostgresProvider::loadFields()
       QString attnum = tresult.PQgetvalue( 0, 0 );
       formattedFieldType = tresult.PQgetvalue( 0, 1 );
 
-      if( !attnum.isEmpty() )
+      if ( !attnum.isEmpty() )
       {
         sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
               .arg( tableoid ).arg( attnum );
@@ -2778,8 +2778,16 @@ bool QgsPostgresProvider::getGeometryDetails()
   if ( QgsPostgresConn::wkbTypeFromPostgis( detectedType ) == QGis::WKBUnknown )
   {
     QgsPostgresLayerProperty layerProperty;
-    layerProperty.schemaName = schemaName;
-    layerProperty.tableName = tableName;
+    if ( !mIsQuery )
+    {
+      layerProperty.schemaName = schemaName;
+      layerProperty.tableName = tableName;
+    }
+    else
+    {
+      layerProperty.schemaName = "";
+      layerProperty.tableName = mQuery;
+    }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.isGeography = mIsGeography;
 

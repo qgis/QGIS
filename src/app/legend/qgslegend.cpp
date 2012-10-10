@@ -2688,3 +2688,30 @@ void QgsLegend::groupSelectedLayers()
   }
 }
 
+void QgsLegend::addLegendLayerAction( QAction* action, QString menu, QString id,
+                                      QgsMapLayer::LayerType type )
+{
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id ) );
+}
+
+bool QgsLegend::removeLegendLayerAction( QAction* action )
+{
+  for ( QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it ).removeAt( i );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const
+{
+  return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}

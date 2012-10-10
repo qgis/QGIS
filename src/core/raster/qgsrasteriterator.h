@@ -23,6 +23,9 @@ class QgsRasterInterface;
 class QgsRasterProjector;
 struct QgsRasterViewPort;
 
+/** \ingroup core
+ * Iterator for sequentially processing raster cells.
+ */
 class CORE_EXPORT QgsRasterIterator
 {
   public:

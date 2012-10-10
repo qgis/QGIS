@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>799</width>
-    <height>382</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -203,6 +203,11 @@
          <property name="allColumnsShowFocus">
           <bool>true</bool>
          </property>
+         <column>
+          <property name="text">
+           <string>State</string>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Status</string>

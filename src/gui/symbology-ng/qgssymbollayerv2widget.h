@@ -4,7 +4,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -260,8 +260,6 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
 
   protected:
     QgsSVGFillSymbolLayer* mLayer;
-    //sets new output unit. Is called on combo box or spin box change
-    void setOutputUnit();
     void insertIcons();
     void updateOutlineIcon();
     void updateParamGui();

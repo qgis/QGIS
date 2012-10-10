@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -162,6 +162,6 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
     double mAngle;
 };
 
-class QgsSymbolLayerV2Widget;
+class QgsSymbolLayerV2Widget;  // why does SIP fail, when this isn't here
 
 #endif

@@ -37,6 +37,10 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBandNumber, colors(), mNColors );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setInvertColor( mInvertColor );
+  renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
 
@@ -105,7 +109,7 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
   void* rasterData = mInput->block( bandNo, extent, width, height );
   if ( ! rasterData )
   {
-    QgsDebugMsg("No raster data!" );
+    QgsDebugMsg( "No raster data!" );
     return 0;
   }
 

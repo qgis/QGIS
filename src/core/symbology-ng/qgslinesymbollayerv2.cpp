@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -76,7 +76,7 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   QColor penColor = mColor;
-  penColor.setAlphaF( context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   mPen.setColor( penColor );
   double scaledWidth = context.outputLineWidth( mWidth );
   mPen.setWidthF( scaledWidth );

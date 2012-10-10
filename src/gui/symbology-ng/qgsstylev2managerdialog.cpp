@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -669,12 +669,14 @@ void QgsStyleV2ManagerDialog::removeItem()
 
 bool QgsStyleV2ManagerDialog::removeSymbol()
 {
-  QString symbolName = currentItemName();
-  if ( symbolName.isEmpty() )
-    return false;
-
-  // delete from style and update list
-  mStyle->removeSymbol( symbolName );
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  foreach( QModelIndex index, indexes )
+  {
+    QString symbolName = index.data().toString();
+    // delete from style and update list
+    if ( !symbolName.isEmpty() )
+      mStyle->removeSymbol( symbolName );
+  }
   mModified = true;
   return true;
 }
@@ -799,7 +801,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
   QStringList symbolNames;
   QStringList groupSymbols;
 
-  StyleEntity type = currentItemType() < 3 ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = currentItemType() < 3 ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
     QgsDebugMsg( "Entity not implemented" );
@@ -936,11 +938,11 @@ void QgsStyleV2ManagerDialog::removeGroup()
   QStandardItem *parentItem = model->itemFromIndex( index.parent() );
   if ( parentItem->data( Qt::UserRole + 1 ).toString() == "smartgroups" )
   {
-    mStyle->remove( SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
+    mStyle->remove( QgsStyleV2::SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
   else
   {
-    mStyle->remove( GroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
+    mStyle->remove( QgsStyleV2::GroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
     QStandardItem *item = model->itemFromIndex( index );
     if ( item->hasChildren() )
     {
@@ -989,11 +991,11 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
     QString name = item->text();
     if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
     {
-      mStyle->rename( SmartgroupEntity, id, name );
+      mStyle->rename( QgsStyleV2::SmartgroupEntity, id, name );
     }
     else
     {
-      mStyle->rename( GroupEntity, id, name );
+      mStyle->rename( QgsStyleV2::GroupEntity, id, name );
     }
   }
 }
@@ -1069,7 +1071,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
 void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
 {
-  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
     QgsDebugMsg( "Unknown style entity" );
@@ -1118,14 +1120,14 @@ void QgsStyleV2ManagerDialog::tagsChanged()
   QStringList oldtags = mTagList;
   QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
 
-  StyleEntity type;
+  QgsStyleV2::StyleEntity type;
   if ( currentItemType() < 3 )
   {
-    type = SymbolEntity;
+    type = QgsStyleV2::SymbolEntity;
   }
   else if ( currentItemType() == 3 )
   {
-    type = ColorrampEntity;
+    type = QgsStyleV2::ColorrampEntity;
   }
   else
   {
@@ -1165,7 +1167,7 @@ void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
   // Populate the tags for the symbol
   tagsLineEdit->clear();
   QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
-  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
   tagsLineEdit->setText( mTagList.join( "," ) );
 }
@@ -1283,7 +1285,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
 
   if ( selectedItem )
   {
-    StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+    QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
     if ( currentItemType() > 3 )
     {
       QgsDebugMsg( "unknow entity type" );
@@ -1294,7 +1296,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     {
       groupId = mStyle->groupId( selectedItem->text() );
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
     foreach ( QModelIndex index, indexes )
     {
       mStyle->group( type, index.data().toString(), groupId );
@@ -1328,7 +1330,7 @@ void QgsStyleV2ManagerDialog::editSmartgroupAction()
   if ( dlg.exec() == QDialog::Rejected )
     return;
 
-  mStyle->remove( SmartgroupEntity, item->data().toInt() );
+  mStyle->remove( QgsStyleV2::SmartgroupEntity, item->data().toInt() );
   int id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
   if ( !id )
   {

@@ -43,6 +43,7 @@
 
 QgsMapRenderer::QgsMapRenderer()
 {
+  mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
   mCachedTrForLayer = 0;
@@ -163,7 +164,7 @@ void QgsMapRenderer::adjustExtentToSize()
 
   if ( !myWidth || !myHeight )
   {
-    mScale = 1;
+    mScale = 1.0;
     newCoordXForm.setParameters( 0, 0, 0, 0 );
     return;
   }
@@ -382,7 +383,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->extent().toString() )
                );
 
-    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) || mOverview )
+    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 

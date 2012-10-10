@@ -105,19 +105,30 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
-  QVBoxLayout *layout = new QVBoxLayout( labelingFrame );
-  layout->setMargin( 0 );
-  labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
-  layout->addWidget( labelingDialog );
-  labelingFrame->setLayout( layout );
+  QVBoxLayout *layout;
 
-  // Create the Label dialog tab
-  layout = new QVBoxLayout( labelOptionsFrame );
-  layout->setMargin( 0 );
-  labelDialog = new QgsLabelDialog( layer->label(), labelOptionsFrame );
-  layout->addWidget( labelDialog );
-  labelOptionsFrame->setLayout( layout );
-  connect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+  if ( layer->hasGeometryType() )
+  {
+    // Create the Labeling dialog tab
+    layout = new QVBoxLayout( labelingFrame );
+    layout->setMargin( 0 );
+    labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
+    layout->addWidget( labelingDialog );
+    labelingFrame->setLayout( layout );
+
+    // Create the Labeling (deprecated) dialog tab
+    layout = new QVBoxLayout( labelOptionsFrame );
+    layout->setMargin( 0 );
+    labelDialog = new QgsLabelDialog( layer->label(), labelOptionsFrame );
+    layout->addWidget( labelDialog );
+    labelOptionsFrame->setLayout( layout );
+    connect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+  }
+  else
+  {
+    tabWidget->setTabEnabled( 1, false ); // hide labeling item
+    tabWidget->setTabEnabled( 2, false ); // hide labeling (deprecated) item
+  }
 
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
@@ -202,11 +213,24 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
   }
 
-  tabWidget->setCurrentIndex( 0 );
-
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
-  tabWidget->setCurrentIndex( settings.value( "/Windows/VectorLayerProperties/row" ).toInt() );
+  int tabIndex = settings.value( "/Windows/VectorLayerProperties/row", 0 ).toInt();
+
+  // if the last used tab is not enabled display the first enabled one
+  if ( !tabWidget->isTabEnabled( tabIndex ) )
+  {
+    tabIndex = 0;
+    for ( int i = 0; i < tabWidget->count(); i++ )
+    {
+      if ( tabWidget->isTabEnabled( i ) )
+      {
+        tabIndex = i;
+        break;
+      }
+    }
+  }
+  tabWidget->setCurrentIndex( tabIndex );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
 } // QgsVectorLayerProperties ctor
@@ -214,7 +238,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+  if ( layer->hasGeometryType() )
+  {
+    disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+  }
 
   QSettings settings;
   settings.setValue( "/Windows/VectorLayerProperties/geometry", saveGeometry() );
@@ -443,10 +470,12 @@ void QgsVectorLayerProperties::updateButtons()
   }
   else
   {
+    int cap = layer->dataProvider()->capabilities();
+    bool canChangeAttributes = cap & QgsVectorDataProvider::ChangeAttributeValues;
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
-    mToggleEditingButton->setEnabled( false );
+    mToggleEditingButton->setEnabled( canChangeAttributes && !layer->isReadOnly() );
     mCalculateFieldButton->setEnabled( false );
   }
 }
@@ -586,10 +615,15 @@ void QgsVectorLayerProperties::reset( void )
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
-  leMinimumScale->setText( QString::number( layer->minimumScale(), 'f' ) );
-  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leMaximumScale->setText( QString::number( layer->maximumScale(), 'f' ) );
-  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  if ( projectScales )
+  {
+    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    cbMinimumScale->updateScales( scalesList );
+    cbMaximumScale->updateScales( scalesList );
+  }
+  cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
+  cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
   // symbology initialization
   if ( legendtypecombobox->count() == 0 )
@@ -610,9 +644,14 @@ void QgsVectorLayerProperties::reset( void )
   layer->label()->setFields( layer->pendingFields() );
 
   actionDialog->init();
-  labelDialog->init();
+
+  if ( layer->hasGeometryType() )
+  {
+    labelDialog->init();
+  }
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
   labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
+
   //set the transparency slider
   sliderTransparency->setValue( 255 - layer->getTransparency() );
   //update the transparency percentage label
@@ -682,8 +721,8 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  layer->setMinimumScale( leMinimumScale->text().toFloat() );
-  layer->setMaximumScale( leMaximumScale->text().toFloat() );
+  layer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
+  layer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
 
   // provider-specific options
   if ( layer->dataProvider() )
@@ -1288,12 +1327,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   }
   else
   {
-    if ( tabWidget->currentIndex() == 0 )
-    {
-      tabWidget->setCurrentIndex( 1 );
-    }
-
-    tabWidget->setTabEnabled( 0, true ); // hide symbology item
+    tabWidget->setTabEnabled( 0, false ); // hide symbology item
   }
 
   if ( mRendererDialog )

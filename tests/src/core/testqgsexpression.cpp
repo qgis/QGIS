@@ -246,6 +246,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
+      QTest::newRow( "log(-2,32)" ) << "log(-2,32)" << false << QVariant( );
+      QTest::newRow( "log(2,-32)" ) << "log(2,-32)" << false << QVariant( );
+      QTest::newRow( "log(0.5,32)" ) << "log(0.5,32)" << false << QVariant( -5. );
       QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
       QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
@@ -541,6 +544,33 @@ class TestQgsExpression: public QObject
       QVariant vPerimeter = exp3.evaluate( &fPolygon );
       QCOMPARE( vPerimeter.toDouble(), 20. );
     }
+
+  void eval_special_columns()
+  {
+    QTest::addColumn<QString>( "string" );
+    QTest::addColumn<QVariant>( "result" );
+
+    QgsExpression::setSpecialColumn( "$var1", QVariant((int)42) );
+
+    QgsExpression exp( "$var1 + 1" );
+    QVariant v1 = exp.evaluate();
+    QCOMPARE( v1.toInt(), 43 );
+    
+    QgsExpression::setSpecialColumn( "$var1", QVariant((int)100) );
+    QVariant v2 = exp.evaluate();
+    QCOMPARE( v2.toInt(), 101 );
+
+    QgsExpression exp2( "_specialcol_('$var1')+1" );
+    QVariant v3 = exp2.evaluate();
+    QCOMPARE( v3.toInt(), 101 );
+
+    QgsExpression exp3( "_specialcol_('undefined')");
+    QVariant v4 = exp3.evaluate();
+    QCOMPARE( v4, QVariant() );
+
+    QgsExpression::unsetSpecialColumn( "$var1" );
+  }
+
 };
 
 QTEST_MAIN( TestQgsExpression )

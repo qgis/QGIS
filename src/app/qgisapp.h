@@ -175,7 +175,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
-    void setFontSize( int size );
+    void setFontSize( int fontSize );
+    //! Set app font family
+    //! @note added in 2.0
+    void setFontFamily( const QString& fontFamily );
+    //! Set app stylesheet from settings
+    //! @note added in 2.0
+    void setAppStyleSheet();
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -1235,8 +1241,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void projectChanged( const QDomDocument & );
 
     bool cmpByText( QAction* a, QAction* b );
-
-    QString mOldScale;
 
     //! the user has trusted the project macros
     bool mTrustedMacros;

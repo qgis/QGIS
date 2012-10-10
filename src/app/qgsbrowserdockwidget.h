@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -35,6 +35,7 @@ class QgsBrowserDockWidget : public QDockWidget
     void showContextMenu( const QPoint & );
 
     void addFavourite();
+    void addFavouriteDirectory();
     void removeFavourite();
 
     void refresh();
@@ -45,6 +46,7 @@ class QgsBrowserDockWidget : public QDockWidget
     void showProperties();
 
   protected:
+    void addFavouriteDirectory( QString favDir );
 
     void refreshModel( const QModelIndex& index );
 

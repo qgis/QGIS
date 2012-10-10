@@ -229,7 +229,7 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
     mMaximumNumberOfFeatures = 0;
   }
   QgsComposerItem::setSceneRect( rectangle );
-  emit maximumNumerOfFeaturesChanged( mMaximumNumberOfFeatures );
+  emit maximumNumberOfFeaturesChanged( mMaximumNumberOfFeatures );
 }
 
 bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc ) const

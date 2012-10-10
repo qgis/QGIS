@@ -52,7 +52,18 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
     return;
   }
 
-  if ( !rotationPoint( mRotationPoint ) )
+  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+  bool labelSettingsOk;
+  QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
+
+  if ( !mCurrentLabelPos.isPinned && labelSettingsOk
+       && !layerSettings.placement == QgsPalLayerSettings::OverPoint )
+  {
+    return;
+  }
+
+  // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
+  if ( !rotationPoint( mRotationPoint, false, !mCurrentLabelPos.isPinned ) )
   {
     return;
   }

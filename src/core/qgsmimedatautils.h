@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,7 @@ class CORE_EXPORT QgsMimeDataUtils
 {
   public:
 
-    struct Uri
+    struct CORE_EXPORT Uri
     {
       Uri( QgsLayerItem* layer );
       Uri( QString& encData );

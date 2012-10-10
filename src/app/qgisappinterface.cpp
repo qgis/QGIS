@@ -67,6 +67,16 @@ QgsLegendInterface* QgisAppInterface::legendInterface()
   return &legendIface;
 }
 
+void QgisAppInterface::setFontSize( int fontSize )
+{
+  qgis->setFontSize( fontSize );
+}
+
+void QgisAppInterface::setFontFamily( QString fontFamily )
+{
+  qgis->setFontFamily( fontFamily );
+}
+
 void QgisAppInterface::zoomFull()
 {
   qgis->zoomFull();

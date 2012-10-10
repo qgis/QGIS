@@ -140,35 +140,31 @@ class CORE_EXPORT QgsRasterInterface
       return 1;
     }
 
-    /** Retruns value representing 'no data' (NULL) */
-    // TODO: Q_DECL_DEPRECATED
-    virtual double noDataValue() const { return 0; }
-
     /** Return no data value for specific band. Each band/provider must have
      * no data value, if there is no one set in original data, provider decides one
      * possibly using wider data type.
      * @param bandNo band number
      * @return No data value */
-    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return noDataValue(); }
+    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
 
     /** Test if value is nodata for specific band
      * @param bandNo band number
      * @param value tested value
      * @return true if value is nodata */
-    virtual bool isNoDataValue( int bandNo, double value ) const ;
+    virtual bool isNoDataValue( int bandNo, double value ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    void *block( int bandNo, const QgsRectangle &extent, int width, int height );
 
     /** Read block of data using given extent and size.
      *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
@@ -182,7 +178,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual QgsRasterInterface * input() const { return mInput; }
 
     /** Is on/off */
-    virtual bool on( ) { return mOn; }
+    virtual bool on() { return mOn; }
 
     /** Set on/off */
     virtual void setOn( bool on ) { mOn = on; }
@@ -191,7 +187,7 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface * srcInput() const
+    virtual const QgsRasterInterface *srcInput() const
     {
       QgsDebugMsg( "Entered" );
       return mInput ? mInput->srcInput() : this;
@@ -216,6 +212,10 @@ class CORE_EXPORT QgsRasterInterface
      * returned. */
     double time( bool cumulative = false );
 
+    inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
+
+    inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
      *  @param value the value to be printed
@@ -238,13 +238,12 @@ class CORE_EXPORT QgsRasterInterface
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
-    inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
-    inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
-
     /** \brief Test if value is within the list of ranges
      *  @param value value
      *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges */
+     *  @return true if value is in at least one of ranges
+     *  @note not available in python bindings
+     */
     inline static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
 
   private:

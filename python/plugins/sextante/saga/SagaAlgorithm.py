@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    SagaAlgorithm.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
 from qgis.core import *
 from PyQt4.QtCore import *
@@ -19,6 +44,7 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.SextanteLog import SextanteLog
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -195,7 +221,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         if layer:
                             filename = LayerExporter.exportVectorLayer(layer)
                             self.exportedLayers[layerfile]=filename
-                        elif (not value.endswith("shp")):
+                        elif (not layerfile.endswith("shp")):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
@@ -225,7 +251,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile  = SextanteUtils.getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
-                values = param.value.split(",")
+                values = param.value.split(",")                
                 for i in range(0, len(values), 3):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)

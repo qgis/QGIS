@@ -22,7 +22,9 @@
 
 class QImage;
 
-/**Interface for resampling rasters (e.g. to have a smoother appearance)*/
+/** \ingroup core
+  * Interface for resampling rasters (e.g. to have a smoother appearance)
+  */
 class QgsRasterResampler
 {
   public:

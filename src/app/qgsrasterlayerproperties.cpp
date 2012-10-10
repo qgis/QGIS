@@ -83,10 +83,17 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  leMinimumScale->setText( QString::number( lyr->minimumScale(), 'f' ) );
-  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
-  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  if ( projectScales )
+  {
+    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    cbMinimumScale->updateScales( scalesList );
+    cbMaximumScale->updateScales( scalesList );
+  }
+  cbMinimumScale->setScale( 1.0 / lyr->minimumScale() );
+  cbMaximumScale->setScale( 1.0 / lyr->maximumScale() );
+
+
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   // build GUI components
@@ -546,12 +553,19 @@ void QgsRasterLayerProperties::sync()
   // TODO: no data ranges
   if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterInterface::printValue( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterInterface::printValue( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
+
+  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSrcNoDataValue( 1 ) );
+
+  bool enableSrcNoData = mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) );
+
+  mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
+  lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
   QList<QgsRasterInterface::Range> noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
   QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
@@ -600,30 +614,31 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    if ( mRasterLayer->isNoDataValueValid() )
+    // TODO: all bands
+    if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->noDataValue() ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
     }
     else
     {
-      lblNoData->setText( tr( "No-Data Value: Not Set" ) );
+      lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
     }
   }
 
   //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
-  mRasterLayer->thumbnailAsPixmap( &myQPixmap );
-  pixmapThumbnail->setPixmap( myQPixmap );
+  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
+
+  // TODO fix legend + palette pixmap
 
   //update the legend pixmap on this dialog
   //pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
 
   //set the palette pixmap
-  //pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
-  pixmapPalette->setScaledContents( true );
-  pixmapPalette->repaint();
+  // pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
+  // pixmapPalette->setScaledContents( true );
+  // pixmapPalette->repaint();
 
   QgsDebugMsg( "populate metadata tab" );
   /*
@@ -678,6 +693,7 @@ void QgsRasterLayerProperties::apply()
   for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
   {
     mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
+    mRasterLayer->dataProvider()->setUseSrcNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
   }
 
   //set renderer from widget
@@ -741,13 +757,13 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  mRasterLayer->setMinimumScale( leMinimumScale->text().toFloat() );
-  mRasterLayer->setMaximumScale( leMaximumScale->text().toFloat() );
+  mRasterLayer->setMinimumScale( 1.0 / cbMinimumScale->scale() );
+  mRasterLayer->setMaximumScale( 1.0 / cbMaximumScale->scale() );
 
   //update the legend pixmap
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
 
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
 
@@ -787,9 +803,7 @@ void QgsRasterLayerProperties::apply()
 
 
   //get the thumbnail for the layer
-  QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
-  mRasterLayer->thumbnailAsPixmap( &myQPixmap );
-  pixmapThumbnail->setPixmap( myQPixmap );
+  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
 
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
@@ -898,9 +912,10 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     }
   }
   //update the legend pixmap
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
+  // pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  // pixmapLegend->setScaledContents( true );
+  // pixmapLegend->repaint();
+
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->setHtml( mRasterLayer->metadata() );
@@ -992,32 +1007,30 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
   setupTransparencyTable( nBands );
 
+// I don't think that noDataValue should be added to transparency list
+#if 0
   if ( nBands == 3 )
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      // I don't think that noDataValue should be added to transparency list
-#if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 2, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, 100 );
-#endif
     }
   }
   else //1 band
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-#if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
       setTransparencyCell( 0, 1, 100 );
-#endif
     }
   }
+#endif
 
   tableTransparency->resizeColumnsToContents(); // works only with values
   tableTransparency->resizeRowsToContents();

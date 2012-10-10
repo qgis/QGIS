@@ -213,7 +213,7 @@ In the above example, we are declaring an input of type
 ``vector`` named ``polyg``. When executing the algorithm,
 SEXTANTE will open in R the layer selected by the user and store it in a
 variable also named ``polyg``. So the name of a parameter is also the
-name of the variable that we can use in R for accesing the value of that
+name of the variable that we can use in R for accessing the value of that
 parameter (thus, you should avoid using reserved R words as parameter
 names).
 
@@ -303,7 +303,7 @@ GRASS
 
 Configuring GRASS is not much different from configuring SAGA. First,
 the path to the GRASS folder has to be defined, but only if you are
-running Windows. Additionaly, a shell interpreter (usually msys.exe,
+running Windows. Additionally, a shell interpreter (usually msys.exe,
 which can be found in most GRASS for Windows distributions) has to be
 defined and its path set up as well. 
 

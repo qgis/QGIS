@@ -1932,7 +1932,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
                                        QGis::WkbType vectortype,
-                                       const std::list<std::pair<QString, QString> > &attributes,
+                                       const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem *srs = NULL )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
@@ -1957,7 +1957,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     // check for duplicate fieldnames
     QSet<QString> fieldNames;
-    std::list<std::pair<QString, QString> >::const_iterator fldIt;
+    QList<QPair<QString, QString> >::const_iterator fldIt;
     for ( fldIt = attributes.begin(); fldIt != attributes.end(); ++fldIt )
     {
       QString name = fldIt->first.left( 10 );
@@ -2052,7 +2052,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     Q_ASSERT( codec );
   }
 
-  for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QStringList fields = it->second.split( ";" );
 

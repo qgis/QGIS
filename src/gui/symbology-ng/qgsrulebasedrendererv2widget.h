@@ -3,7 +3,7 @@
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,7 +32,7 @@ Tree model for the rules:
  +--- top level rule
  +--- top level rule
 */
-class QgsRuleBasedRendererV2Model : public QAbstractItemModel
+class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );

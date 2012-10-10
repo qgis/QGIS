@@ -57,9 +57,14 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     qApp->processEvents();
   }
-  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
-  mWebPage->setViewportSize( contentsSize );
 
+  if ( frameCount() < 1 )  return;
+
+  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
+  contentsSize.setWidth( mFrameItems.at( 0 )->boundingRect().width() * mHtmlUnitsToMM );
+  mWebPage->setViewportSize( contentsSize );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
   recalculateFrameSizes();

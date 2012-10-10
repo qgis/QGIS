@@ -92,7 +92,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
   }
   else
   {
-    // retrun selected layer
+    // return selected layer
     myLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
   }
 

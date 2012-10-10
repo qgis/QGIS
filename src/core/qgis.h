@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QString>
 #include <QMetaType>
+#include <stdlib.h>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -75,9 +76,11 @@ class CORE_EXPORT QGis
     };
 
     // String representation of geometry types (set in qgis.cpp)
+    //! @note not available in python bindings
     static const char *qgisVectorGeometryType[];
 
     //! description strings for feature types
+    //! @note not available in python bindings
     static const char *qgisFeatureTypes[];
 
     /** Map units that qgis supports
@@ -151,6 +154,43 @@ inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
+
+//
+// compare two doubles using specified number of significant digits
+//
+inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
+{
+  // The most simple would be to print numbers as %.xe and compare as strings
+  // but that is probably too costly
+  // Then the fastest would be to set some bits directly, but little/big endian
+  // has to be considered (maybe TODO)
+  // Is there a better way?
+  int aexp, bexp;
+  double ar = frexp( a, &aexp );
+  double br = frexp( b, &bexp );
+
+  return aexp == bexp &&
+         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
+}
+
+/** Allocates size bytes and returns a pointer to the allocated  memory.
+    Works like C malloc() but prints debug message by QgsLogger if allocation fails.
+    @param size size in bytes
+ */
+void *QgsMalloc( size_t size );
+
+/** Allocates  memory for an array of nmemb elements of size bytes each and returns
+    a pointer to the allocated memory. Works like C calloc() but prints debug message
+    by QgsLogger if allocation fails.
+    @param nmemb number of elements
+    @param size size of element in bytes
+ */
+void *QgsCalloc( size_t nmemb, size_t size );
+
+/** Frees the memory space  pointed  to  by  ptr. Works like C free().
+    @param ptr pointer to memory space
+ */
+void QgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt

@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    ModelerAlgorithm.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.modeler.WrongModelException import WrongModelException
@@ -22,6 +47,7 @@ import time
 class ModelerAlgorithm(GeoAlgorithm):
 
     CANVAS_SIZE = 4000
+    LINE_BREAK_STRING="%%%"
 
     def getCopy(self):
         newone = ModelerAlgorithm()
@@ -89,8 +115,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                     self.paramPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
-                    tokens = valueLine.split("=")
-                    self.paramValues[tokens[0]] = tokens[1]
+                    tokens = valueLine.split("===")
+                    
+                    self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
                 elif line.startswith("GROUP:"):
@@ -289,7 +316,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             s +=  str(pt.x()) + "," + str(pt.y()) + "\n"
             i+=1
         for key in self.paramValues.keys():
-            s += "VALUE:" + key + "=" + str(self.paramValues[key]) + "\n"
+            s += "VALUE:" + key + "===" + str(self.paramValues[key]).replace('\n', ModelerAlgorithm.LINE_BREAK_STRING) + "\n"
         for i in range(len(self.algs)):
             alg = self.algs[i]
             s+="ALGORITHM:" + alg.commandLineName()+"\n"

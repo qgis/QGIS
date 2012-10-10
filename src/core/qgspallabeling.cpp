@@ -4,7 +4,7 @@
   -------------------
          begin                : June 2009
          copyright            : (C) Martin Dobias
-         email                : wonder.sk at gmail.com
+         email                : wonder dot sk at gmail dot com
 
  ***************************************************************************
  *                                                                         *
@@ -174,6 +174,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
+  upsidedownLabels = Upright;
   fontSizeInMapUnits = false;
   bufferSizeInMapUnits = false;
   labelOffsetInMapUnits = true;
@@ -221,6 +222,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
+  upsidedownLabels = s.upsidedownLabels;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   bufferSizeInMapUnits = s.bufferSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
@@ -400,6 +402,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   displayAll = layer->customProperty( "labeling/displayAll", QVariant( false ) ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
+  upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
@@ -458,6 +461,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/displayAll", displayAll );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
+  layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
@@ -701,25 +705,6 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
   }
 
-  // convert centroids to points before processing to use GEOS instead of PAL calculation
-  if ( centroidPoly )
-  {
-    QgsGeometry* centroidpt = geom->centroid();
-    if ( centroidpt->isGeosValid() && extentGeom->contains( centroidpt ) )
-    {
-      geom = QgsGeometry::fromPoint( centroidpt->asPoint() );
-      if ( geom->type() == QGis::Point )
-      {
-        QgsDebugMsg( QString( "Feature %1 centroid converted to point: " ).arg( f.id() ) );
-      }
-    }
-    else
-    {
-      // invalid geom type or outside extents
-      return;
-    }
-  }
-
   GEOSGeometry* geos_geom = geom->asGeos();
 
   if ( geos_geom == NULL )
@@ -730,9 +715,49 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
   bool labelIsPinned = false;
+  bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
   bool ddXPos = false, ddYPos = false;
+  double quadOffsetX = 0.0, quadOffsetY = 0.0;
+  double offsetX = 0.0, offsetY = 0.0;
+
+  // adjust quadrant offset of labels
+  if ( xQuadOffset != 0 )
+  {
+    quadOffsetX = xQuadOffset;
+  }
+  if ( yQuadOffset != 0 )
+  {
+    quadOffsetY = yQuadOffset;
+  }
+
+  // adjust offset of labels to match chosen unit and map scale
+  double mapUntsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
+  if ( xOffset != 0 )
+  {
+    offsetX = xOffset;
+    if ( !labelOffsetInMapUnits )
+    {
+      offsetX = xOffset * mapUntsPerMM; //convert offset from mm to map units
+    }
+  }
+  if ( yOffset != 0 )
+  {
+    offsetY = yOffset;
+    if ( !labelOffsetInMapUnits )
+    {
+      offsetY = yOffset * mapUntsPerMM; //convert offset from mm to map units
+    }
+  }
+
+  // layer defined rotation?
+  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+  if ( placement == QgsPalLayerSettings::OverPoint && angleOffset != 0 )
+  {
+    layerDefinedRotation = true;
+    angle = angleOffset * M_PI / 180; // convert to radians
+  }
 
   //data defined rotation?
   QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
@@ -740,7 +765,6 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   {
     dataDefinedRotation = true;
     angle = f.attributeMap().value( *rotIt ).toDouble() * M_PI / 180.0;
-
   }
 
   QMap< DataDefinedProperties, int >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );
@@ -757,13 +781,19 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       {
         dataDefinedPosition = true;
         labelIsPinned = true;
+        // layer rotation set, but don't rotate pinned labels unless data defined
+        if ( layerDefinedRotation && !dataDefinedRotation )
+        {
+          angle = 0.0;
+        }
+
         //x/y shift in case of alignment
         double xdiff = 0.0;
         double ydiff = 0.0;
 
         //horizontal alignment
         QMap< DataDefinedProperties, int >::const_iterator haliIt = dataDefinedProperties.find( QgsPalLayerSettings::Hali );
-        if ( haliIt != dataDefinedProperties.end() )
+        if ( haliIt != dataDefinedProperties.constEnd() )
         {
           QString haliString = f.attributeMap().value( *haliIt ).toString();
           if ( haliString.compare( "Center", Qt::CaseInsensitive ) == 0 )
@@ -824,53 +854,15 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         xPos += xdiff;
         yPos += ydiff;
       }
+      else
+      {
+        // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+        if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
+        {
+          angle = 0.0;
+        }
+      }
     }
-  }
-
-  // treat rotated labels of PAL layer point/centroid features as data defined
-  // does not flag label as pinned or rotateable
-  // always set rotation center as if Center/Half were set for data defined
-  bool overPointCentroid = false;
-  if ( !labelIsPinned
-       && placement == QgsPalLayerSettings::OverPoint
-       && geom->type() == QGis::Point )
-  {
-    overPointCentroid = true;
-    dataDefinedPosition = true;
-
-    QgsPoint fPt = geom->asPoint();
-    // default reference (feature) point is lower left corner of label bounding box
-    xPos = fPt.x();
-    yPos = fPt.y();
-
-    double xdiff = 0.0;
-    double ydiff = 0.0;
-
-    // as per Center for data defined
-    xdiff -= labelX / 2.0;
-
-    // as per Half for data defined
-    QFontMetrics labelFontMetrics( labelFont );
-    double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
-    ydiff -= labelY * 0.5 * ( 1 - descentRatio );
-
-    if ( !dataDefinedRotation && angleOffset != 0 )
-    {
-      dataDefinedRotation = true;
-      angle = angleOffset * M_PI / 180; // convert to radians
-    }
-
-    if ( dataDefinedRotation )
-    {
-      //adjust xdiff and ydiff for Center/Half
-      double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-      double yd = xdiff * sin( angle ) + ydiff * cos( angle );
-      xdiff = xd;
-      ydiff = yd;
-    }
-
-    xPos += xdiff;
-    yPos += ydiff;
   }
 
   QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, geos_geom_clone );
@@ -882,7 +874,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
-                                     xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation ) )
+                                     xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY ) )
       return;
   }
   catch ( std::exception &e )
@@ -917,72 +910,6 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       distance *= vectorScaleFactor;
     }
     feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance );
-  }
-
-  // treat offset labels of PAL layer point/centroid features as data defined
-  // does not flag label as pinned
-  // done after feature registration so label W and H are relative to any applied rotation
-  if ( overPointCentroid )
-  {
-    double labelW = labelX;
-    double labelH = labelY;
-
-    if ( dataDefinedRotation )
-    {
-      // use LabelPosition construction to calculate new rotated label dimensions
-      pal::FeaturePart* fpart = new FeaturePart( feat, geom->asGeos() );
-      pal::LabelPosition* lp = new LabelPosition( 1, xPos, yPos, labelX, labelY, angle, 0.0, fpart );
-
-      // lp->getWidth or lp->getHeight doesn't account for rotation, get bbox instead
-      double amin[2], amax[2];
-      lp->getBoundingBox( amin, amax );
-      QgsRectangle lblrect = QgsRectangle( amin[0], amin[1], amax[0], amax[1] );
-
-      labelW = lblrect.width();
-      labelH = lblrect.height();
-      delete fpart;
-      delete lp;
-    }
-
-    // x/y shift in case of alignment other than center
-    double xdiff = 0.0;
-    double ydiff = 0.0;
-
-    // quadrant offsets are -1, 0, or 1 (positive is up and right)
-    if ( xQuadOffset != 0 )
-    {
-      xdiff += labelW / 2 * xQuadOffset;
-    }
-    if ( yQuadOffset != 0 )
-    {
-      ydiff += labelH / 2 * yQuadOffset;
-    }
-
-    double mapUntsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
-
-    if ( xOffset != 0 )
-    {
-      double xoff = xOffset;
-      if ( !labelOffsetInMapUnits ) //convert offset from mm to map units
-      {
-        xoff = xOffset * mapUntsPerMM;
-      }
-      xdiff += xoff;
-    }
-
-    if ( yOffset != 0 )
-    {
-      double yoff = yOffset;
-      if ( !labelOffsetInMapUnits ) //convert offset from mm to map units
-      {
-        yoff = yOffset * mapUntsPerMM;
-      }
-      ydiff += yoff;
-    }
-
-    xPos += xdiff;
-    yPos += ydiff;
-    feat->setFixedPosition( xPos, yPos );
   }
 
   //add parameters for data defined labeling to QgsPalGeometry
@@ -1140,6 +1067,17 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
+
+  // set how to show upside-down labels
+  Layer::UpsideDownLabels upsdnlabels;
+  switch ( lyr.upsidedownLabels )
+  {
+    case QgsPalLayerSettings::Upright:     upsdnlabels = Layer::Upright; break;
+    case QgsPalLayerSettings::ShowDefined: upsdnlabels = Layer::ShowDefined; break;
+    case QgsPalLayerSettings::ShowAll:     upsdnlabels = Layer::ShowAll; break;
+    default: Q_ASSERT( "unsupported upside-down label setting" && 0 ); return 0;
+  }
+  l->setUpsidedownLabels( upsdnlabels );
 
   // fix for font size in map units causing font to show pointsize at small map scales
   int pixelFontSize = lyr.sizeToPixel( lyr.textFont.pointSizeF(), ctx );

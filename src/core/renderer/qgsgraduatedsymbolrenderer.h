@@ -55,7 +55,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
     void addSymbol( QgsSymbol* sy );
 
-    /**Returns the indes of the classification field*/
+    /**Returns the index of the classification field*/
     int classificationField() const;
 
     /**Removes all symbols*/

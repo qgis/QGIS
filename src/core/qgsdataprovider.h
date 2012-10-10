@@ -80,7 +80,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * @param uri source specification
      */
-    virtual void setDataSourceUri( QString const & uri )
+    virtual void setDataSourceUri( const QString & uri )
     {
       mDataSourceURI = uri;
     }

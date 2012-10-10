@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrasterlayersaveasdialog.cpp
+    ---------------------
+    begin                : May 2012
+    copyright            : (C) 2012 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
@@ -76,6 +90,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     {
       mCreateOptionsWidget->setFormat( myFormats[0] );
     }
+    mCreateOptionsWidget->setRasterLayer( mRasterLayer );
     mCreateOptionsWidget->update();
   }
 
@@ -98,6 +113,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   {
     mPyramidsGroupBox->setEnabled( false );
   }
+
+  // restore checked state for most groupboxes (default is to restore collapsed state)
+  // create options and pyramids will be preset, if user has selected defaults in the gdal options dlg
+  mCreateOptionsGroupBox->setSaveCheckedState( true );
+  mTilesGroupBox->setSaveCheckedState( true );
+  // don't restore nodata, it needs user input
+  // pyramids are not necessarily built every time
 
   updateCrsGroup();
 
@@ -751,5 +773,16 @@ QgsRasterDataProvider::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyra
     return QgsRasterDataProvider::CopyExisting;
   else
     return QgsRasterDataProvider::PyramidsFlagYes;
+}
+
+bool QgsRasterLayerSaveAsDialog::validate() const
+{
+  if ( mCreateOptionsGroupBox->isChecked() )
+  {
+    QString message = mCreateOptionsWidget->validateOptions( true, false );
+    if ( !message.isNull() )
+      return false;
+  }
+  return true;
 }
 

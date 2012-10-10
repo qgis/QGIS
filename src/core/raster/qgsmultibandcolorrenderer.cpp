@@ -55,6 +55,11 @@ QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
   {
     renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
   }
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setInvertColor( mInvertColor );
+  renderer->setRasterTransparency( mRasterTransparency );
+
   return renderer;
 }
 
@@ -198,11 +203,11 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
     if ( !bandData[*bandIt] )
     {
       // We should free the alloced mem from block().
-      QgsDebugMsg("No input band" );      
+      QgsDebugMsg( "No input band" );
       bandIt--;
       for ( ; bandIt != bands.constBegin(); bandIt-- )
       {
-	VSIFree( bandData[*bandIt] );
+        VSIFree( bandData[*bandIt] );
       }
       return 0;
     }
