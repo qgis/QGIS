@@ -414,21 +414,26 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
                        tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
+    if ( mySettings.value( "mActionZoomToBestScale", true ).toBool() )
+      theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
 
     QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
-    if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+    if ( mySettings.value( "mActionStretchCurrentExtent", true ).toBool() &&
+         rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
     {
       theMenu.addAction( tr( "&Stretch Using Current Extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
     }
   }
 
   // show in overview
-  QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in Overview" ), this, SLOT( showInOverview() ) );
-  showInOverviewAction->setCheckable( true );
-  showInOverviewAction->blockSignals( true );
-  showInOverviewAction->setChecked( mLyr.isInOverview() );
-  showInOverviewAction->blockSignals( false );
+  if ( mySettings.value( "mActionShowInOverview", true ).toBool() )
+  {
+    QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in Overview" ), this, SLOT( showInOverview() ) );
+    showInOverviewAction->setCheckable( true );
+    showInOverviewAction->blockSignals( true );
+    showInOverviewAction->setChecked( mLyr.isInOverview() );
+    showInOverviewAction->blockSignals( false );
+  }
 
   // remove from canvas
   if ( mySettings.value( "mActionRemoveLayer", true ).toBool() )
@@ -455,8 +460,8 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 
     // allow editing
     int cap = vlayer->dataProvider()->capabilities();
-    if ( cap & QgsVectorDataProvider::EditingCapabilities &&
-         mySettings.value( "mActionToggleEditing", true ).toBool() )
+    if ( mySettings.value( "mActionToggleEditing", true ).toBool() &&
+         cap & QgsVectorDataProvider::EditingCapabilities )
     {
       if ( toggleEditingAction )
       {
@@ -484,12 +489,15 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     //show number of features in legend if requested
-    QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
-    showNFeaturesAction->setCheckable( true );
-    showNFeaturesAction->setChecked( mShowFeatureCount );
-    QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
-    theMenu.addAction( showNFeaturesAction );
-    theMenu.addSeparator();
+    if ( mySettings.value( "mActionShowFeatureCount", true ).toBool() )
+    {
+      QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
+      showNFeaturesAction->setCheckable( true );
+      showNFeaturesAction->setChecked( mShowFeatureCount );
+      QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
+      theMenu.addAction( showNFeaturesAction );
+      theMenu.addSeparator();
+    }
   }
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
@@ -497,10 +505,23 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
+  QList< LegendLayerAction > actions = legend()->legendLayerActions( lyr->type() );
+  if ( ! actions.isEmpty() )
+  {
+    theMenu.addSeparator();
+    for ( int i = 0; i < actions.count(); i++ )
+    {
+      if ( mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() )
+        theMenu.addAction( actions[i].action );
+    }
+    theMenu.addSeparator();
+  }
+
   // properties goes on bottom of menu for consistency with normal ui standards
   // e.g. kde stuff
   if ( mySettings.value( "mActionLayerProperties", true ).toBool() )
     theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
+
   mySettings.endGroup();
 }
 
