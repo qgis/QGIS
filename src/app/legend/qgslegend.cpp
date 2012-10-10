@@ -700,6 +700,9 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   }
 
   QMenu theMenu( tr( "Legend context" ), this );
+  QSettings mySettings("QuantumGIS","QGISCUSTOMIZATION");
+  mySettings.beginGroup("Customization/Docks/Legend");
+  bool custom;
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
@@ -710,24 +713,33 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
-        theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
+		custom = mySettings.value("mActionLayerTop",true).toBool();
+		if ( custom )
+			theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
       }
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+	  custom = mySettings.value("mActionZoomtoLegendGroup",true).toBool();
+	  if ( custom )
+		theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
                          tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       // use QGisApp::removeLayer() to remove all selected layers+groups
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
-
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+	  custom = mySettings.value("mActionRemoveLegendGroup",true).toBool();
+	  if ( custom )
+		theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+	  custom = mySettings.value("mActionSetLegendGroupCRS",true).toBool();
+	  if ( custom )
+		theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
                          tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
     if (( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
     {
-      theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
+	  custom = mySettings.value("mActionLayerRename",true).toBool();
+	  if ( custom )		
+		theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
 
     //
@@ -735,7 +747,9 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     //
     if ( selectedLayers().length() > 1 )
     {
-      theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
+      custom = mySettings.value("mActionLegendGroupSelected",true).toBool();
+	  if ( custom )	
+		theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
     }
     // ends here
   }
@@ -743,20 +757,34 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   if ( selectedLayers().length() == 1 )
   {
     QgisApp* app = QgisApp::instance();
-    theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+	custom = mySettings.value("mActionLayerCopyStyle",true).toBool();
+	if ( custom )	
+		theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
     if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
     {
-      theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+	  custom = mySettings.value("mActionLayerPasteStyle",true).toBool();
+	  if ( custom )
+		theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
     }
   }
 
-  theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
+  custom = mySettings.value("mActionLegendGroupNew",true).toBool();
+  if ( custom )
+	theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
+  custom = mySettings.value("mActionLegendGroupExpandTree",true).toBool();
+  if ( custom )
+	theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
+  custom = mySettings.value("mActionLegendGroupCollapseTree",true).toBool();
+  if ( custom )
+	theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
 
-  QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
-  updateDrawingOrderAction->setCheckable( true );
-  updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  custom = mySettings.value("mActionLegendGroupUpdateDrawingOrder",true).toBool();
+  if ( custom )
+  {
+	QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+	updateDrawingOrderAction->setCheckable( true );
+	updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  }
 
   theMenu.exec( position );
 }

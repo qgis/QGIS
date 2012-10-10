@@ -150,6 +150,7 @@ class QgsCustomization : public QObject
     void createTreeItemMenus( );
     void createTreeItemToolbars( );
     void createTreeItemDocks( );
+	QTreeWidgetItem * QgsCustomization::readDockXmlNode(QTreeWidgetItem * topItem, QDomNode theNode );
     void createTreeItemStatus( );
     void addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu );
     void addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions );
