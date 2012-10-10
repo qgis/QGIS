@@ -63,9 +63,6 @@ class MeanCoords(GeoAlgorithm):
         self.addOutput(OutputVector(MeanCoords.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)

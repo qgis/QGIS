@@ -61,9 +61,6 @@ class DensifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         useSelection = self.getParameterValue(self.USE_SELECTION)
         vertices =self.getParameterValue(self.VERTICES)
