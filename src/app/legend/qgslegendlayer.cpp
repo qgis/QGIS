@@ -388,7 +388,9 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       if ( s.value( "/qgis/createRasterLegendIcons", true ).toBool() )
       {
         QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theLayer );
-        return rlayer->previewAsPixmap( QSize( 32, 32 ) );
+        QPixmap myPixmap( 32, 32 );
+        rlayer->thumbnailAsPixmap( &myPixmap );
+        return myPixmap;
       }
       else
       {
