@@ -151,8 +151,49 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
+{
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
+    QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    if ( !dlg.exec() )
+    {
+      delete newSymbol;
+      return;
+    }
+
+    foreach( QModelIndex idx, selectedIndexes )
+    {
+      if( idx.isValid() )
+      {
+        int catIdx = mRenderer->categoryIndexForValue( idx.data( Qt::UserRole + 1 ) );
+        QgsSymbolV2* newCatSymbol = newSymbol->clone();
+        newCatSymbol->setColor( mRenderer->categories()[catIdx].symbol()->color() );
+        mRenderer->updateCategorySymbol( catIdx, newCatSymbol );
+      }
+    }
+  }
+
+  populateCategories();
+}
+
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
+  // When there is a slection, change the selected symbols alone
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList i = m->selectedRows();
+
+  if ( m && i.size() > 0 )
+  {
+    changeSelectedSymbols();
+    return;
+  }
+
+  // When there is no selection, change the base mCategorizedSymbol
   QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
