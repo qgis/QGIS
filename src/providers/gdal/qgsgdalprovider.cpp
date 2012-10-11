@@ -2032,7 +2032,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   if ( !( theStats & QgsRasterBandStats::StdDev ) ) pdfStdDev = NULL;
 
   // try to fetch the cached stats (bForce=FALSE)
-  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, pdfMin, pdfMax, pdfMean, pdfStdDev );
+  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, false, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
   if ( CE_None == myerval ) // CE_Warning if cached not found
   {
@@ -2095,6 +2095,8 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     }
   }
 
+  QgsDebugMsg( QString( "bApproxOK = %1" ).arg( bApproxOK ) );
+
   double pdfMin;
   double pdfMax;
   double pdfMean;
@@ -2105,14 +2107,20 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
   // try to fetch the cached stats (bForce=FALSE)
   CPLErr myerval =
-    GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
+    GDALGetRasterStatistics( myGdalBand, bApproxOK, false, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
 
+  QgsDebugMsg( QString( "myerval = %1" ).arg( myerval ) );
   // if cached stats are not found, compute them
-  if ( CE_Warning == myerval )
+  if ( CE_None != myerval )
   {
+    QgsDebugMsg( "Calculating statistics by GDAL" );
     myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
                                            &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
                                            progressCallback, &myProg ) ;
+  }
+  else
+  {
+    QgsDebugMsg( "Using GDAL cached statistics" );
   }
 
   // if stats are found populate the QgsRasterBandStats object
