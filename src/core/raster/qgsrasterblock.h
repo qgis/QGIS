@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL) 
+     *  @param theNoDataValue the value representing no data (NULL)
      */
     QgsRasterBlock( DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL) 
+     *  @param theNoDataValue the value representing no data (NULL)
      *  @return true on success
      */
     bool reset( DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
@@ -129,6 +129,7 @@ class CORE_EXPORT QgsRasterBlock
 
     int dataTypeSize( int bandNo ) const
     {
+      Q_UNUSED( bandNo );
       return typeSize( mDataType );
     }
 
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsRasterBlock
      */
     void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
 
-    /** Test if value is nodata comparing to noDataValue 
+    /** Test if value is nodata comparing to noDataValue
      * @param value tested value
      * @param noDataValue no data value
      * @return true if value is nodata */
@@ -173,7 +174,7 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Read a single value
      *  @param index data matrix index
      *  @return value */
-    double value( size_t index) const;
+    double value( size_t index ) const;
 
     /** \brief Read a single color
      *  @param row row index
@@ -184,7 +185,7 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Read a single value
      *  @param index data matrix index
      *  @return color */
-    QRgb color( size_t index) const;
+    QRgb color( size_t index ) const;
 
     /** \brief Check if value at position is no data
      *  @param row row index
@@ -223,14 +224,14 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setColor( size_t index, QRgb color );
 
-    /** \brief Get pointer to data 
+    /** \brief Get pointer to data
      *  @param row row index
      *  @param column column index
      *  @retun pointer to data
      */
     char * bits( int row, int column );
 
-    /** \brief Get pointer to data 
+    /** \brief Get pointer to data
      *  @param index data matrix index
      *  @retun pointer to data
      */
@@ -244,12 +245,12 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Convert data to different type.
      *  @param destDataType dest data type
-     *  @return true on success 
+     *  @return true on success
      */
     bool convert( QgsRasterBlock::DataType destDataType );
 
-    QImage image() const; 
-    bool setImage( const QImage * image ); 
+    QImage image() const;
+    bool setImage( const QImage * image );
 
     /** \brief Test if value is within the list of ranges
      *  @param value value
@@ -285,11 +286,11 @@ class CORE_EXPORT QgsRasterBlock
 
   private:
 
-    static QImage::Format imageFormat ( QgsRasterBlock::DataType theDataType );
-    static DataType dataType ( QImage::Format theFormat );
+    static QImage::Format imageFormat( QgsRasterBlock::DataType theDataType );
+    static DataType dataType( QImage::Format theFormat );
 
 
-    // Valid 
+    // Valid
     //bool isValid;
 
     // Data type
@@ -298,11 +299,11 @@ class CORE_EXPORT QgsRasterBlock
     // Data type size in bytes, to make bits() fast
     int mTypeSize;
 
-    // Width 
+    // Width
     int mWidth;
 
-    // Height 
-    int mHeight;  
+    // Height
+    int mHeight;
 
     // No data value
     double mNoDataValue;
