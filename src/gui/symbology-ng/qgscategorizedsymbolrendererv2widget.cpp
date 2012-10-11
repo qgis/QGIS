@@ -405,18 +405,41 @@ QVariant QgsCategorizedSymbolRendererV2Widget::currentCategory()
   return m->item( row, 1 )->data();
 }
 
+QList<QVariant> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
+{
+  QList<QVariant> categories;
+  QModelIndexList rows = viewCategories->selectionModel()->selectedRows();
+  QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
+
+  foreach( QModelIndex r, rows )
+  {
+    if( r.isValid() )
+    {
+      categories.append( m->item( r.row(), 1 )->data() );
+    }
+  }
+
+  return categories;
+}
+
 void QgsCategorizedSymbolRendererV2Widget::deleteCategory()
 {
-  QVariant k = currentCategory();
-  if ( !k.isValid() )
+  QList<QVariant> categories = selectedCategories();
+
+  if ( !categories.size() )
     return;
 
-  int idx = mRenderer->categoryIndexForValue( k );
-  if ( idx < 0 )
-    return;
-
-  mRenderer->deleteCategory( idx );
-
+  foreach( const QVariant k, categories )
+  {
+    if ( k.isValid() )
+    {
+      int idx = mRenderer->categoryIndexForValue( k );
+      if ( idx >= 0 )
+      {
+        mRenderer->deleteCategory( idx );
+      }
+    }
+  }
   populateCategories();
 }
 
