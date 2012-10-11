@@ -151,13 +151,63 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
   return mRenderer;
 }
 
+void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
+{
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
+    QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    if ( !dlg.exec() )
+    {
+      delete newSymbol;
+      return;
+    }
+
+    foreach( QModelIndex idx, selectedIndexes )
+    {
+      if( idx.isValid() )
+      {
+        int catIdx = mRenderer->categoryIndexForValue( idx.data( Qt::UserRole + 1 ) );
+        QgsSymbolV2* newCatSymbol = newSymbol->clone();
+        newCatSymbol->setColor( mRenderer->categories()[catIdx].symbol()->color() );
+        mRenderer->updateCategorySymbol( catIdx, newCatSymbol );
+      }
+    }
+  }
+
+  populateCategories();
+}
+
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mCategorizedSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
-    return;
+  // When there is a slection, change the selected symbols alone
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList i = m->selectedRows();
 
+  if ( m && i.size() > 0 )
+  {
+    changeSelectedSymbols();
+    return;
+  }
+
+  // When there is no selection, change the base mCategorizedSymbol
+  QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
+
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  if ( !dlg.exec() )
+  {
+    delete newSymbol;
+    return;
+  }
+
+  mCategorizedSymbol = newSymbol;
   updateCategorizedSymbolIcon();
+
+  mRenderer->updateSymbols( mCategorizedSymbol );
+  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -396,18 +446,41 @@ QVariant QgsCategorizedSymbolRendererV2Widget::currentCategory()
   return m->item( row, 1 )->data();
 }
 
+QList<QVariant> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
+{
+  QList<QVariant> categories;
+  QModelIndexList rows = viewCategories->selectionModel()->selectedRows();
+  QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
+
+  foreach( QModelIndex r, rows )
+  {
+    if( r.isValid() )
+    {
+      categories.append( m->item( r.row(), 1 )->data() );
+    }
+  }
+
+  return categories;
+}
+
 void QgsCategorizedSymbolRendererV2Widget::deleteCategory()
 {
-  QVariant k = currentCategory();
-  if ( !k.isValid() )
+  QList<QVariant> categories = selectedCategories();
+
+  if ( !categories.size() )
     return;
 
-  int idx = mRenderer->categoryIndexForValue( k );
-  if ( idx < 0 )
-    return;
-
-  mRenderer->deleteCategory( idx );
-
+  foreach( const QVariant k, categories )
+  {
+    if ( k.isValid() )
+    {
+      int idx = mRenderer->categoryIndexForValue( k );
+      if ( idx >= 0 )
+      {
+        mRenderer->deleteCategory( idx );
+      }
+    }
+  }
   populateCategories();
 }
 
