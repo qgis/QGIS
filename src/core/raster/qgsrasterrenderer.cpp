@@ -34,6 +34,9 @@
 
 #define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
 
+// Changing RGB components of NODATA_COLOR may break tests
+const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
+
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
     : QgsRasterInterface( input )
     , mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 )
@@ -54,15 +57,15 @@ int QgsRasterRenderer::bandCount() const
   return 0;
 }
 
-QgsRasterInterface::DataType QgsRasterRenderer::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsg( "Entered" );
 
-  if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
+  if ( mOn ) return QgsRasterBlock::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterInterface::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
@@ -79,7 +82,7 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
 
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( !typeIsNumeric( input->dataType( i ) ) )
+    if ( !QgsRasterBlock::typeIsNumeric( input->dataType( i ) ) )
     {
       return false;
     }

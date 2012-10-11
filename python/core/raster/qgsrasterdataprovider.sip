@@ -135,12 +135,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -172,6 +172,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Read block of data using given extent and size. */
     // virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -196,10 +197,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const;
 
-    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData );
+    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData );
 
     /** Get list of user no data value ranges */
-    virtual  QList<QgsRasterInterface::Range> userNoDataValue( int bandNo ) const;
+    virtual  QList<QgsRasterBlock::Range> userNoDataValue( int bandNo ) const;
 
     virtual double minimumValue( int bandNo ) const;
     virtual double maximumValue( int bandNo ) const;
@@ -403,7 +404,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterInterface::DataType type,
+                         QgsRasterBlock::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ );

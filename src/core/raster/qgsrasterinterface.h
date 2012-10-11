@@ -23,6 +23,7 @@
 #include <QImage>
 
 #include "qgslogger.h"
+#include "qgsrasterblock.h"
 #include "qgsrectangle.h"
 
 #include "gdal.h"
@@ -35,31 +36,7 @@ class CORE_EXPORT QgsRasterInterface
 {
   public:
 
-    /** Data types.
-     *  This is modified and extended copy of GDALDataType.
-     */
-    enum DataType
-    {
-      /*! Unknown or unspecified type */          UnknownDataType = 0,
-      /*! Eight bit unsigned integer */           Byte = 1,
-      /*! Sixteen bit unsigned integer */         UInt16 = 2,
-      /*! Sixteen bit signed integer */           Int16 = 3,
-      /*! Thirty two bit unsigned integer */      UInt32 = 4,
-      /*! Thirty two bit signed integer */        Int32 = 5,
-      /*! Thirty two bit floating point */        Float32 = 6,
-      /*! Sixty four bit floating point */        Float64 = 7,
-      /*! Complex Int16 */                        CInt16 = 8,
-      /*! Complex Int32 */                        CInt32 = 9,
-      /*! Complex Float32 */                      CFloat32 = 10,
-      /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */  ARGB32_Premultiplied = 13,
-
-      TypeCount = 14          /* maximum type # + 1 */
-    };
-
+#if 0
     struct Range
     {
       double min;
@@ -69,76 +46,29 @@ class CORE_EXPORT QgsRasterInterface
         return min == o.min && max == o.max;
       }
     };
+#endif
 
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
 
-    static int typeSize( int dataType )
-    {
-      // Modified and extended copy from GDAL
-      switch ( dataType )
-      {
-        case Byte:
-          return 8;
-
-        case UInt16:
-        case Int16:
-          return 16;
-
-        case UInt32:
-        case Int32:
-        case Float32:
-        case CInt16:
-          return 32;
-
-        case Float64:
-        case CInt32:
-        case CFloat32:
-          return 64;
-
-        case CFloat64:
-          return 128;
-
-        case ARGB32:
-        case ARGB32_Premultiplied:
-          return 32;
-
-        default:
-          return 0;
-      }
-    }
-
     /** Clone itself, create deep copy */
     virtual QgsRasterInterface *clone() const = 0;
 
-    int dataTypeSize( int bandNo ) const
-    {
-      return typeSize( dataType( bandNo ) );
-    }
-
-    /** Returns true if data type is numeric */
-    bool typeIsNumeric( DataType type ) const;
-
-    /** Returns true if data type is color */
-    bool typeIsColor( DataType type ) const;
-
     /** Returns data type for the band specified by number */
-    virtual DataType dataType( int bandNo ) const
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
+#if 0
     {
       Q_UNUSED( bandNo );
       QgsDebugMsg( "Entered" );
       return UnknownDataType;
     }
+#endif
 
-    /** For given data type returns wider type and sets no data value */
-    static DataType typeWithNoDataValue( DataType dataType, double *noDataValue );
+    int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
     /** Get number of bands */
-    virtual int bandCount() const
-    {
-      return 1;
-    }
+    virtual int bandCount() const = 0;
 
     /** Return no data value for specific band. Each band/provider must have
      * no data value, if there is no one set in original data, provider decides one
@@ -157,18 +87,21 @@ class CORE_EXPORT QgsRasterInterface
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    void *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    //void *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     /** Read block of data using given extent and size.
      *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
-    {
-      Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
-      return 0;
-    }
+    //virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
+    //virtual QgsRasterBlock *readBlock( int bandNo, const QgsRectangle &extent, int width, int height ) const = 0;
+
+    //{
+    //  Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
+    //  return new QgsRasterBlock();
+    //}
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -198,38 +131,14 @@ class CORE_EXPORT QgsRasterInterface
       return mInput ? mInput->srcInput() : this;
     }
 
-    /** Create a new image with extraneous data, such data may be used
-     *  after the image is destroyed. The memory is not initialized.
-     */
-    QImage * createImage( int width, int height, QImage::Format format );
-
     /** Switch on (and clear old statistics) or off collection of statistics */
-    void setStatsOn( bool on );
+    //void setStatsOn( bool on );
 
     /** Last total time (for allbands) consumed by this interface for call to block()
      * If cumulative is true, the result includes also time spent in all preceding
      * interfaces. If cumulative is false, only time consumed by this interface is
      * returned. */
-    double time( bool cumulative = false );
-
-    inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
-
-    inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
-
-    /** \brief Print double value with all necessary significant digits.
-     *         It is ensured that conversion back to double gives the same number.
-     *  @param value the value to be printed
-     *  @return string representing the value*/
-    static QString printValue( double value );
-
-    /** \brief Convert block of data from one type to another. Original block memory
-     *         is not release.
-     *  @param srcData source data
-     *  @param srcDataType source data type
-     *  @param destDataType dest data type
-     *  @param size block size (width * height)
-     *  @return block of data in destDataType */
-    static void * convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size );
+    //double time( bool cumulative = false );
 
   protected:
     // QgsRasterInterface used as input
@@ -238,115 +147,13 @@ class CORE_EXPORT QgsRasterInterface
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
-    /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
-     *  @note not available in python bindings
-     */
-    inline static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
-
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
-    QVector<double> mTime;
+    //QVector<double> mTime;
 
     // Collect statistics
-    int mStatsOn;
+    //int mStatsOn;
 };
-
-inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::DataType type, int index )
-{
-#if 0
-  if ( !mInput )
-  {
-    return 0;
-  }
-
-  if ( !data )
-  {
-    return mInput->noDataValue();
-  }
-#endif
-
-  switch ( type )
-  {
-    case QgsRasterInterface::Byte:
-      return ( double )(( GByte * )data )[index];
-      break;
-    case QgsRasterInterface::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::Int16:
-      return ( double )(( GInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Int32:
-      return ( double )(( GInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Float32:
-      return ( double )(( float * )data )[index];
-      break;
-    case QgsRasterInterface::Float64:
-      return ( double )(( double * )data )[index];
-      break;
-    default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
-      break;
-  }
-
-  // TODO: noDataValue is per band
-  //return mInput->noDataValue();
-  return std::numeric_limits<double>::quiet_NaN();
-}
-
-inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::DataType type, int index, double value )
-{
-  if ( !data ) return;
-
-  switch ( type )
-  {
-    case QgsRasterInterface::Byte:
-      (( GByte * )data )[index] = ( GByte ) value;
-      break;
-    case QgsRasterInterface::UInt16:
-      (( GUInt16 * )data )[index] = ( GUInt16 ) value;
-      break;
-    case QgsRasterInterface::Int16:
-      (( GInt16 * )data )[index] = ( GInt16 ) value;
-      break;
-    case QgsRasterInterface::UInt32:
-      (( GUInt32 * )data )[index] = ( GUInt32 ) value;
-      break;
-    case QgsRasterInterface::Int32:
-      (( GInt32 * )data )[index] = ( GInt32 ) value;
-      break;
-    case QgsRasterInterface::Float32:
-      (( float * )data )[index] = ( float ) value;
-      break;
-    case QgsRasterInterface::Float64:
-      (( double * )data )[index] = value;
-      break;
-    default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
-      break;
-  }
-}
-
-inline bool QgsRasterInterface::valueInRange( double value, QList<QgsRasterInterface::Range> rangeList )
-{
-  foreach ( QgsRasterInterface::Range range, rangeList )
-  {
-    if (( value >= range.min && value <= range.max ) ||
-        doubleNear( value, range.min ) ||
-        doubleNear( value, range.max ) )
-    {
-      return true;
-    }
-  }
-  return false;
-}
 
 #endif
 

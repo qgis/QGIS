@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller * nuller() const;
 
     /** Set on/off collection of statistics */
-    void setStatsOn( bool on ) { if ( last() ) last()->setStatsOn( on ); }
+    //void setStatsOn( bool on ) { if ( last() ) last()->setStatsOn( on ); }
 
   private:
     /** Get known parent type_info of interface parent */

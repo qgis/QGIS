@@ -407,30 +407,30 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       @note python bindings not available
       */
-    void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
+    //void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       @note python bindings not available
       */
-    void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
+    //void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
-    void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
+    //void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       @note python bindings not available
       */
-    void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       @note python bindings not available
       */
-    void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
+    //void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
-    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Allocate memory and load data to that allocated memory */
     //void* readData( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
-    void* readData( int bandNo, QgsRasterViewPort *viewPort );
+    //void* readData( int bandNo, QgsRasterViewPort *viewPort );
 
     /** \brief Load the given raster file */
     bool readFile( const QString & fileName );

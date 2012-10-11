@@ -33,13 +33,13 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock * block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 
     bool usesTransparency() const;
 

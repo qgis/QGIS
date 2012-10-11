@@ -458,6 +458,7 @@ QString QgsRasterLayer::colorShadingAlgorithmAsString() const
   return QString( "UndefinedShader" );
 }
 
+#if 0
 /**
  * @param theBand The band (number) for which to estimate the min max values
  * @param theMinMax Pointer to a double[2] which hold the estimated min max
@@ -500,7 +501,7 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
   if ( !theMinMax )
     return;
 
-  QgsRasterInterface::DataType myDataType = mDataProvider->dataType( theBand );
+  QgsRasterBlock::DataType myDataType = mDataProvider->dataType( theBand );
   void* myScanData = readData( theBand, &mLastViewPort );
 
   /* Check for out of memory error */
@@ -551,6 +552,7 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double& t
   theMin = theMinMax[0];
   theMax = theMinMax[1];
 }
+#endif
 
 /**
  * @param theBand The band (number) for which to get the contrast enhancement for
@@ -844,34 +846,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
     projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
   }
 
-#ifdef QGISDEBUG
-  // Collect stats only for larger sizes to avoid confusion (small time values)
-  // after thumbnail render e.g. 120 is current thumbnail size
-  // TODO: consider another way to switch stats on/off or storing of last significant
-  //       stats somehow
-  if ( theRasterViewPort->drawableAreaXDim > 120 && theRasterViewPort->drawableAreaYDim > 120 )
-  {
-    mPipe.setStatsOn( true );
-  }
-#endif
-
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe.last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-#ifdef QGISDEBUG
-  mPipe.setStatsOn( false );
-  // Print time stats
-  QgsDebugMsg( QString( "interface                  bands  time" ) );
-  for ( int i = 0; i < mPipe.size(); i++ )
-  {
-    QgsRasterInterface * interface = mPipe.at( i );
-    QString name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" ).left( 30 );
-    QgsDebugMsg( QString( "%1 %2 %3" ).arg( name, -30 ).arg( interface->bandCount() ).arg( interface->time(), 5 ) );
-  }
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
-#endif
 } //end of draw method
 
 QString QgsRasterLayer::drawingStyleAsString() const
@@ -980,7 +960,7 @@ bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theRe
   QMap<int, void *> dataMap = mDataProvider->identify( point );
   foreach ( int bandNo, dataMap.keys() )
   {
-    QgsRasterInterface::DataType dataType = mDataProvider->dataType( bandNo );
+    QgsRasterBlock::DataType dataType = mDataProvider->dataType( bandNo );
     void * data = dataMap.value( bandNo );
     QString str;
     if ( !data )
@@ -989,7 +969,7 @@ bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theRe
     }
     else
     {
-      if ( mDataProvider->typeIsNumeric( dataType ) )
+      if ( QgsRasterBlock::typeIsNumeric( dataType ) )
       {
         double value = mDataProvider->readValue( data, dataType, 0 );
         if ( mDataProvider->isNoDataValue( bandNo, value ) )
@@ -1788,8 +1768,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32
-            ||  mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
+  else if ( mDataProvider->dataType( 1 ) == QgsRasterBlock::ARGB32
+            ||  mDataProvider->dataType( 1 ) == QgsRasterBlock::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }
@@ -1943,7 +1923,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   {
     if ( myBand != -1 )
     {
-      QgsRasterDataProvider::DataType myType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( myBand );
+      QgsRasterBlock::DataType myType = ( QgsRasterBlock::DataType )mDataProvider->dataType( myBand );
       QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )myType );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
@@ -2057,7 +2037,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
   else if ( mDrawingStyle == MultiBandColor )
   {
-    if ( dataProvider()->typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
+    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
     {
       myKey = "multiBandSingleByte";
       myDefault = "NoEnhancement";
@@ -2679,14 +2659,14 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSrcNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
-      QList<QgsRasterInterface::Range> myNoDataRangeList;
+      QList<QgsRasterBlock::Range> myNoDataRangeList;
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();
-        QgsRasterInterface::Range myNoDataRange;
+        QgsRasterBlock::Range myNoDataRange;
         myNoDataRange.min = rangeElement.attribute( "min" ).toDouble();
         myNoDataRange.max = rangeElement.attribute( "max" ).toDouble();
         QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min ) );
@@ -2763,7 +2743,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterInterface::Range range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterBlock::Range range, mDataProvider->userNoDataValue( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 
@@ -2836,6 +2816,7 @@ QString QgsRasterLayer::projectionWkt()
  *data type is the same as raster band. The memory must be released later!
  *  \return pointer to the memory
  */
+#if 0
 void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
 {
   int size = mDataProvider->dataTypeSize( bandNo ) / 8;
@@ -2873,6 +2854,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
   }
   return data;
 }
+#endif
 
 /*
  * @note Called from ctor if a raster image given there

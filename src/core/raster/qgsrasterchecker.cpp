@@ -141,7 +141,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     int width = expectedProvider->xSize();
     int height = expectedProvider->ySize();
-    int blockSize =  width * height * expectedProvider->typeSize( expectedProvider->dataType( band ) ) ;
+    int blockSize =  width * height * QgsRasterBlock::typeSize( expectedProvider->dataType( band ) ) ;
     void * expectedData = malloc( blockSize );
     void * verifiedData = malloc( blockSize );
 

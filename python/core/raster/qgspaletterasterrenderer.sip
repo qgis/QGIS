@@ -10,7 +10,7 @@ class QgsPalettedRasterRenderer: QgsRasterRenderer
     QgsRasterInterface * clone() /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
     /**Returns number of colors*/
     int nColors() const;

@@ -19,6 +19,7 @@
 #include <QMap>
 
 class QgsMapToPixel;
+class QgsRasterBlock;
 class QgsRasterInterface;
 class QgsRasterProjector;
 struct QgsRasterViewPort;
@@ -37,6 +38,7 @@ class CORE_EXPORT QgsRasterIterator
       int nCols;
       int nRows;
       void* data; //data (can be in oversampled/undersampled resolution)
+      QgsRasterBlock *block;
       QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };
 
@@ -61,7 +63,8 @@ class CORE_EXPORT QgsRasterIterator
        @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
-                             void** rasterData,
+                             //void** rasterData,
+                             QgsRasterBlock **block,
                              int& topLeftCol, int& topLeftRow );
 
     void stopRasterRead( int bandNumber );

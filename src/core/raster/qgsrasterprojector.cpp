@@ -113,11 +113,11 @@ int QgsRasterProjector::bandCount() const
   return 0;
 }
 
-QgsRasterInterface::DataType QgsRasterProjector::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterInterface::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
 void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS )
@@ -694,11 +694,16 @@ bool QgsRasterProjector::checkRows()
   return true;
 }
 
-void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsDebugMsg( QString( "extent:\n%1" ).arg( extent.toString() ) );
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
-  if ( !mInput ) return 0;
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  if ( !mInput )
+  {
+    return outputBlock;
+  }
+
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
@@ -720,24 +725,28 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
     return 0;
   }
 
-  void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
+  //void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
+  QgsRasterBlock *inputBlock = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
+  if ( !inputBlock || inputBlock->isEmpty() )
+  {
+    QgsDebugMsg( "No raster data!" );
+    delete inputBlock;
+    return outputBlock;
+  }
 
-  if ( !inputData ) return 0;
-
-  size_t pixelSize = mInput->typeSize( mInput->dataType( bandNo ) ) / 8;
+  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) / 8;
 
   size_t inputSize = pixelSize * srcCols() * srcRows();
 
   size_t outputSize = width * height * pixelSize;
-  void * outputData = malloc( outputSize );
+  //void * outputData = malloc( outputSize );
 
-  // Check for allcoation error
-  if ( ! outputData )
+  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
   {
-    QgsDebugMsg( QString( "Couldn't malloc %1 bytes!" ).arg( outputSize ) );
-    free( inputData );
-    return 0;
+    delete inputBlock;
+    return outputBlock;
   }
+
   // TODO: fill by transparent
 
   int srcRow, srcCol;
@@ -751,11 +760,15 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
 
       if ( srcIndex >= inputSize || destIndex >= outputSize ) continue; // should not happen
 
-      memcpy(( char* )outputData + destIndex, ( char* )inputData + srcIndex, pixelSize );
+      //memcpy(( char* )outputData + destIndex, ( char* )inputData + srcIndex, pixelSize );
+
+      char *srcBits = inputBlock->bits( srcIndex );
+      char *destBits = outputBlock->bits( destIndex );
+      memcpy( destBits, srcBits, pixelSize );
     }
   }
 
-  free( inputData );
+  delete inputBlock;
 
-  return outputData;
+  return outputBlock;
 }

@@ -836,7 +836,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
       void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      writeValue( data, dataType( i ), 0, noDataValue( i ) );
+      QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
   }
@@ -938,63 +938,60 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QgsRasterInterface::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
+QgsRasterBlock::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Unknown:
-      return QgsRasterDataProvider::UnknownDataType;
+      return QgsRasterBlock::UnknownDataType;
       break;
     case GDT_Byte:
-      return QgsRasterDataProvider::Byte;
+      return QgsRasterBlock::Byte;
       break;
     case GDT_UInt16:
-      return QgsRasterDataProvider::UInt16;
+      return QgsRasterBlock::UInt16;
       break;
     case GDT_Int16:
-      return QgsRasterDataProvider::Int16;
+      return QgsRasterBlock::Int16;
       break;
     case GDT_UInt32:
-      return QgsRasterDataProvider::UInt32;
+      return QgsRasterBlock::UInt32;
       break;
     case GDT_Int32:
-      return QgsRasterDataProvider::Int32;
+      return QgsRasterBlock::Int32;
       break;
     case GDT_Float32:
-      return QgsRasterDataProvider::Float32;
+      return QgsRasterBlock::Float32;
       break;
     case GDT_Float64:
-      return QgsRasterDataProvider::Float64;
+      return QgsRasterBlock::Float64;
       break;
     case GDT_CInt16:
-      return QgsRasterDataProvider::CInt16;
+      return QgsRasterBlock::CInt16;
       break;
     case GDT_CInt32:
-      return QgsRasterDataProvider::CInt32;
+      return QgsRasterBlock::CInt32;
       break;
     case GDT_CFloat32:
-      return QgsRasterDataProvider::CFloat32;
+      return QgsRasterBlock::CFloat32;
       break;
     case GDT_CFloat64:
-      return QgsRasterDataProvider::CFloat64;
-      break;
-    case GDT_TypeCount:
-      // make gcc happy
+      return QgsRasterBlock::CFloat64;
       break;
   }
-  return QgsRasterDataProvider::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
-QgsRasterInterface::DataType QgsGdalProvider::srcDataType( int bandNo ) const
+QgsRasterBlock::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   return dataTypeFromGdal( myGdalDataType );
 }
 
-QgsRasterInterface::DataType QgsGdalProvider::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
+  if ( mGdalDataType.size() == 0 ) return QgsRasterBlock::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
@@ -2316,23 +2313,23 @@ void QgsGdalProvider::initBaseDataset()
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterDataProvider::Byte:
+      case QgsRasterBlock::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterDataProvider::Int16:
+      case QgsRasterBlock::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::UInt16:
+      case QgsRasterBlock::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::Int32:
+      case QgsRasterBlock::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterDataProvider::UInt32:
+      case QgsRasterBlock::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -2360,7 +2357,7 @@ char** papszFromStringList( const QStringList& list )
 }
 
 bool QgsGdalProvider::create( const QString& format, int nBands,
-                              QgsRasterDataProvider::DataType type,
+                              QgsRasterBlock::DataType type,
                               int width, int height, double* geoTransform,
                               const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
