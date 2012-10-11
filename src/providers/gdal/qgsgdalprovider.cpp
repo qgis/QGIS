@@ -2032,7 +2032,15 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   if ( !( theStats & QgsRasterBandStats::StdDev ) ) pdfStdDev = NULL;
 
   // try to fetch the cached stats (bForce=FALSE)
-  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, false, pdfMin, pdfMax, pdfMean, pdfStdDev );
+  // Unfortunately GDALGetRasterStatistics() does not work as expected acording to
+  // API doc, if bApproxOK=false and bForce=false/true and exact statistics
+  // (from all raster pixels) are not available/cached, it should return CE_Warning.
+  // Instead, it is giving estimated (from sample) cached statistics and it returns CE_None.
+  // see above and https://trac.osgeo.org/gdal/ticket/4857
+  // -> Cannot used cached GDAL stats for exact
+  if ( !bApproxOK ) return false;
+
+  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, true, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
   if ( CE_None == myerval ) // CE_Warning if cached not found
   {
@@ -2106,12 +2114,17 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   myProg.provider = this;
 
   // try to fetch the cached stats (bForce=FALSE)
+  // GDALGetRasterStatistics() do not work correctly with bApproxOK=false and bForce=false/true
+  // see above and https://trac.osgeo.org/gdal/ticket/4857
+  // -> Cannot used cached GDAL stats for exact
+
   CPLErr myerval =
-    GDALGetRasterStatistics( myGdalBand, bApproxOK, false, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
+    GDALGetRasterStatistics( myGdalBand, bApproxOK, true, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
 
   QgsDebugMsg( QString( "myerval = %1" ).arg( myerval ) );
+
   // if cached stats are not found, compute them
-  if ( CE_None != myerval )
+  if ( !bApproxOK || CE_None != myerval )
   {
     QgsDebugMsg( "Calculating statistics by GDAL" );
     myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
