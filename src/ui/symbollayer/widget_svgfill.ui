@@ -19,10 +19,59 @@
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QLabel" name="mBorderColorLabel">
+       <property name="text">
+        <string>Border color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mColorLabel">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QgsColorButtonV2" name="mChangeBorderColorButton">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="mTextureWidthLabel">
        <property name="text">
         <string>Texture width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsColorButtonV2" name="mChangeColorButton">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="mBorderWidthSpinBox">
+       <property name="decimals">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mRotationLabel">
+       <property name="text">
+        <string>Rotation</string>
        </property>
       </widget>
      </item>
@@ -36,73 +85,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mRotationLabel">
-       <property name="text">
-        <string>Rotation</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="mRotationSpinBox">
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mColorLabel">
-       <property name="text">
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="mChangeColorButton">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="mBorderColorLabel">
-       <property name="text">
-        <string>Border color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="mChangeBorderColorButton">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="mBorderWidthLabel">
        <property name="text">
         <string>Border width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QDoubleSpinBox" name="mBorderWidthSpinBox">
-       <property name="decimals">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mOutlineLabel">
-       <property name="text">
-        <string>Outline</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QPushButton" name="mChangeOutlinePushButton">
-       <property name="text">
-        <string>Change</string>
        </property>
       </widget>
      </item>
@@ -161,6 +147,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
