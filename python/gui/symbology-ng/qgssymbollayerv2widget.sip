@@ -200,11 +200,6 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-
-  protected:
-    void insertIcons();
-    void updateOutlineIcon();
-    void updateParamGui();
 };
 
 //////////
