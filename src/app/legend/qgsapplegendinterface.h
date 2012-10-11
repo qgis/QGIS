@@ -62,8 +62,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     bool isLayerVisible( QgsMapLayer * ml );
 
     void addLegendLayerAction( QAction* action, QString menu, QString id,
-                               QgsMapLayer::LayerType type );
+                               QgsMapLayer::LayerType type, bool allLayers );
     bool removeLegendLayerAction( QAction* action );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
 
     QgsMapLayer* currentLayer();
     bool setCurrentLayer( QgsMapLayer *layer );

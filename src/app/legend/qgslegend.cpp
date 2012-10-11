@@ -346,6 +346,7 @@ void QgsLegend::removeLayers( QStringList theLayers )
           {
             invLayerRemoved = true;
           }
+          removeLegendLayerActionsForLayer( ll->layer() );
           removeItem( ll );
           delete ll;
           break;
@@ -2689,14 +2690,15 @@ void QgsLegend::groupSelectedLayers()
 }
 
 void QgsLegend::addLegendLayerAction( QAction* action, QString menu, QString id,
-                                      QgsMapLayer::LayerType type )
+                                      QgsMapLayer::LayerType type, bool allLayers )
 {
-  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id ) );
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
 }
 
 bool QgsLegend::removeLegendLayerAction( QAction* action )
 {
-  for ( QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it = mLegendLayerActionMap.begin();
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
         it != mLegendLayerActionMap.end(); ++it )
   {
     for ( int i = 0; i < it->count(); i++ )
@@ -2709,6 +2711,36 @@ bool QgsLegend::removeLegendLayerAction( QAction* action )
     }
   }
   return false;
+}
+
+void QgsLegend::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it )[i].layers.append( layer );
+        return;
+      }
+    }
+  }
+}
+
+void QgsLegend::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      ( *it )[i].layers.removeAll( layer );
+    }
+  }
 }
 
 QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const

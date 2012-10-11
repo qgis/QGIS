@@ -81,12 +81,18 @@ class GUI_EXPORT QgsLegendInterface : public QObject
      * @note added in 2.0
      */
     virtual void addLegendLayerAction( QAction* action, QString menu, QString id,
-                                       QgsMapLayer::LayerType type ) = 0;
+                                       QgsMapLayer::LayerType type, bool allLayers ) = 0;
 
     /** Remove action for layers in the legend
      * @note added in 2.0
      */
     virtual bool removeLegendLayerAction( QAction* action ) = 0;
+
+    /** Add action for a specific layers in the legend.
+     * Use this in combination with addLegendLayerAction( allLayers = False )
+     * @note added in 2.0
+     */
+    virtual void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
 
     //! Returns the current layer if the current item is a QgsLegendLayer.
     //! If the current item is a QgsLegendLayer, its first maplayer is returned.

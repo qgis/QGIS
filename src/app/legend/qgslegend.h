@@ -45,14 +45,15 @@ typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
 struct LegendLayerAction
 {
-  LegendLayerAction( QAction* a, QString m, QString i ) : action( a ), menu( m ), id( i ) {}
+  LegendLayerAction( QAction* a, QString m, QString i, bool all )
+      : action( a ), menu( m ), id( i ), allLayers( all ) {}
+
   QAction* action;
   QString menu;
   QString id;
+  bool allLayers;
+  QList<QgsMapLayer*> layers;
 };
-
-/* typedef QList< QPair< QAction*, QString > > LegendLayerActionList; */
-/* typedef QList< QPair< QAction*, QString > > LegendLayerActionList; */
 
 /**
    \class QgsLegend
@@ -342,8 +343,10 @@ class QgsLegend : public QTreeWidget
     void groupSelectedLayers();
 
     void addLegendLayerAction( QAction* action, QString menu, QString id,
-                               QgsMapLayer::LayerType type );
+                               QgsMapLayer::LayerType type, bool allLayers );
     bool removeLegendLayerAction( QAction* action );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
 
   protected:
