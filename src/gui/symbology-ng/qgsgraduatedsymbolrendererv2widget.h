@@ -68,6 +68,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
 
+    void changeSelectedSymbols();
+
     QList<QgsSymbolV2*> selectedSymbols();
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
     void refreshSymbolView();
