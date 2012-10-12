@@ -643,31 +643,28 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     myQSettings.setValue( "/UI/lastSaveAtlasAsPdfDir", outputDir );
   }
 
-  size_t featureI = 0;
-  QPrinter printer;
+  mView->setPaintingEnabled( false );
+
   if ( hasAnAtlas )
   {
+    QPrinter printer;
+
+    QPainter painter;
+
     atlasMap->beginRender();
     if ( atlasOnASingleFile )
     {
       mComposition->beginPrintAsPDF( printer, outputFileName );
+      painter.begin( &printer );
     }
-  }
-  QPainter painter( &printer );
 
-  QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
-  QApplication::setOverrideCursor( Qt::BusyCursor );
-  mView->setPaintingEnabled( false );
+    QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
+    QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  do
-  {
-    if ( hasAnAtlas )
+    for ( size_t featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
     {
-      if ( 0 == atlasMap->numFeatures() )
-	break;
-      
       progress.setValue( featureI );
-            // process input events in order to allow aborting
+      // process input events in order to allow aborting
       QCoreApplication::processEvents();
       if ( progress.wasCanceled() )
       {
@@ -689,30 +686,30 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       if ( !atlasOnASingleFile )
       {
 	outputFileName = QDir(outputDir).filePath( atlasMap->currentFilename() ) + ".pdf";
+	mComposition->beginPrintAsPDF( printer, outputFileName );
+	painter.begin( &printer );
+	mComposition->doPrint( printer, painter );
+	painter.end();
       }
-    }
-
-    if ( !atlasOnASingleFile )
-    {
-      mComposition->exportAsPDF( outputFileName );
-    }
-    else
-    {
-      if ( featureI > 0 )
+      else
       {
-	printer.newPage();
+	if ( featureI > 0 )
+	{
+	  printer.newPage();
+	}
+	mComposition->doPrint( printer, painter );
       }
-      mComposition->doPrint( printer, painter );
     }
-
-    featureI++;
-  } while ( hasAnAtlas && featureI < atlasMap->numFeatures() );
-  
-  if ( hasAnAtlas )
-  {
     atlasMap->endRender();
+    if ( atlasOnASingleFile )
+    {
+      painter.end();
+    }
   }
-  painter.end();
+  else
+  {
+    mComposition->exportAsPDF( outputFileName );
+  }
 
   mView->setPaintingEnabled( true );
   QApplication::restoreOverrideCursor();
