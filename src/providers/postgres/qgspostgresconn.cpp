@@ -1021,28 +1021,29 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 {
   QString table;
 
-  // it is possible that the where clause restricts the feature type or srid
-  if ( useEstimatedMetadata )
+  if ( !layerProperty.schemaName.isEmpty() )
   {
-    table = QString( "(SELECT %1 FROM %2.%3 WHERE %1 IS NOT NULL%4 LIMIT %5) AS t" )
-            .arg( quotedIdentifier( layerProperty.geometryColName ) )
-            .arg( quotedIdentifier( layerProperty.schemaName ) )
-            .arg( quotedIdentifier( layerProperty.tableName ) )
-            .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
-            .arg( sGeomTypeSelectLimit );
-  }
-  else if ( !layerProperty.schemaName.isEmpty() )
-  {
-    table = QString( "%1.%2%3" )
-            .arg( quotedIdentifier( layerProperty.schemaName ) )
-            .arg( quotedIdentifier( layerProperty.tableName ) )
-            .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
+    table = QString( "%1.%2" ).arg( quotedIdentifier( layerProperty.schemaName ) ).arg( layerProperty.tableName );
   }
   else
   {
-    table = QString( "%1%2" )
-            .arg( layerProperty.tableName )
-            .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
+    // Query
+    table = layerProperty.tableName;
+  }
+
+
+  // it is possible that the where clause restricts the feature type or srid
+  if ( useEstimatedMetadata )
+  {
+    table = QString( "(SELECT %1 FROM %2 WHERE %1 IS NOT NULL%3 LIMIT %4) AS t" )
+            .arg( quotedIdentifier( layerProperty.geometryColName ) )
+            .arg( table )
+            .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
+            .arg( sGeomTypeSelectLimit );
+  }
+  else if ( !layerProperty.sql.isEmpty() )
+  {
+    table += QString( " WHERE %1" ).arg( layerProperty.sql );
   }
 
   QString query = QString( "SELECT DISTINCT"

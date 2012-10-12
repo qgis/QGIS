@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>600</height>
+    <width>695</width>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -187,39 +187,57 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLabel" name="mTimeLabel">
-           <property name="text">
-            <string>Time</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="mTimeComboBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QWidget" name="mTimeWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mTimeLabel">
+            <property name="text">
+             <string>Time</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mTimeComboBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mCRSGroupBox">
-         <property name="title">
-          <string>Coordinate Reference System</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+        <widget class="QWidget" name="mCRSWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mCRSLabel">
+            <property name="text">
+             <string>Coordinate Reference System:</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="mSelectedCRSLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Coordinate Reference System</string>
+             <string>Selected Coordinate Reference System</string>
             </property>
             <property name="buddy">
              <cstring>mChangeCRSButton</cstring>
@@ -240,22 +258,29 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mImageFormatsGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>16</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Format</string>
-         </property>
+        <widget class="QWidget" name="mFormatWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mFormatLabel">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mFormatComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -310,24 +335,28 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="mCacheLabel">
-           <property name="text">
-            <string>Cache</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="mCacheComboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Cache preference
+        <widget class="QWidget" name="mCacheWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mCacheLabel">
+            <property name="text">
+             <string>Cache</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mCacheComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Cache preference
 
 Always cache: load from cache, even if it expired
 
@@ -337,10 +366,11 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>

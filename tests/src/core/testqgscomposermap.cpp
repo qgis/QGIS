@@ -38,6 +38,7 @@ class TestQgsComposerMap: public QObject
     void grid(); //test if grid and grid annotation works
     void overviewMap(); //test if overview map frame works
     void uniqueId(); //test if map id is adapted when doing copy paste
+    void zebraStyle(); //test zebra map border style
 
   private:
     QgsComposition* mComposition;
@@ -159,6 +160,17 @@ void TestQgsComposerMap::uniqueId()
   mComposition->removeComposerItem( const_cast<QgsComposerMap*>( newMap ) );
 
   QVERIFY( oldId != newId );
+}
+
+void TestQgsComposerMap::zebraStyle()
+{
+  mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
+  mComposerMap->setGridEnabled( true );
+
+  QgsCompositionChecker checker( "Composer map zebra", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_zebra_style.png" ) );
+  bool testResult = checker.testComposition();
+  QVERIFY( testResult );
 }
 
 QTEST_MAIN( TestQgsComposerMap )

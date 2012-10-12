@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -595,4 +595,16 @@ void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* r
 {
   delete mSourceColorRamp;
   mSourceColorRamp = ramp;
+}
+
+void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
+{
+  int i = 0;
+  foreach( QgsRendererCategoryV2 cat, mCategories )
+  {
+    QgsSymbolV2* symbol = sym->clone();
+    symbol->setColor( cat.symbol()->color() );
+    updateCategorySymbol( i, symbol );
+    ++i;
+  }
 }

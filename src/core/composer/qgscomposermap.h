@@ -30,6 +30,7 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
     /** Constructor. Settings are read from project. */
     QgsComposerMap( QgsComposition *composition );
-    ~QgsComposerMap();
+    virtual ~QgsComposerMap();
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const { return ComposerMap; }

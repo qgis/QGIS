@@ -23,8 +23,15 @@
 //#include "qgssymbolv2propertiesdialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsmaplayerregistry.h"
+#include "qgscomposershape.h"
+#include "qgspaperitem.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
@@ -749,7 +756,7 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
   QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont() );
 #endif
@@ -901,6 +908,11 @@ void QgsComposerMapWidget::showEvent( QShowEvent * event )
 {
   refreshMapComboBox();
   QWidget::showEvent( event );
+}
+
+void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
+{
+  toolBox->addItem( widget, name );
 }
 
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )

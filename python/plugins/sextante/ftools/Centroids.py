@@ -1,7 +1,35 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    Centroids.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os.path
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -21,26 +49,30 @@ class Centroids(GeoAlgorithm):
         self.name = "Polygon centroids"
         self.group = "Geometry tools"
 
-        self.addParameter(ParameterVector(Centroids.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
 
-        self.addOutput(OutputVector(Centroids.OUTPUT_LAYER, "Output layer"))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(Centroids.INPUT_LAYER))
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
-        provider = layer.dataProvider()
+        outFileName = self.getOutputValue(self.OUTPUT_LAYER)
 
-        writer = self.getOutputFromName(Centroids.OUTPUT_LAYER).getVectorWriter(provider.fields(),
-                                     QGis.WKBPoint, provider.crs())
+        settings = QSettings()
+        encoding = settings.value( "/UI/encoding", "System" ).toString()
 
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(layer.pendingFields(),
+                     QGis.WKBPoint, layer.dataProvider().crs())
+
+        layer.select(layer.pendingAllAttributesList())
 
         inFeat = QgsFeature()
         outFeat = QgsFeature()
-        total = provider.featureCount()
+
+        total = 100.0 / float(layer.featureCount())
         current = 0
-        while provider.nextFeature(inFeat):
+
+        while layer.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             attrMap = inFeat.attributeMap()
 
@@ -52,6 +84,6 @@ class Centroids(GeoAlgorithm):
             outFeat.setAttributeMap(attrMap)
             writer.addFeature(outFeat)
             current += 1
-            progress.setPercentage(int(current / total * 100))
+            progress.setPercentage(int(current * total))
 
         del writer

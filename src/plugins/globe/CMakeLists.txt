@@ -14,9 +14,10 @@ ENDIF(HAVE_OSGEARTH_CHILD_SPACING)
 
 SET (globe_plugin_SRCS
      globe_plugin.cpp
-     qgsosgviewer.cpp
      qgsosgearthtilesource.cpp
      globe_plugin_dialog.cpp
+     osgEarthQt/ViewerWidget.cpp
+     osgEarthUtil/Controls.cpp
 )
 
 SET (globe_plugin_UIS
@@ -26,7 +27,6 @@ SET (globe_plugin_UIS
 SET (globe_plugin_MOC_HDRS
      globe_plugin.h
      globe_plugin_dialog.h
-     qgsosgviewer.h
 )
 
 SET (globe_plugin_RCCS  globe_plugin.qrc)
@@ -57,7 +57,9 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${QT_QTOPENGL_LIBRARY}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
+  ${OSGUTIL_LIBRARY}
   ${OSG_LIBRARY}
+  ${OSGQT_LIBRARY}
   ${OSGVIEWER_LIBRARY}
   ${OSGEARTH_LIBRARY}
   ${OSGEARTHFEATURES_LIBRARY}
@@ -76,5 +78,5 @@ INSTALL(TARGETS globeplugin
 INSTALL (FILES images/world.tif
          DESTINATION ${QGIS_DATA_DIR}/globe)
 
-INSTALL (DIRECTORY data images/gui
+INSTALL (DIRECTORY images/gui
          DESTINATION ${QGIS_DATA_DIR}/globe)

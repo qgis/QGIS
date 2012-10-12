@@ -12,7 +12,7 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
     int redBand() const;
     void setRedBand( int band );

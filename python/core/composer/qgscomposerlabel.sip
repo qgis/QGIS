@@ -26,6 +26,9 @@ class QgsComposerLabel : QgsComposerItem
       @note this function was added in version 1.2*/
     QString displayText() const;
 
+    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = QMap<QString, QVariant>() );
+
     QFont font() const;
     void setFont( const QFont& f );
     /** Accessor for the vertical alignment of the label

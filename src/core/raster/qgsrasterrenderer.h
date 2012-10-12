@@ -33,9 +33,31 @@ struct QgsRasterViewPort;
 
 class QDomElement;
 
+/** \ingroup core
+  * Raster renderer pipe that applies colours to a raster.
+  */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
   public:
+    // Origin of min / max values
+    enum MinMaxOrigin
+    {
+      MinMaxUnknown         = 0,
+      MinMaxUser            = 1, // entered by user
+      // method
+      MinMaxMinMax          = 1 << 1,
+      MinMaxCumulativeCut   = 1 << 2,
+      MinMaxStdDev          = 1 << 3,
+      // Extent
+      MinMaxFullExtent      = 1 << 4,
+      MinMaxSubExtent       = 1 << 5,
+      // Precision
+      MinMaxEstimated       = 1 << 6,
+      MinMaxExact           = 1 << 7
+    };
+
+    static const QRgb NODATA_COLOR;
+
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
@@ -43,17 +65,21 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const;
 
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input );
 
+#if 0
     virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
     }
+#endif
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     bool usesTransparency() const;
 
@@ -78,6 +104,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
+
+    static QString minMaxOriginName( int theOrigin );
+    static QString minMaxOriginLabel( int theOrigin );
+    static int minMaxOriginFromName( QString theName );
 
   protected:
 

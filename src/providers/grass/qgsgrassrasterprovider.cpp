@@ -440,7 +440,7 @@ QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
     }
   }
   void * data = malloc( dataTypeSize( 1 ) / 8 );
-  writeValue( data, dataType( 1 ), 0, value );
+  QgsRasterBlock::writeValue( data, dataType( 1 ), 0, value );
 
   results.insert( 1, data );
   QgsDebugMsg( "strValue = " + strValue );
@@ -457,27 +457,27 @@ int QgsGrassRasterProvider::capabilities() const
   return capability;
 }
 
-QgsRasterInterface::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-QgsRasterInterface::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
+QgsRasterBlock::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
-      return QgsRasterDataProvider::Int32;
+      return QgsRasterBlock::Int32;
       break;
     case FCELL_TYPE:
-      return QgsRasterDataProvider::Float32;
+      return QgsRasterBlock::Float32;
       break;
     case DCELL_TYPE:
-      return QgsRasterDataProvider::Float64;
+      return QgsRasterBlock::Float64;
       break;
   }
-  return QgsRasterDataProvider::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
 int QgsGrassRasterProvider::bandCount() const

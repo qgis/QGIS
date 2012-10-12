@@ -1,4 +1,3 @@
-
 /* Markus Kuhn -- 2001-01-12 -- public domain */
 /* Adaptions for KDE by Waldo Bastian <bastian@kde.org> */
 /*

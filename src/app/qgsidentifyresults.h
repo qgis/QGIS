@@ -94,6 +94,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void copyFeatureAttributes();
     void highlightAll();
     void highlightLayer();
+    void layerProperties();
     void clearHighlights();
     void expandAll();
     void collapseAll();
@@ -126,6 +127,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QTreeWidgetItem *layerItem( QObject *layer );
 
     void highlightLayer( QTreeWidgetItem *object );
+    void layerProperties( QTreeWidgetItem *object );
     void disconnectLayer( QObject *object );
 
     void setColumnText( int column, const QString & label );

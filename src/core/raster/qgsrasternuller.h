@@ -23,6 +23,9 @@
 
 #include <QList>
 
+/** \ingroup core
+  * Raster pipe that deals with null values.
+*/
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 {
   public:
@@ -39,9 +42,9 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     int bandCount() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    QgsRasterBlock::DataType dataType( int bandNo ) const;
 
-    void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, const QgsRectangle &extent, int width, int height );
 
     void setNoData( QList<QgsRasterNuller::NoData> noData ) { mNoData = noData; }
 

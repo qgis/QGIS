@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -239,9 +239,26 @@ void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
+  // Change the selected symbols alone if anything is selected
+  QItemSelectionModel* m = viewGraduated->selectionModel();
+  QModelIndexList i = m->selectedRows();
+  if ( m && i.size() > 0 )
+  {
+    changeSelectedSymbols();
     return;
+  }
+
+  // Otherwise change the base mGraduatedSymbol
+  QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
+
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  if ( !dlg.exec() )
+  {
+    delete newSymbol;
+    return;
+  }
+
+  mGraduatedSymbol = newSymbol;
 
   updateGraduatedSymbolIcon();
   mRenderer->updateSymbols( mGraduatedSymbol );
@@ -318,6 +335,34 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
     mRowSelected = -1;
   else
     mRowSelected = idx.row();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
+{
+  QItemSelectionModel* m = viewGraduated->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
+    QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+    if ( !dlg.exec() )
+    {
+      delete newSymbol;
+      return;
+    }
+
+    foreach( QModelIndex idx, selectedIndexes )
+    {
+      if( idx.isValid() )
+      {
+        int rangeIdx = idx.row();
+        QgsSymbolV2* newRangeSymbol = newSymbol->clone();
+        newRangeSymbol->setColor( mRenderer->ranges()[rangeIdx].symbol()->color() );
+        mRenderer->updateRangeSymbol( rangeIdx, newRangeSymbol );
+      }
+    }
+  }
+  refreshSymbolView();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )

@@ -59,18 +59,12 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   }
 
   if ( frameCount() < 1 )  return;
-  //QSize contentsSize = mWebPage->mainFrame()->contentsSize();
 
-  QRectF contentRect = this->mFrameItems.at( 0 )->boundingRect();
-  //there is going to be a little rounding error converting from float to int
-  QSize contentsSize = QSize(( int )( contentRect.width() * mHtmlUnitsToMM ),
-                             ( int )( contentRect.height() * mHtmlUnitsToMM ) );
+  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
+  contentsSize.setWidth( mFrameItems.at( 0 )->boundingRect().width() * mHtmlUnitsToMM );
   mWebPage->setViewportSize( contentsSize );
-
-  //suppress scroll bars always
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
-
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
   recalculateFrameSizes();

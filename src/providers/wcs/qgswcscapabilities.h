@@ -27,12 +27,12 @@
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QNetworkRequest>
 #include <QVector>
 #include <QUrl>
 
 class QNetworkAccessManager;
 class QNetworkReply;
-class QNetworkRequest;
 
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
@@ -216,6 +216,8 @@ class QgsWcsCapabilities : public QObject
     void capabilitiesReplyProgress( qint64, qint64 );
 
   private:
+    void parseUri();
+
     //! Get coverage summary for identifier
     QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
 
@@ -326,6 +328,9 @@ class QgsWcsCapabilities : public QObject
 
     //! Password for basic http authentication
     QString mPassword;
+
+    //! Cache load control
+    QNetworkRequest::CacheLoadControl mCacheLoadControl;
 };
 
 

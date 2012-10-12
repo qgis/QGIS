@@ -32,6 +32,19 @@ class QgisInterface : QObject
 
   public slots: // TODO: do these functions really need to be slots?
 
+    /* Exposed functions */
+    /** Set the app font size
+     * @param fontSize point size of font
+     * @note added in 2.0
+     */
+    virtual void setFontSize( int fontSize ) = 0;
+
+    /** Set the app font family
+     * @param fontFamily family of font (not including any style)
+     * @note added in 2.0
+     */
+    virtual void setFontFamily( QString fontFamily ) = 0;
+
     //! Zoom to full extent of map layers
     virtual void zoomFull() = 0;
 

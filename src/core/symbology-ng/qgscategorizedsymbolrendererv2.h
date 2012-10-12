@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -84,6 +84,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual int capabilities() { return SymbolLevels | RotationField; }
 
     virtual QgsSymbolV2List symbols();
+    //! @note added in 2.0
+    void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() { return mCategories; }
 

@@ -23,7 +23,9 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-/**Renderer for multiband images with the color components*/
+/** \ingroup core
+  * Renderer for multiband images with the color components
+*/
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
@@ -35,7 +37,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     int redBand() const { return mRedBand; }
     void setRedBand( int band ) { mRedBand = band; }

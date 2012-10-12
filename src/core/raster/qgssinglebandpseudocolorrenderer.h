@@ -23,6 +23,9 @@
 class QDomElement;
 class QgsRasterShader;
 
+/** \ingroup core
+  * Raster renderer pipe for single band pseudocolor.
+  */
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
@@ -33,7 +36,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height );
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
@@ -46,9 +49,23 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const;
 
+    double classificationMin() const { return mClassificationMin; }
+    double classificationMax() const { return mClassificationMax; }
+    void setClassificationMin( double min ) { mClassificationMin = min; }
+    void setClassificationMax( double max ) { mClassificationMax = max; }
+    int classificationMinMaxOrigin() const { return mClassificationMinMaxOrigin; }
+    void setClassificationMinMaxOrigin( int origin ) { mClassificationMinMaxOrigin = origin; }
+
   private:
     QgsRasterShader* mShader;
     int mBand;
+
+    // Minimum and maximum values used for automatic classification, these
+    // values are not used by renderer in rendering process
+    double mClassificationMin;
+    double mClassificationMax;
+
+    int mClassificationMinMaxOrigin;
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

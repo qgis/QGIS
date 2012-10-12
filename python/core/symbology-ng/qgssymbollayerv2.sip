@@ -2,6 +2,7 @@ class QgsSymbolLayerV2
 {
 %TypeHeaderCode
 #include <qgssymbollayerv2.h>
+#include <qgslinesymbollayerv2.h>
 %End
 
 %ConvertToSubClassCode

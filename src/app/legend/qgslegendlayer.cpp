@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -388,9 +388,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       if ( s.value( "/qgis/createRasterLegendIcons", true ).toBool() )
       {
         QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theLayer );
-        QPixmap myPixmap( 32, 32 );
-        rlayer->thumbnailAsPixmap( &myPixmap );
-        return myPixmap;
+        return rlayer->previewAsPixmap( QSize( 32, 32 ) );
       }
       else
       {

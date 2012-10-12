@@ -29,7 +29,7 @@
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
     , mOn( true )
-    , mStatsOn( false )
+    //, mStatsOn( false )
 {
 }
 
@@ -37,117 +37,13 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
-bool QgsRasterInterface::typeIsNumeric( DataType dataType ) const
+bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
 {
-  switch ( dataType )
-  {
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
-      return true;
-
-    case UnknownDataType:
-    case ARGB32:
-    case ARGB32_Premultiplied:
-    case TypeCount:
-      return false;
-  }
-  return false;
+  return QgsRasterBlock::isNoDataValue( value, noDataValue( bandNo ) );
 }
 
-bool QgsRasterInterface::typeIsColor( DataType dataType ) const
-{
-  switch ( dataType )
-  {
-    case ARGB32:
-    case ARGB32_Premultiplied:
-      return true;
-
-    case UnknownDataType:
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
-    case TypeCount:
-      return false;
-  }
-  return false;
-}
-
-QgsRasterInterface::DataType QgsRasterInterface::typeWithNoDataValue( DataType dataType, double *noDataValue )
-{
-  DataType newDataType;
-
-  switch ( dataType )
-  {
-    case QgsRasterInterface::Byte:
-      *noDataValue = -32768.0;
-      newDataType = QgsRasterInterface::Int16;
-      break;
-    case QgsRasterInterface::Int16:
-      *noDataValue = -2147483648.0;
-      newDataType = QgsRasterInterface::Int32;
-      break;
-    case QgsRasterInterface::UInt16:
-      *noDataValue = -2147483648.0;
-      newDataType = QgsRasterInterface::Int32;
-      break;
-    case QgsRasterInterface::UInt32:
-    case QgsRasterInterface::Int32:
-    case QgsRasterInterface::Float32:
-    case QgsRasterInterface::Float64:
-      *noDataValue = std::numeric_limits<double>::max() * -1.0;
-      newDataType = QgsRasterInterface::Float64;
-    default:
-      QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
-      return UnknownDataType;
-      break;
-  }
-  QgsDebugMsg( QString( "newDataType = %1 noDataValue = %2" ).arg( newDataType ).arg( *noDataValue ) );
-  return newDataType;
-}
-
-inline bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
-{
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
-  // not important and slower
-  if ( qIsNaN( value ) ||
-       doubleNear( value, noDataValue( bandNo ) ) )
-  {
-    return true;
-  }
-  return false;
-}
-
-// To give to an image preallocated memory is the only way to avoid memcpy
-// when we want to keep data but delete QImage
-QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format format )
-{
-  // Qt has its own internal function depthForFormat(), unfortunately it is not public
-
-  QImage img( 1, 1, format );
-
-  // We ignore QImage::Format_Mono and QImage::Format_MonoLSB ( depth 1)
-  int size = width * height * img.bytesPerLine();
-  uchar * data = ( uchar * ) malloc( size );
-  return new QImage( data, width, height, format );
-}
-
+#if 0
+// version with time counting
 void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QTime time;
@@ -182,7 +78,9 @@ void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int 
   }
   return b;
 }
+#endif
 
+#if 0
 void QgsRasterInterface::setStatsOn( bool on )
 {
   if ( on )
@@ -211,56 +109,5 @@ double QgsRasterInterface::time( bool cumulative )
   }
   return t;
 }
+#endif
 
-QString QgsRasterInterface::printValue( double value )
-{
-  /*
-   *  IEEE 754 double has 15-17 significant digits. It specifies:
-   *
-   * "If a decimal string with at most 15 significant decimal is converted to
-   *  IEEE 754 double precision and then converted back to the same number of
-   *  significant decimal, then the final string should match the original;
-   *  and if an IEEE 754 double precision is converted to a decimal string with at
-   *  least 17 significant decimal and then converted back to double, then the final
-   *  number must match the original."
-   *
-   * If printing only 15 digits, some precision could be lost. Printing 17 digits may
-   * add some confusing digits.
-   *
-   * Default 'g' precision on linux is 6 digits, not all significant digits like
-   * some sprintf manuals say.
-   *
-   * We need to ensure that the number printed and used in QLineEdit or XML will
-   * give the same number when parsed.
-   *
-   * Is there a better solution?
-   */
-
-  QString s;
-
-  for ( int i = 15; i <= 17; i++ )
-  {
-    s.setNum( value, 'g', i );
-    if ( s.toDouble() == value )
-    {
-      return s;
-    }
-  }
-  // Should not happen
-  QgsDebugMsg( "Cannot correctly parse printed value" );
-  return s;
-}
-
-void * QgsRasterInterface::convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size )
-{
-  int destDataTypeSize = typeSize( destDataType ) / 8;
-  void *destData = VSIMalloc( destDataTypeSize * size );
-  for ( int i = 0; i < size; i++ )
-  {
-    double value = readValue( srcData, srcDataType, i );
-    writeValue( destData, destDataType, i, value );
-    //double newValue = readValue( destData, destDataType, i );
-    //QgsDebugMsg( QString("convert type %1 to %2: %3 -> %4").arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
-  }
-  return destData;
-}

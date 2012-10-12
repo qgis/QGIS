@@ -250,7 +250,7 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
-    void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
+    //void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
@@ -260,7 +260,7 @@ class QgsRasterLayer : QgsMapLayer
 
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
-    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
@@ -335,7 +335,7 @@ class QgsRasterLayer : QgsMapLayer
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /** \brief Get a legend image for this layer */
-    QPixmap legendAsPixmap();
+    QPixmap legendAsPixmap() /Deprecated/;
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
     QPixmap legendAsPixmapBool( bool ) /Deprecated/;
@@ -473,12 +473,15 @@ class QgsRasterLayer : QgsMapLayer
     virtual QStringList subLayers() const;
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
-    void thumbnailAsPixmap( QPixmap * theQPixmap );
+    void thumbnailAsPixmap( QPixmap * theQPixmap ) /Deprecated/;
+
+    /** \brief Draws a preview of the rasterlayer into a pixmap */
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
 
     /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
      * @note added in QGIS 1.6
      * */
-    void thumbnailAsImage( QImage * thepImage );
+    /* void thumbnailAsImage( QImage * thepImage ) /Deprecated/; */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

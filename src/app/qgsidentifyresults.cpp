@@ -456,9 +456,11 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearHighlights() ) );
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
   mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
+  mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
+  mActionPopup->addSeparator();
 
   if ( featItem && vlayer->actions()->size() > 0 )
   {
@@ -938,6 +940,19 @@ void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
   }
 }
 
+void QgsIdentifyResults::layerProperties()
+{
+  layerProperties( lstResults->currentItem() );
+}
+
+void QgsIdentifyResults::layerProperties( QTreeWidgetItem *item )
+{
+  QgsVectorLayer *vlayer = vectorLayer( item );
+  if( !vlayer )
+    return;
+
+  QgisApp::instance()->showLayerProperties( vlayer );
+}
 
 void QgsIdentifyResults::expandAll()
 {

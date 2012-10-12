@@ -22,6 +22,9 @@
 
 class QDomElement;
 
+/** \ingroup core
+  * Raster renderer pipe for single band color.
+  */
 class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
@@ -33,7 +36,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     bool setInput( QgsRasterInterface* input );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

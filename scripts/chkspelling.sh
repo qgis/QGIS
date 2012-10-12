@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    chkspelling.sh
+#    ---------------------
+#    Date                 : December 2009
+#    Copyright            : (C) 2009 by Juergen E. Fischer
+#    Email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 
 RE=$(echo $(cut -d: -f1 scripts/spelling.dat | sed -e 's/^/\\</; s/$/\\>|/;') | sed -e 's/| /|/g; s/|$//;')

@@ -543,9 +543,14 @@ class Plugins(QObject):
       except:
         pass
       try:
-        exec("auth = %s.authorName()" % key)
+        exec("auth = %s.author()" % key)
       except:
-        pass
+        # "authorName" was deprecated in QGis > 1.8,
+        # you must use "author" instead
+        try:
+          exec("auth = %s.authorName()" % key)
+        except:
+          pass
       try:
         exec("homepage = %s.homepage()" % key)
       except:

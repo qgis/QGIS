@@ -1,18 +1,29 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-############################################################################
-#
-# MODULE:       qgis.db.connect-login.py
-# AUTHOR(S):    Radim Blazek
-#
-# PURPOSE:      Connect to Postgresql
-# COPYRIGHT:    (C) 2009 by Radim Blazek
-#
-#               This program is free software under the GNU General Public
-#               License (>=v2). Read the file COPYING that comes with GRASS
-#               for details.
-#
-#############################################################################
+"""
+***************************************************************************
+    db.connect-login.pg.py - Connect to PostgreSQL
+    ---------------------
+    Date                 : July 2009
+    Copyright            : (C) 2009 by Radim Blazek
+    Email                : radim dot blazek at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Radim Blazek'
+__date__ = 'July 2009'
+__copyright__ = '(C) 2009, Radim Blazek'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 #%Module
 #% description: Make connection to PostgreSQL database and login.

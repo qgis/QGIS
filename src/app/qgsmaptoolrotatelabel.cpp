@@ -57,7 +57,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
   QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
 
   if ( !mCurrentLabelPos.isPinned && labelSettingsOk
-       && !layerSettings.placement == QgsPalLayerSettings::OverPoint )
+       && layerSettings.placement != QgsPalLayerSettings::OverPoint )
   {
     return;
   }

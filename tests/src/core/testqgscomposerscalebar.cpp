@@ -134,8 +134,8 @@ void TestQgsComposerScaleBar::numeric()
 void TestQgsComposerScaleBar::tick()
 {
   mComposerScaleBar->setStyle( "Line Ticks Up" );
-  QgsCompositionChecker checker( "Composer scalebar numeric", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_numeric.png" ) );
+  QgsCompositionChecker checker( "Composer scalebar tick", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_tick.png" ) );
   QVERIFY( checker.testComposition() );
 };
 

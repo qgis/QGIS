@@ -98,8 +98,6 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
-  qgsrasterprojector.cpp
-  qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
   qgsrenderchecker.cpp
   qgsrectangle.cpp
@@ -135,6 +133,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
   composer/qgspaperitem.cpp
@@ -163,13 +162,16 @@ SET(QGIS_CORE_SRCS
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
+  raster/qgsrasterblock.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
+  raster/qgsrasterdataprovider.cpp
   raster/qgsfreakoutshader.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
+  raster/qgsrasterprojector.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
@@ -285,7 +287,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsproject.h
   qgsrunprocess.h
   qgsvectorlayer.h
-  qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
   qgsgeometryvalidator.h
@@ -302,11 +303,13 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerattributetable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
+  composer/qgsatlascomposition.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
   symbology/qgsmarkercatalogue.h
   raster/qgsrasterlayer.h
+  raster/qgsrasterdataprovider.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
@@ -379,8 +382,6 @@ SET(QGIS_CORE_HDRS
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
-  qgsrasterprojector.h
-  qgsrasterdataprovider.h
   qgsrectangle.h
   qgsrendercontext.h
   qgsrenderchecker.h
@@ -404,6 +405,8 @@ SET(QGIS_CORE_HDRS
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
+  raster/qgsrasterblock.h
+  raster/qgsrasterdataprovider.h
   raster/qgsrasterresamplefilter.h
   raster/qgscliptominmaxenhancement.h
   raster/qgscolorrampshader.h
@@ -422,6 +425,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
   raster/qgsrasterpipe.h
+  raster/qgsrasterprojector.h
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h

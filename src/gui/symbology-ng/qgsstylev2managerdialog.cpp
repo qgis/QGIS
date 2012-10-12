@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -669,12 +669,14 @@ void QgsStyleV2ManagerDialog::removeItem()
 
 bool QgsStyleV2ManagerDialog::removeSymbol()
 {
-  QString symbolName = currentItemName();
-  if ( symbolName.isEmpty() )
-    return false;
-
-  // delete from style and update list
-  mStyle->removeSymbol( symbolName );
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  foreach( QModelIndex index, indexes )
+  {
+    QString symbolName = index.data().toString();
+    // delete from style and update list
+    if ( !symbolName.isEmpty() )
+      mStyle->removeSymbol( symbolName );
+  }
   mModified = true;
   return true;
 }
@@ -1294,7 +1296,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     {
       groupId = mStyle->groupId( selectedItem->text() );
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
     foreach ( QModelIndex index, indexes )
     {
       mStyle->group( type, index.data().toString(), groupId );

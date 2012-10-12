@@ -59,6 +59,9 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mRotationSpinBox->setValue( mLayer->angle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
+  btnChangeColorBorder->setColor( mLayer->outlineColor() );
+  btnChangeColorFill->setColor( mLayer->fillColor() );
+
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
   if ( symbolItemList.size() > 0 )
   {
@@ -192,6 +195,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_clicked()
     if ( newColor.isValid() )
     {
       mLayer->setOutlineColor( newColor );
+      btnChangeColorBorder->setColor( newColor );
       emit changed();
     }
   }
@@ -205,6 +209,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_clicked()
     if ( newColor.isValid() )
     {
       mLayer->setFillColor( newColor );
+      btnChangeColorFill->setColor( newColor );
       emit changed();
     }
   }

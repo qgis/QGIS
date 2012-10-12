@@ -177,10 +177,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
 
-    QgsRasterInterface::DataType dataTypeFormGdal( int theGdalDataType ) const;
+    QgsRasterBlock::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -269,7 +269,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     bool create( const QString& format, int nBands,
-                 QgsRasterDataProvider::DataType type,
+                 QgsRasterBlock::DataType type,
                  int width, int height, double* geoTransform,
                  const QgsCoordinateReferenceSystem& crs,
                  QStringList createOptions = QStringList() );

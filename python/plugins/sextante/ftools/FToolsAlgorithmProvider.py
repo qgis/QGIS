@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    FToolsAlgorithmProvider.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
 
 from PyQt4 import QtGui
@@ -9,12 +34,14 @@ from sextante.ftools.SumLines import SumLines
 from sextante.ftools.MeanCoords import MeanCoords
 from sextante.ftools.UniqueValues import UniqueValues
 from sextante.ftools.PointDistance import PointDistance
-from sextante.ftools.BasicStatistics import BasicStatistics
+from sextante.ftools.BasicStatisticsStrings import BasicStatisticsStrings
+from sextante.ftools.BasicStatisticsNumbers import BasicStatisticsNumbers
 from sextante.ftools.PointsInPolygon import PointsInPolygon
 from sextante.ftools.LinesIntersection import LinesIntersection
 from sextante.ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
 
 # data management tools
+from sextante.ftools.ReprojectLayer import ReprojectLayer
 
 # geometry tools
 from sextante.ftools.Delaunay import Delaunay
@@ -23,6 +50,7 @@ from sextante.ftools.ExtractNodes import ExtractNodes
 from sextante.ftools.VoronoiPolygons import VoronoiPolygons
 from sextante.ftools.LinesToPolygons import LinesToPolygons
 from sextante.ftools.PolygonsToLines import PolygonsToLines
+from sextante.ftools.DensifyGeometries import DensifyGeometries
 from sextante.ftools.SimplifyGeometries import SimplifyGeometries
 from sextante.ftools.ExportGeometryInfo import ExportGeometryInfo
 from sextante.ftools.MultipartToSingleparts import MultipartToSingleparts
@@ -48,14 +76,16 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [SumLines(), PointsInPolygon(), BasicStatistics(),
-                        NearestNeighbourAnalysis(), MeanCoords(), LinesIntersection(),
-                        UniqueValues(), PointDistance(),
+        self.alglist = [SumLines(), PointsInPolygon(), BasicStatisticsStrings(),
+                        BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
+                        MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
                         # data management
+                        ReprojectLayer(),
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
-                        SimplifyGeometries(), MultipartToSingleparts(), SinglePartsToMultiparts(),
-                        PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
+                        SimplifyGeometries(), DensifyGeometries(), MultipartToSingleparts(),
+                        SinglePartsToMultiparts(), PolygonsToLines(), LinesToPolygons(),
+                        ExtractNodes(),
                         # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                         Dissolve(), Difference(), Intersection(), Union(), Clip(),

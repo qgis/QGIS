@@ -40,7 +40,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         super(PythonEdit,self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
         
-        self.current_prompt_pos = None
         self.new_input_line = True 
         
         self.setMarginWidth(0, 0)
@@ -50,9 +49,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.buffer = []
         
         self.insertInitText()
-        
-        self.setCursorPosition(4,4)
-        
         self.displayPrompt(False)
         
         for line in _init_commands:
@@ -135,9 +131,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def commandConsole(self, command):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
-        line, pos = self.getCurLine()
-        selCmd= self.text(line).length()
-        self.setSelection(line, 4, line, selCmd)
+        line, pos = self.getCursorPosition()
+        selCmdLenght = self.text(line).length()
+        self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
         if command == "iface":
             """Import QgisInterface class"""
@@ -148,12 +144,21 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.append('from sextante.core.Sextante import Sextante')
             self.move_cursor_to_end()
         elif command == "cLayer":
-            """Retrive current Layer from map camvas"""
+            """Retrieve current Layer from map camvas"""
             self.append('cLayer = iface.mapCanvas().currentLayer()')
+            self.move_cursor_to_end()
+        elif command == "qtCore":
+            """Import QtCore class"""
+            self.append('from PyQt4.QtCore import *')
+            self.move_cursor_to_end()
+        elif command == "qtGui":
+            """Import QtGui class"""
+            self.append('from PyQt4.QtGui import *')
             self.move_cursor_to_end()
         self.setFocus()
         
     def setLexers(self, lexer):
+        from qgis.core import QgsApplication
         if lexer:
             font = QFont()
             font.setFamily('Mono') ## Courier New
@@ -174,7 +179,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 3)
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
-            self.api.loadPrepared(QString(os.path.dirname(__file__) + "/api/pyqgis_master.pap"))
+            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
+
             self.setLexer(self.lexer)
             
     ## TODO: show completion list for file and directory
@@ -183,10 +189,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if id == 1:
             txt = unicode(txt)
             # get current cursor position 
-            line, pos = self.getCurLine()
-            selCmd= self.text(line).length()
+            line, pos = self.getCursorPosition()
+            selCmdLength = self.text(line).length()
             # select typed text
-            self.setSelection(line, 4, line, selCmd)
+            self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.insert(txt)
 
@@ -196,12 +202,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                                              "## To access Quantum GIS environment from this console\n"
                                              "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
-
-    def getCurrentPos(self):
-        """ Get the position (as an int) of the cursor. 
-        getCursorPosition() returns a (linenr, index) tuple.
-        """        
-        return self.SendScintilla(self.SCI_GETCURRENTPOS)
 
     def getText(self):
         """ Get the text as a unicode string. """
@@ -221,20 +221,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def getTextLength(self):
         return self.SendScintilla(QsciScintilla.SCI_GETLENGTH)
 
-    def getLine(self, linenr):
-        """ Get the bytes on the given line number. """
-        len = self.SendScintilla(QsciScintilla.SCI_LINELENGTH)+1
-        bb = QByteArray(len,'0')
-        N = self.SendScintilla(QsciScintilla.SCI_GETLINE, len, bb)
-        return bytes(bb)[:-1]
-    
-    def getCurLine(self):
-        """ Get the current line (as a string) and the 
-        position of the cursor in it. """
-        linenr, index = self.getCursorPosition()
-        #line = self.getLine(linenr) #.decode('utf-8')
-        return linenr, index
-    
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
@@ -250,17 +236,22 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         line, index = self.get_end_pos()
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
+        self.ensureLineVisible(line)
         
-    def on_new_line(self):
-        """On new input line"""
-        self.move_cursor_to_end()
-        self.current_prompt_pos = self.getCursorPosition()
-        self.new_input_line = False
+#    def on_new_line(self):
+#        """On new input line"""
+#        self.move_cursor_to_end()
+#        self.new_input_line = False
         
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
         cline, _ = self.getCursorPosition()
         return cline == self.lines() - 1
+
+    def is_cursor_on_edition_zone(self):
+        """ Return True if the cursor is in the edition zone """
+        cline, cindex = self.getCursorPosition()
+        return cline == self.lines() - 1 and cindex >= 4
     
     def new_prompt(self, prompt):
         """
@@ -268,22 +259,23 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         """
         self.write(prompt, prompt=True)
         # now we update our cursor giving end of prompt
-        self.current_prompt_pos = self.getCursorPosition()
+        line, index = self.getCursorPosition()
         self.ensureCursorVisible()
+        self.ensureLineVisible(line)
         
-    def check_selection(self):
-        """
-        Check if selected text is r/w,
-        otherwise remove read-only parts of selection
-        """
-        #if self.current_prompt_pos is None:
-            #self.move_cursor_to_end()
-            #return
-        line_from, index_from, line_to, index_to = self.getSelection()
-        pline, pindex = self.getCursorPosition()
-        if line_from < pline or \
-           (line_from == pline and index_from < pindex):
-            self.setSelection(pline, pindex, line_to, index_to)
+#    def check_selection(self):
+#        """
+#        Check if selected text is r/w,
+#        otherwise remove read-only parts of selection
+#        """
+#        #if self.current_prompt_pos is None:
+#            #self.move_cursor_to_end()
+#            #return
+#        line_from, index_from, line_to, index_to = self.getSelection()
+#        pline, pindex = self.getCursorPosition()
+#        if line_from < pline or \
+#           (line_from == pline and index_from < pindex):
+#            self.setSelection(pline, pindex, line_to, index_to)
 
     def displayPrompt(self, more=False):
         self.append("... ") if more else self.append(">>> ")
@@ -322,9 +314,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
     def showPrevious(self):
         if self.historyIndex < len(self.history) and not self.history.isEmpty():
-            line, pos = self.getCurLine()
-            selCmd= self.text(line).length()
-            self.setSelection(line, 4, line, selCmd)
+            line, pos = self.getCursorPosition()
+            selCmdLenght = self.text(line).length()
+            self.setSelection(line, 4, line, selCmdLenght)
             self.removeSelectedText()
             self.historyIndex += 1
             if self.historyIndex == len(self.history):
@@ -337,9 +329,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             
     def showNext(self):
         if  self.historyIndex > 0 and not self.history.isEmpty():
-            line, pos = self.getCurLine()
-            selCmd = self.text(line).length()
-            self.setSelection(line, 4, line, selCmd)
+            line, pos = self.getCursorPosition()
+            selCmdLenght = self.text(line).length()
+            self.setSelection(line, 4, line, selCmdLenght)
             self.removeSelectedText()
             self.historyIndex -= 1
             if self.historyIndex == len(self.history):
@@ -350,83 +342,92 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):  
-        linenr, index = self.getCurLine()
-        if not self.is_cursor_on_last_line() or index < 4:
-            if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier:
-                if e.key() == Qt.Key_C or e.key() == Qt.Key_A:
+        startLine, _, endLine, _ = self.getSelection()
+
+        # handle invalid cursor position and multiline selections
+        if not self.is_cursor_on_edition_zone() or startLine < endLine:
+            # allow to copy and select
+            if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
+                if e.key() in (Qt.Key_C, Qt.Key_A):
                     QsciScintilla.keyPressEvent(self, e)
-            else:
-                # all other keystrokes get sent to the input line
-                self.move_cursor_to_end()
-                #pass
-        else:
-            if (e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter) and not self.isListActive():
-                    self.entered()
-            elif e.modifiers() & Qt.ControlModifier:
-                if e.key() == Qt.Key_V:
-                    self.paste()
-                elif e.key() == Qt.Key_C:
-                    self.copy()
-                elif e.key() == Qt.Key_X:
-                    self.cut()  
-                elif e.key() == Qt.Key_Left:
-                    e.accept()
-                    if e.modifiers() & Qt.ShiftModifier:
-                        if index > 4:
-                            if e.modifiers() & Qt.ControlModifier:
-                                self.SendScintilla(QsciScintilla.SCI_WORDLEFTEXTEND)
-                            else:
-                                self.SendScintilla(QsciScintilla.SCI_CHARLEFTEXTEND)
-                    else:
-                        if index > 4:
-                            if e.modifiers() & Qt.ControlModifier:
-                                self.SendScintilla(QsciScintilla.SCI_WORDLEFT)
-                            else:
-                                self.SendScintilla(QsciScintilla.SCI_CHARLEFT)
-                elif e.key() == Qt.Key_Right:
-                    e.accept()
-                    if e.modifiers() & Qt.ShiftModifier:
-                        if index >= 4:
-                            if e.modifiers() & Qt.ControlModifier:
-                                self.SendScintilla(QsciScintilla.SCI_WORDRIGHTEXTEND)
-                            else:
-                                self.SendScintilla(QsciScintilla.SCI_CHARRIGHTEXTEND)
-                    else:
-                        if index >= 4:
-                            if e.modifiers() & Qt.ControlModifier:
-                                self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
-                            else:
-                                self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
-            elif e.key() == Qt.Key_Backspace:
-                curPos, pos = self.getCursorPosition()
-                line = self.lines() -1
-                if curPos < line -1 or pos < 5:
-                    return
-                #else:
-                    #self.move_cursor_to_end()
-                QsciScintilla.keyPressEvent(self, e)
-            elif e.key() == Qt.Key_Delete:
+                return
+            # allow selection
+            if e.modifiers() & Qt.ShiftModifier:
+                if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
+                    QsciScintilla.keyPressEvent(self, e)
+                return
+
+            # all other keystrokes get sent to the input line
+            self.move_cursor_to_end()
+
+        line, index = self.getCursorPosition()
+        cmd = self.text(line)
+
+        if e.key() in (Qt.Key_Return, Qt.Key_Enter) and not self.isListActive():
+            self.entered()
+
+        elif e.key() in (Qt.Key_Left, Qt.Key_Home):
+            QsciScintilla.keyPressEvent(self, e)
+            # check whether the cursor is moved out of the edition zone
+            newline, newindex = self.getCursorPosition()
+            if newline < line or newindex < 4:
+                # fix selection and the cursor position
                 if self.hasSelectedText():
-                    self.removeSelectedText()
-                elif self.is_cursor_on_last_line():
-                    self.SendScintilla(QsciScintilla.SCI_CLEAR)
-                e.accept()
-            elif e.key() == Qt.Key_Home:
-                self.setCursorPosition(linenr,4)
-                self.ensureCursorVisible()
-            elif e.key() == Qt.Key_Down and not self.isListActive():
-                self.showPrevious()
-            elif e.key() == Qt.Key_Up and not self.isListActive():
-                self.showNext()
-            ## TODO: press event for auto-completion file directory
-            else:
-                QsciScintilla.keyPressEvent(self, e)
+                    self.setSelection(line, self.getSelection()[3], line, 4)
+                else:
+                    self.setCursorPosition(line, 4)
+
+        elif e.key() in (Qt.Key_Backspace, Qt.Key_Delete):
+            QsciScintilla.keyPressEvent(self, e)
+            # check whether the cursor is moved out of the edition zone
+            _, newindex = self.getCursorPosition()
+            if newindex < 4:
+                # restore the prompt chars (if removed) and
+                # fix the cursor position
+                self.insert( cmd[:3-newindex] + " " )
+                self.setCursorPosition(line, 4)
+
+        elif e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
+                e.key() == Qt.Key_V:
+            self.paste()
+            e.accept()
+
+        elif e.key() == Qt.Key_Down and not self.isListActive():
+            self.showPrevious()
+        elif e.key() == Qt.Key_Up and not self.isListActive():
+            self.showNext()
+        ## TODO: press event for auto-completion file directory
+        else:
+            QsciScintilla.keyPressEvent(self, e)
+                
+    def mousePressEvent(self, e):
+        """
+        Re-implemented to handle the mouse press event.
+        e: the mouse press event (QMouseEvent)
+        """
+        self.setFocus()
+        if e.button() == Qt.MidButton:
+            stringSel = unicode(QApplication.clipboard().text(QClipboard.Selection))
+            if not self.is_cursor_on_last_line():
+                self.move_cursor_to_end()
+            self.insertFromDropPaste(stringSel)
+            e.accept()
+        else:
+            QsciScintilla.mousePressEvent(self, e)
                 
     def paste(self):
-        """Reimplement QScintilla method"""
+        """
+        Method to display data from the clipboard. 
+
+        XXX: It should reimplement the virtual QScintilla.paste method, 
+        but it seems not used by QScintilla code.
+        """
         stringPaste = unicode(QApplication.clipboard().text())
-        if self.hasSelectedText():
-            self.removeSelectedText()
+        if self.is_cursor_on_last_line():
+            if self.hasSelectedText():
+                self.removeSelectedText()
+        else:
+            self.move_cursor_to_end()
         self.insertFromDropPaste(stringPaste)
         
     ## Drag and drop
@@ -434,25 +435,25 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if e.mimeData().hasText():
             stringDrag = e.mimeData().text()
             self.insertFromDropPaste(stringDrag)
+            self.setFocus()
             e.setDropAction(Qt.MoveAction)
             e.accept()
         else:
             QsciScintillaCompat.dropEvent(self, e)
 
-    def insertFromDropPaste(self, textDP):
-        pasteList = QStringList()
+    def insertFromDropPaste(self, textDP): 
         pasteList = textDP.split("\n")
         for line in pasteList[:-1]:
             self.insert(line)
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             self.runCommand(unicode(self.currentCommand()))
-        self.insert(unicode(pasteList[-1]))
-        self.move_cursor_to_end()
+        if pasteList[-1] != "":
+            self.insert(unicode(pasteList[-1]))
+            self.move_cursor_to_end()
 
     def getTextFromEditor(self):
         text = self.text()
-        textList = QStringList()
         textList = text.split("\n")
         return textList
     
@@ -470,15 +471,16 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.move_cursor_to_end()
         self.runCommand( unicode(self.currentCommand()) )
         self.setFocus()
+        self.move_cursor_to_end()
         #self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
         
     def currentCommand(self):
-        linenr, index = self.getCurLine()
+        linenr, index = self.getCursorPosition()
         #for i in range(0, linenr):
         txtLength = self.text(linenr).length()
         string = self.text()
         cmdLine = string.right(txtLength - 4)
-        cmd = str(cmdLine)
+        cmd = unicode(cmdLine)
         return cmd
 
     def runCommand(self, cmd):
@@ -512,7 +514,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.displayPrompt(False)
         else:
             self.buffer.append(cmd)
-            src = "\n".join(self.buffer)
+            src = u"\n".join(self.buffer)
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
@@ -526,3 +528,5 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)
         self.append(txt)
         self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)
+
+

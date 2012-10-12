@@ -20,14 +20,15 @@
 #define QGS_GLOBE_PLUGIN_H
 
 #include "../qgisplugin.h"
-#include "qgsosgviewer.h"
 #include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
 #include <QObject>
+#include <osgViewer/Viewer>
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
-#include <osgEarthUtil/Controls>
+//#include <osgEarthUtil/Controls>
+#include "osgEarthUtil/Controls"
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
 
@@ -56,8 +57,10 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! show the help document
     void help();
 
-    //! Emitted when a new set of layers has been received
-    void layersChanged();
+    //! Emitted when a new set of image layers has been received
+    void imageLayersChanged();
+    //! Emitted when a new set of elevation layers has been received
+    void elevationLayersChanged();
     //! Called when the extents of the map change
     void extentsChanged();
     //! Sync globe extent to mapCanavas
@@ -108,9 +111,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     //!pointer to the qaction for this plugin
     QAction * mQActionSettingsPointer;
     //! OSG Viewer
-    QgsOsgViewer viewer;
-    //! Dock widget for viewer
-    QDockWidgetGlobe *mQDockWidget;
+    osgViewer::Viewer* mOsgViewer;
+    //! QT viewer widget
+    QWidget* mViewerWidget;
     //! Settings Dialog
     QgsGlobePluginDialog *mSettingsDialog;
     //! OSG root node
@@ -122,7 +125,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarth::Util::Controls::ControlCanvas* mControlCanvas;
+    osgEarth::Util::Controls21::ControlCanvas* mControlCanvas;
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
@@ -189,7 +192,7 @@ namespace osgEarth
 {
   namespace Util
   {
-    namespace Controls
+    namespace Controls21
     {
       class NavigationControlHandler : public ControlEventHandler
       {

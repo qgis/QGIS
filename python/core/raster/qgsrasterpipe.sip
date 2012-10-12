@@ -29,6 +29,16 @@ class QgsRasterPipe
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool insert( int idx, QgsRasterInterface* theInterface /Transfer/ );
+%MethodCode
+      sipRes = sipCpp->insert( a0, a1 );
+      if( !sipRes )
+      {
+	// if insertion failed transfer ownership back to python
+	PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
+	if( o )
+	  sipTransferBreak( o );
+      }
+%End
 
     /** Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
@@ -66,6 +76,4 @@ class QgsRasterPipe
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
 
-    /** Set on/off collection of statistics */
-    void setStatsOn( bool on );
 };

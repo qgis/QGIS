@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdexcept>
+
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
@@ -26,22 +28,29 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgscomposerlabel.h"
 #include "qgscomposerattributetable.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgslogger.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
+#include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsexpression.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
 #include <QPainter>
 #include <QPrinter>
 #include <QSettings>
+#include <QDir>
 
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
+QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+    mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -52,7 +61,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
+    mAtlasComposition( this )
 {
   loadSettings();
 }
@@ -112,6 +122,10 @@ void QgsComposition::setNumPages( int pages )
       mPages.removeLast();
     }
   }
+
+  // update the corresponding variable
+  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )numPages() ) );
+
   emit nPagesChanged();
 }
 
@@ -144,6 +158,16 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
     }
   }
   return 0;
+}
+
+int QgsComposition::pageNumberAt( const QPointF& position ) const
+{
+  return position.y() / ( paperHeight() + spaceBetweenPages() );
+}
+
+int QgsComposition::itemPageNumber( const QgsComposerItem* item ) const
+{
+  return pageNumberAt( QPointF( item->transform().dx(), item->transform().dy() ) );
 }
 
 QList<QgsComposerItem*> QgsComposition::selectedComposerItems()
@@ -300,7 +324,6 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   {
     ( *multiFrameIt )->writeXML( compositionElem, doc );
   }
-
   composerElem.appendChild( compositionElem );
 
   return true;
@@ -344,6 +367,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
+
   updatePaperItems();
   return true;
 }
@@ -407,6 +431,11 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
+
+  // read atlas parameters
+  QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
+  atlasComposition().readXML( atlasElem, importDoc );
+
   return true;
 }
 
@@ -1273,6 +1302,7 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
 void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createCommand )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
+
   if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
   {
     removeItem( item );
@@ -1453,6 +1483,8 @@ void QgsComposition::addPaperItem()
   addItem( paperItem );
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
+
+  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )mPages.size() ) );
 }
 
 void QgsComposition::removePaperItems()
@@ -1462,6 +1494,7 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
+  QgsExpression::setSpecialColumn( "$numpages", QVariant(( int )0 ) );
 }
 
 void QgsComposition::deleteAndRemoveMultiFrames()
@@ -1474,29 +1507,25 @@ void QgsComposition::deleteAndRemoveMultiFrames()
   mMultiFrames.clear();
 }
 
-void QgsComposition::exportAsPDF( const QString& file )
+void QgsComposition::beginPrintAsPDF( QPrinter& printer, const QString& file )
 {
-  QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( file );
   printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
 
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
+}
+
+void QgsComposition::exportAsPDF( const QString& file )
+{
+  QPrinter printer;
+  beginPrintAsPDF( printer, file );
   print( printer );
 }
 
-void QgsComposition::print( QPrinter &printer )
+void QgsComposition::doPrint( QPrinter& printer, QPainter& p )
 {
-  //set resolution based on composer setting
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
-
-  //set user-defined resolution
-  printer.setResolution( printResolution() );
-
-  QPainter p( &printer );
-
-  //QgsComposition starts page numbering at 0
+//QgsComposition starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
   int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
 
@@ -1529,6 +1558,23 @@ void QgsComposition::print( QPrinter &printer )
       renderPage( &p, i );
     }
   }
+}
+
+void QgsComposition::beginPrint( QPrinter &printer )
+{
+  //set resolution based on composer setting
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  //set user-defined resolution
+  printer.setResolution( printResolution() );
+}
+
+void QgsComposition::print( QPrinter &printer )
+{
+  beginPrint( printer );
+  QPainter p( &printer );
+  doPrint( printer, p );
 }
 
 QImage QgsComposition::printPageAsRaster( int page )
@@ -1587,3 +1633,4 @@ QString QgsComposition::encodeStringForXML( const QString& str )
   modifiedStr.replace( ">", "&gt;" );
   return modifiedStr;
 }
+

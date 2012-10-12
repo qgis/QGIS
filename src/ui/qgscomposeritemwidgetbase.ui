@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>209</width>
+    <width>235</width>
     <height>277</height>
    </rect>
   </property>
@@ -118,5 +118,38 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mOpacitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>mOpacitySpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>137</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mOpacitySpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>mOpacitySlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>92</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>153</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

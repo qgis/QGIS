@@ -37,8 +37,8 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
     layout()->addWidget( mMinMaxWidget );
-    connect( mMinMaxWidget, SIGNAL( load( int, double, double ) ),
-             this, SLOT( loadMinMax( int, double, double ) ) );
+    connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
+             this, SLOT( loadMinMax( int, double, double, int ) ) );
 
     //fill available bands into combo box
     int nBands = provider->bandCount();
@@ -87,8 +87,9 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   return renderer;
 }
 
-void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
+void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
+  Q_UNUSED( theOrigin );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
   if ( qIsNaN( theMin ) )

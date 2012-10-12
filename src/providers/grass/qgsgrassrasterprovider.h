@@ -192,8 +192,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
 
     int bandCount() const;
 

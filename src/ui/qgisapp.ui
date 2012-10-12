@@ -70,8 +70,8 @@
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
-    <addaction name="separator"/>
     <addaction name="mRecentProjectsMenu"/>
+    <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>

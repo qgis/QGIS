@@ -209,7 +209,7 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont() );
 #endif
@@ -231,7 +231,7 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont() );
 #endif
@@ -253,7 +253,7 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont() );
 #endif
@@ -275,7 +275,7 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont() );
 #endif

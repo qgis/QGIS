@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -69,6 +69,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     //! return key for the currently selected category
     QVariant currentCategory();
+
+    //! return a list of keys for the categories unders selection
+    QList<QVariant> selectedCategories();
+
+    //! change the selected symbols alone for the change button, if there is a selection
+    void changeSelectedSymbols();
 
     void changeCategorySymbol();
 

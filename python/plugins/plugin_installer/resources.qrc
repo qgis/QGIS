@@ -5,5 +5,7 @@
         <file>repoDisabled.png</file>
         <file>repoUnavailable.png</file>
         <file>repoConnected.png</file>
+        <file>pluginExperimental.png</file>
+        <file>pluginStable.png</file>
     </qresource>
 </RCC>

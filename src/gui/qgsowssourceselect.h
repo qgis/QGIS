@@ -143,8 +143,14 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Set supported CRSs
     void populateCRS();
 
+    //! Clear CRSs
+    void clearCRS();
+
     //! Populate times
     void populateTimes();
+
+    //! Clear times
+    void clearTimes();
 
     //! Connection name
     QString connName();
@@ -189,9 +195,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
-
-    //! The widget that controls the image format radio buttons
-    QButtonGroup *mImageFormatGroup;
 
     QPushButton *mAddButton;
 

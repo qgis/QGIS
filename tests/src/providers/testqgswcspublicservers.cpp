@@ -442,10 +442,10 @@ void TestQgsWcsPublicServers::test( )
             myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
             QgsRectangle extent = myLayer->dataProvider()->extent();
             myLog << provider + "_extent:"
-            + QgsRasterInterface::printValue( extent.xMinimum() ) + ","
-            + QgsRasterInterface::printValue( extent.yMinimum() ) + ","
-            + QgsRasterInterface::printValue( extent.xMaximum() ) + ","
-            + QgsRasterInterface::printValue( extent.yMaximum() ) + ",";
+            + QgsRasterBlock::printValue( extent.xMinimum() ) + ","
+            + QgsRasterBlock::printValue( extent.yMinimum() ) + ","
+            + QgsRasterBlock::printValue( extent.xMaximum() ) + ","
+            + QgsRasterBlock::printValue( extent.yMaximum() ) + ",";
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -484,20 +484,20 @@ void TestQgsWcsPublicServers::test( )
 
             // Verify data
             QSet<QString> myValues; // cannot be QSet<double>
-            void *myData = myLayer->dataProvider()->readBlock( 1, myLayer->extent(), myWidth, myHeight );
-            if ( myData )
+            //void *myData = myLayer->dataProvider()->readBlock( 1, myLayer->extent(), myWidth, myHeight );
+            QgsRasterBlock *myBlock = myLayer->dataProvider()->block( 1, myLayer->extent(), myWidth, myHeight );
+            if ( myBlock )
             {
-              int myType = myLayer->dataProvider()->dataType( 1 );
               for ( int row = 0; row < myHeight; row++ )
               {
                 for ( int col = 0; col < myWidth; col++ )
                 {
-                  double value = myLayer->dataProvider()->readValue( myData, myType, row * myWidth + col );
+                  double value = myBlock->value( row, col );
                   QString valueStr = QString::number( value );
                   if ( !myValues.contains( valueStr ) ) myValues.insert( valueStr );
                 }
               }
-              free( myData );
+              delete myBlock;
             }
             QgsDebugMsg( QString( "%1 values" ).arg( myValues.size() ) );
             myLog << provider + QString( "_valuesCount:%1" ).arg( myValues.size() );

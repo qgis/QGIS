@@ -3,7 +3,7 @@
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -67,6 +67,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
+
+    void changeSelectedSymbols();
 
     QList<QgsSymbolV2*> selectedSymbols();
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Mimic the sqlite3 console shell's .dump command
 # Author: Paul Kippes <kippesp@gmail.com>
 

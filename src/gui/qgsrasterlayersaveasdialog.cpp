@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrasterlayersaveasdialog.cpp
+    ---------------------
+    begin                : May 2012
+    copyright            : (C) 2012 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
@@ -254,10 +268,10 @@ void QgsRasterLayerSaveAsDialog::setOutputExtent( const QgsRectangle& r, const Q
     extent = ct.transformBoundingBox( r );
   }
 
-  mXMinLineEdit->setText( QgsRasterInterface::printValue( extent.xMinimum() ) );
-  mXMaxLineEdit->setText( QgsRasterInterface::printValue( extent.xMaximum() ) );
-  mYMinLineEdit->setText( QgsRasterInterface::printValue( extent.yMinimum() ) );
-  mYMaxLineEdit->setText( QgsRasterInterface::printValue( extent.yMaximum() ) );
+  mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
+  mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
+  mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
+  mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
 
   mExtentState = state;
   extentChanged();
@@ -581,12 +595,12 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     QString valueString;
     switch ( mRasterLayer->dataProvider()->srcDataType( 1 ) )
     {
-      case QgsRasterInterface::Float32:
-      case QgsRasterInterface::Float64:
+      case QgsRasterBlock::Float32:
+      case QgsRasterBlock::Float64:
         lineEdit->setValidator( new QDoubleValidator( 0 ) );
         if ( !qIsNaN( value ) )
         {
-          valueString = QgsRasterInterface::printValue( value );
+          valueString = QgsRasterBlock::printValue( value );
         }
         break;
       default:

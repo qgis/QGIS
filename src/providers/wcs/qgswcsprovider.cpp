@@ -91,7 +91,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mPassword( QString::null )
     , mFixBox( false )
     , mFixRotate( false )
-    , mCacheLoadControl( QNetworkRequest::PreferCache )
+    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -307,23 +307,23 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     double myInternalNoDataValue;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterDataProvider::Byte:
+      case QgsRasterBlock::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterDataProvider::Int16:
+      case QgsRasterBlock::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::UInt16:
+      case QgsRasterBlock::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::Int32:
+      case QgsRasterBlock::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterDataProvider::UInt32:
+      case QgsRasterBlock::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -407,22 +407,7 @@ bool QgsWcsProvider::parseUri( QString uriString )
   QString cache = uri.param( "cache" );
   if ( !cache.isEmpty() )
   {
-    if ( cache.compare( "AlwaysCache", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::AlwaysCache;
-    }
-    else if ( cache.compare( "PreferCache", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::PreferCache;
-    }
-    else if ( cache.compare( "PreferNetwork", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::PreferNetwork;
-    }
-    else if ( cache.compare( "AlwaysNetwork", Qt::CaseInsensitive ) == 0 )
-    {
-      mCacheLoadControl = QNetworkRequest::AlwaysNetwork;
-    }
+    mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
   }
   QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) ) ;
 
@@ -518,7 +503,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   QgsDebugMsg( "Entered" );
 
   // TODO: set block to null values, move that to function and call only if fails
-  memset( block, 0, pixelWidth * pixelHeight * typeSize( dataType( bandNo ) ) / 8 );
+  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) / 8 );
 
   // Requested extent must at least partialy overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
@@ -594,7 +579,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
       QgsDebugMsg( tr( "Rotating raster" ) );
-      int pixelSize = typeSize( dataType( bandNo ) ) / 8;
+      int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) ) / 8;
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
@@ -1143,21 +1128,21 @@ void QgsWcsProvider::cacheReplyFinished()
 }
 
 // This could be shared with GDAL provider
-QgsRasterInterface::DataType QgsWcsProvider::srcDataType( int bandNo ) const
+QgsRasterBlock::DataType QgsWcsProvider::srcDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return QgsRasterDataProvider::UnknownDataType;
+    return QgsRasterBlock::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
-QgsRasterInterface::DataType QgsWcsProvider::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {
-    return QgsRasterDataProvider::UnknownDataType;
+    return QgsRasterBlock::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
@@ -1659,7 +1644,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
     for ( int i = 1; i <= bandCount(); i++ )
     {
       void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      writeValue( data, dataType( i ), 0, noDataValue( i ) );
+      QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
     return results;

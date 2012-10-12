@@ -12,4 +12,8 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     QgsRasterRenderer* renderer();
 
     void setFromRenderer( const QgsRasterRenderer* r );
+
+  public slots:
+    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+
 };
