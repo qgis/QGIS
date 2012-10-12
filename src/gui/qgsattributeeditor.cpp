@@ -907,7 +907,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   return true;
 }
 
-QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &proxyWidgets )
+QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &proxyWidgets, bool createGroupBox )
 {
   QWidget *newWidget = 0;
 
@@ -930,17 +930,27 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     case QgsAttributeEditorElement::AeTypeContainer:
     {
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
+      QWidget* myContainer;
 
-      QGroupBox* groupBox = new QGroupBox( parent );
-      groupBox->setTitle ( container->mName );
-      QGridLayout* gbLayout = new QGridLayout( groupBox );
+      if ( createGroupBox )
+      {
+        QGroupBox* groupBox = new QGroupBox( parent );
+        groupBox->setTitle ( container->mName );
+        myContainer = groupBox;
+      }
+      else
+      {
+        myContainer = new QWidget( parent );
+      }
+
+      QGridLayout* gbLayout = new QGridLayout( myContainer );
 
       int index = 0;
 
       for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
       {
         QgsAttributeEditorElement* childDef = *it;
-        QWidget* editor = createWidgetFromDef( childDef, groupBox, vl, attrs, proxyWidgets );
+        QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, attrs, proxyWidgets, true );
 
         if ( childDef->mType == QgsAttributeEditorElement::AeTypeContainer )
         {
@@ -948,7 +958,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         }
         else
         {
-          QLabel * mypLabel = new QLabel( groupBox );
+          QLabel * mypLabel = new QLabel( myContainer );
           gbLayout->addWidget( mypLabel, index, 0 );
           mypLabel->setText( childDef->mName );
           gbLayout->addWidget( editor, index, 1 );
@@ -958,7 +968,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       }
       gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
 
-      newWidget = groupBox;
+      newWidget = myContainer;
       break;
     }
 

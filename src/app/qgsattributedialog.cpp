@@ -110,7 +110,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       if ( widg->mType == QgsAttributeEditorElement::AeTypeContainer )
       {
-        tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef( widg, tabPage, vl, myAttributes, referenceWidgets ) );
+        tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef( widg, tabPage, vl, myAttributes, referenceWidgets, false ) );
       }
       else
       {
