@@ -214,26 +214,26 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Set color on position
      *  @param row row index
      *  @param column column index
-     *  @param index_or_rgb the color to be set, QRgb value
+     *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( int row, int column, QRgb color );
 
     /** \brief Set color on index (indexed line by line)
      *  @param index data matrix index
-     *  @param index_or_rgb the color to be set, QRgb value
+     *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( size_t index, QRgb color );
 
     /** \brief Get pointer to data
      *  @param row row index
      *  @param column column index
-     *  @retun pointer to data
+     *  @return pointer to data
      */
     char * bits( int row, int column );
 
     /** \brief Get pointer to data
      *  @param index data matrix index
-     *  @retun pointer to data
+     *  @return pointer to data
      */
     char * bits( size_t index );
 

@@ -57,13 +57,11 @@ class CORE_EXPORT QgsRasterIterator
        @param bandNumber band to read
        @param nCols number of columns on output device
        @param nRows number of rows on output device
-       @param rasterData to return the pointer to raster data in
        @param topLeftCol top left column
        @param topLeftRow top left row
        @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
-                             //void** rasterData,
                              QgsRasterBlock **block,
                              int& topLeftCol, int& topLeftRow );
 
