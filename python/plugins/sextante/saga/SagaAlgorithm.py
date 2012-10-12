@@ -67,6 +67,12 @@ class SagaAlgorithm(GeoAlgorithm):
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
         self.name = line
+        if "|" in self.name:
+            tokens = self.name.split("|")
+            self.name = tokens[0]
+            self.cmdname = tokens[1]
+        else:
+            self.cmdname = self.name
         line = lines.readline().strip("\n").strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
@@ -201,9 +207,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
         #2: set parameters and outputs
         if SextanteUtils.isWindows():
-            command = self.undecoratedGroup  + " \"" + self.name + "\""
+            command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
-            command = "lib" + self.undecoratedGroup  + " \"" + self.name + "\""
+            command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
 
         for param in self.parameters:
             if param.value is None:

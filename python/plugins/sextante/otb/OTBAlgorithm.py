@@ -162,7 +162,8 @@ class OTBAlgorithm(GeoAlgorithm):
         loglines.append("OTB execution command")
         for line in commands:
             loglines.append(line)
+            progress.setCommand(line)
 
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        progress.setCommand(loglines)
+        
         OTBUtils.executeOtb(commands, progress)
