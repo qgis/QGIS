@@ -345,6 +345,7 @@ class QgsLegend : public QTreeWidget
                                QgsMapLayer::LayerType type );
     bool removeLegendLayerAction( QAction* action );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
+	QMap< QString, QString > legendLayerMenus( QgsMapLayer::LayerType type ) const;
 
   protected:
 

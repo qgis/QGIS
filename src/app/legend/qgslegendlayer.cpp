@@ -506,14 +506,23 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   }
 
   QList< LegendLayerAction > actions = legend()->legendLayerActions( lyr->type() );
+
   if ( ! actions.isEmpty() )
   {
     theMenu.addSeparator();
-    for ( int i = 0; i < actions.count(); i++ )
-    {
-      if ( mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() )
-        theMenu.addAction( actions[i].action );
-    }
+	QMap< QString,QString > actionset = legend()->legendLayerMenus( lyr->type() );
+	QMap<QString, QString>::const_iterator j = actionset.constBegin();
+	while (j != actionset.constEnd())
+	{
+		QString actionMenuName = j.key() ;
+		QMenu *actionMenu = theMenu.addMenu(actionMenuName);
+		for ( int i = 0; i < actions.count(); i++ )
+		{
+		  if ( (actions[i].menu==actionMenuName) && ( mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() ))
+			actionMenu->addAction( actions[i].action );
+		}
+		++j;
+	}
     theMenu.addSeparator();
   }
 
@@ -523,6 +532,17 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
   mySettings.endGroup();
+}
+
+void QgsLegendLayer::addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type )
+{
+
+}
+
+bool QgsLegendLayer::removeLegendLayerAction( QAction* action )
+{
+	return true ;
 }
 
 //////////

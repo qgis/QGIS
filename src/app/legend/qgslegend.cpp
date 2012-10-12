@@ -2715,3 +2715,17 @@ QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType
 {
   return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
 }
+
+QMap< QString, QString > QgsLegend::legendLayerMenus( QgsMapLayer::LayerType type ) const
+{
+  QMap< QString, QString> mapMenus;
+  for ( QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+	for ( int i = 0; i < it->count(); i++ )
+    {
+		mapMenus.insert(( *it )[i].menu,( *it )[i].menu);
+    }
+  }
+  return mapMenus;
+}

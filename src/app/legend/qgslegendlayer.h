@@ -19,6 +19,7 @@
 #include <QFileInfo>
 
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
@@ -55,6 +56,9 @@ class QgsLegendLayer : public QgsLegendItem
 
     /** called to add appropriate menu items to legend's popup menu */
     void addToPopupMenu( QMenu& theMenu );
+	void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type );
+	bool removeLegendLayerAction( QAction* action );
 
     /** Set layer to be visible in canvas */
     void setVisible( bool visible = true );
