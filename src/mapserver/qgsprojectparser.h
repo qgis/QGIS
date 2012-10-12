@@ -169,6 +169,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;
 
+    /**Returns the composer elements published by this WMS. It is possible to hide composers from the WMS*/
+    QList<QDomElement> publishedComposerElements() const;
+
     /**Converts a (possibly relative) path to absolute*/
     QString convertToAbsolutePath( const QString& file ) const;
 

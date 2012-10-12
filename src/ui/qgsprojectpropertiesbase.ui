@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
-    <height>661</height>
+    <width>637</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,8 +60,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>602</width>
-            <height>552</height>
+            <width>607</width>
+            <height>577</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -801,9 +801,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-390</y>
-            <width>670</width>
-            <height>959</height>
+            <y>0</y>
+            <width>646</width>
+            <height>839</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -829,57 +829,8 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="1">
                <widget class="QLineEdit" name="mWMSTitle"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Person</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSContactPerson</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLineEdit" name="mWMSContactPerson"/>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Phone</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSContactPhone</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="2">
-               <widget class="QLineEdit" name="mWMSContactPhone"/>
-              </item>
-              <item row="8" column="2">
-               <widget class="QTextEdit" name="mWMSAbstract"/>
-              </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Abstract</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSAbstract</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>E-Mail</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="2">
-               <widget class="QLineEdit" name="mWMSContactMail"/>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_4">
@@ -891,11 +842,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
+              <item row="1" column="1">
                <widget class="QLineEdit" name="mWMSContactOrganization"/>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="mWMSOnlineResourceLabel">
@@ -903,6 +851,58 @@
                  <string>Online resource</string>
                 </property>
                </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Person</string>
+                </property>
+                <property name="buddy">
+                 <cstring>mWMSContactPerson</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="mWMSContactPerson"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>E-Mail</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="mWMSContactMail"/>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Phone</string>
+                </property>
+                <property name="buddy">
+                 <cstring>mWMSContactPhone</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="mWMSContactPhone"/>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Abstract</string>
+                </property>
+                <property name="buddy">
+                 <cstring>mWMSAbstract</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QTextEdit" name="mWMSAbstract"/>
               </item>
              </layout>
             </widget>
@@ -912,54 +912,8 @@
              <property name="title">
               <string>WMS Capabilitities</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                <property name="text">
-                 <string>Add WKT geometry to feature info response</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QGroupBox" name="grpWMSList">
-                <property name="title">
-                 <string>Coordinate Systems Restrictions</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="0" column="0" colspan="3">
-                  <widget class="QListWidget" name="mWMSList"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="pbnWMSAddSRS">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
-                   <property name="text">
-                    <string>Remove</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                   <property name="text">
-                    <string>Used</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="0">
+             <layout class="QGridLayout" name="gridLayout_14">
+              <item row="0" column="0">
                <widget class="QGroupBox" name="grpWMSExt">
                 <property name="title">
                  <string>Advertised Extent</string>
@@ -1062,14 +1016,113 @@
                 </layout>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="0" column="1">
+               <widget class="QGroupBox" name="mWMSComposerGroupBox">
+                <property name="title">
+                 <string>Composer restrictions</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_10">
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QListWidget" name="mComposerListWidget"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QToolButton" name="mAddWMSComposerButton">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QToolButton" name="mRemoveWMSComposerButton">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <spacer name="horizontalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>81</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QGroupBox" name="grpWMSList">
+                <property name="title">
+                 <string>Coordinate Systems Restrictions</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QListWidget" name="mWMSList"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pbnWMSAddSRS">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                   <property name="text">
+                    <string>Used</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                <property name="text">
+                 <string>Add WKT geometry to feature info response</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
                <widget class="QLabel" name="mWMSUrlLabel">
                 <property name="text">
                  <string>Advertised WMS url</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0" colspan="2">
+              <item row="4" column="0" colspan="2">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLabel" name="mMaxWidthLabel">
@@ -1093,7 +1146,7 @@
                 </item>
                </layout>
               </item>
-              <item row="4" column="0" colspan="2">
+              <item row="3" column="0" colspan="3">
                <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
               </item>
              </layout>

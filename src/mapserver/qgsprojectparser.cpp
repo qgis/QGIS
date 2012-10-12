@@ -1440,18 +1440,19 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     return;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  if ( composerNodeList.size() < 1 )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  if ( composerElemList.size() < 1 )
   {
     return;
   }
 
   QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
 
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement>::const_iterator composerElemIt = composerElemList.constBegin();
+  for ( ; composerElemIt != composerElemList.constEnd(); ++composerElemIt )
   {
     QDomElement composerTemplateElem = doc.createElement( "ComposerTemplate" );
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerElemIt;
     if ( currentComposerElem.isNull() )
     {
       continue;
@@ -1515,10 +1516,11 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
     return composerElem;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  QList<QDomElement>::const_iterator composerIt = composerElemList.constBegin();
+  for ( ; composerIt != composerElemList.constEnd(); ++composerIt )
   {
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerIt;
     if ( currentComposerElem.attribute( "title" ) == composerName )
     {
       return currentComposerElem;
@@ -1526,6 +1528,50 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
   }
 
   return composerElem;
+}
+
+QList<QDomElement> QgsProjectParser::publishedComposerElements() const
+{
+  QList<QDomElement> composerElemList;
+  if ( !mXMLDoc )
+  {
+    return composerElemList;
+  }
+
+  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  QDomElement wmsComposerListElem = propertiesElem.firstChildElement( "WMSComposerList" );
+  if ( wmsComposerListElem.isNull() )
+  {
+    for ( unsigned int i = 0; i < composerNodeList.length(); ++i )
+    {
+      composerElemList.push_back( composerNodeList.at( i ).toElement() );
+    }
+    return composerElemList;
+  }
+
+  QSet<QString> publishedComposerNames;
+  QDomNodeList valueList = wmsComposerListElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    publishedComposerNames.insert( valueList.at( i ).toElement().text() );
+  }
+
+  //remove unpublished composers from list
+  QString currentComposerName;
+  QDomElement currentElem;
+  for ( int i = 0; i < composerNodeList.size(); ++i )
+  {
+    currentElem = composerNodeList.at( i ).toElement();
+    currentComposerName = currentElem.attribute( "title" );
+    if ( publishedComposerNames.contains( currentComposerName ) )
+    {
+      composerElemList.push_back( currentElem );
+    }
+  }
+
+  return composerElemList;
 }
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
