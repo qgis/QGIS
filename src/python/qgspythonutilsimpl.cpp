@@ -76,14 +76,14 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 #endif
     pluginpaths << '"' + p + '"';
   }
-  pluginpaths << homePluginsPath();
+  pluginpaths << '"' + homePluginsPath() + '"';
   pluginpaths << '"' + pluginsPath() + '"';
 
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
   QStringList newpaths;
   newpaths << '"' + pythonPath() + '"';
-  newpaths << homePythonPath();
+  newpaths << '"' + homePythonPath() + '"';
   newpaths << pluginpaths;
   runString( "sys.path = [" + newpaths.join( "," ) + "] + sys.path" );
 
@@ -129,8 +129,8 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 
-  QString startuppath = homePythonPath() + " + \"/startup.py\"";
-  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
+  QString startuppath = homePythonPath() + "/startup.py";
+  runString( "if os.path.exists('" + startuppath + "'): from startup import *\n" );
 }
 
 void QgsPythonUtilsImpl::exitPython()
@@ -445,10 +445,7 @@ QString QgsPythonUtilsImpl::pythonPath()
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-  if ( QgsApplication::isRunningFromBuildDir() )
-    return QString(); // plugins not used
-  else
-    return pythonPath() + "/plugins";
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()
@@ -460,13 +457,13 @@ QString QgsPythonUtilsImpl::homePythonPath()
   }
   else
   {
-    return '"' + settingsDir + "python\"";
+    return settingsDir + "python";
   }
 }
 
 QString QgsPythonUtilsImpl::homePluginsPath()
 {
-  return homePythonPath() + " + \"/plugins\"";
+  return homePythonPath() + "/plugins";
 }
 
 QStringList QgsPythonUtilsImpl::extraPluginsPaths()
