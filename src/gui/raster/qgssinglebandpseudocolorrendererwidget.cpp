@@ -80,6 +80,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mNumberOfEntriesSpinBox->setValue( 5 ); // some default
 
   setFromRenderer( layer->renderer() );
+
+  resetClassifyButton();
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()

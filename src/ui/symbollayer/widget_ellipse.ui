@@ -220,11 +220,11 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
-        <widget class="QComboBox" name="mDDShapeComboBox"/>
-       </item>
        <item row="2" column="1">
         <widget class="QComboBox" name="mDDRotationComboBox"/>
+       </item>
+       <item row="6" column="1">
+        <widget class="QComboBox" name="mDDShapeComboBox"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="mDDRotationLabel">
@@ -232,6 +232,19 @@
           <string>Rotation</string>
          </property>
         </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

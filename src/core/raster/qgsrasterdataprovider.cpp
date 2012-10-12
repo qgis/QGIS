@@ -46,6 +46,7 @@ double QgsRasterDataProvider::noDataValue( int bandNo ) const
   return mInternalNoDataValue.value( bandNo -1 );
 }
 
+#if 0
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
                                        const & viewExtent, int width,
                                        int height,
@@ -115,41 +116,45 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
 
   free( mySrcData );
 }
+#endif
 
-void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+//void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterDataProvider::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsDebugMsg( QString( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ) );
 
-  // TODO: replace VSIMalloc, it is GDAL function
-  void * data = VSIMalloc( dataTypeSize( bandNo ) * width * height );
-  if ( ! data )
+  //void * data = QgsMalloc( dataTypeSize( bandNo ) * width * height );
+
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height, noDataValue( bandNo ) );
+
+  if ( block->isEmpty() )
   {
-    QgsDebugMsg( QString( "Couldn't allocate data memory of % bytes" ).arg( dataTypeSize( bandNo ) * width * height ) );
-    return 0;
+    QgsDebugMsg( "Couldn't create raster block" );
+    return block;
   }
 
-  readBlock( bandNo, extent, width, height, data );
+  readBlock( bandNo, extent, width, height, block->data() );
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
-  QList<QgsRasterInterface::Range> myNoDataRangeList = userNoDataValue( bandNo );
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( bandNo );
   if ( !myNoDataRangeList.isEmpty() )
   {
-    QgsRasterInterface::DataType type = dataType( bandNo );
+    //QgsRasterBlock::DataType type = dataType( bandNo );
     double myNoDataValue = noDataValue( bandNo );
     size_t size = width * height;
     for ( size_t i = 0; i < size; i++ )
     {
-      double value = readValue( data, type, i );
+      double value = block->value( i );
 
-      if ( QgsRasterInterface::valueInRange( value, myNoDataRangeList ) )
+      if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
       {
-        writeValue( data, type, i, myNoDataValue );
+        block->setValue( i, myNoDataValue );
       }
     }
   }
 
-  return data;
+  return block;
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
@@ -306,7 +311,7 @@ QString QgsRasterDataProvider::lastErrorFormat()
 QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
 {
   int type = dataType( theBandNo );
-  size_t size = dataTypeSize( theBandNo ) / 8;
+  size_t size = QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8;
   QByteArray ba;
   ba.resize(( int )size );
   char * data = ba.data();
@@ -318,33 +323,34 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   int i;
   float f;
   double d;
+  // TODO: define correct data types (typedef) like in GDAL
   switch ( type )
   {
-    case Byte:
+    case QgsRasterBlock::Byte:
       uc = ( unsigned char )noval;
       memcpy( data, &uc, size );
       break;
-    case UInt16:
+    case QgsRasterBlock::UInt16:
       us = ( unsigned short )noval;
       memcpy( data, &us, size );
       break;
-    case Int16:
+    case QgsRasterBlock::Int16:
       s = ( short )noval;
       memcpy( data, &s, size );
       break;
-    case UInt32:
+    case QgsRasterBlock::UInt32:
       ui = ( unsigned int )noval;
       memcpy( data, &ui, size );
       break;
-    case Int32:
+    case QgsRasterBlock::Int32:
       i = ( int )noval;
       memcpy( data, &i, size );
       break;
-    case Float32:
+    case QgsRasterBlock::Float32:
       f = ( float )noval;
       memcpy( data, &f, size );
       break;
-    case Float64:
+    case QgsRasterBlock::Float64:
       d = ( double )noval;
       memcpy( data, &d, size );
       break;
@@ -653,7 +659,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( dataTypeSize( theBandNo ) / 8 ) );
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8 ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;
@@ -770,7 +776,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
 
   if ( qIsNaN( theHistogram.minimum ) )
   {
-    if ( mySrcDataType == QgsRasterDataProvider::Byte )
+    if ( mySrcDataType == QgsRasterBlock::Byte )
     {
       theHistogram.minimum = 0; // see histogram() for shift for rounding
     }
@@ -785,7 +791,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
   }
   if ( qIsNaN( theHistogram.maximum ) )
   {
-    if ( mySrcDataType == QgsRasterDataProvider::Byte )
+    if ( mySrcDataType == QgsRasterBlock::Byte )
     {
       theHistogram.maximum = 255;
     }
@@ -844,7 +850,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
   int myBinCount = theBinCount;
   if ( myBinCount == 0 )
   {
-    if ( mySrcDataType == QgsRasterDataProvider::Byte )
+    if ( mySrcDataType == QgsRasterBlock::Byte )
     {
       myBinCount = 256; // Cannot store more values in byte
     }
@@ -929,7 +935,7 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( dataTypeSize( theBandNo ) / 8 ) );
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8 ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;
@@ -1058,25 +1064,25 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
 
   switch ( type )
   {
-    case Byte:
+    case QgsRasterBlock::Byte:
       return ( double )(( GByte * )data )[index];
       break;
-    case UInt16:
+    case QgsRasterBlock::UInt16:
       return ( double )(( GUInt16 * )data )[index];
       break;
-    case Int16:
+    case QgsRasterBlock::Int16:
       return ( double )(( GInt16 * )data )[index];
       break;
-    case UInt32:
+    case QgsRasterBlock::UInt32:
       return ( double )(( GUInt32 * )data )[index];
       break;
-    case Int32:
+    case QgsRasterBlock::Int32:
       return ( double )(( GInt32 * )data )[index];
       break;
-    case Float32:
+    case QgsRasterBlock::Float32:
       return ( double )(( float * )data )[index];
       break;
-    case Float64:
+    case QgsRasterBlock::Float64:
       return ( double )(( double * )data )[index];
       break;
     default:
@@ -1086,14 +1092,14 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData )
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData )
 {
   //if ( bandNo > bandCount() ) return;
   if ( bandNo >= mUserNoDataValue.size() )
   {
     for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
     {
-      mUserNoDataValue.append( QList<QgsRasterInterface::Range>() );
+      mUserNoDataValue.append( QList<QgsRasterBlock::Range>() );
     }
   }
   QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );

@@ -60,8 +60,6 @@ class ExtentFromLayer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         useSelection = self.getParameterValue(self.USE_SELECTION)
         byFeature = self.getParameterValue(self.BY_FEATURE)

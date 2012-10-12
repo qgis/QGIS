@@ -65,9 +65,6 @@ class LinesIntersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         layerA = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_A))
         layerB = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)

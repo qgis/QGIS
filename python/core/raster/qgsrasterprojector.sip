@@ -65,6 +65,6 @@ class QgsRasterProjector : QgsRasterInterface
     int dstRows() const;
     int dstCols() const;
 
-    void *readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 };
 

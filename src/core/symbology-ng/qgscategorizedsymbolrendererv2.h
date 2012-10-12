@@ -84,6 +84,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual int capabilities() { return SymbolLevels | RotationField; }
 
     virtual QgsSymbolV2List symbols();
+    //! @note added in 2.0
+    void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() { return mCategories; }
 

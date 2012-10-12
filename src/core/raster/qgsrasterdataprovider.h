@@ -179,7 +179,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const
     {
       return srcDataType( bandNo );
     }
@@ -187,10 +187,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterInterface::DataType srcDataType( int bandNo ) const
+    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
-      return QgsRasterDataProvider::UnknownDataType;
+      return QgsRasterBlock::UnknownDataType;
     }
 
     /** Returns data type for the band specified by number */
@@ -276,6 +276,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual int xSize() const { return 0; }
     virtual int ySize() const { return 0; }
 
+    // TODO: remove or make protected all readBlock working with void*
+
     /** read block of data  */
     // TODO clarify what happens on the last block (the part outside raster)
     // @note not available in python bindings
@@ -289,11 +291,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** read block of data using give extent and size */
     // @note not available in python bindings
-    virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
+    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
     /** Read block of data using given extent and size. */
     // @note not available in python bindings
-    virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    //virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -318,10 +322,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
 
-    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterInterface::Range> noData );
+    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData );
 
     /** Get list of user no data value ranges */
-    virtual  QList<QgsRasterInterface::Range> userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
+    virtual  QList<QgsRasterBlock::Range> userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
 
     virtual double minimumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
     virtual double maximumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
@@ -549,7 +553,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterInterface::DataType type,
+                         QgsRasterBlock::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ )
@@ -626,7 +630,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief List of lists of user defined additional no data values
      *  for each band, indexed from 0 */
-    QList< QList<QgsRasterInterface::Range> > mUserNoDataValue;
+    QList< QList<QgsRasterBlock::Range> > mUserNoDataValue;
 
     QgsRectangle mExtent;
 

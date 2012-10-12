@@ -4422,7 +4422,7 @@ void QgisApp::deletePrintComposers()
   for ( ; it != mPrintComposers.end(); ++it )
   {
     emit composerWillBeRemoved(( *it )->view() );
-    delete ( (*it)->composition() );
+    delete(( *it )->composition() );
     delete( *it );
   }
   mPrintComposers.clear();
@@ -7113,8 +7113,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGB32
-         && rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGB32_Premultiplied )
+    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterBlock::ARGB32
+         && rlayer->dataProvider()->dataType( 1 ) != QgsRasterBlock::ARGB32_Premultiplied )
     {
       if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {

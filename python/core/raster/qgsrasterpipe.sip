@@ -76,6 +76,4 @@ class QgsRasterPipe
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
 
-    /** Set on/off collection of statistics */
-    void setStatsOn( bool on );
 };

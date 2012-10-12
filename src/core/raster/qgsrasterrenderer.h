@@ -56,6 +56,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
       MinMaxExact           = 1 << 7
     };
 
+    static const QRgb NODATA_COLOR;
+
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
@@ -63,17 +65,21 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const;
 
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input );
 
+#if 0
     virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
     }
+#endif
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     bool usesTransparency() const;
 

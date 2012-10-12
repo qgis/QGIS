@@ -70,6 +70,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     //! return key for the currently selected category
     QVariant currentCategory();
 
+    //! return a list of keys for the categories unders selection
+    QList<QVariant> selectedCategories();
+
+    //! change the selected symbols alone for the change button, if there is a selection
+    void changeSelectedSymbols();
+
     void changeCategorySymbol();
 
     QList<QgsSymbolV2*> selectedSymbols();

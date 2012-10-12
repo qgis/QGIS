@@ -63,9 +63,6 @@ class SumLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         lineLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LINES))
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)

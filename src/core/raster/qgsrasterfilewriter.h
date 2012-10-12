@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRasterFileWriter
                                  int nCols, int nRows,
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
-                                 QgsRasterInterface::DataType destDataType,
+                                 QgsRasterBlock::DataType destDataType,
                                  QList<bool> destHasNoDataValueList,
                                  QList<double> destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
@@ -121,12 +121,12 @@ class CORE_EXPORT QgsRasterFileWriter
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
+        const QString& outputUrl, int fileIndex, int nBands, QgsRasterBlock::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
     /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
     QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
-                                       QgsRasterInterface::DataType type );
+                                       QgsRasterBlock::DataType type );
 
     /**Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );

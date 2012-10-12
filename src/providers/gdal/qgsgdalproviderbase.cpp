@@ -124,51 +124,48 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-QgsRasterInterface::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
+QgsRasterBlock::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Unknown:
-      return QgsRasterDataProvider::UnknownDataType;
+      return QgsRasterBlock::UnknownDataType;
       break;
     case GDT_Byte:
-      return QgsRasterDataProvider::Byte;
+      return QgsRasterBlock::Byte;
       break;
     case GDT_UInt16:
-      return QgsRasterDataProvider::UInt16;
+      return QgsRasterBlock::UInt16;
       break;
     case GDT_Int16:
-      return QgsRasterDataProvider::Int16;
+      return QgsRasterBlock::Int16;
       break;
     case GDT_UInt32:
-      return QgsRasterDataProvider::UInt32;
+      return QgsRasterBlock::UInt32;
       break;
     case GDT_Int32:
-      return QgsRasterDataProvider::Int32;
+      return QgsRasterBlock::Int32;
       break;
     case GDT_Float32:
-      return QgsRasterDataProvider::Float32;
+      return QgsRasterBlock::Float32;
       break;
     case GDT_Float64:
-      return QgsRasterDataProvider::Float64;
+      return QgsRasterBlock::Float64;
       break;
     case GDT_CInt16:
-      return QgsRasterDataProvider::CInt16;
+      return QgsRasterBlock::CInt16;
       break;
     case GDT_CInt32:
-      return QgsRasterDataProvider::CInt32;
+      return QgsRasterBlock::CInt32;
       break;
     case GDT_CFloat32:
-      return QgsRasterDataProvider::CFloat32;
+      return QgsRasterBlock::CFloat32;
       break;
     case GDT_CFloat64:
-      return QgsRasterDataProvider::CFloat64;
-      break;
-    case GDT_TypeCount:
-      // make gcc happy
+      return QgsRasterBlock::CFloat64;
       break;
   }
-  return QgsRasterDataProvider::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( int gdalColorInterpretation ) const

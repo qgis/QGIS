@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock * block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /**Returns number of colors*/
     int nColors() const { return mNColors; }
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QList<int> usesBands() const;
 
   private:
-    int mBandNumber;
+    int mBand;
     /**Color array*/
     QColor* mColors;
     /**Number of colors*/
