@@ -306,6 +306,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   mLayersSupported.clear();
 
+  // TODO: query topology.layer too !
+
   for ( int i = 0; i < 2; i++ )
   {
     QString gtableName, columnName;
@@ -413,17 +415,17 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( searchPublicOnly )
       sql += " AND pg_namespace.nspname='public'";
 
+    // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
     {
-      // TODO: handle this for the topogeometry case
-      sql += " AND (pg_namespace.nspname,pg_class.relname) NOT IN (SELECT f_table_schema,f_table_name FROM geometry_columns)";
+      sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
 
       if ( nGTables > 1 )
       {
-        // TODO: handle this for the topogeometry case
-        // TODO: handle this for the geometry case ?
-        sql += " AND (pg_namespace.nspname,pg_class.relname) NOT IN (SELECT f_table_schema,f_table_name FROM geography_columns)";
+        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geography_column FROM geography_columns)";
       }
+
+      // TODO: handle this for the topogeometry case (once we lookup topology.layer)
     }
 
     sql += " AND pg_class.relkind IN ('v','r')"; // only from views and relations (tables)
