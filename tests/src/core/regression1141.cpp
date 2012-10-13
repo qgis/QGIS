@@ -114,7 +114,6 @@ void Regression1141::diacriticalTest()
     // delete it in its dtor!
     QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
     QgsFeature myFeature;
-    myFeature.setTypeName( "WKBPoint" );
     myFeature.setGeometry( mypPointGeometry );
     myFeature.addAttribute( 0, 10 );
     //

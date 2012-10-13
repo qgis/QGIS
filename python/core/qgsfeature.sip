@@ -87,7 +87,7 @@ class QgsFeature
 %End
 
     //! Constructor
-    QgsFeature( qint64 id = 0, QString typeName = "" );
+    QgsFeature( qint64 id = 0 );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );
@@ -106,16 +106,6 @@ class QgsFeature
      * @param id Feature id
      */
     void setFeatureId( qint64 id );
-
-
-    /** returns the feature's type name
-     */
-    QString typeName() const;
-
-
-    /** sets the feature's type name
-     */
-    void setTypeName( QString typeName );
 
     /**
      * Get the attributes for this feature.

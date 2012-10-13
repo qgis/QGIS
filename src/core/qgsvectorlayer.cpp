@@ -783,8 +783,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     catch ( const QgsCsException &cse )
     {
       Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
-                   .arg( fet.typeName() ).arg( cse.what() ) );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                   .arg( fet.id() ).arg( cse.what() ) );
     }
 #ifndef Q_WS_MAC
     ++featureCount;
@@ -933,8 +933,8 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
         catch ( const QgsCsException &cse )
         {
           Q_UNUSED( cse );
-          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
-                       .arg( fet.typeName() ).arg( cse.what() ) );
+          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+                       .arg( fet.id() ).arg( cse.what() ) );
         }
 #ifndef Q_WS_MAC
         ++featureCount;
@@ -1124,8 +1124,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Rendering stopped. %2" )
-                   .arg( fet.typeName() ).arg( cse.what() ) );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Rendering stopped. %2" )
+                   .arg( fet.id() ).arg( cse.what() ) );
       return false;
     }
 

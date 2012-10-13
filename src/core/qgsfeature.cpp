@@ -22,13 +22,12 @@ email                : sherman at mrcc.com
  * \brief Encapsulates a spatial feature with attributes
  */
 
-QgsFeature::QgsFeature( QgsFeatureId id, QString typeName )
+QgsFeature::QgsFeature( QgsFeatureId id )
     : mFid( id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
     , mValid( false )
     , mDirty( 0 )
-    , mTypeName( typeName )
     , mFields( 0 )
 {
   // NOOP
@@ -41,7 +40,6 @@ QgsFeature::QgsFeature( QgsFeature const & rhs )
     , mOwnsGeometry( false )
     , mValid( rhs.mValid )
     , mDirty( rhs.mDirty )
-    , mTypeName( rhs.mTypeName )
     , mFields( rhs.mFields )
 {
 
@@ -62,7 +60,6 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
   mDirty =  rhs.mDirty;
   mAttributes =  rhs.mAttributes;
   mValid =  rhs.mValid;
-  mTypeName = rhs.mTypeName;
   mFields = rhs.mFields;
 
   // make sure to delete the old geometry (if exists)
@@ -158,21 +155,6 @@ void QgsFeature::setFeatureId( QgsFeatureId id )
 {
   mFid = id;
 }
-
-
-QString QgsFeature::typeName() const
-{
-  return mTypeName;
-} // QgsFeature::typeName
-
-
-
-/** sets the feature's type name
- */
-void QgsFeature::setTypeName( QString typeName )
-{
-  mTypeName = typeName;
-} // QgsFeature::typeName
 
 
 void QgsFeature::setGeometry( const QgsGeometry& geom )

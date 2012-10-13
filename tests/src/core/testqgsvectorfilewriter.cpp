@@ -176,7 +176,6 @@ void TestQgsVectorFileWriter::createLine()
   // delete it in its dtor!
   QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
-  myFeature.setTypeName( "WKBLineString" );
   myFeature.setGeometry( mypLineGeometry );
   myFeature.addAttribute( 0, "HelloWorld" );
   //
@@ -229,7 +228,6 @@ void TestQgsVectorFileWriter::createPolygon()
   // delete it in its dtor!
   QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
-  myFeature.setTypeName( "WKBPolygon" );
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.addAttribute( 0, "HelloWorld" );
   //
@@ -289,7 +287,6 @@ void TestQgsVectorFileWriter::polygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setTypeName( "WKBPolygon" );
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.addAttribute( 0, "HelloWorld" );
       //
@@ -362,7 +359,6 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setTypeName( "WKBPolygon" );
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.addAttribute( 0, "HelloWorld" );
       //

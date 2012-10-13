@@ -130,7 +130,6 @@ void TestQgsMapRenderer::initTestCase()
         // delete it in its dtor!
         QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
         QgsFeature myFeature;
-        myFeature.setTypeName( "WKBPolygon" );
         myFeature.setGeometry( mypPolygonGeometry );
         myFeature.addAttribute( 0, i );
         //

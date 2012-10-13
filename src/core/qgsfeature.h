@@ -107,7 +107,7 @@ class CORE_EXPORT QgsFeature
 {
   public:
     //! Constructor
-    QgsFeature( QgsFeatureId id = QgsFeatureId(), QString typeName = "" );
+    QgsFeature( QgsFeatureId id = QgsFeatureId() );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );
@@ -129,16 +129,6 @@ class CORE_EXPORT QgsFeature
      * @param id Feature id
      */
     void setFeatureId( QgsFeatureId id );
-
-
-    /** returns the feature's type name
-     */
-    QString typeName() const;
-
-
-    /** sets the feature's type name
-     */
-    void setTypeName( QString typeName );
 
     /**
      * Get the attributes for this feature.
@@ -284,9 +274,6 @@ class CORE_EXPORT QgsFeature
     //! Flag to indicate if this feature is dirty (e.g. geometry has been modified in-memory)
     // TODO: still applies? [MD]
     bool mDirty;
-
-    /// feature type name
-    QString mTypeName;
 
     //! Optional field map for name-based attribute lookups
     const QgsFieldMap* mFields;

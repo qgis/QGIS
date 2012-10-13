@@ -292,8 +292,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.typeName() ).arg( e.what() );
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += "\n" + msg;
