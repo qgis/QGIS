@@ -505,25 +505,6 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
-  QList< LegendLayerAction > actions = legend()->legendLayerActions( lyr->type() );
-  QgsDebugMsg( QString( "found %1 actions" ).arg( actions.count() ) );
-  if ( ! actions.isEmpty() )
-  {
-    theMenu.addSeparator();
-    for ( int i = 0; i < actions.count(); i++ )
-    {
-      if (( actions[i].allLayers || actions[i].layers.contains( lyr ) ) &&
-          mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() )
-        theMenu.addAction( actions[i].action );
-    }
-    theMenu.addSeparator();
-  }
-
-  // properties goes on bottom of menu for consistency with normal ui standards
-  // e.g. kde stuff
-  if ( mySettings.value( "mActionLayerProperties", true ).toBool() )
-    theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
-
   mySettings.endGroup();
 }
 

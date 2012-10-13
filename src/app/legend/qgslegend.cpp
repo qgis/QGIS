@@ -709,7 +709,75 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   {
     if ( li->type() == QgsLegendItem::LEGEND_LAYER )
     {
-      qobject_cast<QgsLegendLayer*>( li )->addToPopupMenu( theMenu );
+      QgsLegendLayer* lyr = qobject_cast<QgsLegendLayer*>( li );
+      lyr->addToPopupMenu( theMenu );
+
+      // add custom layer actions
+      QList< LegendLayerAction > actions = legendLayerActions( lyr->layer()->type() );
+      if ( ! actions.isEmpty() )
+      {
+        theMenu.addSeparator();
+        QList<QMenu*> theMenus;
+        for ( int i = 0; i < actions.count(); i++ )
+        {
+          if (( actions[i].allLayers || actions[i].layers.contains( lyr->layer() ) ) &&
+              mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() )
+          {
+            if ( actions[i].menu.isEmpty() )
+            {
+              theMenu.addAction( actions[i].action );
+            }
+            else
+            {
+              // find or create menu for given menu name
+              // adapted from QgisApp::getPluginMenu( QString menuName )
+              QString menuName = actions[i].menu;
+#ifdef Q_WS_MAC
+              // Mac doesn't have '&' keyboard shortcuts.
+              menuName.remove( QChar( '&' ) );
+#endif
+              QAction* before = 0;
+              QMenu* newMenu = 0;
+              QString dst = menuName;
+              dst.remove( QChar( '&' ) );
+              foreach ( QMenu* menu, theMenus )
+              {
+                QString src = menu->title();
+                src.remove( QChar( '&' ) );
+                int comp = dst.localeAwareCompare( src );
+                if ( comp < 0 )
+                {
+                  // Add item before this one
+                  before = menu->menuAction();
+                  break;
+                }
+                else if ( comp == 0 )
+                {
+                  // Plugin menu item already exists
+                  newMenu = menu;
+                  break;
+                }
+              }
+              if ( ! newMenu )
+              {
+                // It doesn't exist, so create
+                newMenu = new QMenu( menuName, this );
+                theMenus.append( newMenu );
+                // Where to put it? - we worked that out above...
+                theMenu.insertMenu( before, newMenu );
+              }
+              // QMenu* menu = getMenu( actions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+              newMenu->addAction( actions[i].action );
+            }
+          }
+        }
+        theMenu.addSeparator();
+      }
+
+      // properties goes on bottom of menu for consistency with normal ui standards
+      // e.g. kde stuff
+      if ( mySettings.value( "mActionLayerProperties", true ).toBool() )
+        theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
@@ -759,6 +827,9 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
         theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
     }
   }
+
+  if ( theMenu.actions().count() > 0 )
+    theMenu.addSeparator();
 
   if ( mySettings.value( "mActionLegendGroupNew", true ).toBool() )
     theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
