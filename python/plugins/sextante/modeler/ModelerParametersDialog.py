@@ -23,9 +23,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os.path
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
+
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -89,8 +92,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         # self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         # self.setTableContent()
         #=======================================================================
-        
-        
+
+
         tooltips = self.alg.getParameterDescriptions()
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.verticalLayout = QtGui.QVBoxLayout()
