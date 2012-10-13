@@ -27,7 +27,6 @@ QgsFeature::QgsFeature( QgsFeatureId id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
     , mValid( false )
-    , mDirty( 0 )
     , mFields( 0 )
 {
   // NOOP
@@ -39,7 +38,6 @@ QgsFeature::QgsFeature( QgsFeature const & rhs )
     , mGeometry( 0 )
     , mOwnsGeometry( false )
     , mValid( rhs.mValid )
-    , mDirty( rhs.mDirty )
     , mFields( rhs.mFields )
 {
 
@@ -57,7 +55,6 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
     return *this;
 
   mFid =  rhs.mFid;
-  mDirty =  rhs.mDirty;
   mAttributes =  rhs.mAttributes;
   mValid =  rhs.mValid;
   mFields = rhs.mFields;
@@ -194,17 +191,6 @@ void QgsFeature::setValid( bool validity )
 {
   mValid = validity;
 }
-
-bool QgsFeature::isDirty() const
-{
-  return mDirty;
-}
-
-void QgsFeature::clean()
-{
-  mDirty = false;
-}
-
 
 bool QgsFeature::addAttribute( const QString& name, QVariant value )
 {

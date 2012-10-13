@@ -148,18 +148,6 @@ class QgsFeature
     void setValid( bool validity );
 
     /**
-     * Return the dirty state of this feature.
-     * Dirty is set if (e.g.) the feature's geometry has been modified in-memory.
-     */
-    bool isDirty() const;
-
-    /**
-     * Reset the dirtiness of the feature.  (i.e. make clean)
-     * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
-     */
-    void clean();
-
-    /**
      * Get the geometry object associated with this feature
      */
     QgsGeometry *geometry();

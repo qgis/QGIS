@@ -170,18 +170,6 @@ class CORE_EXPORT QgsFeature
     void setValid( bool validity );
 
     /**
-     * Return the dirty state of this feature.
-     * Dirty is set if (e.g.) the feature's geometry has been modified in-memory.
-     */
-    bool isDirty() const;
-
-    /**
-     * Reset the dirtiness of the feature.  (i.e. make clean)
-     * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
-     */
-    void clean();
-
-    /**
      * Get the geometry object associated with this feature
      */
     QgsGeometry *geometry();
@@ -270,10 +258,6 @@ class CORE_EXPORT QgsFeature
     //! Flag to indicate if this feature is valid
     // TODO: still applies? [MD]
     bool mValid;
-
-    //! Flag to indicate if this feature is dirty (e.g. geometry has been modified in-memory)
-    // TODO: still applies? [MD]
-    bool mDirty;
 
     //! Optional field map for name-based attribute lookups
     const QgsFieldMap* mFields;
