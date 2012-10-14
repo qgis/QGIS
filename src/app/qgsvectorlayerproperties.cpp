@@ -126,6 +126,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
   else
   {
+    labelingDialog = 0;
+    labelDialog = 0;
     tabWidget->setTabEnabled( 1, false ); // hide labeling item
     tabWidget->setTabEnabled( 2, false ); // hide labeling (deprecated) item
   }
@@ -705,7 +707,8 @@ QgsVectorLayer::EditType QgsVectorLayerProperties::editTypeFromButtonText( QStri
 
 void QgsVectorLayerProperties::apply()
 {
-  labelingDialog->apply();
+  if ( labelingDialog )
+    labelingDialog->apply();
 
   //
   // Set up sql subset query if applicable
@@ -749,7 +752,8 @@ void QgsVectorLayerProperties::apply()
 
   actionDialog->apply();
 
-  labelDialog->apply();
+  if ( labelDialog )
+    labelDialog->apply();
   layer->enableLabels( labelCheckBox->isChecked() );
   layer->setLayerName( displayName() );
 
