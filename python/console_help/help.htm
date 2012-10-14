@@ -34,7 +34,7 @@
 		</tr>
 	</table>
 	<p align="justify">
-		<span id="headerSubject">Python Console based on PyQScintilla2. (Developed by Salvatore Larosa)</span>
+		<span id="headerSubject">Python Console based on PyQScintilla2.</span>
 		<br><br>
 		<span id="headerSubjectMain">To access Quantum GIS environment from this console
 		use qgis.utils.iface object (instance of QgisInterface class).
@@ -64,16 +64,22 @@
 		<br>
 		<li><span id="featuresB">CTRL+ALT+SPACE to view the command history list.</span></li>
 		<br>
+		<li><span id="featuresLoadAPI">Open Quantum GIS API documentation by typing <b>_api</b>.</span></li>
+		<br>
+		<li><span id="featuresLoadCookBook">Open PyQGIS Cookbook by typing <b>_pyqgis</b>.</span>
+		</li>
+		<br>
 		<li><span id="featuresC">Saves the command history by typing <b>_save</b> or closing the widget.<br>
 			This command saves the history command in the file ~/.qgis/console_history.txt</span>
 		</li>
 		<br>
 		<li><span id="featuresD">Clears the command history  by typing <b>_clear</b>.<br>
-			This command clears the command history from file ~/.qgis/console_history.txt</span>
+			This command clears the temporary command history</span>
 		</li>
 		<br>
 		<li><span id="featuresE">Clears completely command history  by typing <b>_clearAll</b>.<br>
-			This command clears completely the command history. It has an irreversible effect.</span>
+			This command clears completely the command history (both temporary and ~/.qgis/console_history.txt). 
+			It has an irreversible effect.</span>
 		</li>
 		</ul>
 	</p>
@@ -119,6 +125,10 @@
 			<td></td>
 			<td><img src="qrc:/images/console/iconSaveConsole.png" /></td>
 			<td><span id="toolbarScriptSave">Tool to save a python script</span></td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/console/iconSettingsConsole.png" /></td>
+			<td colspan="2"><span id="toolbarSettings">Settings</span></td>
 		</tr>
 		<tr>
 			<td><img src="qrc:/images/console/iconHelpConsole.png" /></td>
