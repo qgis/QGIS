@@ -155,7 +155,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   yOffset = 0;
   angleOffset = 0;
   centroidWhole = false;
-  //textFont = QFont();
+  textFont = QApplication::font();
   textNamedStyle = QString( "" );
   textColor = Qt::black;
   textTransp = 0;
@@ -363,6 +363,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
     return; // there's no information available
 
+  // NOTE: set defaults for newly added properties, for backwards compatibility
+
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
   placement = ( Placement ) layer->customProperty( "labeling/placement" ).toInt();
@@ -373,7 +375,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   yOffset = layer->customProperty( "labeling/yOffset", QVariant( 0.0 ) ).toDouble();
   angleOffset = layer->customProperty( "labeling/angleOffset", QVariant( 0.0 ) ).toDouble();
   centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
-  QString fontFamily = layer->customProperty( "labeling/fontFamily" ).toString();
+  QString fontFamily = layer->customProperty( "labeling/fontFamily", QVariant( QApplication::font().family() ) ).toString();
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
   bool fontItalic = layer->customProperty( "labeling/fontItalic" ).toBool();

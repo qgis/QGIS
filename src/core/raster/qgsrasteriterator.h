@@ -57,6 +57,7 @@ class CORE_EXPORT QgsRasterIterator
        @param bandNumber band to read
        @param nCols number of columns on output device
        @param nRows number of rows on output device
+       @param block address of block pointer
        @param topLeftCol top left column
        @param topLeftRow top left row
        @return false if the last part was already returned*/
