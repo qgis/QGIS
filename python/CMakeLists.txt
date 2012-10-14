@@ -149,7 +149,12 @@ ADD_CUSTOM_COMMAND(TARGET compile_python_files
        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-FOREACH(file __init__.py utils.py console.py console_sci.py console_help.py)
+FILE(GLOB UI_FILES *.ui)
+PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
+ADD_CUSTOM_TARGET(console ALL DEPENDS ${PYUI_FILES})
+INSTALL(FILES ${PYUI_FILES} DESTINATION ${QGIS_PYTHON_DIR})
+
+FOREACH(file __init__.py utils.py console.py console_sci.py console_help.py console_settings.py)
   ADD_CUSTOM_COMMAND(TARGET compile_python_files
          POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy ${file} ${QGIS_PYTHON_OUTPUT_DIRECTORY}
@@ -163,3 +168,4 @@ PYTHON_INSTALL(utils.py    ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console_sci.py  ${QGIS_PYTHON_DIR})
 PYTHON_INSTALL(console_help.py  ${QGIS_PYTHON_DIR})
+PYTHON_INSTALL(console_settings.py  ${QGIS_PYTHON_DIR})
