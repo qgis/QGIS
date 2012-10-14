@@ -80,20 +80,6 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        #=======================================================================
-        # self.tableWidget = QtGui.QTableWidget()
-        # self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-        # self.tableWidget.setColumnCount(2)
-        # self.tableWidget.setColumnWidth(0,300)
-        # self.tableWidget.setColumnWidth(1,300)
-        # self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
-        # self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
-        # self.tableWidget.verticalHeader().setVisible(False)
-        # self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        # self.setTableContent()
-        #=======================================================================
-
-
         tooltips = self.alg.getParameterDescriptions()
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.verticalLayout = QtGui.QVBoxLayout()
@@ -117,23 +103,6 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
             self.valueItems[param.name] = widget
-            if isinstance(param, ParameterVector):
-                layout = QtGui.QHBoxLayout()
-                layout.setSpacing(2)
-                layout.setMargin(0)
-                layout.addWidget(widget)
-                button = QtGui.QToolButton()
-                icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/iterate.png")
-                button.setIcon(icon)
-                button.setToolTip("Iterate over this layer")
-                button.setCheckable(True)
-                button.setMaximumWidth(30)
-                button.setMaximumHeight(30)
-                layout.addWidget(button)
-                self.iterateButtons[param.name] = button
-                QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
-                widget = QtGui.QWidget()
-                widget.setLayout(layout)
             if param.name in tooltips.keys():
                 tooltip = tooltips[param.name]
             else:
