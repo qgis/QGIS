@@ -115,7 +115,7 @@ QImage::Format QgsRasterBlock::imageFormat( QgsRasterBlock::DataType theDataType
   { 
     return QImage::Format_ARGB32_Premultiplied;
   }
-  return QImage::QImage::Format_Invalid;
+  return QImage::Format_Invalid;
 }
 
 QgsRasterBlock::DataType QgsRasterBlock::dataType ( QImage::Format theFormat )
@@ -267,7 +267,7 @@ double QgsRasterBlock::value( int row, int column) const
 
 QRgb QgsRasterBlock::color( size_t index) const
 {
-  int row = floor ( index / mWidth );
+  int row = floor ( (double)index / mWidth );
   int column = index % mWidth;
   return color( row, column);
 }
