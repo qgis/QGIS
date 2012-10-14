@@ -1025,7 +1025,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
   if ( !layerProperty.schemaName.isEmpty() )
   {
-    table = QString( "%1.%2" ).arg( quotedIdentifier( layerProperty.schemaName ) ).arg( layerProperty.tableName );
+    table = QString( "%1.%2" )
+            .arg( quotedIdentifier( layerProperty.schemaName ) )
+            .arg( quotedIdentifier( layerProperty.tableName ) );
   }
   else
   {
