@@ -86,7 +86,7 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
         if not self.preloadAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
                 QMessageBox.information(self, self.tr("Warning!"),
-                                              self.tr("Please specify API file or check Preload API files"))
+                                              self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
         self.saveSettings()
         self.listPath = []
