@@ -18,6 +18,8 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgslegend.h"
 
 #include <QAction>
 #include <QDir>
@@ -551,7 +553,7 @@ void QgsCustomization::createTreeItemDocks( )
       if ( st == "Legend" )
       {
         QgsDebugMsg( "Entered" );
-
+		// Load default menu options
         QDomDocument myDoc( "QgsWidgets" );
         QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
 
@@ -571,10 +573,49 @@ void QgsCustomization::createTreeItemDocks( )
         {
           continue ;
         }
-
+		
         QDomElement myCustom = myRoot.firstChildElement( "qgisdocklegendwidget" );
+        QTreeWidgetItem * myItem = createItemFromXmlNode( myCustom );
 
-        QTreeWidgetItem* myItem = createItemFromXmlNode( myCustom );
+		// Load plugins options
+		QStringList myplugin;
+		myplugin << "Plugins";
+
+		QTreeWidgetItem *pluginItem = new QTreeWidgetItem( myItem, myplugin );
+		pluginItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+		pluginItem->setCheckState( 0, Qt::Checked );
+
+		QgsLegend* legend = QgisApp::instance()->legend() ;
+		for(QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer; type<QgsMapLayer::PluginLayer; type = static_cast<QgsMapLayer::LayerType>(type+1))
+		{
+			QList< LegendLayerAction > actions = legend->legendLayerActions( type );
+
+			if ( ! actions.isEmpty() )
+			{
+				QMap< QString,QString > actionset = legend->legendLayerMenus( type );
+				QMap<QString, QString>::const_iterator j = actionset.constBegin();
+				while (j != actionset.constEnd())
+				{
+					QString actionMenuName = j.key() ;
+					QStringList strs;
+					strs << actionMenuName;
+					QTreeWidgetItem* item = new QTreeWidgetItem( pluginItem, strs );
+					for ( int i = 0; i < actions.count(); i++ )
+					{
+					  if ( actions[i].menu==actionMenuName )
+					  {
+						QStringList dwstrs;
+						dwstrs << actions[i].id;
+						QTreeWidgetItem* dwItem = new QTreeWidgetItem( item, dwstrs );
+						dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+						dwItem->setCheckState( 0, Qt::Checked );
+					  }
+					}
+					++j;
+				}
+			}
+		}
+
         topItem->insertChild( 0, myItem );
         myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
         myItem->setCheckState( 0, Qt::Checked );

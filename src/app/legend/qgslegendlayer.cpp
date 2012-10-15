@@ -505,8 +505,8 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
+  // Add menu entries for plugins
   QList< LegendLayerAction > actions = legend()->legendLayerActions( lyr->type() );
-
   if ( ! actions.isEmpty() )
   {
     theMenu.addSeparator();
@@ -518,7 +518,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 		QMenu *actionMenu = theMenu.addMenu(actionMenuName);
 		for ( int i = 0; i < actions.count(); i++ )
 		{
-		  if ( (actions[i].menu==actionMenuName) && ( mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() ))
+		  if ( (actions[i].menu==actionMenuName) && ( mySettings.value( "Plugins/" + actions[i].menu + "/" + actions[i].id, true ).toBool() ))
 			actionMenu->addAction( actions[i].action );
 		}
 		++j;
@@ -532,17 +532,6 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
   mySettings.endGroup();
-}
-
-void QgsLegendLayer::addLegendLayerAction( QAction* action, QString menu, QString id,
-                               QgsMapLayer::LayerType type )
-{
-
-}
-
-bool QgsLegendLayer::removeLegendLayerAction( QAction* action )
-{
-	return true ;
 }
 
 //////////
