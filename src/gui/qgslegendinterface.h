@@ -21,6 +21,7 @@
 #include <QPair>
 #include <QStringList>
 #include <QModelIndex>
+#include <QDomDocument>
 
 class QgsMapLayer;
 class QTreeWidgetItem;
@@ -50,6 +51,9 @@ class GUI_EXPORT QgsLegendInterface : public QObject
 
     //! Return a string list of groups
     virtual QStringList groups() = 0;
+
+    //! Return the groups and layers hierarchy in the legend
+    virtual QDomDocument groupLayerHierarchy() = 0;
 
     //! Return the relationship between groups and layers in the legend
     virtual QList< GroupLayerInfo > groupLayerRelationship() { return QList< GroupLayerInfo >(); }

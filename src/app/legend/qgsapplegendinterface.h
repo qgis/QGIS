@@ -20,6 +20,7 @@
 #include "qgslegendinterface.h"
 
 #include <QModelIndex>
+#include <QDomDocument>
 
 class QgsLegend;
 class QgsMapLayer;
@@ -42,6 +43,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Return a string list of groups
     QStringList groups();
+
+    //! Return the groups and layers hierarchy in the legend
+    QDomDocument groupLayerHierarchy();
 
     //! Return the relationship between groups and layers in the legend
     QList< GroupLayerInfo > groupLayerRelationship();
