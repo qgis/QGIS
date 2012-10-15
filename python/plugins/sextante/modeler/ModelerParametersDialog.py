@@ -137,10 +137,13 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)
+        self.tabWidget.setMinimumWidth(300)        
         self.paramPanel = QtGui.QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.tabWidget.addTab(self.paramPanel, "Parameters")
+        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea.setWidget(self.paramPanel)
+        self.scrollArea.setWidgetResizable(True)
+        self.tabWidget.addTab(self.scrollArea, "Parameters")
         self.webView = QtWebKit.QWebView()
         html = None
         try:
