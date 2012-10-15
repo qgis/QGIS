@@ -700,6 +700,8 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   }
 
   QMenu theMenu( tr( "Legend context" ), this );
+  QSettings mySettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  mySettings.beginGroup( "Customization/Docks/Legend" );
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
@@ -710,24 +712,28 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
-        theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
+        if ( mySettings.value( "mActionLayerTop", true ).toBool() )
+          theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
       }
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
-                         tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
+      if ( mySettings.value( "mActionZoomtoLegendGroup", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+                           tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       // use QGisApp::removeLayer() to remove all selected layers+groups
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
-
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
-                         tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
+      if ( mySettings.value( "mActionRemoveLegendGroup", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      if ( mySettings.value( "mActionSetLegendGroupCRS", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+                           tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
     if (( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
     {
-      theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
+      if ( mySettings.value( "mActionLayerRename", true ).toBool() )
+        theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
 
     //
@@ -735,7 +741,8 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     //
     if ( selectedLayers().length() > 1 )
     {
-      theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
+      if ( mySettings.value( "mActionLegendGroupSelected", true ).toBool() )
+        theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
     }
     // ends here
   }
@@ -743,20 +750,28 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   if ( selectedLayers().length() == 1 )
   {
     QgisApp* app = QgisApp::instance();
-    theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+    if ( mySettings.value( "mActionLayerCopyStyle", true ).toBool() )
+      theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
     if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
     {
-      theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+      if ( mySettings.value( "mActionLayerPasteStyle", true ).toBool() )
+        theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
     }
   }
 
-  theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
+  if ( mySettings.value( "mActionLegendGroupNew", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
+  if ( mySettings.value( "mActionLegendGroupExpandTree", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
+  if ( mySettings.value( "mActionLegendGroupCollapseTree", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
 
-  QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
-  updateDrawingOrderAction->setCheckable( true );
-  updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  if ( mySettings.value( "mActionLegendGroupUpdateDrawingOrder", true ).toBool() )
+  {
+    QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+    updateDrawingOrderAction->setCheckable( true );
+    updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  }
 
   theMenu.exec( position );
 }
@@ -2673,3 +2688,44 @@ void QgsLegend::groupSelectedLayers()
   }
 }
 
+void QgsLegend::addLegendLayerAction( QAction* action, QString menu, QString id,
+                                      QgsMapLayer::LayerType type )
+{
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id ) );
+}
+
+bool QgsLegend::removeLegendLayerAction( QAction* action )
+{
+  for ( QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it ).removeAt( i );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const
+{
+  return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}
+
+QMap< QString, QString > QgsLegend::legendLayerMenus( QgsMapLayer::LayerType type ) const
+{
+  QMap< QString, QString> mapMenus;
+  for ( QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+	for ( int i = 0; i < it->count(); i++ )
+    {
+		mapMenus.insert(( *it )[i].menu,( *it )[i].menu);
+    }
+  }
+  return mapMenus;
+}

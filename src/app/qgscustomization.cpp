@@ -18,6 +18,8 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgslegend.h"
 
 #include <QAction>
 #include <QDir>
@@ -266,12 +268,6 @@ void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
 void QgsCustomizationDialog::init()
 {
   QgsDebugMsg( "Entered" );
-  QTreeWidgetItem * wi = createTreeItemWidgets();
-  if ( wi )
-  {
-    treeWidget->insertTopLevelItem( 0, wi );
-    treeWidget->expandItem( wi );
-  }
 
   treeWidget->insertTopLevelItems( 0, QgsCustomization::instance()->mMainWindowItems );
 
@@ -283,73 +279,6 @@ void QgsCustomizationDialog::init()
 
   treeWidget->sortItems( 0, Qt::AscendingOrder );
   treeWidget->resizeColumnToContents( 0 );
-}
-
-QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
-{
-  QgsDebugMsg( "Entered" );
-
-  QDomDocument myDoc( "QgsWidgets" );
-  QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
-  if ( !myFile.open( QIODevice::ReadOnly ) )
-  {
-    return NULL;
-  }
-  if ( !myDoc.setContent( &myFile ) )
-  {
-    myFile.close();
-    return NULL;
-  }
-  myFile.close();
-
-  QDomElement myRoot = myDoc.documentElement();
-  if ( myRoot.tagName() != "qgiswidgets" )
-  {
-    return NULL;
-  }
-  QTreeWidgetItem *myItem = readWidgetsXmlNode( myRoot );
-  myItem->setData( 0, Qt::DisplayRole, tr( "Widgets" ) );
-
-  return myItem;
-}
-
-QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( QDomNode theNode )
-{
-  QgsDebugMsg( "Entered" );
-  QDomElement myElement = theNode.toElement();
-
-  QString name = myElement.attribute( "objectName", "" );
-  QStringList data( name );
-
-  data << myElement.attribute( "label", name );
-  data << myElement.attribute( "description", "" );
-
-  QTreeWidgetItem *myItem = new QTreeWidgetItem( data );
-
-  // It is nice to have icons for each Qt widget class, is it too heavy?
-  // There are 47 png files, total 196K in qt/tools/designer/src/components/formeditor/images/
-  QString iconName = myElement.attribute( "class", "" ).toLower().mid( 1 ) + ".png";
-  QString iconPath = QgsApplication::iconPath( "/customization/" + iconName );
-  QgsDebugMsg( "iconPath = " + iconPath );
-  if ( QFile::exists( iconPath ) )
-  {
-    myItem->setIcon( 0, QIcon( iconPath ) );
-  }
-  myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-  myItem->setCheckState( 0, Qt::Checked );
-
-  QDomNode n = theNode.firstChild();
-  while ( !n.isNull() )
-  {
-    QDomElement e = n.toElement();
-    if ( !e.isNull() )
-    {
-      QTreeWidgetItem *wi = readWidgetsXmlNode( n );
-      myItem->insertChild( 0, wi );
-    }
-    n = n.nextSibling();
-  }
-  return myItem;
 }
 
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
@@ -489,6 +418,77 @@ void QgsCustomization::addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu
   addTreeItemActions( menuItem, menu->actions() );
 }
 
+QTreeWidgetItem * QgsCustomization::createItemFromXmlNode( QDomNode theNode )
+{
+  QgsDebugMsg( "Entered" );
+  QDomElement myElement = theNode.toElement();
+
+  QString name = myElement.attribute( "objectName", "" );
+  QStringList data( name );
+
+  data << myElement.attribute( "label", name );
+  data << myElement.attribute( "description", "" );
+
+  QTreeWidgetItem *myItem = new QTreeWidgetItem( data );
+
+  // It is nice to have icons for each Qt widget class, is it too heavy?
+  // There are 47 png files, total 196K in qt/tools/designer/src/components/formeditor/images/
+  QString iconName = myElement.attribute( "class", "" ).toLower().mid( 1 ) + ".png";
+  QString iconPath = QgsApplication::iconPath( "/customization/" + iconName );
+  QgsDebugMsg( "iconPath = " + iconPath );
+  if ( QFile::exists( iconPath ) )
+  {
+    myItem->setIcon( 0, QIcon( iconPath ) );
+  }
+  myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+  myItem->setCheckState( 0, Qt::Checked );
+
+  QDomNode n = theNode.firstChild();
+  while ( !n.isNull() )
+  {
+    QDomElement e = n.toElement();
+    if ( !e.isNull() )
+    {
+      QTreeWidgetItem *wi = createItemFromXmlNode( n );
+      myItem->insertChild( 0, wi );
+    }
+    n = n.nextSibling();
+  }
+  return myItem;
+}
+
+void QgsCustomization::createTreeItemWidgets()
+{
+  QgsDebugMsg( "Entered" );
+
+  QDomDocument myDoc( "QgsWidgets" );
+  QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
+
+  if ( !myFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+  if ( !myDoc.setContent( &myFile ) )
+  {
+    myFile.close();
+    return;
+  }
+  myFile.close();
+
+  QDomElement myRoot = myDoc.documentElement();
+  if ( myRoot.tagName() != "qgiswidgets" )
+  {
+    return;
+  }
+
+  QDomElement myCustom = myRoot.firstChildElement( "qgistoolswidgets" );
+
+  QTreeWidgetItem *myItem = createItemFromXmlNode( myCustom );
+  myItem->setData( 0, Qt::DisplayRole, tr( "Widgets" ) );
+
+  mMainWindowItems << myItem;
+}
+
 void QgsCustomization::createTreeItemMenus( )
 {
   QStringList data;
@@ -549,10 +549,86 @@ void QgsCustomization::createTreeItemDocks( )
     {
       QDockWidget* dw = qobject_cast<QDockWidget*> ( obj );
       QStringList dwstrs;
-      dwstrs << dw->objectName() << dw->windowTitle();
-      QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
-      dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      dwItem->setCheckState( 0, Qt::Checked );
+      QString st = dw->objectName();
+      if ( st == "Legend" )
+      {
+        QgsDebugMsg( "Entered" );
+		// Load default menu options
+        QDomDocument myDoc( "QgsWidgets" );
+        QFile myFile( QgsApplication::pkgDataPath() +  "/resources/customization.xml" );
+
+        if ( !myFile.open( QIODevice::ReadOnly ) )
+        {
+          continue ;
+        }
+        if ( !myDoc.setContent( &myFile ) )
+        {
+          myFile.close();
+          continue ;
+        }
+        myFile.close();
+
+        QDomElement myRoot = myDoc.documentElement();
+        if ( myRoot.tagName() != "qgiswidgets" )
+        {
+          continue ;
+        }
+		
+        QDomElement myCustom = myRoot.firstChildElement( "qgisdocklegendwidget" );
+        QTreeWidgetItem * myItem = createItemFromXmlNode( myCustom );
+
+		// Load plugins options
+		QStringList myplugin;
+		myplugin << "Plugins";
+
+		QTreeWidgetItem *pluginItem = new QTreeWidgetItem( myItem, myplugin );
+		pluginItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+		pluginItem->setCheckState( 0, Qt::Checked );
+
+		QgsLegend* legend = QgisApp::instance()->legend() ;
+		for(QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer; type<QgsMapLayer::PluginLayer; type = static_cast<QgsMapLayer::LayerType>(type+1))
+		{
+			QList< LegendLayerAction > actions = legend->legendLayerActions( type );
+
+			if ( ! actions.isEmpty() )
+			{
+				QMap< QString,QString > actionset = legend->legendLayerMenus( type );
+				QMap<QString, QString>::const_iterator j = actionset.constBegin();
+				while (j != actionset.constEnd())
+				{
+					QString actionMenuName = j.key() ;
+					QStringList strs;
+					strs << actionMenuName;
+					QTreeWidgetItem* item = new QTreeWidgetItem( pluginItem, strs );
+					for ( int i = 0; i < actions.count(); i++ )
+					{
+					  if ( actions[i].menu==actionMenuName )
+					  {
+						QStringList dwstrs;
+						dwstrs << actions[i].id;
+						QTreeWidgetItem* dwItem = new QTreeWidgetItem( item, dwstrs );
+						dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+						dwItem->setCheckState( 0, Qt::Checked );
+					  }
+					}
+					++j;
+				}
+			}
+		}
+
+        topItem->insertChild( 0, myItem );
+        myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+        myItem->setCheckState( 0, Qt::Checked );
+        myItem->setData( 0, Qt::DisplayRole, tr( "Legend" ) );
+      }
+      else
+      {
+        dwstrs << dw->objectName() << dw->windowTitle();
+        QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
+        dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+        dwItem->setCheckState( 0, Qt::Checked );
+      }
+
     }
   }
 
@@ -611,6 +687,7 @@ QgsCustomization::~QgsCustomization()
 void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
 {
   // collect tree items even if the customization is disabled
+  createTreeItemWidgets();
   createTreeItemMenus();
   createTreeItemToolbars();
   createTreeItemDocks();

@@ -19,6 +19,7 @@
 #include <QFileInfo>
 
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 
 class QgsLegendLayer;
 class QgsLegendPropertyGroup;
