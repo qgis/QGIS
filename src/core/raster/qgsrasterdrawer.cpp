@@ -63,6 +63,11 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
                                          &block, topLeftCol, topLeftRow ) )
   {
+    if ( !block )
+    {
+      QgsDebugMsg( "Cannot get block" );
+      continue;
+    }
     //create image
     //QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
 

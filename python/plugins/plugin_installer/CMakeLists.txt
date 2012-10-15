@@ -8,6 +8,8 @@ qgis-icon.png
 repoConnected.png
 repoDisabled.png
 repoUnavailable.png
+pluginExperimental.png
+pluginStable.png
 unzip.py
 version_compare.py
 )
