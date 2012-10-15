@@ -134,6 +134,8 @@ class QgsProjectParser: public QgsConfigParser
     QHash< QString, QDomElement > mProjectLayerElementsById;
     /**Project layer elements, accessible by layer name*/
     QHash< QString, QDomElement > mProjectLayerElementsByName;
+    /**Names of layers and groups which should not be published*/
+    QSet<QString> mRestrictedLayers;
 
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
@@ -191,6 +193,9 @@ class QgsProjectParser: public QgsConfigParser
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
     static QString editTypeString( QgsVectorLayer::EditType type );
+
+    /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
+    QSet<QString> restrictedLayers() const;
 };
 
 #endif // QGSPROJECTPARSER_H

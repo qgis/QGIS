@@ -71,6 +71,8 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
         mLegendGroupElements.push_back( groupNodeList.at( i ).toElement() );
       }
     }
+
+    mRestrictedLayers = restrictedLayers();
   }
 }
 
@@ -367,6 +369,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     {
       layerElem.setAttribute( "queryable", "1" );
       QString name = currentChildElem.attribute( "name" );
+      if ( mRestrictedLayers.contains( name ) ) //unpublished group
+      {
+        continue;
+      }
       QDomElement nameElem = doc.createElement( "Name" );
       QDomText nameText = doc.createTextNode( name );
       nameElem.appendChild( nameText );
@@ -434,6 +440,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 
+      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      {
+        continue;
+      }
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
@@ -664,6 +674,13 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
 {
   Q_UNUSED( styleName );
   QList<QgsMapLayer*> layerList;
+
+  //first check if the layer name refers an unpublished layer / group
+  QSet<QString> rLayers = restrictedLayers();
+  if ( mRestrictedLayers.contains( lName ) )
+  {
+    return layerList;
+  }
 
   if ( !mXMLDoc )
   {
@@ -2016,4 +2033,67 @@ void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) 
       layerMap.insert( layer->id(), layer );
     }
   }
+}
+
+QSet<QString> QgsProjectParser::restrictedLayers() const
+{
+  QSet<QString> restrictedLayerSet;
+
+  if ( !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  //names of unpublished layers / groups
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsLayerRestrictionElem = propertiesElem.firstChildElement( "WMSRestrictedLayers" );
+    if ( !wmsLayerRestrictionElem.isNull() )
+    {
+      QStringList restrictedLayersAndGroups;
+      QDomNodeList wmsLayerRestrictionValues = wmsLayerRestrictionElem.elementsByTagName( "value" );
+      for ( int i = 0; i < wmsLayerRestrictionValues.size(); ++i )
+      {
+        restrictedLayerSet.insert( wmsLayerRestrictionValues.at( i ).toElement().text() );
+      }
+    }
+  }
+
+  //get legend dom element
+  if ( restrictedLayerSet.size() < 1 || !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return restrictedLayerSet;
+  }
+
+  //go through all legend groups and insert names of subgroups / sublayers if there is a match
+  QDomNodeList legendGroupList = legendElem.elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < legendGroupList.size(); ++i )
+  {
+    //get name
+    QDomElement groupElem = legendGroupList.at( i ).toElement();
+    QString groupName = groupElem.attribute( "name" );
+    if ( restrictedLayerSet.contains( groupName ) )
+    {
+      //match: add names of subgroups and sublayers to set
+      QDomNodeList subgroupList = groupElem.elementsByTagName( "legendgroup" );
+      for ( int j = 0; j < subgroupList.size(); ++j )
+      {
+        restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( "name" ) );
+      }
+      QDomNodeList sublayerList = groupElem.elementsByTagName( "legendlayer" );
+      for ( int k = 0; k < sublayerList.size(); ++k )
+      {
+        restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+      }
+    }
+  }
+
+  return restrictedLayerSet;
 }
