@@ -22,7 +22,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from console_settings_ui import Ui_SettingsDialog
+from ui_console_settings import Ui_SettingsDialog
 
 class optionsDialog(QDialog, Ui_SettingsDialog):
     def __init__(self, parent):
