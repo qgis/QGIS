@@ -797,7 +797,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-425</y>
+            <y>0</y>
             <width>600</width>
             <height>984</height>
            </rect>
@@ -910,7 +910,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="0" column="0">
-               <widget class="QGroupBox" name="grpWMSExt">
+               <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
                 <property name="title">
                  <string>Advertised Extent</string>
                 </property>
@@ -1013,7 +1013,7 @@
                </widget>
               </item>
               <item row="0" column="1" colspan="2">
-               <widget class="QGroupBox" name="grpWMSList">
+               <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
                 <property name="title">
                  <string>Coordinate Systems Restrictions</string>
                 </property>
@@ -1052,7 +1052,7 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QGroupBox" name="mWMSComposerGroupBox">
+               <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
                 <property name="title">
                  <string>Composer restrictions</string>
                 </property>
@@ -1105,7 +1105,7 @@
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QGroupBox" name="mLayerRestrictionsGroupBox">
+               <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
                 <property name="title">
                  <string>Layer restrictions</string>
                 </property>
@@ -1313,6 +1313,12 @@
    <class>QgsProjectionSelector</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
