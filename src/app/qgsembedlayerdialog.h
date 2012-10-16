@@ -24,13 +24,16 @@ class QgsEmbedLayerDialog: public QDialog, private Ui::QgsEmbedLayerDialogBase
 {
     Q_OBJECT
   public:
-    QgsEmbedLayerDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    /**Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
+    QgsEmbedLayerDialog( QWidget * parent = 0, const QString& projectFile = QString(), Qt::WindowFlags f = 0 );
     ~QgsEmbedLayerDialog();
 
     /**Returns name / projectfiles of groups to embed*/
     QList< QPair < QString, QString > > embeddedGroups() const;
     /**Returns layer id / projectfiles of single layers to embed*/
     QList< QPair < QString, QString > > embeddedLayers() const;
+    /**Returns selected layer and group names*/
+    QStringList layersAndGroupNames() const;
 
   private slots:
     void on_mBrowseFileToolButton_clicked();

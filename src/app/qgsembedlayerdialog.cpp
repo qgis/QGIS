@@ -23,12 +23,21 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
+
+  if ( !projectFile.isEmpty() )
+  {
+    mProjectFileLineEdit->setText( projectFile );
+    mProjectFileLabel->hide();
+    mProjectFileLineEdit->hide();
+    mBrowseFileToolButton->hide();
+    changeProjectFile();
+  }
 
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
@@ -72,6 +81,20 @@ QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedLayers() const
   return result;
 }
 
+QStringList QgsEmbedLayerDialog::layersAndGroupNames() const
+{
+  QStringList result;
+
+  QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
+  for ( ; itemIt != items.end(); ++itemIt )
+  {
+    result.push_back(( *itemIt )->text( 0 ) );
+  }
+
+  return result;
+}
+
 void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when loosing focus
@@ -110,7 +133,7 @@ void QgsEmbedLayerDialog::changeProjectFile()
   }
 
   //check we are not embedding from/to the same project
-  if ( mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
+  if ( mProjectFileLineEdit->isVisible() && mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
   {
     QMessageBox::critical( 0, tr( "Recursive embeding not possible" ), tr( "It is not possible to embed layers / groups from the current project" ) );
     return;

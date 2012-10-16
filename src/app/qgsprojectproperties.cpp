@@ -23,6 +23,7 @@
 #include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
+#include "qgsembedlayerdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -269,6 +270,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   if ( ok )
   {
     mComposerListWidget->addItems( values );
+  }
+
+  //layer restriction for WMS
+  values = QgsProject::instance()->readListEntry( "WMSRestrictedLayers", "/", &ok );
+  mLayerRestrictionsGroupBox->setChecked( ok );
+  if ( ok )
+  {
+    mLayerRestrictionsListWidget->addItems( values );
   }
 
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
@@ -564,6 +573,21 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->removeEntry( "WMSComposerList", "/" );
   }
 
+  //WMS layer restrictions
+  if ( mLayerRestrictionsGroupBox->isChecked() )
+  {
+    QStringList layerNames;
+    for ( int i = 0; i < mLayerRestrictionsListWidget->count(); ++i )
+    {
+      layerNames << mLayerRestrictionsListWidget->item( i )->text();
+    }
+    QgsProject::instance()->writeEntry( "WMSRestrictedLayers", "/", layerNames );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSRestrictedLayers", "/" );
+  }
+
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
@@ -804,7 +828,20 @@ void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
 
 void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
 {
-
+  QgsEmbedLayerDialog d( this, QgsProject::instance()->fileName() );
+  d.setWindowTitle( tr( "Select restricted layers and groups" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QStringList names = d.layersAndGroupNames();
+    QStringList::const_iterator nameIt = names.constBegin();
+    for ( ; nameIt != names.constEnd(); ++nameIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *nameIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *nameIt );
+      }
+    }
+  }
 }
 
 void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
