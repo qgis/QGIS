@@ -676,7 +676,6 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   QList<QgsMapLayer*> layerList;
 
   //first check if the layer name refers an unpublished layer / group
-  QSet<QString> rLayers = restrictedLayers();
   if ( mRestrictedLayers.contains( lName ) )
   {
     return layerList;
@@ -2079,21 +2078,74 @@ QSet<QString> QgsProjectParser::restrictedLayers() const
     //get name
     QDomElement groupElem = legendGroupList.at( i ).toElement();
     QString groupName = groupElem.attribute( "name" );
-    if ( restrictedLayerSet.contains( groupName ) )
+    if ( restrictedLayerSet.contains( groupName ) ) //match: add names of subgroups and sublayers to set
     {
-      //match: add names of subgroups and sublayers to set
-      QDomNodeList subgroupList = groupElem.elementsByTagName( "legendgroup" );
-      for ( int j = 0; j < subgroupList.size(); ++j )
+      //embedded group? -> also get names of subgroups and sublayers from embedded projects
+      if ( groupElem.attribute( "embedded" ) == "1" )
       {
-        restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( "name" ) );
+        sublayersOfEmbeddedGroup( convertToAbsolutePath( groupElem.attribute( "project" ) ), groupName, restrictedLayerSet );
       }
-      QDomNodeList sublayerList = groupElem.elementsByTagName( "legendlayer" );
-      for ( int k = 0; k < sublayerList.size(); ++k )
+      else //local group
       {
-        restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+        QDomNodeList subgroupList = groupElem.elementsByTagName( "legendgroup" );
+        for ( int j = 0; j < subgroupList.size(); ++j )
+        {
+          restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( "name" ) );
+        }
+        QDomNodeList sublayerList = groupElem.elementsByTagName( "legendlayer" );
+        for ( int k = 0; k < sublayerList.size(); ++k )
+        {
+          restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+        }
       }
     }
   }
-
   return restrictedLayerSet;
+}
+
+void QgsProjectParser::sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet )
+{
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument xmlDoc;
+  if ( !xmlDoc.setContent( &projectFile ) )
+  {
+    return;
+  }
+
+  //go to legend node
+  QDomElement legendElem = xmlDoc.documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return;
+  }
+
+  //get group node list of embedded project
+  QDomNodeList groupNodes = legendElem.elementsByTagName( "legendgroup" );
+  QDomElement groupElem;
+  for ( int i = 0; i < groupNodes.size(); ++i )
+  {
+    groupElem = groupNodes.at( i ).toElement();
+    if ( groupElem.attribute( "name" ) == groupName )
+    {
+      //get all subgroups and sublayers and add to layerSet
+      QDomElement subElem;
+      QDomNodeList subGroupList = groupElem.elementsByTagName( "legendgroup" );
+      for ( int j = 0; j < subGroupList.size(); ++j )
+      {
+        subElem = subGroupList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
+      QDomNodeList subLayerList = groupElem.elementsByTagName( "legendlayer" );
+      for ( int j = 0; j < subLayerList.size(); ++j )
+      {
+        subElem = subLayerList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
+    }
+  }
 }

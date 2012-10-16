@@ -196,6 +196,8 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
     QSet<QString> restrictedLayers() const;
+    /**Adds sublayers of an embedded group to layer set*/
+    static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
 };
 
 #endif // QGSPROJECTPARSER_H
