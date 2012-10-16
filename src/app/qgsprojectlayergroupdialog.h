@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsembedlayerdialog.h
-    ---------------------
+    qgsprojectlayergroupdialog.h
+    ----------------------------
     begin                : June 2011
     copyright            : (C) 2011 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch
@@ -12,28 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSEMBEDLAYERSDIALOG_H
-#define QGSEMBEDLAYERSDIALOG_H
+#ifndef QGSPROJECTLAYERGROUPDIALOG_H
+#define QGSPROJECTLAYERGROUPDIALOG_H
 
 #include "QDialog"
-#include "ui_qgsembedlayerdialogbase.h"
+#include "ui_qgsprojectlayergroupdialogbase.h"
 
 class QDomElement;
 
-class QgsEmbedLayerDialog: public QDialog, private Ui::QgsEmbedLayerDialogBase
+/**A dialog to select layers and groups from a qgs project*/
+class QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
     /**Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
-    QgsEmbedLayerDialog( QWidget * parent = 0, const QString& projectFile = QString(), Qt::WindowFlags f = 0 );
-    ~QgsEmbedLayerDialog();
+    QgsProjectLayerGroupDialog( QWidget * parent = 0, const QString& projectFile = QString(), Qt::WindowFlags f = 0 );
+    ~QgsProjectLayerGroupDialog();
 
-    /**Returns name / projectfiles of groups to embed*/
-    QList< QPair < QString, QString > > embeddedGroups() const;
-    /**Returns layer id / projectfiles of single layers to embed*/
-    QList< QPair < QString, QString > > embeddedLayers() const;
-    /**Returns selected layer and group names*/
-    QStringList layersAndGroupNames() const;
+    QStringList selectedGroups() const;
+    QStringList selectedLayerIds() const;
+    QStringList selectedLayerNames() const;
+    QString selectedProjectFile() const;
 
   private slots:
     void on_mBrowseFileToolButton_clicked();
@@ -49,4 +48,4 @@ class QgsEmbedLayerDialog: public QDialog, private Ui::QgsEmbedLayerDialogBase
     QString mProjectPath;
 };
 
-#endif // QGSEMBEDLAYERSDIALOG_H
+#endif //QGSPROJECTLAYERGROUPDIALOG_H

@@ -23,13 +23,13 @@
 #include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
-#include "qgsembedlayerdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
+#include "qgsprojectlayergroupdialog.h"
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
@@ -828,17 +828,27 @@ void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
 
 void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
 {
-  QgsEmbedLayerDialog d( this, QgsProject::instance()->fileName() );
+  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
   d.setWindowTitle( tr( "Select restricted layers and groups" ) );
   if ( d.exec() == QDialog::Accepted )
   {
-    QStringList names = d.layersAndGroupNames();
-    QStringList::const_iterator nameIt = names.constBegin();
-    for ( ; nameIt != names.constEnd(); ++nameIt )
+    QStringList layerNames = d.selectedLayerNames();
+    QStringList::const_iterator layerIt = layerNames.constBegin();
+    for ( ; layerIt != layerNames.constEnd(); ++layerIt )
     {
-      if ( mLayerRestrictionsListWidget->findItems( *nameIt, Qt::MatchExactly ).size() < 1 )
+      if ( mLayerRestrictionsListWidget->findItems( *layerIt, Qt::MatchExactly ).size() < 1 )
       {
-        mLayerRestrictionsListWidget->addItem( *nameIt );
+        mLayerRestrictionsListWidget->addItem( *layerIt );
+      }
+    }
+
+    QStringList groups = d.selectedGroups();
+    QStringList::const_iterator groupIt = groups.constBegin();
+    for ( ; groupIt != groups.constEnd(); ++groupIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *groupIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *groupIt );
       }
     }
   }
