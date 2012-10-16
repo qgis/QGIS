@@ -71,6 +71,8 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
         mLegendGroupElements.push_back( groupNodeList.at( i ).toElement() );
       }
     }
+
+    mRestrictedLayers = restrictedLayers();
   }
 }
 
@@ -367,6 +369,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     {
       layerElem.setAttribute( "queryable", "1" );
       QString name = currentChildElem.attribute( "name" );
+      if ( mRestrictedLayers.contains( name ) ) //unpublished group
+      {
+        continue;
+      }
       QDomElement nameElem = doc.createElement( "Name" );
       QDomText nameText = doc.createTextNode( name );
       nameElem.appendChild( nameText );
@@ -434,6 +440,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 
+      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      {
+        continue;
+      }
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
@@ -664,6 +674,12 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
 {
   Q_UNUSED( styleName );
   QList<QgsMapLayer*> layerList;
+
+  //first check if the layer name refers an unpublished layer / group
+  if ( mRestrictedLayers.contains( lName ) )
+  {
+    return layerList;
+  }
 
   if ( !mXMLDoc )
   {
@@ -1440,18 +1456,19 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     return;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  if ( composerNodeList.size() < 1 )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  if ( composerElemList.size() < 1 )
   {
     return;
   }
 
   QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
 
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement>::const_iterator composerElemIt = composerElemList.constBegin();
+  for ( ; composerElemIt != composerElemList.constEnd(); ++composerElemIt )
   {
     QDomElement composerTemplateElem = doc.createElement( "ComposerTemplate" );
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerElemIt;
     if ( currentComposerElem.isNull() )
     {
       continue;
@@ -1515,10 +1532,11 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
     return composerElem;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  QList<QDomElement>::const_iterator composerIt = composerElemList.constBegin();
+  for ( ; composerIt != composerElemList.constEnd(); ++composerIt )
   {
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerIt;
     if ( currentComposerElem.attribute( "title" ) == composerName )
     {
       return currentComposerElem;
@@ -1526,6 +1544,50 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
   }
 
   return composerElem;
+}
+
+QList<QDomElement> QgsProjectParser::publishedComposerElements() const
+{
+  QList<QDomElement> composerElemList;
+  if ( !mXMLDoc )
+  {
+    return composerElemList;
+  }
+
+  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  QDomElement wmsComposerListElem = propertiesElem.firstChildElement( "WMSComposerList" );
+  if ( wmsComposerListElem.isNull() )
+  {
+    for ( unsigned int i = 0; i < composerNodeList.length(); ++i )
+    {
+      composerElemList.push_back( composerNodeList.at( i ).toElement() );
+    }
+    return composerElemList;
+  }
+
+  QSet<QString> publishedComposerNames;
+  QDomNodeList valueList = wmsComposerListElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    publishedComposerNames.insert( valueList.at( i ).toElement().text() );
+  }
+
+  //remove unpublished composers from list
+  QString currentComposerName;
+  QDomElement currentElem;
+  for ( int i = 0; i < composerNodeList.size(); ++i )
+  {
+    currentElem = composerNodeList.at( i ).toElement();
+    currentComposerName = currentElem.attribute( "title" );
+    if ( publishedComposerNames.contains( currentComposerName ) )
+    {
+      composerElemList.push_back( currentElem );
+    }
+  }
+
+  return composerElemList;
 }
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
@@ -1968,6 +2030,122 @@ void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) 
     {
       QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
       layerMap.insert( layer->id(), layer );
+    }
+  }
+}
+
+QSet<QString> QgsProjectParser::restrictedLayers() const
+{
+  QSet<QString> restrictedLayerSet;
+
+  if ( !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  //names of unpublished layers / groups
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsLayerRestrictionElem = propertiesElem.firstChildElement( "WMSRestrictedLayers" );
+    if ( !wmsLayerRestrictionElem.isNull() )
+    {
+      QStringList restrictedLayersAndGroups;
+      QDomNodeList wmsLayerRestrictionValues = wmsLayerRestrictionElem.elementsByTagName( "value" );
+      for ( int i = 0; i < wmsLayerRestrictionValues.size(); ++i )
+      {
+        restrictedLayerSet.insert( wmsLayerRestrictionValues.at( i ).toElement().text() );
+      }
+    }
+  }
+
+  //get legend dom element
+  if ( restrictedLayerSet.size() < 1 || !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return restrictedLayerSet;
+  }
+
+  //go through all legend groups and insert names of subgroups / sublayers if there is a match
+  QDomNodeList legendGroupList = legendElem.elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < legendGroupList.size(); ++i )
+  {
+    //get name
+    QDomElement groupElem = legendGroupList.at( i ).toElement();
+    QString groupName = groupElem.attribute( "name" );
+    if ( restrictedLayerSet.contains( groupName ) ) //match: add names of subgroups and sublayers to set
+    {
+      //embedded group? -> also get names of subgroups and sublayers from embedded projects
+      if ( groupElem.attribute( "embedded" ) == "1" )
+      {
+        sublayersOfEmbeddedGroup( convertToAbsolutePath( groupElem.attribute( "project" ) ), groupName, restrictedLayerSet );
+      }
+      else //local group
+      {
+        QDomNodeList subgroupList = groupElem.elementsByTagName( "legendgroup" );
+        for ( int j = 0; j < subgroupList.size(); ++j )
+        {
+          restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( "name" ) );
+        }
+        QDomNodeList sublayerList = groupElem.elementsByTagName( "legendlayer" );
+        for ( int k = 0; k < sublayerList.size(); ++k )
+        {
+          restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+        }
+      }
+    }
+  }
+  return restrictedLayerSet;
+}
+
+void QgsProjectParser::sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet )
+{
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument xmlDoc;
+  if ( !xmlDoc.setContent( &projectFile ) )
+  {
+    return;
+  }
+
+  //go to legend node
+  QDomElement legendElem = xmlDoc.documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return;
+  }
+
+  //get group node list of embedded project
+  QDomNodeList groupNodes = legendElem.elementsByTagName( "legendgroup" );
+  QDomElement groupElem;
+  for ( int i = 0; i < groupNodes.size(); ++i )
+  {
+    groupElem = groupNodes.at( i ).toElement();
+    if ( groupElem.attribute( "name" ) == groupName )
+    {
+      //get all subgroups and sublayers and add to layerSet
+      QDomElement subElem;
+      QDomNodeList subGroupList = groupElem.elementsByTagName( "legendgroup" );
+      for ( int j = 0; j < subGroupList.size(); ++j )
+      {
+        subElem = subGroupList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
+      QDomNodeList subLayerList = groupElem.elementsByTagName( "legendlayer" );
+      for ( int j = 0; j < subLayerList.size(); ++j )
+      {
+        subElem = subLayerList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
     }
   }
 }

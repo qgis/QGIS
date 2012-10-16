@@ -28,7 +28,6 @@ SET(QGIS_APP_SRCS
   qgsdecorationscalebardialog.cpp
   qgsdecorationgrid.cpp
   qgsdecorationgriddialog.cpp
-  qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -95,6 +94,7 @@ SET(QGIS_APP_SRCS
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
+  qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
@@ -189,7 +189,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsdelattrdialog.h
   qgsdiagramproperties.h
   qgsdisplayangle.h
-  qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
@@ -241,6 +240,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsoptions.h
   qgspastetransformations.h
   qgspluginmanager.h
+  qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
