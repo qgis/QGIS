@@ -1643,7 +1643,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) );
+      void * data = QgsMalloc( dataTypeSize( i ) );
       QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
@@ -1708,7 +1708,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
 
-    void * data = VSIMalloc( dataTypeSize( i ) );
+    void * data = QgsMalloc( dataTypeSize( i ) );
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
                                data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
 

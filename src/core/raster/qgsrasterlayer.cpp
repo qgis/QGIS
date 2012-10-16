@@ -2830,7 +2830,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 #endif
-  void *data = VSIMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
+  void *data = QgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
   if ( data == NULL )

@@ -299,7 +299,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
     // TODO: no need to alloc memory, change to readBlock() returning the allocated block
-    //blockList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
+    //blockList.push_back( QgsMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
     blockList.push_back( 0 );
     // TODO - fix segfault here when using tiles+vrt (reported by Etienne)
     destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
@@ -373,7 +373,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
         // TODO: this conversion should go to QgsRasterDataProvider::write with additional input data type param
         //void *destData = QgsRasterBlock::convert( blockList[i-1], srcProvider->dataType( i ), destDataType, iterCols * iterRows );
         //destBlockList.push_back( destData );
-        //CPLFree( blockList[i-1] );
+        //QgsFree( blockList[i-1] );
         blockList[i-1]->convert( destDataType );
         destBlockList.push_back( blockList[i-1] );
       }
@@ -437,11 +437,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  //void* data = VSIMalloc( QgsRasterBlock::typeSize( inputDataType ) * mMaxTileWidth * mMaxTileHeight );
-  void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
-  void* greenData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
-  void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
-  void* alphaData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
+  //void* data = QgsMalloc( QgsRasterBlock::typeSize( inputDataType ) * mMaxTileWidth * mMaxTileHeight );
+  void* redData = QgsMalloc( mMaxTileWidth * mMaxTileHeight );
+  void* greenData = QgsMalloc( mMaxTileWidth * mMaxTileHeight );
+  void* blueData = QgsMalloc( mMaxTileWidth * mMaxTileHeight );
+  void* alphaData = QgsMalloc( mMaxTileWidth * mMaxTileHeight );
   QgsRectangle mapRect;
   int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
@@ -547,7 +547,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
 
   delete destProvider;
-  CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
+  QgsFree( redData ); QgsFree( greenData ); QgsFree( blueData ); QgsFree( alphaData );
 
   if ( progressDialog )
   {

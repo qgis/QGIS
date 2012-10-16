@@ -643,10 +643,10 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   myWarpOptions->nBandCount = 1;
   myWarpOptions->panSrcBands =
-    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panSrcBands[0] = theBandNo;
   myWarpOptions->panDstBands =
-    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panDstBands[0] = 1;
 
   // TODO move here progressCallback and use it
@@ -682,8 +682,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
-  myWarpOptions->padfDstNoDataReal = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
-  myWarpOptions->padfDstNoDataImag = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataReal = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataImag = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
 
   myWarpOptions->padfDstNoDataReal[0] = mNoDataValue[theBandNo-1];
   myWarpOptions->padfDstNoDataImag[0] = 0.0;
@@ -835,7 +835,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) );
+      void * data = QgsMalloc( dataTypeSize( i ) );
       QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
@@ -885,7 +885,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
       }
 #endif
       int typeSize = dataTypeSize( i );
-      void * tmpData = VSIMalloc( typeSize * width * height );
+      void * tmpData = QgsMalloc( typeSize * width * height );
 
       CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, width, height,
                                  tmpData, width, height,
@@ -895,11 +895,11 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
       {
         QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       }
-      void * data = VSIMalloc( typeSize );
+      void * data = QgsMalloc( typeSize );
       memcpy( data, ( void* )(( char* )tmpData + ( r*width + c )*typeSize ), typeSize );
       results.insert( i, data );
 
-      CPLFree( tmpData );
+      QgsFree( tmpData );
     }
   }
 
@@ -1127,7 +1127,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
                    NULL, NULL );
 
   if ( myHistogramArray )
-    VSIFree( myHistogramArray );
+    VSIFree( myHistogramArray ); // use VSIFree because allocated by GDAL
 
   // if there was any error/warning assume the histogram is not valid or non-existent
   if ( myError != CE_None )
@@ -2507,7 +2507,7 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
-      CPLFree( pszFormattedXML );
+      QgsFree( pszFormattedXML );
   }
   return message;
 }
