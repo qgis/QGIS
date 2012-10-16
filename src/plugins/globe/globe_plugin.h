@@ -52,6 +52,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void run();
     //! Show the settings dialog box
     void settings();
+    //!  Reset globe
+    void reset();
     //! unload the plugin
     void unload();
     //! show the help document
@@ -86,7 +88,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     double getSelectedLat();
     //! get elevation of user right click
     double getSelectedElevation();
-
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );

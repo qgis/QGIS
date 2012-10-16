@@ -191,18 +191,25 @@ void GlobePlugin::initGui()
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
+  QAction* actionUnload = new QAction( tr( "Unload Globe" ), this );
+
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
   mQActionSettingsPointer->setWhatsThis( tr( "Settings for 3D globe" ) );
-  // Connect the action to the run
+  actionUnload->setWhatsThis( tr( "Unload globe" ) );
+
+  // Connect actions
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  // Connect to the setting slot
   connect( mQActionSettingsPointer, SIGNAL( triggered() ), this, SLOT( settings() ) );
+  connect( actionUnload, SIGNAL( triggered() ), this, SLOT( reset() ) );
+
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
+
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
+  mQGisIface->addPluginToMenu( tr( "&Globe" ), actionUnload );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
@@ -340,7 +347,6 @@ void GlobePlugin::setupMap()
   GDALOptions driverOptions;
   driverOptions.url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
   ImageLayerOptions layerOptions( "world", driverOptions );
-  layerOptions.cacheEnabled() = false;
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
   */
   TMSOptions imagery;
@@ -669,7 +675,7 @@ void GlobePlugin::setupControls()
 #if ENABLE_SYNC_BUTTON
   extraControls->setPosition( 5, 231 );
 #else
-  extraControls->setPosition( 3, 231 );
+  extraControls->setPosition( 35, 231 );
 #endif
   extraControls->setPadding( 6 );
 
@@ -828,8 +834,21 @@ void GlobePlugin::elevationLayersChanged()
   }
 }
 
+void GlobePlugin::reset()
+{
+  if (mViewerWidget) {
+    delete mViewerWidget;
+    mViewerWidget = 0;
+  }
+  if (mOsgViewer) {
+    delete mOsgViewer;
+    mOsgViewer = 0;
+  }
+}
+
 void GlobePlugin::unload()
 {
+  reset();
   // remove the GUI
   mQGisIface->removePluginMenu( "&Globe", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );

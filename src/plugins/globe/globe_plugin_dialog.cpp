@@ -263,7 +263,6 @@ void QgsGlobePluginDialog::resetElevationDatasources()
 
 void QgsGlobePluginDialog::readElevationDatasources()
 {
-  //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
   elevationDatasourcesWidget->setRowCount( 0 );
@@ -276,7 +275,7 @@ void QgsGlobePluginDialog::readElevationDatasources()
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type" ) );
     QTableWidgetItem *uri = new QTableWidgetItem(
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri" ) );
-    bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
+    //bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
 
     elevationDatasourcesWidget->setRowCount( 1 + i );
     elevationDatasourcesWidget->setItem( i, 0, type );
