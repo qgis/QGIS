@@ -254,7 +254,8 @@ void GlobePlugin::run()
       setupMap();
     }
 
-    if ( getenv( "GLOBE_SKY" ) ) {
+    if ( getenv( "GLOBE_SKY" ) )
+    {
       SkyNode* sky = new SkyNode( mMapNode->getMap() );
       sky->setDateTime( 2011, 1, 6, 17.0 );
       //sky->setSunPosition( osg::Vec3(0,-1,0) );
@@ -647,9 +648,14 @@ void GlobePlugin::setupControls()
 
 //END ZOOM CONTROLS
 
-//EXTRA CONTROLS
+  //EXTRA CONTROLS
+  //#define ENABLE_SYNC_BUTTON 1
+#if ENABLE_SYNC_BUTTON
   //Horizontal container
   HBox* extraControls = new HBox();
+#else
+  VBox* extraControls = new VBox();
+#endif
   extraControls->setFrame( new RoundedFrame() );
   extraControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   extraControls->setMargin( 0 );
@@ -660,13 +666,19 @@ void GlobePlugin::setupControls()
 #endif
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
+#if ENABLE_SYNC_BUTTON
   extraControls->setPosition( 5, 231 );
+#else
+  extraControls->setPosition( 3, 231 );
+#endif
   extraControls->setPadding( 6 );
 
   //Sync Extent
+#if ENABLE_SYNC_BUTTON
   osg::Image* extraSyncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
   ImageControl* extraSync = new NavigationControl( extraSyncImg );
   extraSync->addEventHandler( new SyncExtentControlHandler( this ) );
+#endif
 
   //Zoom Reset
   osg::Image* extraHomeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
@@ -679,7 +691,9 @@ void GlobePlugin::setupControls()
   extraRefresh->addEventHandler( new RefreshControlHandler( this ) );
 
   //add controls to extraControls group
+#if ENABLE_SYNC_BUTTON
   extraControls->addControl( extraSync );
+#endif
   extraControls->addControl( extraHome );
   extraControls->addControl( extraRefresh );
 
