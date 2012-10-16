@@ -16,8 +16,6 @@ SET (globe_plugin_SRCS
      globe_plugin.cpp
      qgsosgearthtilesource.cpp
      globe_plugin_dialog.cpp
-     osgEarthQt/ViewerWidget.cpp
-     osgEarthUtil/Controls.cpp
 )
 
 SET (globe_plugin_UIS
@@ -64,6 +62,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${OSGEARTH_LIBRARY}
   ${OSGEARTHFEATURES_LIBRARY}
   ${OSGEARTHUTIL_LIBRARY}
+  ${OSGEARTHQT_LIBRARY}
   ${OPENTHREADS_LIBRARY}
 )
 

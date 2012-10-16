@@ -19,7 +19,8 @@
 #include "globe_plugin.h"
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
-#include "osgEarthQt/ViewerWidget"
+#include <osgEarthQt/ViewerWidget>
+//#include "osgEarthQt/ViewerWidget"
 
 #include <cmath>
 
@@ -58,8 +59,9 @@
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
-using namespace osgEarth::Util::Controls21;
 using namespace osgEarth::Util;
+using namespace osgEarth::Util::Controls;
+//using namespace osgEarth::Util::Controls21;
 
 #define MOVE_OFFSET 0.05
 
@@ -322,12 +324,14 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
+  /*
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
   TMSCacheOptions cacheOptions;
   cacheOptions.setPath( cacheDirectory.toStdString() );
+  */
 
   MapOptions mapOptions;
-  mapOptions.cache() = cacheOptions;
+  //mapOptions.cache() = cacheOptions;
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
@@ -745,7 +749,7 @@ void GlobePlugin::imageLayersChanged()
     ImageLayerOptions options( "QGIS" );
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
-    mQgisMapLayer->setCache( 0 ); //disable caching
+    //[layer->setCache is private in 1.3.0] mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
@@ -782,7 +786,7 @@ void GlobePlugin::elevationLayersChanged()
     for ( int i = 0; i < table->rowCount(); ++i )
     {
       QString type = table->item( i, 0 )->text();
-      bool cache = table->item( i, 1 )->checkState();
+      //bool cache = table->item( i, 1 )->checkState();
       QString uri = table->item( i, 2 )->text();
       ElevationLayer* layer = 0;
 
@@ -800,7 +804,7 @@ void GlobePlugin::elevationLayersChanged()
       }
       map->addElevationLayer( layer );
 
-      if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
+      //if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
   }
   else

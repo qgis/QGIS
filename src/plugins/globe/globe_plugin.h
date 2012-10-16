@@ -27,8 +27,8 @@
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
-//#include <osgEarthUtil/Controls>
-#include "osgEarthUtil/Controls"
+#include <osgEarthUtil/Controls>
+//#include "osgEarthUtil/Controls"
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
 
@@ -125,7 +125,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarth::Util::Controls21::ControlCanvas* mControlCanvas;
+    osgEarth::Util::Controls::ControlCanvas* mControlCanvas;
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
@@ -192,7 +192,7 @@ namespace osgEarth
 {
   namespace Util
   {
-    namespace Controls21
+    namespace Controls
     {
       class NavigationControlHandler : public ControlEventHandler
       {
