@@ -92,41 +92,43 @@ class CORE_EXPORT QgsRasterBlock
     //bool isValid() const { return mValid; }
     bool isEmpty() const;
 
+    // Return data type size in bytes
     static int typeSize( int dataType )
     {
       // Modified and extended copy from GDAL
       switch ( dataType )
       {
         case Byte:
-          return 8;
+          return 1;
 
         case UInt16:
         case Int16:
-          return 16;
+          return 2;
 
         case UInt32:
         case Int32:
         case Float32:
         case CInt16:
-          return 32;
+          return 4;
 
         case Float64:
         case CInt32:
         case CFloat32:
-          return 64;
+          return 8;
 
         case CFloat64:
-          return 128;
+          return 16;
 
         case ARGB32:
         case ARGB32_Premultiplied:
-          return 32;
+          return 4;
 
         default:
           return 0;
       }
     }
 
+    // Data type in bytes
     int dataTypeSize( int bandNo ) const
     {
       Q_UNUSED( bandNo );
@@ -164,6 +166,9 @@ class CORE_EXPORT QgsRasterBlock
      * @param value tested value
      * @return true if value is nodata */
     bool isNoDataValue( double value ) const;
+
+    // get byte array representing no data value
+    static QByteArray valueBytes( DataType theDataType, double theValue );
 
     /** \brief Read a single value
      *  @param row row index
@@ -217,6 +222,21 @@ class CORE_EXPORT QgsRasterBlock
      *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( int row, int column, QRgb color );
+
+    /** \brief Set no data on pixel
+     *  @param row row index
+     *  @param column column index
+     *  @return true on success */
+    bool setIsNoData( int row, int column );
+
+    /** \brief Set no data on pixel
+     *  @param index data matrix index
+     *  @return true on success */
+    bool setIsNoData( size_t index );
+
+    /** \brief Set the whole block to no data
+     *  @return true on success */
+    bool setIsNoData( );
 
     /** \brief Set color on index (indexed line by line)
      *  @param index data matrix index
@@ -288,7 +308,6 @@ class CORE_EXPORT QgsRasterBlock
 
     static QImage::Format imageFormat( QgsRasterBlock::DataType theDataType );
     static DataType dataType( QImage::Format theFormat );
-
 
     // Valid
     //bool isValid;

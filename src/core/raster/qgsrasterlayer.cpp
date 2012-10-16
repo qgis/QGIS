@@ -2819,7 +2819,7 @@ QString QgsRasterLayer::projectionWkt()
 #if 0
 void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
 {
-  int size = mDataProvider->dataTypeSize( bandNo ) / 8;
+  int size = mDataProvider->dataTypeSize( bandNo );
 
 #if 0
   QgsDebugMsg( "calling RasterIO with " +

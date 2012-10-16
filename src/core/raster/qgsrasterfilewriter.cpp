@@ -437,7 +437,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  //void* data = VSIMalloc( QgsRasterBlock::typeSize( inputDataType ) / 8 * mMaxTileWidth * mMaxTileHeight );
+  //void* data = VSIMalloc( QgsRasterBlock::typeSize( inputDataType ) * mMaxTileWidth * mMaxTileHeight );
   void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* greenData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );

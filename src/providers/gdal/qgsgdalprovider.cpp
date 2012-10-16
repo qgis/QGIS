@@ -378,10 +378,10 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     QgsDebugMsg( QString( "transform : %1" ).arg( mGeoTransform[i] ) );
   }
 
-  int dataSize = dataTypeSize( theBandNo ) / 8;
+  int dataSize = dataTypeSize( theBandNo );
 
   // fill with null values
-  QByteArray ba = noValueBytes( theBandNo );
+  QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
   char *nodata = ba.data();
   char *block = ( char * ) theBlock;
   for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
@@ -835,7 +835,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+      void * data = VSIMalloc( dataTypeSize( i ) );
       QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
@@ -884,7 +884,7 @@ QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
         }
       }
 #endif
-      int typeSize = dataTypeSize( i ) / 8;
+      int typeSize = dataTypeSize( i );
       void * tmpData = VSIMalloc( typeSize * width * height );
 
       CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, width, height,

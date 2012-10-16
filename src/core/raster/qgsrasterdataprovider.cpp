@@ -46,86 +46,12 @@ double QgsRasterDataProvider::noDataValue( int bandNo ) const
   return mInternalNoDataValue.value( bandNo -1 );
 }
 
-#if 0
-void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
-                                       const & viewExtent, int width,
-                                       int height,
-                                       QgsCoordinateReferenceSystem theSrcCRS,
-                                       QgsCoordinateReferenceSystem theDestCRS,
-                                       void *data )
+QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entered" );
-  QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
+  QgsDebugMsg( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ) );
+  QgsDebugMsg( QString( "theExtent = %1" ).arg( theExtent.toString() ) );
 
-  if ( ! theSrcCRS.isValid() || ! theDestCRS.isValid() || theSrcCRS == theDestCRS )
-  {
-    readBlock( bandNo, viewExtent, width, height, data );
-    return;
-  }
-
-  QTime time;
-  time.start();
-
-  double mMaxSrcXRes = 0;
-  double mMaxSrcYRes = 0;
-
-  if ( capabilities() & QgsRasterDataProvider::ExactResolution )
-  {
-    mMaxSrcXRes = extent().width() / xSize();
-    mMaxSrcYRes = extent().height() / ySize();
-  }
-
-  QgsRasterProjector myProjector( theSrcCRS, theDestCRS, viewExtent, height, width, mMaxSrcXRes, mMaxSrcYRes, extent() );
-
-  QgsDebugMsg( QString( "create projector time  (ms): %1" ).arg( time.elapsed() ) );
-
-  // TODO: init data by nulls
-
-  // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
-  if ( myProjector.srcRows() <= 0 || myProjector.srcCols() <= 0 )
-    return;
-
-  // Allocate memory for not projected source data
-  size_t mySize = dataTypeSize( bandNo ) / 8;
-  void *mySrcData = malloc( mySize * myProjector.srcRows() * myProjector.srcCols() );
-
-  time.restart();
-
-  readBlock( bandNo, myProjector.srcExtent(), myProjector.srcCols(), myProjector.srcRows(), mySrcData );
-
-  QgsDebugMsg( QString( "read not projected block time  (ms): %1" ).arg( time.elapsed() ) );
-  time.restart();
-
-  // Project data from source
-  int mySrcRow;
-  int mySrcCol;
-  int mySrcOffset;
-  int myDestOffset;
-  for ( int r = 0; r < height; r++ )
-  {
-    for ( int c = 0; c < width; c++ )
-    {
-      myProjector.srcRowCol( r, c, &mySrcRow, &mySrcCol );
-      mySrcOffset = mySize * ( mySrcRow * myProjector.srcCols() + mySrcCol );
-      myDestOffset = mySize * ( r * width + c );
-      // retype to char is just to avoid g++ warning
-      memcpy(( char* ) data + myDestOffset, ( char* )mySrcData + mySrcOffset, mySize );
-    }
-  }
-  QgsDebugMsg( QString( "reproject block time  (ms): %1" ).arg( time.elapsed() ) );
-
-  free( mySrcData );
-}
-#endif
-
-//void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
-QgsRasterBlock * QgsRasterDataProvider::block( int bandNo, QgsRectangle  const & extent, int width, int height )
-{
-  QgsDebugMsg( QString( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ) );
-
-  //void * data = QgsMalloc( dataTypeSize( bandNo ) * width * height );
-
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height, noDataValue( bandNo ) );
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
 
   if ( block->isEmpty() )
   {
@@ -133,16 +59,145 @@ QgsRasterBlock * QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &
     return block;
   }
 
-  readBlock( bandNo, extent, width, height, block->data() );
+  // Read necessary extent only
+  QgsRectangle tmpExtent = extent().intersect( &theExtent );
+
+  if ( tmpExtent.isEmpty() )
+  {
+    QgsDebugMsg( "Extent outside provider extent" );
+    block->setIsNoData();
+    return block;
+  }
+
+  double xRes = theExtent.width() / theWidth;
+  double yRes = theExtent.height() / theHeight;
+  double tmpXRes, tmpYRes;
+  double providerXRes = 0;
+  double providerYRes = 0;
+  if ( capabilities() & ExactResolution )
+  {
+    providerXRes = extent().width() / xSize();
+    providerYRes = extent().height() / ySize();
+    tmpXRes = qMax( providerXRes, xRes );
+    tmpYRes = qMax( providerYRes, yRes );
+    if ( doubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
+    if ( doubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
+  }
+  else
+  {
+    tmpXRes = xRes;
+    tmpYRes = yRes;
+  }
+
+  if ( tmpExtent != theExtent ||
+       tmpXRes > xRes || tmpYRes > yRes )
+  {
+    // Read smaller extent or lower resolution
+
+    // Calculate row/col limits (before tmpExtent is aligned)
+    int fromRow = qRound(( theExtent.yMaximum() - tmpExtent.yMaximum() ) / yRes );
+    int toRow = qRound(( theExtent.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
+    int fromCol = qRound(( tmpExtent.xMinimum() - theExtent.xMinimum() ) / xRes ) ;
+    int toCol = qRound(( tmpExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
+
+    QgsDebugMsg( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ) );
+
+    if ( fromRow < 0 || fromRow >= theHeight || toRow < 0 || toRow >= theHeight ||
+         fromCol < 0 || fromCol >= theWidth || toCol < 0 || toCol >= theWidth )
+    {
+      // Should not happen
+      QgsDebugMsg( "Row or column limits out of range" );
+      return block;
+    }
+
+    // If lower source resolution is used, the extent must beS aligned to original
+    // resolution to avoid possible shift due to resampling
+    if ( tmpXRes > xRes )
+    {
+      int col = floor(( tmpExtent.xMinimum() - extent().xMinimum() ) / providerXRes );
+      tmpExtent.setXMinimum( extent().xMinimum() + col * providerXRes );
+      col = ceil(( tmpExtent.xMaximum() - extent().xMinimum() ) / providerXRes );
+      tmpExtent.setXMaximum( extent().xMinimum() + col * providerXRes );
+    }
+    if ( tmpYRes > yRes )
+    {
+      int row = floor(( extent().yMaximum() - tmpExtent.yMaximum() ) / providerYRes );
+      tmpExtent.setYMaximum( extent().yMaximum() - row * providerYRes );
+      row = ceil(( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
+      tmpExtent.setYMinimum( extent().yMaximum() - row * providerYRes );
+    }
+    int tmpWidth = qRound( tmpExtent.width() / tmpXRes );
+    int tmpHeight = qRound( tmpExtent.height() / tmpYRes );
+    tmpXRes = tmpExtent.width() / tmpWidth;
+    tmpYRes = tmpExtent.height() / tmpHeight;
+
+    QgsDebugMsg( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ) );
+    QgsDebugMsg( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ) );
+
+    block->setIsNoData();
+
+    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, noDataValue( theBandNo ) );
+
+    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->data() );
+
+    int pixelSize = dataTypeSize( theBandNo );
+
+    double xMin = theExtent.xMinimum();
+    double yMax = theExtent.yMaximum();
+    double tmpXMin = tmpExtent.xMinimum();
+    double tmpYMax = tmpExtent.yMaximum();
+
+    for ( int row = fromRow; row <= toRow; row++ )
+    {
+      double y = yMax - ( row + 0.5 ) * yRes;
+      int tmpRow = floor(( tmpYMax - y ) / tmpYRes );
+
+      for ( int col = fromCol; col <= toCol; col++ )
+      {
+        double x = xMin + ( col + 0.5 ) * xRes;
+        int tmpCol = floor(( x - tmpXMin ) / tmpXRes );
+
+        if ( tmpRow < 0 || tmpRow >= tmpHeight || tmpCol < 0 || tmpCol >= tmpWidth )
+        {
+          QgsDebugMsg( "Source row or column limits out of range" );
+          block->setIsNoData(); // so that the problem becomes obvious and fixed
+          delete tmpBlock;
+          return block;
+        }
+
+        size_t tmpIndex = tmpRow * tmpWidth + tmpCol;
+        size_t index = row * theWidth + col;
+
+        char *tmpBits = tmpBlock->bits( tmpIndex );
+        char *bits = block->bits( index );
+        if ( !tmpBits )
+        {
+          QgsDebugMsg( QString( "Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3." ).arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
+          continue;
+        }
+        if ( !bits )
+        {
+          QgsDebugMsg( "Cannot set output block data." );
+          continue;
+        }
+        memcpy( bits, tmpBits, pixelSize );
+      }
+    }
+
+    delete tmpBlock;
+  }
+  else
+  {
+    readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
+  }
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
-  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( bandNo );
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( theBandNo );
   if ( !myNoDataRangeList.isEmpty() )
   {
-    //QgsRasterBlock::DataType type = dataType( bandNo );
-    double myNoDataValue = noDataValue( bandNo );
-    size_t size = width * height;
+    double myNoDataValue = noDataValue( theBandNo );
+    size_t size = theWidth * theHeight;
     for ( size_t i = 0; i < size; i++ )
     {
       double value = block->value( i );
@@ -308,58 +363,6 @@ QString QgsRasterDataProvider::lastErrorFormat()
   return "text/plain";
 }
 
-QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
-{
-  int type = dataType( theBandNo );
-  size_t size = QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8;
-  QByteArray ba;
-  ba.resize(( int )size );
-  char * data = ba.data();
-  double noval = noDataValue( theBandNo - 1 );
-  unsigned char uc;
-  unsigned short us;
-  short s;
-  unsigned int ui;
-  int i;
-  float f;
-  double d;
-  // TODO: define correct data types (typedef) like in GDAL
-  switch ( type )
-  {
-    case QgsRasterBlock::Byte:
-      uc = ( unsigned char )noval;
-      memcpy( data, &uc, size );
-      break;
-    case QgsRasterBlock::UInt16:
-      us = ( unsigned short )noval;
-      memcpy( data, &us, size );
-      break;
-    case QgsRasterBlock::Int16:
-      s = ( short )noval;
-      memcpy( data, &s, size );
-      break;
-    case QgsRasterBlock::UInt32:
-      ui = ( unsigned int )noval;
-      memcpy( data, &ui, size );
-      break;
-    case QgsRasterBlock::Int32:
-      i = ( int )noval;
-      memcpy( data, &i, size );
-      break;
-    case QgsRasterBlock::Float32:
-      f = ( float )noval;
-      memcpy( data, &f, size );
-      break;
-    case QgsRasterBlock::Float64:
-      d = ( double )noval;
-      memcpy( data, &d, size );
-      break;
-    default:
-      QgsLogger::warning( "GDAL data type is not supported" );
-  }
-  return ba;
-}
-
 bool QgsRasterDataProvider::hasPyramids()
 {
   QList<QgsRasterPyramid> myPyramidList = buildPyramidList();
@@ -401,7 +404,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   int myNXBlocks = ( xSize() + xBlockSize() - 1 ) / xBlockSize();
   int myNYBlocks = ( ySize() + yBlockSize() - 1 ) / yBlockSize();
 
-  void *myData = CPLMalloc( xBlockSize() * yBlockSize() * ( dataTypeSize( theBandNo ) / 8 ) );
+  void *myData = CPLMalloc( xBlockSize() * yBlockSize() * ( dataTypeSize( theBandNo ) ) );
 
   // unfortunately we need to make two passes through the data to calculate stddev
   bool myFirstIterationFlag = true;
@@ -659,7 +662,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8 ) );
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;
@@ -935,7 +938,7 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) / 8 ) );
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;

@@ -503,7 +503,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   QgsDebugMsg( "Entered" );
 
   // TODO: set block to null values, move that to function and call only if fails
-  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) / 8 );
+  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
 
   // Requested extent must at least partialy overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
@@ -579,7 +579,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
       QgsDebugMsg( tr( "Rotating raster" ) );
-      int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) ) / 8;
+      int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
@@ -1643,7 +1643,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+      void * data = VSIMalloc( dataTypeSize( i ) );
       QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
       results.insert( i, data );
     }
@@ -1708,7 +1708,7 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
 
-    void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+    void * data = VSIMalloc( dataTypeSize( i ) );
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
                                data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
 

@@ -75,7 +75,8 @@ bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, d
   if ( typeIsNumeric( theDataType ) )
   {
     QgsDebugMsg( "Numeric type" );
-    int tSize = typeSize( theDataType ) / 8;
+    size_t tSize = typeSize( theDataType );
+    QgsDebugMsg( QString( "allocate %1 bytes" ).arg( tSize * theWidth * theHeight ) );
     mData = QgsMalloc( tSize * theWidth * theHeight );
     if ( mData == 0 )
     {
@@ -341,6 +342,36 @@ bool QgsRasterBlock::setColor( size_t index, QRgb color )
   return true;
 }
 
+bool QgsRasterBlock::setIsNoData( int row, int column )
+{
+  return setIsNoData(( size_t )row*column );
+}
+
+bool QgsRasterBlock::setIsNoData( size_t index )
+{
+  return setValue( index, mNoDataValue );
+}
+
+bool QgsRasterBlock::setIsNoData()
+{
+  if ( !mData )
+  {
+    QgsDebugMsg( "Data block not allocated" );
+    return false;
+  }
+
+  int dataTypeSize = typeSize( mDataType );
+  QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
+
+  char *nodata = noDataByteArray.data();
+  for ( size_t i = 0; i < ( size_t )mWidth*mHeight; i++ )
+  {
+    memcpy(( char* )mData + i*dataTypeSize, nodata, dataTypeSize );
+  }
+
+  return true;
+}
+
 char * QgsRasterBlock::bits( size_t index )
 {
   // Not testing type to avoid too much overhead because this method is called per pixel
@@ -481,7 +512,7 @@ QString QgsRasterBlock::printValue( double value )
 
 void * QgsRasterBlock::convert( void *srcData, QgsRasterBlock::DataType srcDataType, QgsRasterBlock::DataType destDataType, size_t size )
 {
-  int destDataTypeSize = typeSize( destDataType ) / 8;
+  int destDataTypeSize = typeSize( destDataType );
   void *destData = QgsMalloc( destDataTypeSize * size );
   for ( size_t i = 0; i < size; i++ )
   {
@@ -491,4 +522,54 @@ void * QgsRasterBlock::convert( void *srcData, QgsRasterBlock::DataType srcDataT
     //QgsDebugMsg( QString("convert type %1 to %2: %3 -> %4").arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
   }
   return destData;
+}
+
+QByteArray QgsRasterBlock::valueBytes( DataType theDataType, double theValue )
+{
+  size_t size = QgsRasterBlock::typeSize( theDataType );
+  QByteArray ba;
+  ba.resize(( int )size );
+  char * data = ba.data();
+  unsigned char uc;
+  unsigned short us;
+  short s;
+  unsigned int ui;
+  int i;
+  float f;
+  double d;
+  // TODO: define correct data types (typedef) like in GDAL
+  switch ( theDataType )
+  {
+    case QgsRasterBlock::Byte:
+      uc = ( unsigned char )theValue;
+      memcpy( data, &uc, size );
+      break;
+    case QgsRasterBlock::UInt16:
+      us = ( unsigned short )theValue;
+      memcpy( data, &us, size );
+      break;
+    case QgsRasterBlock::Int16:
+      s = ( short )theValue;
+      memcpy( data, &s, size );
+      break;
+    case QgsRasterBlock::UInt32:
+      ui = ( unsigned int )theValue;
+      memcpy( data, &ui, size );
+      break;
+    case QgsRasterBlock::Int32:
+      i = ( int )theValue;
+      memcpy( data, &i, size );
+      break;
+    case QgsRasterBlock::Float32:
+      f = ( float )theValue;
+      memcpy( data, &f, size );
+      break;
+    case QgsRasterBlock::Float64:
+      d = ( double )theValue;
+      memcpy( data, &d, size );
+      break;
+    default:
+      QgsDebugMsg( "Data type is not supported" );
+  }
+  return ba;
 }

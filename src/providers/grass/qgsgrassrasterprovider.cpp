@@ -128,7 +128,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
   // for statistics
   int cache_size = 10000000; // ~ 10 MB
-  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) / 8 ) / mCols;
+  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) ) / mCols;
   if ( mYBlockSize  > mRows )
   {
     mYBlockSize = mRows;
@@ -232,7 +232,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = mCols * mYBlockSize * dataTypeSize( bandNo ) / 8;
+  int size = mCols * mYBlockSize * dataTypeSize( bandNo );
   QgsDebugMsg( QString( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg( mCols ).arg( mYBlockSize ).arg( dataTypeSize( bandNo ) ) );
   if ( size != data.size() )
   {
@@ -279,7 +279,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo ) / 8;
+  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo );
   if ( size != data.size() )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
@@ -439,7 +439,7 @@ QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
       QgsDebugMsg( "Cannot convert string to double" );
     }
   }
-  void * data = malloc( dataTypeSize( 1 ) / 8 );
+  void * data = malloc( dataTypeSize( 1 ) );
   QgsRasterBlock::writeValue( data, dataType( 1 ), 0, value );
 
   results.insert( 1, data );

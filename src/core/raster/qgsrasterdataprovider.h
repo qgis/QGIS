@@ -179,19 +179,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const
-    {
-      return srcDataType( bandNo );
-    }
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const
-    {
-      Q_UNUSED( bandNo );
-      return QgsRasterBlock::UnknownDataType;
-    }
+    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const
@@ -289,15 +282,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
-    /** read block of data using give extent and size */
-    // @note not available in python bindings
-    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
-
     /** Read block of data using given extent and size. */
-    // @note not available in python bindings
-    //virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
-
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -527,9 +513,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     static QString makeTableCell( const QString & value );
     static QString makeTableCells( const QStringList & values );
-
-    /** \brief Set null value in char */
-    QByteArray noValueBytes( int theBandNo );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return mTimestamp; }
