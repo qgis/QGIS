@@ -802,6 +802,20 @@ void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
   }
 }
 
+void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
+{
+
+}
+
+void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
+{
+  QListWidgetItem* currentItem = mLayerRestrictionsListWidget->currentItem();
+  if ( currentItem )
+  {
+    delete mLayerRestrictionsListWidget->takeItem( mLayerRestrictionsListWidget->row( currentItem ) );
+  }
+}
+
 void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
 {
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
