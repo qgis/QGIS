@@ -46,6 +46,7 @@ class QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGro
     void addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent = 0 );
     void unselectChildren( QTreeWidgetItem* item );
     QString mProjectPath;
+    bool mShowEmbeddedContent;
 };
 
 #endif //QGSPROJECTLAYERGROUPDIALOG_H

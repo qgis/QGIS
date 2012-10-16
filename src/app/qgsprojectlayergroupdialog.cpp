@@ -23,7 +23,8 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f ): QDialog( parent, f )
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f ): QDialog( parent, f ),
+    mShowEmbeddedContent( false )
 {
   setupUi( this );
 
@@ -36,6 +37,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const 
     mProjectFileLabel->hide();
     mProjectFileLineEdit->hide();
     mBrowseFileToolButton->hide();
+    mShowEmbeddedContent = true;
     changeProjectFile();
   }
 
@@ -50,52 +52,52 @@ QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 
 QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
-    QStringList groups;
-    QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
-    QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-    for ( ; itemIt != items.end(); ++itemIt )
+  QStringList groups;
+  QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
+  for ( ; itemIt != items.end(); ++itemIt )
+  {
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "group" )
     {
-      if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "group" )
-      {
-        groups.push_back( ( *itemIt )->text( 0 ) );
-      }
+      groups.push_back(( *itemIt )->text( 0 ) );
     }
-    return groups;
+  }
+  return groups;
 }
 
 QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
-    QStringList layerIds;
-    QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
-    QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-    for ( ; itemIt != items.end(); ++itemIt )
+  QStringList layerIds;
+  QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
+  for ( ; itemIt != items.end(); ++itemIt )
+  {
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
     {
-      if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
-      {
-          layerIds.push_back( ( *itemIt )->data( 0, Qt::UserRole + 1 ).toString() );
-      }
+      layerIds.push_back(( *itemIt )->data( 0, Qt::UserRole + 1 ).toString() );
     }
-    return layerIds;
+  }
+  return layerIds;
 }
 
 QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
-    QStringList layerNames;
-    QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
-    QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-    for ( ; itemIt != items.end(); ++itemIt )
+  QStringList layerNames;
+  QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
+  for ( ; itemIt != items.end(); ++itemIt )
+  {
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
     {
-      if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
-      {
-          layerNames.push_back( ( *itemIt )->text( 0 ) );
-      }
+      layerNames.push_back(( *itemIt )->text( 0 ) );
     }
-    return layerNames;
+  }
+  return layerNames;
 }
 
 QString QgsProjectLayerGroupDialog::selectedProjectFile() const
 {
-    return mProjectFileLineEdit->text();
+  return mProjectFileLineEdit->text();
 }
 
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
@@ -186,7 +188,7 @@ void QgsProjectLayerGroupDialog::addLegendGroupToTreeWidget( const QDomElement& 
   QDomNodeList groupChildren = groupElem.childNodes();
   QDomElement currentChildElem;
 
-  if ( groupElem.attribute( "embedded" ) == "1" )
+  if ( !mShowEmbeddedContent && groupElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
@@ -220,7 +222,7 @@ void QgsProjectLayerGroupDialog::addLegendGroupToTreeWidget( const QDomElement& 
 
 void QgsProjectLayerGroupDialog::addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent )
 {
-  if ( layerElem.attribute( "embedded" ) == "1" )
+  if ( !mShowEmbeddedContent && layerElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
