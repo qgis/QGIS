@@ -561,6 +561,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
+  Q_UNUSED( theBandNo );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
   if ( qIsNaN( theMin ) )

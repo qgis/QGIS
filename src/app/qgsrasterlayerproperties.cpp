@@ -1182,6 +1182,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text )
 {
+  Q_UNUSED( text );
   QgsDebugMsg( QString( "text = %1" ).arg( text ) );
   QgsRasterRenderer* renderer = mRendererWidget->renderer();
   if ( !renderer )

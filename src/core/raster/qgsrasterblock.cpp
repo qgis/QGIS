@@ -303,7 +303,7 @@ bool QgsRasterBlock::setValue( size_t index, double value )
     QgsDebugMsg( "Data block not allocated" );
     return false;
   }
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return false;
@@ -375,7 +375,7 @@ bool QgsRasterBlock::setIsNoData()
 char * QgsRasterBlock::bits( size_t index )
 {
   // Not testing type to avoid too much overhead because this method is called per pixel
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return 0;

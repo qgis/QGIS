@@ -193,6 +193,7 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
 
 void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
+  Q_UNUSED( theOrigin );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;

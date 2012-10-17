@@ -85,7 +85,9 @@ bool TestQgsDataItem::isValidDirItem( QgsDirectoryItem *item )
 void TestQgsDataItem::testValid()
 {
   if ( mDirItem )
+  {
     QgsDebugMsg( QString( "dirItem has %1 children" ).arg( mDirItem->rowCount() ) );
+  }
   QVERIFY( isValidDirItem( mDirItem ) );
 }
 
