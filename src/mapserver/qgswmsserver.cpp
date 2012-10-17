@@ -1298,13 +1298,14 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 {
   Q_UNUSED( version );
 
-  if ( !infoPoint || !layer )
+  if ( !infoPoint || !layer || !layer->dataProvider() )
   {
     return 1;
   }
 
   QMap<QString, QString> attributes;
-  layer->identify( *infoPoint, attributes );
+  // TODO: use context extent, width height (comes with request) to use WCS cache
+  attributes = layer->dataProvider()->identify( *infoPoint );
 
   for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
   {

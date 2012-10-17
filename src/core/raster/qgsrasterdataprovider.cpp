@@ -22,6 +22,7 @@
 #include <QTime>
 #include <QMap>
 #include <QByteArray>
+#include <QVariant>
 
 #include <qmath.h>
 
@@ -308,53 +309,121 @@ QString QgsRasterDataProvider::capabilitiesString() const
   return abilitiesList.join( ", " );
 }
 
-#if 0
-bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+// Default implementation for values
+QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  Q_UNUSED( thePoint );
-  theResults.clear();
-  return false;
-}
+  QgsDebugMsg( "Entered" );
+  QMap<int, QVariant> results;
 
-bool QgsRasterDataProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
-{
-  Q_UNUSED( point );
-  results.clear();
-  return false;
-}
-#endif
+  if ( theFormat != IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
+  {
+    QgsDebugMsg( "Format not supported" );
+    return results;
+  }
 
-QMap<int, void *> QgsRasterDataProvider::identify( const QgsPoint & point )
-{
-  QMap<int, void *> results;
+  if ( !extent().contains( thePoint ) )
+  {
+    // Outside the raster
+    for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
+    {
+      results.insert( bandNo, noDataValue( bandNo ) );
+    }
+    return results;
+  }
 
-  QgsRectangle myExtent = extent();
+  QgsRectangle myExtent = theExtent;
+  if ( myExtent.isEmpty() )  myExtent = extent();
+
+  if ( theWidth == 0 )
+  {
+    theWidth = capabilities() & Size ? xSize() : 1000;
+  }
+  if ( theHeight == 0 )
+  {
+    theHeight = capabilities() & Size ? ySize() : 1000;
+  }
+
+  // Calculate the row / column where the point falls
+  double xres = ( myExtent.width() ) / theWidth;
+  double yres = ( myExtent.height() ) / theHeight;
+
+  int col = ( int ) floor(( thePoint.x() - myExtent.xMinimum() ) / xres );
+  int row = ( int ) floor(( myExtent.yMaximum() - thePoint.y() ) / yres );
+
+  double xMin = myExtent.xMinimum() + col * xres;
+  double xMax = xMin + xres;
+  double yMax = myExtent.yMaximum() - row * yres;
+  double yMin = yMax - yres;
+  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    double x = point.x();
-    double y = point.y();
+    QgsRasterBlock * myBlock = block( i, pixelExtent, 1, 1 );
 
-    // Calculate the row / column where the point falls
-    double xres = ( myExtent.xMaximum() - myExtent.xMinimum() ) / xSize();
-    double yres = ( myExtent.yMaximum() - myExtent.yMinimum() ) / ySize();
+    double value = noDataValue( i );
+    if ( myBlock ) value = myBlock->value( 0 );
 
-    int col = ( int ) floor(( x - myExtent.xMinimum() ) / xres );
-    int row = ( int ) floor(( myExtent.yMaximum() - y ) / yres );
+    results.insert( i, value );
+  }
+  return results;
+}
 
-    double xMin = myExtent.xMinimum() + col * xres;
-    double xMax = xMin + xres;
-    double yMax = myExtent.yMaximum() - row * yres;
-    double yMin = yMax - yres;
-    QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
+QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoint, const QgsRectangle &theExtent, int theWidth, int theHeight )
+{
+  QMap<QString, QString> results;
 
-    void * data = block( i, pixelExtent, 1, 2 );
+  QgsRasterDataProvider::IdentifyFormat identifyFormat;
+  if ( capabilities() & QgsRasterDataProvider::IdentifyValue )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
+  }
+  else if ( capabilities() & QgsRasterDataProvider::IdentifyHtml )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
+  }
+  else if ( capabilities() & QgsRasterDataProvider::IdentifyText )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatText;
+  }
+  else
+  {
+    return results;
+  }
 
-    if ( data )
+  QMap<int, QVariant> myResults = identify( thePoint, identifyFormat, theExtent, theWidth, theHeight );
+
+  if ( identifyFormat == QgsRasterDataProvider::IdentifyFormatValue )
+  {
+    foreach ( int bandNo, myResults.keys() )
     {
-      results.insert( i, data );
+      double value = myResults.value( bandNo ).toDouble();
+      QString valueString;
+      if ( isNoDataValue( bandNo, value ) )
+      {
+        valueString = tr( "no data" );
+      }
+      else
+      {
+        valueString = QgsRasterBlock::printValue( value );
+      }
+      results.insert( generateBandName( bandNo ), valueString );
     }
   }
+  else // text or html
+  {
+    foreach ( int bandNo, myResults.keys() )
+    {
+      QString value = myResults.value( bandNo ).toString();
+      // TODO: better 'attribute' name, in theory it may be something else than WMS
+      // feature info
+      if ( identifyFormat == QgsRasterDataProvider::IdentifyFormatText )
+      {
+        value = "<pre>" + value + "</pre>";
+      }
+      results.insert( tr( "Feature info" ), value );
+    }
+  }
+
   return results;
 }
 

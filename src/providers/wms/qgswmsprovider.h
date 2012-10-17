@@ -653,36 +653,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-
-    /**
-     * \brief Identify details from a WMS from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A html document containing the return from the WMS server
-     *
-     * \note WMS prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     */
-    QString identifyAsHtml( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a WMS from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     */
-    QString identifyAsText( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -884,7 +855,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString prepareUri( QString uri ) const;
 
-    QStringList identifyAs( const QgsPoint &point, QString format );
+    //QStringList identifyAs( const QgsPoint &point, QString format );
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 

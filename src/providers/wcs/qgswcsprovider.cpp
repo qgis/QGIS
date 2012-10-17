@@ -1467,6 +1467,7 @@ int QgsWcsProvider::capabilities() const
 {
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
+  capability |= QgsRasterDataProvider::IdentifyValue;
   capability |= QgsRasterDataProvider::Histogram;
 
   if ( mHasSize )
@@ -1633,56 +1634,66 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
+//QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
+QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entered" );
-  QMap<int, void *> results;
+  QMap<int, QVariant> results;
+
+  if ( theFormat != IdentifyFormatValue ) return results;
 
   if ( !extent().contains( thePoint ) )
   {
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      void * data = QgsMalloc( dataTypeSize( i ) );
-      QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
-      results.insert( i, data );
+      results.insert( i, noDataValue( i ) );
     }
     return results;
   }
 
-  // It would be nice to use last cached block if possible, unfortunately we don't know
-  // at which resolution identify() is called. It may happen, that user zoomed in with
-  // layer switched off, canvas resolution increased, but provider cache was not refreshed.
-  // In that case the resolution is too low and identify() could give wron results.
-  // So we have to read always a block of data around the point on highest resolution
-  // if not already cached.
-  // TODO: change provider identify() prototype to pass also the resolution
-
-  int width, height;
-  if ( mHasSize )
+  QgsRectangle myExtent = theExtent;
+  int maxSize = 2000;
+  // if context size is to large we have to cut it, in that case caching big
+  // big part does not make sense
+  if ( myExtent.isEmpty() || theWidth == 0 || theHeight == 0 ||
+       theWidth > maxSize || theHeight > maxSize )
   {
-    width = mWidth;
-    height = mHeight;
+    // context missing, use an area around the point and highest resolution if known
+
+    // 1000 is bad in any case, either not precise or too much data requests
+    if ( theWidth == 0 ) theWidth = mHasSize ? mWidth : 1000;
+    if ( theHeight == 0 ) theHeight = mHasSize ? mHeight : 1000;
+
+    if ( myExtent.isEmpty() )  myExtent = extent();
+
+    double xRes = myExtent.width() / theWidth;
+    double yRes = myExtent.height() / theHeight;
+
+    if ( !mCachedGdalDataset ||
+         !mCachedViewExtent.contains( thePoint ) ||
+         mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
+         mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
+         mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
+    {
+      int half = 50;
+      QgsRectangle extent( thePoint.x() - xRes * half, thePoint.y() - yRes * half,
+                           thePoint.x() + xRes * half, thePoint.y() + yRes * half );
+      getCache( 1, extent, 2*half, 2*half );
+
+    }
   }
   else
   {
-    // Bad in any case, either not precise or too much data requests
-    width = height = 1000;
-  }
-  double xRes = mCoverageExtent.width() / width;
-  double yRes = mCoverageExtent.height() / height;
-
-  if ( !mCachedGdalDataset ||
-       !mCachedViewExtent.contains( thePoint ) ||
-       mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
-       mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
-       mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
-  {
-    int half = 50;
-    QgsRectangle extent( thePoint.x() - xRes * half, thePoint.y() - yRes * half,
-                         thePoint.x() + xRes * half, thePoint.y() + yRes * half );
-    getCache( 1, extent, 2*half, 2*half );
-
+    // Use context -> effective caching (usually, if context is constant)
+    QgsDebugMsg( "Using context extent and resolution" );
+    if ( !mCachedGdalDataset ||
+         mCachedViewExtent != theExtent ||
+         mCachedViewWidth != theWidth ||
+         mCachedViewHeight != theHeight )
+    {
+      getCache( 1, theExtent, theWidth, theHeight );
+    }
   }
 
   if ( !mCachedGdalDataset ||
@@ -1695,8 +1706,8 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   double y = thePoint.y();
 
   // Calculate the row / column where the point falls
-  xRes = ( mCachedViewExtent.xMaximum() - mCachedViewExtent.xMinimum() ) / mCachedViewWidth;
-  yRes = ( mCachedViewExtent.yMaximum() - mCachedViewExtent.yMinimum() ) / mCachedViewHeight;
+  double xRes = ( mCachedViewExtent.width() ) / mCachedViewWidth;
+  double yRes = ( mCachedViewExtent.height() ) / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
   int col = ( int ) floor(( x - mCachedViewExtent.xMinimum() ) / xRes );
@@ -1708,31 +1719,21 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
 
-    void * data = QgsMalloc( dataTypeSize( i ) );
+    double value;
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                               data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
+                               &value, 1, 1, GDT_Float64, 0, 0 );
 
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      results.clear();
+      return results;
     }
 
-    results.insert( i, data );
+    results.insert( i, value );
   }
 
   return results;
-}
-
-QString QgsWcsProvider::identifyAsText( const QgsPoint &point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
-}
-
-QString QgsWcsProvider::identifyAsHtml( const QgsPoint &point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
 }
 
 QgsCoordinateReferenceSystem QgsWcsProvider::crs()

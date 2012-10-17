@@ -54,6 +54,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
       /*! Max current value */                              ColorInterpretationMax = 17
     };
 
+    enum IdentifyFormat
+    {
+      IdentifyFormatValue,
+      IdentifyFormatText,
+      IdentifyFormatHtml,
+      IdentifyFormatFeature
+    };
+
     // Progress types
     enum RasterProgressType
     {
@@ -304,47 +312,9 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QString metadata() = 0;
 
-    /** \brief Identify raster value(s) found on the point position
-     * @param point coordinates in data source CRS
-     * @return list of pointers to data blocks for all bands,
-     *         caller is responsible to free the allocated memory,
-     *         readValue() may be used to get values
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
-     */
-    // TODO: Consider QVariant or similar instead of void*
-    // virtual QMap<int, void *> identify( const QgsPoint & point );
+    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     */
-    virtual QString identifyAsText( const QgsPoint& point ) = 0;
-
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A html document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     *
-     * \note  added in 1.5
-     */
-    virtual QString identifyAsHtml( const QgsPoint& point ) = 0;
+    QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

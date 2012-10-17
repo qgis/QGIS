@@ -38,6 +38,7 @@
 class QImage;
 class QgsPoint;
 class QByteArray;
+#include <QVariant>
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 #define RASTER_HISTOGRAM_BINS 256
@@ -68,7 +69,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Histogram =               1 << 5,
       Size =                    1 << 6,  // has fixed source type
       Create =                  1 << 7, //create new datasets
-      Remove =                  1 << 8 //delete datasets
+      Remove =                  1 << 8, //delete datasets
+      IdentifyValue =           1 << 9,
+      IdentifyText =            1 << 10,
+      IdentifyHtml =            1 << 11,
+      IdentifyFeature =         1 << 12  // WMS GML -> feature
     };
 
     // This is modified copy of GDALColorInterp
@@ -93,6 +98,17 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       /*! Cr Chroma */                                      YCbCr_CrBand = 16,
       /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
       /*! Max current value */                              ColorInterpretationMax = 17
+    };
+
+    enum IdentifyFormat
+    {
+      IdentifyFormatValue = 0,
+      IdentifyFormatText  = 1,
+      IdentifyFormatHtml  = 1 << 1,
+      // In future it should be possible to get from GetFeatureInfo (WMS) in GML
+      // vector features. It is possible to use a user type with QVariant if
+      // a class is declared with Q_DECLARE_METATYPE
+      IdentifyFormatFeature = 1 << 2
     };
 
     // Progress types
@@ -430,47 +446,28 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString metadata() = 0;
 
-    /** \brief Identify raster value(s) found on the point position
-     * @param point coordinates in data source CRS
-     * @return list of pointers to data blocks for all bands,
-     *         caller is responsible to free the allocated memory,
-     *         readValue() may be used to get values
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
-     */
-    // TODO: Consider QVariant or similar instead of void*
-    virtual QMap<int, void *> identify( const QgsPoint & point );
-
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
+    /** \brief Identify raster value(s) found on the point position. The context
+     *         parameters theExtent, theWidth and theHeigh are important to identify
+     *         on the same zoom level as a displayed map and to do effective
+     *         caching (WCS). If context params are not specified the highest
+     *         resolution is used. capabilities() may be used to test if format
+     *         is supported by provider. Values are set to 'no data' or empty string
+     *         if point is outside data source extent.
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
+     * @param thePoint coordinates in data source CRS
+     * @param theFormat result format
+     * @param theExtent context extent
+     * @param theWidth context width
+     * @param theHeight context height
+     * @return map of values for all bands, keys are band numbers (from 1), empty
+     *         if failed
      */
-    virtual QString identifyAsText( const QgsPoint& point ) = 0;
+    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A html document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     *
-     * \note  added in 1.5
-     */
-    virtual QString identifyAsHtml( const QgsPoint& point ) = 0;
+
+    QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

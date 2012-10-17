@@ -3194,12 +3194,13 @@ int QgsWmsProvider::capabilities() const
       {
         // Collect all the test results into one bitmask
         capability |= QgsRasterDataProvider::Identify;
-        break;
+        if ( f == "text/html" ) capability |= QgsRasterDataProvider::IdentifyHtml;
+        else if ( f == "text/plain" ) capability |= QgsRasterDataProvider::IdentifyText;
       }
     }
   }
 
-  //QgsDebugMsg( "exiting with '"  + QString( capability )  + "'." );
+  QgsDebugMsg( "exiting with '"  + QString::number( capability, 2 )  + "'." );
 
   return capability;
 }
@@ -3756,16 +3757,56 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
+QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entering." );
-  QStringList results;
+  QStringList resultStrings;
+  QMap<int, QVariant> results;
+
+  QString format;
+  if ( theFormat == IdentifyFormatHtml )
+  {
+    if ( !( capabilities() & IdentifyHtml ) ) return results;
+    format = "text/html";
+  }
+  else if ( theFormat == IdentifyFormatText )
+  {
+    if ( !( capabilities() & IdentifyText ) ) return results;
+    format = "text/plain";
+  }
+  else
+  {
+    return results;
+  }
+
+  if ( !extent().contains( thePoint ) )
+  {
+    results.insert( 1, "" );
+    return results;
+  }
+
+  QgsRectangle myExtent = theExtent;
+  if ( myExtent.isEmpty() )
+  {
+    // use full extent
+    myExtent = extent();
+  }
+
+  // We don't know highest resolution, so it is difficult to guess any
+  // but that is why theExtent, theWidth, theHeight params are here
+  if ( theWidth == 0 ) theWidth = 1000; // just some number
+  if ( theHeight == 0 ) theHeight = 1000;
+
+  // Point in BBOX/WIDTH/HEIGHT coordinates
+  // No need to fiddle with extent origin not covered by layer extent, I believe
+  double xRes = myExtent.width() / theWidth;
+  double yRes = myExtent.height() / theHeight;
+
+  QgsPoint point;
+  point.setX( floor(( thePoint.x() - myExtent.xMinimum() ) / xRes ) );
+  point.setY( floor(( myExtent.yMaximum() - thePoint.y() ) / yRes ) );
 
   // Collect which layers to query on
-
-  QStringList queryableLayers = QStringList();
-  QString text = "";
-
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
   bool changeXY = false;
   if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
@@ -3790,10 +3831,10 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
 
   // Compose request to WMS server
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( mCachedViewExtent.xMinimum(), 0, 'f', 16 )
-                 .arg( mCachedViewExtent.yMinimum(), 0, 'f', 16 )
-                 .arg( mCachedViewExtent.xMaximum(), 0, 'f', 16 )
-                 .arg( mCachedViewExtent.yMaximum(), 0, 'f', 16 );
+                 .arg( myExtent.xMinimum(), 0, 'f', 16 )
+                 .arg( myExtent.yMinimum(), 0, 'f', 16 )
+                 .arg( myExtent.xMaximum(), 0, 'f', 16 )
+                 .arg( myExtent.yMaximum(), 0, 'f', 16 );
 
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator
@@ -3818,8 +3859,8 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
     setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
     setQueryItem( requestUrl, "BBOX", bbox );
     setQueryItem( requestUrl, crsKey, mImageCrs );
-    setQueryItem( requestUrl, "WIDTH", QString::number( mCachedViewWidth ) );
-    setQueryItem( requestUrl, "HEIGHT", QString::number( mCachedViewHeight ) );
+    setQueryItem( requestUrl, "WIDTH", QString::number( theWidth ) );
+    setQueryItem( requestUrl, "HEIGHT", QString::number( theHeight ) );
     setQueryItem( requestUrl, "LAYERS", *layers );
     setQueryItem( requestUrl, "STYLES", *styles );
     setQueryItem( requestUrl, "FORMAT", mImageMimeType );
@@ -3853,56 +3894,23 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
     }
 
-    results << mIdentifyResult;
+    resultStrings << mIdentifyResult;
   }
 
-  QgsDebugMsg( "Exiting with: " + results.join( "\n------\n" ) );
+  QString str;
+
+  if ( theFormat == IdentifyFormatHtml )
+  {
+    str = "<table>\n<tr><td>" + resultStrings.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
+  }
+  else if ( theFormat == IdentifyFormatText )
+  {
+    str = resultStrings.join( "\n-------------\n" );
+  }
+
+  results.insert( 1, str );
+
   return results;
-}
-
-QString QgsWmsProvider::identifyAsText( const QgsPoint &point )
-{
-  if ( !mCapabilities.capability.request.getFeatureInfo.format.contains( "text/plain" ) )
-    return tr( "Layer cannot be queried in plain text." );
-
-  QStringList list = identifyAs( point, "text/plain" );
-
-  if ( list.isEmpty() )
-  {
-    return tr( "Layer cannot be queried." );
-  }
-  else
-  {
-    return list.join( "\n-------------\n" );
-  }
-}
-
-QString QgsWmsProvider::identifyAsHtml( const QgsPoint &point )
-{
-  QString format;
-
-  foreach ( QString f, mSupportedGetFeatureFormats )
-  {
-    if ( mCapabilities.capability.request.getFeatureInfo.format.contains( f ) )
-    {
-      format = f;
-      break;
-    }
-  }
-
-  Q_ASSERT( !format.isEmpty() );
-
-  QStringList results = identifyAs( point, format );
-
-  if ( format == "text/html" )
-  {
-    return "<table>\n<tr><td>" + results.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
-  }
-  else
-  {
-    // TODO format text/xml
-    return "<table>\n<tr><td><pre>\n" + results.join( "\n</pre></td></tr>\n<tr><td><pre>\n" ) + "\n</pre></td></tr>\n</table>";
-  }
 }
 
 void QgsWmsProvider::identifyReplyFinished()

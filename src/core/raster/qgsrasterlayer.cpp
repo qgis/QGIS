@@ -934,6 +934,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
  * @param theResults QMap to hold the pixel values at thePoint for each layer in the raster file
  * @return False if WMS layer and true otherwise
  */
+#if 0
 bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   theResults.clear();
@@ -1026,6 +1027,7 @@ QString QgsRasterLayer::identifyAsHtml( const QgsPoint& thePoint )
 
   return mDataProvider->identifyAsHtml( thePoint );
 }
+#endif
 
 /**
  * @note Note implemented yet
