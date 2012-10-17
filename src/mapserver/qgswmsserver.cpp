@@ -727,7 +727,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
   QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > hiddenAttributes = mConfigParser->hiddenAttributes();
+  QMap< QString, QSet<QString> > excludedAttributes = mConfigParser->wmsExcludedAttributes();
 
   //Render context is needed to determine feature visibility for vector layers
   QgsRenderContext renderContext;
@@ -784,16 +784,16 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
           layerAliasInfo = aliasIt.value();
         }
 
-        //hidden attributes for this layer
-        QSet<QString> layerHiddenAttributes;
-        QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
-        if ( hiddenIt != hiddenAttributes.constEnd() )
+        //excluded attributes for this layer
+        QSet<QString> layerExcludedAttributes;
+        QMap< QString, QSet<QString> >::const_iterator excludedIt = excludedAttributes.find( currentLayer->id() );
+        if ( excludedIt != excludedAttributes.constEnd() )
         {
-          layerHiddenAttributes = hiddenIt.value();
+          layerExcludedAttributes = excludedIt.value();
         }
 
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
-                                         layerAliasInfo, layerHiddenAttributes, version, featuresRect ) != 0 )
+                                         layerAliasInfo, layerExcludedAttributes, version, featuresRect ) != 0 )
         {
           continue;
         }
@@ -1141,7 +1141,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QgsMapRenderer* mapRender,
     QgsRenderContext& renderContext,
     QMap<int, QString>& aliasMap,
-    QSet<QString>& hiddenAttributes,
+    QSet<QString>& excludedAttributes,
     QString version,
     QgsRectangle* featureBBox ) const
 {
@@ -1231,8 +1231,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     {
 
       QString attributeName = fields[it.key()].name();
-      //skip attribute if it has edit type 'hidden'
-      if ( hiddenAttributes.contains( attributeName ) )
+      //skip attribute if it is explicitely excluded from WMS publication
+      if ( excludedAttributes.contains( attributeName ) )
       {
         continue;
       }
