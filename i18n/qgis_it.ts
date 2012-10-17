@@ -652,7 +652,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Selezione causale con un sottoinsieme</translation>
+        <translation>Selezione casuale con un sottoinsieme</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -3252,7 +3252,8 @@ quando si preme sul bottone Aiuto del dialogo degli strumenti.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="68"/>
         <source>cubic</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>cubico</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="73"/>
@@ -4919,7 +4920,8 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1091"/>
         <source>Layer Labeling Options</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Opzioni per l&apos;etichettatura del layer</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1100"/>
