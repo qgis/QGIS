@@ -119,7 +119,6 @@
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
-#include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
@@ -156,6 +155,7 @@
 #include "qgspoint.h"
 #include "qgshandlebadlayers.h"
 #include "qgsproject.h"
+#include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
 #include "qgsproviderregistry.h"
 #include "qgspythonrunner.h"
@@ -5867,30 +5867,33 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 void QgisApp::embedLayers()
 {
   //dialog to select groups/layers from other project files
-  QgsEmbedLayerDialog d( this );
+  QgsProjectLayerGroupDialog d( this );
   if ( d.exec() == QDialog::Accepted )
   {
     mMapCanvas->freeze( true );
+
+    QString projectFile = d.selectedProjectFile();
+
     //groups
-    QList< QPair < QString, QString > > groups = d.embeddedGroups();
-    QList< QPair < QString, QString > >::const_iterator groupIt = groups.constBegin();
+    QStringList groups = d.selectedGroups();
+    QStringList::const_iterator groupIt = groups.constBegin();
     for ( ; groupIt != groups.constEnd(); ++groupIt )
     {
-      mMapLegend->addEmbeddedGroup( groupIt->first, groupIt->second );
+      mMapLegend->addEmbeddedGroup( *groupIt, projectFile );
     }
 
-    //layers
+    //layer ids
     QList<QDomNode> brokenNodes;
     QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-
-    QList< QPair < QString, QString > > layers = d.embeddedLayers();
-    QList< QPair < QString, QString > >::const_iterator layerIt = layers.constBegin();
-    for ( ; layerIt != layers.constEnd(); ++layerIt )
+    QStringList layerIds = d.selectedLayerIds();
+    QStringList::const_iterator layerIt = layerIds.constBegin();
+    for ( ; layerIt != layerIds.constEnd(); ++layerIt )
     {
-      QgsProject::instance()->createEmbeddedLayer( layerIt->first, layerIt->second, brokenNodes, vectorLayerList );
+      QgsProject::instance()->createEmbeddedLayer( *layerIt, projectFile, brokenNodes, vectorLayerList );
     }
+
     mMapCanvas->freeze( false );
-    if ( groups.size() > 0 || layers.size() > 0 )
+    if ( groups.size() > 0 || layerIds.size() > 0 )
     {
       mMapCanvas->refresh();
     }

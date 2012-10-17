@@ -20,5 +20,5 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     int selectedBand( int index = 0 );
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 };

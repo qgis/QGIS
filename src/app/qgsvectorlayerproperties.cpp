@@ -195,19 +195,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDiagramFrame->setLayout( new QVBoxLayout( mDiagramFrame ) );
   mDiagramFrame->layout()->addWidget( diagramPropertiesDialog );
 
-  //for each overlay plugin create a new tab
-  int position;
-  QList<QgsVectorOverlayPlugin*> overlayPluginList = overlayPlugins();
-  QList<QgsVectorOverlayPlugin*>::const_iterator it = overlayPluginList.constBegin();
-
-  for ( ; it != overlayPluginList.constEnd(); ++it )
-  {
-    QgsApplyDialog* d = ( *it )->dialog( lyr );
-    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay" ) );
-    tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
-    mOverlayDialogs.push_back( d );
-  }
-
   //layer title and abstract
   if ( layer )
   {
@@ -266,6 +253,8 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
   tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( "WMS" ) );
+  tblAttributes->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
   tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
@@ -301,6 +290,16 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
 
   //set the alias for the attribute
   tblAttributes->setItem( row, attrAliasCol, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
+
+  //published WMS/WFS attributes
+  QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
+  wmsAttrItem->setCheckState( layer->excludeAttributesWMS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
+  wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  tblAttributes->setItem( row, attrWMSCol, wmsAttrItem );
+  QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
+  wfsAttrItem->setCheckState( layer->excludeAttributesWFS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
+  wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  tblAttributes->setItem( row, attrWFSCol, wfsAttrItem );
 }
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
@@ -757,6 +756,8 @@ void QgsVectorLayerProperties::apply()
   layer->enableLabels( labelCheckBox->isChecked() );
   layer->setLayerName( displayName() );
 
+  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
+
   for ( int i = 0; i < tblAttributes->rowCount(); i++ )
   {
     int idx = tblAttributes->item( i, attrIdCol )->text().toInt();
@@ -815,7 +816,19 @@ void QgsVectorLayerProperties::apply()
       case QgsVectorLayer::UuidGenerator:
         break;
     }
+
+    if ( tblAttributes->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWMS.insert( tblAttributes->item( i, attrNameCol )->text() );
+    }
+    if ( tblAttributes->item( i, attrWFSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWFS.insert( tblAttributes->item( i, attrNameCol )->text() );
+    }
   }
+
+  layer->setExcludeAttributesWMS( excludeAttributesWMS );
+  layer->setExcludeAttributesWFS( excludeAttributesWFS );
 
   if ( layer->isUsingRendererV2() )
   {

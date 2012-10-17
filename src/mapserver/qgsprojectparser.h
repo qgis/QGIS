@@ -87,8 +87,11 @@ class QgsProjectParser: public QgsConfigParser
        Default implementation returns an empty map*/
     virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const;
 
-    /**Returns a stringlist containing the names of the attributes with hidden edit types*/
-    virtual QMap< QString, QSet<QString> > hiddenAttributes() const;
+    /**Returns attributes excluded from WMS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
+    virtual QMap< QString, QSet<QString> > wmsExcludedAttributes() const;
+
+    /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
+    virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const;
 
     /**Returns map rectangle for the project file*/
     QgsRectangle mapRectangle() const;
@@ -134,6 +137,8 @@ class QgsProjectParser: public QgsConfigParser
     QHash< QString, QDomElement > mProjectLayerElementsById;
     /**Project layer elements, accessible by layer name*/
     QHash< QString, QDomElement > mProjectLayerElementsByName;
+    /**Names of layers and groups which should not be published*/
+    QSet<QString> mRestrictedLayers;
 
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
@@ -169,6 +174,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;
 
+    /**Returns the composer elements published by this WMS. It is possible to hide composers from the WMS*/
+    QList<QDomElement> publishedComposerElements() const;
+
     /**Converts a (possibly relative) path to absolute*/
     QString convertToAbsolutePath( const QString& file ) const;
 
@@ -188,6 +196,11 @@ class QgsProjectParser: public QgsConfigParser
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
     static QString editTypeString( QgsVectorLayer::EditType type );
+
+    /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
+    QSet<QString> restrictedLayers() const;
+    /**Adds sublayers of an embedded group to layer set*/
+    static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
 };
 
 #endif // QGSPROJECTPARSER_H

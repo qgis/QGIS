@@ -163,6 +163,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
       attrCommentCol,
       attrEditTypeCol,
       attrAliasCol,
+      attrWMSCol,
+      attrWFSCol,
       attrColCount,
     };
 

@@ -934,6 +934,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
  * @param theResults QMap to hold the pixel values at thePoint for each layer in the raster file
  * @return False if WMS layer and true otherwise
  */
+#if 0
 bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   theResults.clear();
@@ -1026,6 +1027,7 @@ QString QgsRasterLayer::identifyAsHtml( const QgsPoint& thePoint )
 
   return mDataProvider->identifyAsHtml( thePoint );
 }
+#endif
 
 /**
  * @note Note implemented yet
@@ -2819,7 +2821,7 @@ QString QgsRasterLayer::projectionWkt()
 #if 0
 void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
 {
-  int size = mDataProvider->dataTypeSize( bandNo ) / 8;
+  int size = mDataProvider->dataTypeSize( bandNo );
 
 #if 0
   QgsDebugMsg( "calling RasterIO with " +
@@ -2830,7 +2832,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 #endif
-  void *data = VSIMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
+  void *data = QgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
   if ( data == NULL )

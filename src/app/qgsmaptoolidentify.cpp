@@ -38,6 +38,7 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QVariant>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
@@ -315,14 +316,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
 {
   bool res = true;
 
-  if ( !layer )
-    return false;
+  if ( !layer ) return false;
 
   QgsRasterDataProvider *dprovider = layer->dataProvider();
-  if ( dprovider && ( dprovider->capabilities() & QgsRasterDataProvider::Identify ) == 0 )
+  if ( !dprovider || !( dprovider->capabilities() & QgsRasterDataProvider::Identify ) )
+  {
     return false;
+  }
 
-  QMap< QString, QString > attributes, derivedAttributes;
   QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   try
   {
@@ -335,8 +336,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
     return false;
   }
 
-  QString type;
+  if ( !layer->extent().contains( idPoint ) ) return false;
 
+#if 0
   if ( layer->providerType() == "wms" )
   {
     type = tr( "WMS layer" );
@@ -366,13 +368,34 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
       res = false;
     }
   }
-  else
+#endif
+
+  // TODO: extent, width, heigh are approximated only if layer is reprojected!!!!
+  // How to do it better? We dont know source resolution used to reproject the layer.
+
+  QgsRectangle viewExtent = mCanvas->extent();
+  if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {
-    type = tr( "Raster" );
-    res = layer->extent().contains( idPoint ) && layer->identify( idPoint, attributes );
+    viewExtent = toLayerCoordinates( layer, viewExtent );
   }
 
-  if ( res )
+  // cut by layer extent to use possible cache, the same done when drawing
+  viewExtent = dprovider->extent().intersect( &viewExtent );
+
+  double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+  // Width and height are calculated from not projected extent and we hope that
+  // are similar to source width and height used to reproject layer for drawing.
+  int width = mCanvas->extent().width() / mapUnitsPerPixel;
+  int height = mCanvas->extent().height() / mapUnitsPerPixel;
+
+  QMap< QString, QString > attributes, derivedAttributes;
+
+  attributes = dprovider->identify( idPoint, viewExtent, width, height );
+
+  QString type;
+  type = tr( "Raster" );
+
+  if ( attributes.size() > 0 )
   {
     derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
     results()->addFeature( layer, type, attributes, derivedAttributes );

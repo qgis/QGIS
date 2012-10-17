@@ -112,6 +112,10 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSAddSRS_clicked();
     void on_pbnWMSRemoveSRS_clicked();
     void on_pbnWMSSetUsedSRS_clicked();
+    void on_mAddWMSComposerButton_clicked();
+    void on_mRemoveWMSComposerButton_clicked();
+    void on_mAddLayerRestrictionButton_clicked();
+    void on_mRemoveLayerRestrictionButton_clicked();
 
     /*!
      * Slots to select/unselect all the WFS layers

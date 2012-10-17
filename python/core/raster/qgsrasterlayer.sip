@@ -305,21 +305,21 @@ class QgsRasterLayer : QgsMapLayer
     bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
-%MethodCode
-      sipRes = sipCpp->identify( *a0, *a1 );
-%End
+//    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
+//%MethodCode
+//      sipRes = sipCpp->identify( *a0, *a1 );
+//%End
 
     /** \brief Identify arbitrary details from the WMS server found on the point position */
-    QString identifyAsText( const QgsPoint & point );
+    //QString identifyAsText( const QgsPoint & point );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      * @note added in 1.5
      */
-    QString identifyAsHtml( const QgsPoint & point );
+    //QString identifyAsHtml( const QgsPoint & point );
 
     /** \brief Currently returns always false */
     bool isEditable() const;

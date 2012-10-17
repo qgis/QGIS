@@ -734,7 +734,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return outputBlock;
   }
 
-  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) / 8;
+  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
   if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
   {

@@ -121,33 +121,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     bool isValid();
 
-    /** \brief Identify raster value(s) found on the point position */
-    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    //bool identify( const QgsPoint & point, QMap<int, QString>& results );
-
-    QMap<int, void *> identify( const QgsPoint & point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     */
-    QString identifyAsText( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     * \note  added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

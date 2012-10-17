@@ -19,6 +19,8 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
+#include "qgisapp.h"
+#include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
@@ -27,6 +29,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
+#include "qgsprojectlayergroupdialog.h"
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
@@ -260,6 +263,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   grpWMSList->setChecked( mWMSList->count() > 0 );
+
+  //composer restriction for WMS
+  values = QgsProject::instance()->readListEntry( "WMSComposerList", "/", &ok );
+  mWMSComposerGroupBox->setChecked( ok );
+  if ( ok )
+  {
+    mComposerListWidget->addItems( values );
+  }
+
+  //layer restriction for WMS
+  values = QgsProject::instance()->readListEntry( "WMSRestrictedLayers", "/", &ok );
+  mLayerRestrictionsGroupBox->setChecked( ok );
+  if ( ok )
+  {
+    mLayerRestrictionsListWidget->addItems( values );
+  }
 
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
@@ -539,6 +558,36 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->removeEntry( "WMSCrsList", "/" );
   }
 
+  //WMS composer restrictions
+  if ( mWMSComposerGroupBox->isChecked() )
+  {
+    QStringList composerTitles;
+    for ( int i = 0; i < mComposerListWidget->count(); ++i )
+    {
+      composerTitles << mComposerListWidget->item( i )->text();
+    }
+    QgsProject::instance()->writeEntry( "WMSComposerList", "/", composerTitles );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSComposerList", "/" );
+  }
+
+  //WMS layer restrictions
+  if ( mLayerRestrictionsGroupBox->isChecked() )
+  {
+    QStringList layerNames;
+    for ( int i = 0; i < mLayerRestrictionsListWidget->count(); ++i )
+    {
+      layerNames << mLayerRestrictionsListWidget->item( i )->text();
+    }
+    QgsProject::instance()->writeEntry( "WMSRestrictedLayers", "/", layerNames );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSRestrictedLayers", "/" );
+  }
+
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
@@ -745,6 +794,73 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
+}
+
+void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
+{
+  QSet<QgsComposer*> projectComposers = QgisApp::instance()->printComposers();
+  QStringList composerTitles;
+  QSet<QgsComposer*>::const_iterator cIt = projectComposers.constBegin();
+  for ( ; cIt != projectComposers.constEnd(); ++cIt )
+  {
+    composerTitles << ( *cIt )->title();
+  }
+
+  bool ok;
+  QString name = QInputDialog::getItem( this, tr( "Select print composer" ), tr( "Composer Title" ), composerTitles, 0, false, &ok );
+  if ( ok )
+  {
+    if ( mComposerListWidget->findItems( name, Qt::MatchExactly ).size() < 1 )
+    {
+      mComposerListWidget->addItem( name );
+    }
+  }
+}
+
+void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
+{
+  QListWidgetItem* currentItem = mComposerListWidget->currentItem();
+  if ( currentItem )
+  {
+    delete mComposerListWidget->takeItem( mComposerListWidget->row( currentItem ) );
+  }
+}
+
+void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
+{
+  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
+  d.setWindowTitle( tr( "Select restricted layers and groups" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QStringList layerNames = d.selectedLayerNames();
+    QStringList::const_iterator layerIt = layerNames.constBegin();
+    for ( ; layerIt != layerNames.constEnd(); ++layerIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *layerIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *layerIt );
+      }
+    }
+
+    QStringList groups = d.selectedGroups();
+    QStringList::const_iterator groupIt = groups.constBegin();
+    for ( ; groupIt != groups.constEnd(); ++groupIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *groupIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *groupIt );
+      }
+    }
+  }
+}
+
+void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
+{
+  QListWidgetItem* currentItem = mLayerRestrictionsListWidget->currentItem();
+  if ( currentItem )
+  {
+    delete mLayerRestrictionsListWidget->takeItem( mLayerRestrictionsListWidget->row( currentItem ) );
+  }
 }
 
 void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()

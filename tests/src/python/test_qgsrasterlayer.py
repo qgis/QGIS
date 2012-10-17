@@ -19,6 +19,7 @@ from PyQt4.QtCore import QFileInfo, QString, QStringList
 from PyQt4 import QtGui
 
 from qgis.core import (QgsRasterLayer,
+                       QgsRasterDataProvider,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
                        QgsMapLayerRegistry,
@@ -50,21 +51,27 @@ class TestQgsRasterLayer(TestCase):
         assert myRasterLayer.isValid(), myMessage
         myPoint = QgsPoint(786690, 3345803)
         #print 'Extents: %s' % myRasterLayer.extent().toString()
-        myResult, myRasterValues = myRasterLayer.identify(myPoint)
-        assert myResult
+        #myResult, myRasterValues = myRasterLayer.identify(myPoint)
+        #assert myResult
+        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRasterDataProvider.IdentifyFormatValue )
+
+        assert len( myRasterValues ) > 0
+
         # Get the name of the first band
-        myBandName = myRasterValues.keys()[0]
-        myExpectedName = QString('Band 1')
+        myBand = myRasterValues.keys()[0]
+        #myExpectedName = QString('Band 1')
+        myExpectedBand = 1
         myMessage = 'Expected "%s" got "%s" for first raster band name' % (
-                    myExpectedName, myBandName)
-        assert myExpectedName == myBandName, myMessage
+                    myExpectedBand, myBand)
+        assert myExpectedBand == myBand, myMessage
 
         # Convert each band value to a list of ints then to a string
 
         myValues = myRasterValues.values()
         myIntValues = []
         for myValue in myValues:
-          myIntValues.append(int(str(myValue)))
+          #myIntValues.append(int(str(myValue)))
+          myIntValues.append( myValue.toInt()[0] )
         myValues = str(myIntValues)
         myExpectedValues = '[127, 141, 112, 72, 86, 126, 156, 211, 170]'
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)

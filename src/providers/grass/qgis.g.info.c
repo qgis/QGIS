@@ -207,7 +207,8 @@ int main( int argc, char **argv )
 
           if ( col < 0 || col > window.cols || row < 0 || row > window.rows )
           {
-            fprintf( stdout, "value:out\n" );
+            //fprintf( stdout, "value:out\n" );
+            fprintf( stdout, "value:nan\n" );
           }
           else
           {
@@ -245,7 +246,7 @@ int main( int argc, char **argv )
             }
             if ( G_is_null_value( ptr, rast_type ) )
             {
-              fprintf( stdout, "value:null\n" );
+              fprintf( stdout, "value:nan\n" );
             }
             else
             {

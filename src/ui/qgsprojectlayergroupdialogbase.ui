@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsEmbedLayerDialogBase</class>
- <widget class="QDialog" name="QgsEmbedLayerDialogBase">
+ <class>QgsProjectLayerGroupDialogBase</class>
+ <widget class="QDialog" name="QgsProjectLayerGroupDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>

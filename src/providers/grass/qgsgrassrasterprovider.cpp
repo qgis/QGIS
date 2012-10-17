@@ -128,7 +128,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
   // for statistics
   int cache_size = 10000000; // ~ 10 MB
-  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) / 8 ) / mCols;
+  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) ) / mCols;
   if ( mYBlockSize  > mRows )
   {
     mYBlockSize = mRows;
@@ -232,7 +232,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = mCols * mYBlockSize * dataTypeSize( bandNo ) / 8;
+  int size = mCols * mYBlockSize * dataTypeSize( bandNo );
   QgsDebugMsg( QString( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg( mCols ).arg( mYBlockSize ).arg( dataTypeSize( bandNo ) ) );
   if ( size != data.size() )
   {
@@ -279,7 +279,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo ) / 8;
+  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo );
   if ( size != data.size() )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
@@ -417,33 +417,31 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
+QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entered" );
-  QMap<int, void *> results;
+  QMap<int, QVariant> results;
+
+  if ( theFormat != IdentifyFormatValue ) return results;
+
+  if ( !extent().contains( thePoint ) )
+  {
+    results.insert( 1, noDataValue( 1 ) );
+    return results;
+  }
 
   // TODO: use doubles instead of strings
-  //theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
-  QString strValue = mRasterValue.value( thePoint.x(), thePoint.y() );
+
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
 
-  double value = noDataValue( 1 );
+  bool ok;
+  double value = mRasterValue.value( thePoint.x(), thePoint.y(), &ok );
 
-  if ( strValue != "out" && strValue != "null" )
-  {
-    bool ok;
-    value = strValue.toDouble( & ok );
-    if ( !ok )
-    {
-      value = 999999999;
-      QgsDebugMsg( "Cannot convert string to double" );
-    }
-  }
-  void * data = malloc( dataTypeSize( 1 ) / 8 );
-  QgsRasterBlock::writeValue( data, dataType( 1 ), 0, value );
+  if ( !ok ) return results;
 
-  results.insert( 1, data );
-  QgsDebugMsg( "strValue = " + strValue );
+  if ( qIsNaN( value ) ) value = noDataValue( 1 );
+
+  results.insert( 1, value );
 
   return results;
 }
@@ -451,6 +449,7 @@ QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
 int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
+                   | QgsRasterDataProvider::IdentifyValue
                    | QgsRasterDataProvider::ExactResolution
                    | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
@@ -520,18 +519,6 @@ QString QgsGrassRasterProvider::metadata()
 bool QgsGrassRasterProvider::isValid()
 {
   return mValid;
-}
-
-QString QgsGrassRasterProvider::identifyAsText( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return  QString( "Not implemented" );
-}
-
-QString QgsGrassRasterProvider::identifyAsHtml( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return  QString( "Not implemented" );
 }
 
 QString QgsGrassRasterProvider::lastErrorTitle()
@@ -634,11 +621,13 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
   }
 }
 
-QString QgsGrassRasterValue::value( double x, double y )
+double QgsGrassRasterValue::value( double x, double y, bool *ok )
 {
-  QString value = "error";
-  if ( !mProcess )
-    return value; // throw some exception?
+  *ok = false;
+  double value = std::numeric_limits<double>::quiet_NaN();
+
+  if ( !mProcess ) return value;
+
   QString coor = QString( "%1 %2\n" ).arg( x ).arg( y );
   QgsDebugMsg( "coor : " + coor );
   mProcess->write( coor.toAscii() ); // how to flush, necessary?
@@ -646,10 +635,13 @@ QString QgsGrassRasterValue::value( double x, double y )
   QString str = mProcess->readLine().trimmed();
   QgsDebugMsg( "read from stdout : " + str );
 
+  // TODO: use doubles instead of strings
+
   QStringList list = str.trimmed().split( ":" );
   if ( list.size() == 2 )
   {
-    value = list[1];
+    if ( list[1] == "error" ) return value;
+    value = list[1].toDouble( ok );
   }
   return value;
 }
