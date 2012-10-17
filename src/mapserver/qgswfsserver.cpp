@@ -287,7 +287,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
   QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > hiddenAttributes = mConfigParser->hiddenAttributes();
+  QMap< QString, QSet<QString> > excludedAttributes = mConfigParser->wfsExcludedAttributes();
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -306,12 +306,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       layerAliasInfo = aliasIt.value();
     }
 
-    //hidden attributes for this layer
-    QSet<QString> layerHiddenAttributes;
-    QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
-    if ( hiddenIt != hiddenAttributes.constEnd() )
+    //excluded attributes for this layer
+    QSet<QString> layerExcludedAttributes;
+    QMap< QString, QSet<QString> >::const_iterator exclIt = excludedAttributes.find( currentLayer->id() );
+    if ( exclIt != excludedAttributes.constEnd() )
     {
-      layerHiddenAttributes = hiddenIt.value();
+      layerExcludedAttributes = exclIt.value();
     }
 
     //do a select with searchRect and go through all the features
@@ -455,7 +455,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     if ( fidOk )
     {
       provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
-      sendGetFeature( request, format, &feature, 0, layerCrs, fields, layerHiddenAttributes );
+      sendGetFeature( request, format, &feature, 0, layerCrs, fields, layerExcludedAttributes );
     }
     else if ( filterOk )
     {
@@ -469,13 +469,13 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             if ( mFilter->evaluate( feature ) )
             {
-              sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
+              sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
               ++featureCounter;
             }
           }
           else
           {
-            sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
+            sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
             ++featureCounter;
           }
         }
@@ -487,7 +487,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
         {
-          sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
+          sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
           ++featureCounter;
         }
       }
@@ -497,7 +497,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       provider->select( attrIndexes, searchRect, mWithGeom, true );
       while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
       {
-        sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
+        sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
         ++featureCounter;
       }
     }
@@ -633,7 +633,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   fcString = "";
 }
 
-void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
   QByteArray result;
   if ( format == "GeoJSON" )
@@ -643,7 +643,7 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
       fcString += "  ";
     else
       fcString += " ,";
-    fcString += createFeatureGeoJSON( feat, crs, fields, hiddenAttributes );
+    fcString += createFeatureGeoJSON( feat, crs, fields, excludedAttributes );
     fcString += "\n";
 
     result = fcString.toUtf8();
@@ -653,7 +653,7 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
   else
   {
     QDomDocument gmlDoc;
-    QDomElement featureElement = createFeatureElem( feat, gmlDoc, crs, fields, hiddenAttributes );
+    QDomElement featureElement = createFeatureElem( feat, gmlDoc, crs, fields, excludedAttributes );
     gmlDoc.appendChild( featureElement );
 
     result = gmlDoc.toByteArray();
@@ -684,7 +684,7 @@ void QgsWFSServer::endGetFeature( QgsRequestHandler& request, const QString& for
   }
 }
 
-QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem &, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem &, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
   QString fStr = "{\"type\": \"Feature\",\n";
 
@@ -711,8 +711,8 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
   {
     QString attributeName = fields[it.key()].name();
-    //skip attribute if it has edit type 'hidden'
-    if ( hiddenAttributes.contains( attributeName ) )
+    //skip attribute if it is excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
     {
       continue;
     }
@@ -744,7 +744,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   return fStr;
 }
 
-QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
@@ -787,8 +787,8 @@ QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc
   {
 
     QString attributeName = fields[it.key()].name();
-    //skip attribute if it has edit type 'hidden'
-    if ( hiddenAttributes.contains( attributeName ) )
+    //skip attribute if is explicitely excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
     {
       continue;
     }

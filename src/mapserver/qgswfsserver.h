@@ -82,14 +82,14 @@ class QgsWFSServer
   protected:
 
     void startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
-    void sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes );
+    void sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
     //methods to write GeoJSON
-    QString createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
+    QString createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
     //methods to write GML2
-    QDomElement createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
+    QDomElement createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
     QDomElement createBoxElem( QgsRectangle* box, QDomDocument& doc ) /* const */;
     QDomElement createGeometryElem( QgsGeometry* g, QDomDocument& doc ) /*const*/;

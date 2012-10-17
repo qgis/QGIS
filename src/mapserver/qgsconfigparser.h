@@ -109,8 +109,11 @@ class QgsConfigParser
        Default implementation returns an empty map*/
     virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const { return QMap< QString, QMap<int, QString> > (); }
 
-    /**Returns information about vector attributes with hidden edit type. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > hiddenAttributes() const { return QMap< QString, QSet<QString> >(); }
+    /**Returns attributes excluded from WMS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
+    virtual QMap< QString, QSet<QString> > wmsExcludedAttributes() const { return QMap< QString, QSet<QString> >(); }
+
+    /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
+    virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const { return QMap< QString, QSet<QString> >(); }
 
     /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;

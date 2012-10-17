@@ -210,7 +210,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
 
   QStringList wfsLayersId = wfsLayers();
   QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
-  QMap< QString, QSet<QString> > hiddenAttrs = hiddenAttributes();
+  QMap< QString, QSet<QString> > excludedAttrs = wfsExcludedAttributes();
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
@@ -237,11 +237,11 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         }
 
         //hidden attributes for this layer
-        QSet<QString> layerHiddenAttributes;
-        QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttrs.find( mLayer->id() );
-        if ( hiddenIt != hiddenAttrs.constEnd() )
+        QSet<QString> layerExcludedAttributes;
+        QMap< QString, QSet<QString> >::const_iterator exclIt = excludedAttrs.find( mLayer->id() );
+        if ( exclIt != excludedAttrs.constEnd() )
         {
-          layerHiddenAttributes = hiddenIt.value();
+          layerExcludedAttributes = exclIt.value();
         }
 
         QString typeName = layer->name();
@@ -316,7 +316,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
 
           QString attributeName = it.value().name();
           //skip attribute if it has edit type 'hidden'
-          if ( layerHiddenAttributes.contains( attributeName ) )
+          if ( layerExcludedAttributes.contains( attributeName ) )
           {
             continue;
           }
@@ -1053,34 +1053,46 @@ QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
   return resultMap;
 }
 
-QMap< QString, QSet<QString> > QgsProjectParser::hiddenAttributes() const
+QMap< QString, QSet<QString> > QgsProjectParser::wmsExcludedAttributes() const
 {
   QMap< QString, QSet<QString> > resultMap;
   QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
   for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
   {
-    QDomNodeList editTypesList = layerIt->elementsByTagName( "edittypes" );
-    if ( editTypesList.size() > 0 )
+    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWMS" );
+    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
+    if ( attributeNodeList.size() > 0 )
     {
-      QSet< QString > hiddenAttributes;
-      QDomElement editTypesElem = editTypesList.at( 0 ).toElement();
-      QDomNodeList editTypeList = editTypesElem.elementsByTagName( "edittype" );
-      for ( int i = 0; i < editTypeList.size(); ++i )
+      QSet<QString> layerExcludedAttributes;
+      for ( int i = 0; i < attributeNodeList.size(); ++i )
       {
-        QDomElement editTypeElem = editTypeList.at( i ).toElement();
-        if ( editTypeElem.attribute( "type" ).toInt() == QgsVectorLayer::Hidden )
-        {
-          hiddenAttributes.insert( editTypeElem.attribute( "name" ) );
-        }
+        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
       }
-
-      if ( hiddenAttributes.size() > 0 )
-      {
-        resultMap.insert( layerId( *layerIt ), hiddenAttributes );
-      }
+      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
     }
   }
+  return resultMap;
+}
 
+/**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
+QMap< QString, QSet<QString> > QgsProjectParser::wfsExcludedAttributes() const
+{
+  QMap< QString, QSet<QString> > resultMap;
+  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
+  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
+  {
+    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWFS" );
+    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
+    if ( attributeNodeList.size() > 0 )
+    {
+      QSet<QString> layerExcludedAttributes;
+      for ( int i = 0; i < attributeNodeList.size(); ++i )
+      {
+        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
+      }
+      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
+    }
+  }
   return resultMap;
 }
 
