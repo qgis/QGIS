@@ -804,7 +804,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
            <item row="0" column="0">
-            <widget class="QGroupBox" name="grpOWSServiceCapabilities">
+            <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
              <property name="title">
               <string>Service Capabilitities</string>
              </property>
@@ -1054,7 +1054,7 @@
               <item row="1" column="0">
                <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
                 <property name="title">
-                 <string>Composer restrictions</string>
+                 <string>Exclude composers</string>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -1107,7 +1107,7 @@
               <item row="1" column="2">
                <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
                 <property name="title">
-                 <string>Layer restrictions</string>
+                 <string>Exclude layers</string>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
@@ -1248,9 +1248,7 @@
           <zorder>grpOWSServiceCapabilities</zorder>
           <zorder>grpWMSCapabilities</zorder>
           <zorder>grpWFSCapabilities</zorder>
-          <zorder></zorder>
           <zorder>mWMSUrlLineEdit</zorder>
-          <zorder>buttonBox</zorder>
          </widget>
         </widget>
        </item>
