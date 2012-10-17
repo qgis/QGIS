@@ -119,7 +119,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         for output in self.alg.outputs:
             if output.hidden:
                 continue
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+            if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile)):
                 label = QtGui.QLabel(output.description + "<" + output.__module__.split(".")[-1] + ">")
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
@@ -170,6 +170,17 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def showAdvancedParametersClicked(self):
+        self.showAdvanced = not self.showAdvanced
+        if self.showAdvanced:
+            self.advancedButton.setText("Hide advanced parameters")
+        else:
+            self.advancedButton.setText("Show advanced parameters")
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.labels[param.name].setVisible(self.showAdvanced)
+                self.widgets[param.name].setVisible(self.showAdvanced)
+ 
     def getRasterLayers(self):
         layers = []
         params = self.model.parameters

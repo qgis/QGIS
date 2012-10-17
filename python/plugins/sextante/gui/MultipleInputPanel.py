@@ -25,6 +25,8 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
 from sextante.gui.MultipleInputDialog import MultipleInputDialog
+from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
+from sextante.core.QGisLayers import QGisLayers
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -33,9 +35,10 @@ except AttributeError:
 
 class MultipleInputPanel(QtGui.QWidget):
 
-    def __init__(self, options, parent = None):
+    def __init__(self, options, datatype, parent = None):
         super(MultipleInputPanel, self).__init__(parent)
         self.options = options
+        self.datatype = datatype
         self.selectedoptions = []
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -51,6 +54,17 @@ class MultipleInputPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
+        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+            options = QGisLayers.getRasterLayers()
+        elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+            options = QGisLayers.getVectorLayers()
+        else:
+            options = QGisLayers.getVectorLayers(self.datatype)
+        opts = []
+        for opt in options:
+            opts.append(opt.name())
+        self.options = opts
+        
         dlg = MultipleInputDialog(self.options, self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions != None:

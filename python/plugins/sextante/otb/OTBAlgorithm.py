@@ -38,6 +38,7 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.core.WrongHelpFileException import WrongHelpFileException
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.otb.OTBUtils import OTBUtils
@@ -65,10 +66,11 @@ class OTBAlgorithm(GeoAlgorithm):
 
     def helpFile(self):
         folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )
-        if str(folder).strip() != "":
-            helpfile = os.path.join( str(folder), self.appkey + ".html")
+        helpfile = os.path.join( str(folder), self.appkey + ".html")
+        if os.path.exists(helpfile):
             return helpfile
-        return None
+        else:
+            raise WrongHelpFileException("Could not find help file for this algorithm. \nIf you have it put it in: \n"+str(folder))
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)

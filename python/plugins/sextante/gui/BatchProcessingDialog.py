@@ -32,6 +32,12 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from sextante.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 
+from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
+
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
@@ -52,7 +58,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algs = None
         self.table = QtGui.QTableWidget(None)
         AlgorithmExecutionDialog.__init__(self, alg, self.table)
-        self.setModal(True)
+        #self.setModal(True)
+        self.setWindowModality(1)
         self.algEx = None
         self.resize(800, 500)
         self.setWindowTitle("Batch Processing - " + self.alg.name)
@@ -93,7 +100,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             col = 0
             for param in alg.parameters:
                 widget = self.table.cellWidget(row, col)
-                if not self.setParameterValueFromWidget(param, widget):
+                if not self.setParameterValueFromWidget(param, widget, alg):
                     QMessageBox.critical(self.dialog, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
@@ -176,7 +183,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
         self.close()
 
-    def setParameterValueFromWidget(self, param, widget):
+    def setParameterValueFromWidget(self, param, widget, alg = None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
             return param.setValue(widget.getText())
         elif isinstance(param, ParameterBoolean):
@@ -185,6 +192,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
             return param.setValue(widget.table)
+        elif isinstance(param, (ParameterExtent)):
+            if alg != None:
+                widget.useNewAlg(alg)
+            return param.setValue(widget.getValue())
         else:
             return param.setValue(widget.text())
 
@@ -204,6 +215,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item.addItems(param.options)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
+        elif isinstance(param, ParameterExtent):
+            item = ExtentSelectionPanel(self, self.alg, param.default)
         else:
             item = QtGui.QLineEdit()
             try:

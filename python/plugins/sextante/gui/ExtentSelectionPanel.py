@@ -112,7 +112,8 @@ class ExtentSelectionPanel(QtGui.QWidget):
         else:
             return None
 
-
+    def useNewAlg(self, alg):
+        self.params = alg.parameters 
 
     def addToRegion(self, layer, first):
         if first:

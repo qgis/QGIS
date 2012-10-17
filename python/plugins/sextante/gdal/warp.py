@@ -31,6 +31,7 @@ import os
 from qgis.core import *
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.gdal.GdalUtils import GdalUtils
 
 class warp(GeoAlgorithm):
 
