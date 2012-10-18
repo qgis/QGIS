@@ -834,7 +834,7 @@ QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, Identi
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
   Q_UNUSED( theHeight );
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x() ).arg( thePoint.y() ) );
 
   QMap<int, QVariant> results;
 

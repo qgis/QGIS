@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <stdlib.h>
 #include "qgspostrequesthandler.h"
 #include "qgslogger.h"
 #include <QDomDocument>
@@ -54,7 +54,7 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
       QgsDebugMsg( "error, no query string found but a QDomDocument" );
       return parameters; //no query string? something must be wrong...
     }
-    
+
     requestStringToParameterMap( queryString, parameters );
 
     QDomElement docElem = doc.documentElement();

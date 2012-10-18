@@ -648,6 +648,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     return 2;
   }
 
+  QgsDebugMsg( "mMapRenderer->extent(): " +  mMapRenderer->extent().toString() );
+  QgsDebugMsg( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
+  QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
+
   //find out the current scale denominater and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
@@ -1127,9 +1131,28 @@ int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoor
   }
 
   //first transform i,j to map output coordinates
-  QgsPoint mapPoint = mapRender->coordinateTransform()->toMapCoordinates( i, j );
+  // toMapCoordinates() is currently (Oct 18 2012) using average resolution
+  // to calc point but GetFeatureInfo request may be sent with different
+  // resolutions in each axis
+  //QgsPoint mapPoint = mapRender->coordinateTransform()->toMapCoordinates( i, j );
+  double xRes = mapRender->extent().width() / mapRender->width();
+  double yRes = mapRender->extent().height() / mapRender->height();
+  QgsPoint mapPoint( mapRender->extent().xMinimum() + i * xRes,
+                     mapRender->extent().yMaximum() - j * yRes );
+
+  QgsDebugMsg( QString( "mapPoint (corner): %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
+  // use pixel center instead of corner
+  // Unfortunately going through pixel (integer) we cannot reconstruct precisely
+  // the coordinate clicked on client and thus result may differ from
+  // the same raster loaded and queried localy on client
+  mapPoint.setX( mapPoint.x() + xRes / 2 );
+  mapPoint.setY( mapPoint.y() - yRes / 2 );
+
+  QgsDebugMsg( QString( "mapPoint (pixel center): %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
+
   //and then to layer coordinates
   *layerCoords = mapRender->mapToLayerCoordinates( layer, mapPoint );
+  QgsDebugMsg( QString( "mapPoint: %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
   return 0;
 }
 
@@ -1303,9 +1326,11 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     return 1;
   }
 
+  QgsDebugMsg( QString( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
+
   QMap<QString, QString> attributes;
-  // TODO: use context extent, width height (comes with request) to use WCS cache
-  attributes = layer->dataProvider()->identify( *infoPoint );
+  // use context extent, width height (comes with request) to use WCS cache
+  attributes = layer->dataProvider()->identify( *infoPoint, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
 
   for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
   {

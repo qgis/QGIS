@@ -379,17 +379,29 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
     viewExtent = toLayerCoordinates( layer, viewExtent );
   }
 
-  // cut by layer extent to use possible cache, the same done when drawing
-  viewExtent = dprovider->extent().intersect( &viewExtent );
+  // It would be nice to use the same extent and size which was used for drawing,
+  // so that WCS can use cache from last draw, unfortunately QgsRasterLayer::draw()
+  // is doing some tricks with extent and size to allign raster to output which
+  // would be difficult to replicate here.
+  // Note: cutting the extent may result in slightly different x and y resolutions
+  // and thus shifted point calculated back in QGIS WMS (using average resolution)
+  //viewExtent = dprovider->extent().intersect( &viewExtent );
 
   double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
   // Width and height are calculated from not projected extent and we hope that
   // are similar to source width and height used to reproject layer for drawing.
-  int width = mCanvas->extent().width() / mapUnitsPerPixel;
-  int height = mCanvas->extent().height() / mapUnitsPerPixel;
+  // TODO: may be very dangerous, because it may result in different resolutions
+  // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
+  int width = qRound( viewExtent.width() / mapUnitsPerPixel );
+  int height = qRound( viewExtent.height() / mapUnitsPerPixel );
+
+  QgsDebugMsg( QString( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
 
   QMap< QString, QString > attributes, derivedAttributes;
 
+  QgsDebugMsg( QString( "idPoint: %1 %2" ).arg( idPoint.x() ).arg( idPoint.y() ) );
   attributes = dprovider->identify( idPoint, viewExtent, width, height );
 
   QString type;

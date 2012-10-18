@@ -3794,17 +3794,30 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
 
   // We don't know highest resolution, so it is difficult to guess any
   // but that is why theExtent, theWidth, theHeight params are here
+  // Keep resolution in both axis equal! Otherwise silly server (like QGIS mapserver)
+  // fail to calculate coordinate because it is using single resolution average!!!
   if ( theWidth == 0 ) theWidth = 1000; // just some number
-  if ( theHeight == 0 ) theHeight = 1000;
+  if ( theHeight == 0 )
+  {
+    theHeight =  myExtent.height() / ( myExtent.width() / theWidth );
+  }
 
   // Point in BBOX/WIDTH/HEIGHT coordinates
   // No need to fiddle with extent origin not covered by layer extent, I believe
   double xRes = myExtent.width() / theWidth;
   double yRes = myExtent.height() / theHeight;
 
+  QgsDebugMsg( "myExtent = " + myExtent.toString() );
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
+  QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
+
   QgsPoint point;
   point.setX( floor(( thePoint.x() - myExtent.xMinimum() ) / xRes ) );
   point.setY( floor(( myExtent.yMaximum() - thePoint.y() ) / yRes ) );
+
+  QgsDebugMsg( QString( "point = %1 %2" ).arg( point.x() ).arg( point.y() ) );
+
+  QgsDebugMsg( QString( "recalculated orig point (corner) = %1 %2" ).arg( myExtent.xMinimum() + point.x()*xRes ).arg( myExtent.yMaximum() - point.y()*yRes ) );
 
   // Collect which layers to query on
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
