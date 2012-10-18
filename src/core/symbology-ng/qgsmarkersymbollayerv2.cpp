@@ -894,6 +894,7 @@ QString QgsSvgMarkerSymbolLayerV2::symbolPathToName( QString path )
 
   QStringList svgPaths = QgsApplication::svgPaths();
 
+  bool isInSvgPathes = false;
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
     QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
@@ -901,11 +902,15 @@ QString QgsSvgMarkerSymbolLayerV2::symbolPathToName( QString path )
     if ( !dir.isEmpty() && path.startsWith( dir ) )
     {
       path = path.mid( dir.size() );
+      isInSvgPathes = true;
       break;
     }
   }
 
-  return path;
+  if ( isInSvgPathes )
+    return path;
+
+  return QgsProject::instance()->writePath( path );
 }
 
 
