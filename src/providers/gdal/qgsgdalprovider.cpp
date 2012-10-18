@@ -444,7 +444,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int width = right - left + 1;
   int height = bottom - top + 1;
 
-
   int srcLeft = 0; // source raster x offset
   int srcTop = 0; // source raster x offset
   int srcBottom = ySize() - 1;
@@ -521,7 +520,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
 
   // Allocate temporary block
-  char *tmpBlock = ( char * )malloc( dataSize * tmpWidth * tmpHeight );
+  char *tmpBlock = ( char * )QgsMalloc( dataSize * tmpWidth * tmpHeight );
   if ( ! tmpBlock )
   {
     QgsDebugMsg( QString( "Coudn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
@@ -540,7 +539,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    free( tmpBlock );
+    QgsFree( tmpBlock );
     return;
   }
 
@@ -569,7 +568,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     }
   }
 
-  free( tmpBlock );
+  QgsFree( tmpBlock );
   QgsDebugMsg( QString( "resample time (ms): %1" ).arg( time.elapsed() ) );
 
   return;
@@ -830,11 +829,7 @@ int QgsGdalProvider::ySize() const { return mHeight; }
 
 QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  Q_UNUSED( theFormat );
-  Q_UNUSED( theExtent );
-  Q_UNUSED( theWidth );
-  Q_UNUSED( theHeight );
-  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x() ).arg( thePoint.y() ) );
+  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
 
@@ -853,16 +848,22 @@ QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, Identi
   QgsRectangle myExtent = theExtent;
   if ( myExtent.isEmpty() )  myExtent = extent();
 
+  QgsDebugMsg( "myExtent = " + myExtent.toString() );
+
   if ( theWidth == 0 ) theWidth = xSize();
   if ( theHeight == 0 ) theHeight = ySize();
+
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
 
   // Calculate the row / column where the point falls
   double xres = ( myExtent.width() ) / theWidth;
   double yres = ( myExtent.height() ) / theHeight;
 
-  // Offset, not the cell index -> flor
+  // Offset, not the cell index -> floor
   int col = ( int ) floor(( thePoint.x() - myExtent.xMinimum() ) / xres );
   int row = ( int ) floor(( myExtent.yMaximum() - thePoint.y() ) / yres );
+
+  QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
 
   // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 

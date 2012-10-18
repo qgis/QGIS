@@ -27,7 +27,11 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
       Histogram,
       Size,
       Create,
-      Remove
+      Remove,
+      IdentifyValue,
+      IdentifyText,
+      IdentifyHtml,
+      IdentifyFeature
     };
 
     // This is modified copy of GDALColorInterp
