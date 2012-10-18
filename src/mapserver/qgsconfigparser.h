@@ -97,6 +97,9 @@ class QgsConfigParser
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
     /**Returns an ID-list of layers which queryable in WFS service*/
     virtual QStringList wfsLayers() const { return QStringList(); }
+    virtual QStringList wfstUpdateLayers() const { return QStringList(); }
+    virtual QStringList wfstInsertLayers() const { return QStringList(); }
+    virtual QStringList wfstDeleteLayers() const { return QStringList(); }
 
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/

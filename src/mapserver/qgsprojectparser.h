@@ -66,6 +66,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns an ID-list of layers queryable for WFS service (comes from <properties> -> <WFSLayers> in the project file*/
     virtual QStringList wfsLayers() const;
+    virtual QStringList wfstUpdateLayers() const;
+    virtual QStringList wfstInsertLayers() const;
+    virtual QStringList wfstDeleteLayers() const;
 
     /**Returns a set of supported epsg codes for the capabilities document. The list comes from the property <WMSEpsgList> in the project file.
        An empty set means that all possible CRS should be advertised (which could result in very long capabilities documents)

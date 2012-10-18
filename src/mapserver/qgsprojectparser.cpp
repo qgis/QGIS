@@ -131,6 +131,9 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QStringList wfsLayersId = wfsLayers();
+  QStringList wfstUpdateLayersId = wfstUpdateLayers();
+  QStringList wfstInsertLayersId = wfstInsertLayers();
+  QStringList wfstDeleteLayersId = wfstDeleteLayers();
 
   if ( mProjectLayerElements.size() < 1 )
   {
@@ -193,6 +196,37 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
         bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
         layerElem.appendChild( bBoxElement );
+        
+        //wfs:Operations element
+        QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
+        //wfs:Query element
+        QDomElement queryElement = doc.createElement( "Query"/*wfs:Query*/ );
+        operationsElement.appendChild( queryElement );
+
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+        QgsVectorDataProvider* provider = vlayer->dataProvider();
+        if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        {
+          //wfs:Insert element
+          QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
+          operationsElement.appendChild( insertElement );
+        }
+        if ( (provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && 
+             (provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) && 
+             wfstUpdateLayersId.contains( layer->id() ) )
+        {
+          //wfs:Update element
+          QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
+          operationsElement.appendChild( updateElement );
+        }
+        if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        {
+          //wfs:Delete element
+          QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
+          operationsElement.appendChild( deleteElement );
+        }
+
+        layerElem.appendChild( operationsElement );
 
         parentElement.appendChild( layerElem );
       }
@@ -950,6 +984,123 @@ QStringList QgsProjectParser::wfsLayers() const
   for ( int i = 0; i < valueList.size(); ++i )
   {
     wfsList << valueList.at( i ).toElement().text();
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstUpdateLayers() const
+{
+  QStringList publiedIds = wfsLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstUpdateLayersElem = wfstLayersElem.firstChildElement( "Update" );
+  if ( wfstUpdateLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstUpdateLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( publiedIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstInsertLayers() const
+{
+  QStringList updateIds = wfstUpdateLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstInsertLayersElem = wfstLayersElem.firstChildElement( "Insert" );
+  if ( wfstInsertLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstInsertLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( updateIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstDeleteLayers() const
+{
+  QStringList insertIds = wfstInsertLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstDeleteLayersElem = wfstLayersElem.firstChildElement( "Delete" );
+  if ( wfstDeleteLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstDeleteLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( insertIds.contains( id ) )
+      wfsList << id;
   }
   return wfsList;
 }

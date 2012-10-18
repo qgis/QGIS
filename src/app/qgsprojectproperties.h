@@ -139,6 +139,14 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cbxProjectionEnabled_stateChanged( int state );
+    
+    /*!
+     * Slot to link WFS checkboxes
+     */
+    void on_cbxWFSPublied_stateChanged( int aIdx );
+    void on_cbxWFSUpdate_stateChanged( int aIdx );
+    void on_cbxWFSInsert_stateChanged( int aIdx );
+    void on_cbxWFSDelete_stateChanged( int aIdx );
 
     /*!
       * If user changes the CRS, set the corresponding map units
