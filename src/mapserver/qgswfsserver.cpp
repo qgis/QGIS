@@ -964,9 +964,6 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           {
             // Create feature for this layer
             QgsFeature* f = new QgsFeature();
-            unsigned char* wkb = 0;
-            int wkbSize = 0;
-            QGis::WkbType currentType;
 
             QDomElement featureElem = featNodes.at( l ).toElement();
 

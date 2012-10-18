@@ -253,7 +253,7 @@ bool QgsRasterBlock::isNoDataValue( double value ) const
 
 double QgsRasterBlock::value( size_t index ) const
 {
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return mNoDataValue;
@@ -282,7 +282,7 @@ QRgb QgsRasterBlock::color( int row, int column ) const
 
 bool QgsRasterBlock::isNoData( size_t index )
 {
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return true; // we consider no data if outside

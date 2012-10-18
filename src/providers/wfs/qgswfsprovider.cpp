@@ -1261,7 +1261,6 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QgsFeature* f = 0;
   unsigned char* wkb = 0;
   int wkbSize = 0;
-  QGis::WkbType currentType;
   mFeatureCount = 0;
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
