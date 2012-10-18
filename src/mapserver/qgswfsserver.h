@@ -98,7 +98,7 @@ class QgsWFSServer
     QString createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
     //methods to write GML2
-    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
+    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
     QDomElement createBoxGML2( QgsRectangle* box, QDomDocument& doc ) /* const */;
 

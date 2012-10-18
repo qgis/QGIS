@@ -87,7 +87,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement wfsCapabilitiesElement = doc.createElement( "WFS_Capabilities"/*wms:WFS_Capabilities*/ );
   wfsCapabilitiesElement.setAttribute( "xmlns", WFS_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE+" http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
+  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
   wfsCapabilitiesElement.setAttribute( "xmlns:ogc", OGC_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:gml", GML_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
@@ -621,14 +621,14 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 
     //wfs:FeatureCollection valid
     fcString = "<wfs:FeatureCollection";
-    fcString += " xmlns:wfs=\""+WFS_NAMESPACE+"\"";
-    fcString += " xmlns:ogc=\""+OGC_NAMESPACE+"\"";
-    fcString += " xmlns:gml=\""+GML_NAMESPACE+"\"";
+    fcString += " xmlns:wfs=\"" + WFS_NAMESPACE + "\"";
+    fcString += " xmlns:ogc=\"" + OGC_NAMESPACE + "\"";
+    fcString += " xmlns:gml=\"" + GML_NAMESPACE + "\"";
     fcString += " xmlns:ows=\"http://www.opengis.net/ows\"";
     fcString += " xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-    fcString += " xmlns:qgs=\""+QGS_NAMESPACE+"\"";
+    fcString += " xmlns:qgs=\"" + QGS_NAMESPACE + "\"";
     fcString += " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-    fcString += " xsi:schemaLocation=\""+WFS_NAMESPACE+" http://schemas.opengis.net/wfs/1.0.0/wfs.xsd "+QGS_NAMESPACE+" "+ hrefString.replace( "&", "&amp;" ) +"\"";
+    fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd " + QGS_NAMESPACE + " " + hrefString.replace( "&", "&amp;" ) + "\"";
     fcString += ">";
     result = fcString.toUtf8();
     request.startGetFeatureResponse( &result, format );
@@ -671,7 +671,7 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
   else
   {
     QDomDocument gmlDoc;
-    QDomElement featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, hiddenAttributes );
+    QDomElement featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, excludedAttributes );
     gmlDoc.appendChild( featureElement );
 
     result = gmlDoc.toByteArray();
@@ -733,10 +733,10 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
   for ( int i = docChildNodes.count(); 0 < i; --i )
   {
-    actionElem = docChildNodes.at( i-1 ).toElement();
+    actionElem = docChildNodes.at( i - 1 ).toElement();
     actionName = actionElem.localName();
 
-    if (actionName == "Insert" )
+    if ( actionName == "Insert" )
     {
       QDomElement featureElem = actionElem.firstChild().toElement();
       typeName = featureElem.localName();
@@ -757,7 +757,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       mDocElem.appendChild( typeNameElem );
     }
     else
-      typeNameElem = typeNameList.at(0).toElement();
+      typeNameElem = typeNameList.at( 0 ).toElement();
 
     typeNameElem.appendChild( actionElem );
   }
@@ -769,7 +769,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   QDomElement respElem = resp.createElement( "WFS_TransactionResponse"/*wfs:WFS_TransactionResponse*/ );
   respElem.setAttribute( "xmlns", WFS_NAMESPACE );
   respElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  respElem.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE+" http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
+  respElem.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
   respElem.setAttribute( "xmlns:ogc", OGC_NAMESPACE );
   respElem.setAttribute( "version", "1.0.0" );
   resp.appendChild( respElem );
@@ -807,7 +807,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
       // Start the update transaction
       layer->startEditing();
-      if ( (cap & QgsVectorDataProvider::ChangeAttributeValues ) && (cap & QgsVectorDataProvider::ChangeGeometries ) )
+      if (( cap & QgsVectorDataProvider::ChangeAttributeValues ) && ( cap & QgsVectorDataProvider::ChangeGeometries ) )
       {
         // Loop through the update elements for this layer
         QDomNodeList upNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Update" );
@@ -827,7 +827,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           QDomElement nameElem;
           QDomElement valueElem;
           QDomElement geometryElem;
-          
+
           for ( int l = 0; l < propertyNodeList.count(); ++l )
           {
             propertyElem = propertyNodeList.at( l ).toElement();
@@ -876,8 +876,9 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                 layer->changeAttributeValue( *fidIt, fieldIt.key(), it.value() );
             }
 
-            if ( !geometryElem.isNull() ) {
-              if (!layer->changeGeometry( *fidIt, QgsGeometry::fromGML2( geometryElem ) ) )
+            if ( !geometryElem.isNull() )
+            {
+              if ( !layer->changeGeometry( *fidIt, QgsGeometry::fromGML2( geometryElem ) ) )
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
             }
           }
@@ -905,7 +906,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       }
       // Start the delete transaction
       layer->startEditing();
-      if ( ( cap & QgsVectorDataProvider::DeleteFeatures ) )
+      if (( cap & QgsVectorDataProvider::DeleteFeatures ) )
       {
         // Loop through the delete elements
         QDomNodeList delNodeList = typeNameElem.elementsByTagNameNS( WFS_NAMESPACE, "Delete" );
@@ -959,7 +960,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           actionElem = inNodeList.at( j ).toElement();
           // Loop through the feature element
           QDomNodeList featNodes = actionElem.childNodes();
-          for ( int l = 0; l< featNodes.count(); l++ )
+          for ( int l = 0; l < featNodes.count(); l++ )
           {
             // Create feature for this layer
             QgsFeature* f = new QgsFeature();
@@ -967,7 +968,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             int wkbSize = 0;
             QGis::WkbType currentType;
 
-            QDomElement featureElem = featNodes.at(l).toElement();
+            QDomElement featureElem = featNodes.at( l ).toElement();
 
             QDomNode currentAttributeChild = featureElem.firstChild();
 
@@ -1034,7 +1035,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         return resp;
       }
       // Get the Feature Ids of the inserted feature
-      for (int j = 0; j < inFeatList.size(); j++ )
+      for ( int j = 0; j < inFeatList.size(); j++ )
       {
         insertResults.insert( inFeatList[j].id() );
       }
@@ -1068,7 +1069,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   return resp;
 }
 
-QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVectorLayer* layer ) 
+QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVectorLayer* layer )
 {
   QgsFeatureIds fids;
 
@@ -1099,7 +1100,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVect
   return fids;
 }
 
-QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem &, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem &, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
   QString fStr = "{\"type\": \"Feature\",\n";
 
@@ -1159,7 +1160,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   return fStr;
 }
 
-QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
