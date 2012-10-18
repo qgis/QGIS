@@ -49,6 +49,7 @@ for item in pyqtcfg.pyqt_sip_flags.split(' '):
         in_t = False
 print("pyqt_version_tag:%s" % pyqt_version_tag)
 
+print("pyqt_mod_dir:%s" % pyqtcfg.pyqt_mod_dir)
 print("pyqt_sip_dir:%s" % pyqtcfg.pyqt_sip_dir)
 print("pyqt_sip_flags:%s" % pyqtcfg.pyqt_sip_flags)
 print("pyqt_bin_dir:%s" % pyqtcfg.pyqt_bin_dir)

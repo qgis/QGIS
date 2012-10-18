@@ -229,6 +229,16 @@ ELSE (WITH_TOUCH)
   MESSAGE (STATUS "Touch support disabled")
 ENDIF (WITH_TOUCH)
 
+# search for QScintilla2 (C++ lib)
+IF (WITH_BINDINGS)
+  # TODO: make required after testing find paths on Windows platforms
+  #FIND_PACKAGE(QScintilla REQUIRED)
+  FIND_PACKAGE(QScintilla)
+ELSE (WITH_BINDINGS)
+  # for when library is used in .h/cpp
+  FIND_PACKAGE(QScintilla)
+ENDIF (WITH_BINDINGS)
+
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
@@ -497,6 +507,7 @@ IF (WITH_BINDINGS)
   FIND_PACKAGE(PythonLibrary REQUIRED)
   FIND_PACKAGE(SIP REQUIRED)
   FIND_PACKAGE(PyQt4 REQUIRED)
+  FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
   INCLUDE(SIPMacros)
   INCLUDE(PyQt4Macros)
@@ -512,6 +523,11 @@ IF (WITH_BINDINGS)
   ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
 
 ENDIF (WITH_BINDINGS)
+
+# Set QSCINTILLA_VERSION_STR to that of module, if no headers found
+IF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
+  SET(QSCINTILLA_VERSION_STR ${QSCI_MOD_VERSION_STR})
+ENDIF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
 
 #############################################################
 # create qgsconfig.h

@@ -79,6 +79,11 @@ else(EXISTS PYTHON_LIBRARY)
   endif(PYTHONINTERP_FOUND)
 
   if(PYTHONLIBRARY_FOUND)
+    if(APPLE)
+      # keep reference to system or custom python site-packages
+      # useful during app-bundling operations
+      set(PYTHON_SITE_PACKAGES_SYS ${PYTHON_SITE_PACKAGES_DIR})
+    endif(APPLE)
     set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
     if(NOT PYTHONLIBRARY_FIND_QUIETLY)
       message(STATUS "Found Python executable: ${PYTHON_EXECUTABLE}")
