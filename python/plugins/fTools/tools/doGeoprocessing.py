@@ -492,6 +492,7 @@ class geoprocessingThread( QThread ):
           hull = []
           first = True
           outID = 0
+          vproviderA.rewind()
           for inFeat in selectionA:
             atMap = inFeat.attributeMap()
             idVar = atMap[ self.myParam ]
@@ -546,6 +547,7 @@ class geoprocessingThread( QThread ):
           hull = []
           first = True
           outID = 0
+          vproviderA.rewind()
           while vproviderA.nextFeature( inFeat ):
             atMap = inFeat.attributeMap()
             idVar = atMap[ self.myParam ]
