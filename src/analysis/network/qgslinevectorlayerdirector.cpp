@@ -280,29 +280,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   vl->select( la );
   while ( vl->nextFeature( feature ) )
   {
-    QgsAttributeMap attr = feature.attributeMap();
     int directionType = mDefaultDirection;
-    QgsAttributeMap::const_iterator it;
+
     // What direction have feature?
-    for ( it = attr.constBegin(); it != attr.constEnd(); ++it )
+    QString str = feature.attribute( mDirectionFieldId ).toString();
+    if ( str == mBothDirectionValue )
     {
-      if ( it.key() != mDirectionFieldId )
-      {
-        continue;
-      }
-      QString str = it.value().toString();
-      if ( str == mBothDirectionValue )
-      {
-        directionType = 3;
-      }
-      else if ( str == mDirectDirectionValue )
-      {
-        directionType = 1;
-      }
-      else if ( str == mReverseDirectionValue )
-      {
-        directionType = 2;
-      }
+      directionType = 3;
+    }
+    else if ( str == mDirectDirectionValue )
+    {
+      directionType = 1;
+    }
+    else if ( str == mReverseDirectionValue )
+    {
+      directionType = 2;
     }
 
     // begin features segments and add arc to the Graph;

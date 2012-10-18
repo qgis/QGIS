@@ -323,7 +323,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     int max = INT_MAX;
     while ( mLayer->nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         int valInt = val.toInt();
@@ -344,7 +344,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) );
     while ( mLayer->nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         double dVal =  val.toDouble();

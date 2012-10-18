@@ -61,7 +61,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( theFieldMap.isEmpty() )
     return;
 
-  QgsAttributeMap myAttributes = mFeature->attributeMap();
+  QgsAttributes myAttributes = mFeature->attributes();
 
   QDialogButtonBox *buttonBox = NULL;
 
@@ -134,7 +134,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QString myFieldName = vl->attributeDisplayName( it.key() );
       int myFieldType = it->type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes[it.key()] );
       if ( !myWidget )
         continue;
 
@@ -351,7 +351,7 @@ void QgsAttributeDialog::accept()
 
     int idx = mpIndizes.value( myIndex );
     if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, idx, value ) )
-      mFeature->changeAttribute( idx, value );
+      mFeature->setAttribute( idx, value );
 
     ++myIndex;
   }

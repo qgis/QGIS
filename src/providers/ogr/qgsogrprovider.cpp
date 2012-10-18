@@ -770,13 +770,11 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     OGR_F_SetGeometryDirectly( feature, geom );
   }
 
-  QgsAttributeMap attrs = f.attributeMap();
+  const QgsAttributes& attrs = f.attributes();
 
   //add possible attribute information
-  for ( QgsAttributeMap::iterator it = attrs.begin(); it != attrs.end(); ++it )
+  for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
   {
-    int targetAttributeId = it.key();
-
     // don't try to set field from attribute map if it's not present in layer
     if ( targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
       continue;
@@ -787,7 +785,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    if ( it->isNull() || ( type != OFTString && it->toString().isEmpty() ) )
+    QVariant attrVal = attrs[targetAttributeId];
+    if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
       OGR_F_UnsetField( feature, targetAttributeId );
     }
@@ -796,19 +795,19 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature, targetAttributeId, it->toInt() );
+          OGR_F_SetFieldInteger( feature, targetAttributeId, attrVal.toInt() );
           break;
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature, targetAttributeId, it->toDouble() );
+          OGR_F_SetFieldDouble( feature, targetAttributeId, attrVal.toDouble() );
           break;
 
         case OFTString:
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( targetAttributeId )
-                       .arg( it->toString() )
+                       .arg( attrVal.toString() )
                        .arg( mEncoding->name().data() ) );
-          OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( it->toString() ).constData() );
+          OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 
         default:

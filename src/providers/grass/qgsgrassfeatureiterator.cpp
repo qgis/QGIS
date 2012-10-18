@@ -160,7 +160,7 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
 #endif
 
   feature.setFeatureId( id );
-  feature.clearAttributeMap();
+  feature.initAttributes( P->fieldCount() );
   feature.setFieldMap( &P->fields() ); // allow name-based attribute lookups
 
   if ( mRequest.flags() & QgsFeatureRequest::NoGeometry )

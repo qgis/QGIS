@@ -3,6 +3,8 @@
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+typedef QVector<QVariant> QgsAttributes;
+
 // key = feature id, value = changed attributes
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
@@ -30,13 +32,12 @@ class QgsFeature
 
     SIP_PYOBJECT __getitem__(int key);
 %MethodCode
-  const QgsAttributeMap& attrMap = sipCpp->attributeMap();
-  QgsAttributeMap::const_iterator it = attrMap.find(a0);
-  if (it == attrMap.end())
+  const QgsAttributes& attrs = sipCpp->attributes();
+  if (a0 < 0 || a0 >= attrs.count())
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
   else
   {
-    QVariant* v = new QVariant(it.value());
+    QVariant* v = new QVariant(attrs[a0]);
     sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
   }
 %End
@@ -48,14 +49,14 @@ class QgsFeature
     PyErr_SetString(PyExc_KeyError, a0->toAscii());
   else
   {
-    QVariant* v = new QVariant( sipCpp->attributeMap().value(fieldIdx) );
+    QVariant* v = new QVariant( sipCpp->attribute(fieldIdx) );
     sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
   }
 %End
 
     void __setitem__(int key, QVariant value);
 %MethodCode
-  sipCpp->addAttribute(a0, *a1);
+  sipCpp->setAttribute(a0, *a1);
 %End
 
     void __setitem__(const QString& key, QVariant value);
@@ -65,13 +66,13 @@ class QgsFeature
     PyErr_SetString(PyExc_KeyError, a0->toAscii());
   else
   {
-    sipCpp->addAttribute(fieldIdx, *a1);
+    sipCpp->setAttribute(fieldIdx, *a1);
   }
 %End
 
     void __delitem__(int key);
 %MethodCode
-  if (sipCpp->attributeMap().contains(a0))
+  if (a0 >= 0 && a0 < sipCpp->attributes().count())
     sipCpp->deleteAttribute(a0);
   else
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
@@ -107,33 +108,14 @@ class QgsFeature
      */
     void setFeatureId( qint64 id );
 
-    /**
-     * Get the attributes for this feature.
-     * @return A std::map containing the field name/value mapping
-     */
-    const QMap<int, QVariant> & attributeMap() const;
-
-
-    /**Sets all the attributes in one go*/
-    void setAttributeMap( const QMap<int, QVariant> & attributeMap );
-
-    /** Clear attribute map
-     * added in 1.5
-     */
-    void clearAttributeMap();
-
-    /**
-     * Add an attribute to the map
-     */
-    void addAttribute( int field, QVariant attr );
+    const QgsAttributes& attributes() const;
+    //QgsAttributes& attributes();
+    void setAttributes(const QgsAttributes& attrs);
+    void setAttribute( int field, const QVariant& attr );
+    void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/
     void deleteAttribute( int field );
-
-    /**Changes an existing attribute value
-       @param field index of the field
-       @param attr attribute name and value to be set */
-    void changeAttribute( int field, QVariant attr );
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -188,13 +170,7 @@ class QgsFeature
      *  Field map must be associated to make this work.
      *  @note added in 2.0
      */
-    bool addAttribute( const QString& name, QVariant value );
-
-    /** Change a value of an attribute. Returns false if attribute name could not be converted to index.
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    bool changeAttribute( const QString& name, QVariant value );
+    bool setAttribute( const QString& name, QVariant value );
 
     /** Remove an attribute value. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.

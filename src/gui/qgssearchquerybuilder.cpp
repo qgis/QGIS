@@ -139,8 +139,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   while ( mLayer->nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
-    const QgsAttributeMap& attributes = feat.attributeMap();
-    value = attributes[fieldIndex].toString();
+    value = feat.attribute( fieldIndex ).toString();
 
     if ( !numeric )
     {

@@ -131,7 +131,8 @@ void TestQgsMapRenderer::initTestCase()
         QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
         QgsFeature myFeature;
         myFeature.setGeometry( mypPolygonGeometry );
-        myFeature.addAttribute( 0, i );
+        myFeature.initAttributes( 1 );
+        myFeature.setAttribute( 0, i );
         //
         // Write the feature to the filewriter
         // and check for errors

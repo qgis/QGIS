@@ -25,7 +25,7 @@ QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare(): mCurrentSo
 }
 
 
-bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
+bool QgsComposerAttributeTableCompare::operator()( const QgsAttributes& m1, const QgsAttributes& m2 )
 {
   QVariant v1 = m1[mCurrentSortColumn];
   QVariant v2 = m2[mCurrentSortColumn];
@@ -117,7 +117,7 @@ void QgsComposerAttributeTable::setComposerMap( const QgsComposerMap* map )
   }
 }
 
-bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
 {
   if ( !mVectorLayer )
   {
@@ -158,7 +158,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
   int counter = 0;
   while ( mVectorLayer->nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    attributes.push_back( f.attributeMap() );
+    attributes.push_back( f.attributes() );
     ++counter;
   }
 

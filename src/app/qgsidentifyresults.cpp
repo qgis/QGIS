@@ -161,27 +161,28 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
   mFeatures << f;
   layItem->addChild( featItem );
 
-  for ( QgsAttributeMap::const_iterator it = f.attributeMap().begin(); it != f.attributeMap().end(); it++ )
+  const QgsAttributes& attrs = f.attributes();
+  for ( int i = 0; i < attrs.count(); ++i )
   {
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( it.key() ) << it.value().toString() );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
 
     const QgsFieldMap &fields = vlayer->pendingFields();
 
-    QgsFieldMap::const_iterator fit = fields.find( it.key() );
+    QgsFieldMap::const_iterator fit = fields.find( i );
     if ( fit == fields.constEnd() )
     {
       delete attrItem;
       continue;
     }
 
-    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( it.key() ) );
+    attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
     attrItem->setData( 0, Qt::UserRole, fit->name() );
-    attrItem->setData( 0, Qt::UserRole + 1, it.key() );
+    attrItem->setData( 0, Qt::UserRole + 1, i );
 
-    QVariant value = it.value();
+    QVariant value = attrs[i];
     attrItem->setData( 1, Qt::UserRole, value );
 
-    switch ( vlayer->editType( it.key() ) )
+    switch ( vlayer->editType( i ) )
     {
       case QgsVectorLayer::Hidden:
         // skip the item
@@ -189,7 +190,7 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
         continue;
 
       case QgsVectorLayer::ValueMap:
-        value = vlayer->valueMap( it.key() ).key( it->toString(), QString( "(%1)" ).arg( it->toString() ) );
+        value = vlayer->valueMap( i ).key( value.toString(), QString( "(%1)" ).arg( value.toString() ) );
         break;
 
       default:
@@ -948,7 +949,7 @@ void QgsIdentifyResults::layerProperties()
 void QgsIdentifyResults::layerProperties( QTreeWidgetItem *item )
 {
   QgsVectorLayer *vlayer = vectorLayer( item );
-  if( !vlayer )
+  if ( !vlayer )
     return;
 
   QgisApp::instance()->showLayerProperties( vlayer );

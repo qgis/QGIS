@@ -73,8 +73,8 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     QgsFeature f;
     while ( cacheLayer->nextFeature( f ) )
     {
-      const QgsAttributeMap& map = f.attributeMap();
-      joinInfo.cachedAttributes.insert( map.value( joinInfo.joinField ).toString(), map );
+      const QgsAttributes& attrs = f.attributes();
+      joinInfo.cachedAttributes.insert( attrs[joinInfo.joinField].toString(), attrs );
     }
   }
 }
@@ -172,7 +172,7 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
         continue;
       }
 
-      QVariant targetFieldValue = f.attributeMap().value( joinIt->targetField );
+      QVariant targetFieldValue = f.attribute( joinIt->targetField );
       if ( !targetFieldValue.isValid() )
       {
         continue;
@@ -201,7 +201,7 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
         continue;
       }
 
-      QVariant targetFieldValue = f.attributeMap().value( joinIt->joinInfo->targetField );
+      QVariant targetFieldValue = f.attribute( joinIt->joinInfo->targetField );
       if ( !targetFieldValue.isValid() )
       {
         continue;
@@ -215,27 +215,27 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
 void QgsVectorLayerJoinBuffer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName,
     const QVariant& joinValue, const QgsAttributeList& attributes, int attributeIndexOffset )
 {
-  const QHash< QString, QgsAttributeMap>& memoryCache = joinInfo.cachedAttributes;
+  f.attributes().resize( attributeIndexOffset + attributes.count() ); // make sure we have enough space for newly added attributes
+  const QHash< QString, QgsAttributes>& memoryCache = joinInfo.cachedAttributes;
   if ( !memoryCache.isEmpty() ) //use join memory cache
   {
-    QgsAttributeMap featureAttributes = memoryCache.value( joinValue.toString() );
+    QgsAttributes featureAttributes = memoryCache.value( joinValue.toString() );
     bool found = !featureAttributes.isEmpty();
-    QgsAttributeList::const_iterator attIt = attributes.constBegin();
-    for ( ; attIt != attributes.constEnd(); ++attIt )
+    for ( int i = 0; i < featureAttributes.count(); ++i )
     {
       //skip the join field to avoid double field names (fields often have the same name)
-      if ( *attIt == joinInfo.joinField )
+      if ( i == joinInfo.joinField )
       {
         continue;
       }
 
       if ( found )
       {
-        f.addAttribute( *attIt + attributeIndexOffset, featureAttributes.value( *attIt ) );
+        f.setAttribute( i + attributeIndexOffset, featureAttributes[i] );
       }
       else
       {
-        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+        f.setAttribute( i + attributeIndexOffset, QVariant() );
       }
     }
   }
@@ -265,11 +265,10 @@ void QgsVectorLayerJoinBuffer::addJoinedFeatureAttributes( QgsFeature& f, const 
     QgsFeature fet;
     if ( joinLayer->nextFeature( fet ) )
     {
-      QgsAttributeMap attMap = fet.attributeMap();
-      QgsAttributeMap::const_iterator attIt = attMap.constBegin();
-      for ( ; attIt != attMap.constEnd(); ++attIt )
+      const QgsAttributes& attr = fet.attributes();
+      for ( int i = 0; i < attr.count(); ++i )
       {
-        f.addAttribute( attIt.key() + attributeIndexOffset, attIt.value() );
+        f.setAttribute( i + attributeIndexOffset, attr[i] );
       }
     }
     else //no suitable join feature found, insert invalid variants
@@ -277,7 +276,7 @@ void QgsVectorLayerJoinBuffer::addJoinedFeatureAttributes( QgsFeature& f, const 
       QgsAttributeList::const_iterator attIt = attributes.constBegin();
       for ( ; attIt != attributes.constEnd(); ++attIt )
       {
-        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+        f.setAttribute( *attIt + attributeIndexOffset, QVariant() );
       }
     }
 

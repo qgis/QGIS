@@ -3283,7 +3283,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
   if ( flist.size() == 0 )
     return true;
-  const QgsAttributeMap & attributevec = flist[0].attributeMap();
+  const QgsAttributes & attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
@@ -3304,9 +3304,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     separator = ",";
   }
 
-  for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
+  for ( int i = 0; i < attributevec.count(); ++i )
   {
-    QgsFieldMap::const_iterator fit = attributeFields.find( it.key() );
+    if ( !attributevec[i].isValid() )
+      continue;
+
+    QgsFieldMap::const_iterator fit = attributeFields.find( i );
     if ( fit == attributeFields.end() )
       continue;
 
@@ -3333,7 +3336,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
   {
     // looping on each feature to insert
-    const QgsAttributeMap & attributevec = features->attributeMap();
+    const QgsAttributes & attributevec = features->attributes();
 
     // resetting Prepared Statement and bindings
     sqlite3_reset( stmt );
@@ -3356,10 +3359,14 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
     }
 
-    for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
+    for ( int i = 0; i < attributevec.count(); ++i )
     {
+      QVariant v = attributevec[i];
+      if ( !v.isValid() )
+        continue;
+
       // binding values for each attribute
-      QgsFieldMap::const_iterator fit = attributeFields.find( it.key() );
+      QgsFieldMap::const_iterator fit = attributeFields.find( i );
       if ( fit == attributeFields.end() )
         continue;
 
@@ -3368,7 +3375,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       QVariant::Type type = fit->type();
-      if ( it->toString().isEmpty() )
+      if ( v.toString().isEmpty() )
       {
         // assuming to be a NULL value
         type = QVariant::Invalid;
@@ -3377,17 +3384,17 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       if ( type == QVariant::Int )
       {
         // binding an INTEGER value
-        sqlite3_bind_int( stmt, ++ia, it->toInt() );
+        sqlite3_bind_int( stmt, ++ia, v.toInt() );
       }
       else if ( type == QVariant::Double )
       {
         // binding a DOUBLE value
-        sqlite3_bind_double( stmt, ++ia, it->toDouble() );
+        sqlite3_bind_double( stmt, ++ia, v.toDouble() );
       }
       else if ( type == QVariant::String )
       {
         // binding a TEXT value
-        QByteArray ba = it->toString().toUtf8();
+        QByteArray ba = v.toString().toUtf8();
         sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
       }
       else

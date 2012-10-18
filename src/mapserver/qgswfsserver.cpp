@@ -698,16 +698,17 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
 
   //read all attribute values from the feature
   fStr += "   \"properties\": {\n";
-  QgsAttributeMap featureAttributes = feat->attributeMap();
+  QgsAttributes featureAttributes = feat->attributes();
   int attributeCounter = 0;
-  for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
+  for ( int i = 0; i < featureAttributes.count(); ++i )
   {
-    QString attributeName = fields[it.key()].name();
+    QString attributeName = fields[i].name();
     //skip attribute if it has edit type 'hidden'
     if ( hiddenAttributes.contains( attributeName ) )
     {
       continue;
     }
+    QVariant val = featureAttributes[i];
 
     if ( attributeCounter == 0 )
       fStr += "    \"";
@@ -715,14 +716,14 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
       fStr += "   ,\"";
     fStr += attributeName;
     fStr += "\": ";
-    if ( it->type() == 6 || it->type() == 2 )
+    if ( val.type() == 6 || val.type() == 2 )
     {
-      fStr +=  it->toString();
+      fStr +=  val.toString();
     }
     else
     {
       fStr += "\"";
-      fStr +=  it->toString().replace( QString( "\"" ), QString( "\\\"" ) );
+      fStr +=  val.toString().replace( QString( "\"" ), QString( "\\\"" ) );
       fStr += "\"";
     }
     fStr += "\n";
@@ -774,11 +775,11 @@ QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc
   }
 
   //read all attribute values from the feature
-  QgsAttributeMap featureAttributes = feat->attributeMap();
-  for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
+  QgsAttributes featureAttributes = feat->attributes();
+  for ( int i = 0; i < featureAttributes.count(); ++i )
   {
 
-    QString attributeName = fields[it.key()].name();
+    QString attributeName = fields[i].name();
     //skip attribute if it has edit type 'hidden'
     if ( hiddenAttributes.contains( attributeName ) )
     {
@@ -786,7 +787,7 @@ QDomElement QgsWFSServer::createFeatureElem( QgsFeature* feat, QDomDocument& doc
     }
 
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
-    QDomText fieldText = doc.createTextNode( it->toString() );
+    QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
   }

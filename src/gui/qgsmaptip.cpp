@@ -103,5 +103,5 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   if ( idx < 0 )
     return QgsExpression::replaceExpressionText( vlayer->displayField(), feature, vlayer );
   else
-    return feature.attributeMap().value( idx, "" ).toString();
+    return feature.attribute( idx ).toString();
 }

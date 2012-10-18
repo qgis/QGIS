@@ -158,6 +158,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
         }
         feature.setValid( true );
         feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+        feature.initAttributes( attributeFields.count() );
 
         // add attributes if they are wanted
         for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )
@@ -165,29 +166,29 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           switch ( *iter )
           {
             case NameAttr:
-              feature.addAttribute( NameAttr, QVariant( wpt->name ) );
+              feature.setAttribute( NameAttr, QVariant( wpt->name ) );
               break;
             case EleAttr:
               if ( wpt->ele != -std::numeric_limits<double>::max() )
-                feature.addAttribute( EleAttr, QVariant( wpt->ele ) );
+                feature.setAttribute( EleAttr, QVariant( wpt->ele ) );
               break;
             case SymAttr:
-              feature.addAttribute( SymAttr, QVariant( wpt->sym ) );
+              feature.setAttribute( SymAttr, QVariant( wpt->sym ) );
               break;
             case CmtAttr:
-              feature.addAttribute( CmtAttr, QVariant( wpt->cmt ) );
+              feature.setAttribute( CmtAttr, QVariant( wpt->cmt ) );
               break;
             case DscAttr:
-              feature.addAttribute( DscAttr, QVariant( wpt->desc ) );
+              feature.setAttribute( DscAttr, QVariant( wpt->desc ) );
               break;
             case SrcAttr:
-              feature.addAttribute( SrcAttr, QVariant( wpt->src ) );
+              feature.setAttribute( SrcAttr, QVariant( wpt->src ) );
               break;
             case URLAttr:
-              feature.addAttribute( URLAttr, QVariant( wpt->url ) );
+              feature.setAttribute( URLAttr, QVariant( wpt->url ) );
               break;
             case URLNameAttr:
-              feature.addAttribute( URLNameAttr, QVariant( wpt->urlname ) );
+              feature.setAttribute( URLNameAttr, QVariant( wpt->urlname ) );
               break;
           }
         }
@@ -250,6 +251,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           result = true;
           feature.setValid( true );
           feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+          feature.initAttributes( attributeFields.count() );
 
           // add attributes if they are wanted
           for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )
@@ -257,26 +259,26 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
             switch ( *iter )
             {
               case NameAttr:
-                feature.addAttribute( NameAttr, QVariant( rte->name ) );
+                feature.setAttribute( NameAttr, QVariant( rte->name ) );
                 break;
               case NumAttr:
                 if ( rte->number != std::numeric_limits<int>::max() )
-                  feature.addAttribute( NumAttr, QVariant( rte->number ) );
+                  feature.setAttribute( NumAttr, QVariant( rte->number ) );
                 break;
               case CmtAttr:
-                feature.addAttribute( CmtAttr, QVariant( rte->cmt ) );
+                feature.setAttribute( CmtAttr, QVariant( rte->cmt ) );
                 break;
               case DscAttr:
-                feature.addAttribute( DscAttr, QVariant( rte->desc ) );
+                feature.setAttribute( DscAttr, QVariant( rte->desc ) );
                 break;
               case SrcAttr:
-                feature.addAttribute( SrcAttr, QVariant( rte->src ) );
+                feature.setAttribute( SrcAttr, QVariant( rte->src ) );
                 break;
               case URLAttr:
-                feature.addAttribute( URLAttr, QVariant( rte->url ) );
+                feature.setAttribute( URLAttr, QVariant( rte->url ) );
                 break;
               case URLNameAttr:
-                feature.addAttribute( URLNameAttr, QVariant( rte->urlname ) );
+                feature.setAttribute( URLNameAttr, QVariant( rte->urlname ) );
                 break;
             }
           }
@@ -367,6 +369,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 
           feature.setValid( true );
           feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+          feature.initAttributes( attributeFields.count() );
 
           // add attributes if they are wanted
           for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )
@@ -374,26 +377,26 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
             switch ( *iter )
             {
               case NameAttr:
-                feature.addAttribute( NameAttr, QVariant( trk->name ) );
+                feature.setAttribute( NameAttr, QVariant( trk->name ) );
                 break;
               case NumAttr:
                 if ( trk->number != std::numeric_limits<int>::max() )
-                  feature.addAttribute( NumAttr, QVariant( trk->number ) );
+                  feature.setAttribute( NumAttr, QVariant( trk->number ) );
                 break;
               case CmtAttr:
-                feature.addAttribute( CmtAttr, QVariant( trk->cmt ) );
+                feature.setAttribute( CmtAttr, QVariant( trk->cmt ) );
                 break;
               case DscAttr:
-                feature.addAttribute( DscAttr, QVariant( trk->desc ) );
+                feature.setAttribute( DscAttr, QVariant( trk->desc ) );
                 break;
               case SrcAttr:
-                feature.addAttribute( SrcAttr, QVariant( trk->src ) );
+                feature.setAttribute( SrcAttr, QVariant( trk->src ) );
                 break;
               case URLAttr:
-                feature.addAttribute( URLAttr, QVariant( trk->url ) );
+                feature.setAttribute( URLAttr, QVariant( trk->url ) );
                 break;
               case URLNameAttr:
-                feature.addAttribute( URLNameAttr, QVariant( trk->urlname ) );
+                feature.setAttribute( URLNameAttr, QVariant( trk->urlname ) );
                 break;
             }
           }
@@ -533,7 +536,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   QGis::WkbType wkbType = f.geometry()->wkbType();
   bool success = false;
   QgsGPSObject* obj = NULL;
-  const QgsAttributeMap& attrs( f.attributeMap() );
+  const QgsAttributes& attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
@@ -546,18 +549,18 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     std::memcpy( &wpt.lat, geo + 13, sizeof( double ) );
 
     // add waypoint-specific attributes
-    for ( it = attrs.begin(); it != attrs.end(); ++it )
+    for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( it.key() == EleAttr )
+      if ( i == EleAttr )
       {
         bool eleIsOK;
-        double ele = it->toDouble( &eleIsOK );
+        double ele = attrs[i].toDouble( &eleIsOK );
         if ( eleIsOK )
           wpt.ele = ele;
       }
-      else if ( it.key() == SymAttr )
+      else if ( i == SymAttr )
       {
-        wpt.sym = it->toString();
+        wpt.sym = attrs[i].toString();
       }
     }
 
@@ -597,12 +600,12 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     }
 
     // add route-specific attributes
-    for ( it = attrs.begin(); it != attrs.end(); ++it )
+    for ( i = 0; i < attrs.count(); ++i )
     {
-      if ( it.key() == NumAttr )
+      if ( i == NumAttr )
       {
         bool numIsOK;
-        long num = it->toInt( &numIsOK );
+        long num = attrs[i].toInt( &numIsOK );
         if ( numIsOK )
           rte.number = num;
       }
@@ -645,12 +648,12 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     }
 
     // add track-specific attributes
-    for ( it = attrs.begin(); it != attrs.end(); ++it )
+    for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( it.key() == NumAttr )
+      if ( i == NumAttr )
       {
         bool numIsOK;
-        long num = it->toInt( &numIsOK );
+        long num = attrs[i].toInt( &numIsOK );
         if ( numIsOK )
           trk.number = num;
       }
@@ -666,31 +669,31 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   // add common attributes
   if ( obj )
   {
-    for ( it = attrs.begin(); it != attrs.end(); ++it )
+    for ( int i = 0; i < attrs.count(); ++i )
     {
-      if ( it.key() == NameAttr )
+      if ( i == NameAttr )
       {
-        obj->name = it->toString();
+        obj->name = attrs[i].toString();
       }
-      else if ( it.key() == CmtAttr )
+      else if ( i == CmtAttr )
       {
-        obj->cmt = it->toString();
+        obj->cmt = attrs[i].toString();
       }
-      else if ( it.key() == DscAttr )
+      else if ( i == DscAttr )
       {
-        obj->desc = it->toString();
+        obj->desc = attrs[i].toString();
       }
-      else if ( it.key() == SrcAttr )
+      else if ( i == SrcAttr )
       {
-        obj->src = it->toString();
+        obj->src = attrs[i].toString();
       }
-      else if ( it.key() == URLAttr )
+      else if ( i == URLAttr )
       {
-        obj->url = it->toString();
+        obj->url = attrs[i].toString();
       }
-      else if ( it.key() == URLNameAttr )
+      else if ( i == URLNameAttr )
       {
-        obj->urlname = it->toString();
+        obj->urlname = attrs[i].toString();
       }
     }
   }

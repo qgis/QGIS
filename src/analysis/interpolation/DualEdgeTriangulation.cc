@@ -3134,6 +3134,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
       QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
       edgeLineFeature.setGeometry( geom );
+      edgeLineFeature.initAttributes( 1 );
 
       //attributes
       QString attributeString;
@@ -3148,7 +3149,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
           attributeString = "structure line";
         }
       }
-      edgeLineFeature.addAttribute( 0, attributeString );
+      edgeLineFeature.setAttribute( 0, attributeString );
 
       writer.addFeature( edgeLineFeature );
     }

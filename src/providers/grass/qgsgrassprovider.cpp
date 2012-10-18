@@ -1017,22 +1017,25 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
+    feature->initAttributes( mLayers[layerId].nColumns );
+
     for ( int i = 0; i < mLayers[layerId].nColumns; i++ )
     {
       if ( att != NULL )
       {
         QByteArray cstr( att->values[i] );
-        feature->addAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
+        feature->setAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {
-        feature->addAttribute( i, QVariant() );
+        feature->setAttribute( i, QVariant() );
       }
     }
   }
   else
   {
-    feature->addAttribute( 0, QVariant( cat ) );
+    feature->initAttributes( 1 );
+    feature->setAttribute( 0, QVariant( cat ) );
   }
 }
 
@@ -1049,22 +1052,25 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
+    feature->initAttributes( mLayers[layerId].nColumns );
+
     for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
     {
       if ( att != NULL )
       {
         QByteArray cstr( att->values[*iter] );
-        feature->addAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
+        feature->setAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {
-        feature->addAttribute( *iter, QVariant() );
+        feature->setAttribute( *iter, QVariant() );
       }
     }
   }
   else
   {
-    feature->addAttribute( 0, QVariant( cat ) );
+    feature->initAttributes( 1 );
+    feature->setAttribute( 0, QVariant( cat ) );
   }
 }
 

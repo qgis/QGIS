@@ -38,7 +38,7 @@ QgsFilter::~QgsFilter()
 
 QVariant QgsFilter::propertyIndexValue( const QgsFeature& f ) const
 {
-  return f.attributeMap().value( mPropertyIndex );
+  return f.attribute( mPropertyIndex );
 }
 
 QList<int> QgsFilter::attributeIndices() const

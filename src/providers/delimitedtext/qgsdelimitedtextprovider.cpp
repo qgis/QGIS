@@ -547,6 +547,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     feature.setValid( true );
     feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
     feature.setFeatureId( mFid );
+    feature.initAttributes( mFieldCount );
 
     if ( geom )
       feature.setGeometry( geom );
@@ -579,7 +580,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
           val = QVariant( value );
           break;
       }
-      feature.addAttribute( fieldIdx, val );
+      feature.setAttribute( fieldIdx, val );
     }
 
     // We have a good line, so return

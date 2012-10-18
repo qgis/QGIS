@@ -528,13 +528,13 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         // NOTE: Spatialite provider ignores position of geometry column
         // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
         int column = 0;
-        QgsAttributeMap newAttrMap;
-        QgsAttributeMap attrMap = f.attributeMap();
-        for ( QgsAttributeMap::const_iterator it = attrMap.begin(); it != attrMap.end(); ++it )
+        QgsAttributes newAttrs;
+        QgsAttributes attrs = f.attributes();
+        for ( int it = 0; it < attrs.count(); ++it )
         {
-          newAttrMap.insert( column++, it.value() );
+          newAttrs[column++] = attrs[it];
         }
-        f.setAttributeMap( newAttrMap );
+        f.setAttributes( newAttrs );
 
         newLayer->addFeature( f, false );
 
@@ -633,6 +633,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   mProgressDialog->setupProgressBar( tr( "%v / %m features added" ), features.size() );
 
   int i = 1;
+  int newAttrsCount = remoteLayer->pendingFields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsFeature f = *it;
@@ -640,13 +641,13 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     // NOTE: Spatialite provider ignores position of geometry column
     // restore gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
     QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
-    QgsAttributeMap newAttrMap;
-    QgsAttributeMap attrMap = f.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = attrMap.begin(); it != attrMap.end(); ++it )
+    QgsAttributes newAttrs( newAttrsCount );
+    QgsAttributes attrs = f.attributes();
+    for ( int it = 0; it < attrs.count(); ++it )
     {
-      newAttrMap.insert( attrLookup[ it.key()], it.value() );
+      newAttrs[ attrLookup[ it ] ] = attrs[ it ];
     }
-    f.setAttributeMap( newAttrMap );
+    f.setAttributes( newAttrs );
 
     remoteLayer->addFeature( f, false );
 

@@ -78,8 +78,9 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValue
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )
   {
-    if ( feat.attributeMap().contains( defaultValueIndex ) )
-      substitutionMap.insert( "$currfield", feat.attributeMap()[ defaultValueIndex ] );
+    QVariant defaultValue = feat.attribute( defaultValueIndex );
+    if ( defaultValue.isValid() )
+      substitutionMap.insert( "$currfield", defaultValue );
   }
 
   doAction( index, feat, &substitutionMap );

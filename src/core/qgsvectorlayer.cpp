@@ -1591,39 +1591,41 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
   {
     const QgsAttributeMap &map = mChangedAttributeValues[f.id()];
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
-      f.changeAttribute( it.key(), it.value() );
+      f.setAttribute( it.key(), it.value() );
   }
 
   // remove all attributes that will disappear
-  QgsAttributeMap map = f.attributeMap();
-  for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
-    if ( !mUpdatedFields.contains( it.key() ) )
-      f.deleteAttribute( it.key() );
+  const QgsAttributes& attrs = f.attributes();
+  for ( int i = 0; i < attrs.count(); ++i )
+    if ( !mUpdatedFields.contains( i ) )
+      f.deleteAttribute( i );
 
   // null/add all attributes that were added, but don't exist in the feature yet
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
-    if ( !map.contains( it.key() ) && ( all || mFetchAttributes.contains( it.key() ) ) )
-      f.changeAttribute( it.key(), QVariant( QString::null ) );
+    if ( !attrs[it.key()].isValid() && ( all || mFetchAttributes.contains( it.key() ) ) )
+      f.setAttribute( it.key(), QVariant( QString::null ) );
 }
 
+// TODO[MD] is this method really unused?
+/*
 void QgsVectorLayer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName,
     const QVariant& joinValue, const QgsAttributeList& attributes, int attributeIndexOffset )
 {
-  const QHash< QString, QgsAttributeMap>& memoryCache = joinInfo.cachedAttributes;
+  f.attributes().resize(pendingFields().count()); // make sure we have enough space for newly added attributes
+  const QHash< QString, QgsAttributes>& memoryCache = joinInfo.cachedAttributes;
   if ( !memoryCache.isEmpty() ) //use join memory cache
   {
-    QgsAttributeMap featureAttributes = memoryCache.value( joinValue.toString() );
+    QgsAttributes featureAttributes = memoryCache.value( joinValue.toString() );
     bool found = !featureAttributes.isEmpty();
-    QgsAttributeList::const_iterator attIt = attributes.constBegin();
-    for ( ; attIt != attributes.constEnd(); ++attIt )
+    for ( int i = 0; i < featureAttributes.count(); ++i )
     {
       if ( found )
       {
-        f.addAttribute( *attIt + attributeIndexOffset, featureAttributes.value( *attIt ) );
+        f.setAttribute( i + attributeIndexOffset, featureAttributes.value( i ) );
       }
       else
       {
-        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+        f.setAttribute( i + attributeIndexOffset, QVariant() );
       }
     }
   }
@@ -1653,11 +1655,10 @@ void QgsVectorLayer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJ
     QgsFeature fet;
     if ( joinLayer->nextFeature( fet ) )
     {
-      QgsAttributeMap attMap = fet.attributeMap();
-      QgsAttributeMap::const_iterator attIt = attMap.constBegin();
-      for ( ; attIt != attMap.constEnd(); ++attIt )
+      const QgsAttributes& attrs = fet.attributes();
+      for ( int i = 0; i < attrs.count(); ++i )
       {
-        f.addAttribute( attIt.key() + attributeIndexOffset, attIt.value() );
+        f.setAttribute( i + attributeIndexOffset, attrs[i] );
       }
     }
     else //no suitable join feature found, insert invalid variants
@@ -1665,13 +1666,13 @@ void QgsVectorLayer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJ
       QgsAttributeList::const_iterator attIt = attributes.constBegin();
       for ( ; attIt != attributes.constEnd(); ++attIt )
       {
-        f.addAttribute( *attIt + attributeIndexOffset, QVariant() );
+        f.setAttribute( *attIt + attributeIndexOffset, QVariant() );
       }
     }
 
     joinLayer->dataProvider()->setSubsetString( bkSubsetString, false );
   }
-}
+}*/
 
 void QgsVectorLayer::updateFeatureGeometry( QgsFeature &f )
 {
@@ -1800,7 +1801,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
               if ( fid == it->id() )
               {
                 found = true;
-                f.setAttributeMap( it->attributeMap() );
+                f.setAttributes( it->attributes() );
                 updateFeatureAttributes( f );
                 break;
               }
@@ -1822,7 +1823,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             if ( fi.nextFeature( tmp ) )
             {
               updateFeatureAttributes( tmp );
-              f.setAttributeMap( tmp.attributeMap() );
+              f.setAttributes( tmp.attributes() );
             }
           }
         }
@@ -1857,7 +1858,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
 
       if ( mFetchAttributes.size() > 0 )
       {
-        f.setAttributeMap( mFetchAddedFeaturesIt->attributeMap() );
+        f.setAttributes( mFetchAddedFeaturesIt->attributes() );
         updateFeatureAttributes( f );
       }
 
@@ -1916,7 +1917,7 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
           if ( featureId != it->id() )
           {
             found = true;
-            f.setAttributeMap( it->attributeMap() );
+            f.setAttributes( it->attributes() );
             break;
           }
         }
@@ -1935,7 +1936,7 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
         request.setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry );
         QgsFeatureIterator fi = mDataProvider->getFeatures( request );
         if ( fi.nextFeature( tmp ) )
-          f.setAttributeMap( tmp.attributeMap() );
+          f.setAttributes( tmp.attributes() );
       }
       updateFeatureAttributes( f, true );
     }
@@ -1953,7 +1954,7 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
         f.setGeometry( *iter->geometry() );
 
       if ( fetchAttributes )
-        f.setAttributeMap( iter->attributeMap() );
+        f.setAttributes( iter->attributes() );
 
       return true;
     }
@@ -2025,7 +2026,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
   QgsFeature current;
-  if ( !featureAtId( f.id(), current, f.geometry(), !f.attributeMap().isEmpty() ) )
+  if ( !featureAtId( f.id(), current, f.geometry(), !f.attributes().isEmpty() ) )
   {
     QgsDebugMsg( QString( "feature %1 could not be retrieved" ).arg( f.id() ) );
     return false;
@@ -2040,12 +2041,12 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     }
   }
 
-  const QgsAttributeMap &fa = f.attributeMap();
-  const QgsAttributeMap &ca = current.attributeMap();
+  const QgsAttributes &fa = f.attributes();
+  const QgsAttributes &ca = current.attributes();
 
-  foreach ( int attr, fa.keys() )
+  for ( int attr = 0; attr < fa.count(); ++attr )
   {
-    if ( fa.contains( attr ) && ca.contains( attr ) && fa[attr] != ca[attr] )
+    if ( fa[attr] != ca[attr] )
     {
       if ( !changeAttributeValue( f.id(), attr, fa[attr] ) )
       {
@@ -2468,18 +2469,18 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
         if ( mDataProvider )
         {
           //use default value where possible (primary key issue), otherwise the value from the original (split) feature
-          QgsAttributeMap newAttributes = select_it->attributeMap();
+          QgsAttributes newAttributes = select_it->attributes();
           QVariant defaultValue;
-          foreach ( int j, newAttributes.keys() )
+          for ( int j = 0; j < newAttributes.count(); ++j )
           {
             defaultValue = mDataProvider->defaultValue( j );
             if ( !defaultValue.isNull() )
             {
-              newAttributes.insert( j, defaultValue );
+              newAttributes[ j ] = defaultValue;
             }
           }
 
-          newFeature.setAttributeMap( newAttributes );
+          newFeature.setAttributes( newAttributes );
         }
 
         newFeatures.append( newFeature );
@@ -3865,14 +3866,14 @@ bool QgsVectorLayer::commitChanges()
     // remap attributes of added features
     for ( QgsFeatureList::iterator fit = mAddedFeatures.begin(); fit != mAddedFeatures.end(); fit++ )
     {
-      const QgsAttributeMap &src = fit->attributeMap();
-      QgsAttributeMap dst;
+      const QgsAttributes &src = fit->attributes();
+      QgsAttributes dst( pendingFields().count() );
 
-      for ( QgsAttributeMap::const_iterator it = src.begin(); it != src.end(); it++ )
-        if ( remap.contains( it.key() ) )
-          dst[ remap[it.key()] ] = it.value();
+      for ( int it = 0; it < src.count(); ++it )
+        if ( remap.contains( it ) )
+          dst[ remap[it] ] = src[it];
 
-      fit->setAttributeMap( dst );
+      fit->setAttributes( dst );
     }
 
     QgsFieldMap attributes;
@@ -4850,9 +4851,9 @@ void QgsVectorLayer::editAttributeChange( QgsFeatureId featureId, int field, QVa
       // work with added feature
       for ( int i = 0; i < mAddedFeatures.size(); i++ )
       {
-        if ( mAddedFeatures[i].id() == featureId && mAddedFeatures[i].attributeMap().contains( field ) )
+        if ( mAddedFeatures[i].id() == featureId && mAddedFeatures[i].attribute( field ).isValid() )
         {
-          original = mAddedFeatures[i].attributeMap()[field];
+          original = mAddedFeatures[i].attribute( field );
           isFirstChange = false;
           break;
         }
@@ -4886,7 +4887,7 @@ void QgsVectorLayer::editAttributeChange( QgsFeatureId featureId, int field, QVa
     {
       if ( mAddedFeatures[i].id() == featureId )
       {
-        mAddedFeatures[i].changeAttribute( field, value );
+        mAddedFeatures[i].setAttribute( field, value );
         break;
       }
     }
@@ -4999,7 +5000,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
         {
           if ( mAddedFeatures[i].id() == fid )
           {
-            mAddedFeatures[i].changeAttribute( attrChIt.key(), attrChIt.value().target );
+            mAddedFeatures[i].setAttribute( attrChIt.key(), attrChIt.value().target );
             break;
           }
         }
@@ -5135,7 +5136,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
         {
           if ( mAddedFeatures[i].id() == fid )
           {
-            mAddedFeatures[i].changeAttribute( attrChIt.key(), attrChIt.value().original );
+            mAddedFeatures[i].setAttribute( attrChIt.key(), attrChIt.value().original );
             break;
           }
         }
@@ -5150,7 +5151,7 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
         request.setSubsetOfAttributes( QgsAttributeList() << attrChIt.key() );
         QgsFeatureIterator fi = mDataProvider->getFeatures( request );
         if ( fi.nextFeature( tmp ) )
-          original = tmp.attributeMap()[ attrChIt.key()];
+          original = tmp.attribute( attrChIt.key() );
       }
       emit attributeValueChanged( fid, attrChIt.key(), original );
     }
@@ -5262,9 +5263,11 @@ void QgsVectorLayer::updateFieldMap()
     QgsFeatureList::iterator featureIt = mAddedFeatures.begin();
     for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
     {
-      QgsAttributeMap attMap = featureIt->attributeMap();
-      updateAttributeMapIndex( attMap, fieldIt.key(), mMaxUpdatedIndex );
-      featureIt->setAttributeMap( attMap );
+      QgsAttributes& attrs = featureIt->attributes();
+      attrs[mMaxUpdatedIndex] = attrs[fieldIt.key()];
+      attrs[fieldIt.key()].clear();
+      // updateAttributeMapIndex( attrs, fieldIt.key(), mMaxUpdatedIndex );
+      // featureIt->setAttributes( attrs );
     }
   }
 
@@ -5334,7 +5337,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   QHash<QString, QVariant> val;
   while ( nextFeature( f ) )
   {
-    currentValue = f.attributeMap()[index];
+    currentValue = f.attribute( index );
     val.insert( currentValue.toString(), currentValue );
     if ( limit >= 0 && val.size() >= limit )
     {
@@ -5390,7 +5393,7 @@ QVariant QgsVectorLayer::minimumValue( int index )
   double currentValue = 0;
   while ( nextFeature( f ) )
   {
-    currentValue = f.attributeMap()[index].toDouble();
+    currentValue = f.attribute( index ).toDouble();
     if ( currentValue < minimumValue )
     {
       minimumValue = currentValue;
@@ -5444,7 +5447,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
   double currentValue = 0;
   while ( nextFeature( f ) )
   {
-    currentValue = f.attributeMap()[index].toDouble();
+    currentValue = f.attribute( index ).toDouble();
     if ( currentValue > maximumValue )
     {
       maximumValue = currentValue;

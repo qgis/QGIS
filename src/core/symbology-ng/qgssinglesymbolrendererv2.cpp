@@ -47,11 +47,11 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
   {
-    rotation = feature.attributeMap()[mRotationFieldIdx].toDouble();
+    rotation = feature.attribute( mRotationFieldIdx ).toDouble();
   }
   if ( mSizeScaleFieldIdx != -1 )
   {
-    sizeScale = feature.attributeMap()[mSizeScaleFieldIdx].toDouble();
+    sizeScale = feature.attribute( mSizeScaleFieldIdx ).toDouble();
   }
 
   if ( mTempSymbol->type() == QgsSymbolV2::Marker )

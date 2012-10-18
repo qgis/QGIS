@@ -69,7 +69,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
-  QHash< QString, QgsAttributeMap> cachedAttributes;
+  QHash< QString, QgsAttributes> cachedAttributes;
 };
 
 /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
@@ -868,8 +868,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @param joinValue lookup value for join
       @param attributes (join layer) attribute indices to add
       @param attributeIndexOffset index offset to get from join layer attribute index to layer index*/
-    void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
-                                     const QgsAttributeList& attributes, int attributeIndexOffset );
+    //void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
+    //                                 const QgsAttributeList& attributes, int attributeIndexOffset );
 
     /**Update feature with uncommited geometry updates*/
     void updateFeatureGeometry( QgsFeature &f );
@@ -890,7 +890,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
 
     /**Updates an index in an attribute map to a new value (usually necessary because of a join operation)*/
-    void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
+    void updateAttributeMapIndex( QgsAttributeMap& attrs, int oldIndex, int newIndex ) const;
 
     /**Registers label and diagram layer
       @param rendererContext render context

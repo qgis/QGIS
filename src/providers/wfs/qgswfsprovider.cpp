@@ -163,7 +163,7 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   }
 
   //and the attributes
-  const QgsAttributeMap& attributes = f->attributeMap();
+  const QgsAttributes& attributes = f->attributes();
   for ( QgsAttributeList::const_iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
   {
     feature.addAttribute( *it, attributes[*it] );
@@ -722,7 +722,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
       for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
       {
-        currentFeature->changeAttribute( attMapIt.key(), attMapIt.value() );
+        currentFeature->setAttribute( attMapIt.key(), attMapIt.value() );
       }
     }
     return true;

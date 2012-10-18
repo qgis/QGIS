@@ -91,46 +91,12 @@ QgsFeatureId QgsFeature::id() const
   return mFid;
 }
 
-/**
- * Get the attributes for this feature.
- * @return A std::map containing the field name/value mapping
- */
-const QgsAttributeMap& QgsFeature::attributeMap() const
-{
-  return mAttributes;
-}
-
-/**Sets the attributes for this feature*/
-void QgsFeature::setAttributeMap( const QgsAttributeMap& attributes )
-{
-  mAttributes = attributes;
-}
-
-/**Clear attribute map for this feature*/
-void QgsFeature::clearAttributeMap()
-{
-  mAttributes.clear();
-}
-
-/**
- * Add an attribute to the map
- */
-void QgsFeature::addAttribute( int field, QVariant attr )
-{
-  mAttributes.insert( field, attr );
-}
-
 /**Deletes an attribute and its value*/
 void QgsFeature::deleteAttribute( int field )
 {
-  mAttributes.remove( field );
+  mAttributes[field].clear();
 }
 
-
-void QgsFeature::changeAttribute( int field, QVariant attr )
-{
-  mAttributes[field] = attr;
-}
 
 QgsGeometry *QgsFeature::geometry()
 {
@@ -192,19 +158,14 @@ void QgsFeature::setValid( bool validity )
   mValid = validity;
 }
 
-bool QgsFeature::addAttribute( const QString& name, QVariant value )
+bool QgsFeature::setAttribute( const QString& name, QVariant value )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
     return false;
 
-  mAttributes.insert( fieldIdx, value );
+  mAttributes[fieldIdx] = value;
   return true;
-}
-
-bool QgsFeature::changeAttribute( const QString& name, QVariant value )
-{
-  return addAttribute( name, value );
 }
 
 bool QgsFeature::deleteAttribute( const QString& name )
@@ -213,9 +174,17 @@ bool QgsFeature::deleteAttribute( const QString& name )
   if ( fieldIdx == -1 )
     return false;
 
-  mAttributes.remove( fieldIdx );
+  mAttributes[fieldIdx].clear();
   return true;
 }
+
+QVariant QgsFeature::attribute( int fieldIdx ) const
+{
+  if ( fieldIdx < 0 || fieldIdx >= mAttributes.count() )
+    return QVariant();
+  return mAttributes[fieldIdx];
+}
+
 
 QVariant QgsFeature::attribute( const QString& name ) const
 {
@@ -223,7 +192,7 @@ QVariant QgsFeature::attribute( const QString& name ) const
   if ( fieldIdx == -1 )
     return QVariant();
 
-  return mAttributes.value( fieldIdx );
+  return mAttributes[fieldIdx];
 }
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const

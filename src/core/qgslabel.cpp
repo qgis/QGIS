@@ -70,17 +70,7 @@ QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
     return QString();
   }
 
-  const QgsAttributeMap& attrs = feature.attributeMap();
-  QgsAttributeMap::const_iterator it = attrs.find( mLabelFieldIdx[attr] );
-
-  if ( it != attrs.end() )
-  {
-    return it->toString();
-  }
-  else
-  {
-    return QString();
-  }
+  return feature.attribute( attr ).toString();
 }
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,

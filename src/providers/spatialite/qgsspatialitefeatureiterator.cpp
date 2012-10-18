@@ -162,7 +162,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
   catch ( QgsSpatiaLiteProvider::SLFieldNotFound )
   {
     rewind();
-    return false;  
+    return false;
   }
 
   return true;
@@ -275,7 +275,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
     feature.setGeometryAndOwnership( 0, 0 );
   }
 
-  feature.clearAttributeMap();
+  feature.initAttributes( P->fieldCount() );
 
   int ic;
   int n_columns = sqlite3_column_count( stmt );
@@ -295,7 +295,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
     else
     {
       int attrIndex = subsetAttributes ? mRequest.subsetOfAttributes()[ic-1] : ic - 1;
-      feature.addAttribute( attrIndex, getFeatureAttribute( stmt, ic ) );
+      feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic ) );
     }
   }
 

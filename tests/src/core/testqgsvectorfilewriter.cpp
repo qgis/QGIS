@@ -130,7 +130,8 @@ void TestQgsVectorFileWriter::createPoint()
   QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -177,7 +178,8 @@ void TestQgsVectorFileWriter::createLine()
   QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -229,7 +231,8 @@ void TestQgsVectorFileWriter::createPolygon()
   QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -288,7 +291,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
-      myFeature.addAttribute( 0, "HelloWorld" );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, "HelloWorld" );
       //
       // Write the feature to the filewriter
       // and check for errors
@@ -360,7 +364,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
-      myFeature.addAttribute( 0, "HelloWorld" );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, "HelloWorld" );
       //
       // Write the feature to the filewriter
       // and check for errors

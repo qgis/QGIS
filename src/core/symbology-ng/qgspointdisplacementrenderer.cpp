@@ -458,14 +458,10 @@ void QgsPointDisplacementRenderer::setDisplacementGroups( const QList< QMap<QgsF
 QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
 {
   QString attribute;
-  QgsAttributeMap attMap = f.attributeMap();
-  if ( attMap.size() > 0 )
+  const QgsAttributes& attrs = f.attributes();
+  if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
-    QgsAttributeMap::const_iterator valIt = attMap.find( mLabelIndex );
-    if ( valIt != attMap.constEnd() )
-    {
-      attribute = valIt->toString();
-    }
+    attribute = attrs[mLabelIndex].toString();
   }
   return attribute;
 }

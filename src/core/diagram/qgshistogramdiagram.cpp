@@ -29,21 +29,20 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 {
 }
 
-QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
   QSize size;
-  QgsAttributeMap::const_iterator attIt = attributes.constBegin();
-  if ( attIt == attributes.constEnd() )
+  if ( attributes.count() == 0 )
   {
     return QSizeF(); //zero size if no attributes
   }
 
-  double maxValue = attIt.value().toDouble();
+  double maxValue = attributes[0].toDouble();
 
-  for ( ++attIt; attIt != attributes.constEnd(); ++attIt )
+  for ( int i = 1; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attIt.value().toDouble(), maxValue );
+    maxValue = qMax( attributes[i].toDouble(), maxValue );
   }
 
   // Scale, if extension is smaller than the specified minimum
@@ -70,22 +69,21 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
   return size;
 }
 
-QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
   QSizeF size;
 
-  QgsAttributeMap::const_iterator attIt = attributes.constBegin();
-  if ( attIt == attributes.constEnd() )
+  if ( attributes.count() == 0 )
   {
     return QSizeF(); //zero size if no attributes
   }
 
-  double maxValue = attIt.value().toDouble();
+  double maxValue = attributes[0].toDouble();
 
-  for ( ; attIt != attributes.constEnd(); ++attIt )
+  for ( int i = 0; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attIt.value().toDouble(), maxValue );
+    maxValue = qMax( attributes[i].toDouble(), maxValue );
   }
 
   switch ( s.diagramOrientation )
@@ -107,7 +105,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
   return size;
 }
 
-void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsHistogramDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
   if ( !p )

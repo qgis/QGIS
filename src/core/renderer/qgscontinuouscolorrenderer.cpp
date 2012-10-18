@@ -80,7 +80,7 @@ void QgsContinuousColorRenderer::renderFeature( QgsRenderContext &renderContext,
   if (( mMinimumSymbol && mMaximumSymbol ) )
   {
     //first find out the value for the classification attribute
-    const QgsAttributeMap& attrs = f.attributeMap();
+    const QgsAttributes& attrs = f.attributes();
     if ( attrs[mClassificationField].isNull() )
     {
       if ( img )

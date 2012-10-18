@@ -434,22 +434,16 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   QgsFieldMap::const_iterator fldIt;
   for ( fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt )
   {
-    if ( !feature.attributeMap().contains( fldIt.key() ) )
-    {
-      QgsDebugMsg( QString( "no attribute for field %1" ).arg( fldIt.key() ) );
-      continue;
-    }
-
     if ( !mAttrIdxToOgrIdx.contains( fldIt.key() ) )
     {
       QgsDebugMsg( QString( "no ogr field for field %1" ).arg( fldIt.key() ) );
       continue;
     }
 
-    const QVariant& attrValue = feature.attributeMap()[ fldIt.key()];
+    const QVariant& attrValue = feature.attribute( fldIt.key() );
     int ogrField = mAttrIdxToOgrIdx[ fldIt.key()];
 
-    if ( attrValue.isNull() )
+    if ( !attrValue.isValid() || attrValue.isNull() )
       continue;
 
     switch ( attrValue.type() )
@@ -686,7 +680,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     }
     if ( skipAttributeCreation )
     {
-      fet.clearAttributeMap();
+      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {

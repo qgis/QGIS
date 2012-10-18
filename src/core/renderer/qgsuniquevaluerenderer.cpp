@@ -121,21 +121,18 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
     if ( symbol->scaleClassificationField() >= 0 )
     {
       //first find out the value for the scale classification attribute
-      const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( qAbs( attrs[symbol->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( f.attribute( symbol->scaleClassificationField() ).toDouble() ) );
     }
     if ( symbol->rotationClassificationField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      rotation = attrs[symbol->rotationClassificationField()].toDouble();
+      rotation = f.attribute( symbol->rotationClassificationField() ).toDouble();
     }
 
     QString oldName;
 
     if ( symbol->symbolField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      QString name = attrs[symbol->symbolField()].toString();
+      QString name = f.attribute( symbol->symbolField() ).toString();
       oldName = symbol->pointSymbolName();
       symbol->setNamedPointSymbol( name );
     }
@@ -193,8 +190,7 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
 QgsSymbol *QgsUniqueValueRenderer::symbolForFeature( const QgsFeature *f )
 {
   //first find out the value
-  const QgsAttributeMap& attrs = f->attributeMap();
-  QString value = attrs[mClassificationField].toString();
+  QString value = f->attribute( mClassificationField ).toString();
 
   QMap<QString, QgsSymbol*>::iterator it = mSymbols.find( value );
   if ( it == mSymbols.end() )

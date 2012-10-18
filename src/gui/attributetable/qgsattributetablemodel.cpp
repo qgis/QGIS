@@ -438,7 +438,7 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
     if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
       continue;
 
-    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attributeMap()[idx] );
+    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attribute( idx ) );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -497,7 +497,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( mFeat.id() != rowId )
     return QVariant( "ERROR" );
 
-  const QVariant &val = mFeat.attributeMap()[ fieldId ];
+  const QVariant &val = mFeat.attribute( fieldId );
 
   if ( val.isNull() )
   {
@@ -531,12 +531,12 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 
   if ( mFeatureMap.contains( fid ) )
   {
-    mFeatureMap[ fid ].changeAttribute( idx, value );
+    mFeatureMap[ fid ].setAttribute( idx, value );
   }
 
   if ( mFeat.id() == fid || featureAtId( fid ) )
   {
-    mFeat.changeAttribute( idx, value );
+    mFeat.setAttribute( idx, value );
   }
 
   if ( !mLayer->isModified() )
@@ -604,7 +604,7 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
+    f.setAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   return f;

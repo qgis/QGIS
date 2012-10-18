@@ -102,6 +102,6 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
 
     void combineFieldLists( QgsFieldMap& fieldListA, QgsFieldMap fieldListB );
     void intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw, QgsVectorLayer* dp, QgsSpatialIndex* index );
-    void combineAttributeMaps( QgsAttributeMap& attributeMapA, QgsAttributeMap attributeMapB );
+    void combineAttributeMaps( QgsAttributes& attributesA, const QgsAttributes& attributesB );
 };
 #endif //QGSVECTORANALYZER

@@ -1161,7 +1161,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   //do a select with searchRect and go through all the features
 
   QgsFeature feature;
-  QgsAttributeMap featureAttributes;
+  QgsAttributes featureAttributes;
   int featureCounter = 0;
   const QgsFieldMap& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
@@ -1206,11 +1206,11 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     layerElement.appendChild( featureElement );
 
     //read all attribute values from the feature
-    featureAttributes = feature.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
+    featureAttributes = feature.attributes();
+    for ( int i = 0; i < featureAttributes.count(); ++i )
     {
 
-      QString attributeName = fields[it.key()].name();
+      QString attributeName = fields[i].name();
       //skip attribute if it has edit type 'hidden'
       if ( hiddenAttributes.contains( attributeName ) )
       {
@@ -1218,7 +1218,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       }
 
       //check if the attribute name should be replaced with an alias
-      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( it.key() );
+      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( i );
       if ( aliasIt != aliasMap.constEnd() )
       {
         QString aliasName = aliasIt.value();
@@ -1230,7 +1230,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
       attributeElement.setAttribute( "name", attributeName );
-      attributeElement.setAttribute( "value", it->toString() );
+      attributeElement.setAttribute( "value", featureAttributes[i].toString() );
       featureElement.appendChild( attributeElement );
     }
 

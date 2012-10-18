@@ -1502,16 +1502,20 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    const QgsAttributeMap &attributevec = flist[0].attributeMap();
+    const QgsAttributes &attributevec = flist[0].attributes();
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
-    for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
+    for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      if ( fieldId.contains( it.key() ) )
+      QVariant v = attributevec[idx];
+      if ( !v.isValid() )
         continue;
 
-      QgsFieldMap::const_iterator fit = mAttributeFields.find( it.key() );
+      if ( fieldId.contains( idx ) )
+        continue;
+
+      QgsFieldMap::const_iterator fit = mAttributeFields.find( idx );
       if ( fit == mAttributeFields.end() )
         continue;
 
@@ -1525,23 +1529,23 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       int i;
       for ( i = 1; i < flist.size(); i++ )
       {
-        const QgsAttributeMap &attributevec = flist[i].attributeMap();
+        const QgsAttributes &attrs2 = flist[i].attributes();
+        QVariant v2 = attrs2[idx];
 
-        QgsAttributeMap::const_iterator thisit = attributevec.find( it.key() );
-        if ( thisit == attributevec.end() )
+        if ( !v2.isValid() )
           break;
 
-        if ( *thisit != *it )
+        if ( v2 != v )
           break;
       }
 
       insert += delim + quotedIdentifier( fieldname );
 
-      QString defVal = defaultValue( it.key() ).toString();
+      QString defVal = defaultValue( idx ).toString();
 
       if ( i == flist.size() )
       {
-        if ( *it == defVal )
+        if ( attributevec[idx] == defVal )
         {
           if ( defVal.isNull() )
           {
@@ -1557,17 +1561,17 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
           values += QString( "%1%2(%3)" )
                     .arg( delim )
                     .arg( mConnectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
-                    .arg( quotedValue( it->toString() ) );
+                    .arg( quotedValue( v.toString() ) );
         }
         else if ( fit->typeName() == "geography" )
         {
           values += QString( "%1st_geographyfromewkt(%2)" )
                     .arg( delim )
-                    .arg( quotedValue( it->toString() ) );
+                    .arg( quotedValue( v.toString() ) );
         }
         else
         {
-          values += delim + quotedValue( it->toString() );
+          values += delim + quotedValue( v.toString() );
         }
       }
       else
@@ -1593,7 +1597,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
                     .arg( defaultValues.size() + offset );
         }
         defaultValues.append( defVal );
-        fieldId.append( it.key() );
+        fieldId.append( idx );
       }
 
       delim = ",";
@@ -1608,7 +1612,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
     {
-      const QgsAttributeMap &attributevec = features->attributeMap();
+      const QgsAttributes &attrs = features->attributes();
 
       QStringList params;
       if ( !mGeometryColumn.isNull() )
@@ -1618,23 +1622,23 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        QgsAttributeMap::const_iterator attr = attributevec.find( fieldId[i] );
+        QVariant value = attrs[ fieldId[i] ];
 
         QString v;
-        if ( attr == attributevec.end() )
+        if ( !value.isValid() )
         {
           const QgsField &fld = field( fieldId[i] );
           v = paramValue( defaultValues[i], defaultValues[i] );
-          features->addAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( attr.value().toString(), defaultValues[i] );
+          v = paramValue( value.toString(), defaultValues[i] );
 
-          if ( v != attr.value().toString() )
+          if ( v != value.toString() )
           {
             const QgsField &fld = field( fieldId[i] );
-            features->changeAttribute( fieldId[i], convertValue( fld.type(), v ) );
+            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
           }
         }
 
@@ -1657,11 +1661,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
       {
-        const QgsAttributeMap &attributevec = features->attributeMap();
+        const QgsAttributes &attrs = features->attributes();
 
         if ( mPrimaryKeyType == pktInt )
         {
-          features->setFeatureId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
+          features->setFeatureId( STRING_TO_FID( attrs[ mPrimaryKeyAttrs[0] ] ) );
         }
         else
         {
@@ -1669,7 +1673,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
           foreach ( int idx, mPrimaryKeyAttrs )
           {
-            primaryKeyVals << attributevec[ idx ];
+            primaryKeyVals << attrs[ idx ];
           }
 
           features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );

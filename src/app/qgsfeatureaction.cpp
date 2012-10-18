@@ -99,18 +99,18 @@ bool QgsFeatureAction::editFeature()
   }
   else
   {
-    QgsAttributeMap src = mFeature.attributeMap();
+    QgsAttributes src = mFeature.attributes();
 
     if ( dialog->exec() )
     {
       mLayer->beginEditCommand( text() );
 
-      const QgsAttributeMap &dst = mFeature.attributeMap();
-      for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
+      const QgsAttributes &dst = mFeature.attributes();
+      for ( int i = 0; i < dst.count(); ++i )
       {
-        if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+        if ( dst[i] != src[i] )
         {
-          mLayer->changeAttributeValue( mFeature.id(), it.key(), it.value() );
+          mLayer->changeAttributeValue( mFeature.id(), i, dst[i] );
         }
       }
 
@@ -145,11 +145,11 @@ bool QgsFeatureAction::addFeature()
     if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( it.key() ) )
     {
       QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
-      mFeature.addAttribute( it.key(), mLastUsedValues[ mLayer ][ it.key()] );
+      mFeature.setAttribute( it.key(), mLastUsedValues[ mLayer ][ it.key()] );
     }
     else
     {
-      mFeature.addAttribute( it.key(), provider->defaultValue( it.key() ) );
+      mFeature.setAttribute( it.key(), provider->defaultValue( it.key() ) );
     }
   }
 
@@ -165,9 +165,9 @@ bool QgsFeatureAction::addFeature()
   }
   else
   {
-    QgsAttributeMap origValues;
+    QgsAttributes origValues;
     if ( reuseLastValues )
-      origValues = mFeature.attributeMap();
+      origValues = mFeature.attributes();
 
     QgsAttributeDialog *dialog = newDialog( false );
     if ( dialog->exec() )
@@ -176,10 +176,8 @@ bool QgsFeatureAction::addFeature()
       {
         for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
         {
-          const QgsAttributeMap &newValues = mFeature.attributeMap();
-          if ( newValues.contains( it.key() )
-               && origValues.contains( it.key() )
-               && origValues[ it.key()] != newValues[ it.key()] )
+          const QgsAttributes &newValues = mFeature.attributes();
+          if ( origValues[it.key()] != newValues[it.key()] )
           {
             QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
             mLastUsedValues[ mLayer ][ it.key()] = newValues[ it.key()];

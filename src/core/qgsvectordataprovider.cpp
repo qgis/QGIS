@@ -352,10 +352,10 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
 
   while ( fi.nextFeature( f ) )
   {
-    if ( !set.contains( f.attributeMap()[index].toString() ) )
+    if ( !set.contains( f.attribute( index ).toString() ) )
     {
-      values.append( f.attributeMap()[index] );
-      set.insert( f.attributeMap()[index].toString() );
+      values.append( f.attribute( index ) );
+      set.insert( f.attribute( index ).toString() );
     }
 
     if ( limit >= 0 && values.size() >= limit )
@@ -399,10 +399,10 @@ void QgsVectorDataProvider::fillMinMaxCache()
 
   while ( fi.nextFeature( f ) )
   {
-    QgsAttributeMap attrMap = f.attributeMap();
+    const QgsAttributes& attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
-      const QVariant& varValue = attrMap[*it];
+      const QVariant& varValue = attrs[*it];
 
       if ( flds[*it].type() == QVariant::Int )
       {

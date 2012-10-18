@@ -116,14 +116,14 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     f.setGeometry( mModifiedGeometry );
 
     //add empty values for all fields (allows to insert attribute values via the feature form in the same session)
-    QgsAttributeMap attMap;
+    QgsAttributes attrs( vlayer->pendingFields().count() );
     const QgsFieldMap& fields = vlayer->pendingFields();
     QgsFieldMap::const_iterator fieldIt = fields.constBegin();
     for ( ; fieldIt != fields.constEnd(); ++fieldIt )
     {
-      attMap.insert( fieldIt.key(), QVariant() );
+      attrs[ fieldIt.key()] = QVariant();
     }
-    f.setAttributeMap( attMap );
+    f.setAttributes( attrs );
     editOk = vlayer->addFeature( f );
   }
 

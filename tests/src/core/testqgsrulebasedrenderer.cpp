@@ -69,9 +69,9 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsVectorLayer* layer = new QgsVectorLayer( "point?field=fld:int", "x", "memory" );
       int idx = layer->fieldNameIndex( "fld" );
       QVERIFY( idx != -1 );
-      QgsFeature f1; f1.addAttribute( idx, QVariant( 2 ) );
-      QgsFeature f2; f2.addAttribute( idx, QVariant( 8 ) );
-      QgsFeature f3; f3.addAttribute( idx, QVariant( 100 ) );
+      QgsFeature f1; f1.initAttributes( 1 ); f1.setAttribute( idx, QVariant( 2 ) );
+      QgsFeature f2; f2.initAttributes( 1 ); f2.setAttribute( idx, QVariant( 8 ) );
+      QgsFeature f3; f3.initAttributes( 1 ); f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
       QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( QGis::Point );

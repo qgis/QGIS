@@ -210,7 +210,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
     value = QVariant( QString::null );
   }
 
-  f.addAttribute( attindex, value );
+  f.setAttribute( attindex, value );
 }
 
 
@@ -218,7 +218,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
-  feature.clearAttributeMap();
+  feature.initAttributes( P->fieldCount() );
   feature.setFieldMap( &P->mAttributeFields ); // allow name-based attribute lookups
 
   // fetch geometry

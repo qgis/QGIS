@@ -346,7 +346,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & a
 
     const QgsAttributeMap& attrs = it.value();
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
-      fit->changeAttribute( it2.key(), it2.value() );
+      fit->setAttribute( it2.key(), it2.value() );
   }
   return true;
 }

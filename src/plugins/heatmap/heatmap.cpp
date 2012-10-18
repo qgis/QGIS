@@ -204,8 +204,7 @@ void Heatmap::run()
       float radius;
       if ( d.variableRadius() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        radius = myAttrMap.value( rField ).toFloat();
+        radius = myFeature.attribute( rField ).toFloat();
       }
       else
       {
@@ -236,8 +235,7 @@ void Heatmap::run()
       float weight = 1.0;
       if ( d.weighted() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        weight = myAttrMap.value( wField ).toFloat();
+        weight = myFeature.attribute( wField ).toFloat();
       }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )

@@ -111,7 +111,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
-    const QgsAttributeMap &attrs = mFeatureList[i].attributeMap();
+    const QgsAttributes &attrs = mFeatureList[i].attributes();
 
     for ( int j = 0; j < mTableWidget->columnCount(); j++ )
     {
@@ -551,14 +551,14 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
   mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
 }
 
-QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
+QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
   if ( mFeatureList.size() < 1 )
   {
-    return QgsAttributeMap();
+    return QgsAttributes();
   }
 
-  QgsAttributeMap resultMap;
+  QgsAttributes results( mTableWidget->columnCount() );
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
     int idx = mTableWidget->horizontalHeaderItem( i )->data( Qt::UserRole ).toInt();
@@ -571,8 +571,10 @@ QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
     if ( !currentItem )
       continue;
 
-    resultMap.insert( idx, currentItem->text() );
+    if ( idx >= results.count() )
+      results.resize( idx + 1 ); // make sure the results vector is long enough (maybe not necessary)
+    results[idx] = currentItem->text();
   }
 
-  return resultMap;
+  return results;
 }

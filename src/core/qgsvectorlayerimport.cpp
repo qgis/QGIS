@@ -118,19 +118,20 @@ QString QgsVectorLayerImport::errorMessage()
 
 bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
-  const QgsAttributeMap &attrs = feat.attributeMap();
+  const QgsAttributes &attrs = feat.attributes();
 
   QgsFeature newFeat;
   newFeat.setGeometry( *feat.geometry() );
+  newFeat.initAttributes( attrs.count() );
 
-  for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
+  for ( int i = 0; i < attrs.count(); ++i )
   {
     // add only mapped attributes (un-mapped ones are not present in the
     // destination layer)
-    if ( mOldToNewAttrIdx.contains( it.key() ) )
+    if ( mOldToNewAttrIdx.contains( i ) )
     {
-      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( it.key() ).arg( mOldToNewAttrIdx.value( it.key() ) ), 3 );
-      newFeat.addAttribute( mOldToNewAttrIdx.value( it.key() ), *it );
+      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( mOldToNewAttrIdx.value( i ) ), 3 );
+      newFeat.setAttribute( mOldToNewAttrIdx.value( i ), attrs[i] );
     }
   }
 
@@ -303,7 +304,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
     if ( skipAttributeCreation )
     {
-      fet.clearAttributeMap();
+      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {

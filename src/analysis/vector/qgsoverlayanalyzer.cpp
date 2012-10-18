@@ -166,10 +166,10 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
       intersectGeometry = featureGeometry->intersection( overlayFeature.geometry() );
 
       outFeature.setGeometry( intersectGeometry );
-      QgsAttributeMap attributeMapA = f.attributeMap();
-      QgsAttributeMap attributeMapB = overlayFeature.attributeMap();
-      combineAttributeMaps( attributeMapA, attributeMapB );
-      outFeature.setAttributeMap( attributeMapA );
+      QgsAttributes attributesA = f.attributes();
+      QgsAttributes attributesB = overlayFeature.attributes();
+      combineAttributeMaps( attributesA, attributesB );
+      outFeature.setAttributes( attributesA );
 
       //add it to vector file writer
       if ( vfw )
@@ -210,17 +210,8 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFieldMap& fieldListA, QgsFieldMap
   }
 }
 
-void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributeMap& attributeMapA, QgsAttributeMap attributeMapB )
+void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributes& attributesA, const QgsAttributes& attributesB )
 {
-  QMap<int, QVariant>::const_iterator i = attributeMapB.constBegin();
-  QVariant attribute;
-  int fcount = attributeMapA.size();
-  while ( i != attributeMapB.constEnd() )
-  {
-    attribute = i.value();
-    attributeMapA.insert( fcount, attribute );
-    ++i;
-    ++fcount;
-  }
+  attributesA += attributesB;
 }
 

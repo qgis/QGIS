@@ -115,7 +115,8 @@ void Regression1141::diacriticalTest()
     QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
     QgsFeature myFeature;
     myFeature.setGeometry( mypPointGeometry );
-    myFeature.addAttribute( 0, 10 );
+    myFeature.initAttributes( 1 );
+    myFeature.setAttribute( 0, 10 );
     //
     // Write the feature to the filewriter
     // and check for errors

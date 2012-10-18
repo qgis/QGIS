@@ -94,20 +94,20 @@ static double keep6digits( double x )
 
 static void checkFid4( QgsFeature& f, bool hasGeometry, bool hasAttrs, int onlyOneAttribute )
 {
-  const QgsAttributeMap& attrs = f.attributeMap();
+  const QgsAttributes& attrs = f.attributes();
 
   QCOMPARE( f.id(), ( QgsFeatureId )4 );
 
   if ( hasAttrs )
   {
-    QCOMPARE( f.attributeMap().count(), onlyOneAttribute == -1 ? 3 : 1 );
+    QCOMPARE( f.attributes().count(), 3 );
     QCOMPARE( attrs[0].toString(), ( onlyOneAttribute == -1 || onlyOneAttribute == 0 ) ? QString( "Jet" ) : QString() );
     QCOMPARE( attrs[1].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 1 ) ? 90 : 0 );
     QCOMPARE( attrs[2].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 2 ) ? 3 : 0 );
   }
   else
   {
-    QCOMPARE( f.attributeMap().count(), 0 );
+    QCOMPARE( f.attributes().count(), 0 );
   }
 
   if ( hasGeometry )

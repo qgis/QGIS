@@ -21,6 +21,7 @@ email                : sherman at mrcc.com
 #include <QVariant>
 #include <QList>
 #include <QHash>
+#include <QVector>
 
 class QgsGeometry;
 class QgsRectangle;
@@ -94,6 +95,8 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+typedef QVector<QVariant> QgsAttributes;
+
 class QgsField;
 typedef QMap<int, QgsField> QgsFieldMap;
 
@@ -130,32 +133,14 @@ class CORE_EXPORT QgsFeature
      */
     void setFeatureId( QgsFeatureId id );
 
-    /**
-     * Get the attributes for this feature.
-     * @return A std::map containing the field name/value mapping
-     */
-    const QgsAttributeMap& attributeMap() const;
-
-    /**Sets all the attributes in one go*/
-    void setAttributeMap( const QgsAttributeMap& attributeMap );
-
-    /** Clear attribute map
-     * added in 1.5
-     */
-    void clearAttributeMap();
-
-    /**
-     * Add an attribute to the map
-     */
-    void addAttribute( int field, QVariant attr );
+    const QgsAttributes& attributes() const { return mAttributes; }
+    QgsAttributes& attributes() { return mAttributes; }
+    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    void setAttribute( int field, const QVariant& attr ) { mAttributes[field] = attr; }
+    void initAttributes( int fieldCount ) { mAttributes.resize( fieldCount ); for ( int i = 0;i < fieldCount;++i ) mAttributes[i].clear(); }
 
     /**Deletes an attribute and its value*/
     void deleteAttribute( int field );
-
-    /**Changes an existing attribute value
-       @param field index of the field
-       @param attr attribute name and value to be set */
-    void changeAttribute( int field, QVariant attr );
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -210,13 +195,7 @@ class CORE_EXPORT QgsFeature
      *  Field map must be associated to make this work.
      *  @note added in 2.0
      */
-    bool addAttribute( const QString& name, QVariant value );
-
-    /** Change a value of an attribute. Returns false if attribute name could not be converted to index.
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    bool changeAttribute( const QString& name, QVariant value );
+    bool setAttribute( const QString& name, QVariant value );
 
     /** Remove an attribute value. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
@@ -230,6 +209,11 @@ class CORE_EXPORT QgsFeature
      */
     QVariant attribute( const QString& name ) const;
 
+    /** Lookup attribute value from its index. Returns invalid variant if the index does not exist.
+     *  @note added in 2.0
+     */
+    QVariant attribute( int fieldIdx ) const;
+
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
      *  Field map must be associated to make this work.
      *  @note added in 2.0
@@ -241,8 +225,8 @@ class CORE_EXPORT QgsFeature
     //! feature id
     QgsFeatureId mFid;
 
-    /** map of attributes accessed by field index */
-    QgsAttributeMap mAttributes;
+    /** attributes accessed by field index */
+    QgsAttributes mAttributes;
 
     /** pointer to geometry in binary WKB format
 
