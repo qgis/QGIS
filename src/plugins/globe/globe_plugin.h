@@ -19,7 +19,8 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include "../qgisplugin.h"
+#include "qgsconfig.h"
+#include "qgisplugin.h"
 #include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
 #include <QObject>
@@ -27,8 +28,16 @@
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
+#ifndef HAVE_OSGEARTHQT //use backported controls if osgEarth <= 2.1
+#define USE_BACKPORTED_CONTROLS
+#endif
+#ifdef USE_BACKPORTED_CONTROLS
+#include "osgEarthUtil/Controls"
+using namespace osgEarth::Util::Controls21;
+#else
 #include <osgEarthUtil/Controls>
-//#include "osgEarthUtil/Controls"
+using namespace osgEarth::Util::Controls;
+#endif
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
 
@@ -126,7 +135,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarth::Util::Controls::ControlCanvas* mControlCanvas;
+    ControlCanvas* mControlCanvas;
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
@@ -193,7 +202,11 @@ namespace osgEarth
 {
   namespace Util
   {
-    namespace Controls
+#ifdef USE_BACKPORTED_CONTROLS
+  namespace Controls21
+#else
+  namespace Controls
+#endif
     {
       class NavigationControlHandler : public ControlEventHandler
       {

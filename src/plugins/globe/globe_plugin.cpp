@@ -19,8 +19,11 @@
 #include "globe_plugin.h"
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
+#ifdef HAVE_OSGEARTHQT
 #include <osgEarthQt/ViewerWidget>
-//#include "osgEarthQt/ViewerWidget"
+#else
+#include "osgEarthQt/ViewerWidget"
+#endif
 
 #include <cmath>
 
@@ -60,8 +63,6 @@
 
 using namespace osgEarth::Drivers;
 using namespace osgEarth::Util;
-using namespace osgEarth::Util::Controls;
-//using namespace osgEarth::Util::Controls21;
 
 #define MOVE_OFFSET 0.05
 

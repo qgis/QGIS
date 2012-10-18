@@ -17,6 +17,13 @@ SET (globe_plugin_SRCS
      qgsosgearthtilesource.cpp
      globe_plugin_dialog.cpp
 )
+IF (NOT HAVE_OSGEARTHQT)
+    SET(globe_plugin_SRCS
+        ${globe_plugin_SRCS}
+        osgEarthQt/ViewerWidget.cpp
+        osgEarthUtil/Controls.cpp
+        )
+ENDIF (NOT HAVE_OSGEARTHQT)
 
 SET (globe_plugin_UIS
      globe_plugin_dialog_guibase.ui
@@ -49,6 +56,17 @@ INCLUDE_DIRECTORIES(
      ..
 )
 
+SET (OSGEARTH_LIBS
+  ${OSGEARTH_LIBRARY}
+  ${OSGEARTHFEATURES_LIBRARY}
+  ${OSGEARTHUTIL_LIBRARY}
+)
+IF (HAVE_OSGEARTHQT)
+    SET(OSGEARTH_LIBS
+        ${OSGEARTH_LIBS}
+        ${OSGEARTHQT_LIBRARY}
+        )
+ENDIF (HAVE_OSGEARTHQT)
 TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
@@ -59,10 +77,7 @@ TARGET_LINK_LIBRARIES(globeplugin
   ${OSG_LIBRARY}
   ${OSGQT_LIBRARY}
   ${OSGVIEWER_LIBRARY}
-  ${OSGEARTH_LIBRARY}
-  ${OSGEARTHFEATURES_LIBRARY}
-  ${OSGEARTHUTIL_LIBRARY}
-  ${OSGEARTHQT_LIBRARY}
+  ${OSGEARTH_LIBS}
   ${OPENTHREADS_LIBRARY}
 )
 

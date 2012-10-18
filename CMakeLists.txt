@@ -95,6 +95,10 @@ SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be buil
 IF (WITH_GLOBE)
   SET(QT_USE_QTOPENGL 1)
   FIND_PACKAGE(OSGEARTH REQUIRED)
+  IF (OSGEARTHQT_LIBRARY)
+    # following variable is used in qgsconfig.h
+    SET(HAVE_OSGEARTHQT TRUE)
+  ENDIF (OSGEARTHQT_LIBRARY)
 ENDIF (WITH_GLOBE)
 
 # Compile flag. Make it possible to turn it off.
