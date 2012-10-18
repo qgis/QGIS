@@ -7669,31 +7669,31 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Schätze Normalenableitungen...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1393"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1395"/>
         <source>Could not open CRS database %1
 Error(%2): %3</source>
         <translation>Konnte KBS-Datenbank %1 nicht öffnen
 Fehler(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1396"/>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1499"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1398"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1501"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1456"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1458"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>Erzeugtes KBS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1499"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1501"/>
         <source>Saved user CRS [%1]</source>
         <translation>Benutzer-KBS gespeichert [%1]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1772"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1774"/>
         <source>Imported from GDAL</source>
         <translation>Importiert aus GDAL</translation>
     </message>
@@ -8677,60 +8677,60 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Version 0.9</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="40"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="169"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="264"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="288"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="307"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="340"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="392"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="424"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="459"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="481"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="506"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2400"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2713"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2747"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2785"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2934"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2958"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3850"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5469"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5583"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6768"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6791"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="46"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="175"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="270"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="294"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="313"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="346"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="398"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="465"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="487"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="512"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3001"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3314"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3348"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3386"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3535"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3559"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4451"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6494"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7679"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7702"/>
         <source>Exception: %1</source>
         <translation>Ausnahme: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="40"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="169"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="264"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="288"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="307"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="340"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="392"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="424"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="459"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="481"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="506"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2400"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2713"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2747"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2785"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2934"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2958"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3850"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5469"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5583"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6431"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6768"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6791"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="46"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="175"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="270"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="294"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="313"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="346"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="398"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="465"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="487"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="512"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3001"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3314"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3348"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3386"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3535"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3559"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4451"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6494"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7342"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7679"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7702"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6431"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="7342"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
         <translation>GEOS vor 3.2 unterstützt GEOSInterpolate nicht</translation>
     </message>
@@ -15083,12 +15083,12 @@ Fehler: %5</translation>
 <context>
     <name>QgsCptCityBrowserModel</name>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1355"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1365"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1357"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="1367"/>
         <source>Info</source>
         <translation>Information</translation>
     </message>
@@ -15096,27 +15096,27 @@ Fehler: %5</translation>
 <context>
     <name>QgsCptCityColorRampItem</name>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="728"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="736"/>
         <source>colors</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="730"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="738"/>
         <source>continuous</source>
         <translation>Fortlaufend</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="732"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="740"/>
         <source>continuous (multi)</source>
         <translation>Fortlaufend (mehrere)</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="734"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="742"/>
         <source>discrete</source>
         <translation>Diskret</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="739"/>
+        <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="747"/>
         <source>variants</source>
         <translation>Varianten</translation>
     </message>
@@ -15124,12 +15124,12 @@ Fehler: %5</translation>
 <context>
     <name>QgsCptCityColorRampV2Dialog</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="350"/>
+        <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="354"/>
         <source>%1 directory details</source>
         <translation>Verzeichnisdetails %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="354"/>
+        <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="358"/>
         <source>%1 gradient details</source>
         <translation>Detail der Gradiente %1</translation>
     </message>
@@ -24639,14 +24639,14 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapRenderer</name>
     <message>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="782"/>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="804"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="786"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="808"/>
         <source>Transform error caught: %1</source>
         <translation>Transformationsfehler abgefangen: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="782"/>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="804"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="786"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="808"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
@@ -25012,7 +25012,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <name>QgsMapToolIdentify</name>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="203"/>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="400"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="412"/>
         <source>(clicked coordinate)</source>
         <translation>(Angeklickte Koordinate)</translation>
     </message>
@@ -25094,7 +25094,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Objektinformation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="396"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="408"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
@@ -26417,17 +26417,17 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
         <translation>Auf MinMax zuschneiden</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="278"/>
+        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="279"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="279"/>
+        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="280"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="280"/>
+        <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="281"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
@@ -29655,6 +29655,16 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <translation>Passwort</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
+        <source>Restrict the displayed tables to those that are in the layer registries.</source>
+        <translation>Beschränke angezeigte Tabellen auf jene aus der Layerregistratur.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
+        <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
+        <translation>Beschränkt die Tabellenanzeige auf solche, die in den Layerregistraturen (geometry_columns, geography_columns oder topology.layer) enthalten sind. Die kann bei der ersten Anzeige Zeit sparen.</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="250"/>
         <source>Use estimated table statistics for the layer metadata.</source>
         <translation>Geschätzte Tabellenstatistik für die Tabellen-Metadaten verwenden.</translation>
@@ -29706,6 +29716,11 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <translation>5432</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
+        <source>Only look in the layer registries</source>
+        <translation>Nur in den Layerregistraturen suchen</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="227"/>
         <source>Save Username</source>
         <translation>Benutzernamen speichern</translation>
@@ -29719,21 +29734,6 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="234"/>
         <source>&amp;Test Connect</source>
         <translation>Verbindung &amp;testen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
-        <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation>Beschränke angezeigte Tabellen auf jene aus der Tabelle geometry_columns</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
-        <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
-        <translation>Beschränke dargestellte Tabellen auf jene aus der Tabelle geometry_columns. Dies kann die Anzeige räumlicher Tabellen beschleunigen.</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
-        <source>Only look in the geometry_columns table</source>
-        <translation>Nur in geometry_columns nachsehen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
@@ -31008,24 +31008,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="223"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="240"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="292"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="391"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="441"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="502"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="530"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="541"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="599"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="699"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="722"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="780"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="786"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="796"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="802"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="807"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="405"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="458"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="519"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="547"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="558"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="602"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="616"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="716"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="739"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="797"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="803"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="813"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="818"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1440"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1449"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="819"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="824"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="830"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="835"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1457"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1466"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -31061,12 +31061,12 @@ Fehler:%3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="391"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="405"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>Die Datenbankverbindung war erfolgreich, jedoch konnten die zugänglichen Tabellen nicht bestimmt werden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="439"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="456"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -31075,93 +31075,93 @@ Fehler:%3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="530"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="547"/>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
         <translation>Die Datenbankverbindung war erfolgreich, jedoch wurden keine zugänglichen Tabellen gefunden.  Bitte stellen Sie sicher, dass Sie das SELECT-Recht für eine Tabelle mit PostGIS-Geometrie haben.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="541"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="558"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>Konnte Liste der räumlichen Tabellen der Datenbank nicht bestimmen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="585"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="602"/>
         <source>Retrieval of postgis version failed</source>
         <translation>Bestimmen der PostGIS-Version schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="599"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="616"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>Unverständliche PostGIS-Version &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="697"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="714"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>Verbindungsfehler: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="720"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="737"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>Fehlerhafte Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1264"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1281"/>
         <source>Point</source>
         <translation>Punkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1272"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1289"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1280"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1297"/>
         <source>Polygon</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1287"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1304"/>
         <source>No Geometry</source>
         <translation>Ohne Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1439"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1449"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1456"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1466"/>
         <source>Query could not be canceled [%1]</source>
         <translation>Abfrage konnte nicht abgebrochen werden [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1439"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1456"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1268"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1285"/>
         <source>Multipoint</source>
         <translation>Multipunkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1276"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1293"/>
         <source>Multiline</source>
         <translation>Multilinie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1284"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1301"/>
         <source>Multipolygon</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1290"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1307"/>
         <source>Unknown Geometry</source>
         <translation>Unbekannte Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="776"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="793"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="500"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="517"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -31170,21 +31170,21 @@ Die Fehlermeldung der Datenbank war:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="733"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="750"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>Abfrage gescheitert: %1
 Fehler: kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="737"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="754"/>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
         <translation>Nicht protokollierte Abfrage gescheitert: %1
 Fehler: Kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="784"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="801"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -31193,27 +31193,27 @@ SQL: %2
 Ergebnis: %3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="796"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="813"/>
         <source>resetting bad connection.</source>
         <translation>Schlechte Verbindung wird zurückgesetzt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="802"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="819"/>
         <source>retry after reset succeeded.</source>
         <translation>Erneuter Versuch nach Rücksetzung erfolgreich.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="807"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="824"/>
         <source>retry after reset failed again.</source>
         <translation>Erneuter Versuch nach Rücksetzung schlug wieder fehl.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="813"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="830"/>
         <source>connection still bad after reset.</source>
         <translation>Verbindung nach Rücksetzung immer noch schlecht.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="818"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="835"/>
         <source>bad connection, not retrying.</source>
         <translation>Schlechte Verbindung, keine neuen Versuche.</translation>
     </message>
@@ -31577,7 +31577,7 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
         <source>It is not possible to embed layers / groups from the current project.</source>
-        <translation type="unfinished">Es ist nicht möglich Layer/Gruppen des aktuellen Projekts einzubetten.</translation>
+        <translation>Es ist nicht möglich Layer/Gruppen des aktuellen Projekts einzubetten.</translation>
     </message>
 </context>
 <context>
@@ -31601,121 +31601,121 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="168"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="170"/>
         <source>Layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="169"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="171"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="170"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="172"/>
         <source>Identifiable</source>
         <translation>Abfragbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="190"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="192"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="198"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="200"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="202"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="204"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="540"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="756"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="587"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="881"/>
         <source>Coordinate System Restriction</source>
         <translation>Koordinatensystemeinschränkung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="540"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="587"/>
         <source>No coordinate systems selected. Disabling restriction.</source>
         <translation>Kein Koordinatensystem gewählt. Einschränkung aufgehoben.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="658"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="727"/>
         <source>Selection color</source>
         <translation>Auswahlfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="756"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="881"/>
         <source>CRS %1 was already selected</source>
         <translation>KBS %1 war bereits gewählt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="776"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="901"/>
         <source>Coordinate System Restrictions</source>
         <translation>Koordinatensystemeinschränkung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="777"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="902"/>
         <source>The current selection of coordinate systems will be lost.
 Proceed?</source>
         <translation>Die aktuelle Koordinatensystemauswahl wird verloren gehen.
 Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="810"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="935"/>
         <source>Select print composer</source>
         <translation>Druckzusammenstellung wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="810"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="935"/>
         <source>Composer Title</source>
         <translation>Titel der Druckzusammenstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="832"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="957"/>
         <source>Select restricted layers and groups</source>
         <translation>Eingeschränkte Layer und Gruppen wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="888"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1013"/>
         <source>Enter scale</source>
         <translation>Maßstab eingeben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="889"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1014"/>
         <source>Scale denominator</source>
         <translation>Maßstabsnenner</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="913"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1038"/>
         <source>Load scales</source>
         <translation>Maßstäbe laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="914"/>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="940"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1039"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1065"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XML-Dateien (*.xml *.XML)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="939"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1064"/>
         <source>Save scales</source>
         <translation>Maßstäbe speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1074"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1199"/>
         <source>Transparency %1%</source>
         <translation>Transparenz %1%</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1082"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1207"/>
         <source>Select a valid symbol</source>
         <translation>Ein gültiges Symbol wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="1088"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="1213"/>
         <source>Invalid symbol : </source>
         <translation>Ungültiges Symbil : </translation>
     </message>
@@ -31951,22 +31951,37 @@ Fortfahren?</translation>
         <translation>Layer ausschließen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1233"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1230"/>
+        <source>Update</source>
+        <translation>Aktualisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1235"/>
+        <source>Insert</source>
+        <translation>Einfügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1240"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1248"/>
         <source>Unselect all</source>
         <translation>Alle abwählen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1240"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1255"/>
         <source>Select all</source>
         <translation>Alle wählen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1259"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1274"/>
         <source>Macros</source>
         <translation>Makros</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1265"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1280"/>
         <source>Python macros</source>
         <translation>Python-Makros</translation>
     </message>
@@ -33472,28 +33487,28 @@ Klicken Sie auf den Hilfeknopf, um die gültigen Optionen für dies Format zu er
         <translation>Datei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1537"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1538"/>
         <source>Load layer properties from style file</source>
         <translation>Layereigenschaften aus Stildatei laden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1539"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1575"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1540"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1576"/>
         <source>QGIS Layer Style File</source>
         <translation>QGIS-Layerstildatei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1573"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1574"/>
         <source>Save layer properties as style file</source>
         <translation>Layereigenschaften als Stildatei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1639"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1640"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1639"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1640"/>
         <source>Bands</source>
         <translation>Kanäle</translation>
     </message>
@@ -33503,22 +33518,22 @@ Klicken Sie auf den Hilfeknopf, um die gültigen Optionen für dies Format zu er
         <translation>QGIS-erzeugte Export-Datei für transparente Pixelwerte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1261"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1262"/>
         <source>Open file</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1340"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1341"/>
         <source>Import Error</source>
         <translation>Importfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1345"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1346"/>
         <source>Read access denied</source>
         <translation>Lesezugriff verweigert</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1345"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1346"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -33530,8 +33545,8 @@ Klicken Sie auf den Hilfeknopf, um die gültigen Optionen für dies Format zu er
         <translation>Nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1506"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1523"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1507"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1524"/>
         <source>Default Style</source>
         <translation>Vorgabestil</translation>
     </message>
@@ -33551,8 +33566,8 @@ Klicken Sie auf den Hilfeknopf, um die gültigen Optionen für dies Format zu er
         <translation>Die Datei war nicht beschreibbar. Einige Formate unterstützen Übersichtspyramiden nicht. Gucken Sie im Zweifel in die GDAL-Dokumentation.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1561"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1591"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1562"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1592"/>
         <source>Saved Style</source>
         <translation>Gespeicherter Stil</translation>
     </message>
@@ -33578,12 +33593,12 @@ Klicken Sie auf den Hilfeknopf, um die gültigen Optionen für dies Format zu er
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1130"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1261"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1262"/>
         <source>Textfile</source>
         <translation>Textdatei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1340"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1341"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -39740,17 +39755,17 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsWFSProvider</name>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1894"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1364"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1900"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1370"/>
         <source>received %1 bytes from %2</source>
         <translation>%1 von %2 Bytes empfangen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2458"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1725"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -41133,7 +41148,7 @@ URL %1 versucht</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1272"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1393"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3007"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3951"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3964"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
@@ -41282,22 +41297,22 @@ Antwort war:
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3937"/>
         <source>identify request redirected.</source>
         <translation>Identify-Anfrage umgeleitet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3940"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3953"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation>GetFeatureInfo-Fehler %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3950"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3963"/>
         <source>ERROR: GetFeatureInfo failed</source>
         <translation>FEHLER: GetFeatureInfo gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3951"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3964"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>GetFeatureInfo-Fehler %1 [%2]</translation>
     </message>
