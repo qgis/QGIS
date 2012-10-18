@@ -432,14 +432,17 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
     {
-      sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
-
       if ( foundInTables & 1 )
+      {
+        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
+      }
+
+      if ( foundInTables & 2 )
       {
         sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geography_column FROM geography_columns)";
       }
 
-      if ( foundInTables & 2 )
+      if ( foundInTables & 4 )
       {
         sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT schema_name,table_name,feature_column FROM topology.layer)";
       }
