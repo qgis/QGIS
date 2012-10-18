@@ -2368,6 +2368,12 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
 void QgsPostgresProvider::appendGeomParam( QgsGeometry *geom, QStringList &params ) const
 {
+  if ( !geom )
+  {
+    params << QString::null;
+    return;
+  }
+
   QString param;
   unsigned char *buf = geom->asWkb();
   for ( uint i = 0; i < geom->wkbSize(); ++i )
