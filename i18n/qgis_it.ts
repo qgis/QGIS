@@ -6453,6 +6453,10 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Salva file</translation>
     </message>
     <message>
+        <source>Settings</source>
+        <translation>Impostazioni</translation>
+    </message>
+    <message>
         <source>Help</source>
         <translation>Aiuto</translation>
     </message>
