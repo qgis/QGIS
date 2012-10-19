@@ -1304,7 +1304,16 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
   QMap<QString, QString> attributes;
   // use context extent, width height (comes with request) to use WCS cache
-  attributes = layer->dataProvider()->identify( *infoPoint, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
+  // We can only use context if raster is not reprojected, otherwise it is difficult
+  // to guess correct source resolution
+  if ( mMapRenderer->hasCrsTransformEnabled() && layer->dataProvider()->crs() != mMapRenderer->destinationCrs() )
+  {
+    attributes = layer->dataProvider()->identify( *infoPoint );
+  }
+  else
+  {
+    attributes = layer->dataProvider()->identify( *infoPoint, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
+  }
 
   for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
   {
