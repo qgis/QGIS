@@ -57,9 +57,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( !mFeature || !vl->dataProvider() )
     return;
 
-  // Used to sync multiple widgets for the same field
-  QMap<int, QWidget*> referenceWidgets = QMap<int, QWidget*>();
-
   const QgsFieldMap &theFieldMap = vl->pendingFields();
   if ( theFieldMap.isEmpty() )
     return;
@@ -103,15 +100,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
     for ( QList<QgsAttributeEditorElement*>::const_iterator tIt = vl->attributeEditorElements().begin(); tIt != vl->attributeEditorElements().end(); ++tIt )
     {
-      QgsAttributeEditorElement* widg = *tIt;
+      QgsAttributeEditorElement* widgDef = *tIt;
 
       QWidget* tabPage = new QWidget( tabWidget );
-      tabWidget->addTab( tabPage, widg->name() );
+      tabWidget->addTab( tabPage, widgDef->name() );
       QGridLayout *tabPageLayout = new QGridLayout( tabPage );
 
-      if ( widg->type() == QgsAttributeEditorElement::AeTypeContainer )
+      if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
-        tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef( widg, tabPage, vl, myAttributes, referenceWidgets, false ) );
+        tabPageLayout->addWidget( QgsAttributeEditor::createWidgetFromDef( widgDef, tabPage, vl, myAttributes, mProxyWidgets, false ) );
       }
       else
       {
@@ -175,7 +172,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QString myFieldName = vl->attributeDisplayName( it.key() );
       int myFieldType = it->type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ), referenceWidgets );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ), mProxyWidgets );
       if ( !myWidget )
         continue;
 
@@ -224,7 +221,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ), referenceWidgets );
+        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ), mProxyWidgets );
 
         if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
         {

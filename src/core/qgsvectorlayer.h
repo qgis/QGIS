@@ -68,6 +68,7 @@ class QgsAttributeEditorElement : public QObject
 
     QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
         : QObject( parent ), mType( type ), mName( name ) {}
+
     virtual ~QgsAttributeEditorElement() {}
 
     QString name() const { return mName; }
@@ -87,10 +88,10 @@ class QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QgsAttributeEditorContainer( QString name, QObject *parent )
         : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
 
-    ~QgsAttributeEditorContainer();
+    ~QgsAttributeEditorContainer() {}
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
-    virtual void addWidget( QgsAttributeEditorElement *widget );
+    virtual void addChildElement( QgsAttributeEditorElement *widget );
     QList<QgsAttributeEditorElement*> children() const { return mChildren; }
 
   private:
@@ -103,6 +104,8 @@ class QgsAttributeEditorField : public QgsAttributeEditorElement
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent )
         : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
+
+    ~QgsAttributeEditorField() {}
 
     virtual QDomElement toDomElement( QDomDocument& doc ) const;
     int idx() const { return mIdx; }
@@ -385,7 +388,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param elem the DOM element
      * @param parent the QObject which will own this object
      */
-    static QgsAttributeEditorElement* attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent );
+    static QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.

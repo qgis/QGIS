@@ -3291,15 +3291,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   {
     QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
-    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorWidgetFromDomElement( elem, this );
+    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
     mAttributeEditorElements.append( attributeEditorWidget );
   }
   return true;
 }
 
-QgsAttributeEditorElement* QgsVectorLayer::attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent )
+QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
 {
-  QgsAttributeEditorElement* newWidget = NULL;
+  QgsAttributeEditorElement* newElement = NULL;
 
   if ( elem.tagName() == "attributeEditorContainer" )
   {
@@ -3310,18 +3310,18 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorWidgetFromDomElement( 
     for ( int i = 0; i < childNodeList.size(); i++ )
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
-
-      container->addWidget( attributeEditorWidgetFromDomElement( childElem, parent ) );
+      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
+      container->addChildElement( myElem );
     }
 
-    newWidget = container;
+    newElement = container;
   }
   else if ( elem.tagName() == "attributeEditorField" )
   {
-    newWidget = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
   }
 
-  return newWidget;
+  return newElement;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
@@ -5921,14 +5921,6 @@ void QgsVectorLayer::clearAttributeEditorWidgets()
   mAttributeEditorElements.clear();
 }
 
-QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
-{
-  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
-  {
-    delete( *it );
-  }
-}
-
 QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
@@ -5941,7 +5933,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 }
 
 
-void QgsAttributeEditorContainer::addWidget( QgsAttributeEditorElement *widget )
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
 }

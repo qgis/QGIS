@@ -266,7 +266,8 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       newWidget = mAttributesTree->addContainer( parent, widgetDef->name() );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
-      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->children().begin(); it != container->children().end(); ++it )
+      QList<QgsAttributeEditorElement*> children = container->children();
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = children.begin(); it != children.end(); ++it )
       {
         loadAttributeEditorTreeItem( *it, newWidget );
       }
@@ -776,7 +777,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
     for ( int t = 0; t < item->childCount(); t++ )
     {
-      container->addWidget( createAttributeEditorWidget( item->child( t ), container ) );
+      container->addChildElement( createAttributeEditorWidget( item->child( t ), container ) );
     }
 
     widgetDef = container;

@@ -947,7 +947,9 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 
       int index = 0;
 
-      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->children().begin(); it != container->children().end(); ++it )
+      QList<QgsAttributeEditorElement*>children = container->children();
+
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = children.begin(); it != children.end(); ++it )
       {
         QgsAttributeEditorElement* childDef = *it;
         QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, attrs, proxyWidgets, true );
