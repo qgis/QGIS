@@ -304,8 +304,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > excludedAttributes = mConfigParser->wfsExcludedAttributes();
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -318,19 +316,19 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   {
     //is there alias info for this vector layer?
     QMap< int, QString > layerAliasInfo;
-    QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
-    if ( aliasIt != aliasInfo.constEnd() )
+    const QMap< QString, QString >& aliasMap = layer->attributeAliases();
+    QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
+    for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
     {
-      layerAliasInfo = aliasIt.value();
+      int attrIndex = layer->fieldNameIndex( aliasIt.key() );
+      if ( attrIndex != -1 )
+      {
+        layerAliasInfo.insert( attrIndex, aliasIt.value() );
+      }
     }
 
     //excluded attributes for this layer
-    QSet<QString> layerExcludedAttributes;
-    QMap< QString, QSet<QString> >::const_iterator exclIt = excludedAttributes.find( currentLayer->id() );
-    if ( exclIt != excludedAttributes.constEnd() )
-    {
-      layerExcludedAttributes = exclIt.value();
-    }
+    const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
 
     //do a select with searchRect and go through all the features
     QgsVectorDataProvider* provider = layer->dataProvider();

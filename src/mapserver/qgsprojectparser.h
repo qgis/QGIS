@@ -86,13 +86,6 @@ class QgsProjectParser: public QgsConfigParser
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
 
-    /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
-       Default implementation returns an empty map*/
-    virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const;
-
-    /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const;
-
     /**Returns map rectangle for the project file*/
     QgsRectangle mapRectangle() const;
 

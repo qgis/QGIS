@@ -243,8 +243,6 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   }
 
   QStringList wfsLayersId = wfsLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
-  QMap< QString, QSet<QString> > excludedAttrs = wfsExcludedAttributes();
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
@@ -262,21 +260,8 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           continue;
         }
 
-        //is there alias info for this vector layer?
-        QMap< int, QString > layerAliasInfo;
-        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( mLayer->id() );
-        if ( aliasIt != aliasInfo.constEnd() )
-        {
-          layerAliasInfo = aliasIt.value();
-        }
-
         //hidden attributes for this layer
-        QSet<QString> layerExcludedAttributes;
-        QMap< QString, QSet<QString> >::const_iterator exclIt = excludedAttrs.find( mLayer->id() );
-        if ( exclIt != excludedAttrs.constEnd() )
-        {
-          layerExcludedAttributes = exclIt.value();
-        }
+        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
 
         QString typeName = layer->name();
         typeName = typeName.replace( QString( " " ), QString( "_" ) );
@@ -349,7 +334,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         {
 
           QString attributeName = it.value().name();
-          //skip attribute if it has edit type 'hidden'
+          //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
             continue;
@@ -367,11 +352,10 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
 
           sequenceElem.appendChild( geomElem );
 
-          //check if the attribute name should be replaced with an alias
-          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
-          if ( aliasIt != layerAliasInfo.constEnd() )
+          QString alias = layer->attributeAlias( it.key() );
+          if ( !alias.isEmpty() )
           {
-            geomElem.setAttribute( "alias", aliasIt.value() );
+            geomElem.setAttribute( "alias", alias );
           }
         }
       }
@@ -1183,52 +1167,6 @@ bool QgsProjectParser::featureInfoWithWktGeometry() const
   }
 
   return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-}
-
-QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
-{
-  QMap< QString, QMap< int, QString > > resultMap;
-
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomNodeList aNodeList = layerIt->elementsByTagName( "aliases" );
-    if ( aNodeList.size() > 0 )
-    {
-      QMap<int, QString> aliasMap;
-      QDomNodeList aliasNodeList = aNodeList.at( 0 ).toElement().elementsByTagName( "alias" );
-      for ( int i = 0; i < aliasNodeList.size(); ++i )
-      {
-        QDomElement aliasElem = aliasNodeList.at( i ).toElement();
-        aliasMap.insert( aliasElem.attribute( "index" ).toInt(), aliasElem.attribute( "name" ) );
-      }
-      resultMap.insert( layerId( *layerIt ) , aliasMap );
-    }
-  }
-
-  return resultMap;
-}
-
-/**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-QMap< QString, QSet<QString> > QgsProjectParser::wfsExcludedAttributes() const
-{
-  QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWFS" );
-    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
-    if ( attributeNodeList.size() > 0 )
-    {
-      QSet<QString> layerExcludedAttributes;
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
-    }
-  }
-  return resultMap;
 }
 
 QgsRectangle QgsProjectParser::mapRectangle() const

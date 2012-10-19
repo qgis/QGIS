@@ -733,7 +733,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   result.appendChild( getFeatureInfoElement );
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
 
   //Render context is needed to determine feature visibility for vector layers
   QgsRenderContext renderContext;
@@ -782,14 +781,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( vectorLayer )
       {
-        //is there alias info for this vector layer?
-        QMap< int, QString > layerAliasInfo;
-        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
-        if ( aliasIt != aliasInfo.constEnd() )
-        {
-          layerAliasInfo = aliasIt.value();
-        }
-
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
                                          version, featuresRect ) != 0 )
         {
