@@ -68,6 +68,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   QDialogButtonBox *buttonBox = NULL;
 
+  // UI-File defined layout
   if ( !vl->editorLayout() == QgsVectorLayer::UiFileLayout && !vl->editForm().isEmpty() )
   {
     QFile file( vl->editForm() );
@@ -204,15 +205,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
-      mpIndizes << it.key();
-      mpWidgets << myWidget;
       ++index;
     }
 
     // Set focus to first widget in list, to help entering data without moving the mouse.
-    if ( mpWidgets.size() > 0 )
+    if ( mProxyWidgets.size() > 0 )
     {
-      mpWidgets.first()->setFocus( Qt::OtherFocusReason );
+      (*mProxyWidgets.begin())->setFocus( Qt::OtherFocusReason );
     }
   }
   else
@@ -231,9 +230,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         {
           ( *itw )->setEnabled(( *itw )->isEnabled() && vl->isEditable() );
         }
-
-        mpIndizes << it.key();
-        mpWidgets << *itw;
       }
     }
 
@@ -387,16 +383,14 @@ void QgsAttributeDialog::accept()
     return;
 
   //write the new values back to the feature
-  int myIndex = 0;
   for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); ++it )
   {
+    int idx = it.key();
+
     QVariant value;
 
-    int idx = mpIndizes.value( myIndex );
-    if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, idx, value ) )
+    if ( QgsAttributeEditor::retrieveValue( mProxyWidgets.value( idx ), mLayer, idx, value ) )
       mFeature->changeAttribute( idx, value );
-
-    ++myIndex;
   }
 }
 
