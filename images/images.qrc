@@ -67,6 +67,7 @@
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
         <file>themes/default/mActionExpandTree.png</file>
+        <file>themes/default/mActionExpandNewTree.png</file>
         <file>themes/default/mActionExportMapServer.png</file>
         <file>themes/default/mActionFileExit.png</file>
         <file>themes/default/mActionFileNew.png</file>
