@@ -54,7 +54,7 @@ QgsRasterBlock::QgsRasterBlock( DataType theDataType, int theWidth, int theHeigh
 QgsRasterBlock::~QgsRasterBlock()
 {
   QgsFree( mData );
-
+  delete mImage;
 }
 
 bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
@@ -416,12 +416,9 @@ bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
   }
   else if ( typeIsColor( mDataType ) && typeIsColor( destDataType ) )
   {
-    // It would be probably faster to convert value by value here instead of
-    // creating new image, QImage (4.8) does not have any method to convert in place
     QImage::Format format = imageFormat( destDataType );
     QImage image = mImage->convertToFormat( format );
-    memcpy( mImage->bits(), image.bits(), mImage->byteCount() );
-    //mImage = new QImage( mWidth, mHeight, format );
+    *mImage = image;
   }
   else
   {

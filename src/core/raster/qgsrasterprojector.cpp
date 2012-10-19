@@ -708,6 +708,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsg( "No projection necessary" );
+    delete outputBlock;
     return mInput->block( bandNo, extent, width, height );
   }
 
