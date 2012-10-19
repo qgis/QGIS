@@ -80,7 +80,7 @@ class QgsRasterInterface
     virtual QgsRasterInterface * input() const;
 
     /** Is on/off */
-    virtual bool on();
+    virtual bool on() const;
 
     /** Set on/off */
     virtual void setOn( bool on );
