@@ -731,7 +731,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
   QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > excludedAttributes = mConfigParser->wmsExcludedAttributes();
 
   //Render context is needed to determine feature visibility for vector layers
   QgsRenderContext renderContext;
@@ -788,16 +787,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
           layerAliasInfo = aliasIt.value();
         }
 
-        //excluded attributes for this layer
-        QSet<QString> layerExcludedAttributes;
-        QMap< QString, QSet<QString> >::const_iterator excludedIt = excludedAttributes.find( currentLayer->id() );
-        if ( excludedIt != excludedAttributes.constEnd() )
-        {
-          layerExcludedAttributes = excludedIt.value();
-        }
-
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
-                                         layerAliasInfo, layerExcludedAttributes, version, featuresRect ) != 0 )
+                                         version, featuresRect ) != 0 )
         {
           continue;
         }
@@ -1163,8 +1154,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QDomElement& layerElement,
     QgsMapRenderer* mapRender,
     QgsRenderContext& renderContext,
-    QMap<int, QString>& aliasMap,
-    QSet<QString>& excludedAttributes,
     QString version,
     QgsRectangle* featureBBox ) const
 {
@@ -1208,6 +1197,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   int featureCounter = 0;
   const QgsFieldMap& fields = provider->fields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
   provider->select( provider->attributeIndexes(), searchRect, addWktGeometry || featureBBox, true );
   while ( provider->nextFeature( feature ) )
@@ -1252,24 +1242,14 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     featureAttributes = feature.attributeMap();
     for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
     {
-
-      QString attributeName = fields[it.key()].name();
       //skip attribute if it is explicitely excluded from WMS publication
-      if ( excludedAttributes.contains( attributeName ) )
+      if ( excludedAttributes.contains( fields[it.key()].name() ) )
       {
         continue;
       }
 
-      //check if the attribute name should be replaced with an alias
-      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( it.key() );
-      if ( aliasIt != aliasMap.constEnd() )
-      {
-        QString aliasName = aliasIt.value();
-        if ( !aliasName.isEmpty() )
-        {
-          attributeName = aliasName;
-        }
-      }
+      //replace attribute name if there is an attribute alias?
+      QString attributeName = layer->attributeDisplayName( it.key() );
 
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
       attributeElement.setAttribute( "name", attributeName );

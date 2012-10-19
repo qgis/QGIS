@@ -90,9 +90,6 @@ class QgsProjectParser: public QgsConfigParser
        Default implementation returns an empty map*/
     virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const;
 
-    /**Returns attributes excluded from WMS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wmsExcludedAttributes() const;
-
     /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
     virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const;
 

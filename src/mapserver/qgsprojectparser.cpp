@@ -196,7 +196,7 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
         bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
         layerElem.appendChild( bBoxElement );
-        
+
         //wfs:Operations element
         QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
         //wfs:Query element
@@ -205,21 +205,21 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
 
         QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
         QgsVectorDataProvider* provider = vlayer->dataProvider();
-        if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
         {
           //wfs:Insert element
           QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
           operationsElement.appendChild( insertElement );
         }
-        if ( (provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && 
-             (provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) && 
-             wfstUpdateLayersId.contains( layer->id() ) )
+        if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+            ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+            wfstUpdateLayersId.contains( layer->id() ) )
         {
           //wfs:Update element
           QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
           operationsElement.appendChild( updateElement );
         }
-        if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
         {
           //wfs:Delete element
           QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
@@ -1201,27 +1201,6 @@ QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
     }
   }
 
-  return resultMap;
-}
-
-QMap< QString, QSet<QString> > QgsProjectParser::wmsExcludedAttributes() const
-{
-  QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWMS" );
-    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
-    if ( attributeNodeList.size() > 0 )
-    {
-      QSet<QString> layerExcludedAttributes;
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
-    }
-  }
   return resultMap;
 }
 
