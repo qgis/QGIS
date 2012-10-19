@@ -116,7 +116,7 @@ class QgsCustomization : public QObject
     static void customizeWidget( QString path, QWidget * widget, QSettings* settings );
     static void removeFromLayout( QLayout *theLayout, QWidget * widget );
 
-    void updateMainWindow( QMenu * theToolBarMenu );
+    void updateMainWindow();
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }

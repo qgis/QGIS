@@ -650,7 +650,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   restoreWindowState();
 
   // do main window customization - after window state has been restored, before the window is shown
-  QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
+  QgsCustomization::instance()->updateMainWindow();
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
