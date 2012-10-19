@@ -444,6 +444,13 @@ QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint,
 
   if ( qIsNaN( value ) ) value = noDataValue( 1 );
 
+  // Apply user no data
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( 1 );
+  if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+  {
+    value = noDataValue( 1 );
+  }
+
   results.insert( 1, value );
 
   return results;

@@ -1731,6 +1731,13 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
       return results;
     }
 
+    // Apply user no data
+    QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( i );
+    if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+    {
+      value = noDataValue( i );
+    }
+
     results.insert( i, value );
   }
 
