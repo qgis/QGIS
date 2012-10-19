@@ -346,6 +346,7 @@ void QgsLegend::removeLayers( QStringList theLayers )
           {
             invLayerRemoved = true;
           }
+          removeLegendLayerActionsForLayer( ll->layer() );
           removeItem( ll );
           delete ll;
           break;
@@ -700,34 +701,108 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   }
 
   QMenu theMenu( tr( "Legend context" ), this );
+  QSettings mySettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  mySettings.beginGroup( "Customization/Docks/Legend" );
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
   {
     if ( li->type() == QgsLegendItem::LEGEND_LAYER )
     {
-      qobject_cast<QgsLegendLayer*>( li )->addToPopupMenu( theMenu );
+      QgsLegendLayer* lyr = qobject_cast<QgsLegendLayer*>( li );
+      lyr->addToPopupMenu( theMenu );
+
+      // add custom layer actions
+      QList< LegendLayerAction > actions = legendLayerActions( lyr->layer()->type() );
+      if ( ! actions.isEmpty() )
+      {
+        theMenu.addSeparator();
+        QList<QMenu*> theMenus;
+        for ( int i = 0; i < actions.count(); i++ )
+        {
+          if (( actions[i].allLayers || actions[i].layers.contains( lyr->layer() ) ) &&
+              mySettings.value( "pluginActions/" + actions[i].menu + actions[i].id, true ).toBool() )
+          {
+            if ( actions[i].menu.isEmpty() )
+            {
+              theMenu.addAction( actions[i].action );
+            }
+            else
+            {
+              // find or create menu for given menu name
+              // adapted from QgisApp::getPluginMenu( QString menuName )
+              QString menuName = actions[i].menu;
+#ifdef Q_WS_MAC
+              // Mac doesn't have '&' keyboard shortcuts.
+              menuName.remove( QChar( '&' ) );
+#endif
+              QAction* before = 0;
+              QMenu* newMenu = 0;
+              QString dst = menuName;
+              dst.remove( QChar( '&' ) );
+              foreach ( QMenu* menu, theMenus )
+              {
+                QString src = menu->title();
+                src.remove( QChar( '&' ) );
+                int comp = dst.localeAwareCompare( src );
+                if ( comp < 0 )
+                {
+                  // Add item before this one
+                  before = menu->menuAction();
+                  break;
+                }
+                else if ( comp == 0 )
+                {
+                  // Plugin menu item already exists
+                  newMenu = menu;
+                  break;
+                }
+              }
+              if ( ! newMenu )
+              {
+                // It doesn't exist, so create
+                newMenu = new QMenu( menuName, this );
+                theMenus.append( newMenu );
+                // Where to put it? - we worked that out above...
+                theMenu.insertMenu( before, newMenu );
+              }
+              // QMenu* menu = getMenu( actions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+              newMenu->addAction( actions[i].action );
+            }
+          }
+        }
+        theMenu.addSeparator();
+      }
+
+      // properties goes on bottom of menu for consistency with normal ui standards
+      // e.g. kde stuff
+      if ( mySettings.value( "mActionLayerProperties", true ).toBool() )
+        theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
-        theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
+        if ( mySettings.value( "mActionLayerTop", true ).toBool() )
+          theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
       }
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
-                         tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
+      if ( mySettings.value( "mActionZoomtoLegendGroup", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+                           tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       // use QGisApp::removeLayer() to remove all selected layers+groups
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
-
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
-                         tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
+      if ( mySettings.value( "mActionRemoveLegendGroup", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      if ( mySettings.value( "mActionSetLegendGroupCRS", true ).toBool() )
+        theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+                           tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
     if (( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
     {
-      theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
+      if ( mySettings.value( "mActionLayerRename", true ).toBool() )
+        theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
 
     //
@@ -735,7 +810,8 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     //
     if ( selectedLayers().length() > 1 )
     {
-      theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
+      if ( mySettings.value( "mActionLegendGroupSelected", true ).toBool() )
+        theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
     }
     // ends here
   }
@@ -743,20 +819,31 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   if ( selectedLayers().length() == 1 )
   {
     QgisApp* app = QgisApp::instance();
-    theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+    if ( mySettings.value( "mActionLayerCopyStyle", true ).toBool() )
+      theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
     if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
     {
-      theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+      if ( mySettings.value( "mActionLayerPasteStyle", true ).toBool() )
+        theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
     }
   }
 
-  theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
+  if ( theMenu.actions().count() > 0 )
+    theMenu.addSeparator();
 
-  QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
-  updateDrawingOrderAction->setCheckable( true );
-  updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  if ( mySettings.value( "mActionLegendGroupNew", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
+  if ( mySettings.value( "mActionLegendGroupExpandTree", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
+  if ( mySettings.value( "mActionLegendGroupCollapseTree", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
+
+  if ( mySettings.value( "mActionLegendGroupUpdateDrawingOrder", true ).toBool() )
+  {
+    QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+    updateDrawingOrderAction->setCheckable( true );
+    updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
+  }
 
   theMenu.exec( position );
 }
@@ -2673,3 +2760,61 @@ void QgsLegend::groupSelectedLayers()
   }
 }
 
+void QgsLegend::addLegendLayerAction( QAction* action, QString menu, QString id,
+                                      QgsMapLayer::LayerType type, bool allLayers )
+{
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
+}
+
+bool QgsLegend::removeLegendLayerAction( QAction* action )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it ).removeAt( i );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void QgsLegend::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it )[i].layers.append( layer );
+        return;
+      }
+    }
+  }
+}
+
+void QgsLegend::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      ( *it )[i].layers.removeAll( layer );
+    }
+  }
+}
+
+QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const
+{
+  return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}

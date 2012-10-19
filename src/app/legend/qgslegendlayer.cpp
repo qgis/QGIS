@@ -403,38 +403,49 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
 
 void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
+  QSettings mySettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  mySettings.beginGroup( "Customization/Docks/Legend" );
   QgsMapLayer *lyr = layer();
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
 
   // zoom to layer extent
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
-                     tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
+  if ( mySettings.value( "mActionZoomToLayer", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+                       tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
+    if ( mySettings.value( "mActionZoomToBestScale", true ).toBool() )
+      theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
 
     QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
-    if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+    if ( mySettings.value( "mActionStretchCurrentExtent", true ).toBool() &&
+         rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
     {
       theMenu.addAction( tr( "&Stretch Using Current Extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
     }
   }
 
   // show in overview
-  QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in Overview" ), this, SLOT( showInOverview() ) );
-  showInOverviewAction->setCheckable( true );
-  showInOverviewAction->blockSignals( true );
-  showInOverviewAction->setChecked( mLyr.isInOverview() );
-  showInOverviewAction->blockSignals( false );
+  if ( mySettings.value( "mActionShowInOverview", true ).toBool() )
+  {
+    QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in Overview" ), this, SLOT( showInOverview() ) );
+    showInOverviewAction->setCheckable( true );
+    showInOverviewAction->blockSignals( true );
+    showInOverviewAction->setChecked( mLyr.isInOverview() );
+    showInOverviewAction->blockSignals( false );
+  }
 
   // remove from canvas
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+  if ( mySettings.value( "mActionRemoveLayer", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // set layer crs
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+  if ( mySettings.value( "mActionSetLayerCRS", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
   // assign layer crs to project
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+  if ( mySettings.value( "mActionSetProjectCRSFromLayer", true ).toBool() )
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
   theMenu.addSeparator();
 
@@ -443,12 +454,14 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
-                       QgisApp::instance(), SLOT( attributeTable() ) );
+    if ( mySettings.value( "mActionOpenTable", true ).toBool() )
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
+                         QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing
     int cap = vlayer->dataProvider()->capabilities();
-    if ( cap & QgsVectorDataProvider::EditingCapabilities )
+    if ( mySettings.value( "mActionToggleEditing", true ).toBool() &&
+         cap & QgsVectorDataProvider::EditingCapabilities )
     {
       if ( toggleEditingAction )
       {
@@ -458,34 +471,41 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     // save as vector file
-    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
+    if ( mySettings.value( "mActionLayerSaveAs", true ).toBool() )
+      theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
     // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
-    if ( vlayer->selectedFeatureCount() == 0 )
+    if ( mySettings.value( "mActionLayerSelectionSaveAs", true ).toBool() )
     {
-      saveSelectionAsAction->setEnabled( false );
+      QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
+      saveSelectionAsAction->setEnabled( vlayer->selectedFeatureCount() != 0 );
     }
 
-    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
+    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() &&
+         vlayer->vectorJoins().isEmpty() &&
+         mySettings.value( "mActionLayerSubsetString", true ).toBool() )
+    {
       theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+    }
 
     //show number of features in legend if requested
-    QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
-    showNFeaturesAction->setCheckable( true );
-    showNFeaturesAction->setChecked( mShowFeatureCount );
-    QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
-    theMenu.addAction( showNFeaturesAction );
-    theMenu.addSeparator();
+    if ( mySettings.value( "mActionShowFeatureCount", true ).toBool() )
+    {
+      QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
+      showNFeaturesAction->setCheckable( true );
+      showNFeaturesAction->setChecked( mShowFeatureCount );
+      QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );
+      theMenu.addAction( showNFeaturesAction );
+      theMenu.addSeparator();
+    }
   }
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+    if ( mySettings.value( "mActionLayerSaveAs", true ).toBool() )
+      theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
   }
 
-  // properties goes on bottom of menu for consistency with normal ui standards
-  // e.g. kde stuff
-  theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
+  mySettings.endGroup();
 }
 
 //////////
