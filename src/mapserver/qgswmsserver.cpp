@@ -209,7 +209,10 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   {
     //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
+  }
 
+  if ( mConfigParser && fullProjectInformation )
+  {
     //WFS layers
     QStringList wfsLayers = mConfigParser->wfsLayerNames();
     if ( wfsLayers.size() > 0 )

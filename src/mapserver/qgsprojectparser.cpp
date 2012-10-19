@@ -583,6 +583,7 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
   if ( currentLayer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+    const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
 
     //displayfield
     layerElem.setAttribute( "displayField", vLayer->displayField() );
@@ -593,8 +594,12 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
     QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
     for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
     {
+      if ( excludedAttributes.contains( fieldIt->name() ) )
+      {
+        continue;
+      }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", fieldIt->name() );
+      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( fieldIt.key() ) );
       attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
 
       //edit type to text
