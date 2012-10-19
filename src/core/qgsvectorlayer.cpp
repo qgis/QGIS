@@ -3283,7 +3283,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   // tabs and groups display info
-  mAttributeEditorWidgets.clear();
+  mAttributeEditorElements.clear();
   QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
   QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
 
@@ -3292,7 +3292,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
     QgsAttributeEditorElement *attributeEditorWidget = attributeEditorWidgetFromDomElement( elem, this );
-    mAttributeEditorWidgets.append( attributeEditorWidget );
+    mAttributeEditorElements.append( attributeEditorWidget );
   }
   return true;
 }
@@ -3581,13 +3581,13 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( excludeWFSElem );
 
   // tabs and groups of edit form
-  if ( mAttributeEditorWidgets.size() > 0 )
+  if ( mAttributeEditorElements.size() > 0 )
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
-    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorWidgets.begin(); it != mAttributeEditorWidgets.end(); it++ )
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); it++ )
     {
-      QDomElement attributeEditorWidgetElem = ( *it )->getDomElement( doc );
+      QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
       tabsElem.appendChild( attributeEditorWidgetElem );
     }
 
@@ -3745,7 +3745,7 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 
 void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
 {
-  mAttributeEditorWidgets.append( data );
+  mAttributeEditorElements.append( data );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -5911,14 +5911,14 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   return mValueRelations[ fields[idx].name()];
 }
 
-QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorWidgets()
+QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorElements()
 {
-  return mAttributeEditorWidgets;
+  return mAttributeEditorElements;
 }
 
 void QgsVectorLayer::clearAttributeEditorWidgets()
 {
-  mAttributeEditorWidgets.clear();
+  mAttributeEditorElements.clear();
 }
 
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
@@ -5929,13 +5929,13 @@ QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
   }
 }
 
-QDomElement QgsAttributeEditorContainer::getDomElement( QDomDocument& doc ) const
+QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
   for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
-    elem.appendChild(( *it )->getDomElement( doc ) );
+    elem.appendChild(( *it )->toDomElement( doc ) );
   }
   return elem;
 }
@@ -5946,7 +5946,7 @@ void QgsAttributeEditorContainer::addWidget( QgsAttributeEditorElement *widget )
   mChildren.append( widget );
 }
 
-QDomElement QgsAttributeEditorField::getDomElement( QDomDocument& doc ) const
+QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( "attributeEditorField" );
   elem.setAttribute( "name", mName );

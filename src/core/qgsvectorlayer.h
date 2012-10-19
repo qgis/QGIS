@@ -53,7 +53,7 @@ class QgsDiagramLayerSettings;
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
-
+/** @note Added in 1.9 */
 class QgsAttributeEditorElement : public QObject
 {
     Q_OBJECT
@@ -70,12 +70,17 @@ class QgsAttributeEditorElement : public QObject
         : QObject( parent ), mType( type ), mName( name ) {}
     virtual ~QgsAttributeEditorElement() {}
 
+    QString name() const { return mName; }
+    AttributeEditorType type() const { return mType; }
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
+
+  protected:
     AttributeEditorType mType;
     QString mName;
-
-    virtual QDomElement getDomElement( QDomDocument& doc ) const = 0;
 };
 
+/** @note Added in 1.9 */
 class QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
@@ -84,20 +89,26 @@ class QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
     ~QgsAttributeEditorContainer();
 
-    virtual QDomElement getDomElement( QDomDocument& doc ) const;
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
     virtual void addWidget( QgsAttributeEditorElement *widget );
+    QList<QgsAttributeEditorElement*> children() const { return mChildren; }
 
+  private:
     QList<QgsAttributeEditorElement*> mChildren;
 };
 
+/** @note Added in 1.9 */
 class QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent )
         : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
 
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    int idx() const { return mIdx; }
+
+  private:
     int mIdx;
-    virtual QDomElement getDomElement( QDomDocument& doc ) const;
 };
 
 /** @note added in 1.7 */
@@ -136,6 +147,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
+    /** The different types to layout the attribute editor. @note added in 1.9 */
     enum EditorLayout
     {
       GeneratedLayout = 0,
@@ -369,6 +381,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
+    /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
+     * @param elem the DOM element
+     * @param parent the QObject which will own this object
+     */
     static QgsAttributeEditorElement* attributeEditorWidgetFromDomElement( QDomElement &elem, QObject* parent );
 
     /** Read the symbology for the current layer from the Dom node supplied.
@@ -639,10 +655,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     void addAttributeAlias( int attIndex, QString aliasString );
 
-    /**Sets a tab (for the dit form) for attributes to display in dialogs
+    /**Adds a tab (for the attribute editor form) holding groups and fields
       @note added in version 1.9*/
     void addAttributeEditorWidget( QgsAttributeEditorElement* data );
-    QList< QgsAttributeEditorElement* > &attributeEditorWidgets();
+    /**Returns a list of tabs holding groups and fields
+      @note added in version 1.9*/
+    QList< QgsAttributeEditorElement* > &attributeEditorElements();
+    /**Clears all the tabs for the attribute editor form
+      @note added in version 1.9*/
     void clearAttributeEditorWidgets();
 
     /**Returns the alias of an attribute name or an empty string if there is no alias
@@ -1061,8 +1081,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;
 
-    /**Map that stores the widgets (groups and fields) for attributes in the edit form*/
-    QList< QgsAttributeEditorElement* > mAttributeEditorWidgets;
+    /**Stores a list of attribute editor elements (Each holding a tree structure for a tab in the attribute editor)*/
+    QList< QgsAttributeEditorElement* > mAttributeEditorElements;
 
     /**Attributes which are not published in WMS*/
     QSet<QString> mExcludeAttributesWMS;
@@ -1101,10 +1121,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** The current size of editing marker */
     int mCurrentVertexMarkerSize;
 
-    /**Flag if the vertex markers should be drawn only for selection (true) or for all features (false)*/
+    /** Flag if the vertex markers should be drawn only for selection (true) or for all features (false) */
     bool mVertexMarkerOnlyForSelection;
 
-    /**List of overlays. Vector overlays will be rendered on top of all maplayers*/
+    /** List of overlays. Vector overlays will be rendered on top of all maplayers */
     QList<QgsVectorOverlay*> mOverlays;
 
     QStringList mCommitErrors;
@@ -1115,6 +1135,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
 
+    /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
 
     QString mEditForm, mEditFormInit;

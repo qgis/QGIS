@@ -227,7 +227,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
   connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
 
-  mAttributesTree->setHeaderLabels( QStringList() << tr("Label") );
+  mAttributesTree->setHeaderLabels( QStringList() << tr( "Label" ) );
 
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
@@ -255,18 +255,18 @@ void QgsFieldsProperties::toggleEditing()
 QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
 {
   QTreeWidgetItem* newWidget = 0;
-  switch ( widgetDef->mType )
+  switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
-      newWidget = mAttributesTree->addItem( parent, widgetDef->mName );
+      newWidget = mAttributesTree->addItem( parent, widgetDef->name() );
       break;
 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
-      newWidget = mAttributesTree->addContainer( parent, widgetDef->mName );
+      newWidget = mAttributesTree->addContainer( parent, widgetDef->name() );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
-      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->children().begin(); it != container->children().end(); ++it )
       {
         loadAttributeEditorTreeItem( *it, newWidget );
       }
@@ -297,7 +297,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mAttributesTree->setAcceptDrops( true );
   mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  QList<QgsAttributeEditorElement*> widgets = mLayer->attributeEditorWidgets();
+  QList<QgsAttributeEditorElement*> widgets = mLayer->attributeEditorElements();
 
   for ( QList<QgsAttributeEditorElement*>::const_iterator it = widgets.begin(); it != widgets.end(); ++it )
   {
@@ -444,7 +444,7 @@ void QgsFieldsProperties::on_mMoveDownItem_clicked()
   }
   int itemIndex = parent->indexOfChild( itemToMoveDown );
 
-  if ( itemIndex < parent->childCount()-1 )
+  if ( itemIndex < parent->childCount() - 1 )
   {
     parent->takeChild( itemIndex );
     parent->insertChild( itemIndex + 1, itemToMoveDown );
@@ -797,9 +797,9 @@ void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
   leEditForm->setText( uifilename );
 }
 
-void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged ( int index )
+void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged( int index )
 {
-  switch( index )
+  switch ( index )
   {
     case 0:
       mAttributeEditorOptionsWidget->setVisible( false );
@@ -888,7 +888,7 @@ void QgsFieldsProperties::apply()
     mLayer->addAttributeEditorWidget( createAttributeEditorWidget( tabItem, mLayer ) );
   }
 
-  mLayer->setEditorLayout( (QgsVectorLayer::EditorLayout)mEditorLayoutComboBox->currentIndex() );
+  mLayer->setEditorLayout(( QgsVectorLayer::EditorLayout )mEditorLayoutComboBox->currentIndex() );
   mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
 }

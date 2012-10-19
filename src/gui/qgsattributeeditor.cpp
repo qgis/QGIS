@@ -128,7 +128,7 @@ QListWidget *QgsAttributeEditor::listWidget( QWidget *editor, QWidget *parent )
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {
   QMap<int, QWidget*> dummyProxyWidgets;
-  return createAttributeEditor ( parent, editor, vl, idx, value, dummyProxyWidgets );
+  return createAttributeEditor( parent, editor, vl, idx, value, dummyProxyWidgets );
 }
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value, QMap<int, QWidget*> &proxyWidgets )
@@ -498,8 +498,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
         if ( it != proxyWidgets.end() )
         {
-          synchronized =  connect( *it, SIGNAL( textChanged(QString) ), myWidget, SLOT( setText(QString) )  );
-          synchronized &= connect( myWidget, SIGNAL( textChanged(QString) ), *it, SLOT( setText(QString) )  );
+          synchronized =  connect( *it, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
+          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), *it, SLOT( setText( QString ) ) );
         }
       }
     }
@@ -911,15 +911,15 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 {
   QWidget *newWidget = 0;
 
-  switch ( widgetDef->mType )
+  switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
-      newWidget = createAttributeEditor ( parent, 0, vl, fieldDef->mIdx, attrs.value( fieldDef->mIdx, QVariant() ), proxyWidgets );
+      newWidget = createAttributeEditor( parent, 0, vl, fieldDef->idx(), attrs.value( fieldDef->idx(), QVariant() ), proxyWidgets );
 
 
-      if ( vl->editType( fieldDef->mIdx ) != QgsVectorLayer::Immutable )
+      if ( vl->editType( fieldDef->idx() ) != QgsVectorLayer::Immutable )
       {
         newWidget->setEnabled( newWidget->isEnabled() && vl->isEditable() );
       }
@@ -935,7 +935,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       if ( createGroupBox )
       {
         QGroupBox* groupBox = new QGroupBox( parent );
-        groupBox->setTitle ( container->mName );
+        groupBox->setTitle( container->name() );
         myContainer = groupBox;
       }
       else
@@ -947,12 +947,12 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 
       int index = 0;
 
-      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->mChildren.begin(); it != container->mChildren.end(); ++it )
+      for ( QList<QgsAttributeEditorElement*>::const_iterator it = container->children().begin(); it != container->children().end(); ++it )
       {
         QgsAttributeEditorElement* childDef = *it;
         QWidget* editor = createWidgetFromDef( childDef, myContainer, vl, attrs, proxyWidgets, true );
 
-        if ( childDef->mType == QgsAttributeEditorElement::AeTypeContainer )
+        if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
           gbLayout->addWidget( editor, index, 0, 1, 2 );
         }
@@ -960,7 +960,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         {
           QLabel * mypLabel = new QLabel( myContainer );
           gbLayout->addWidget( mypLabel, index, 0 );
-          mypLabel->setText( childDef->mName );
+          mypLabel->setText( childDef->name() );
           gbLayout->addWidget( editor, index, 1 );
         }
 
@@ -973,7 +973,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     }
 
     default:
-      QgsDebugMsg("Unknown attribute editor widget type encountered...");
+      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
       break;
   }
 
