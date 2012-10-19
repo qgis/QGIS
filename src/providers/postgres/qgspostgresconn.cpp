@@ -345,15 +345,15 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
-    sql = QString( "SELECT %1,%2,%3,%4,c.relkind"
-                   " FROM %5 l,pg_class c,pg_namespace n"
+    sql = QString( "SELECT %1,%2,%3,%4,%5,c.relkind"
+                   " FROM %6 l,pg_class c,pg_namespace n"
                    " WHERE c.relname=%1"
                    " AND %2=n.nspname"
                    " AND n.oid=c.relnamespace"
                    " AND has_schema_privilege(n.nspname,'usage')"
                    " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
                  )
-          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( gtableName );
+          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( sridName ).arg( gtableName );
 
     if ( searchPublicOnly )
       sql += " AND n.nspname='public'";
@@ -388,7 +388,16 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
-      layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
+
+      if ( relkind == "v" )
+      {
+        layerProperty.pkCols = pkCandidates( schemaName, tableName );
+        if ( layerProperty.pkCols.isEmpty() )
+        {
+          QgsDebugMsg( "no key columns found." );
+          continue;
+        }
+      }
       layerProperty.srid = srid;
       layerProperty.sql = "";
       layerProperty.isGeography = i == 1;
@@ -472,18 +481,26 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       // Make the assumption that the geometry type for the first
       // row is the same as for all other rows.
 
-      QString table   = result.PQgetvalue( i, 0 ); // relname
-      QString schema  = result.PQgetvalue( i, 1 ); // nspname
-      QString column  = result.PQgetvalue( i, 2 ); // attname
-      QString relkind = result.PQgetvalue( i, 3 ); // relation kind
+      QString tableName  = result.PQgetvalue( i, 0 ); // relname
+      QString schemaName = result.PQgetvalue( i, 1 ); // nspname
+      QString column     = result.PQgetvalue( i, 2 ); // attname
+      QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
 
-      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
       layerProperty.type = QString::null;
-      layerProperty.schemaName = schema;
-      layerProperty.tableName = table;
+      layerProperty.schemaName = schemaName;
+      layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
-      layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+      if ( relkind == "v" )
+      {
+        layerProperty.pkCols = pkCandidates( schemaName, tableName );
+        if ( layerProperty.pkCols.isEmpty() )
+        {
+          QgsDebugMsg( "no key columns found." );
+          continue;
+        }
+      }
       layerProperty.sql = "";
       layerProperty.isGeography = false; // TODO might be geography after all
 
