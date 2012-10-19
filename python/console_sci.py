@@ -73,7 +73,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         # Set Python lexer
         # Set style for Python comments (style number 1) to a fixed-width
         # courier.
-        self.setLexers(True)
+        self.setLexers()
                
         # Indentation
         #self.setAutoIndent(True)
@@ -120,10 +120,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     
     def autoComplete(self):
         self.autoCompleteFromAll()
-        
+       
     def clearConsole(self):
         """Clear the contents of the console."""
-        self.setText('')
+        self.SendScintilla(QsciScintilla.SCI_CLEARALL)
+        #self.setText('')
         self.insertInitText()
         self.displayPrompt(False)
         self.setFocus()
@@ -156,32 +157,39 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.append('from PyQt4.QtGui import *')
             self.move_cursor_to_end()
         self.setFocus()
-        
-    def setLexers(self, lexer):
-        from qgis.core import QgsApplication
-        if lexer:
-            font = QFont()
-            font.setFamily('Mono') ## Courier New
-            font.setFixedPitch(True)
-            ## check platform for font size
-            if sys.platform.startswith('darwin'):
-                font.setPointSize(13)
-            else:
-                font.setPointSize(10)
-            self.setFont(font)
-            self.setMarginsFont(font)
-            self.lexer = QsciLexerPython()
-            self.lexer.setDefaultFont(font)
-            self.lexer.setColor(Qt.red, 1)
-            self.lexer.setColor(Qt.darkGreen, 5)
-            self.lexer.setColor(Qt.darkBlue, 15)
-            self.lexer.setFont(font, 1)
-            self.lexer.setFont(font, 3)
-            self.lexer.setFont(font, 4)
-            self.api = QsciAPIs(self.lexer)
-            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
 
-            self.setLexer(self.lexer)
+    def setLexers(self):
+        from qgis.core import QgsApplication
+        
+        self.lexer = QsciLexerPython()
+        settings = QSettings()
+        loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
+        fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
+        
+        font = QFont(loadFont)
+        font.setFixedPitch(True)
+        font.setPointSize(fontSize)
+        
+        self.lexer.setDefaultFont(font)
+        self.lexer.setColor(Qt.red, 1)
+        self.lexer.setColor(Qt.darkGreen, 5)
+        self.lexer.setColor(Qt.darkBlue, 15)
+        self.lexer.setFont(font, 1)
+        self.lexer.setFont(font, 3)
+        self.lexer.setFont(font, 4)
+        
+        self.api = QsciAPIs(self.lexer)
+        chekBoxAPI = settings.value( "pythonConsole/preloadAPI" ).toBool()
+        if chekBoxAPI:
+            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
+        else:
+            apiPath = settings.value("pythonConsole/userAPI").toStringList()
+            for i in range(0, len(apiPath)):
+                self.api.load(QString(unicode(apiPath[i])))        
+            self.api.prepare()
+            self.lexer.setAPIs(self.api)
+
+        self.setLexer(self.lexer)
             
     ## TODO: show completion list for file and directory
     
@@ -262,6 +270,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         line, index = self.getCursorPosition()
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
+        
+    def refreshLexerProperties(self):
+        self.setLexers()
         
 #    def check_selection(self):
 #        """
@@ -484,9 +495,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         return cmd
 
     def runCommand(self, cmd):
+        import webbrowser
         self.updateHistory(cmd)
         self.SendScintilla(QsciScintilla.SCI_NEWLINE)
-        if cmd in ('_save', '_clear', '_clearAll'):
+        if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
                 print QCoreApplication.translate("PythonConsole", 
@@ -508,6 +520,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 self.clearHistoryFile()
                 print QCoreApplication.translate("PythonConsole", 
                                                  "## History cleared successfully ##")
+            elif cmd == '_pyqgis':
+                webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
+            elif cmd == '_api':
+                webbrowser.open( "http://www.qgis.org/api/" )
+                
             output = sys.stdout.get_and_clean_data()
             if output:
                 self.append(output)
