@@ -140,14 +140,6 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     alphaBlock = inputBlock;
   }
 
-  //create image
-  //QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
-  //if ( img.isNull() )
-  //{
-  //QgsDebugMsg( "Could not create QImage" );
-  //VSIFree( rasterData );
-  //return 0;
-  //}
   if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;

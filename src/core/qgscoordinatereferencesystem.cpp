@@ -188,7 +188,9 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
     QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
   }
   else
+  {
     QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
+  }
 #endif
 }
 

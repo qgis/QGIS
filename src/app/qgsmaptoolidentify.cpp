@@ -38,6 +38,7 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QVariant>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
@@ -315,14 +316,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
 {
   bool res = true;
 
-  if ( !layer )
-    return false;
+  if ( !layer ) return false;
 
   QgsRasterDataProvider *dprovider = layer->dataProvider();
-  if ( dprovider && ( dprovider->capabilities() & QgsRasterDataProvider::Identify ) == 0 )
+  if ( !dprovider || !( dprovider->capabilities() & QgsRasterDataProvider::Identify ) )
+  {
     return false;
+  }
 
-  QMap< QString, QString > attributes, derivedAttributes;
   QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
   try
   {
@@ -334,45 +335,50 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
     QgsDebugMsg( QString( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
     return false;
   }
+  QgsDebugMsg( QString( "idPoint = %1 %2" ).arg( idPoint.x() ).arg( idPoint.y() ) );
 
-  QString type;
+  if ( !layer->extent().contains( idPoint ) ) return false;
 
-  if ( layer->providerType() == "wms" )
+  QgsRectangle viewExtent = mCanvas->extent();
+
+  QMap< QString, QString > attributes, derivedAttributes;
+
+  // We can only use context (extent, width, heigh) if layer is not reprojected,
+  // otherwise we don't know source resolution (size).
+  if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {
-    type = tr( "WMS layer" );
-
-    //if WMS layer does not cover the view origin,
-    //we need to map the view pixel coordinates
-    //to WMS layer pixel coordinates
-    QgsRectangle viewExtent = toLayerCoordinates( layer, mCanvas->extent() );
-    QgsRectangle layerExtent = layer->extent();
-    double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
-    if ( mapUnitsPerPixel > 0 && viewExtent.intersects( layerExtent ) )
-    {
-      double xMinView = viewExtent.xMinimum();
-      double yMaxView = viewExtent.yMaximum();
-      double xMinLayer = layerExtent.xMinimum();
-      double yMaxLayer = layerExtent.yMaximum();
-
-      idPoint.set(
-        xMinView < xMinLayer ? floor( x - ( xMinLayer - xMinView ) / mapUnitsPerPixel ) : x,
-        yMaxView > yMaxLayer ? floor( y - ( yMaxView - yMaxLayer ) / mapUnitsPerPixel ) : y
-      );
-
-      attributes.insert( tr( "Feature info" ), layer->identifyAsHtml( idPoint ) );
-    }
-    else
-    {
-      res = false;
-    }
+    viewExtent = toLayerCoordinates( layer, viewExtent );
+    attributes = dprovider->identify( idPoint );
   }
   else
   {
-    type = tr( "Raster" );
-    res = layer->extent().contains( idPoint ) && layer->identify( idPoint, attributes );
+    // It would be nice to use the same extent and size which was used for drawing,
+    // so that WCS can use cache from last draw, unfortunately QgsRasterLayer::draw()
+    // is doing some tricks with extent and size to allign raster to output which
+    // would be difficult to replicate here.
+    // Note: cutting the extent may result in slightly different x and y resolutions
+    // and thus shifted point calculated back in QGIS WMS (using average resolution)
+    //viewExtent = dprovider->extent().intersect( &viewExtent );
+
+    double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+    // Width and height are calculated from not projected extent and we hope that
+    // are similar to source width and height used to reproject layer for drawing.
+    // TODO: may be very dangerous, because it may result in different resolutions
+    // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
+    int width = qRound( viewExtent.width() / mapUnitsPerPixel );
+    int height = qRound( viewExtent.height() / mapUnitsPerPixel );
+
+    QgsDebugMsg( QString( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
+    QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
+    QgsDebugMsg( QString( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
+
+    attributes = dprovider->identify( idPoint, viewExtent, width, height );
   }
 
-  if ( res )
+  QString type;
+  type = tr( "Raster" );
+
+  if ( attributes.size() > 0 )
   {
     derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
     results()->addFeature( layer, type, attributes, derivedAttributes );

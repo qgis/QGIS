@@ -1,7 +1,7 @@
 ColorMapping
 otbcli_ColorMapping
 Color Mapping
-Learning
+Image Manipulation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

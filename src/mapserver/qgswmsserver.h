@@ -117,7 +117,7 @@ class QgsWMSServer
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
     int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint* infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
-                                    QgsRenderContext& renderContext, QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes, QString version, QgsRectangle* featureBBox = 0 ) const;
+                                    QgsRenderContext& renderContext, QString version, QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement, QString version ) const;
 

@@ -572,6 +572,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     QString attributeDisplayName( int attributeIndex ) const;
 
+    const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
+
+    const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
+    void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
+
+    const QSet<QString>& excludeAttributesWFS() const { return mExcludeAttributesWFS; }
+    void setExcludeAttributesWFS( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
@@ -965,6 +973,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;
+
+    /**Attributes which are not published in WMS*/
+    QSet<QString> mExcludeAttributesWMS;
+    /**Attributes which are not published in WFS*/
+    QSet<QString> mExcludeAttributesWFS;
 
     /** max field index */
     int mMaxUpdatedIndex;

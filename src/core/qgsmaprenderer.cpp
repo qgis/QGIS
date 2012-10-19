@@ -206,6 +206,10 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
 
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( mExtent.width() / myWidth, 0, 'f', 8 ).arg( mExtent.height() / myHeight, 0, 'f', 8 ) );
+
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( mExtent.width() / mMapUnitsPerPixel, 0, 'f', 8 ).arg( mExtent.height() / mMapUnitsPerPixel, 0, 'f', 8 ) );
+
   // update the scale
   updateScale();
 

@@ -161,7 +161,7 @@ void TestQgsAtlasComposition::filename()
 void TestQgsAtlasComposition::autoscale_render()
 {
   mAtlas->setFixedScale( false );
-  mAtlas->setMargin( 0.10 );
+  mAtlas->setMargin( 0.10f );
 
   mAtlas->beginRender();
 

@@ -37,7 +37,6 @@ class CORE_EXPORT QgsRasterIterator
       int currentRow;
       int nCols;
       int nRows;
-      void* data; //data (can be in oversampled/undersampled resolution)
       QgsRasterBlock *block;
       QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };

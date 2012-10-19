@@ -119,7 +119,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         for output in self.alg.outputs:
             if output.hidden:
                 continue
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+            if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile)):
                 label = QtGui.QLabel(output.description + "<" + output.__module__.split(".")[-1] + ">")
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
@@ -137,10 +137,13 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)
+        self.tabWidget.setMinimumWidth(300)        
         self.paramPanel = QtGui.QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.tabWidget.addTab(self.paramPanel, "Parameters")
+        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea.setWidget(self.paramPanel)
+        self.scrollArea.setWidgetResizable(True)
+        self.tabWidget.addTab(self.scrollArea, "Parameters")
         self.webView = QtWebKit.QWebView()
         html = None
         try:
@@ -167,6 +170,17 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def showAdvancedParametersClicked(self):
+        self.showAdvanced = not self.showAdvanced
+        if self.showAdvanced:
+            self.advancedButton.setText("Hide advanced parameters")
+        else:
+            self.advancedButton.setText("Show advanced parameters")
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.labels[param.name].setVisible(self.showAdvanced)
+                self.widgets[param.name].setVisible(self.showAdvanced)
+ 
     def getRasterLayers(self):
         layers = []
         params = self.model.parameters
@@ -678,7 +692,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             name =  self.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
-            self.values[name] = str(widget.getText())
+            self.values[name] = str(widget.text())
             return True
 
     def getSafeNameForHarcodedParameter(self, param):

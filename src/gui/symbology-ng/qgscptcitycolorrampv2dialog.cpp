@@ -294,7 +294,9 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
     updateListWidget( item );
   }
   else
+  {
     QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg(( int )item->type() ) );
+  }
 }
 
 void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * item )
@@ -308,7 +310,9 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * 
     populateVariants();
   }
   else
+  {
     QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( rampItem->path() ).arg(( int )rampItem->type() ) );
+  }
 }
 
 void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )

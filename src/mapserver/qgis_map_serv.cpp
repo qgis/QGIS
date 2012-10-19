@@ -379,6 +379,26 @@ int main( int argc, char * argv[] )
           continue;
         }
       }
+      else if ( request == "Transaction" )
+      {
+        QDomDocument transactionDocument;
+        try
+        {
+          transactionDocument = theServer->transaction( parameterMap.value( "REQUEST_BODY" ) );
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending Transaction response" );
+        theRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
 
       return 0;
     }

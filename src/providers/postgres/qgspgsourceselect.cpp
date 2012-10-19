@@ -519,6 +519,11 @@ void QgsPgSourceSelect::finishList()
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
 
+  if ( mTablesTreeView->model()->rowCount() == 0 )
+    QMessageBox::information( this,
+                              tr( "Postgres/PostGIS Provider" ),
+                              tr( "No accessible tables or views found.  Check the message log for possible errors." ) );
+
 }
 
 void QgsPgSourceSelect::columnThreadFinished()

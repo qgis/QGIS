@@ -129,8 +129,30 @@ class GrassAlgorithm(GeoAlgorithm):
         lines.close()
 
         self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER, "GRASS region extent"))
-        self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize", 0, None, 1))
+        self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize (leave 0 for default)", 0, None, 0.0))
 
+
+    def getDefaultCellsize(self):
+        cellsize = 0
+        for param in self.parameters:
+            if param.value:
+                if isinstance(param, ParameterRaster):
+                    if isinstance(param.value, QgsRasterLayer):
+                        layer = param.value
+                    else:
+                        layer = QGisLayers.getObjectFromUri(param.value)
+                    cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
+                    
+                elif isinstance(param, ParameterMultipleInput):
+                    layers = param.value.split(";")
+                    for layername in layers:
+                        layer = QGisLayers.getObjectFromUri(layername)
+                        if isinstance(layer, QgsRasterLayer):
+                            cellsize = max(cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
+
+        if cellsize == 0:
+            cellsize = 1
+        return cellsize
 
     def processAlgorithm(self, progress):
         if SextanteUtils.isWindows():
@@ -151,7 +173,10 @@ class GrassAlgorithm(GeoAlgorithm):
         command +=" s=" + str(regionCoords[2])
         command +=" e=" + str(regionCoords[1])
         command +=" w=" + str(regionCoords[0])
-        command +=" res=" + str(self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER));
+        if self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER) == 0:
+            command +=" res=" + str(self.getDefaultCellsize())
+        else:
+            command +=" res=" + str(self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER));
         commands.append(command)
 
         #1: Export layer to grass mapset

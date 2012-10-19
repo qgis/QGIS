@@ -38,13 +38,16 @@ def show_console():
     parent = iface.mainWindow() if iface else None
     _console = PythonConsole( parent )
     _console.show() # force show even if it was restored as hidden
+
+    # set focus to the console so the user can start typing
+    # defer the set focus event so it works also whether the console not visible yet
+    QTimer.singleShot(0, _console.activate)
   else:
     _console.setVisible(not _console.isVisible())
 
-  # set focus to the edit box so the user can start typing
-  if _console.isVisible():
-    _console.activateWindow()
-    _console.setFocus()
+    # set focus to the console so the user can start typing
+    if _console.isVisible():
+      _console.activate()
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -78,10 +81,17 @@ class PythonConsole(QDockWidget):
 
         self.console = PythonConsoleWidget(self)
         self.setWidget( self.console )
+        self.setFocusProxy( self.console )
 
         # try to restore position from stored main window state
         if iface and not iface.mainWindow().restoreDockWidget(self):
             iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+
+    def activate(self):
+        self.activateWindow()
+        self.raise_()
+        QDockWidget.setFocus(self)
+
 
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
@@ -262,8 +272,6 @@ class PythonConsoleWidget(QWidget):
 
         self.e.addWidget(self.widgetButton)
         self.e.addWidget(self.edit)
-
-        self.edit.setFocus()
         
         self.clearButton.triggered.connect(self.edit.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)

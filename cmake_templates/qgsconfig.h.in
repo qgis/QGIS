@@ -38,5 +38,7 @@
 
 #cmakedefine HAVE_TOUCH
 
+#cmakedefine HAVE_OSGEARTHQT
+
 #endif
 

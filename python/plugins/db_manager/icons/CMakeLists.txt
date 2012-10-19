@@ -1,2 +1,3 @@
 FILE(GLOB ICON_FILES *.png *.xpm toolbar/*.png)
-INSTALL(FILES ${ICON_FILES} DESTINATION ${DB_MANAGER_PLUGIN_DIR}/icons)
+
+PLUGIN_INSTALL(db_manager icons ${ICON_FILES})

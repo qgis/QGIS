@@ -177,7 +177,7 @@ inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
  */
-void *QgsMalloc( size_t size );
+void CORE_EXPORT *QgsMalloc( size_t size );
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
@@ -185,12 +185,12 @@ void *QgsMalloc( size_t size );
     @param nmemb number of elements
     @param size size of element in bytes
  */
-void *QgsCalloc( size_t nmemb, size_t size );
+void CORE_EXPORT *QgsCalloc( size_t nmemb, size_t size );
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
     @param ptr pointer to memory space
  */
-void QgsFree( void *ptr );
+void CORE_EXPORT QgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt

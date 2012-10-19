@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Tim Sutton'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextanteexampleprovider.SextanteExampleProviderPlugin import SextanteExampleProviderPlugin
 def name():
     return "SEXTANTE example provider"
 def description():
@@ -35,4 +34,5 @@ def icon():
 def qgisMinimumVersion():
     return "1.0"
 def classFactory(iface):
+    from sextanteexampleprovider.SextanteExampleProviderPlugin import SextanteExampleProviderPlugin
     return SextanteExampleProviderPlugin()

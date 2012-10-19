@@ -708,6 +708,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsg( "No projection necessary" );
+    delete outputBlock;
     return mInput->block( bandNo, extent, width, height );
   }
 
@@ -722,7 +723,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
   if ( srcRows() <= 0 || srcCols() <= 0 )
   {
-    return 0;
+    return outputBlock;
   }
 
   //void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
@@ -734,12 +735,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return outputBlock;
   }
 
-  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) / 8;
-
-  size_t inputSize = pixelSize * srcCols() * srcRows();
-
-  size_t outputSize = width * height * pixelSize;
-  //void * outputData = malloc( outputSize );
+  size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
   if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
   {
@@ -755,15 +751,21 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      size_t srcIndex = pixelSize * ( srcRow * mSrcCols + srcCol );
-      size_t destIndex = pixelSize * ( i * width + j );
-
-      if ( srcIndex >= inputSize || destIndex >= outputSize ) continue; // should not happen
-
-      //memcpy(( char* )outputData + destIndex, ( char* )inputData + srcIndex, pixelSize );
+      size_t srcIndex = srcRow * mSrcCols + srcCol;
+      size_t destIndex = i * width + j;
 
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
+      if ( !srcBits )
+      {
+        QgsDebugMsg( "Cannot get input block data." );
+        continue;
+      }
+      if ( !destBits )
+      {
+        QgsDebugMsg( "Cannot set output block data." );
+        continue;
+      }
       memcpy( destBits, srcBits, pixelSize );
     }
   }

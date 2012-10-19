@@ -32,6 +32,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 
+#include "qgspoint.h"
+
 #include <QImage>
 #include <QSettings>
 #include <QColor>
@@ -378,10 +380,10 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     QgsDebugMsg( QString( "transform : %1" ).arg( mGeoTransform[i] ) );
   }
 
-  int dataSize = dataTypeSize( theBandNo ) / 8;
+  int dataSize = dataTypeSize( theBandNo );
 
   // fill with null values
-  QByteArray ba = noValueBytes( theBandNo );
+  QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
   char *nodata = ba.data();
   char *block = ( char * ) theBlock;
   for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
@@ -441,7 +443,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   // target size in pizels
   int width = right - left + 1;
   int height = bottom - top + 1;
-
 
   int srcLeft = 0; // source raster x offset
   int srcTop = 0; // source raster x offset
@@ -519,7 +520,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
 
   // Allocate temporary block
-  char *tmpBlock = ( char * )malloc( dataSize * tmpWidth * tmpHeight );
+  char *tmpBlock = ( char * )QgsMalloc( dataSize * tmpWidth * tmpHeight );
   if ( ! tmpBlock )
   {
     QgsDebugMsg( QString( "Coudn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
@@ -538,7 +539,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    free( tmpBlock );
+    QgsFree( tmpBlock );
     return;
   }
 
@@ -567,7 +568,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     }
   }
 
-  free( tmpBlock );
+  QgsFree( tmpBlock );
   QgsDebugMsg( QString( "resample time (ms): %1" ).arg( time.elapsed() ) );
 
   return;
@@ -643,10 +644,10 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   myWarpOptions->nBandCount = 1;
   myWarpOptions->panSrcBands =
-    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panSrcBands[0] = theBandNo;
   myWarpOptions->panDstBands =
-    ( int * ) CPLMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panDstBands[0] = 1;
 
   // TODO move here progressCallback and use it
@@ -682,8 +683,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
-  myWarpOptions->padfDstNoDataReal = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
-  myWarpOptions->padfDstNoDataImag = ( double * ) CPLMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataReal = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataImag = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
 
   myWarpOptions->padfDstNoDataReal[0] = mNoDataValue[theBandNo-1];
   myWarpOptions->padfDstNoDataImag[0] = 0.0;
@@ -826,102 +827,99 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
-QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
+QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entered" );
-  QMap<int, void *> results;
-  if ( !mExtent.contains( point ) )
+  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
+
+  QMap<int, QVariant> results;
+
+  if ( theFormat != IdentifyFormatValue ) return results;
+
+  if ( !extent().contains( thePoint ) )
   {
     // Outside the raster
-    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      QgsRasterBlock::writeValue( data, dataType( i ), 0, noDataValue( i ) );
-      results.insert( i, data );
+      results.insert( bandNo, noDataValue( bandNo ) );
     }
+    return results;
   }
-  else
-  {
-    double x = point.x();
-    double y = point.y();
 
-    // Calculate the row / column where the point falls
-    double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
-    double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
+  QgsRectangle myExtent = theExtent;
+  if ( myExtent.isEmpty() )  myExtent = extent();
 
-    // Offset, not the cell index -> flor
-    int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
-    int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
+  QgsDebugMsg( "myExtent = " + myExtent.toString() );
 
-    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+  if ( theWidth == 0 ) theWidth = xSize();
+  if ( theHeight == 0 ) theHeight = ySize();
 
-    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
-    {
-      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
 
-      int r = 0;
-      int c = 0;
-      int width = 1;
-      int height = 1;
+  // Calculate the row / column where the point falls
+  double xres = ( myExtent.width() ) / theWidth;
+  double yres = ( myExtent.height() ) / theHeight;
 
-      // GDAL ECW driver in GDAL <  1.9.2 read whole row if single pixel (nYSize == 1)
-      // was requested which made identify very slow -> use 2x2 matrix
-      // but other drivers may be optimised for 1x1 -> conditional
+  // Offset, not the cell index -> floor
+  int col = ( int ) floor(( thePoint.x() - myExtent.xMinimum() ) / xres );
+  int row = ( int ) floor(( myExtent.yMaximum() - thePoint.y() ) / yres );
+
+  QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
+
+  // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+
+  int r = 0;
+  int c = 0;
+  int width = 1;
+  int height = 1;
+
+  // GDAL ECW driver in GDAL <  1.9.2 read whole row if single pixel (nYSize == 1)
+  // was requested which made identify very slow -> use 2x2 matrix
+  // but other drivers may be optimised for 1x1 -> conditional
 #if !defined(GDAL_VERSION_NUM) || GDAL_VERSION_NUM < 1920
-      if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "ECW" ) == 0 )
-      {
-        width = 2;
-        height = 2;
-        if ( col == mWidth - 1 && mWidth > 1 )
-        {
-          col--;
-          c++;
-        }
-        if ( row == mHeight - 1 && mHeight > 1 )
-        {
-          row--;
-          r++;
-        }
-      }
-#endif
-      int typeSize = dataTypeSize( i ) / 8;
-      void * tmpData = VSIMalloc( typeSize * width * height );
-
-      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, width, height,
-                                 tmpData, width, height,
-                                 ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
-
-      if ( err != CPLE_None )
-      {
-        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      }
-      void * data = VSIMalloc( typeSize );
-      memcpy( data, ( void* )(( char* )tmpData + ( r*width + c )*typeSize ), typeSize );
-      results.insert( i, data );
-
-      CPLFree( tmpData );
+  if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "ECW" ) == 0 )
+  {
+    width = 2;
+    height = 2;
+    if ( col == mWidth - 1 && mWidth > 1 )
+    {
+      col--;
+      c++;
+    }
+    if ( row == mHeight - 1 && mHeight > 1 )
+    {
+      row--;
+      r++;
     }
   }
+#endif
 
+  double xMin = myExtent.xMinimum() + col * xres;
+  double xMax = xMin + xres * width;
+  double yMax = myExtent.yMaximum() - row * yres;
+  double yMin = yMax - yres * height;
+  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
+
+  for ( int i = 1; i <= bandCount(); i++ )
+  {
+    QgsRasterBlock * myBlock = block( i, pixelExtent, width, height );
+
+    if ( !myBlock )
+    {
+      results.clear();
+      return results;
+    }
+
+    double value = myBlock->value( r, c );
+
+    results.insert( i, value );
+  }
   return results;
 }
-
-#if 0
-bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
-{
-  QMap<int, QString> results;
-  identify( thePoint, results );
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
-  {
-    theResults[ generateBandName( i )] = results.value( i );
-  }
-  return true;
-}
-#endif
 
 int QgsGdalProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
+                   | QgsRasterDataProvider::IdentifyValue
                    | QgsRasterDataProvider::ExactResolution
                    | QgsRasterDataProvider::EstimatedMinimumMaximum
                    | QgsRasterDataProvider::BuildPyramids
@@ -1014,18 +1012,6 @@ bool QgsGdalProvider::isValid()
 {
   QgsDebugMsg( QString( "valid = %1" ).arg( mValid ) );
   return mValid;
-}
-
-QString QgsGdalProvider::identifyAsText( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
-}
-
-QString QgsGdalProvider::identifyAsHtml( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::lastErrorTitle()
@@ -1127,7 +1113,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
                    NULL, NULL );
 
   if ( myHistogramArray )
-    VSIFree( myHistogramArray );
+    VSIFree( myHistogramArray ); // use VSIFree because allocated by GDAL
 
   // if there was any error/warning assume the histogram is not valid or non-existent
   if ( myError != CE_None )
@@ -2507,7 +2493,7 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
-      CPLFree( pszFormattedXML );
+      QgsFree( pszFormattedXML );
   }
   return message;
 }

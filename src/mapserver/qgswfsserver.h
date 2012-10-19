@@ -22,6 +22,8 @@
 #include <QMap>
 #include <QString>
 #include <map>
+#include "qgis.h"
+#include "qgsvectorlayer.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsComposerLayerItem;
@@ -66,6 +68,10 @@ class QgsWFSServer
        @return 0 in case of success*/
     int getFeature( QgsRequestHandler& request, const QString& format );
 
+    /**Read and apply the transaction
+       @return 0 in case of success*/
+    QDomDocument transaction( const QString& requestBody );
+
     /**Sets configuration parser for administration settings. Does not take ownership*/
     void setAdminConfigParser( QgsConfigParser* parser ) { mConfigParser = parser; }
 
@@ -82,29 +88,25 @@ class QgsWFSServer
   protected:
 
     void startGetFeature( QgsRequestHandler& request, const QString& format, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
-    void sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes );
+    void sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
+    //method for transaction
+    QgsFeatureIds getFeatureIdsFromFilter( QDomElement filter, QgsVectorLayer* layer );
+
     //methods to write GeoJSON
-    QString createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
+    QString createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
     //methods to write GML2
-    QDomElement createFeatureElem( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/;
+    QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/;
 
-    QDomElement createBoxElem( QgsRectangle* box, QDomDocument& doc ) /* const */;
-    QDomElement createGeometryElem( QgsGeometry* g, QDomDocument& doc ) /*const*/;
-    QDomElement createLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
+    QDomElement createBoxGML2( QgsRectangle* box, QDomDocument& doc ) /* const */;
 
     /**Create a GML coordinate string from a point list.
       @param points list of data points
       @param coordString out: GML coord string
       @return 0 in case of success*/
-    QDomElement createCoordinateElem( const QVector<QgsPoint> points, QDomDocument& doc ) const;
+    QDomElement createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const;
 };
 
 #endif

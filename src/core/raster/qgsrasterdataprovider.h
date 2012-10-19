@@ -38,6 +38,7 @@
 class QImage;
 class QgsPoint;
 class QByteArray;
+#include <QVariant>
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 #define RASTER_HISTOGRAM_BINS 256
@@ -68,7 +69,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Histogram =               1 << 5,
       Size =                    1 << 6,  // has fixed source type
       Create =                  1 << 7, //create new datasets
-      Remove =                  1 << 8 //delete datasets
+      Remove =                  1 << 8, //delete datasets
+      IdentifyValue =           1 << 9,
+      IdentifyText =            1 << 10,
+      IdentifyHtml =            1 << 11,
+      IdentifyFeature =         1 << 12  // WMS GML -> feature
     };
 
     // This is modified copy of GDALColorInterp
@@ -93,6 +98,17 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       /*! Cr Chroma */                                      YCbCr_CrBand = 16,
       /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
       /*! Max current value */                              ColorInterpretationMax = 17
+    };
+
+    enum IdentifyFormat
+    {
+      IdentifyFormatValue = 0,
+      IdentifyFormatText  = 1,
+      IdentifyFormatHtml  = 1 << 1,
+      // In future it should be possible to get from GetFeatureInfo (WMS) in GML
+      // vector features. It is possible to use a user type with QVariant if
+      // a class is declared with Q_DECLARE_METATYPE
+      IdentifyFormatFeature = 1 << 2
     };
 
     // Progress types
@@ -179,19 +195,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const
-    {
-      return srcDataType( bandNo );
-    }
+    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const
-    {
-      Q_UNUSED( bandNo );
-      return QgsRasterBlock::UnknownDataType;
-    }
+    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const
@@ -289,15 +298,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
-    /** read block of data using give extent and size */
-    // @note not available in python bindings
-    //virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
-
     /** Read block of data using given extent and size. */
-    // @note not available in python bindings
-    //virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
-
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -444,47 +446,28 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString metadata() = 0;
 
-    /** \brief Identify raster value(s) found on the point position
-     * @param point coordinates in data source CRS
-     * @return list of pointers to data blocks for all bands,
-     *         caller is responsible to free the allocated memory,
-     *         readValue() may be used to get values
-     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
-     */
-    // TODO: Consider QVariant or similar instead of void*
-    virtual QMap<int, void *> identify( const QgsPoint & point );
-
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
+    /** \brief Identify raster value(s) found on the point position. The context
+     *         parameters theExtent, theWidth and theHeigh are important to identify
+     *         on the same zoom level as a displayed map and to do effective
+     *         caching (WCS). If context params are not specified the highest
+     *         resolution is used. capabilities() may be used to test if format
+     *         is supported by provider. Values are set to 'no data' or empty string
+     *         if point is outside data source extent.
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
+     * @param thePoint coordinates in data source CRS
+     * @param theFormat result format
+     * @param theExtent context extent
+     * @param theWidth context width
+     * @param theHeight context height
+     * @return map of values for all bands, keys are band numbers (from 1), empty
+     *         if failed
      */
-    virtual QString identifyAsText( const QgsPoint& point ) = 0;
+    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
-    /**
-     * \brief Identify details from a server (e.g. WMS) from the last screen update
-     *
-     * \param[in] point  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A html document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     *
-     * \note  added in 1.5
-     */
-    virtual QString identifyAsHtml( const QgsPoint& point ) = 0;
+
+    QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -527,9 +510,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     static QString makeTableCell( const QString & value );
     static QString makeTableCells( const QStringList & values );
-
-    /** \brief Set null value in char */
-    QByteArray noValueBytes( int theBandNo );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return mTimestamp; }

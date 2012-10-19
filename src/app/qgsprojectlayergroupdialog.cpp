@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsembedlayerdialog.h"
+#include "qgsprojectlayergroupdialog.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -23,56 +23,84 @@
 #include <QMessageBox>
 #include <QSettings>
 
-QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f ): QDialog( parent, f ),
+    mShowEmbeddedContent( false )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
 
+  if ( !projectFile.isEmpty() )
+  {
+    mProjectFileLineEdit->setText( projectFile );
+    mProjectFileLabel->hide();
+    mProjectFileLineEdit->hide();
+    mBrowseFileToolButton->hide();
+    mShowEmbeddedContent = true;
+    changeProjectFile();
+  }
+
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
 
-QgsEmbedLayerDialog::~QgsEmbedLayerDialog()
+QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/EmbedLayer/geometry", saveGeometry() );
 }
 
-QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedGroups() const
+QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
-  QList< QPair < QString, QString > > result;
-
+  QStringList groups;
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
   QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
   for ( ; itemIt != items.end(); ++itemIt )
   {
     if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "group" )
     {
-      result.push_back( qMakePair(( *itemIt )->text( 0 ), mProjectPath ) );
+      groups.push_back(( *itemIt )->text( 0 ) );
     }
   }
-
-  return result;
+  return groups;
 }
 
-QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedLayers() const
+QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
-  QList< QPair < QString, QString > > result;
-
+  QStringList layerIds;
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
   QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
   for ( ; itemIt != items.end(); ++itemIt )
   {
     if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
     {
-      result.push_back( qMakePair(( *itemIt )->data( 0, Qt::UserRole + 1 ).toString(), mProjectPath ) );
+      layerIds.push_back(( *itemIt )->data( 0, Qt::UserRole + 1 ).toString() );
     }
   }
-  return result;
+  return layerIds;
 }
 
-void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
+QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
+{
+  QStringList layerNames;
+  QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
+  for ( ; itemIt != items.end(); ++itemIt )
+  {
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
+    {
+      layerNames.push_back(( *itemIt )->text( 0 ) );
+    }
+  }
+  return layerNames;
+}
+
+QString QgsProjectLayerGroupDialog::selectedProjectFile() const
+{
+  return mProjectFileLineEdit->text();
+}
+
+void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when loosing focus
   mProjectFileLineEdit->blockSignals( true );
@@ -90,12 +118,12 @@ void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( false );
 }
 
-void QgsEmbedLayerDialog::on_mProjectFileLineEdit_editingFinished()
+void QgsProjectLayerGroupDialog::on_mProjectFileLineEdit_editingFinished()
 {
   changeProjectFile();
 }
 
-void QgsEmbedLayerDialog::changeProjectFile()
+void QgsProjectLayerGroupDialog::changeProjectFile()
 {
   QFile projectFile( mProjectFileLineEdit->text() );
   if ( !projectFile.exists() )
@@ -110,9 +138,9 @@ void QgsEmbedLayerDialog::changeProjectFile()
   }
 
   //check we are not embedding from/to the same project
-  if ( mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
+  if ( mProjectFileLineEdit->isVisible() && mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
   {
-    QMessageBox::critical( 0, tr( "Recursive embeding not possible" ), tr( "It is not possible to embed layers / groups from the current project" ) );
+    QMessageBox::critical( 0, tr( "Recursive embedding not possible" ), tr( "It is not possible to embed layers / groups from the current project." ) );
     return;
   }
 
@@ -155,12 +183,12 @@ void QgsEmbedLayerDialog::changeProjectFile()
   mProjectPath = mProjectFileLineEdit->text();
 }
 
-void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupElem, QTreeWidgetItem* parent )
+void QgsProjectLayerGroupDialog::addLegendGroupToTreeWidget( const QDomElement& groupElem, QTreeWidgetItem* parent )
 {
   QDomNodeList groupChildren = groupElem.childNodes();
   QDomElement currentChildElem;
 
-  if ( groupElem.attribute( "embedded" ) == "1" )
+  if ( !mShowEmbeddedContent && groupElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
@@ -192,9 +220,9 @@ void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupEl
   }
 }
 
-void QgsEmbedLayerDialog::addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent )
+void QgsProjectLayerGroupDialog::addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent )
 {
-  if ( layerElem.attribute( "embedded" ) == "1" )
+  if ( !mShowEmbeddedContent && layerElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
@@ -213,7 +241,7 @@ void QgsEmbedLayerDialog::addLegendLayerToTreeWidget( const QDomElement& layerEl
   item->setData( 0, Qt::UserRole + 1, layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" ) );
 }
 
-void QgsEmbedLayerDialog::on_mTreeWidget_itemSelectionChanged()
+void QgsProjectLayerGroupDialog::on_mTreeWidget_itemSelectionChanged()
 {
   mTreeWidget->blockSignals( true );
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
@@ -226,7 +254,7 @@ void QgsEmbedLayerDialog::on_mTreeWidget_itemSelectionChanged()
   mTreeWidget->blockSignals( false );
 }
 
-void QgsEmbedLayerDialog::unselectChildren( QTreeWidgetItem* item )
+void QgsProjectLayerGroupDialog::unselectChildren( QTreeWidgetItem* item )
 {
   if ( !item )
   {
@@ -242,7 +270,7 @@ void QgsEmbedLayerDialog::unselectChildren( QTreeWidgetItem* item )
   }
 }
 
-void QgsEmbedLayerDialog::on_mButtonBox_accepted()
+void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
 {
   QSettings s;
   QFileInfo fi( mProjectPath );

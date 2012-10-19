@@ -1182,6 +1182,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text )
 {
+  Q_UNUSED( text );
   QgsDebugMsg( QString( "text = %1" ).arg( text ) );
   QgsRasterRenderer* renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1372,7 +1373,15 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   if ( mMapCanvas && mPixelSelectorTool )
   {
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
-    QMap< int, void *> myPixelMap = mRasterLayer->dataProvider()->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ) );
+
+    QgsPoint myPoint = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint );
+
+    QgsRectangle myExtent = mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
+    double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
+    int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
+    int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
+
+    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight );
 
     QList<int> bands = renderer->usesBands();
 
@@ -1383,8 +1392,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
       int bandNo = bands.value( i );
       if ( myPixelMap.count( bandNo ) == 1 )
       {
-        void * data = myPixelMap.value( bandNo );
-        double value = provider->readValue( data, provider->dataType( bandNo ), 0 );
+        double value = myPixelMap.value( bandNo ).toDouble();
         QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
 
         if ( provider->isNoDataValue( bandNo, value ) )
