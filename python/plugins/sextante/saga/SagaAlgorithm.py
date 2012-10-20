@@ -40,11 +40,9 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
 from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
-from sextante.core.SextanteLog import SextanteLog
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -53,6 +51,7 @@ import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtGui
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
+from sextante.core.SextanteLog import SextanteLog
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -264,9 +263,12 @@ class SagaAlgorithm(GeoAlgorithm):
                 f.close()
                 command+=( " -" + param.name + " " + tempTableFile)
             elif isinstance(param, ParameterExtent):
+                #'we have to substract half cell size, since saga is center based, not corner based
+                halfcell = self.getOutputCellsize() / 2
+                offset = [halfcell, 0, halfcell, 0]
                 values = param.value.split(",")
                 for i in range(4):
-                    command+=(" -" + self.extentParamNames[i] + " " + str(values[i]));
+                    command+=(" -" + self.extentParamNames[i] + " " + str(float(values[i]) + offset[i]));
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 command+=(" -" + param.name + " " + str(param.value));
             else:
@@ -316,7 +318,18 @@ class SagaAlgorithm(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
-
+    
+    def getOutputCellsize(self):
+        '''tries to guess the cellsize of the output, searchiing for a parameter with an appropriate name for it'''
+        cellsize = 0;
+        for param in self.parameters:
+            if param.value is not None and param.name == "USER_SIZE":
+                cellsize = float(param.value)
+                break;
+        QtGui.QMessageBox.critical(None, "", str(cellsize));
+        return cellsize
+    
+    
     def resampleRasterLayer(self,layer):
         '''this is supposed to be run after having exported all raster layers'''
         if layer in self.exportedLayers.keys():

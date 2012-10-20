@@ -96,7 +96,7 @@ class RAlgorithm(GeoAlgorithm):
         self.name = filename[:filename.rfind(".")].replace("_", " ")
         self.group = "User R scripts"
         lines = open(self.descriptionFile)
-        line = lines.readline().strip("\n")
+        line = lines.readline().strip("\n").strip("\r")
         while line != "":
             if line.startswith("##"):
                 try:
@@ -112,7 +112,7 @@ class RAlgorithm(GeoAlgorithm):
             else:
                 self.commands.append(line)
             self.script += line + "\n"
-            line = lines.readline().strip("\n")
+            line = lines.readline().strip("\n").strip("\r")
         lines.close()
 
     def getVerboseCommands(self):
