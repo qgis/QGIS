@@ -48,7 +48,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** convert a vector layer to a vector file */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -113,14 +113,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Get the number of fields in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Get the field information for the layer
      */
-    virtual const QgsFieldMap & fields() const;
+    virtual const QgsFields & fields() const;
 
     /** Return the extent for this data layer
      */
@@ -265,7 +260,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;
 

@@ -47,7 +47,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -103,11 +103,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const;
 
     /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const;
-
-    /**
      * Return a string representation of the endian-ness for the layer
      */
     QString endianString();
@@ -134,7 +129,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFieldMap &fields() const;
+    const QgsFields &fields() const;
 
     /**
      * Return a short comment for the data that this provider is
@@ -325,7 +320,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
     QString mDataComment;
 
     //! Data source URI struct for this layer

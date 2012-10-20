@@ -79,10 +79,8 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
   }
 }
 
-void QgsVectorLayerJoinBuffer::updateFieldMap( QgsFieldMap& fields, int& maxIndex )
+void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
 {
-  int currentMaxIndex = 0; //maximum index of the current join layer
-
   QList< QgsVectorJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
   for ( ; joinIt != mVectorJoins.constEnd(); ++joinIt )
   {
@@ -92,22 +90,16 @@ void QgsVectorLayerJoinBuffer::updateFieldMap( QgsFieldMap& fields, int& maxInde
       continue;
     }
 
-    const QgsFieldMap& joinFields = joinLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = joinFields.constBegin();
-    for ( ; fieldIt != joinFields.constEnd(); ++fieldIt )
+    const QgsFields& joinFields = joinLayer->pendingFields();
+    for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
       //skip the join field to avoid double field names (fields often have the same name)
-      if ( fieldIt.key() != joinIt->joinField )
+      if ( idx != joinIt->joinField )
       {
-        QgsField f = fieldIt.value();
+        QgsField f = joinFields[idx];
         f.setName( joinLayer->name() + "_" + f.name() );
-        fields.insert( maxIndex + 1 + fieldIt.key(), f );
+        fields.append( f );
       }
-    }
-
-    if ( maximumIndex( joinFields, currentMaxIndex ) )
-    {
-      maxIndex += ( currentMaxIndex + 1 ); //+1 because there are fields with index 0
     }
   }
 }
@@ -122,7 +114,7 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
 }
 
 void QgsVectorLayerJoinBuffer::select( const QgsAttributeList& fetchAttributes,
-                                       QgsAttributeList& sourceJoinFields, int maxProviderIndex )
+                                       QgsAttributeList& sourceJoinFields, int providerFieldCount )
 {
   mFetchJoinInfos.clear();
   sourceJoinFields.clear();
@@ -131,7 +123,7 @@ void QgsVectorLayerJoinBuffer::select( const QgsAttributeList& fetchAttributes,
   for ( ; attIt != fetchAttributes.constEnd(); ++attIt )
   {
     int indexOffset;
-    const QgsVectorJoinInfo* joinInfo = joinForFieldIndex( *attIt, maxProviderIndex, indexOffset );
+    const QgsVectorJoinInfo* joinInfo = joinForFieldIndex( *attIt, providerFieldCount, indexOffset );
     if ( joinInfo )
     {
       QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo->joinLayerId ) );
@@ -150,12 +142,11 @@ void QgsVectorLayerJoinBuffer::select( const QgsAttributeList& fetchAttributes,
   }
 }
 
-void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxProviderIndex, bool all )
+void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int providerFieldCount, bool all )
 {
   if ( all )
   {
-    int index = maxProviderIndex + 1;
-    int currentMaxIndex;
+    int index = providerFieldCount;
 
     QList< QgsVectorJoinInfo >::const_iterator joinIt = mVectorJoins.constBegin();
     for ( ; joinIt != mVectorJoins.constEnd(); ++joinIt )
@@ -166,7 +157,10 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
         continue;
       }
 
-      QString joinFieldName = joinLayer->pendingFields().value( joinIt->joinField ).name();
+      const QgsFields& fields = joinLayer->pendingFields();
+      if ( joinIt->joinField < 0 || joinIt->joinField >= fields.count() )
+        continue;
+      QString joinFieldName = fields[joinIt->joinField].name();
       if ( joinFieldName.isEmpty() )
       {
         continue;
@@ -180,8 +174,7 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
 
       addJoinedFeatureAttributes( f, *joinIt, joinFieldName, targetFieldValue, joinLayer->pendingAllAttributesList(), index );
 
-      maximumIndex( joinLayer->pendingFields(), currentMaxIndex );
-      index += ( currentMaxIndex + 1 );
+      index += joinLayer->pendingFields().count();
     }
   }
   else
@@ -195,7 +188,11 @@ void QgsVectorLayerJoinBuffer::updateFeatureAttributes( QgsFeature &f, int maxPr
         continue;
       }
 
-      QString joinFieldName = joinLayer->pendingFields().value( joinIt.value().joinInfo->joinField ).name();
+      int joinField = joinIt.value().joinInfo->joinField;
+      const QgsFields& fields = joinLayer->pendingFields();
+      if ( joinField < 0 || joinField < fields.count() )
+        continue;
+      QString joinFieldName = fields[joinField].name();
       if ( joinFieldName.isEmpty() )
       {
         continue;
@@ -320,10 +317,9 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
   }
 }
 
-const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, int maxProviderIndex, int& indexOffset ) const
+const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, int providerFieldCount, int& indexOffset ) const
 {
-  int currentMaxIndex = 0;
-  int totIndex = maxProviderIndex + 1;
+  int totIndex = providerFieldCount;
 
   //go through all the joins to search the index
   QList< QgsVectorJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
@@ -335,28 +331,15 @@ const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index,
       continue;
     }
 
-    if ( joinLayer->pendingFields().contains( index - totIndex ) )
+    if ( joinLayer->pendingFields().count() > index - totIndex )
     {
       indexOffset = totIndex;
       return &( *joinIt );
     }
 
-    maximumIndex( joinLayer->pendingFields(), currentMaxIndex );
-    totIndex += ( currentMaxIndex + 1 );
+    totIndex += joinLayer->pendingFields().count();
   }
 
   //an added field or a provider field
   return 0;
-}
-
-bool QgsVectorLayerJoinBuffer::maximumIndex( const QgsFieldMap& fMap, int& index )
-{
-  if ( fMap.size() < 1 )
-  {
-    return false;
-  }
-  QgsFieldMap::const_iterator endIt = fMap.constEnd();
-  --endIt;
-  index = endIt.key();
-  return true;
 }

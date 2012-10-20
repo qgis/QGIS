@@ -83,7 +83,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     QGis::WkbType geometryType() const;
     long featureCount() const;
-    uint fieldCount() const;
     const QgsFieldMap & fields() const;
     void rewind();
 

@@ -63,7 +63,6 @@ class QgsAttributeDialog : public QObject
     QDialog *mDialog;
     QString mSettingsPath;
     QList<QWidget *> mpWidgets;
-    QList<int> mpIndizes;
     QgsVectorLayer *mLayer;
     QgsFeature *mFeature;
     bool mFeatureOwner;

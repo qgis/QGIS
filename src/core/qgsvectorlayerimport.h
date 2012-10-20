@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerImport
     /** create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
-                          const QgsFieldMap& fields,
+                          const QgsFields &fields,
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,

@@ -605,19 +605,6 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
   setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
 }
 
-/**
- * @note Note implemented yet
- * @return always returns false
- */
-bool QgsRasterLayer::copySymbologySettings( const QgsMapLayer& theOther )
-{
-  //prevent warnings
-  if ( theOther.type() < 0 )
-  {
-    return false;
-  }
-  return false;
-} //todo
 
 /**
  * @param theBandNo the band number
@@ -916,19 +903,6 @@ QString QgsRasterLayer::drawingStyleAsString() const
 
 }
 
-/**
- * @note Not implemented yet
- * @return always returns false
- */
-bool QgsRasterLayer::hasCompatibleSymbology( const QgsMapLayer& theOther ) const
-{
-  //prevent warnings
-  if ( theOther.type() < 0 )
-  {
-    return false;
-  }
-  return false;
-} //todo
 
 #if 0
 /**

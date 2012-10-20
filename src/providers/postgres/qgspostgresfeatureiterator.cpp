@@ -100,7 +100,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
     bool gotit = getFeature( queryResult, 0, feature );
 
     feature.setValid( gotit );
-    feature.setFieldMap( &P->mAttributeFields ); // allow name-based attribute lookups
+    feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
     return gotit;
   }
 
@@ -168,7 +168,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
   mFetched++;
 
   feature.setValid( true );
-  feature.setFieldMap( &P->mAttributeFields ); // allow name-based attribute lookups
+  feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
   return true;
 }
 
@@ -316,7 +316,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     }
 
     bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-    foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : P->mAttributeFields.keys() )
+    foreach ( int idx, subsetOfAttributes ? mRequest.subsetOfAttributes() : P->attributeIndexes() )
     {
       if ( P->mPrimaryKeyAttrs.contains( idx ) )
         continue;
@@ -350,7 +350,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 {
   try
   {
-    feature.initAttributes( P->fieldCount() );
+    feature.initAttributes( P->fields().count() );
 
     int col = 0;
 
@@ -419,17 +419,15 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
 
     // iterate attributes
-    foreach ( int idx, subsetOfAttributes ? fetchAttributes : P->mAttributeFields.keys() )
+    if ( subsetOfAttributes )
     {
-      if ( P->mPrimaryKeyAttrs.contains( idx ) )
-        continue;
-
-      const QgsField &fld = P->field( idx );
-
-      QVariant v = P->convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
-      feature.setAttribute( idx, v );
-
-      col++;
+      foreach ( int idx, fetchAttributes )
+        getFeatureAttribute(idx, queryResult, row, col, feature );
+    }
+    else
+    {
+      for (int idx = 0; idx < P->mAttributeFields.count(); ++idx )
+        getFeatureAttribute(idx, queryResult, row, col, feature );
     }
 
     return true;
@@ -440,3 +438,13 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
   }
 }
 
+void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature )
+{
+  if ( P->mPrimaryKeyAttrs.contains( idx ) )
+    return;
+
+  QVariant v = P->convertValue( P->mAttributeFields[idx].type(), queryResult.PQgetvalue( row, col ) );
+  feature.setAttribute( idx, v );
+
+  col++;
+}

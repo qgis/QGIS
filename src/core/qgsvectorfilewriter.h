@@ -86,7 +86,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
-                         const QgsFieldMap& fields,
+                         const QgsFields& fields,
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsVectorFileWriter
     OGRLayerH mLayer;
     OGRGeometryH mGeom;
 
-    QgsFieldMap mFields;
+    QgsFields mFields;
 
     /** contains error value if construction was not successful */
     WriterError mError;

@@ -200,22 +200,23 @@ void QgsAttributeTableModel::loadAttributes()
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().constBegin(); it != mLayer->pendingFields().end(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    switch ( mLayer->editType( it.key() ) )
+    switch ( mLayer->editType( idx ) )
     {
       case QgsVectorLayer::Hidden:
         continue;
 
       case QgsVectorLayer::ValueMap:
-        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
+        mValueMaps.insert( idx, &mLayer->valueMap( idx ) );
         break;
 
       default:
         break;
     }
 
-    attributes << it.key();
+    attributes << idx;
   }
 
   if ( columnCount() < attributes.size() )

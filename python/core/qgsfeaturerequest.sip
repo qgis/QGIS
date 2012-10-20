@@ -45,6 +45,6 @@ class QgsFeatureRequest
     const QgsAttributeList& subsetOfAttributes() const;
 
     //! Set a subset of attributes by names that will be fetched
-    QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFieldMap& fields );
+    QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
 
 };

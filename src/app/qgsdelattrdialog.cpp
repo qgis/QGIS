@@ -25,12 +25,11 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl ): QDialog()
   if ( vl )
   {
     listBox2->clear();
-    const QgsFieldMap layerAttributes = vl->pendingFields();
-    QgsFieldMap::const_iterator attIt = layerAttributes.constBegin();
-    for ( ; attIt != layerAttributes.constEnd(); ++attIt )
+    const QgsFields& layerAttributes = vl->pendingFields();
+    for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
-      QListWidgetItem* item = new QListWidgetItem( attIt.value().name(), listBox2 );
-      item->setData( Qt::UserRole, attIt.key() );
+      QListWidgetItem* item = new QListWidgetItem( layerAttributes[idx].name(), listBox2 );
+      item->setData( Qt::UserRole, idx );
     }
   }
 }

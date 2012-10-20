@@ -165,17 +165,16 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   if ( !mLayer )
     return;
 
-  const QgsFieldMap fieldMap = mLayer->pendingFields();
-  loadFieldNames( fieldMap );
+  loadFieldNames( mLayer->pendingFields() );
 }
 
-void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
+void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 {
   if ( fields.isEmpty() )
     return;
 
   QStringList fieldNames;
-  foreach ( QgsField field, fields )
+  foreach ( const QgsField& field, fields )
   {
     QString fieldName = field.name();
     fieldNames << fieldName;

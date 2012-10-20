@@ -3083,8 +3083,8 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
 {
   QString shapeFileName = fileName;
 
-  QgsFieldMap fields;
-  fields.insert( 0, QgsField( "type", QVariant::String, "String" ) );
+  QgsFields fields;
+  fields.append( QgsField( "type", QVariant::String, "String" ) );
 
   // add the extension if not present
   if ( shapeFileName.indexOf( ".shp" ) == -1 )

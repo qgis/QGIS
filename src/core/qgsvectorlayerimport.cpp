@@ -29,7 +29,7 @@
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem *destCRS,
   bool overwrite,
@@ -41,7 +41,7 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
-    const QgsFieldMap& fields,
+    const QgsFields& fields,
     QGis::WkbType geometryType,
     const QgsCoordinateReferenceSystem* crs,
     bool overwrite,
@@ -204,13 +204,13 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
 
-  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
   if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
   {
     // convert field names to lowercase
-    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      fldIt.value().setName( fldIt.value().name().toLower() );
+      fields[fldIdx].setName( fields[fldIdx].name().toLower() );
     }
   }
 

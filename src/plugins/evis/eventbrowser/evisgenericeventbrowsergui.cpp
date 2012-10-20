@@ -282,24 +282,25 @@ bool eVisGenericEventBrowserGui::initBrowser( )
     return false;
   }
 
-  QgsFieldMap myFieldMap = mDataProvider->fields( );
+  const QgsFields& myFields = mDataProvider->fields( );
   mIgnoreEvent = true; //Ignore indexChanged event when adding items to combo boxes
-  for ( int x = 0; x < myFieldMap.size( ); x++ )
+  for ( int x = 0; x < myFields.count( ); x++ )
   {
-    cboxEventImagePathField->addItem( myFieldMap[x].name( ) );
-    cboxCompassBearingField->addItem( myFieldMap[x].name( ) );
-    cboxCompassOffsetField->addItem( myFieldMap[x].name( ) );
+    QString name = myFields[x].name();
+    cboxEventImagePathField->addItem( name );
+    cboxCompassBearingField->addItem( name );
+    cboxCompassOffsetField->addItem( name );
     if ( myFeature->attribute( x ).toString( ).contains( QRegExp( "(jpg|jpeg|tif|tiff|gif)", Qt::CaseInsensitive ) ) )
     {
       mDefaultEventImagePathField = x;
     }
 
-    if ( myFieldMap[x].name( ).contains( QRegExp( "(comp|bear)", Qt::CaseInsensitive ) ) )
+    if ( name.contains( QRegExp( "(comp|bear)", Qt::CaseInsensitive ) ) )
     {
       mDefaultCompassBearingField = x;
     }
 
-    if ( myFieldMap[x].name( ).contains( QRegExp( "(offset|declination)", Qt::CaseInsensitive ) ) )
+    if ( name.contains( QRegExp( "(offset|declination)", Qt::CaseInsensitive ) ) )
     {
       mDefaultCompassOffsetField = x;
     }
@@ -593,27 +594,28 @@ void eVisGenericEventBrowserGui::loadRecord( )
   QString myCompassBearingField = cboxCompassBearingField->currentText( );
   QString myCompassOffsetField = cboxCompassOffsetField->currentText( );
   QString myEventImagePathField = cboxEventImagePathField->currentText( );
-  QgsFieldMap myFieldMap = mDataProvider->fields( );
+  const QgsFields& myFields = mDataProvider->fields( );
   const QgsAttributes& myAttrs = myFeature->attributes();
   //loop through the attributes and display their contents
   for ( int i = 0; i < myAttrs.count(); ++i )
   {
     QStringList myValues;
-    myValues << myFieldMap[i].name( ) << myAttrs[i].toString( );
+    QString fieldName = myFields[i].name();
+    myValues << fieldName << myAttrs[i].toString( );
     QTreeWidgetItem* myItem = new QTreeWidgetItem( myValues );
-    if ( myFieldMap[i].name( ) == myEventImagePathField )
+    if ( fieldName == myEventImagePathField )
     {
       mEventImagePath = myAttrs[i].toString( );
     }
 
-    if ( myFieldMap[i].name( ) == myCompassBearingField )
+    if ( fieldName == myCompassBearingField )
     {
       mCompassBearing = myAttrs[i].toDouble( );
     }
 
     if ( mConfiguration.isAttributeCompassOffsetSet( ) )
     {
-      if ( myFieldMap[i].name( ) == myCompassOffsetField )
+      if ( fieldName == myCompassOffsetField )
       {
         mCompassOffset = myAttrs[i].toDouble( );
       }
@@ -840,7 +842,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText( ) );
 
-    QgsFieldMap myFieldMap = mDataProvider->fields( );
+    const QgsFields& myFields = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( 0 == myFeature )
@@ -849,7 +851,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     const QgsAttributes& myAttrs = myFeature->attributes();
     for ( int i = 0 ; i < myAttrs.count(); ++i )
     {
-      if ( myFieldMap[i].name( ) == cboxEventImagePathField->currentText( ) )
+      if ( myFields[i].name( ) == cboxEventImagePathField->currentText( ) )
       {
         mEventImagePath = myAttrs[i].toString( );
       }
@@ -868,7 +870,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText( ) );
 
-    QgsFieldMap myFieldMap = mDataProvider->fields( );
+    const QgsFields& myFields = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( 0 == myFeature )
@@ -877,7 +879,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     const QgsAttributes& myAttrs = myFeature->attributes( );
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
-      if ( myFieldMap[i].name( ) == cboxCompassBearingField->currentText( ) )
+      if ( myFields[i].name( ) == cboxCompassBearingField->currentText( ) )
       {
         mCompassBearing = myAttrs[i].toDouble( );
       }
@@ -896,7 +898,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText( ) );
 
-    QgsFieldMap myFieldMap = mDataProvider->fields( );
+    const QgsFields& myFields = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( 0 == myFeature )
@@ -905,7 +907,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     const QgsAttributes& myAttrs = myFeature->attributes( );
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
-      if ( myFieldMap[i].name( ) == cboxCompassOffsetField->currentText( ) )
+      if ( myFields[i].name( ) == cboxCompassOffsetField->currentText( ) )
       {
         mCompassOffset = myAttrs[i].toDouble( );
       }

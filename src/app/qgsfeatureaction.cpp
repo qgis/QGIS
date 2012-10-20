@@ -139,17 +139,17 @@ bool QgsFeatureAction::addFeature()
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   // add the fields to the QgsFeature
-  const QgsFieldMap fields = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( it.key() ) )
+    if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
-      mFeature.setAttribute( it.key(), mLastUsedValues[ mLayer ][ it.key()] );
+      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+      mFeature.setAttribute( idx, mLastUsedValues[ mLayer ][idx] );
     }
     else
     {
-      mFeature.setAttribute( it.key(), provider->defaultValue( it.key() ) );
+      mFeature.setAttribute( idx, provider->defaultValue( idx ) );
     }
   }
 
@@ -174,13 +174,13 @@ bool QgsFeatureAction::addFeature()
     {
       if ( reuseLastValues )
       {
-        for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+        for ( int idx = 0; idx < fields.count(); ++idx )
         {
           const QgsAttributes &newValues = mFeature.attributes();
-          if ( origValues[it.key()] != newValues[it.key()] )
+          if ( origValues[idx] != newValues[idx] )
           {
-            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
-            mLastUsedValues[ mLayer ][ it.key()] = newValues[ it.key()];
+            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+            mLastUsedValues[ mLayer ][idx] = newValues[idx];
           }
         }
       }

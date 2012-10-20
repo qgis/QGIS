@@ -2573,11 +2573,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       mVectorLayerNames.push_back( grassLayer );
 
       // convert from QgsFieldMap to std::vector<QgsField>
-      QgsFieldMap flds = vector->dataProvider()->fields();
-      std::vector<QgsField> fields;
-      for ( QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it )
-        fields.push_back( it.value() );
-      mVectorFields.push_back( fields );
+      mVectorFields.push_back( vector->dataProvider()->fields() );
     }
     else if ( mType == Raster && layer->type() == QgsMapLayer::RasterLayer )
     {
@@ -2663,7 +2659,7 @@ QStringList QgsGrassModuleInput::options()
   return list;
 }
 
-std::vector<QgsField> QgsGrassModuleInput::currentFields()
+QgsFields QgsGrassModuleInput::currentFields()
 {
   QgsDebugMsg( "called." );
 
@@ -2671,7 +2667,7 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
   if ( !mRequired )
     limit = 1;
 
-  std::vector<QgsField> fields;
+  QgsFields fields;
 
   unsigned int current = mLayerComboBox->currentIndex();
   if ( current < limit )
@@ -3207,7 +3203,7 @@ void QgsGrassModuleField::updateFields()
   if ( mLayerInput == 0 )
     return;
 
-  std::vector<QgsField> fields = mLayerInput->currentFields();
+  QgsFields fields = mLayerInput->currentFields();
 
   for ( unsigned int i = 0; i < fields.size(); i++ )
   {

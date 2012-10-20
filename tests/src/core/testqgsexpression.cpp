@@ -381,7 +381,7 @@ class TestQgsExpression: public QObject
 
     void eval_columns()
     {
-      QgsFieldMap fields;
+      QgsFields fields( 5 );
       fields[4] = QgsField( "foo", QVariant::Int );
 
       QgsFeature f;

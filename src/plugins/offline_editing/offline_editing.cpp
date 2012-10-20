@@ -403,11 +403,11 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
   QString delim = "";
-  const QgsFieldMap& fields = layer->dataProvider()->fields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end() ; ++it )
+  const QgsFields& fields = layer->dataProvider()->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString dataType = "";
-    QVariant::Type type = it.value().type();
+    QVariant::Type type = fields[idx].type();
     if ( type == QVariant::Int )
     {
       dataType = "INTEGER";
@@ -425,7 +425,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       showWarning( tr( "Unknown data type %1" ).arg( type ) );
     }
 
-    sql += delim + QString( "'%1' %2" ).arg( it.value().name() ).arg( dataType );
+    sql += delim + QString( "'%1' %2" ).arg( fields[idx].name() ).arg( dataType );
     delim = ",";
   }
   sql += ")";

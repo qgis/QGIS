@@ -120,7 +120,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 
 QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -561,8 +561,8 @@ void QgsOgrProvider::loadFields()
         default: varType = QVariant::String; // other unsupported, leave it as a string
       }
 
-      mAttributeFields.insert(
-        i, QgsField(
+      mAttributeFields.append(
+          QgsField(
           //TODO: fix this hack
 #ifdef ANDROID
           OGR_Fld_GetNameRef( fldDef ),
@@ -727,16 +727,8 @@ long QgsOgrProvider::featureCount() const
   return featuresCounted;
 }
 
-/**
- * Return the number of fields
- */
-uint QgsOgrProvider::fieldCount() const
-{
-  return mAttributeFields.size();
-}
 
-
-const QgsFieldMap & QgsOgrProvider::fields() const
+const QgsFields & QgsOgrProvider::fields() const
 {
   return mAttributeFields;
 }
@@ -833,7 +825,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
 bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
 {
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
@@ -928,7 +920,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   clearMinMaxCache();
 
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1003,7 +995,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
@@ -1940,7 +1932,10 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 {
   uniqueValues.clear();
 
-  QgsField fld = mAttributeFields.value( index );
+  if ( index < 0 || index >= mAttributeFields.count() )
+    return;
+
+  const QgsField& fld = mAttributeFields[index];
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -1979,12 +1974,11 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
 QVariant QgsOgrProvider::minimumValue( int index )
 {
-  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
-  if ( attIt == mAttributeFields.constEnd() )
+  if ( index < 0 || index >= mAttributeFields.count() )
   {
     return QVariant();
   }
-  const QgsField& fld = attIt.value();
+  const QgsField& fld = mAttributeFields[index];
 
   QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
@@ -2019,8 +2013,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
 
 QVariant QgsOgrProvider::maximumValue( int index )
 {
-  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
-  if ( attIt == mAttributeFields.constEnd() )
+  if ( index < 0 || index >= mAttributeFields.count() )
   {
     return QVariant();
   }
@@ -2124,7 +2117,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

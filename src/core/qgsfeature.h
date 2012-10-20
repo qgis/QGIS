@@ -100,6 +100,8 @@ typedef QVector<QVariant> QgsAttributes;
 class QgsField;
 typedef QMap<int, QgsField> QgsFieldMap;
 
+typedef QVector<QgsField> QgsFields;
+
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
@@ -184,12 +186,12 @@ class CORE_EXPORT QgsFeature
     /** Assign a field map with the feature to allow attribute access by attribute name
      *  @note added in 2.0
      */
-    void setFieldMap( const QgsFieldMap* fields ) { mFields = fields; }
+    void setFields( const QgsFields* fields ) { mFields = fields; }
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0
      */
-    const QgsFieldMap* fieldMap() const { return mFields; }
+    const QgsFields* fields() const { return mFields; }
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
@@ -240,11 +242,10 @@ class CORE_EXPORT QgsFeature
     bool mOwnsGeometry;
 
     //! Flag to indicate if this feature is valid
-    // TODO: still applies? [MD]
     bool mValid;
 
     //! Optional field map for name-based attribute lookups
-    const QgsFieldMap* mFields;
+    const QgsFields* mFields;
 
 }; // class QgsFeature
 

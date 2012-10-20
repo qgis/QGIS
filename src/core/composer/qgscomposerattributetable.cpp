@@ -81,14 +81,13 @@ void QgsComposerAttributeTable::initializeAliasMap()
   mFieldAliasMap.clear();
   if ( mVectorLayer )
   {
-    QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator it = fieldMap.constBegin();
-    for ( ; it != fieldMap.constEnd(); ++it )
+    const QgsFields& fields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      QString currentAlias = mVectorLayer->attributeAlias( it.key() );
+      QString currentAlias = mVectorLayer->attributeAlias( idx );
       if ( !currentAlias.isEmpty() )
       {
-        mFieldAliasMap.insert( it.key(), currentAlias );
+        mFieldAliasMap.insert( idx, currentAlias );
       }
     }
   }
@@ -178,15 +177,14 @@ QMap<int, QString> QgsComposerAttributeTable::getHeaderLabels() const
   QMap<int, QString> header;
   if ( mVectorLayer )
   {
-    QgsFieldMap vectorFields = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = vectorFields.constBegin();
-    for ( ; fieldIt != vectorFields.constEnd(); ++fieldIt )
+    const QgsFields& vectorFields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < vectorFields.count(); ++idx )
     {
-      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( fieldIt.key() ) )
+      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( idx ) )
       {
         continue;
       }
-      header.insert( fieldIt.key(), attributeDisplayName( fieldIt.key(), fieldIt.value().name() ) );
+      header.insert( idx, attributeDisplayName( idx, vectorFields[idx].name() ) );
     }
   }
   return header;

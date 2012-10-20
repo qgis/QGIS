@@ -246,11 +246,6 @@ long QgsWFSProvider::featureCount() const
   return mFeatureCount;
 }
 
-uint QgsWFSProvider::fieldCount() const
-{
-  return mFields.size();
-}
-
 const QgsFieldMap & QgsWFSProvider::fields() const
 {
   return mFields;

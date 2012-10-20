@@ -92,15 +92,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
+    virtual const QgsFields & fields() const;
 
     /** Restart reading features from previous select operation */
     virtual void rewind();
@@ -183,7 +178,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     //! Fields
     QList<int> attributeColumns;
-    QgsFieldMap attributeFields;
+    QgsFields attributeFields;
 
     QgsAttributeList mAttributesToFetch;
 

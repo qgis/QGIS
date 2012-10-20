@@ -17,7 +17,7 @@ typedef QMap<int, QString> QgsFieldNameMap;
 typedef QList<QgsFeature> QgsFeatureList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
-
+typedef QVector<QgsField> QgsFields;
 
 class QgsFeature
 {
@@ -159,12 +159,12 @@ class QgsFeature
     /** Assign a field map with the feature to allow attribute access by attribute name
      *  @note added in 2.0
      */
-    void setFieldMap( const QgsFieldMap* fields );
+    void setFields( const QgsFields* fields );
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0
      */
-    const QgsFieldMap* fieldMap() const;
+    const QgsFields* fields() const;
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.

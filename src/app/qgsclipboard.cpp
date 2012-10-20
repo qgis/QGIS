@@ -67,9 +67,9 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     textFields += "wkt_geom";
   }
 
-  for ( QgsFieldMap::const_iterator fit = mFeatureFields.begin(); fit != mFeatureFields.end(); ++fit )
+  for ( int idx = 0; idx < mFeatureFields.count(); ++idx )
   {
-    textFields += fit->name();
+    textFields += mFeatureFields[idx].name();
   }
   textLines += textFields.join( "\t" );
   textFields.clear();

@@ -83,23 +83,21 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mTableWidget->setRowCount( mFeatureList.size() + 2 );
 
   //create combo boxes and insert attribute names
-  const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->pendingFields();
 
   int col = 0;
-  for ( QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-        fieldIt != fieldMap.constEnd();
-        ++fieldIt )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Hidden ||
-         mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Immutable )
+    if ( mVectorLayer->editType( idx ) == QgsVectorLayer::Hidden ||
+         mVectorLayer->editType( idx ) == QgsVectorLayer::Immutable )
       continue;
 
     mTableWidget->setColumnCount( col + 1 );
 
-    mTableWidget->setCellWidget( 0, col, createMergeComboBox( fieldIt->type() ) );
+    mTableWidget->setCellWidget( 0, col, createMergeComboBox( fields[idx].type() ) );
 
-    QTableWidgetItem *item = new QTableWidgetItem( fieldIt.value().name() );
-    item->setData( Qt::UserRole, fieldIt.key() );
+    QTableWidgetItem *item = new QTableWidgetItem( fields[idx].name() );
+    item->setData( Qt::UserRole, idx );
     mTableWidget->setHorizontalHeaderItem( col++, item );
   }
 

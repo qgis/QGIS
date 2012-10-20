@@ -83,14 +83,9 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Get the number of fields in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Get the field information for the layer
      */
-    virtual const QgsFieldMap & fields() const;
+    virtual const QgsFields& fields() const;
 
     /** Restart reading features from previous select operation */
     virtual void rewind();
@@ -165,7 +160,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     QgsGPSData* data;
 
     //! Fields
-    QgsFieldMap attributeFields;
+    QgsFields attributeFields;
 
     QString mFileName;
 

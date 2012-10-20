@@ -14,7 +14,7 @@ class QgsExpression
     QString parserErrorString() const;
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QMap<int, QgsField> &fields );
+    bool prepare( const QgsFields &fields );
 
     //! Get list of columns referenced by the expression
     QStringList referencedColumns();
@@ -29,7 +29,7 @@ class QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( QgsFeature* f, const QMap<int, QgsField>& fields );
+    QVariant evaluate( QgsFeature* f, const QgsFields& fields );
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
@@ -169,7 +169,7 @@ class QgsExpression
 
         // abstract virtual preparation function
         // errors are reported to the parent
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields ) = 0;
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) = 0;
 
         virtual QString dump() const = 0;
 
@@ -224,7 +224,7 @@ class QgsExpression
         QgsExpression::UnaryOperator op();
         QgsExpression::Node* operand();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -246,7 +246,7 @@ class QgsExpression
         QgsExpression::Node* opLeft();
         QgsExpression::Node* opRight();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -268,7 +268,7 @@ class QgsExpression
         bool isNotIn();
         QgsExpression::NodeList* list();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -289,7 +289,7 @@ class QgsExpression
         int fnIndex();
         QgsExpression::NodeList* args();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -308,7 +308,7 @@ class QgsExpression
 
         QVariant value();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -327,7 +327,7 @@ class QgsExpression
 
         QString name();
 
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -358,7 +358,7 @@ class QgsExpression
         ~NodeCondition();
 
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
-        virtual bool prepare( QgsExpression* parent, const QMap<int, QgsField> &fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;

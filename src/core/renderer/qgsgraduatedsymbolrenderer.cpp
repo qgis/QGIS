@@ -372,9 +372,10 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   }
 
   QString classificationFieldName;
-  if ( vl.pendingFields().contains( mClassificationField ) )
+  const QgsFields& fields = vl.pendingFields();
+  if ( mClassificationField >= 0 && mClassificationField < fields.count() )
   {
-    classificationFieldName = vl.pendingFields()[ mClassificationField ].name();
+    classificationFieldName = fields[ mClassificationField ].name();
   }
 
   QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );

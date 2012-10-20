@@ -161,22 +161,17 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
   mFeatures << f;
   layItem->addChild( featItem );
 
+  const QgsFields &fields = vlayer->pendingFields();
   const QgsAttributes& attrs = f.attributes();
   for ( int i = 0; i < attrs.count(); ++i )
   {
+    if ( i >= fields.count() )
+      continue;
+
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
 
-    const QgsFieldMap &fields = vlayer->pendingFields();
-
-    QgsFieldMap::const_iterator fit = fields.find( i );
-    if ( fit == fields.constEnd() )
-    {
-      delete attrItem;
-      continue;
-    }
-
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setData( 0, Qt::UserRole, fit->name() );
+    attrItem->setData( 0, Qt::UserRole, fields[i].name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
     QVariant value = attrs[i];
@@ -199,7 +194,7 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
 
     attrItem->setData( 1, Qt::DisplayRole, value );
 
-    if ( fit->name() == vlayer->displayField() )
+    if ( fields[i].name() == vlayer->displayField() )
     {
       featItem->setText( 0, attrItem->text( 0 ) );
       featItem->setText( 1, attrItem->text( 1 ) );
@@ -569,11 +564,12 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
-    for ( QgsFieldMap::const_iterator it = layer->pendingFields().begin(); it != layer->pendingFields().end(); it++ )
+    const QgsFields& fields = layer->pendingFields();
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( it->name() == fieldName )
+      if ( fields[fldIdx].name() == fieldName )
       {
-        idx = it.key();
+        idx = fldIdx;
         break;
       }
     }
@@ -986,15 +982,15 @@ void QgsIdentifyResults::copyFeatureAttributes()
   QgsAttributeMap attributes;
   retrieveAttributes( lstResults->currentItem(), attributes, idx );
 
-  const QgsFieldMap &fields = vlayer->pendingFields();
+  const QgsFields &fields = vlayer->pendingFields();
 
   for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
   {
-    QgsFieldMap::const_iterator fit = fields.find( it.key() );
-    if ( fit == fields.constEnd() )
+    int attrIdx = it.key();
+    if ( attrIdx < 0 || attrIdx >= fields.count() )
       continue;
 
-    text += QString( "%1: %2\n" ).arg( fit->name() ).arg( it.value().toString() );
+    text += QString( "%1: %2\n" ).arg( fields[attrIdx].name() ).arg( it.value().toString() );
   }
 
   QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );

@@ -408,11 +408,10 @@ QString QgsDiagramOverlay::attributeNameFromIndex( int index, const QgsVectorLay
   const QgsVectorDataProvider *provider;
   if (( provider = dynamic_cast<const QgsVectorDataProvider *>( vl->dataProvider() ) ) )
   {
-    const QgsFieldMap & fields = provider->fields();
-    QgsFieldMap::const_iterator field_iter = fields.find( index );
-    if ( field_iter != fields.constEnd() )
+    const QgsFields & fields = provider->fields();
+    if ( index < 0 || index >= fields.count() )
     {
-      return field_iter->name();
+      return fields[index].name();
     }
   }
   return "";

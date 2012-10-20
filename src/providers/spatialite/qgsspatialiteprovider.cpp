@@ -94,7 +94,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 QgsVectorLayerImport::ImportError
 QgsSpatiaLiteProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -146,25 +146,25 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       // if no pk name was passed, define the new pk field name
       int index = 0;
       QString pk = primaryKey = "pk";
-      for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fldIt.value().name() == pk )
+        if ( fields[fldIdx].name() == pk )
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIt = fields.begin();
+          fldIdx = 0;
         }
       }
     }
     else
     {
       // search for the passed field
-      for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fldIt.value().name() == primaryKey )
+        if ( fields[fldIdx].name() == primaryKey )
         {
           // found, get the field type
-          QgsField fld = fldIt.value();
+          QgsField fld = fields[fldIdx];
           if ( convertField( fld ) )
           {
             primaryKeyType = fld.typeName();
@@ -349,9 +349,9 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      QgsField fld = fldIt.value();
+      QgsField fld = fields[fldIdx];
       if ( fld.name() == primaryKey )
         continue;
 
@@ -372,7 +372,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
       }
 
-      QgsDebugMsg( "creating field #" + QString::number( fldIt.key() ) +
+      QgsDebugMsg( "creating field #" + QString::number( fldIdx ) +
                    " -> #" + QString::number( offset ) +
                    " name " + fld.name() +
                    " type " + QString( QVariant::typeToName( fld.type() ) ) +
@@ -382,7 +382,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fldIt.key(), offset );
+        oldToNewAttrIdxMap->insert( fldIdx, offset );
 
       offset++;
     }
@@ -3019,14 +3019,6 @@ long QgsSpatiaLiteProvider::featureCount() const
   return numberFeatures;
 }
 
-/**
- * Return the number of fields
- */
-uint QgsSpatiaLiteProvider::fieldCount() const
-{
-  return attributeFields.size();
-}
-
 
 QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
 {
@@ -3057,7 +3049,7 @@ QString QgsSpatiaLiteProvider::description() const
   return SPATIALITE_DESCRIPTION;
 }                               //  QgsSpatiaLiteProvider::description()
 
-const QgsFieldMap & QgsSpatiaLiteProvider::fields() const
+const QgsFields & QgsSpatiaLiteProvider::fields() const
 {
   return attributeFields;
 }
@@ -3198,12 +3190,11 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   uniqueValues.clear();
 
   // get the field name
-  QgsFieldMap::const_iterator fieldIt = attributeFields.find( index );
-  if ( fieldIt == attributeFields.constEnd() )
+  if ( index < 0 || index >= attributeFields.count() )
   {
     return; //invalid field
   }
-  const QgsField& fld = fieldIt.value();
+  const QgsField& fld = attributeFields[index];
 
   sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
@@ -3309,11 +3300,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( !attributevec[i].isValid() )
       continue;
 
-    QgsFieldMap::const_iterator fit = attributeFields.find( i );
-    if ( fit == attributeFields.end() )
+    if ( i >= attributeFields.count() )
       continue;
 
-    QString fieldname = fit->name();
+    QString fieldname = attributeFields[i].name();
     if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
       continue;
 
@@ -3366,15 +3356,14 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       // binding values for each attribute
-      QgsFieldMap::const_iterator fit = attributeFields.find( i );
-      if ( fit == attributeFields.end() )
+      if ( i >= attributeFields.count() )
         continue;
 
-      QString fieldname = fit->name();
+      QString fieldname = attributeFields[i].name();
       if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
-      QVariant::Type type = fit->type();
+      QVariant::Type type = attributeFields[i].type();
       if ( v.toString().isEmpty() )
       {
         // assuming to be a NULL value
@@ -4564,15 +4553,13 @@ error:
 
 const QgsField & QgsSpatiaLiteProvider::field( int index ) const
 {
-  QgsFieldMap::const_iterator it = attributeFields.find( index );
-
-  if ( it == attributeFields.constEnd() )
+  if ( index < 0 || index >= attributeFields.count() )
   {
     QgsMessageLog::logMessage( tr( "FAILURE: Field %1 not found." ).arg( index ), tr( "SpatiaLite" ) );
     throw SLFieldNotFound();
   }
 
-  return it.value();
+  return attributeFields[index];
 }
 
 
@@ -4612,7 +4599,7 @@ QGISEXTERN bool isProvider()
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

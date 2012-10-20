@@ -74,6 +74,8 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
   mFeatureType = ( typeStr == "waypoint" ? WaypointType :
                    ( typeStr == "route" ? RouteType : TrackType ) );
 
+  // TODO[MD]: fields
+
   // set up the attributes and the geometry type depending on the feature type
   attributeFields[NameAttr] = QgsField( attr[NameAttr], QVariant::String, "text" );
   if ( mFeatureType == WaypointType )
@@ -157,7 +159,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           feature.setGeometryAndOwnership(( unsigned char * )geo, sizeof( wkbPoint ) );
         }
         feature.setValid( true );
-        feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+        feature.setFields( &attributeFields ); // allow name-based attribute lookups
         feature.initAttributes( attributeFields.count() );
 
         // add attributes if they are wanted
@@ -250,7 +252,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           feature.setFeatureId( rte->id );
           result = true;
           feature.setValid( true );
-          feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+          feature.setFields( &attributeFields ); // allow name-based attribute lookups
           feature.initAttributes( attributeFields.count() );
 
           // add attributes if they are wanted
@@ -368,7 +370,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           result = true;
 
           feature.setValid( true );
-          feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+          feature.setFields( &attributeFields ); // allow name-based attribute lookups
           feature.initAttributes( attributeFields.count() );
 
           // add attributes if they are wanted
@@ -477,16 +479,7 @@ long QgsGPXProvider::featureCount() const
 }
 
 
-/**
- * Return the number of fields
- */
-uint QgsGPXProvider::fieldCount() const
-{
-  return attributeFields.size();
-}
-
-
-const QgsFieldMap& QgsGPXProvider::fields() const
+const QgsFields& QgsGPXProvider::fields() const
 {
   return attributeFields;
 }

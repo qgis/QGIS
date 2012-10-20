@@ -170,7 +170,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
       break;
     case pktInt:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
-      Q_ASSERT( mAttributeFields.contains( mPrimaryKeyAttrs[0] ) );
+      Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
       key = mAttributeFields[ mPrimaryKeyAttrs[0] ].name();
       break;
     case pktFidMap:
@@ -511,26 +511,16 @@ QGis::WkbType QgsPostgresProvider::geometryType() const
 
 const QgsField &QgsPostgresProvider::field( int index ) const
 {
-  QgsFieldMap::const_iterator it = mAttributeFields.find( index );
-
-  if ( it == mAttributeFields.constEnd() )
+  if ( index < 0 || index >= mAttributeFields.count() )
   {
     QgsMessageLog::logMessage( tr( "FAILURE: Field %1 not found." ).arg( index ), tr( "PostGIS" ) );
     throw PGFieldNotFound();
   }
 
-  return it.value();
+  return mAttributeFields[index];
 }
 
-/**
- * Return the number of fields
- */
-uint QgsPostgresProvider::fieldCount() const
-{
-  return mAttributeFields.size();
-}
-
-const QgsFieldMap & QgsPostgresProvider::fields() const
+const QgsFields & QgsPostgresProvider::fields() const
 {
   return mAttributeFields;
 }
@@ -765,7 +755,7 @@ bool QgsPostgresProvider::loadFields()
 
     fields << fieldName;
 
-    mAttributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
+    mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
   }
 
   return true;
@@ -1071,22 +1061,20 @@ bool QgsPostgresProvider::determinePrimaryKey()
       {
         QString name = res.PQgetvalue( i, 0 );
 
-        QgsFieldMap::const_iterator it = mAttributeFields.begin();
-        while ( it != mAttributeFields.end() && it->name() != name )
-          it++;
-
-        if ( it == mAttributeFields.end() )
+        int idx = fieldNameIndex( name );
+        if ( idx == -1 )
         {
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
+        const QgsField& fld = mAttributeFields[idx];
 
         if ( isInt &&
-             it->type() != QVariant::Int &&
-             it->type() != QVariant::LongLong )
+             fld.type() != QVariant::Int &&
+             fld.type() != QVariant::LongLong )
           isInt = false;
 
-        mPrimaryKeyAttrs << it.key();
+        mPrimaryKeyAttrs << idx;
       }
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
@@ -1208,17 +1196,12 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
 {
   enumList.clear();
 
-  QString typeName;
-  //find out type of index
-  QgsFieldMap::const_iterator f_it = mAttributeFields.find( index );
-  if ( f_it != mAttributeFields.constEnd() )
-  {
-    typeName = f_it.value().typeName();
-  }
-  else
-  {
+  if ( index < 0 || index >= mAttributeFields.count() )
     return;
-  }
+
+  //find out type of index
+  QString fieldName = mAttributeFields[index].name();
+  QString typeName = mAttributeFields[index].typeName();
 
   //is type an enum?
   QString typeSql = QString( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
@@ -1233,7 +1216,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
   if ( typtype.compare( "e", Qt::CaseInsensitive ) == 0 )
   {
     //try to read enum_range of attribute
-    if ( !parseEnumRange( enumList, f_it->name() ) )
+    if ( !parseEnumRange( enumList, fieldName ) )
     {
       enumList.clear();
     }
@@ -1241,7 +1224,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
   else
   {
     //is there a domain check constraint for the attribute?
-    if ( !parseDomainCheckConstraint( enumList, f_it->name() ) )
+    if ( !parseDomainCheckConstraint( enumList, fieldName ) )
     {
       enumList.clear();
     }
@@ -1515,11 +1498,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       if ( fieldId.contains( idx ) )
         continue;
 
-      QgsFieldMap::const_iterator fit = mAttributeFields.find( idx );
-      if ( fit == mAttributeFields.end() )
+      if ( idx >= mAttributeFields.count() )
         continue;
 
-      QString fieldname = fit->name();
+      QString fieldname = mAttributeFields[idx].name();
+      QString fieldTypeName = mAttributeFields[idx].typeName();
 
       QgsDebugMsg( "Checking field against: " + fieldname );
 
@@ -1556,14 +1539,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
             values += delim + defVal;
           }
         }
-        else if ( fit->typeName() == "geometry" )
+        else if ( fieldTypeName == "geometry" )
         {
           values += QString( "%1%2(%3)" )
                     .arg( delim )
                     .arg( mConnectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
                     .arg( quotedValue( v.toString() ) );
         }
-        else if ( fit->typeName() == "geography" )
+        else if ( fieldTypeName == "geography" )
         {
           values += QString( "%1st_geographyfromewkt(%2)" )
                     .arg( delim )
@@ -1577,14 +1560,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       else
       {
         // value is not unique => add parameter
-        if ( fit->typeName() == "geometry" )
+        if ( fieldTypeName == "geometry" )
         {
           values += QString( "%1%2($%3)" )
                     .arg( delim )
                     .arg( mConnectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
                     .arg( defaultValues.size() + offset );
         }
-        else if ( fit->typeName() == "geography" )
+        else if ( fieldTypeName == "geography" )
         {
           values += QString( "%1st_geographyfromewkt($%2)" )
                     .arg( delim )
@@ -1822,11 +1805,11 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 
     for ( QgsAttributeIds::const_iterator iter = ids.begin(); iter != ids.end(); ++iter )
     {
-      QgsFieldMap::const_iterator field_it = mAttributeFields.find( *iter );
-      if ( field_it == mAttributeFields.constEnd() )
+      int index = *iter;
+      if ( index < 0 || index >= mAttributeFields.count() )
         continue;
 
-      QString column = field_it->name();
+      QString column = mAttributeFields[index].name();
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
                     .arg( mQuery )
                     .arg( quotedIdentifier( column ) );
@@ -1837,7 +1820,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
         throw PGException( result );
 
       //delete the attribute from mAttributeFields
-      mAttributeFields.remove( *iter );
+      mAttributeFields.remove( index );
     }
 
     mConnectionRW->PQexecNR( "COMMIT" );
@@ -2041,7 +2024,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 QgsAttributeList QgsPostgresProvider::attributeIndexes()
 {
-  return mAttributeFields.keys();
+  QgsAttributeList lst;
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
+    lst.append( i );
+  return lst;
 }
 
 int QgsPostgresProvider::capabilities() const
@@ -2524,7 +2510,7 @@ bool QgsPostgresProvider::convertField( QgsField &field )
 
 QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -2573,25 +2559,25 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   {
     int index = 0;
     QString pk = primaryKey = "id";
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fldIt.value().name() == pk )
+      if ( fields[fldIdx].name() == pk )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-        fldIt = fields.begin();
+        fldIdx = 0;
       }
     }
   }
   else
   {
     // search for the passed field
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fldIt.value().name() == primaryKey )
+      if ( fields[fldIdx].name() == primaryKey )
       {
         // found, get the field type
-        QgsField fld = fldIt.value();
+        QgsField fld = fields[fldIdx];
         if ( convertField( fld ) )
         {
           primaryKeyType = fld.typeName();
@@ -2721,12 +2707,12 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      QgsField fld = fldIt.value();
+      QgsField fld = fields[fldIdx];
       if ( fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( fldIt.key(), 0 );
+        oldToNewAttrIdxMap->insert( fldIdx, 0 );
         continue;
       }
 
@@ -2746,14 +2732,14 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
       }
 
       QgsDebugMsg( QString( "creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7" )
-                   .arg( fldIt.key() ).arg( offset )
+                   .arg( fldIdx ).arg( offset )
                    .arg( fld.name() ).arg( QVariant::typeToName( fld.type() ) ).arg( fld.typeName() )
                    .arg( fld.length() ).arg( fld.precision() )
                  );
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fldIt.key(), offset++ );
+        oldToNewAttrIdxMap->insert( fldIdx, offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -2853,7 +2839,7 @@ QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

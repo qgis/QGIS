@@ -123,11 +123,6 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     virtual QgsRectangle extent();
 
     /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const { return mAttributeFields.size(); }
-
-    /**
       * Get the field information for the layer
       * @return vector of QgsField objects
       */

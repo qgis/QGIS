@@ -45,8 +45,8 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 
   QGis::WkbType outputType = dpA->geometryType();
   const QgsCoordinateReferenceSystem crs = layerA->crs();
-  QgsFieldMap fieldsA = dpA->fields();
-  QgsFieldMap fieldsB = dpB->fields();
+  QgsFields fieldsA = layerA->pendingFields();
+  QgsFields fieldsB = layerB->pendingFields();
   combineFieldLists( fieldsA, fieldsB );
 
   QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, &crs );
@@ -180,33 +180,24 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 }
 
-void QgsOverlayAnalyzer::combineFieldLists( QgsFieldMap& fieldListA, QgsFieldMap fieldListB )
+void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFields& fieldListB )
 {
   QList<QString> names;
-  QMap<int, QgsField>::const_iterator j = fieldListA.constBegin();
-  while ( j != fieldListA.constEnd() )
+  for ( int idx = 0; idx < fieldListA.count(); ++idx )
+    names.append( fieldListA[idx].name() );
+
+  for ( int idx = 0; idx < fieldListB.count(); ++idx )
   {
-    names.append( j.value().name() );
-    ++j;
-  }
-  QMap<int, QgsField>::const_iterator i = fieldListB.constBegin();
-  int count = 0;
-  int fcount = fieldListA.size();
-  QgsField field;
-  while ( i != fieldListB.constEnd() )
-  {
-    field = i.value();
+    QgsField field = fieldListB[idx];
+    int count = 0;
     while ( names.contains( field.name() ) )
     {
-      QString name = field.name();
-      name.append( "_" ).append( QString( count ) );
+      QString name = QString("%1_%2").arg( field.name() ).arg( count );
       field = QgsField( name, field.type() );
       ++count;
     }
-    fieldListA.insert( fcount, field );
-    count = 0;
-    ++fcount;
-    ++i;
+    fieldListA.append( field );
+    names.append( field.name() );
   }
 }
 

@@ -180,12 +180,6 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    bool copySymbologySettings( const QgsMapLayer& other );
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    bool hasCompatibleSymbology( const QgsMapLayer& other ) const;
-
     /** Returns a pointer to the renderer */
     const QgsRenderer* renderer() const;
 
@@ -476,7 +470,7 @@ class QgsVectorLayer : QgsMapLayer
     QgsRectangle extent();
 
     /** returns field list in the to-be-committed state */
-    const QMap<int, QgsField> &pendingFields() const;
+    const QgsFields &pendingFields() const;
 
     /** returns list of attributes */
     QList<int> pendingAllAttributesList();

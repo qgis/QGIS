@@ -4889,15 +4889,15 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 
   QHash<int, int> remap;
-  const QgsFieldMap &fields = clipboard()->fields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+  const QgsFields &fields = clipboard()->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( it->name() );
+    int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
     if ( dst < 0 )
     {
       continue;
     }
-    remap.insert( it.key(), dst );
+    remap.insert( idx, dst );
   }
 
   int dstAttrCount = pasteVectorLayer->pendingFields().count();

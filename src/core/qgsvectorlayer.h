@@ -229,12 +229,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    bool copySymbologySettings( const QgsMapLayer& other );
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    bool hasCompatibleSymbology( const QgsMapLayer& other ) const;
-
     /** Returns a pointer to the renderer */
     const QgsRenderer* renderer() const;
 
@@ -530,7 +524,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsRectangle extent();
 
     /** returns field list in the to-be-committed state */
-    const QgsFieldMap &pendingFields() const;
+    const QgsFields &pendingFields() const;
 
     /** returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
@@ -970,7 +964,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsGeometryMap mChangedGeometries;
 
     /** field map to commit */
-    QgsFieldMap mUpdatedFields;
+    QgsFields mUpdatedFields;
 
     /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;

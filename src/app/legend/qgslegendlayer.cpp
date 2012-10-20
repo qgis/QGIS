@@ -207,13 +207,16 @@ void QgsLegendLayer::vectorLayerSymbology( QgsVectorLayer* layer, double widthSc
       if ( renderer->needsAttributes() )
       {
         QgsAttributeList classfieldlist = renderer->classificationAttributes();
-        const QgsFieldMap& fields = layer->pendingFields();
+        const QgsFields& fields = layer->pendingFields();
         for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
         {
-          QString classfieldname = layer->attributeAlias( *it );
+          int idx = *it;
+          if ( idx < 0 || idx >= fields.count() )
+            continue;
+          QString classfieldname = layer->attributeAlias( idx );
           if ( classfieldname.isEmpty() )
           {
-            classfieldname = fields[*it].name();
+            classfieldname = fields[idx].name();
           }
           itemList.append( qMakePair( classfieldname, QPixmap() ) );
         }

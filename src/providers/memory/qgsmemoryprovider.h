@@ -58,15 +58,10 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
+    virtual const QgsFields & fields() const;
 
 
     /**
@@ -160,7 +155,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     // fields
-    QgsFieldMap mFields;
+    QgsFields mFields;
     QGis::WkbType mWkbType;
     QgsRectangle mExtent;
 

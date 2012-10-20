@@ -218,8 +218,8 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
-  feature.initAttributes( P->fieldCount() );
-  feature.setFieldMap( &P->mAttributeFields ); // allow name-based attribute lookups
+  feature.initAttributes( P->fields().count() );
+  feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
 
   // fetch geometry
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
@@ -252,9 +252,9 @@ void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
   else
   {
     // all attributes
-    for ( QgsFieldMap::iterator it = P->mAttributeFields.begin(); it != P->mAttributeFields.end(); ++it )
+    for ( int idx = 0; idx < P->mAttributeFields.count(); ++idx )
     {
-      getFeatureAttribute( fet, feature, it.key() );
+      getFeatureAttribute( fet, feature, idx );
     }
   }
 }

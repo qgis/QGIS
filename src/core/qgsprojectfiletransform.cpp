@@ -341,7 +341,7 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         return;
       }
-      QgsFieldMap theFieldMap = theProvider->fields();
+      QgsFields theFields = theProvider->fields();
 
       //read classificationfield
       QDomNodeList classificationFieldList = layerElem.elementsByTagName( "classificationfield" );
@@ -349,10 +349,9 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
         int fieldNumber = classificationFieldElem.text().toInt();
-        QgsFieldMap::const_iterator field_it = theFieldMap.find( fieldNumber );
-        if ( field_it != theFieldMap.constEnd() )
+        if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( field_it.value().name() );
+          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }

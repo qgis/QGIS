@@ -50,7 +50,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -114,11 +114,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     long featureCount() const;
 
-    /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const;
-
     /** Return the extent for this data layer
     */
     virtual QgsRectangle extent();
@@ -135,7 +130,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       * Get the field information for the layer
       * @return vector of QgsField objects
       */
-    const QgsFieldMap & fields() const;
+    const QgsFields & fields() const;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
@@ -258,7 +253,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
-    QgsFieldMap attributeFields;
+    QgsFields attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
        */

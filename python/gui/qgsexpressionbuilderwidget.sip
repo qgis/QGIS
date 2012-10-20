@@ -82,7 +82,7 @@ class QgsExpressionBuilderWidget : QWidget
       */
     void loadFieldNames();
 
-    void loadFieldNames( QMap<int, QgsField> fields );
+    void loadFieldNames( const QgsFields& fields );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */

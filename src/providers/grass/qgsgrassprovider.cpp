@@ -302,18 +302,9 @@ long QgsGrassProvider::featureCount() const
 }
 
 /**
-* Return the number of fields
-*/
-uint QgsGrassProvider::fieldCount() const
-{
-  QgsDebugMsg( QString( "return: %1" ).arg( mLayers[mLayerId].fields.size() ) );
-  return mLayers[mLayerId].fields.size();
-}
-
-/**
 * Return fields
 */
-const QgsFieldMap & QgsGrassProvider::fields() const
+const QgsFields & QgsGrassProvider::fields() const
 {
   return mLayers[mLayerId].fields;
 }
@@ -325,7 +316,7 @@ int QgsGrassProvider::keyField()
 
 QVariant QgsGrassProvider::minimumValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -336,7 +327,7 @@ QVariant QgsGrassProvider::minimumValue( int index )
 
 QVariant QgsGrassProvider::maxValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -542,8 +533,8 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
               qtype = QVariant::String;
               break;
           }
-          layer.fields[i] = QgsField( db_get_column_name( column ), qtype, ctypeStr,
-                                      db_get_column_length( column ), db_get_column_precision( column ) );
+          layer.fields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
+                                      db_get_column_length( column ), db_get_column_precision( column ) ) );
 
           if ( G_strcasecmp( db_get_column_name( column ), layer.fieldInfo->key ) == 0 )
           {
@@ -647,7 +638,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
   if ( layer.nColumns == 0 )
   {
     layer.keyColumn = 0;
-    layer.fields[0] = ( QgsField( "cat", QVariant::Int, "integer" ) );
+    layer.fields.append( QgsField( "cat", QVariant::Int, "integer" ) );
     layer.minmax = new double[1][2];
     layer.minmax[0][0] = 0;
     layer.minmax[0][1] = 0;

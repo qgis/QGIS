@@ -87,14 +87,13 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
     QgsFeature f;
     if ( mVectorLayer->featureAtId( mFeature, f, false, true ) )
     {
-      const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
+      const QgsFields& fields = mVectorLayer->pendingFields();
       const QgsAttributes& attrs = f.attributes();
       for ( int i = 0; i < attrs.count(); ++i )
       {
-        QgsFieldMap::const_iterator fieldIt = fieldMap.find( i );
-        if ( fieldIt != fieldMap.constEnd() )
+        if ( i < fields.count() )
         {
-          QWidget* attWidget = widget->findChild<QWidget*>( fieldIt->name() );
+          QWidget* attWidget = widget->findChild<QWidget*>( fields[i].name() );
           if ( attWidget )
           {
             QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs[i] );

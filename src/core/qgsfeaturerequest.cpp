@@ -5,20 +5,20 @@
 #include <QStringList>
 
 QgsFeatureRequest::QgsFeatureRequest()
-    : mFlags( 0 )
+    : mFilter( FilterNone )
+    , mFlags( 0 )
 {
 }
 
 
-QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFieldMap& fields )
+QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
 {
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  foreach( const QString& attrName, attrNames )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int idx = fields.key( attrName, -1 );
-    if ( idx != -1 )
+    if ( attrNames.contains( fields[idx].name() ) )
       mAttrs.append( idx );
   }
 

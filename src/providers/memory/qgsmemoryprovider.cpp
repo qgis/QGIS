@@ -237,13 +237,7 @@ long QgsMemoryProvider::featureCount() const
   return mFeatures.count();
 }
 
-uint QgsMemoryProvider::fieldCount() const
-{
-  return mFields.count();
-}
-
-
-const QgsFieldMap & QgsMemoryProvider::fields() const
+const QgsFields & QgsMemoryProvider::fields() const
 {
   return mFields;
 }
@@ -320,11 +314,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     }
 
     // add new field as a last one
-    int nextId = -1;
-    for ( QgsFieldMap::iterator it2 = mFields.begin(); it2 != mFields.end(); ++it2 )
-      if ( it2.key() > nextId )
-        nextId = it2.key();
-    mFields[nextId+1] = *it;
+    mFields.append( *it );
   }
   return true;
 }

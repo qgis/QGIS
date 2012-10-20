@@ -120,7 +120,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void loadFieldNames();
 
-    void loadFieldNames( QgsFieldMap fields );
+    void loadFieldNames( const QgsFields& fields );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */

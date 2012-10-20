@@ -118,14 +118,13 @@ void QgsFieldCalculator::accept()
     }
 
     //get index of the new field
-    const QgsFieldMap fieldList = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->pendingFields();
 
-    QgsFieldMap::const_iterator it = fieldList.constBegin();
-    for ( ; it != fieldList.constEnd(); ++it )
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      if ( it.value().name() == mOutputFieldNameLineEdit->text() )
+      if ( fields[idx].name() == mOutputFieldNameLineEdit->text() )
       {
-        mAttributeId = it.key();
+        mAttributeId = idx;
         break;
       }
     }
@@ -267,15 +266,14 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  const QgsFields& fields = mVectorLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
 
-    QString fieldName = fieldIt.value().name();
+    QString fieldName = fields[idx].name();
 
     //insert into field list and field combo box
-    mFieldMap.insert( fieldName, fieldIt.key() );
+    mFieldMap.insert( fieldName, idx );
     mExistingFieldComboBox->addItem( fieldName );
   }
 }

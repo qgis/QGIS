@@ -43,7 +43,7 @@ class QgsVectorLayerImport
     /** create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
-                          const QMap<int, QgsField> &fields,
+                          const QgsFields &fields,
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,

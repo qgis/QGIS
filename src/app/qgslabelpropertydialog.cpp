@@ -71,7 +71,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
   {
     mCurrentLabelField = vlayer->fieldNameIndex( labelFieldName );
     mLabelTextLineEdit->setText( attributeValues[mCurrentLabelField].toString() );
-    const QgsFieldMap& layerFields = vlayer->pendingFields();
+    const QgsFields& layerFields = vlayer->pendingFields();
     switch ( layerFields[mCurrentLabelField].type() )
     {
       case QVariant::Double:

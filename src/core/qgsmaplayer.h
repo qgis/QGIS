@@ -190,12 +190,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    virtual bool hasCompatibleSymbology( const QgsMapLayer& other ) const = 0;
-
     /** Accessor for transparency level. */
     unsigned int getTransparency();
 

@@ -316,11 +316,11 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         geomElem.setAttribute( "maxOccurs", "1" );
         sequenceElem.appendChild( geomElem );
 
-        const QgsFieldMap& fields = provider->fields();
-        for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+        const QgsFields& fields = provider->fields();
+        for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
-          QString attributeName = it.value().name();
+          QString attributeName = fields[idx].name();
           //skip attribute if it has edit type 'hidden'
           if ( layerHiddenAttributes.contains( attributeName ) )
           {
@@ -330,9 +330,10 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           //xsd:element
           QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
           geomElem.setAttribute( "name", attributeName );
-          if ( it.value().type() == 2 )
+          QVariant::Type attributeType = fields[idx].type();
+          if ( attributeType == QVariant::Int )
             geomElem.setAttribute( "type", "integer" );
-          else if ( it.value().type() == 6 )
+          else if ( attributeType == QVariant::Double )
             geomElem.setAttribute( "type", "double" );
           else
             geomElem.setAttribute( "type", "string" );
@@ -340,7 +341,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           sequenceElem.appendChild( geomElem );
 
           //check if the attribute name should be replaced with an alias
-          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
+          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( idx );
           if ( aliasIt != layerAliasInfo.constEnd() )
           {
             geomElem.setAttribute( "alias", aliasIt.value() );

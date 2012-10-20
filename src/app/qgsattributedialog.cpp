@@ -57,8 +57,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( !mFeature || !vl->dataProvider() )
     return;
 
-  const QgsFieldMap &theFieldMap = vl->pendingFields();
-  if ( theFieldMap.isEmpty() )
+  const QgsFields &theFields = vl->pendingFields();
+  if ( theFields.isEmpty() )
     return;
 
   QgsAttributes myAttributes = mFeature->attributes();
@@ -128,13 +128,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QGridLayout *mypInnerLayout = new QGridLayout( mypInnerFrame );
 
     int index = 0;
-    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
+    for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
       //show attribute alias if available
-      QString myFieldName = vl->attributeDisplayName( it.key() );
-      int myFieldType = it->type();
+      QString myFieldName = vl->attributeDisplayName( fldIdx );
+      int myFieldType = theFields[fldIdx].type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes[it.key()] );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx] );
       if ( !myWidget )
         continue;
 
@@ -158,13 +158,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         mypLabel->setText( myFieldName );
       }
 
-      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
         myWidget->setEnabled( vl->isEditable() );
       }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
-      mpIndizes << it.key();
       mpWidgets << myWidget;
       ++index;
     }
@@ -177,20 +176,19 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
   else
   {
-    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
+    for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
-      QWidget *myWidget = mDialog->findChild<QWidget*>( it->name() );
+      QWidget *myWidget = mDialog->findChild<QWidget*>( theFields[fldIdx].name() );
       if ( !myWidget )
         continue;
 
-      QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
+      QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, fldIdx, myAttributes.value( fldIdx, QVariant() ) );
 
-      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
         myWidget->setEnabled( vl->isEditable() );
       }
 
-      mpIndizes << it.key();
       mpWidgets << myWidget;
     }
 
@@ -344,16 +342,13 @@ void QgsAttributeDialog::accept()
     return;
 
   //write the new values back to the feature
-  int myIndex = 0;
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QVariant value;
 
-    int idx = mpIndizes.value( myIndex );
-    if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, idx, value ) )
+    if ( QgsAttributeEditor::retrieveValue( mpWidgets[idx], mLayer, idx, value ) )
       mFeature->setAttribute( idx, value );
-
-    ++myIndex;
   }
 }
 

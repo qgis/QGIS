@@ -55,11 +55,10 @@ QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt:
   QgsVectorDataProvider* provider = mLayer->dataProvider();
   if ( provider )
   {
-    const QgsFieldMap& layerFieldMap = provider->fields();
-    QgsFieldMap::const_iterator fieldIt = layerFieldMap.constBegin();
-    for ( ; fieldIt != layerFieldMap.constEnd(); ++fieldIt )
+    const QgsFields& layerFields = provider->fields();
+    for ( int idx = 0; idx < layerFields.count(); ++idx )
     {
-      mTargetFieldComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+      mTargetFieldComboBox->addItem( layerFields[idx].name(), idx );
     }
   }
 
@@ -120,11 +119,10 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
     return;
   }
 
-  const QgsFieldMap& layerFieldMap = vLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = layerFieldMap.constBegin();
-  for ( ; fieldIt != layerFieldMap.constEnd(); ++fieldIt )
+  const QgsFields& layerFields = vLayer->pendingFields();
+  for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
-    mJoinFieldComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+    mJoinFieldComboBox->addItem( layerFields[idx].name(), idx );
   }
 
   //does provider support creation of attribute indices?

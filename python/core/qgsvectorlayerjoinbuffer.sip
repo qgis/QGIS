@@ -16,15 +16,15 @@ class QgsVectorLayerJoinBuffer
 
     /**Creates QgsVectorLayerJoinBuffer for the joins containing attributes to fetch*/
     void select( const QgsAttributeList& fetchAttributes,
-                 QgsAttributeList& sourceJoinFields, int maxProviderIndex );
+                 QgsAttributeList& sourceJoinFields, int providerFieldCount );
 
     /**Updates field map with joined attributes
       @param fields map to append joined attributes
-      @param maxIndex in/out: maximum attribute index*/
-    void updateFieldMap( QMap<int, QgsField> &fields, int& maxIndex );
+     */
+    void updateFields( QgsFields& fields );
 
     /**Update feature with uncommited attribute updates and joined attributes*/
-    void updateFeatureAttributes( QgsFeature &f, int maxProviderIndex, bool all = false );
+    void updateFeatureAttributes( QgsFeature &f, int providerFieldCount, bool all = false );
 
     /**Calls cacheJoinLayer() for all vector joins*/
     void createJoinCaches();
@@ -47,9 +47,6 @@ class QgsVectorLayerJoinBuffer
       @param maxProviderIndex maximum attribute index of the vectorlayer provider
       @param indexOffset out: offset between layer index and original provider index
        @return pointer to the join if the index belongs to a joined field, otherwise 0 (possibily provider field or added field)*/
-    const QgsVectorJoinInfo* joinForFieldIndex( int index, int maxProviderIndex, int& indexOffset ) const;
+    const QgsVectorJoinInfo* joinForFieldIndex( int index, int providerFieldCount, int& indexOffset ) const;
 
-    /** Helper function to find out the maximum index of a field map
-        @return true in case of success, otherwise false (e.g. empty map)*/
-    static bool maximumIndex( const QMap<int, QgsField> &fMap, int& index );
 };

@@ -872,14 +872,6 @@ long QgsMssqlProvider::featureCount() const
   return mNumberFeatures;
 }
 
-/**
- * Return the number of fields
- */
-uint QgsMssqlProvider::fieldCount() const
-{
-  return mAttributeFields.size();
-}
-
 
 const QgsFieldMap & QgsMssqlProvider::fields() const
 {

@@ -467,11 +467,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 void QgsLabelingGui::populateFieldNames()
 {
-  const QgsFieldMap& fields = mLayer->pendingFields();
-  QgsFieldMap::const_iterator it = fields.constBegin();
-  for ( ; it != fields.constEnd(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    cboFieldName->addItem( it->name() );
+    cboFieldName->addItem( fields[idx].name() );
   }
 }
 
@@ -538,12 +537,12 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   }
 
   // TODO: don't add field that aren't of appropriate type for the data defined property
-  const QgsFieldMap& fields = mLayer->dataProvider()->fields();
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++ )
+  const QgsFields& fields = mLayer->dataProvider()->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
     for ( comboIt = comboList.begin(); comboIt != comboList.end(); ++comboIt )
     {
-      ( *comboIt )->addItem( it.value().name(), it.key() );
+      ( *comboIt )->addItem( fields[idx].name(), idx );
     }
 
   }

@@ -17,6 +17,7 @@ from PyQt4.QtCore import QVariant
 from qgis.core import (QGis,
                         QgsVectorLayer,
                         QgsFeature,
+                        QgsFeatureRequest,
                         QgsField,
                         QgsGeometry,
                         QgsPoint)
@@ -55,15 +56,15 @@ class TestQgsMemoryProvider(TestCase):
         assert res, "Failed to add attributes"
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (3, provider.fieldCount()))
+                      (3, len(provider.fields())))
 
-        assert provider.fieldCount() == 3, myMessage
+        assert len(provider.fields()) == 3, myMessage
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
-        ft.setAttributeMap({0 : QVariant("Johny"),
-                            1 : QVariant(20),
-                            2 : QVariant(0.3)})
+        ft.setAttributes([ QVariant("Johny"),
+                           QVariant(20),
+                           QVariant(0.3) ])
         res, t = provider.addFeatures([ft])
 
         assert res, "Failed to add feature"
@@ -72,24 +73,22 @@ class TestQgsMemoryProvider(TestCase):
                       (1, provider.featureCount()))
         assert provider.featureCount() == 1, myMessage
 
-        f = QgsFeature()
-        provider.select()
-        while provider.nextFeature(f):
-          attrMap = f.attributeMap()
+        for f in provider.getFeatures(QgsFeatureRequest()):
+          attrs = f.attributes()
           myMessage = ('Expected: %s\nGot: %s\n' %
-                        ("Johny", str(attrMap[0].toString())))
+                        ("Johny", str(attrs[0].toString())))
 
-          assert str(attrMap[0].toString()) == "Johny", myMessage
+          assert str(attrs[0].toString()) == "Johny", myMessage
 
           myMessage = ('Expected: %s\nGot: %s\n' %
-                        (20, attrMap[1].toInt()[0]))
+                        (20, attrs[1].toInt()[0]))
 
-          assert attrMap[1].toInt()[0] == 20, myMessage
+          assert attrs[1].toInt()[0] == 20, myMessage
 
           myMessage = ('Expected: %s\nGot: %s\n' %
-                        (0.3, attrMap[2].toFloat()[0]))
+                        (0.3, attrs[2].toFloat()[0]))
 
-          assert (attrMap[0].toFloat()[0] - 0.3) < 0.0000001, myMessage
+          assert (attrs[0].toFloat()[0] - 0.3) < 0.0000001, myMessage
 
           geom = f.geometry()
 

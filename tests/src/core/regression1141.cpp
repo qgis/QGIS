@@ -60,7 +60,7 @@ class Regression1141: public QObject
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
-    QgsFieldMap mFields;
+    QgsFields mFields;
     QString mFileName;
 };
 
@@ -93,7 +93,7 @@ void Regression1141::diacriticalTest()
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
   QgsField myField( "ąęćń", QVariant::Int, "int", 10, 0, "Value on lon" );
-  mFields.insert( 0, myField );
+  mFields.append( myField );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
 
   qDebug( "Checking test dataset exists...\n%s", mFileName.toLocal8Bit().constData() );

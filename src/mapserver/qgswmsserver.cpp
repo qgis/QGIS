@@ -1163,7 +1163,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   QgsFeature feature;
   QgsAttributes featureAttributes;
   int featureCounter = 0;
-  const QgsFieldMap& fields = layer->pendingFields();
+  const QgsFields& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
 
   layer->select( layer->pendingAllAttributesList(), searchRect, addWktGeometry || featureBBox, true );

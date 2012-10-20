@@ -69,7 +69,7 @@ void QgsAtlasComposition::beginRender()
   mTransform.setSourceCrs( coverage_crs );
   mTransform.setDestCRS( destination_crs );
 
-  QgsFieldMap fieldmap = mCoverageLayer->pendingFields();
+  const QgsFields& fields = mCoverageLayer->pendingFields();
 
   if ( mFilenamePattern.size() > 0 )
   {
@@ -82,7 +82,7 @@ void QgsAtlasComposition::beginRender()
     }
 
     // prepare the filename expression
-    mFilenameExpr->prepare( fieldmap );
+    mFilenameExpr->prepare( fields );
   }
 
   // select all features with all attributes

@@ -200,11 +200,11 @@ int QgsFeature::fieldNameIndex( const QString& fieldName ) const
   if ( !mFields )
     return -1;
 
-  for ( QgsFieldMap::const_iterator it = mFields->constBegin(); it != mFields->constEnd(); ++it )
+  for ( int i = 0; i < mFields->count(); ++i )
   {
-    if ( QString::compare( it->name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( mFields->at( i ).name(), fieldName, Qt::CaseInsensitive ) == 0 )
     {
-      return it.key();
+      return i;
     }
   }
   return -1;

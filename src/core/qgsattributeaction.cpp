@@ -165,23 +165,23 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   else
     expanded_action = action;
 
-  const QgsFieldMap &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->pendingFields();
 
   for ( int i = 0; i < 4; i++ )
   {
     for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
     {
-      QgsFieldMap::const_iterator fit = fields.find( it.key() );
-      if ( fit == fields.constEnd() )
+      int attrIdx = it.key();
+      if ( attrIdx < 0 || attrIdx >= fields.count() )
         continue;
 
       QString to_replace;
       switch ( i )
       {
-        case 0: to_replace = "[%" + fit->name() + "]"; break;
-        case 1: to_replace = "[%" + mLayer->attributeDisplayName( it.key() ) + "]"; break;
-        case 2: to_replace = "%" + fit->name(); break;
-        case 3: to_replace = "%" + mLayer->attributeDisplayName( it.key() ); break;
+        case 0: to_replace = "[%" + fields[attrIdx].name() + "]"; break;
+        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + "]"; break;
+        case 2: to_replace = "%" + fields[attrIdx].name(); break;
+        case 3: to_replace = "%" + mLayer->attributeDisplayName( attrIdx ); break;
       }
 
       expanded_action = expanded_action.replace( to_replace, it.value().toString() );

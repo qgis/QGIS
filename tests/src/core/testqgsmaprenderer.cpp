@@ -65,7 +65,7 @@ class TestQgsMapRenderer: public QObject
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
-    QgsFieldMap mFields;
+    QgsFields mFields;
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
@@ -83,7 +83,7 @@ void TestQgsMapRenderer::initTestCase()
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
   QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
-  mFields.insert( 0, myField1 );
+  mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
   // Create the test dataset if it doesnt exist

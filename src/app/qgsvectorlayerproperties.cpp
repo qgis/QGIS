@@ -133,7 +133,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin( 0 );
-  const QgsFieldMap &fields = layer->pendingFields();
+  const QgsFields &fields = layer->pendingFields();
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
@@ -251,7 +251,7 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 void QgsVectorLayerProperties::loadRows()
 {
   QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
-  const QgsFieldMap &fields = layer->pendingFields();
+  const QgsFields &fields = layer->pendingFields();
 
   tblAttributes->clear();
 
@@ -272,9 +272,8 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setSelectionMode( QAbstractItemView::ExtendedSelection );
   tblAttributes->verticalHeader()->hide();
 
-  int row = 0;
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
-    setRow( row, it.key(), it.value() );
+  for ( int idx = 0; idx < fields.count(); ++idx )
+    setRow( idx, idx, fields[idx] );
 
   tblAttributes->resizeColumnsToContents();
   QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
@@ -378,7 +377,7 @@ void QgsVectorLayerProperties::toggleEditing()
 
 void QgsVectorLayerProperties::attributeAdded( int idx )
 {
-  const QgsFieldMap &fields = layer->pendingFields();
+  const QgsFields &fields = layer->pendingFields();
   int row = tblAttributes->rowCount();
   tblAttributes->insertRow( row );
   setRow( row, idx, fields[idx] );
@@ -604,11 +603,11 @@ void QgsVectorLayerProperties::reset( void )
   }
 
   //get field list for display field combo
-  const QgsFieldMap& myFields = layer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = layer->pendingFields();
+  for ( int idx = 0; idx < myFields.count(); ++idx )
   {
-    displayFieldComboBox->addItem( it->name() );
-    fieldComboBox->addItem( it->name() );
+    displayFieldComboBox->addItem( myFields[idx].name() );
+    fieldComboBox->addItem( myFields[idx].name() );
   }
 
   setDisplayField( layer-> displayField() );
@@ -1106,9 +1105,9 @@ void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column
   {
     int idx = tblAttributes->item( row, attrIdCol )->text().toInt();
 
-    const QgsFieldMap &fields = layer->pendingFields();
+    const QgsFields &fields = layer->pendingFields();
 
-    if ( !fields.contains( idx ) )
+    if ( idx < 0 || idx >= fields.count() )
     {
       return; // index must be wrong
     }

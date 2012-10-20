@@ -85,7 +85,6 @@ bool QgsSpatiaLiteFeatureIterator::nextFeature( QgsFeature& feature )
     return false;
   }
 
-  feature.setFieldMap( &P->attributeFields ); // allow name-based attribute lookups
   feature.setValid( true );
   return true;
 }
@@ -135,9 +134,9 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
     else
     {
       // fetch all attributes
-      for ( QgsFieldMap::const_iterator it = P->attributeFields.begin(); it != P->attributeFields.end(); ++it )
+      for ( int idx = 0; idx < P->attributeFields.count(); ++idx )
       {
-        sql += "," + fieldName( it.value() );
+        sql += "," + fieldName( P->attributeFields[idx] );
         colIdx++;
       }
     }
@@ -275,7 +274,8 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
     feature.setGeometryAndOwnership( 0, 0 );
   }
 
-  feature.initAttributes( P->fieldCount() );
+  feature.initAttributes( P->fields().count() );
+  feature.setFields( &P->attributeFields ); // allow name-based attribute lookups
 
   int ic;
   int n_columns = sqlite3_column_count( stmt );

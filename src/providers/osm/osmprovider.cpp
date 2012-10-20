@@ -883,12 +883,6 @@ long QgsOSMDataProvider::featureCount() const
 }
 
 
-uint QgsOSMDataProvider::fieldCount() const
-{
-  return mAttributeFields.size();;
-}
-
-
 bool QgsOSMDataProvider::isValid()
 {
   return mValid;

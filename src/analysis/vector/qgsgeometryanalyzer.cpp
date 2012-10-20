@@ -47,7 +47,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   QGis::WkbType outputType = dp->geometryType();
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -163,7 +163,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   QGis::WkbType outputType = QGis::WKBPoint;
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -279,17 +279,17 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
   QGis::WkbType outputType = QGis::WKBPolygon;
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsFieldMap fields;
-  fields.insert( 0 , QgsField( QString( "MINX" ), QVariant::Double ) );
-  fields.insert( 1 , QgsField( QString( "MINY" ), QVariant::Double ) );
-  fields.insert( 2 , QgsField( QString( "MAXX" ), QVariant::Double ) );
-  fields.insert( 3 , QgsField( QString( "MAXY" ), QVariant::Double ) );
-  fields.insert( 4 , QgsField( QString( "CNTX" ), QVariant::Double ) );
-  fields.insert( 5 , QgsField( QString( "CNTY" ), QVariant::Double ) );
-  fields.insert( 6 , QgsField( QString( "AREA" ), QVariant::Double ) );
-  fields.insert( 7 , QgsField( QString( "PERIM" ), QVariant::Double ) );
-  fields.insert( 8 , QgsField( QString( "HEIGHT" ), QVariant::Double ) );
-  fields.insert( 9 , QgsField( QString( "WIDTH" ), QVariant::Double ) );
+  QgsFields fields;
+  fields.append( QgsField( QString( "MINX" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "MINY" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "MAXX" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "MAXY" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "CNTX" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "CNTY" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "AREA" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "PERIM" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "HEIGHT" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "WIDTH" ), QVariant::Double ) );
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
 
@@ -404,10 +404,10 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   {
     useField = true;
   }
-  QgsFieldMap fields;
-  fields.insert( 0 , QgsField( QString( "UID" ), QVariant::String ) );
-  fields.insert( 1 , QgsField( QString( "AREA" ), QVariant::Double ) );
-  fields.insert( 2 , QgsField( QString( "PERIM" ), QVariant::Double ) );
+  QgsFields fields;
+  fields.append( QgsField( QString( "UID" ), QVariant::String ) );
+  fields.append( QgsField( QString( "AREA" ), QVariant::Double ) );
+  fields.append( QgsField( QString( "PERIM" ), QVariant::Double ) );
 
   QGis::WkbType outputType = QGis::WKBPolygon;
   const QgsCoordinateReferenceSystem crs = layer->crs();
@@ -618,7 +618,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   QGis::WkbType outputType = dp->geometryType();
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
   QgsFeature currentFeature;
   QMultiMap<QString, QgsFeatureId> map;
 
@@ -771,7 +771,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   }
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
   QgsFeature currentFeature;
   QgsGeometry *dissolveGeometry = 0; //dissolve geometry (if dissolve enabled)
 
@@ -951,7 +951,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
   else
   {
-    memoryProvider->addAttributes( eventLayer->pendingFields().values() );
+    memoryProvider->addAttributes( eventLayer->pendingFields().toList() );
   }
 
   //iterate over eventLayer and write new features to output file or layer

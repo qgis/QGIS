@@ -40,14 +40,14 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
     QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
     if ( provider )
     {
-      const QgsFieldMap & fields = provider->fields();
+      const QgsFields & fields = provider->fields();
       QString str;
 
-      for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+      for ( int idx = 0; idx < fields.count(); ++idx )
       {
-        str = ( *it ).name();
-        str = mVectorLayer->attributeDisplayName( it.key() );
-        mClassificationComboBox->addItem( str, it.key() );
+        str = fields[idx].name();
+        str = mVectorLayer->attributeDisplayName( idx );
+        mClassificationComboBox->addItem( str, idx );
       }
     }
   }

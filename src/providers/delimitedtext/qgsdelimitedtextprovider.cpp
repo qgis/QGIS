@@ -290,7 +290,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         // assume that the field could be integer or double
         // for now, let's set field type as text
         attributeColumns.append( column );
-        attributeFields[fieldPos] = QgsField( field, QVariant::String, "Text" );
+        attributeFields.append( QgsField( field, QVariant::String, "Text" ) );
         couldBeInt.insert( fieldPos, true );
         couldBeDouble.insert( fieldPos, true );
         fieldPos++;
@@ -430,17 +430,18 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QgsDebugMsg( "feature count is: " + QString::number( mNumberFeatures ) );
 
   // now it's time to decide the types for the fields
-  for ( QgsFieldMap::iterator it = attributeFields.begin(); it != attributeFields.end(); ++it )
+  for ( int i = 0; i < attributeFields.count(); ++i )
   {
-    if ( couldBeInt[it.key()] )
+    QgsField& fld = attributeFields[i];
+    if ( couldBeInt[i] )
     {
-      it->setType( QVariant::Int );
-      it->setTypeName( "integer" );
+      fld.setType( QVariant::Int );
+      fld.setTypeName( "integer" );
     }
-    else if ( couldBeDouble[it.key()] )
+    else if ( couldBeDouble[i] )
     {
-      it->setType( QVariant::Double );
-      it->setTypeName( "double" );
+      fld.setType( QVariant::Double );
+      fld.setTypeName( "double" );
     }
   }
 
@@ -545,7 +546,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     // At this point the current feature values are valid
 
     feature.setValid( true );
-    feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
+    feature.setFields( &attributeFields ); // allow name-based attribute lookups
     feature.setFeatureId( mFid );
     feature.initAttributes( mFieldCount );
 
@@ -660,16 +661,8 @@ long QgsDelimitedTextProvider::featureCount() const
   return mNumberFeatures;
 }
 
-/**
- * Return the number of fields
- */
-uint QgsDelimitedTextProvider::fieldCount() const
-{
-  return attributeFields.size();
-}
 
-
-const QgsFieldMap & QgsDelimitedTextProvider::fields() const
+const QgsFields & QgsDelimitedTextProvider::fields() const
 {
   return attributeFields;
 }
