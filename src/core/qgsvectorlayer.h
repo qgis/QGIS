@@ -572,6 +572,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     QString attributeDisplayName( int attributeIndex ) const;
 
+    const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
+
     const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
     void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
 

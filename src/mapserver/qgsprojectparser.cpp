@@ -131,6 +131,9 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QStringList wfsLayersId = wfsLayers();
+  QStringList wfstUpdateLayersId = wfstUpdateLayers();
+  QStringList wfstInsertLayersId = wfstInsertLayers();
+  QStringList wfstDeleteLayersId = wfstDeleteLayers();
 
   if ( mProjectLayerElements.size() < 1 )
   {
@@ -194,6 +197,37 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
         layerElem.appendChild( bBoxElement );
 
+        //wfs:Operations element
+        QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
+        //wfs:Query element
+        QDomElement queryElement = doc.createElement( "Query"/*wfs:Query*/ );
+        operationsElement.appendChild( queryElement );
+
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+        QgsVectorDataProvider* provider = vlayer->dataProvider();
+        if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        {
+          //wfs:Insert element
+          QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
+          operationsElement.appendChild( insertElement );
+        }
+        if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+            ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+            wfstUpdateLayersId.contains( layer->id() ) )
+        {
+          //wfs:Update element
+          QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
+          operationsElement.appendChild( updateElement );
+        }
+        if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        {
+          //wfs:Delete element
+          QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
+          operationsElement.appendChild( deleteElement );
+        }
+
+        layerElem.appendChild( operationsElement );
+
         parentElement.appendChild( layerElem );
       }
     }
@@ -209,8 +243,6 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   }
 
   QStringList wfsLayersId = wfsLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = layerAliasInfo();
-  QMap< QString, QSet<QString> > excludedAttrs = wfsExcludedAttributes();
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
@@ -228,21 +260,8 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           continue;
         }
 
-        //is there alias info for this vector layer?
-        QMap< int, QString > layerAliasInfo;
-        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( mLayer->id() );
-        if ( aliasIt != aliasInfo.constEnd() )
-        {
-          layerAliasInfo = aliasIt.value();
-        }
-
         //hidden attributes for this layer
-        QSet<QString> layerExcludedAttributes;
-        QMap< QString, QSet<QString> >::const_iterator exclIt = excludedAttrs.find( mLayer->id() );
-        if ( exclIt != excludedAttrs.constEnd() )
-        {
-          layerExcludedAttributes = exclIt.value();
-        }
+        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
 
         QString typeName = layer->name();
         typeName = typeName.replace( QString( " " ), QString( "_" ) );
@@ -315,7 +334,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         {
 
           QString attributeName = it.value().name();
-          //skip attribute if it has edit type 'hidden'
+          //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
             continue;
@@ -333,11 +352,10 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
 
           sequenceElem.appendChild( geomElem );
 
-          //check if the attribute name should be replaced with an alias
-          QMap<int, QString>::const_iterator aliasIt = layerAliasInfo.find( it.key() );
-          if ( aliasIt != layerAliasInfo.constEnd() )
+          QString alias = layer->attributeAlias( it.key() );
+          if ( !alias.isEmpty() )
           {
-            geomElem.setAttribute( "alias", aliasIt.value() );
+            geomElem.setAttribute( "alias", alias );
           }
         }
       }
@@ -549,6 +567,7 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
   if ( currentLayer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+    const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
 
     //displayfield
     layerElem.setAttribute( "displayField", vLayer->displayField() );
@@ -559,8 +578,12 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
     QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
     for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
     {
+      if ( excludedAttributes.contains( fieldIt->name() ) )
+      {
+        continue;
+      }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", fieldIt->name() );
+      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( fieldIt.key() ) );
       attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
 
       //edit type to text
@@ -954,6 +977,123 @@ QStringList QgsProjectParser::wfsLayers() const
   return wfsList;
 }
 
+QStringList QgsProjectParser::wfstUpdateLayers() const
+{
+  QStringList publiedIds = wfsLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstUpdateLayersElem = wfstLayersElem.firstChildElement( "Update" );
+  if ( wfstUpdateLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstUpdateLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( publiedIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstInsertLayers() const
+{
+  QStringList updateIds = wfstUpdateLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstInsertLayersElem = wfstLayersElem.firstChildElement( "Insert" );
+  if ( wfstInsertLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstInsertLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( updateIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstDeleteLayers() const
+{
+  QStringList insertIds = wfstInsertLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstDeleteLayersElem = wfstLayersElem.firstChildElement( "Delete" );
+  if ( wfstDeleteLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstDeleteLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( insertIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
 QStringList QgsProjectParser::supportedOutputCrsList() const
 {
   QStringList crsList;
@@ -1027,73 +1167,6 @@ bool QgsProjectParser::featureInfoWithWktGeometry() const
   }
 
   return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-}
-
-QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
-{
-  QMap< QString, QMap< int, QString > > resultMap;
-
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomNodeList aNodeList = layerIt->elementsByTagName( "aliases" );
-    if ( aNodeList.size() > 0 )
-    {
-      QMap<int, QString> aliasMap;
-      QDomNodeList aliasNodeList = aNodeList.at( 0 ).toElement().elementsByTagName( "alias" );
-      for ( int i = 0; i < aliasNodeList.size(); ++i )
-      {
-        QDomElement aliasElem = aliasNodeList.at( i ).toElement();
-        aliasMap.insert( aliasElem.attribute( "index" ).toInt(), aliasElem.attribute( "name" ) );
-      }
-      resultMap.insert( layerId( *layerIt ) , aliasMap );
-    }
-  }
-
-  return resultMap;
-}
-
-QMap< QString, QSet<QString> > QgsProjectParser::wmsExcludedAttributes() const
-{
-  QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWMS" );
-    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
-    if ( attributeNodeList.size() > 0 )
-    {
-      QSet<QString> layerExcludedAttributes;
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
-    }
-  }
-  return resultMap;
-}
-
-/**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-QMap< QString, QSet<QString> > QgsProjectParser::wfsExcludedAttributes() const
-{
-  QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomElement excludeWMSElem = layerIt->firstChildElement( "excludeAttributesWFS" );
-    QDomNodeList attributeNodeList = excludeWMSElem.elementsByTagName( "attribute" );
-    if ( attributeNodeList.size() > 0 )
-    {
-      QSet<QString> layerExcludedAttributes;
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        layerExcludedAttributes.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-      resultMap.insert( layerId( *layerIt ), layerExcludedAttributes );
-    }
-  }
-  return resultMap;
 }
 
 QgsRectangle QgsProjectParser::mapRectangle() const

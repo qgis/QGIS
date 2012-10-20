@@ -101,8 +101,8 @@ class QGisLayers:
             name = path.split(layer)[1]
         qgslayer = QgsVectorLayer(layer, name , 'ogr')
         if qgslayer.isValid():
-            if crs != None:
-                qgslayer.setCrs(crs,False)
+            if crs is not None and qgslayer.crs() is None:
+                qgslayer.setCrs(crs, False)
             if style == None:
                 if qgslayer.geometryType == 0:
                     style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)

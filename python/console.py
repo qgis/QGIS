@@ -24,6 +24,7 @@ from PyQt4.QtGui import *
 from qgis.utils import iface
 from console_sci import PythonEdit
 from console_help import HelpDialog
+from console_settings import optionsDialog
 
 import sys
 import os
@@ -37,13 +38,16 @@ def show_console():
     parent = iface.mainWindow() if iface else None
     _console = PythonConsole( parent )
     _console.show() # force show even if it was restored as hidden
+
+    # set focus to the console so the user can start typing
+    # defer the set focus event so it works also whether the console not visible yet
+    QTimer.singleShot(0, _console.activate)
   else:
     _console.setVisible(not _console.isVisible())
 
-  # set focus to the edit box so the user can start typing
-  if _console.isVisible():
-    _console.activateWindow()
-    _console.setFocus()
+    # set focus to the console so the user can start typing
+    if _console.isVisible():
+      _console.activate()
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -66,7 +70,7 @@ class QgisOutputCatcher:
     def flush(self):
         pass
 
-sys.stdout = QgisOutputCatcher()
+sys.stdout = QgisOutputCatcher()    
 
 class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
@@ -77,10 +81,16 @@ class PythonConsole(QDockWidget):
 
         self.console = PythonConsoleWidget(self)
         self.setWidget( self.console )
+        self.setFocusProxy( self.console )
 
         # try to restore position from stored main window state
         if iface and not iface.mainWindow().restoreDockWidget(self):
             iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
+
+    def activate(self):
+        self.activateWindow()
+        self.raise_()
+        QDockWidget.setFocus(self)
 
 
 class PythonConsoleWidget(QWidget):
@@ -89,7 +99,8 @@ class PythonConsoleWidget(QWidget):
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
 
         self.widgetButton = QWidget()
-
+        self.options = optionsDialog(self)
+        
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
         #self.toolBar.setFont(font)
@@ -121,13 +132,16 @@ class PythonConsoleWidget(QWidget):
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
         self.clearButton.setText(clearBt)
-        ## Action for paste snippets code
-#        self.currentLayerButton = QAction(parent)
-#        self.currentLayerButton.setCheckable(False)
-#        self.currentLayerButton.setEnabled(True)
-#        self.currentLayerButton.setIcon(QIcon("icon/iconTempConsole.png"))
-#        self.currentLayerButton.setMenuRole(QAction.PreferencesRole)
-#        self.currentLayerButton.setIconVisibleInMenu(True)
+        ## Action for settings
+        optionsBt = QCoreApplication.translate("PythonConsole", "Settings")
+        self.optionsButton = QAction(parent)
+        self.optionsButton.setCheckable(False)
+        self.optionsButton.setEnabled(True)
+        self.optionsButton.setIcon(QIcon(":/images/console/iconSettingsConsole.png"))
+        self.optionsButton.setMenuRole(QAction.PreferencesRole)
+        self.optionsButton.setIconVisibleInMenu(True)
+        self.optionsButton.setToolTip(optionsBt)
+        self.optionsButton.setText(optionsBt)
         ## Action menu for class
         actionClassBt = QCoreApplication.translate("PythonConsole", "Import Class")
         self.actionClass = QAction(parent)
@@ -232,6 +246,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.clearButton)
         self.toolBar.addAction(self.actionClass)
         self.toolBar.addAction(self.actionScript)
+        self.toolBar.addAction(self.optionsButton)
         self.toolBar.addAction(self.helpButton)
         self.toolBar.addAction(self.runButton)
         ## Menu Import Class
@@ -257,11 +272,9 @@ class PythonConsoleWidget(QWidget):
 
         self.e.addWidget(self.widgetButton)
         self.e.addWidget(self.edit)
-
-        self.edit.setFocus()
         
         self.clearButton.triggered.connect(self.edit.clearConsole)
-        #self.currentLayerButton.triggered.connect(self.cLayer)
+        self.optionsButton.triggered.connect(self.openSettings)
         self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
         self.loadQtCoreButton.triggered.connect(self.qtCore)
@@ -270,9 +283,8 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-
-    def cLayer(self):
-        self.edit.commandConsole('cLayer')
+        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"), 
+                        self.prefChanged)
 
     def sextante(self):
        self.edit.commandConsole('sextante')
@@ -288,7 +300,7 @@ class PythonConsoleWidget(QWidget):
 
     def openScriptFile(self):
         settings = QSettings()
-        lastDirPath = settings.value("/pythonConsole/lastDirPath").toString()
+        lastDirPath = settings.value("pythonConsole/lastDirPath").toString()
         scriptFile = QFileDialog.getOpenFileName(
                         self, "Open File", lastDirPath, "Script file (*.py)")
         if scriptFile.isEmpty() == False:
@@ -300,7 +312,7 @@ class PythonConsoleWidget(QWidget):
             self.edit.insertTextFromFile(listScriptFile)
 
             lastDirPath = QFileInfo(scriptFile).path()
-            settings.setValue("/pythonConsole/lastDirPath", QVariant(scriptFile))
+            settings.setValue("pythonConsole/lastDirPath", QVariant(scriptFile))
 
 
     def saveScriptFile(self):
@@ -329,11 +341,17 @@ class PythonConsoleWidget(QWidget):
     def openHelp(self):
         dlg = HelpDialog()
         dlg.exec_()
+        
+    def openSettings(self):
+        #options = optionsDialog()
+        self.options.exec_()
+        
+    def prefChanged(self):
+        self.edit.refreshLexerProperties()
 
     def closeEvent(self, event):
         self.edit.writeHistoryFile()
         QWidget.closeEvent(self, event)
-
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)

@@ -26,7 +26,6 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.wps.WPSAlgorithmProvider import WPSAlgorithmProvider
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.core.QGisLayers import QGisLayers
@@ -123,7 +122,6 @@ class Sextante:
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(ScriptAlgorithmProvider())
-        Sextante.addProvider(WPSAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()

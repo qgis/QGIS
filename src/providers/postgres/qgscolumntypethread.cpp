@@ -34,6 +34,9 @@ void QgsGeomColumnTypeThread::addGeometryColumn( QgsPostgresLayerProperty layerP
 
 void QgsGeomColumnTypeThread::stop()
 {
+  if ( !mConn )
+    return;
+
   mConn->cancel();
   mStopped = true;
 }

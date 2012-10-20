@@ -97,6 +97,9 @@ class QgsConfigParser
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
     /**Returns an ID-list of layers which queryable in WFS service*/
     virtual QStringList wfsLayers() const { return QStringList(); }
+    virtual QStringList wfstUpdateLayers() const { return QStringList(); }
+    virtual QStringList wfstInsertLayers() const { return QStringList(); }
+    virtual QStringList wfstDeleteLayers() const { return QStringList(); }
 
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
@@ -104,16 +107,6 @@ class QgsConfigParser
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const { return false; }
-
-    /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
-       Default implementation returns an empty map*/
-    virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const { return QMap< QString, QMap<int, QString> > (); }
-
-    /**Returns attributes excluded from WMS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wmsExcludedAttributes() const { return QMap< QString, QSet<QString> >(); }
-
-    /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const { return QMap< QString, QSet<QString> >(); }
 
     /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;

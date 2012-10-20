@@ -1,5 +1,4 @@
-SET (DB_MANAGER_POSTGIS_TOPOVIEW_TEMPLATE_DIR ${DB_MANAGER_POSTGIS_DIR}/plugins/qgis_topoview/templates)
 
 FILE(GLOB QML_FILES *.qml)
 
-INSTALL(FILES ${QML_FILES} DESTINATION ${DB_MANAGER_POSTGIS_TOPOVIEW_TEMPLATE_DIR})
+PLUGIN_INSTALL(db_manager db_plugins/postgis/plugins/qgis_topoview/templates ${QML_FILES})

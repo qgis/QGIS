@@ -99,9 +99,13 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   else
     mParentScrollArea = 0;
   if ( mParentScrollArea )
+  {
     QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
+  }
   else
+  {
     QgsDebugMsg( "did not find a QScrollArea parent" );
+  }
 
   loadState();
 

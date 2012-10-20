@@ -298,7 +298,7 @@ QStringList QgsPostgresConn::pkCandidates( QString schemaName, QString viewName 
 bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
 {
   int nColumns = 0;
-  int nGTables = 0;
+  int foundInTables = 0;
   QgsPostgresResult result;
   QgsPostgresLayerProperty layerProperty;
 
@@ -306,45 +306,59 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   mLayersSupported.clear();
 
-  // TODO: query topology.layer too !
-
-  for ( int i = 0; i < 2; i++ )
+  for ( int i = 0; i < 3; i++ )
   {
-    QString gtableName, columnName;
+    QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
 
     if ( i == 0 )
     {
+      tableName  = "l.f_table_name";
+      schemaName = "l.f_table_schema";
+      columnName = "l.f_geometry_column";
+      typeName   = "upper(l.type)";
+      sridName   = "l.srid";
       gtableName = "geometry_columns";
-      columnName = "f_geometry_column";
     }
     else if ( i == 1 )
     {
+      tableName  = "l.f_table_name";
+      schemaName = "l.f_table_schema";
+      columnName = "l.f_geography_column";
+      typeName   = "upper(l.type)";
+      sridName   = "l.srid";
       gtableName = "geography_columns";
-      columnName = "f_geography_column";
+    }
+    else if ( i == 2 )
+    {
+      schemaName = "l.schema_name";
+      tableName  = "l.table_name";
+      columnName = "l.feature_column";
+      typeName   = "CASE "
+                   "WHEN l.feature_type = 1 THEN 'MULTIPOINT' "
+                   "WHEN l.feature_type = 2 THEN 'MULTILINESTRING' "
+                   "WHEN l.feature_type = 3 THEN 'MULTIPOLYGON' "
+                   "WHEN l.feature_type = 4 THEN 'GEOMETRYCOLLECTION' "
+                   "END AS type";
+      sridName   = "(SELECT srid FROM topology.topology t WHERE l.topology_id=t.id)";
+      gtableName = "topology.layer";
     }
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
-    QString sql = QString( "SELECT "
-                           "f_table_name,"
-                           "f_table_schema,"
-                           "%2,"
-                           "upper(type),"
-                           "srid,"
-                           "pg_class.relkind"
-                           " FROM "
-                           "%1,pg_class,pg_namespace"
-                           " WHERE relname=f_table_name"
-                           " AND f_table_schema=nspname"
-                           " AND pg_namespace.oid=pg_class.relnamespace"
-                           " AND has_schema_privilege(pg_namespace.nspname,'usage')"
-                           " AND has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
-                         ).arg( gtableName ).arg( columnName );
+    sql = QString( "SELECT %1,%2,%3,%4,%5,c.relkind"
+                   " FROM %6 l,pg_class c,pg_namespace n"
+                   " WHERE c.relname=%1"
+                   " AND %2=n.nspname"
+                   " AND n.oid=c.relnamespace"
+                   " AND has_schema_privilege(n.nspname,'usage')"
+                   " AND has_table_privilege('\"'||n.nspname||'\".\"'||c.relname||'\"','select')" // user has select privilege
+                 )
+          .arg( tableName ).arg( schemaName ).arg( columnName ).arg( typeName ).arg( sridName ).arg( gtableName );
 
     if ( searchPublicOnly )
-      sql += " AND f_table_schema='public'";
+      sql += " AND n.nspname='public'";
 
-    sql += QString( " ORDER BY f_table_schema,f_table_name,%1" ).arg( columnName );
+    sql += QString( " ORDER BY n.nspname,c.relname,%1" ).arg( columnName );
 
     QgsDebugMsg( "getting table info: " + sql );
     result = PQexec( sql, i == 0 );
@@ -353,8 +367,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       PQexecNR( "COMMIT" );
       continue;
     }
-
-    nGTables++;
 
     for ( int idx = 0; idx < result.PQntuples(); idx++ )
     {
@@ -376,7 +388,16 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
-      layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
+
+      if ( relkind == "v" )
+      {
+        layerProperty.pkCols = pkCandidates( schemaName, tableName );
+        if ( layerProperty.pkCols.isEmpty() )
+        {
+          QgsDebugMsg( "no key columns found." );
+          continue;
+        }
+      }
       layerProperty.srid = srid;
       layerProperty.sql = "";
       layerProperty.isGeography = i == 1;
@@ -384,6 +405,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       mLayersSupported << layerProperty;
       nColumns++;
     }
+
+    foundInTables |= 1 << i;
   }
 
   if ( nColumns == 0 )
@@ -418,14 +441,20 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
     {
-      sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
+      if ( foundInTables & 1 )
+      {
+        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
+      }
 
-      if ( nGTables > 1 )
+      if ( foundInTables & 2 )
       {
         sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geography_column FROM geography_columns)";
       }
 
-      // TODO: handle this for the topogeometry case (once we lookup topology.layer)
+      if ( foundInTables & 4 )
+      {
+        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT schema_name,table_name,feature_column FROM topology.layer)";
+      }
     }
 
     sql += " AND pg_class.relkind IN ('v','r')"; // only from views and relations (tables)
@@ -452,18 +481,26 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       // Make the assumption that the geometry type for the first
       // row is the same as for all other rows.
 
-      QString table   = result.PQgetvalue( i, 0 ); // relname
-      QString schema  = result.PQgetvalue( i, 1 ); // nspname
-      QString column  = result.PQgetvalue( i, 2 ); // attname
-      QString relkind = result.PQgetvalue( i, 3 ); // relation kind
+      QString tableName  = result.PQgetvalue( i, 0 ); // relname
+      QString schemaName = result.PQgetvalue( i, 1 ); // nspname
+      QString column     = result.PQgetvalue( i, 2 ); // attname
+      QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
 
-      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
       layerProperty.type = QString::null;
-      layerProperty.schemaName = schema;
-      layerProperty.tableName = table;
+      layerProperty.schemaName = schemaName;
+      layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
-      layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+      if ( relkind == "v" )
+      {
+        layerProperty.pkCols = pkCandidates( schemaName, tableName );
+        if ( layerProperty.pkCols.isEmpty() )
+        {
+          QgsDebugMsg( "no key columns found." );
+          continue;
+        }
+      }
       layerProperty.sql = "";
       layerProperty.isGeography = false; // TODO might be geography after all
 

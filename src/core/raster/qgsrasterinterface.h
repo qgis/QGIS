@@ -111,7 +111,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual QgsRasterInterface * input() const { return mInput; }
 
     /** Is on/off */
-    virtual bool on() { return mOn; }
+    virtual bool on() const { return mOn; }
 
     /** Set on/off */
     virtual void setOn( bool on ) { mOn = on; }

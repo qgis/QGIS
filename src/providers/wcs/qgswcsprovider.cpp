@@ -1634,10 +1634,11 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-//QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
 QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
+  QgsDebugMsg( "theExtent = " + theExtent.toString() );
   QMap<int, QVariant> results;
 
   if ( theFormat != IdentifyFormatValue ) return results;
@@ -1706,8 +1707,8 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
   double y = thePoint.y();
 
   // Calculate the row / column where the point falls
-  double xRes = ( mCachedViewExtent.width() ) / mCachedViewWidth;
-  double yRes = ( mCachedViewExtent.height() ) / mCachedViewHeight;
+  double xRes = mCachedViewExtent.width() / mCachedViewWidth;
+  double yRes = mCachedViewExtent.height() / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
   int col = ( int ) floor(( x - mCachedViewExtent.xMinimum() ) / xRes );
@@ -1728,6 +1729,13 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       results.clear();
       return results;
+    }
+
+    // Apply user no data
+    QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( i );
+    if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+    {
+      value = noDataValue( i );
     }
 
     results.insert( i, value );

@@ -293,11 +293,15 @@ QMap< QString, QString > QgsCptCityArchive::description( const QString& fileName
 
   QDomElement e = docElem.firstChildElement( "name" );
   if ( e.isNull() )
+  {
     QgsDebugMsg( "name tag missing" );
+  }
   descMap[ "name" ] = e.text().simplified();
   e = docElem.firstChildElement( "full" );
   if ( e.isNull() )
+  {
     QgsDebugMsg( "full tag missing" );
+  }
   descMap[ "full" ] = e.text().simplified();
 
   return descMap;
@@ -376,7 +380,9 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
           colorMap[offset] = qMakePair( color, color );
       }
       else
+      {
         QgsDebugMsg( QString( "at offset=%1 invalid color" ).arg( offset ) );
+      }
     }
     else
     {
@@ -460,7 +466,9 @@ void QgsCptCityArchive::initArchives( bool loadAll )
     if ( QDir( it.value() ).exists() )
       QgsCptCityArchive::initArchive( it.key(), it.value() );
     else
+    {
       QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key() ).arg( it.value() ) );
+    }
   }
   mDefaultArchiveName = defArchiveName;
 }
@@ -837,7 +845,9 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
       // should also delete item from parent, but we are in a loop now
     }
     else
+    {
       QgsDebugMsg( "invalid item " + childItem->path() );
+    }
   }
   return rampItems;
 }

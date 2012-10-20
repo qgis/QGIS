@@ -125,9 +125,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     int mAlphaBand;
 
     bool mInvertColor;
-
-    /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
-    double mMaxOversampling;
 };
 
 #endif // QGSRASTERRENDERER_H

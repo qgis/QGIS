@@ -140,7 +140,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   //check we are not embedding from/to the same project
   if ( mProjectFileLineEdit->isVisible() && mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
   {
-    QMessageBox::critical( 0, tr( "Recursive embeding not possible" ), tr( "It is not possible to embed layers / groups from the current project" ) );
+    QMessageBox::critical( 0, tr( "Recursive embedding not possible" ), tr( "It is not possible to embed layers / groups from the current project." ) );
     return;
   }
 

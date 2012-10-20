@@ -1225,6 +1225,21 @@
                   <string>Published</string>
                  </property>
                 </column>
+                <column>
+                 <property name="text">
+                  <string>Update</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Insert</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Delete</string>
+                 </property>
+                </column>
                </widget>
               </item>
               <item row="1" column="1">

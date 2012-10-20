@@ -54,7 +54,7 @@ QgsRasterBlock::QgsRasterBlock( DataType theDataType, int theWidth, int theHeigh
 QgsRasterBlock::~QgsRasterBlock()
 {
   QgsFree( mData );
-
+  delete mImage;
 }
 
 bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
@@ -253,7 +253,7 @@ bool QgsRasterBlock::isNoDataValue( double value ) const
 
 double QgsRasterBlock::value( size_t index ) const
 {
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return mNoDataValue;
@@ -282,7 +282,7 @@ QRgb QgsRasterBlock::color( int row, int column ) const
 
 bool QgsRasterBlock::isNoData( size_t index )
 {
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return true; // we consider no data if outside
@@ -303,7 +303,7 @@ bool QgsRasterBlock::setValue( size_t index, double value )
     QgsDebugMsg( "Data block not allocated" );
     return false;
   }
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return false;
@@ -375,7 +375,7 @@ bool QgsRasterBlock::setIsNoData()
 char * QgsRasterBlock::bits( size_t index )
 {
   // Not testing type to avoid too much overhead because this method is called per pixel
-  if ( index < 0 || index >= ( size_t )mWidth*mHeight )
+  if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     return 0;
@@ -416,12 +416,9 @@ bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
   }
   else if ( typeIsColor( mDataType ) && typeIsColor( destDataType ) )
   {
-    // It would be probably faster to convert value by value here instead of
-    // creating new image, QImage (4.8) does not have any method to convert in place
     QImage::Format format = imageFormat( destDataType );
     QImage image = mImage->convertToFormat( format );
-    memcpy( mImage->bits(), image.bits(), mImage->byteCount() );
-    //mImage = new QImage( mWidth, mHeight, format );
+    *mImage = image;
   }
   else
   {

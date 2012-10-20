@@ -66,6 +66,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns an ID-list of layers queryable for WFS service (comes from <properties> -> <WFSLayers> in the project file*/
     virtual QStringList wfsLayers() const;
+    virtual QStringList wfstUpdateLayers() const;
+    virtual QStringList wfstInsertLayers() const;
+    virtual QStringList wfstDeleteLayers() const;
 
     /**Returns a set of supported epsg codes for the capabilities document. The list comes from the property <WMSEpsgList> in the project file.
        An empty set means that all possible CRS should be advertised (which could result in very long capabilities documents)
@@ -82,16 +85,6 @@ class QgsProjectParser: public QgsConfigParser
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
-
-    /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
-       Default implementation returns an empty map*/
-    virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const;
-
-    /**Returns attributes excluded from WMS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wmsExcludedAttributes() const;
-
-    /**Returns attributes excluded from WFS publication. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > wfsExcludedAttributes() const;
 
     /**Returns map rectangle for the project file*/
     QgsRectangle mapRectangle() const;

@@ -88,6 +88,11 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     , mDock( NULL )
 {
   setupUi( this );
+
+  mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
+  mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
+  mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
+
   QSettings mySettings;
   restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
   bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
@@ -98,6 +103,7 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
   }
+  mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
@@ -369,6 +375,12 @@ void QgsIdentifyResults::show()
     // expand first layer and feature
     featItem->setExpanded( true );
     layItem->setExpanded( true );
+  }
+
+  // expand all if enabled
+  if ( mExpandNewToolButton->isChecked() )
+  {
+    lstResults->expandAll();
   }
 
   QDialog::show();
@@ -948,7 +960,7 @@ void QgsIdentifyResults::layerProperties()
 void QgsIdentifyResults::layerProperties( QTreeWidgetItem *item )
 {
   QgsVectorLayer *vlayer = vectorLayer( item );
-  if( !vlayer )
+  if ( !vlayer )
     return;
 
   QgisApp::instance()->showLayerProperties( vlayer );
@@ -1006,4 +1018,10 @@ void QgsIdentifyResults::openUrl( const QUrl &url )
   {
     QMessageBox::warning( this, tr( "Could not open url" ), tr( "Could not open URL '%1'" ).arg( url.toString() ) );
   }
+}
+
+void QgsIdentifyResults:: on_mExpandNewToolButton_toggled( bool checked )
+{
+  QSettings settings;
+  settings.setValue( "/Map/identifyExpand", checked );
 }

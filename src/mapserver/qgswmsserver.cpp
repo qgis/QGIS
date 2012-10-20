@@ -209,7 +209,10 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   {
     //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
+  }
 
+  if ( mConfigParser && fullProjectInformation )
+  {
     //WFS layers
     QStringList wfsLayers = mConfigParser->wfsLayerNames();
     if ( wfsLayers.size() > 0 )
@@ -648,6 +651,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     return 2;
   }
 
+  QgsDebugMsg( "mMapRenderer->extent(): " +  mMapRenderer->extent().toString() );
+  QgsDebugMsg( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
+  QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
+
   //find out the current scale denominater and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
@@ -726,8 +733,6 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   result.appendChild( getFeatureInfoElement );
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
-  QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
-  QMap< QString, QSet<QString> > excludedAttributes = mConfigParser->wmsExcludedAttributes();
 
   //Render context is needed to determine feature visibility for vector layers
   QgsRenderContext renderContext;
@@ -776,24 +781,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( vectorLayer )
       {
-        //is there alias info for this vector layer?
-        QMap< int, QString > layerAliasInfo;
-        QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
-        if ( aliasIt != aliasInfo.constEnd() )
-        {
-          layerAliasInfo = aliasIt.value();
-        }
-
-        //excluded attributes for this layer
-        QSet<QString> layerExcludedAttributes;
-        QMap< QString, QSet<QString> >::const_iterator excludedIt = excludedAttributes.find( currentLayer->id() );
-        if ( excludedIt != excludedAttributes.constEnd() )
-        {
-          layerExcludedAttributes = excludedIt.value();
-        }
-
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
-                                         layerAliasInfo, layerExcludedAttributes, version, featuresRect ) != 0 )
+                                         version, featuresRect ) != 0 )
         {
           continue;
         }
@@ -1127,9 +1116,28 @@ int QgsWMSServer::infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoor
   }
 
   //first transform i,j to map output coordinates
-  QgsPoint mapPoint = mapRender->coordinateTransform()->toMapCoordinates( i, j );
+  // toMapCoordinates() is currently (Oct 18 2012) using average resolution
+  // to calc point but GetFeatureInfo request may be sent with different
+  // resolutions in each axis
+  //QgsPoint mapPoint = mapRender->coordinateTransform()->toMapCoordinates( i, j );
+  double xRes = mapRender->extent().width() / mapRender->width();
+  double yRes = mapRender->extent().height() / mapRender->height();
+  QgsPoint mapPoint( mapRender->extent().xMinimum() + i * xRes,
+                     mapRender->extent().yMaximum() - j * yRes );
+
+  QgsDebugMsg( QString( "mapPoint (corner): %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
+  // use pixel center instead of corner
+  // Unfortunately going through pixel (integer) we cannot reconstruct precisely
+  // the coordinate clicked on client and thus result may differ from
+  // the same raster loaded and queried localy on client
+  mapPoint.setX( mapPoint.x() + xRes / 2 );
+  mapPoint.setY( mapPoint.y() - yRes / 2 );
+
+  QgsDebugMsg( QString( "mapPoint (pixel center): %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
+
   //and then to layer coordinates
   *layerCoords = mapRender->mapToLayerCoordinates( layer, mapPoint );
+  QgsDebugMsg( QString( "mapPoint: %1 %2" ).arg( mapPoint.x() ).arg( mapPoint.y() ) );
   return 0;
 }
 
@@ -1140,8 +1148,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QDomElement& layerElement,
     QgsMapRenderer* mapRender,
     QgsRenderContext& renderContext,
-    QMap<int, QString>& aliasMap,
-    QSet<QString>& excludedAttributes,
     QString version,
     QgsRectangle* featureBBox ) const
 {
@@ -1185,6 +1191,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   int featureCounter = 0;
   const QgsFieldMap& fields = provider->fields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
+  const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
   provider->select( provider->attributeIndexes(), searchRect, addWktGeometry || featureBBox, true );
   while ( provider->nextFeature( feature ) )
@@ -1229,24 +1236,14 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     featureAttributes = feature.attributeMap();
     for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
     {
-
-      QString attributeName = fields[it.key()].name();
       //skip attribute if it is explicitely excluded from WMS publication
-      if ( excludedAttributes.contains( attributeName ) )
+      if ( excludedAttributes.contains( fields[it.key()].name() ) )
       {
         continue;
       }
 
-      //check if the attribute name should be replaced with an alias
-      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( it.key() );
-      if ( aliasIt != aliasMap.constEnd() )
-      {
-        QString aliasName = aliasIt.value();
-        if ( !aliasName.isEmpty() )
-        {
-          attributeName = aliasName;
-        }
-      }
+      //replace attribute name if there is an attribute alias?
+      QString attributeName = layer->attributeDisplayName( it.key() );
 
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
       attributeElement.setAttribute( "name", attributeName );
@@ -1303,9 +1300,20 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     return 1;
   }
 
+  QgsDebugMsg( QString( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
+
   QMap<QString, QString> attributes;
-  // TODO: use context extent, width height (comes with request) to use WCS cache
-  attributes = layer->dataProvider()->identify( *infoPoint );
+  // use context extent, width height (comes with request) to use WCS cache
+  // We can only use context if raster is not reprojected, otherwise it is difficult
+  // to guess correct source resolution
+  if ( mMapRenderer->hasCrsTransformEnabled() && layer->dataProvider()->crs() != mMapRenderer->destinationCrs() )
+  {
+    attributes = layer->dataProvider()->identify( *infoPoint );
+  }
+  else
+  {
+    attributes = layer->dataProvider()->identify( *infoPoint, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
+  }
 
   for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
   {

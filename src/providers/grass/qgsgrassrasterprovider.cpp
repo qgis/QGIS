@@ -419,6 +419,9 @@ int QgsGrassRasterProvider::ySize() const { return mRows; }
 
 QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
+  Q_UNUSED( theExtent );
+  Q_UNUSED( theWidth );
+  Q_UNUSED( theHeight );
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
 
@@ -440,6 +443,13 @@ QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint,
   if ( !ok ) return results;
 
   if ( qIsNaN( value ) ) value = noDataValue( 1 );
+
+  // Apply user no data
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( 1 );
+  if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+  {
+    value = noDataValue( 1 );
+  }
 
   results.insert( 1, value );
 
