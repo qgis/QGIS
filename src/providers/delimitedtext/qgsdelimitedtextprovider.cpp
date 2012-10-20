@@ -38,6 +38,7 @@
 #include "qgis.h"
 
 #include "qgsdelimitedtextsourceselect.h"
+#include "qgsdelimitedtextfeatureiterator.h"
 
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
@@ -187,8 +188,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   if ( mDelimiterType != "regexp" )
     mDelimiter.replace( "\\t", "\t" ); // replace "\t" with a real tabulator
 
-  // Set the selection rectangle to null
-  mSelectionRectangle = QgsRectangle();
   // assume the layer is invalid until proven otherwise
   mValid = false;
   if ( mFileName.isEmpty() || mDelimiter.isEmpty() )
@@ -463,134 +462,14 @@ QString QgsDelimitedTextProvider::storageType() const
 }
 
 
-bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
+QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  // before we do anything else, assume that there's something wrong with
-  // the feature
-  feature.setValid( false );
-  while ( !mStream->atEnd() )
-  {
-    QString line = readLine( mStream ); // Default local 8 bit encoding
-    if ( line.isEmpty() )
-      continue;
+  return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
+}
 
-    // lex the tokens from the current data line
-    QStringList tokens = splitLine( line );
 
-    while ( tokens.size() < mFieldCount )
-      tokens.append( QString::null );
-
-    QgsGeometry *geom = 0;
-
-    if ( mWktFieldIndex >= 0 )
-    {
-      try
-      {
-        QString &sWkt = tokens[mWktFieldIndex];
-        // Remove Z and M coordinates if present, as currently fromWkt doesn't
-        // support these.
-        if ( mWktHasZM )
-        {
-          sWkt.remove( mWktZMRegexp ).replace( mWktCrdRegexp, "\\1" );
-        }
-
-        geom = QgsGeometry::fromWkt( sWkt );
-      }
-      catch ( ... )
-      {
-        geom = 0;
-      }
-
-      if ( geom && geom->wkbType() != mWkbType )
-      {
-        delete geom;
-        geom = 0;
-      }
-      mFid++;
-      if ( geom && !boundsCheck( geom ) )
-      {
-        delete geom;
-        geom = 0;
-      }
-    }
-    else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
-    {
-      QString sX = tokens[mXFieldIndex];
-      QString sY = tokens[mYFieldIndex];
-
-      if ( !mDecimalPoint.isEmpty() )
-      {
-        sX.replace( mDecimalPoint, "." );
-        sY.replace( mDecimalPoint, "." );
-      }
-
-      bool xOk, yOk;
-      double x = sX.toDouble( &xOk );
-      double y = sY.toDouble( &yOk );
-      if ( xOk && yOk )
-      {
-        mFid++;
-        if ( boundsCheck( x, y ) )
-        {
-          geom = QgsGeometry::fromPoint( QgsPoint( x, y ) );
-        }
-      }
-    }
-
-    if ( !geom && mWkbType != QGis::WKBNoGeometry )
-    {
-      mInvalidLines << line;
-      continue;
-    }
-
-    // At this point the current feature values are valid
-
-    feature.setValid( true );
-    feature.setFields( &attributeFields ); // allow name-based attribute lookups
-    feature.setFeatureId( mFid );
-    feature.initAttributes( mFieldCount );
-
-    if ( geom )
-      feature.setGeometry( geom );
-
-    for ( QgsAttributeList::const_iterator i = mAttributesToFetch.begin();
-          i != mAttributesToFetch.end();
-          ++i )
-    {
-      int fieldIdx = *i;
-      if ( fieldIdx < 0 || fieldIdx >= attributeColumns.count() )
-        continue; // ignore non-existant fields
-
-      QString &value = tokens[attributeColumns[fieldIdx]];
-      QVariant val;
-      switch ( attributeFields[fieldIdx].type() )
-      {
-        case QVariant::Int:
-          if ( !value.isEmpty() )
-            val = QVariant( value );
-          else
-            val = QVariant( attributeFields[fieldIdx].type() );
-          break;
-        case QVariant::Double:
-          if ( !value.isEmpty() )
-            val = QVariant( value.toDouble() );
-          else
-            val = QVariant( attributeFields[fieldIdx].type() );
-          break;
-        default:
-          val = QVariant( value );
-          break;
-      }
-      feature.setAttribute( fieldIdx, val );
-    }
-
-    // We have a good line, so return
-    return true;
-
-  } // !mStream->atEnd()
-
-  // End of the file. If there are any lines that couldn't be
-  // loaded, display them now.
+void QgsDelimitedTextProvider::handleInvalidLines()
+{
   if ( mShowInvalidLines && !mInvalidLines.isEmpty() )
   {
     mShowInvalidLines = false;
@@ -610,32 +489,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     // We no longer need these lines.
     mInvalidLines.clear();
   }
-
-  return false;
-
-} // nextFeature
-
-
-void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,
-                                       QgsRectangle rect,
-                                       bool fetchGeometry,
-                                       bool useIntersect )
-{
-  mSelectionRectangle = rect;
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-  mUseIntersect = useIntersect;
-  if ( rect.isEmpty() )
-  {
-    mSelectionRectangle = mExtent;
-  }
-  else
-  {
-    mSelectionRectangle = rect;
-  }
-  rewind();
 }
-
 
 
 
@@ -667,45 +521,11 @@ const QgsFields & QgsDelimitedTextProvider::fields() const
   return attributeFields;
 }
 
-void QgsDelimitedTextProvider::rewind()
-{
-  // Reset feature id to 0
-  mFid = 0;
-  // Skip to first data record
-  mStream->seek( 0 );
-  int n = mFirstDataLine - 1;
-  while ( n-- > 0 )
-    readLine( mStream );
-}
-
 bool QgsDelimitedTextProvider::isValid()
 {
   return mValid;
 }
 
-/**
- * Check to see if the point is within the selection rectangle
- */
-bool QgsDelimitedTextProvider::boundsCheck( double x, double y )
-{
-  // no selection rectangle or geometry => always in the bounds
-  if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
-    return true;
-
-  return mSelectionRectangle.contains( QgsPoint( x, y ) );
-}
-/**
- * Check to see if the geometry is within the selection rectangle
- */
-bool QgsDelimitedTextProvider::boundsCheck( QgsGeometry *geom )
-{
-  // no selection rectangle or geometry => always in the bounds
-  if ( mSelectionRectangle.isEmpty() || !mFetchGeom )
-    return true;
-
-  return geom->boundingBox().intersects( mSelectionRectangle ) &&
-         ( !mUseIntersect || geom->intersects( mSelectionRectangle ) );
-}
 
 int QgsDelimitedTextProvider::capabilities() const
 {

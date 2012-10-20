@@ -5,7 +5,7 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 ADD_SUBDIRECTORY(memory)
 ADD_SUBDIRECTORY(ogr)
 ADD_SUBDIRECTORY(wms)
-#ADD_SUBDIRECTORY(delimitedtext) # TODO: enable when migrated to new api
+ADD_SUBDIRECTORY(delimitedtext)
 #ADD_SUBDIRECTORY(osm)           # TODO: enable when migrated to new api
 #ADD_SUBDIRECTORY(sqlanywhere)   # TODO: enable when migrated to new api
 ADD_SUBDIRECTORY(gdal)
