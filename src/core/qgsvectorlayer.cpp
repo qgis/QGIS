@@ -731,6 +731,9 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
   {
     try
     {
+      if ( !fet.geometry() )
+        continue; // skip features without geometry
+
       if ( rendererContext.renderingStopped() )
       {
         break;
@@ -828,6 +831,9 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 #endif //Q_WS_MAC
   while ( nextFeature( fet ) )
   {
+    if ( !fet.geometry() )
+      continue; // skip features without geometry
+
     if ( rendererContext.renderingStopped() )
     {
       stopRendererV2( rendererContext, selRenderer );
@@ -1050,6 +1056,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     {
       while ( nextFeature( fet ) )
       {
+        if ( !fet.geometry() )
+          continue; // skip features without geometry
 
         if ( rendererContext.renderingStopped() )
         {
