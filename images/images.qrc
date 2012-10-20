@@ -468,7 +468,7 @@
         <file>console/iconClassConsole.png</file>
         <file>console/iconSaveConsole.png</file>
         <file>console/iconHelpConsole.png</file>
-        <file>console/iconTempConsole.png</file>
+        <file>console/iconSettingsConsole.png</file>
         <file>console/iconOpenConsole.png</file>
         <file>console/iconClearConsole.png</file>
         <file>console/imgHelpDialog.png</file>
@@ -478,6 +478,7 @@
         <file>console/iconQtCoreConsole.png</file>
         <file>console/iconQtGuiConsole.png</file>
         <file>console/iconRunConsole.png</file>
+		<file>console/iconAboutConsole.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
     </qresource>
