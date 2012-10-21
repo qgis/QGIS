@@ -172,10 +172,10 @@ class QgsVectorLayer : QgsMapLayer
     QList<QgsFeature> selectedFeatures();
 
     /** Return reference to identifiers of selected features */
-    const QSet<qint64> &selectedFeaturesIds() const;
+    const QgsFeatureIds &selectedFeaturesIds() const;
 
     /** Change selection to the new set of features */
-    void setSelectedFeatures( const QSet<qint64> &ids );
+    void setSelectedFeatures( const QgsFeatureIds &ids );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
@@ -317,7 +317,7 @@ class QgsVectorLayer : QgsMapLayer
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( qint64 featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
         @param f feature to add
@@ -337,17 +337,17 @@ class QgsVectorLayer : QgsMapLayer
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
-    bool insertVertex( double x, double y, qint64 atFeatureId, int beforeVertex );
+    bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
-    bool moveVertex( double x, double y, qint64 atFeatureId, int atVertex );
+    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
      */
-    bool deleteVertex( qint64 atFeatureId, int atVertex );
+    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
@@ -381,7 +381,7 @@ class QgsVectorLayer : QgsMapLayer
        @param dx translation of x-coordinate
        @param dy translation of y-coordinate
        @return 0 in case of success*/
-    int translateFeature( qint64 featureId, double dx, double dy );
+    int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
     /**Splits features cut by the given line
      *  @param splitLine line that splits the layer features
@@ -498,10 +498,10 @@ class QgsVectorLayer : QgsMapLayer
 
     /** change feature's geometry
       @note added in version 1.2 */
-    bool changeGeometry( qint64 fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
     /** changed an attribute value (but does not commit it) */
-    bool changeAttributeValue( qint64 fid, int field, QVariant value, bool emitSignal = true );
+    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal = true );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
@@ -525,6 +525,14 @@ class QgsVectorLayer : QgsMapLayer
       @note added in version 1.2*/
     QString attributeDisplayName( int attributeIndex ) const;
 
+    const QMap< QString, QString >& attributeAliases() const;
+
+    const QSet<QString>& excludeAttributesWMS() const;
+    void setExcludeAttributesWMS( const QSet<QString>& att );
+
+    const QSet<QString>& excludeAttributesWFS() const;
+    void setExcludeAttributesWFS( const QSet<QString>& att );
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
@@ -532,7 +540,7 @@ class QgsVectorLayer : QgsMapLayer
     bool addFeatures( QList<QgsFeature> features, bool makeSelected = true );
 
     /** delete a feature from the layer (but does not commit it) */
-    bool deleteFeature( qint64 fid );
+    bool deleteFeature( QgsFeatureId fid );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -640,7 +648,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand.
      * @note not available in python bindings
      */
-    // redoEditCommand( QgsUndoCommand* cmd );
+    // void redoEditCommand( QgsUndoCommand* cmd );
 
     /** Returns the index of a field name or -1 if the field does not exist
       @note this method was added in version 1.4
@@ -685,10 +693,10 @@ class QgsVectorLayer : QgsMapLayer
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( qint64 featureId, bool emitSignal = true );
+    void select( QgsFeatureId featureId, bool emitSignal = true );
 
     /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( qint64 featureId, bool emitSignal = true );
+    void deselect( QgsFeatureId featureId, bool emitSignal = true );
 
     /** Clear selection */
     void removeSelection( bool emitSignal = true );
@@ -718,8 +726,8 @@ class QgsVectorLayer : QgsMapLayer
     void editingStopped();
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
-    void featureAdded(  qint64 fid );  // added in 1.7
-    void featureDeleted( qint64 fid );
+    void featureAdded( QgsFeatureId fid );  // added in 1.7
+    void featureDeleted( QgsFeatureId fid );
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );

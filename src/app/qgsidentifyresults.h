@@ -115,8 +115,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void on_mExpandNewToolButton_toggled( bool checked );
 
-    void on_mExpandToolButton_clicked( bool checked ) { expandAll(); }
-    void on_mCollapseToolButton_clicked( bool checked ) { collapseAll(); }
+    void on_mExpandToolButton_clicked( bool checked ) { Q_UNUSED( checked); expandAll(); }
+    void on_mCollapseToolButton_clicked( bool checked ) { Q_UNUSED( checked); collapseAll(); }
 
     void openUrl( const QUrl &url );
 
