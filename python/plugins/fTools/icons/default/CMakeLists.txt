@@ -47,4 +47,5 @@ delaunay.png
 layer_extent.png
 merge_shapes.png
 )
-INSTALL(FILES ${ICON_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/icons/default)
+
+PLUGIN_INSTALL(fTools icons/default ${ICON_FILES})
