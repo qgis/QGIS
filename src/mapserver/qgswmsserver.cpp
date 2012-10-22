@@ -729,7 +729,17 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QStringList layerIds = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
-  QDomElement getFeatureInfoElement = result.createElement( "GetFeatureInfoResponse" );
+  QString featureInfoElemName = mConfigParser->featureInfoDocumentElement( "GetFeatureInfoResponse" );
+  QString featureInfoElemNS = mConfigParser->featureInfoDocumentElementNS();
+  QDomElement getFeatureInfoElement;
+  if ( featureInfoElemNS.isEmpty() )
+  {
+    getFeatureInfoElement = result.createElement( featureInfoElemName );
+  }
+  else
+  {
+    getFeatureInfoElement = result.createElementNS( featureInfoElemNS, featureInfoElemName );
+  }
   result.appendChild( getFeatureInfoElement );
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
@@ -745,6 +755,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     renderContext.setScaleFactor( mMapRenderer->outputDpi() / 25.4 );
     renderContext.setPainter( 0 );
   }
+
+  //layers can have assigned a different name for GetCapabilities
+  QHash<QString, QString> layerAliasMap = mConfigParser->featureInfoLayerAliasMap();
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -774,7 +787,15 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
 
       QDomElement layerElement = result.createElement( "Layer" );
-      layerElement.setAttribute( "name", currentLayer->name() );
+      QString layerName = currentLayer->name();
+
+      //check if the layer is given a different name for GetFeatureInfo output
+      QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
+      if ( layerAliasIt != layerAliasMap.constEnd() )
+      {
+        layerName = layerAliasIt.value();
+      }
+      layerElement.setAttribute( "name", layerName );
       getFeatureInfoElement.appendChild( layerElement );
 
       //switch depending on vector or raster

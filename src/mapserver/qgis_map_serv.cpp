@@ -165,6 +165,8 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
   QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
@@ -522,7 +524,15 @@ int main( int argc, char * argv[] )
       }
 
       //info format for GetFeatureInfo
-      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, parameterMap.value( "INFO_FORMAT" ) );
+
+      //additionally support text/xml; format=sia2045
+      QString infoFormat = parameterMap.value( "INFO_FORMAT" );
+      if ( infoFormat.compare( "text/xml", Qt::CaseInsensitive ) == 0 && adminConfigParser->featureInfoFormatSIA2045() )
+      {
+        infoFormat = "text/xml; format=sia2045";
+      }
+
+      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
       delete theRequestHandler;
       delete theServer;
       continue;

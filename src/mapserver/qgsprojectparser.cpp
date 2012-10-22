@@ -1855,6 +1855,107 @@ QStringList QgsProjectParser::wfsLayerNames() const
   return layerNameList;
 }
 
+QHash<QString, QString> QgsProjectParser::featureInfoLayerAliasMap() const
+{
+  QHash<QString, QString> aliasMap;
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return aliasMap;
+  }
+
+  //WMSFeatureInfoAliasLayers
+  QStringList aliasLayerStringList;
+  QDomElement featureInfoAliasLayersElem = propertiesElem.firstChildElement( "WMSFeatureInfoAliasLayers" );
+  if ( featureInfoAliasLayersElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList aliasLayerValueList = featureInfoAliasLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < aliasLayerValueList.size(); ++i )
+  {
+    aliasLayerStringList << aliasLayerValueList.at( i ).toElement().text();
+  }
+
+  //WMSFeatureInfoLayerAliases
+  QStringList layerAliasStringList;
+  QDomElement featureInfoLayerAliasesElem = propertiesElem.firstChildElement( "WMSFeatureInfoLayerAliases" );
+  if ( featureInfoLayerAliasesElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList layerAliasesValueList = featureInfoLayerAliasesElem.elementsByTagName( "value" );
+  for ( int i = 0; i < layerAliasesValueList.size(); ++i )
+  {
+    layerAliasStringList << layerAliasesValueList.at( i ).toElement().text();
+  }
+
+  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  for ( int i = 0; i < nMapEntries; ++i )
+  {
+    aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );
+  }
+
+  return aliasMap;
+}
+
+QString QgsProjectParser::featureInfoDocumentElement( const QString& defaultValue ) const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return defaultValue;
+  }
+  QDomElement featureInfoDocumentElem = propertiesElem.firstChildElement( "WMSFeatureInfoDocumentElement" );
+  if ( featureInfoDocumentElem.isNull() )
+  {
+    return defaultValue;
+  }
+  return featureInfoDocumentElem.text();
+}
+
+QString QgsProjectParser::featureInfoDocumentElementNS() const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return "";
+  }
+  QDomElement featureInfoDocumentNSElem = propertiesElem.firstChildElement( "WMSFeatureInfoDocumentElementNS" );
+  if ( featureInfoDocumentNSElem.isNull() )
+  {
+    return "";
+  }
+  return featureInfoDocumentNSElem.text();
+}
+
+bool QgsProjectParser::featureInfoFormatSIA2045() const
+{
+  if ( !mXMLDoc )
+  {
+    return false;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement sia2045Elem = propertiesElem.firstChildElement( "WMSInfoFormatSIA2045" );
+  if ( sia2045Elem.isNull() )
+  {
+    return false;
+  }
+
+  if ( sia2045Elem.text().compare( "enabled", Qt::CaseInsensitive ) == 0
+       || sia2045Elem.text().compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )

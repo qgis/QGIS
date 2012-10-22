@@ -111,6 +111,16 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     QStringList wfsLayerNames() const;
 
+    /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
+    virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
+
+    virtual QString featureInfoDocumentElement( const QString& defaultValue ) const;
+
+    virtual QString featureInfoDocumentElementNS() const;
+
+    /**Return feature info in format SIA2045?*/
+    bool featureInfoFormatSIA2045() const;
+
   private:
 
     //forbidden
