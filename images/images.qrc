@@ -150,6 +150,8 @@
     <file>themes/default/mActionSelectPolygon.svg</file>
     <file>themes/default/mActionSelectRadius.png</file>
     <file>themes/default/mActionSelectRectangle.png</file>
+    <file>themes/default/mActionSignPlus.png</file>
+    <file>themes/default/mActionSignMinus.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
     <file>themes/default/mActionShowHideLabels.svg</file>
