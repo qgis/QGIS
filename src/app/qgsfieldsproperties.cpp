@@ -238,6 +238,11 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   updateButtons();
 }
 
+void QgsFieldsProperties::init()
+{
+  loadRows();
+}
+
 void QgsFieldsProperties::on_attributeSelectionChanged()
 {
   bool isAddPossible = false;
@@ -752,14 +757,6 @@ QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
 QgsVectorLayer::EditType QgsFieldsProperties::editTypeFromButtonText( QString text )
 {
   return editTypeMap.key( text );
-}
-
-// TODO: Is this needed?
-void QgsFieldsProperties::reset()
-{
-  /*  QObject::disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
-
-    QObject::connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );*/
 }
 
 QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent )

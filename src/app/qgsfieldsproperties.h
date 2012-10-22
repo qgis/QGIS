@@ -79,7 +79,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
      */
     QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent );
 
-    void reset();
+    void init();
     void apply();
 
     void updateButtons();
