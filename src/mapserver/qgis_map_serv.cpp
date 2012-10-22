@@ -164,6 +164,8 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
   QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
