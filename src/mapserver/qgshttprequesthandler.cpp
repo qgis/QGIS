@@ -133,8 +133,10 @@ void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
 
   if ( infoFormat == "text/xml" )
   {
-    //ba = infoDoc.toByteArray();
-    //Modifications for SIA2045
+    ba = infoDoc.toByteArray();
+  }
+  else if ( infoFormat == "text/xml; format=sia2045" )
+  {
     QDomDocument outFeatureInfoDoc;
     QDomElement infoDocElement = infoDoc.documentElement();
     QDomElement outInfoDocElement = outFeatureInfoDoc.importNode( infoDocElement, false ).toElement();

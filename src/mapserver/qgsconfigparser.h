@@ -121,6 +121,9 @@ class QgsConfigParser
     /**Returns document element namespace in GetFeatureInfo response or empty string*/
     virtual QString featureInfoDocumentElementNS() const { return ""; }
 
+    /**Return feature info in format SIA2045?*/
+    virtual bool featureInfoFormatSIA2045() const { return false; }
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;

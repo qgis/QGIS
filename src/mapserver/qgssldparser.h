@@ -82,6 +82,9 @@ class QgsSLDParser: public QgsConfigParser
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
 
+    /**Return feature info in format SIA2045?*/
+    bool featureInfoFormatSIA2045() const;
+
   private:
     /**Don't use the default constructor*/
     QgsSLDParser();

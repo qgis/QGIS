@@ -1427,6 +1427,33 @@ QString QgsProjectParser::featureInfoDocumentElementNS() const
   return featureInfoDocumentNSElem.text();
 }
 
+bool QgsProjectParser::featureInfoFormatSIA2045() const
+{
+  if ( !mXMLDoc )
+  {
+    return false;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement sia2045Elem = propertiesElem.firstChildElement( "WMSInfoFormatSIA2045" );
+  if ( sia2045Elem.isNull() )
+  {
+    return false;
+  }
+
+  if ( sia2045Elem.text().compare( "enabled", Qt::CaseInsensitive ) == 0
+       || sia2045Elem.text().compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )

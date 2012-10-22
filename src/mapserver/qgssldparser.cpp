@@ -1573,6 +1573,15 @@ QHash<QString, QString> QgsSLDParser::featureInfoLayerAliasMap() const
   return QHash<QString, QString>();
 }
 
+bool QgsSLDParser::featureInfoFormatSIA2045() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoFormatSIA2045();
+  }
+  return false;
+}
+
 #ifdef DIAGRAMSERVER
 int QgsSLDParser::overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
