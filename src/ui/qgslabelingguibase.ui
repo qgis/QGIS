@@ -449,7 +449,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-162</y>
              <width>686</width>
              <height>628</height>
             </rect>
@@ -523,7 +523,7 @@
                  <item>
                   <widget class="QDoubleSpinBox" name="mFontLineHeightSpinBox">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -576,7 +576,7 @@
                  <item>
                   <widget class="QComboBox" name="mFontMultiLineComboBox">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1493,7 +1493,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
+            <width>636</width>
             <height>553</height>
            </rect>
           </property>
@@ -2355,7 +2355,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
+            <width>488</width>
             <height>951</height>
            </rect>
           </property>

@@ -192,6 +192,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   }
 
   wrapCharacterEdit->setText( lyr.wrapChar );
+  mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
+  mFontMultiLineComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -461,6 +463,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
   lyr.wrapChar = wrapCharacterEdit->text();
+  lyr.multilineHeight = mFontLineHeightSpinBox->value();
+  lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineComboBox->currentIndex();
   if ( chkPreserveRotation->isChecked() )
   {
     lyr.preserveRotation = true;

@@ -88,6 +88,13 @@ class CORE_EXPORT QgsPalLayerSettings
       ShowAll // show upside down for all labels, including dynamic ones
     };
 
+    enum MultiLineAlign
+    {
+      MultiLeft = 0,
+      MultiCenter,
+      MultiRight
+    };
+
     // increment iterator in _writeDataDefinedPropertyMap() when adding more
     enum DataDefinedProperties
     {
@@ -172,6 +179,8 @@ class CORE_EXPORT QgsPalLayerSettings
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QString wrapChar;
+    double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
+    MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
 

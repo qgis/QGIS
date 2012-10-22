@@ -187,6 +187,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   labelOffsetInMapUnits = true;
   distInMapUnits = false;
   wrapChar = "";
+  multilineHeight = 1.0;
+  multilineAlign = MultiLeft;
   preserveRotation = true;
 }
 
@@ -235,6 +237,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   distInMapUnits = s.distInMapUnits;
   labelOffsetInMapUnits = s.labelOffsetInMapUnits;
   wrapChar = s.wrapChar;
+  multilineHeight = s.multilineHeight;
+  multilineAlign = s.multilineAlign;
   preserveRotation = s.preserveRotation;
 
   dataDefinedProperties = s.dataDefinedProperties;
@@ -416,6 +420,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   labelOffsetInMapUnits = layer->customProperty( "labeling/labelOffsetInMapUnits", QVariant( true ) ).toBool();
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
+  multilineHeight = layer->customProperty( "labeling/multilineHeight", QVariant( 1.0 ) ).toDouble();
+  multilineAlign = ( MultiLineAlign ) layer->customProperty( "labeling/multilineAlign", QVariant( MultiLeft ) ).toUInt();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
   _readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -475,6 +481,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/labelOffsetInMapUnits", labelOffsetInMapUnits );
   layer->setCustomProperty( "labeling/wrapChar", wrapChar );
+  layer->setCustomProperty( "labeling/multilineHeight", multilineHeight );
+  layer->setCustomProperty( "labeling/multilineAlign", ( unsigned int )multilineAlign );
   layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
   _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -540,16 +548,20 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     text.append( ">" );
   }
 
-  double w, h;
+  double w = 0.0, h = 0.0;
   QStringList multiLineSplit;
   if ( !wrapChar.isEmpty() )
     multiLineSplit = text.split( wrapChar );
   else
     multiLineSplit = text.split( "\n" );
+  int lines = multiLineSplit.size();
 
-  h = fm->height() * multiLineSplit.size() / rasterCompressFactor;
-  w = 0;
-  for ( int i = 0; i < multiLineSplit.size(); ++i )
+  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
+
+  h += fm->height() + ( double )(( lines - 1 ) * labelHeight * multilineHeight );
+  h /= rasterCompressFactor;
+
+  for ( int i = 0; i < lines; ++i )
   {
     double width = fm->width( multiLineSplit.at( i ) );
     if ( width > w )
@@ -1661,7 +1673,24 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   else
     multiLineList = txt.split( "\n" );
 
-  for ( int i = 0; i < multiLineList.size(); ++i )
+  int lines = multiLineList.size();
+
+  double labelWidest = 0.0;
+  for ( int i = 0; i < lines; ++i )
+  {
+    double labelWidth = labelfm->width( multiLineList.at( i ) );
+    if ( labelWidth > labelWidest )
+    {
+      labelWidest = labelWidth;
+    }
+  }
+
+  double labelHeight = labelfm->ascent() + labelfm->descent(); // ignore +1 for baseline
+
+  // needed to move bottom of text's descender to within bottom edge of label
+  double ascentOffset = 0.25 * labelfm->ascent(); // labelfm->descent() is not enough
+
+  for ( int i = 0; i < lines; ++i )
   {
     painter->save();
     painter->translate( QPointF( outPt.x(), outPt.y() ) );
@@ -1671,10 +1700,22 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     // to workaround a Qt font scaling bug with small font sizes
     painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
 
-    double yMultiLineOffset = ( multiLineList.size() - 1 - i ) * labelfm->height();
-    double ascentOffset = 0.0;
-    ascentOffset = labelfm->height() * 0.25 * labelfm->ascent() / labelfm->height();
-    painter->translate( QPointF( 0, - ascentOffset - yMultiLineOffset ) );
+    // figure x offset for horizontal alignment of multiple lines
+    double xMultiLineOffset = 0.0;
+    if ( lines > 1 && lyr.multilineAlign != QgsPalLayerSettings::MultiLeft )
+    {
+      double labelWidth = labelfm->width( multiLineList.at( i ) );
+      double labelWidthDiff = labelWidest - labelWidth;
+      if ( lyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
+      {
+        labelWidthDiff /= 2;
+      }
+      xMultiLineOffset = labelWidthDiff * lyr.rasterCompressFactor;
+      QgsDebugMsg( QString( "xMultiLineOffset: %0" ).arg( xMultiLineOffset ) );
+    }
+
+    double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * lyr.multilineHeight;
+    painter->translate( QPointF( xMultiLineOffset, - ascentOffset - yMultiLineOffset ) );
 
     if ( drawBuffer )
     {
