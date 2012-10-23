@@ -154,7 +154,7 @@ PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
 ADD_CUSTOM_TARGET(console ALL DEPENDS ${PYUI_FILES})
 INSTALL(FILES ${PYUI_FILES} DESTINATION ${QGIS_PYTHON_DIR})
 
-FOREACH(file __init__.py utils.py console.py console_sci.py console_help.py console_settings.py)
+FOREACH(file __init__.py utils.py console.py console_sci.py console_help.py console_settings.py ${PYUI_FILES})
   ADD_CUSTOM_COMMAND(TARGET compile_python_files
          POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy ${file} ${QGIS_PYTHON_OUTPUT_DIRECTORY}
