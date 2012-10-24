@@ -165,6 +165,14 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
       continue;
     }
 
+    if ( mInvertColor )
+    {
+      // 1.8 was flipping blue and red
+      red = 255 - red;
+      green = 255 - green;
+      blue = 255 - blue;
+    }
+
     if ( !hasTransparency )
     {
       outputBlock->setColor( i, qRgba( red, green, blue, 255 ) );
