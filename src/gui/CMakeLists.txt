@@ -56,6 +56,7 @@ qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
 qgsdialog.cpp
 qgsencodingfiledialog.cpp
+qgserrordialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
@@ -155,6 +156,7 @@ qgsdialog.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
+qgserrordialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
 qgshtmlannotationitem.h

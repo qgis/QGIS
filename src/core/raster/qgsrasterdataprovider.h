@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
+#include "qgserror.h"
 #include "qgsrasterinterface.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
@@ -143,31 +144,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface* input ) { Q_UNUSED( input ); return false; }
-
-    /**
-     * Add the list of WMS layer names to be rendered by this server
-     */
-    virtual void addLayers( const QStringList & layers,
-                            const QStringList & styles = QStringList() ) = 0;
-
-    //! get raster image encodings supported by (e.g.) the WMS Server, expressed as MIME types
-    virtual QStringList supportedImageEncodings() = 0;
-
-    /**
-     * Get the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
-     */
-    virtual QString imageEncoding() const = 0;
-
-    /**
-     * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
-     */
-    virtual void setImageEncoding( const QString & mimeType ) = 0;
-
-    /**
-     * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
-     */
-    virtual void setImageCrs( const QString & crs ) = 0;
-
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image

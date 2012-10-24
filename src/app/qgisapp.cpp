@@ -120,6 +120,8 @@
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
 #include "qgsencodingfiledialog.h"
+#include "qgserror.h"
+#include "qgserrordialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
@@ -7294,6 +7296,14 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
   QgsRasterLayer *layer =
     new QgsRasterLayer( rasterFile, baseName ); // fi.completeBaseName());
 
+  if ( !layer->isValid() )
+  {
+    //QMessageBox::critical( this, tr( "Invalid Layer" ), layer->error().message()  );
+    QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
+    delete layer;
+    return NULL;
+  }
+
   bool ok = false;
 
   if ( shouldAskUserForGDALSublayers( layer ) )
@@ -7377,7 +7387,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 
   QgsDebugMsg( "Constructed new layer." );
 
-  if ( layer && layer->isValid() )
+  if ( layer->isValid() )
   {
     addRasterLayer( layer );
 
@@ -7385,8 +7395,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   }
   else
   {
-    QMessageBox::critical( this, tr( "Layer is not valid" ),
-                           tr( "The layer is not a valid layer and can not be added to the map" ) );
+    QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
   }
 
   // update UI
@@ -7454,25 +7463,37 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       // create the layer
       QgsRasterLayer *layer = new QgsRasterLayer( *myIterator, myBaseNameQString );
 
-      if ( shouldAskUserForGDALSublayers( layer ) )
+      if ( !layer->isValid() )
       {
-        askUserForGDALSublayers( layer );
-
-        // The first layer loaded is not useful in that case. The user can select it in
-        // the list if he wants to load it.
-        delete layer;
+        returnValue = false;
+        if ( guiWarning )
+        {
+          QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
+          delete layer;
+        }
       }
       else
       {
-        addRasterLayer( layer );
-
-        //only allow one copy of a ai grid file to be loaded at a
-        //time to prevent the user selecting all adfs in 1 dir which
-        //actually represent 1 coverate,
-
-        if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+        if ( shouldAskUserForGDALSublayers( layer ) )
         {
-          break;
+          askUserForGDALSublayers( layer );
+
+          // The first layer loaded is not useful in that case. The user can select it in
+          // the list if he wants to load it.
+          delete layer;
+        }
+        else
+        {
+          addRasterLayer( layer );
+
+          //only allow one copy of a ai grid file to be loaded at a
+          //time to prevent the user selecting all adfs in 1 dir which
+          //actually represent 1 coverate,
+
+          if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+          {
+            break;
+          }
         }
       }
     } // valid raster filename

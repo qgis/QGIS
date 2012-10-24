@@ -61,6 +61,9 @@
 #include <QDir>
 #endif
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
+#define SRVERR(message) QGS_ERROR_MESSAGE(message,"WMS server")
+
 static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
 
@@ -93,13 +96,22 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
-  // assume this is a valid layer until we determine otherwise
-  mValid = true;
+  mValid = false;
 
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
   // with username=user,password=pass,url=http://xxx.xxx.xx/yyy...
-  parseUri( uri );
+  if ( !parseUri( uri ) )
+  {
+    appendError( ERR( tr( "Cannot parse URI" ) ) );
+    return;
+  }
+
+  if ( !calculateExtent() || mLayerExtent.isEmpty() )
+  {
+    appendError( ERR( tr( "Cannot calculate extent" ) ) );
+    return;
+  }
 
   // URL can be in 3 forms:
   // 1) http://xxx.xxx.xx/yyy/yyy
@@ -109,12 +121,12 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
 
   mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml";
 
+  mValid = true;
   QgsDebugMsg( "exiting constructor." );
 }
 
-void QgsWmsProvider::parseUri( QString uriString )
+bool QgsWmsProvider::parseUri( QString uriString )
 {
-
   QgsDebugMsg( "uriString = " + uriString );
   QgsDataSourceURI uri;
   uri.setEncodedUri( uriString );
@@ -181,11 +193,16 @@ void QgsWmsProvider::parseUri( QString uriString )
   }
 
   // setImageCrs is using mTiled !!!
-  setImageCrs( uri.param( "crs" ) );
+  if ( !setImageCrs( uri.param( "crs" ) ) )
+  {
+    appendError( ERR( tr( "Cannot set CRS" ) ) );
+    return false;
+  }
   mCrs.createFromOgcWmsCrs( uri.param( "crs" ) );
 
   mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
 
+  return true;
 }
 
 QString QgsWmsProvider::prepareUri( QString uri ) const
@@ -398,7 +415,7 @@ void QgsWmsProvider::setImageEncoding( QString const & mimeType )
 }
 
 
-void QgsWmsProvider::setImageCrs( QString const & crs )
+bool QgsWmsProvider::setImageCrs( QString const & crs )
 {
   QgsDebugMsg( "Setting image CRS to " + crs + "." );
 
@@ -420,17 +437,20 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
   {
     if ( mActiveSubLayers.size() != 1 )
     {
-      QgsDebugMsg( "Number of tile layers must be one" );
-      mValid = false;
-      return;
+      appendError( ERR( tr( "Number of tile layers must be one" ) ) );
+      return false;
     }
 
-    mValid = retrieveServerCapabilities();
-    QgsDebugMsg( QString( "mValid = %1 mTileLayersSupported.size() = %2" ).arg( mValid ).arg( mTileLayersSupported.size() ) );
-    if ( !mValid || mTileLayersSupported.size() == 0 )
+    if ( !retrieveServerCapabilities() )
     {
-      QgsDebugMsg( "Tile layer not found" );
-      return;
+      // Error set in retrieveServerCapabilities()
+      return false;
+    }
+    QgsDebugMsg( QString( "mTileLayersSupported.size() = %1" ).arg( mTileLayersSupported.size() ) );
+    if ( mTileLayersSupported.size() == 0 )
+    {
+      appendError( ERR( tr( "Tile layer not found" ) ) );
+      return false;
     }
 
     for ( int i = 0; i < mTileLayersSupported.size(); i++ )
@@ -483,8 +503,13 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
 
     setProperty( "resolutions", resolutions );
 
-    mValid = mTileLayer != 0 && mTileMatrixSet != 0;
+    if ( mTileLayer == 0 && mTileMatrixSet == 0 )
+    {
+      appendError( ERR( tr( "Tile layer or tile matrix set not found" ) ) );
+      return false;
+    }
   }
+  return true;
 }
 
 void QgsWmsProvider::setQueryItem( QUrl &url, QString item, QString value )
@@ -3120,6 +3145,13 @@ bool QgsWmsProvider::calculateExtent()
     {
       QgsDebugMsg( "Sublayer Iterator: " + *it );
       // This is the extent for the layer name in *it
+      if ( !mExtentForLayer.contains( *it ) )
+      {
+        mLayerExtent = QgsRectangle();
+        appendError( ERR( tr( "Extent for layer %1 not found in capabilities" ).arg( *it ) ) );
+        return false;
+      }
+
       QgsRectangle extent = mExtentForLayer.find( *it ).value();
 
       // Convert to the user's CRS as required
@@ -3159,6 +3191,7 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
     return true;
   }
+  return false; // should not be reached
 }
 
 

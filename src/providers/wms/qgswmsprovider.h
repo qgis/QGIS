@@ -542,7 +542,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \note an empty crs value will result in the previous CRS being retained.
      */
-    void setImageCrs( QString const & crs );
+    bool setImageCrs( QString const & crs );
 
     /**
      * Set the name of the connection for use in authentication where required
@@ -846,7 +846,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \note added in 1.1
      */
 
-    void parseUri( QString uri );
+    bool parseUri( QString uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value

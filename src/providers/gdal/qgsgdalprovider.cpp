@@ -52,6 +52,7 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 
 static QString PROVIDER_KEY = "gdal";
 static QString PROVIDER_DESCRIPTION = "GDAL provider";
@@ -134,8 +135,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( !mGdalBaseDataset )
   {
     QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsDebugMsg( msg );
-    QgsMessageLog::logMessage( msg );
+    appendError( ERR( msg ) );
     return;
   }
 
@@ -538,7 +538,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     QgsFree( tmpBlock );
     return;
   }
@@ -2223,8 +2222,7 @@ void QgsGdalProvider::initBaseDataset()
     // if there are no subdatasets, then close the dataset
     if ( mSubLayers.size() == 0 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
+      appendError( ERR( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
 
       GDALDereferenceDataset( mGdalBaseDataset );
       mGdalBaseDataset = NULL;

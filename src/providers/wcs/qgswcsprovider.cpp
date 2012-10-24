@@ -60,6 +60,9 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
+#define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
+
 static QString WCS_KEY = "wcs";
 static QString WCS_DESCRIPTION = "OGC Web Coverage Service version 1.0/1.1 data provider";
 
@@ -117,7 +120,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // 1.0 get additional coverage info
   if ( !mCapabilities.describeCoverage( mIdentifier ) )
   {
-    QgsMessageLog::logMessage( tr( "Cannot describe coverage" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Cannot describe coverage" ) ) );
     return;
   }
 
@@ -125,7 +128,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   if ( !mCoverageSummary.valid )
   {
     // Should not happen if describeCoverage() did not fail
-    QgsMessageLog::logMessage( tr( "Coverage not found" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Coverage not found" ) ) );
     return;
   }
 
@@ -182,7 +185,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   if ( !calculateExtent() )
   {
-    QgsMessageLog::logMessage( tr( "Cannot calculate extent" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Cannot calculate extent" ) ) );
     return;
   }
 
@@ -239,7 +242,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   if ( !mCachedGdalDataset )
   {
-    QgsMessageLog::logMessage( tr( "Cannot get test dataset." ), tr( "WCS" ) );
+    setError( mCachedError );
+    appendError( ERR( tr( "Cannot get test dataset." ) ) );
     return;
   }
 
@@ -871,9 +875,9 @@ void QgsWcsProvider::cacheReplyFinished()
             contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
           && parseServiceExceptionReportDom( text ) )
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
-                                   .arg( mErrorCaption ).arg( mError )
-                                   .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+        mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" )
+                                     .arg( mErrorCaption ).arg( mError )
+                                     .arg( mCacheReply->url().toString() ) ) );
       }
       else
       {
@@ -1186,6 +1190,7 @@ void QgsWcsProvider::clearCache()
   }
   QgsDebugMsg( "Clear mCachedData" );
   mCachedData.clear();
+  mCachedError.clear();
   QgsDebugMsg( "Cleared" );
 }
 
@@ -1456,6 +1461,7 @@ bool QgsWcsProvider::calculateExtent()
   else
   {
     QgsDebugMsg( "Cannot get cache to verify extent" );
+    setError( mCachedError );
     return false;
   }
 

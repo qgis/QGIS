@@ -309,10 +309,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
-    static QLibrary* loadProviderLibrary( QString theProviderKey );
-    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
-
-
     /** \brief  Accessor for blue band name mapping */
     QString blueBandName() const { return mBlueBandName; }
 

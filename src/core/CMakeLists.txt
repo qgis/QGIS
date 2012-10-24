@@ -63,6 +63,7 @@ SET(QGIS_CORE_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgserror.cpp
   qgsexpression.cpp
   qgsfeature.cpp
   qgsfield.cpp
@@ -350,6 +351,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitem.h
   qgsdistancearea.h
   qgscsexception.h
+  qgserror.h
   qgsexception.h
   qgsexpression.h
   qgsfeature.h

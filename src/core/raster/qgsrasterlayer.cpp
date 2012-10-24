@@ -86,6 +86,8 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 // doubles can take for the current system.  (Yes, 20 was arbitrary.)
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
+
 const double QgsRasterLayer::CUMULATIVE_CUT_LOWER = 0.02;
 const double QgsRasterLayer::CUMULATIVE_CUT_UPPER = 0.98;
 const double QgsRasterLayer::SAMPLE_SIZE = 250000;
@@ -121,6 +123,7 @@ QgsRasterLayer::QgsRasterLayer(
   // TODO, call constructor with provider key
   init();
   setDataProvider( "gdal" );
+  if ( !mValid ) return;
 
   bool defaultLoadedFlag = false;
   if ( mValid && loadDefaultStyleFlag )
@@ -157,6 +160,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
   QgsDebugMsg( "Entered" );
   init();
   setDataProvider( providerKey );
+  if ( !mValid ) return;
 
   // load default style
   bool defaultLoadedFlag = false;
@@ -189,6 +193,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
+  //delete mDataProvider; // deleted by pipe
 }
 
 //////////////////////////////////////////////////////////
@@ -207,21 +212,14 @@ QgsRasterLayer::~QgsRasterLayer()
 void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersString )
 {
   QgsDebugMsg( "Entered" );
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "Could not load gdal provider library" );
-    return;
-  }
-  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib->resolve( "buildSupportedRasterFileFilter" ) );
+  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal", "buildSupportedRasterFileFilter" ) );
   if ( ! pBuild )
   {
-    QgsDebugMsg( "Could not resolve buildSupportedRasterFileFilter in gdal provider library" );
+    QgsDebugMsg( "Could get buildSupportedRasterFileFilter in gdal provider library" );
     return;
   }
 
   pBuild( theFileFiltersString );
-  delete myLib;
 }
 
 /**
@@ -229,14 +227,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
  */
 bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )
 {
-
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "Could not load gdal provider library" );
-    return false;
-  }
-  isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( myLib->resolve( "isValidRasterFileName" ) );
+  isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) );
   if ( ! pValid )
   {
     QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
@@ -244,7 +235,6 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, 
   }
 
   bool myIsValid = pValid( theFileNameQString, retErrMsg );
-  delete myLib;
   return myIsValid;
 }
 
@@ -1587,96 +1577,18 @@ void QgsRasterLayer::init()
   mLastViewPort.drawableAreaYDim = 0;
 }
 
-QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
-{
-  QgsDebugMsg( "theProviderKey = " + theProviderKey );
-  // load the plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString myLibPath = pReg->library( theProviderKey );
-  QgsDebugMsg( "myLibPath = " + myLibPath );
-
-#ifdef TESTPROVIDERLIB
-  const char *cOgrLib = ( const char * ) myLibPath;
-  // test code to help debug provider loading problems
-  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
-  void *handle = dlopen( cOgrLib, RTLD_LAZY | RTLD_GLOBAL );
-  if ( !handle )
-  {
-    QgsLogger::warning( "Error in dlopen: " );
-  }
-  else
-  {
-    QgsDebugMsg( "dlopen suceeded" );
-    dlclose( handle );
-  }
-
-#endif
-
-  // load the data provider
-  QLibrary*  myLib = new QLibrary( myLibPath );
-
-  QgsDebugMsg( "Library name is " + myLib->fileName() );
-  bool loaded = myLib->load();
-
-  if ( !loaded )
-  {
-    QgsMessageLog::logMessage( tr( "Failed to load provider %1 (Reason: %2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Loaded data provider library" );
-  return myLib;
-}
-
-// This code should be shared also by vector layer -> move it to QgsMapLayer
-QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QString theDataSource )
-{
-  QgsDebugMsg( "Entered" );
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( theProviderKey );
-  QgsDebugMsg( "Library loaded" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "myLib is NULL" );
-    return NULL;
-  }
-
-  QgsDebugMsg( "Attempting to resolve the classFactory function" );
-  classFactoryFunction_t * classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "classFactory" ) );
-
-  if ( !classFactory )
-  {
-    QgsMessageLog::logMessage( tr( "Cannot resolve the classFactory function" ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Getting pointer to a mDataProvider object from the library" );
-  //XXX - This was a dynamic cast but that kills the Windows
-  //      version big-time with an abnormal termination error
-  //      mDataProvider = (QgsRasterDataProvider*)(classFactory((const
-  //                                              char*)(dataSource.utf8())));
-
-  // Copied from qgsproviderregistry in preference to the above.
-  QgsRasterDataProvider* myDataProvider = ( QgsRasterDataProvider* )( *classFactory )( &theDataSource );
-
-  if ( !myDataProvider )
-  {
-    QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Data driver created" );
-  return myDataProvider;
-}
-
-/** Copied from QgsVectorLayer::setDataProvider
- *  TODO: Make it work in the raster environment
- */
 void QgsRasterLayer::setDataProvider( QString const & provider )
 {
   QgsDebugMsg( "Entered" );
+  mValid = false; // assume the layer is invalid until we determine otherwise
+
+  mPipe.remove( mDataProvider ); // deletes if exists
+  mDataProvider = 0;
+
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
   mProviderKey = provider;
-  mValid = false;            // assume the layer is invalid until we determine otherwise
-
   // set the layer name (uppercase first character)
   if ( ! mLayerName.isEmpty() )   // XXX shouldn't this happen in parent?
   {
@@ -1685,13 +1597,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 
   mBandCount = 0;
 
-  mDataProvider = QgsRasterLayer::loadProvider( mProviderKey, mDataSource );
+  mDataProvider = ( QgsRasterDataProvider* )QgsProviderRegistry::instance()->provider( mProviderKey, mDataSource );
   if ( !mDataProvider )
   {
+    //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
+    appendError( ERR( tr( "Cannot instantiate the '%1' data provider" ).arg( mProviderKey ) ) );
     return;
   }
+  QgsDebugMsg( "Data provider created" );
+
   if ( !mDataProvider->isValid() )
   {
+    setError( mDataProvider->error() );
+    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey ).arg( mDataSource ) ) );
     return;
   }
   mPipe.set( mDataProvider );
@@ -2619,7 +2537,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   }
 
   setDataProvider( mProviderKey );
-
+  if ( !mValid ) return false;
 
   QString theError;
   bool res = readSymbology( layer_node, theError );
@@ -2644,6 +2562,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
+      if ( !mValid ) return false;
     }
   }
 
