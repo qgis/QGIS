@@ -22,46 +22,45 @@
 
 #include <QRegExp>
 
-QgsErrorMessage::QgsErrorMessage ( const QString & theMessage, const QString & theTag, const QString & theFile, const QString & theFunction, int theLine )
-  : mMessage(theMessage)
-  , mTag(theTag)
-  , mFile(theFile)
-  , mFunction(theFunction)
-  , mLine(theLine)
-  , mFormat(Text)
+QgsErrorMessage::QgsErrorMessage( const QString & theMessage, const QString & theTag, const QString & theFile, const QString & theFunction, int theLine )
+    : mMessage( theMessage )
+    , mTag( theTag )
+    , mFile( theFile )
+    , mFunction( theFunction )
+    , mLine( theLine )
+    , mFormat( Text )
 {
 }
 
-QgsError::QgsError ( const QString & theMessage, const QString & theTag )
+QgsError::QgsError( const QString & theMessage, const QString & theTag )
 {
-  append ( theMessage, theTag ); 
+  append( theMessage, theTag );
 }
 
-void QgsError::append ( const QString & theMessage, const QString & theTag )
+void QgsError::append( const QString & theMessage, const QString & theTag )
 {
-  mMessageList.append ( QgsErrorMessage ( theMessage, theTag ) ); 
+  mMessageList.append( QgsErrorMessage( theMessage, theTag ) );
 }
 
-void QgsError::append ( const QgsErrorMessage & theMessage )
+void QgsError::append( const QgsErrorMessage & theMessage )
 {
-  mMessageList.append ( theMessage ); 
+  mMessageList.append( theMessage );
 }
 
-QString QgsError::message ( QgsErrorMessage::Format theFormat ) const
+QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 {
   QString str;
-  int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
 
   QString srcUrl;
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
-  //       and there are no local not commited changes 
-  QString hash = QString(QGis::QGIS_DEV_VERSION);
-  QString remote = QString(QGS_GIT_REMOTE_URL);
-  QgsDebugMsg ("remote = " + remote );
-  if ( !hash.isEmpty () && !remote.isEmpty() && remote.contains ( "github.com" ) )
+  //       and there are no local not commited changes
+  QString hash = QString( QGis::QGIS_DEV_VERSION );
+  QString remote = QString( QGS_GIT_REMOTE_URL );
+  QgsDebugMsg( "remote = " + remote );
+  if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( "github.com" ) )
   {
-    QString path = remote.remove( QRegExp(".*github.com[:/]" )).remove(".git");
+    QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( ".git" );
     srcUrl = "https://github.com/" + path + "/blob/" + hash;
   }
 #endif
@@ -71,7 +70,8 @@ QString QgsError::message ( QgsErrorMessage::Format theFormat ) const
 #ifdef QGISDEBUG
     QString file;
 #ifndef _MSC_VER
-    file = m.file().mid(sPrefixLength);
+    int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
+    file = m.file().mid( sPrefixLength );
 #else
     file = m.file();
 #endif
@@ -89,10 +89,10 @@ QString QgsError::message ( QgsErrorMessage::Format theFormat ) const
       str += "<p><b>" + m.tag() + ":</b> " + m.message();
 #ifdef QGISDEBUG
       QString location = QString( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
-      if ( !srcUrl.isEmpty() ) 
+      if ( !srcUrl.isEmpty() )
       {
-        QString url = QString("%1/%2#L%3").arg(srcUrl).arg(file).arg( m.line() );
-        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg(url).arg( location );
+        QString url = QString( "%1/%2#L%3" ).arg( srcUrl ).arg( file ).arg( m.line() );
+        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url ).arg( location );
       }
       else
       {
@@ -104,8 +104,8 @@ QString QgsError::message ( QgsErrorMessage::Format theFormat ) const
   return str;
 }
 
-QString QgsError::summary ( ) const
+QString QgsError::summary( ) const
 {
   // The first message in chain is usually the real error given by backend/server
-  return mMessageList.first().message(); 
+  return mMessageList.first().message();
 }

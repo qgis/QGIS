@@ -243,7 +243,9 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     }
 
     bool isNoData = false;
-    double redVal, greenVal, blueVal;
+    double redVal = 0;
+    double greenVal = 0;
+    double blueVal = 0;
     if ( mRedBand > 0 )
     {
       redVal = redBlock->value( i );
