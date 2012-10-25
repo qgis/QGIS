@@ -434,17 +434,20 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     {
       QString packageName = pluginList[i];
 
+      // TODO: apply better solution for #5879
+      // start - temporary fix for issue #5879
       if ( QgsApplication::isRunningFromBuildDir() )
       {
         if ( corePlugins.contains( packageName ) )
         {
-          QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() );
+          QgsApplication::setPkgDataPath( QString("") );
         }
         else
         {
           QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
         }
       }
+      // end - temporary fix for issue #5879, more below
 
       if ( checkPythonPlugin( packageName ) )
       {
@@ -456,10 +459,12 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
         }
       }
     }
+    // start - temporary fix for issue #5879, more above
     if ( QgsApplication::isRunningFromBuildDir() )
     {
       QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
     }
+    // end - temporary fix for issue #5879
   }
 
   QgsDebugMsg( "Plugin loading completed" );
