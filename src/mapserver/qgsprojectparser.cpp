@@ -1719,6 +1719,26 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     serviceElem.appendChild( wmsAbstractElem );
   }
 
+  //keyword list
+  QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      QDomElement keywordElem = doc.createElement( "Keyword" );
+      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+      keywordElem.appendChild( keywordText );
+      wmsKeywordElem.appendChild( keywordElem );
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      serviceElem.appendChild( wmsKeywordElem );
+    }
+  }
+
   //OnlineResource element is mandatory according to the WMS specification
   QDomElement wmsOnlineResourceElem = propertiesElem.firstChildElement( "WMSOnlineResource" );
   QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
@@ -1784,6 +1804,26 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   }
 
   serviceElem.appendChild( contactInfoElem );
+
+  //Fees
+  QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
+  if ( !feesElem.isNull() )
+  {
+    QDomElement wmsFeesElem = doc.createElement( "Fees" );
+    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
+    wmsFeesElem.appendChild( wmsFeesText );
+    serviceElem.appendChild( wmsFeesElem );
+  }
+
+  //AccessConstraints
+  QDomElement accessConstraintsElem = propertiesElem.firstChildElement( "WMSAccessConstraints" );
+  if ( !accessConstraintsElem.isNull() )
+  {
+    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
+    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+    serviceElem.appendChild( wmsAccessConstraintsElem );
+  }
 
   //MaxWidth / MaxHeight for WMS 1.3
   QString version = doc.documentElement().attribute( "version" );

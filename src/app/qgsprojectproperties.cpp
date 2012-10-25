@@ -223,6 +223,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSAbstract->setPlainText( QgsProject::instance()->readEntry( "WMSServiceAbstract", "/", "" ) );
   mWMSOnlineResourceLineEdit->setText( QgsProject::instance()->readEntry( "WMSOnlineResource", "/", "" ) );
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
+  mWMSFees->setText( QgsProject::instance()->readEntry( "WMSFees", "/", "" ) );
+  mWMSAccessConstraints->setText( QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" ) );
+  mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( "," ) );
 
   bool ok;
   QStringList values;
@@ -304,14 +307,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Insert" );
   QStringList wfstDeleteLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Delete" );
 
-  QSignalMapper *smPublied = new QSignalMapper(this);
-  connect(smPublied, SIGNAL(mapped(int)), this, SLOT(on_cbxWFSPublied_stateChanged(int)));
-  QSignalMapper *smUpdate = new QSignalMapper(this);
-  connect(smUpdate, SIGNAL(mapped(int)), this, SLOT(on_cbxWFSUpdate_stateChanged(int)));
-  QSignalMapper *smInsert = new QSignalMapper(this);
-  connect(smInsert, SIGNAL(mapped(int)), this, SLOT(on_cbxWFSInsert_stateChanged(int)));
-  QSignalMapper *smDelete = new QSignalMapper(this);
-  connect(smDelete, SIGNAL(mapped(int)), this, SLOT(on_cbxWFSDelete_stateChanged(int)));
+  QSignalMapper *smPublied = new QSignalMapper( this );
+  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSPublied_stateChanged( int ) ) );
+  QSignalMapper *smUpdate = new QSignalMapper( this );
+  connect( smUpdate, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSUpdate_stateChanged( int ) ) );
+  QSignalMapper *smInsert = new QSignalMapper( this );
+  connect( smInsert, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSInsert_stateChanged( int ) ) );
+  QSignalMapper *smDelete = new QSignalMapper( this );
+  connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSDelete_stateChanged( int ) ) );
 
   twWFSLayers->setColumnCount( 5 );
   twWFSLayers->horizontalHeader()->setVisible( true );
@@ -337,37 +340,37 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
       twWFSLayers->setCellWidget( j, 1, cbp );
 
-      smPublied->setMapping(cbp, j);
-      connect(cbp, SIGNAL(stateChanged(int)), smPublied, SLOT(map()));
+      smPublied->setMapping( cbp, j );
+      connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
 
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
       QgsVectorDataProvider* provider = vlayer->dataProvider();
-      if ( (provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && (provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+      if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
       {
         QCheckBox* cbu = new QCheckBox();
         cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 2, cbu );
 
-        smUpdate->setMapping(cbu, j);
-        connect(cbu, SIGNAL(stateChanged(int)), smUpdate, SLOT(map()));
+        smUpdate->setMapping( cbu, j );
+        connect( cbu, SIGNAL( stateChanged( int ) ), smUpdate, SLOT( map() ) );
       }
-      if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+      if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
         QCheckBox* cbi = new QCheckBox();
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 3, cbi );
 
-        smInsert->setMapping(cbi, j);
-        connect(cbi, SIGNAL(stateChanged(int)), smInsert, SLOT(map()));
+        smInsert->setMapping( cbi, j );
+        connect( cbi, SIGNAL( stateChanged( int ) ), smInsert, SLOT( map() ) );
       }
-      if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+      if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
         QCheckBox* cbd = new QCheckBox();
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
         twWFSLayers->setCellWidget( j, 4, cbd );
 
-        smDelete->setMapping(cbd, j);
-        connect(cbd, SIGNAL(stateChanged(int)), smDelete, SLOT(map()));
+        smDelete->setMapping( cbd, j );
+        connect( cbd, SIGNAL( stateChanged( int ) ), smDelete, SLOT( map() ) );
       }
 
       j++;
@@ -567,6 +570,9 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSServiceAbstract", "/", mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( "WMSOnlineResource", "/", mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( "WMSUrl", "/", mWMSUrlLineEdit->text() );
+  QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFees->text() );
+  QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraints->text() );
+  QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
 
   if ( grpWMSExt->isChecked() )
   {
@@ -762,58 +768,58 @@ void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 
 void QgsProjectProperties::on_cbxWFSPublied_stateChanged( int aIdx )
 {
-    QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
-    if ( cb && !cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-      if ( cbn )
-        cbn->setChecked(false);
-    }
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
+  if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
 }
 
 void QgsProjectProperties::on_cbxWFSUpdate_stateChanged( int aIdx )
 {
-    QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-    if ( cb && cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
-      if ( cbn )
-        cbn->setChecked(true);
-    }
-    else if ( cb && !cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-      if ( cbn )
-        cbn->setChecked(false);
-    }
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
+    if ( cbn )
+      cbn->setChecked( true );
+  }
+  else if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
 }
 
 void QgsProjectProperties::on_cbxWFSInsert_stateChanged( int aIdx )
 {
-    QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-    if ( cb && cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
-      if ( cbn )
-        cbn->setChecked(true);
-    }
-    else if ( cb && !cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
-      if ( cbn )
-        cbn->setChecked(false);
-    }
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+    if ( cbn )
+      cbn->setChecked( true );
+  }
+  else if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
 }
 
 void QgsProjectProperties::on_cbxWFSDelete_stateChanged( int aIdx )
 {
-    QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
-    if ( cb && cb->isChecked() )
-    {
-      QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
-      if ( cbn )
-        cbn->setChecked(true);
-    }
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    if ( cbn )
+      cbn->setChecked( true );
+  }
 }
 
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
