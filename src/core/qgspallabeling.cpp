@@ -1711,7 +1711,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
         labelWidthDiff /= 2;
       }
       xMultiLineOffset = labelWidthDiff * lyr.rasterCompressFactor;
-      QgsDebugMsg( QString( "xMultiLineOffset: %0" ).arg( xMultiLineOffset ) );
+      //QgsDebugMsg( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ) );
     }
 
     double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * lyr.multilineHeight;
