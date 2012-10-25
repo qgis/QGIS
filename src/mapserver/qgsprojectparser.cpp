@@ -1929,6 +1929,21 @@ QString QgsProjectParser::featureInfoDocumentElementNS() const
   return featureInfoDocumentNSElem.text();
 }
 
+QString QgsProjectParser::featureInfoSchema() const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return "";
+  }
+  QDomElement featureInfoSchemaElem = propertiesElem.firstChildElement( "WMSFeatureInfoSchema" );
+  if ( featureInfoSchemaElem.isNull() )
+  {
+    return "";
+  }
+  return featureInfoSchemaElem.text();
+}
+
 bool QgsProjectParser::featureInfoFormatSIA2045() const
 {
   if ( !mXMLDoc )

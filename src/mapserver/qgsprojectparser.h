@@ -118,6 +118,8 @@ class QgsProjectParser: public QgsConfigParser
 
     virtual QString featureInfoDocumentElementNS() const;
 
+    virtual QString featureInfoSchema() const;
+
     /**Return feature info in format SIA2045?*/
     bool featureInfoFormatSIA2045() const;
 

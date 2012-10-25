@@ -740,6 +740,14 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   {
     getFeatureInfoElement = result.createElementNS( featureInfoElemNS, featureInfoElemName );
   }
+  //feature info schema
+  QString featureInfoSchema = mConfigParser->featureInfoSchema();
+  if ( !featureInfoSchema.isEmpty() )
+  {
+    getFeatureInfoElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    getFeatureInfoElement.setAttribute( "xsi:schemaLocation", featureInfoSchema );
+  }
+
   result.appendChild( getFeatureInfoElement );
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();

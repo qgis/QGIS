@@ -136,6 +136,8 @@ class QgsConfigParser
     virtual QString featureInfoDocumentElement( const QString& defaultValue ) const { return defaultValue; }
     /**Returns document element namespace in GetFeatureInfo response or empty string*/
     virtual QString featureInfoDocumentElementNS() const { return ""; }
+    /**Returns schema url for feature info xsd (or an empty string if there is no schema)*/
+    virtual QString featureInfoSchema() const { return ""; }
 
     /**Return feature info in format SIA2045?*/
     virtual bool featureInfoFormatSIA2045() const { return false; }
