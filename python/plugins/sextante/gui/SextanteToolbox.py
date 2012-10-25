@@ -25,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import subprocess
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -85,7 +86,14 @@ class SextanteToolbox(QDockWidget):
         QMetaObject.connectSlotsByName(self)
 
     def configureProviders(self):
-        QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
+        #QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
+        filename = os.path.join(os.path.dirname(__file__), "..", "help", "3rdParty.html")
+        if os.name == "nt":
+            os.startfile(filename)
+        elif sys.platform == "darwin":
+            subprocess.Popen(('open', filename))
+        else:
+            subprocess.call(('xdg-open', filename))
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)
