@@ -572,7 +572,16 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSUrl", "/", mWMSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFees->text() );
   QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraints->text() );
-  QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
+  //WMS keyword list
+  QStringList keywordStringList = mWMSKeywordList->text().split( "," );
+  if ( keywordStringList.size() > 0 )
+  {
+    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSKeywordList", "/" );
+  }
 
   if ( grpWMSExt->isChecked() )
   {
