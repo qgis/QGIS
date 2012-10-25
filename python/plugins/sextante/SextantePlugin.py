@@ -67,19 +67,19 @@ class SextantePlugin:
         self.menu.setTitle(QCoreApplication.translate("SEXTANTE", "Analysis"))
 
         self.toolboxAction = QAction(QIcon(":/sextante/images/toolbox.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Toolbox"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE toolbox"),
             self.iface.mainWindow())
         QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(QIcon(":/sextante/images/model.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Modeler"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE modeler"),
             self.iface.mainWindow())
         QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(QIcon(":/sextante/images/history.gif"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE History and log"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE history and log"),
             self.iface.mainWindow())
         QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
         self.menu.addAction(self.historyAction)
