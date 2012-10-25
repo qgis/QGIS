@@ -623,6 +623,14 @@ ENDIF (ENABLE_TESTS)
 IF (APPLE)
   # must be last for install, so install_name_tool can do its work
   ADD_SUBDIRECTORY(mac)
+
+  # make hard link to embedded app bundle binary (symlink won't work)
+  # allows QGIS to be run directly from build directory
+  IF (EXISTS "${CMAKE_BINARY_DIR}/output/bin/QGIS.app/Contents/MacOS/QGIS")
+    EXECUTE_PROCESS(COMMAND /bin/ln -f
+      "${CMAKE_BINARY_DIR}/output/bin/QGIS.app/Contents/MacOS/QGIS"
+      "${CMAKE_BINARY_DIR}/output/bin/QGIS")
+  ENDIF ()
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems
