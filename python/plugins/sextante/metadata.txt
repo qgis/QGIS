@@ -1,12 +1,14 @@
 [general]
 name=SEXTANTE
 description=SEXTANTE Geoprocessing Platform for QGIS
+category=Analysis
 version=1.0.8
-icon=images/toolbox.png
 qgisMinimumVersion=1.0
-class_name=SextantePlugin
+
+author=Victor Olaya
+email=volayaf@gmail.com
 website=www.sextantegis.com
 
-[author]
-name=Victor Olaya
-email=volayaf@gmail.com
+icon=images/toolbox.png
+
+class_name=SextantePlugin
