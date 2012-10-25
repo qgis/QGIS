@@ -626,11 +626,11 @@ IF (APPLE)
 
   # make hard link to embedded app bundle binary (symlink won't work)
   # allows QGIS to be run directly from build directory
-  IF (EXISTS "${CMAKE_BINARY_DIR}/output/bin/QGIS.app/Contents/MacOS/QGIS")
-    EXECUTE_PROCESS(COMMAND /bin/ln -f
-      "${CMAKE_BINARY_DIR}/output/bin/QGIS.app/Contents/MacOS/QGIS"
-      "${CMAKE_BINARY_DIR}/output/bin/QGIS")
-  ENDIF ()
+  ADD_CUSTOM_TARGET(mac_hardlink ALL
+    COMMAND /bin/ln -f QGIS.app/Contents/MacOS/QGIS QGIS
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/output/bin"
+    DEPENDS QGIS
+  )
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems
