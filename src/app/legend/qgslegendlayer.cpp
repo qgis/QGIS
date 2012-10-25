@@ -598,15 +598,16 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
-
   layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
   QgsFeature f;
-  QgsSymbolV2* currentSymbol = 0;
 
   while ( layer->nextFeature( f ) )
   {
-    currentSymbol = renderer->symbolForFeature( f );
-    mSymbolCountMap[currentSymbol] += 1;
+    QgsSymbolV2List symbolList = renderer->symbolsForFeature( f );
+    for ( QgsSymbolV2List::iterator symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
+    {
+      mSymbolCountMap[*symbolIt] += 1;
+    }
     ++featuresCounted;
     if ( featuresCounted % 50 == 0 )
     {
