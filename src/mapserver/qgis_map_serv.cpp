@@ -523,15 +523,7 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      //info format for GetFeatureInfo
-
-      //additionally support text/xml; format=sia2045
       QString infoFormat = parameterMap.value( "INFO_FORMAT" );
-      if ( infoFormat.compare( "text/xml", Qt::CaseInsensitive ) == 0 && adminConfigParser->featureInfoFormatSIA2045() )
-      {
-        infoFormat = "text/xml; format=sia2045";
-      }
-
       theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
       delete theRequestHandler;
       delete theServer;
