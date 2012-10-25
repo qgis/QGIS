@@ -1,3 +1,3 @@
 FILE(GLOB PY_FILES *.py)
 
-INSTALL(FILES ${PY_FILES} DESTINATION ${SEXTANTE_PLUGIN_DIR}/pymorph/scripts)
+PLUGIN_INSTALL(sextante ./pymorph/scripts ${PY_FILES})
