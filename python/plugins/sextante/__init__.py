@@ -35,6 +35,9 @@ def version():
 def icon():
     return "images/toolbox.png"
 
+def category():
+  return "Analysis"
+
 def qgisMinimumVersion():
     return "1.0"
 
