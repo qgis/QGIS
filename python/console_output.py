@@ -86,10 +86,14 @@ class EditorOutput(QsciScintilla):
         # Margin 0 is used for line numbers
         #fm = QFontMetrics(font)
         self.setMarginsFont(font)
-        self.setMarginWidth(1, "000") 
+        self.setMarginWidth(1, "00000")
         self.setMarginLineNumbers(1, True)
-        self.setMarginsBackgroundColor(QColor("#ffe4e4"))
-        
+        self.setMarginsForegroundColor(QColor("#3E3EE3"))
+        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
+        self.setCaretLineVisible(True)
+        self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
+
+
         # Folding
         #self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
         #self.setFoldMarginColors(QColor("#99CC66"),QColor("#333300"))
