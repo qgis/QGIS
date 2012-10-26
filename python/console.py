@@ -88,12 +88,6 @@ class PythonConsoleWidget(QWidget):
         #self.widgetEditors = QWidget()
         
         self.options = optionsDialog(self)
-        
-        self.splitter = QSplitter(self)
-        self.splitter.setOrientation(Qt.Vertical)
-        self.splitter.setHandleWidth(3)
-        self.splitter.setChildrenCollapsible(False)
-        
         #self.textEdit = QTextEdit()
         
         self.toolBar = QToolBar()
@@ -284,11 +278,27 @@ class PythonConsoleWidget(QWidget):
         self.widgetButton.setSizePolicy(sizePolicy)
         #self.e.addWidget(self.textEdit)
         #self.e.addWidget(self.edit)
-        
-        self.splitter.addWidget(self.textEditOut)
-        self.splitter.addWidget(self.edit)
-        self.f.addWidget(self.widgetButton, 0, 0, 1, 1)
-        self.f.addWidget(self.splitter, 0, 1, 1, 1)
+
+        self.consoleFrame = QFrame(self)
+        self.consoleFrame.setObjectName("consoleFrame")
+        self.consoleLayout = QVBoxLayout(self.consoleFrame)
+        self.consoleLayout.setSpacing(0)
+        self.consoleLayout.setMargin(0)
+
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textEditOut.sizePolicy().hasHeightForWidth())
+        self.textEditOut.setSizePolicy(sizePolicy)
+        self.consoleLayout.addWidget(self.textEditOut)
+
+        self.edit.setMinimumSize(QSize(0, 32))
+        self.edit.setMaximumSize(QSize(16777215, 32))
+        self.consoleLayout.addWidget(self.edit)
+
+
+        self.f.addWidget(self.widgetButton, 0, 0)
+        self.f.addWidget(self.consoleFrame, 0, 1)
         #self.f.addWidget(self.widgetEditors)
         
         #self.f.setStretchFactor(self.widgetEditors, 1)

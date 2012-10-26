@@ -51,7 +51,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
         self.buffer = []
         
-        self.insertInitText()
+        #self.insertInitText()
         self.displayPrompt(False)
         
         for line in _init_commands:
@@ -69,8 +69,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         #self.selectToMatchingBrace()
         
         # Current line visible with special background color
-        self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
+        #self.setCaretLineVisible(True)
+        #self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
         self.setCaretWidth(2)
     
         # Set Python lexer
@@ -98,7 +98,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(60)
+        self.setMinimumHeight(32)
         
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -132,7 +132,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         """Clear the contents of the console."""
         self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         #self.setText('')
-        self.insertInitText()
+        #self.insertInitText()
         self.displayPrompt(False)
         self.setFocus()
         
