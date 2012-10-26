@@ -167,3 +167,13 @@ INSTALL(FILES ${PY_FILES} ${PYUI_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
 
 ADD_SUBDIRECTORY(console_help)
 
+# Byte-compile staged PyQGIS utilities
+IF(WITH_PY_COMPILE)
+  ADD_CUSTOM_TARGET(pycompile_pyutils ALL
+    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/qgis"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMENT "Byte-compiling staged PyQGIS utility modules..."
+    DEPENDS pyutils
+  )
+ENDIF(WITH_PY_COMPILE)
+

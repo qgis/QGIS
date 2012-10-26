@@ -76,6 +76,7 @@ IF (WITH_BINDINGS)
   # as otherwise user has to use PYTHONPATH environemnt variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+  SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
   # concatenate QScintilla2 API files
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
 ENDIF (WITH_BINDINGS)
@@ -639,6 +640,10 @@ IF (UNIX AND NOT APPLE)
 ENDIF (UNIX AND NOT APPLE)
 
 INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
+
+#############################################################
+# Post-install commands
+ADD_SUBDIRECTORY(postinstall)
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
