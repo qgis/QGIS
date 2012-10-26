@@ -76,7 +76,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
 
     virtual QgsSymbolV2List symbols();
 

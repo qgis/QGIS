@@ -342,11 +342,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale member */
+    /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
     float minimumScale();
 
-    /** Accessor and mutator for the maximum scale member */
+    /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
     float maximumScale();
 
@@ -474,9 +474,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Tag for embedding additional information */
     QString mTag;
 
-    /** Minimum scale at which this layer should be displayed */
+    /** Minimum scale denominator at which this layer should be displayed */
     float mMinScale;
-    /** Maximum scale at which this layer should be displayed */
+    /** Maximum scale denominator at which this layer should be displayed */
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;

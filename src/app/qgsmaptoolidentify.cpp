@@ -31,6 +31,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
+#include "qgsrendererv2.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -193,8 +194,18 @@ bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
 
 bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int y )
 {
-  if ( !layer )
+  if ( !layer || !layer->rendererV2() )
     return false;
+
+  if ( layer->hasScaleBasedVisibility() &&
+       ( layer->minimumScale() > mCanvas->mapRenderer()->scale() ||
+         layer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
+  {
+    QgsDebugMsg( "Out of scale limits" );
+    return false;
+  }
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
 
   QMap< QString, QString > attributes, derivedAttributes;
 
@@ -252,11 +263,21 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   }
   QgsFeatureList::iterator f_it = featureList.begin();
 
+  if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  {
+    // setup scale for scale dependent visibility (rule based)
+    renderer->startRender( *( mCanvas->mapRenderer()->rendererContext() ), layer );
+  }
+  bool filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
+
   for ( ; f_it != featureList.end(); ++f_it )
   {
+    QgsFeatureId fid = f_it->id();
+
+    if ( filter && !renderer->willRenderFeature( *f_it ) ) continue;
+
     featureCount++;
 
-    QgsFeatureId fid = f_it->id();
     QMap<QString, QString> derivedAttributes;
 
     // Calculate derived attributes and insert:
@@ -305,6 +326,11 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results()->addFeature( layer, *f_it, derivedAttributes );
+  }
+
+  if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  {
+    renderer->stopRender( *( mCanvas->mapRenderer()->rendererContext() ) );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );

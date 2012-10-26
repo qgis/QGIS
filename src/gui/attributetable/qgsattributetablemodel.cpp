@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsattributeaction.h"
 #include "qgsmapcanvas.h"
+#include "qgsrendererv2.h"
 
 #include <QtGui>
 #include <QVariant>
@@ -44,7 +45,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorL
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
+  connect( mLayer, SIGNAL( repaintRequested() ), this, SLOT( layerRepaintRequested() ) );
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+
   extentsChanged();
 }
 
@@ -289,21 +292,66 @@ void QgsAttributeTableModel::loadLayer()
       rect = mCurrentExtent;
     }
 
-    mLayer->select( QgsAttributeList(), rect, false );
-
-    QgsFeature f;
-    for ( i = 0; mLayer->nextFeature( f ); ++i )
+    QgsFeatureRendererV2* renderer = mLayer->rendererV2();
+    if ( !renderer )
     {
-      featureAdded( f.id() );
-
-      if ( t.elapsed() > 5000 )
+      QgsDebugMsg( "Cannot get renderer" );
+    }
+    else if ( mLayer->hasScaleBasedVisibility() &&
+              ( mLayer->minimumScale() > mCanvas->mapRenderer()->scale() ||
+                mLayer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
+    {
+      QgsDebugMsg( "Out of scale limits" );
+    }
+    else
+    {
+      QgsRenderContext renderContext;
+      if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
       {
-        bool cancel = false;
-        emit progress( i, cancel );
-        if ( cancel )
-          break;
+        // setup scale
+        // mapRenderer()->renderContext()->scale is not automaticaly updated when
+        // render extent changes (because it's scale is used to identify if changed
+        // since last render) -> use local context
+        renderContext.setExtent( mCanvas->mapRenderer()->rendererContext()->extent() );
+        renderContext.setMapToPixel( mCanvas->mapRenderer()->rendererContext()->mapToPixel() );
+        renderContext.setRendererScale( mCanvas->mapRenderer()->scale() );
+        renderer->startRender( renderContext, mLayer );
+      }
 
-        t.restart();
+      bool filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
+
+      QgsAttributeList attributeList = QgsAttributeList();
+      if ( filter )
+      {
+        QList<QString> attributeNameList = renderer->usedAttributes();
+        foreach ( QString attributeName, attributeNameList )
+        {
+          attributeList.append( mLayer->fieldNameIndex( attributeName ) );
+        }
+      }
+      mLayer->select( attributeList, rect, false );
+
+      QgsFeature f;
+      for ( i = 0; mLayer->nextFeature( f ); ++i )
+      {
+        if ( !filter || renderer->willRenderFeature( f ) )
+        {
+          featureAdded( f.id() );
+        }
+
+        if ( t.elapsed() > 5000 )
+        {
+          bool cancel = false;
+          emit progress( i, cancel );
+          if ( cancel )
+            break;
+
+          t.restart();
+        }
+      }
+      if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+      {
+        renderer->stopRender( renderContext );
       }
     }
     emit finished();
@@ -612,5 +660,27 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 
 void QgsAttributeTableModel::extentsChanged()
 {
+  QgsDebugMsg( "Entered" );
   mCurrentExtent = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, mCanvas->extent() );
+
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+  if ( behaviour == 2 ) // features in current canvas
+  {
+    loadLayer();
+  }
+}
+
+void QgsAttributeTableModel::layerRepaintRequested()
+{
+  QgsDebugMsg( "Entered" );
+  // Added to reload table if properties changed and so some features could become invisible
+  // TODO: in theory we need to reload table only if previous or new renderer
+  // capabilities are ScaleDependent or Filter
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+  if ( behaviour == 2 ) // features in current canvas
+  {
+    loadLayer();
+  }
 }

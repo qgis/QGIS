@@ -2104,6 +2104,24 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   setItemExpanded( theLegendLayer, expandItem );//make sure the symbology items are visible
 }
 
+void QgsLegend::refreshLayerSymbology( QString key, QgsLegendItem::Expansion expandItem )
+{
+  bool expand = true;
+  if ( expandItem == QgsLegendItem::DontChange )
+  {
+    QgsLegendLayer* theLegendLayer = findLegendLayer( key );
+    if ( !theLegendLayer )
+    {
+      return;
+    }
+    expand = theLegendLayer->isExpanded();
+  }
+  else if ( expandItem == QgsLegendItem::Collapse )
+  {
+    expand = false;
+  }
+  return refreshLayerSymbology( key, expand );
+}
 
 void QgsLegend::addPixmapWidthValue( int width )
 {

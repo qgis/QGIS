@@ -159,7 +159,6 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 {
   // TODO: special case for int, double
-
   QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.toString() );
   if ( it == mSymbolHash.end() )
   {
@@ -169,7 +168,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
     }
     else
     {
-      //QgsDebugMsg( "attribute value not found: " + value.toString() );
+      QgsDebugMsg( "attribute value not found: " + value.toString() );
     }
     return NULL;
   }
@@ -192,7 +191,12 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   if ( symbol == NULL )
   {
     // if no symbol found use default one
-    return symbolForValue( QVariant( "" ) );
+    //return symbolForValue( QVariant( "" ) );
+    // What is default? Empty string may be a legal value, and features not found
+    // should not be rendered using empty string value category symbology.
+    // We also need to get NULL in that case so that willRenderFeature()
+    // may be used to count features.
+    return 0;
   }
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
@@ -600,7 +604,7 @@ void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* r
 void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
 {
   int i = 0;
-  foreach( QgsRendererCategoryV2 cat, mCategories )
+  foreach ( QgsRendererCategoryV2 cat, mCategories )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( cat.symbol()->color() );

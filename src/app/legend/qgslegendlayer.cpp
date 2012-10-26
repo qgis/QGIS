@@ -601,6 +601,11 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
   QgsFeature f;
 
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  renderer->startRender( renderContext, layer );
+
   while ( layer->nextFeature( f ) )
   {
     QgsSymbolV2List symbolList = renderer->symbolsForFeature( f );
@@ -622,6 +627,7 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
       }
     }
   }
+  renderer->stopRender( renderContext );
   p.setValue( nFeatures );
 
   QMap<QString, QPixmap> itemMap;
@@ -632,7 +638,6 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   }
   itemList.clear();
 
-  //
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
