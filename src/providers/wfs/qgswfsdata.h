@@ -88,6 +88,7 @@ class QgsWFSData: public QObject
     void startElement( const XML_Char* el, const XML_Char** attr );
     void endElement( const XML_Char* el );
     void characters( const XML_Char* chars, int len );
+    int encoder( const XML_Char* name, XML_Encoding* info );
     static void start( void* data, const XML_Char* el, const XML_Char** attr )
     {
       static_cast<QgsWFSData*>( data )->startElement( el, attr );
@@ -99,6 +100,10 @@ class QgsWFSData: public QObject
     static void chars( void* data, const XML_Char* chars, int len )
     {
       static_cast<QgsWFSData*>( data )->characters( chars, len );
+    }
+    static int encode( void* data, const XML_Char* name, XML_Encoding* info )
+    {
+      return static_cast<QgsWFSData*>( data )->encoder( name, info );
     }
 
     //helper routines
