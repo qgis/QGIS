@@ -766,6 +766,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
 
   //layers can have assigned a different name for GetCapabilities
   QHash<QString, QString> layerAliasMap = mConfigParser->featureInfoLayerAliasMap();
+  //collect layer name / maplayer for potential later modifications of the xml
+  QMap< QString, QgsMapLayer* > layerNameMap;
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -805,6 +807,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
       layerElement.setAttribute( "name", layerName );
       getFeatureInfoElement.appendChild( layerElement );
+      layerNameMap.insert( layerName, currentLayer );
 
       //switch depending on vector or raster
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
@@ -848,71 +851,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   if ( mConfigParser->featureInfoFormatSIA2045()
        && mParameterMap.value( "INFO_FORMAT" ).compare( "text/xml", Qt::CaseInsensitive ) == 0 )
   {
-    //infoFormat = "text/xml; format=sia2045";
-    QDomDocument outFeatureInfoDoc;
-    QDomElement infoDocElement = result.documentElement();
-    QDomElement outInfoDocElement = outFeatureInfoDoc.importNode( infoDocElement, false ).toElement();
-    outFeatureInfoDoc.appendChild( outInfoDocElement );
 
-    QString currentAttributeName;
-    QString currentAttributeValue;
-    QDomElement currentAttributeElem;
-    QString currentLayerName;
-    QDomElement currentLayerElem;
-    QDomNodeList layerNodeList = infoDocElement.elementsByTagName( "Layer" );
-    for ( int i = 0; i < layerNodeList.size(); ++i )
-    {
-      currentLayerElem = layerNodeList.at( i ).toElement();
-      currentLayerName = currentLayerElem.attribute( "name" );
-      QDomElement currentFeatureElem;
-
-      QDomNodeList featureList = currentLayerElem.elementsByTagName( "Feature" );
-      if ( featureList.size() < 1 )
-      {
-        //raster?
-        QDomNodeList attributeList = currentLayerElem.elementsByTagName( "Attribute" );
-        QDomElement rasterLayerElem;
-        if ( attributeList.size() > 0 )
-        {
-          rasterLayerElem = outFeatureInfoDoc.createElement( currentLayerName );
-        }
-        for ( int j = 0; j < attributeList.size(); ++j )
-        {
-          currentAttributeElem = attributeList.at( j ).toElement();
-          currentAttributeName = currentAttributeElem.attribute( "name" );
-          currentAttributeValue = currentAttributeElem.attribute( "value" );
-          QDomElement outAttributeElem = outFeatureInfoDoc.createElement( currentAttributeName );
-          QDomText outAttributeText = outFeatureInfoDoc.createTextNode( currentAttributeValue );
-          outAttributeElem.appendChild( outAttributeText );
-          rasterLayerElem.appendChild( outAttributeElem );
-        }
-        if ( attributeList.size() > 0 )
-        {
-          outInfoDocElement.appendChild( rasterLayerElem );
-        }
-      }
-      else //vector
-      {
-        for ( int j = 0; j < featureList.size(); ++j )
-        {
-          QDomElement outFeatureElem = outFeatureInfoDoc.createElement( currentLayerName );
-          currentFeatureElem = featureList.at( j ).toElement();
-          QDomNodeList attributeList = currentFeatureElem.elementsByTagName( "Attribute" );
-          for ( int k = 0; k < attributeList.size(); ++k )
-          {
-            currentAttributeElem = attributeList.at( k ).toElement();
-            currentAttributeName = currentAttributeElem.attribute( "name" );
-            currentAttributeValue = currentAttributeElem.attribute( "value" );
-            QDomElement outAttributeElem = outFeatureInfoDoc.createElement( currentAttributeName );
-            QDomText outAttributeText = outFeatureInfoDoc.createTextNode( currentAttributeValue );
-            outAttributeElem.appendChild( outAttributeText );
-            outFeatureElem.appendChild( outAttributeElem );
-          }
-          outInfoDocElement.appendChild( outFeatureElem );
-        }
-      }
-    }
-    result = outFeatureInfoDoc;
+    convertFeatureInfoToSIA2045( result, layerNameMap );
   }
 
   restoreLayerFilters( originalLayerFilters );
@@ -2127,4 +2067,121 @@ void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
 {
   QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\"" );
   doc.appendChild( xmlDeclaration );
+}
+
+void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc, const QMap< QString, QgsMapLayer* >& layerNameMap )
+{
+  QDomDocument SIAInfoDoc;
+  QDomElement infoDocElement = doc.documentElement();
+  QDomElement SIAInfoDocElement = SIAInfoDoc.importNode( infoDocElement, false ).toElement();
+  SIAInfoDoc.appendChild( SIAInfoDocElement );
+
+  QString currentAttributeName;
+  QString currentAttributeValue;
+  QDomElement currentAttributeElem;
+  QString currentLayerName;
+  QDomElement currentLayerElem;
+  QDomNodeList layerNodeList = infoDocElement.elementsByTagName( "Layer" );
+  for ( int i = 0; i < layerNodeList.size(); ++i )
+  {
+    currentLayerElem = layerNodeList.at( i ).toElement();
+    currentLayerName = currentLayerElem.attribute( "name" );
+
+    QDomElement currentFeatureElem;
+
+    QDomNodeList featureList = currentLayerElem.elementsByTagName( "Feature" );
+    if ( featureList.size() < 1 )
+    {
+      //raster?
+      QDomNodeList attributeList = currentLayerElem.elementsByTagName( "Attribute" );
+      QDomElement rasterLayerElem;
+      if ( attributeList.size() > 0 )
+      {
+        rasterLayerElem = SIAInfoDoc.createElement( currentLayerName );
+      }
+      for ( int j = 0; j < attributeList.size(); ++j )
+      {
+        currentAttributeElem = attributeList.at( j ).toElement();
+        currentAttributeName = currentAttributeElem.attribute( "name" );
+        currentAttributeValue = currentAttributeElem.attribute( "value" );
+        QDomElement outAttributeElem = SIAInfoDoc.createElement( currentAttributeName );
+        QDomText outAttributeText = SIAInfoDoc.createTextNode( currentAttributeValue );
+        outAttributeElem.appendChild( outAttributeText );
+        rasterLayerElem.appendChild( outAttributeElem );
+      }
+      if ( attributeList.size() > 0 )
+      {
+        SIAInfoDocElement.appendChild( rasterLayerElem );
+      }
+    }
+    else //vector
+    {
+
+      //property attributes
+      QSet<QString> layerPropertyAttributes;
+      QMap< QString, QgsMapLayer* >::const_iterator layerNameMapIt = layerNameMap.find( currentLayerName );
+      if ( layerNameMapIt != layerNameMap.constEnd() )
+      {
+        QgsMapLayer* currentLayer = layerNameMapIt.value();
+        if ( currentLayer )
+        {
+          QString WMSPropertyAttributesString = currentLayer->customProperty( "WMSPropertyAttributes" ).toString();
+          if ( !WMSPropertyAttributesString.isEmpty() )
+          {
+            QStringList propertyList = WMSPropertyAttributesString.split( "//" );
+            QStringList::const_iterator propertyIt = propertyList.constBegin();
+            for ( ; propertyIt != propertyList.constEnd(); ++propertyIt )
+            {
+              layerPropertyAttributes.insert( *propertyIt );
+            }
+          }
+        }
+      }
+
+      QDomElement propertyRefChild; //child to insert the next property after (or
+      for ( int j = 0; j < featureList.size(); ++j )
+      {
+        QDomElement SIAFeatureElem = SIAInfoDoc.createElement( currentLayerName );
+        currentFeatureElem = featureList.at( j ).toElement();
+        QDomNodeList attributeList = currentFeatureElem.elementsByTagName( "Attribute" );
+
+        for ( int k = 0; k < attributeList.size(); ++k )
+        {
+          currentAttributeElem = attributeList.at( k ).toElement();
+          currentAttributeName = currentAttributeElem.attribute( "name" );
+          currentAttributeValue = currentAttributeElem.attribute( "value" );
+          if ( layerPropertyAttributes.contains( currentAttributeName ) )
+          {
+            QDomElement propertyElem = SIAInfoDoc.createElement( "property" );
+            QDomElement identifierElem = SIAInfoDoc.createElement( "identifier" );
+            QDomText identifierText = SIAInfoDoc.createTextNode( currentAttributeName );
+            identifierElem.appendChild( identifierText );
+            QDomElement valueElem = SIAInfoDoc.createElement( "value" );
+            QDomText valueText = SIAInfoDoc.createTextNode( currentAttributeValue );
+            valueElem.appendChild( valueText );
+            propertyElem.appendChild( identifierElem );
+            propertyElem.appendChild( valueElem );
+            if ( propertyRefChild.isNull() )
+            {
+              SIAFeatureElem.insertBefore( propertyElem, QDomNode() );
+              propertyRefChild = propertyElem;
+            }
+            else
+            {
+              SIAFeatureElem.insertAfter( propertyElem, propertyRefChild );
+            }
+          }
+          else
+          {
+            QDomElement SIAAttributeElem = SIAInfoDoc.createElement( currentAttributeName );
+            QDomText SIAAttributeText = SIAInfoDoc.createTextNode( currentAttributeValue );
+            SIAAttributeElem.appendChild( SIAAttributeText );
+            SIAFeatureElem.appendChild( SIAAttributeElem );
+          }
+        }
+        SIAInfoDocElement.appendChild( SIAFeatureElem );
+      }
+    }
+  }
+  doc = SIAInfoDoc;
 }
