@@ -93,12 +93,14 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         # Use raw message to Scintilla here (all messages are documented
         # here: http://www.scintilla.org/ScintillaDoc.html)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        self.SendScintilla(QsciScintilla.SCI_SETVSCROLLBAR, 0)
+
     
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(125)
+        self.setMinimumHeight(60)
         
-        self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 1)
+        self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
         
         ## Disable command key
@@ -117,6 +119,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.showHistory)
         self.connect(self, SIGNAL('userListActivated(int, const QString)'),
                      self.completion_list_selected)
+        
+        self.createStandardContextMenu()
     
     def showHistory(self):
         self.showUserList(1, QStringList(self.history))
@@ -172,6 +176,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
+        font.setStyleHint(QFont.TypeWriter)
+        font.setStretch(QFont.SemiCondensed)
+        font.setLetterSpacing(QFont.PercentageSpacing, 87.0)
+        font.setBold(False)
         
         self.lexer.setDefaultFont(font)
         self.lexer.setColor(Qt.red, 1)
@@ -209,9 +217,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def insertInitText(self):
         #self.setLexers(False)
-        txtInit = QCoreApplication.translate("PythonConsole",
-                                             "## To access Quantum GIS environment from this console\n"
-                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
+        txtInit = QCoreApplication.translate("PythonConsole", "## Interactive Python Console for Quantum GIS\n\n")
+                                             #"## To access Quantum GIS environment from this console\n"
+                                             #"## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
 
     def getText(self):
@@ -413,6 +421,16 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         ## TODO: press event for auto-completion file directory
         else:
             QsciScintilla.keyPressEvent(self, e)
+            
+    def contextMenuEvent(self, e):     
+        menu = QMenu(self)
+        copyAction = menu.addAction("Copy  CTRL+C")
+        pasteAction = menu.addAction("Paste CTRL+V")
+        action = menu.exec_(self.mapToGlobal(e.pos()))
+        if action == copyAction:
+            self.copy()
+        elif action == pasteAction:
+            self.paste()
                 
     def mousePressEvent(self, e):
         """
@@ -458,6 +476,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def insertFromDropPaste(self, textDP): 
         pasteList = textDP.split("\n")
         for line in pasteList[:-1]:
+            line.replace(">>> ", "").replace("... ", "")
             self.insert(line)
             self.move_cursor_to_end()
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
@@ -466,10 +485,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.insert(unicode(pasteList[-1]))
             self.move_cursor_to_end()
 
-    def getTextFromEditor(self):
-        text = self.text()
-        textList = text.split("\n")
-        return textList
+#    def getTextFromEditor(self):
+#        text = self.text()
+#        textList = text.split("\n")
+#        return textList
     
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
@@ -483,7 +502,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             
     def entered(self):
         self.move_cursor_to_end()
-        self.runCommand( unicode(self.currentCommand()) )
+        self.runCommand( unicode(self.currentCommand()) )        
         self.setFocus()
         self.move_cursor_to_end()
         #self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -498,9 +517,14 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         return cmd
 
     def runCommand(self, cmd):
+        self.write_stdout(cmd)
         import webbrowser
         self.updateHistory(cmd)
-        self.SendScintilla(QsciScintilla.SCI_NEWLINE)
+        line, pos = self.getCursorPosition()
+        selCmdLenght = self.text(line).length()
+        self.setSelection(line, 0, line, selCmdLenght)
+        self.removeSelectedText()
+        #self.SendScintilla(QsciScintilla.SCI_NEWLINE)
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
@@ -528,9 +552,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             elif cmd == '_api':
                 webbrowser.open( "http://www.qgis.org/api/" )
                 
-            output = sys.stdout.get_and_clean_data()
-            if output:
-                self.append(output)
             self.displayPrompt(False)
         else:
             self.buffer.append(cmd)
@@ -538,15 +559,14 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
-            output = sys.stdout.get_and_clean_data()
-            if output:
-                self.append(output)
             self.move_cursor_to_end()
             self.displayPrompt(more)
 
     def write(self, txt):
-        self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)
-        self.append(txt)
-        self.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(txt), 1)
+        sys.stderr.write(txt)
 
-
+    def write_stdout(self, txt):
+        if len(txt) > 0:
+            getCmdString = self.text(2)
+            prompt = getCmdString[0:4]
+            sys.stdout.write(prompt+txt+'\n')
