@@ -60,7 +60,7 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
     QDomElement docElem = doc.documentElement();
     parameters.insert( "VERSION", docElem.attribute( "version" ) );
     parameters.insert( "SERVICE", docElem.attribute( "service" ) );
-    parameters.insert( "REQUEST", docElem.localName() );
+    parameters.insert( "REQUEST", docElem.tagName() );
     parameters.insert( "REQUEST_BODY", inputString );
   }
 

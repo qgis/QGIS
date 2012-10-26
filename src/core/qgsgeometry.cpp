@@ -536,14 +536,24 @@ QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
 {
-  QDomNode geometryChild = geometryNode.firstChild();
-  if ( geometryChild.isNull() )
-  {
-    return 0;
-  }
   QgsGeometry* g = new QgsGeometry();
-  QDomElement geometryTypeElement = geometryChild.toElement();
+  QDomElement geometryTypeElement = geometryNode.toElement();
   QString geomType = geometryTypeElement.tagName();
+
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon") )
+  {
+    QDomNode geometryChild = geometryNode.firstChild();
+    if ( geometryChild.isNull() )
+    {
+      return 0;
+    }
+    geometryTypeElement = geometryChild.toElement();
+    geomType = geometryTypeElement.tagName();
+  }
+
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon") )
+    return 0;
+
   if ( geomType == "Point" )
   {
     g->setFromGML2Point( geometryTypeElement );

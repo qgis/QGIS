@@ -203,8 +203,11 @@ QDomDocument QgsWFSServer::getCapabilities()
   getFeatureFormatElement.appendChild( gmlFormatElement );
   QDomElement geojsonFormatElement = doc.createElement( "GeoJSON" );/*wfs:GeoJSON*/
   getFeatureFormatElement.appendChild( geojsonFormatElement );
-  QDomElement getFeatureDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-  getFeatureElement.appendChild( getFeatureDhcTypeElement );
+  QDomElement getFeatureDhcTypeGetElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+  getFeatureElement.appendChild( getFeatureDhcTypeGetElement );
+  QDomElement getFeatureDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+  getFeatureDhcTypePostElement.firstChild().firstChild().toElement().setTagName( "Post" );
+  getFeatureElement.appendChild( getFeatureDhcTypePostElement );
 
   //wfs:Transaction
   QDomElement transactionElement = doc.createElement( "Transaction"/*wfs:Transaction*/ );
@@ -240,14 +243,19 @@ QDomDocument QgsWFSServer::getCapabilities()
   filterCapabilitiesElement.appendChild( spatialCapabilitiesElement );
   QDomElement spatialOperatorsElement = doc.createElement( "ogc:Spatial_Operators"/*ogc:Spatial_Operators*/ );
   spatialCapabilitiesElement.appendChild( spatialOperatorsElement );
-  QDomElement ogcBboxElement = doc.createElement( "ogc:BBOX"/*ogc:BBOX*/ );
-  spatialOperatorsElement.appendChild( ogcBboxElement );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:BBOX"/*ogc:BBOX*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Disjoint"/*ogc:Disjoint*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Intersects"/*ogc:Intersects*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Touches"/*ogc:Touches*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Crosses"/*ogc:Crosses*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Contains"/*ogc:Contains*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Overlaps"/*ogc:Overlaps*/ ) );
   QDomElement scalarCapabilitiesElement = doc.createElement( "ogc:Scalar_Capabilities"/*ogc:Scalar_Capabilities*/ );
   filterCapabilitiesElement.appendChild( scalarCapabilitiesElement );
   QDomElement comparisonOperatorsElement = doc.createElement( "ogc:Comparison_Operators"/*ogc:Comparison_Operators*/ );
   scalarCapabilitiesElement.appendChild( comparisonOperatorsElement );
-  QDomElement simpleComparisonsElement = doc.createElement( "ogc:Simple_Comparisons"/*ogc:Simple_Comparisons*/ );
-  comparisonOperatorsElement.appendChild( simpleComparisonsElement );
+  comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Simple_Comparisons"/*ogc:Simple_Comparisons*/ ) );
+  comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Between"/*ogc:Simple_Comparisons*/ ) );
   return doc;
 }
 
@@ -292,6 +300,178 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 {
   QgsDebugMsg( "Info format is:" + format );
 
+  QStringList wfsLayersId = mConfigParser->wfsLayers();
+
+  QList<QgsMapLayer*> layerList;
+  QgsMapLayer* currentLayer = 0;
+
+  QDomDocument doc;
+  QString errorMsg;
+  if ( doc.setContent( mParameterMap.value( "REQUEST_BODY" ), true, &errorMsg ) )
+  {
+    QDomElement docElem = doc.documentElement();
+
+    long maxFeat = 0;
+    long featureCounter = 0;
+    long maxFeatures = 0;
+    if ( docElem.hasAttribute( "maxFeatures" ) )
+      maxFeatures = docElem.attribute( "maxFeatures" ).toLong();
+
+    QDomNodeList queryNodes = docElem.elementsByTagName( "Query" );
+    for ( int i = 0; i < queryNodes.size(); i++ )
+    {
+      QDomElement queryElem = queryNodes.at( 0 ).toElement();
+      mTypeName = queryElem.attribute( "typeName", "" );
+      if ( mTypeName.contains( ":" ) )
+      {
+        mTypeName = mTypeName.section( ":", 1, 1 );
+      }
+
+      layerList = mConfigParser->mapLayerFromStyle( mTypeName, "" );
+      currentLayer = layerList.at( 0 );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      if ( layer && wfsLayersId.contains( layer->id() ) )
+      {
+        //is there alias info for this vector layer?
+        QMap< int, QString > layerAliasInfo;
+        const QMap< QString, QString >& aliasMap = layer->attributeAliases();
+        QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
+        for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
+        {
+          int attrIndex = layer->fieldNameIndex( aliasIt.key() );
+          if ( attrIndex != -1 )
+          {
+            layerAliasInfo.insert( attrIndex, aliasIt.value() );
+          }
+        }
+
+        //excluded attributes for this layer
+        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+
+        //do a select with searchRect and go through all the features
+        QgsVectorDataProvider* provider = layer->dataProvider();
+        if ( !provider )
+        {
+          return 2;
+        }
+
+        QgsFeature feature;
+        QgsAttributeMap featureAttributes;
+        const QgsFieldMap& fields = provider->fields();
+
+        mWithGeom = true;
+        QgsAttributeList attrIndexes = provider->attributeIndexes();
+
+        QDomNodeList queryChildNodes = queryElem.childNodes();
+        if ( queryChildNodes.size() )
+        {
+          mWithGeom = false;
+          QStringList::const_iterator alstIt;
+          QList<int> idxList;
+          QMap<QString, int> fieldMap = provider->fieldNameMap();
+          QMap<QString, int>::const_iterator fieldIt;
+          QString fieldName;
+          QDomElement propertyElem;
+          for ( int q = 0; q < queryChildNodes.size(); q++ )
+          {
+            QDomElement queryChildElem = queryChildNodes.at( q ).toElement();
+            if ( queryChildElem.tagName() == "PropertyName" )
+            {
+              fieldName = queryChildElem.text();
+              if ( fieldName.contains( ":" ) )
+              {
+                fieldName = fieldName.section( ":", 1, 1 );
+              }
+              fieldIt = fieldMap.find( fieldName );
+              if ( fieldIt != fieldMap.end() )
+              {
+                idxList.append( fieldIt.value() );
+              }
+              else if ( fieldName == "geometry" )
+              {
+                mWithGeom = true;
+              }
+            }
+          }
+          if ( idxList.size() > 0 || mWithGeom )
+          {
+            attrIndexes = idxList;
+          }
+          else
+          {
+            mWithGeom = true;
+          }
+        }
+
+        //map extent
+        QgsRectangle searchRect = layer->extent();
+        searchRect.set( searchRect.xMinimum() - 0.000001
+                      , searchRect.yMinimum() - 0.000001
+                      , searchRect.xMaximum() + 0.000001
+                      , searchRect.yMaximum() + 0.000001 );
+        QgsCoordinateReferenceSystem layerCrs = layer->crs();
+
+        if ( maxFeatures == 0 )
+          maxFeat += layer->featureCount();
+        
+        provider->select( attrIndexes, searchRect, mWithGeom, true );
+        
+        if ( i == 0 )
+          startGetFeature( request, format, layerCrs, &searchRect );
+
+        long featCounter = 0;
+        QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
+        if (filterNodes.size() > 0 )
+        {
+          QDomElement filterElem = filterNodes.at( 0 ).toElement();
+          QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
+          if ( fidNodes.size() > 0 )
+          {
+            QDomElement fidElem;
+            for ( int f = 0; f < fidNodes.size(); f++ )
+            {
+              fidElem = fidNodes.at( f ).toElement();
+              provider->featureAtId( fidElem.attribute( "fid" ).toInt(), feature, mWithGeom, attrIndexes );
+              sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+              ++featCounter;
+              ++featureCounter;
+            }
+          } 
+          else
+          {
+            QgsFilter* mFilter = QgsFilter::createFilterFromXml( filterElem.firstChild().toElement(), layer );
+            if ( mFilter )
+            {
+              while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+              {
+                if ( mFilter->evaluate( feature ) )
+                {
+                  sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+                  ++featCounter;
+                  ++featureCounter;
+                }
+              }
+            }
+          }
+        }
+        else
+        {
+          while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+          {
+            sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+            ++featCounter;
+            ++featureCounter;
+          }
+        }
+      }
+
+    }
+
+    endGetFeature( request, format );
+    return 0;
+
+  }
+
   //read TYPENAME
   QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
   if ( type_name_it != mParameterMap.end() )
@@ -302,11 +482,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   {
     return 1;
   }
-
-  QStringList wfsLayersId = mConfigParser->wfsLayers();
-
-  QList<QgsMapLayer*> layerList;
-  QgsMapLayer* currentLayer = 0;
 
   layerList = mConfigParser->mapLayerFromStyle( mTypeName, "" );
   currentLayer = layerList.at( 0 );
@@ -1069,12 +1244,17 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVect
   QgsFeatureIds fids;
 
   QgsVectorDataProvider* provider = layer->dataProvider();
-  QDomElement filterFirstElem = filter.firstChild().toElement();
+  QDomNodeList fidNodes = filter.elementsByTagName( "FeatureId" );
 
-  if ( filterFirstElem.localName() == "FeatureId" )
+  if ( fidNodes.size() != 0 )
   {
+    QDomElement fidElem;
     bool conversionSuccess;
-    fids.insert( filterFirstElem.attribute( "fid" ).toInt( &conversionSuccess ) );
+    for ( int i = 0; i < fidNodes.size(); ++i )
+    {
+      fidElem = fidNodes.at( i ).toElement();
+      fids.insert( fidElem.attribute( "fid" ).toInt( &conversionSuccess ) );
+    }
   }
   else
   {
