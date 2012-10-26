@@ -764,10 +764,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     renderContext.setPainter( 0 );
   }
 
+  bool sia2045 = mConfigParser->featureInfoFormatSIA2045();
+
   //layers can have assigned a different name for GetCapabilities
   QHash<QString, QString> layerAliasMap = mConfigParser->featureInfoLayerAliasMap();
-  //collect layer name / maplayer for potential later modifications of the xml
-  QMap< QString, QgsMapLayer* > layerNameMap;
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -807,7 +807,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
       layerElement.setAttribute( "name", layerName );
       getFeatureInfoElement.appendChild( layerElement );
-      layerNameMap.insert( layerName, currentLayer );
+      if ( sia2045 ) //the name might not be unique after alias replacement
+      {
+        layerElement.setAttribute( "id", currentLayer->id() );
+      }
 
       //switch depending on vector or raster
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
@@ -848,11 +851,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
     getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
   }
 
-  if ( mConfigParser->featureInfoFormatSIA2045()
-       && mParameterMap.value( "INFO_FORMAT" ).compare( "text/xml", Qt::CaseInsensitive ) == 0 )
+  if ( sia2045 && mParameterMap.value( "INFO_FORMAT" ).compare( "text/xml", Qt::CaseInsensitive ) == 0 )
   {
-
-    convertFeatureInfoToSIA2045( result, layerNameMap );
+    convertFeatureInfoToSIA2045( result );
   }
 
   restoreLayerFilters( originalLayerFilters );
@@ -2069,7 +2070,7 @@ void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
   doc.appendChild( xmlDeclaration );
 }
 
-void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc, const QMap< QString, QgsMapLayer* >& layerNameMap )
+void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc )
 {
   QDomDocument SIAInfoDoc;
   QDomElement infoDocElement = doc.documentElement();
@@ -2116,13 +2117,12 @@ void QgsWMSServer::convertFeatureInfoToSIA2045( QDomDocument& doc, const QMap< Q
     }
     else //vector
     {
-
       //property attributes
       QSet<QString> layerPropertyAttributes;
-      QMap< QString, QgsMapLayer* >::const_iterator layerNameMapIt = layerNameMap.find( currentLayerName );
-      if ( layerNameMapIt != layerNameMap.constEnd() )
+      QString currentLayerId = currentLayerElem.attribute( "id" );
+      if ( !currentLayerId.isEmpty() )
       {
-        QgsMapLayer* currentLayer = layerNameMapIt.value();
+        QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayerId );
         if ( currentLayer )
         {
           QString WMSPropertyAttributesString = currentLayer->customProperty( "WMSPropertyAttributes" ).toString();

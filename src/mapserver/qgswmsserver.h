@@ -177,7 +177,7 @@ class QgsWMSServer
     void addXMLDeclaration( QDomDocument& doc ) const;
 
     /**Converts a feature info xml document to SIA2045 norm*/
-    void convertFeatureInfoToSIA2045( QDomDocument& doc, const QMap< QString, QgsMapLayer* >& layerNameMap );
+    void convertFeatureInfoToSIA2045( QDomDocument& doc );
 
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
