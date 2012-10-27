@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -329,7 +330,7 @@ class ModelerParametersDialog(QtGui.QDialog):
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QtGui.QComboBox()
-            item.setEditable(True)
+            #item.setEditable(True)
             layers = self.getRasterLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -337,7 +338,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterVector):
             item = QtGui.QComboBox()
-            item.setEditable(True)
+            #item.setEditable(True)
             layers = self.getVectorLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -486,8 +487,10 @@ class ModelerParametersDialog(QtGui.QDialog):
                 if isinstance(param, (ParameterRaster, ParameterVector,
                                       ParameterTable, ParameterTableField,
                                       ParameterSelection, ParameterNumber,
-                                      ParameterString,ParameterBoolean)):
+                                      ParameterString,ParameterBoolean, ParameterExtent)):
                     self.setComboBoxValue(widget, value, param)
+                elif isinstance(param, ParameterCrs):
+                    widget.setText(unicode(value))
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
@@ -540,8 +543,6 @@ class ModelerParametersDialog(QtGui.QDialog):
             value = widget.itemData(widget.currentIndex()).toPyObject()
             self.params[param.name] = value
         return True
-
-
 
         if widget.currentIndex() < 0:
             return False

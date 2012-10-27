@@ -65,7 +65,10 @@ class SextanteUtils:
     @staticmethod
     def getTempFilename(ext):
         path = SextanteUtils.tempFolder()
-        filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers()) + "." + ext
+        if ext is None:
+            filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers())
+        else:
+            filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers()) + "." + ext
         return filename
 
     @staticmethod

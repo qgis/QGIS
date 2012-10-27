@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.saga.SplitRGBBands import SplitRGBBands
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -80,7 +81,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
-
+        self.preloadedAlgs.append(SplitRGBBands())
+        
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 

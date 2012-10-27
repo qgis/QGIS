@@ -320,7 +320,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
     
     def getOutputCellsize(self):
-        '''tries to guess the cellsize of the output, searchiing for a parameter with an appropriate name for it'''
+        '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
         cellsize = 0;
         for param in self.parameters:
             if param.value is not None and param.name == "USER_SIZE":
