@@ -213,7 +213,7 @@ class RAlgorithm(GeoAlgorithm):
             f.close()
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
-            f = open(htmlfilename)
+            f = open(htmlfilename, "w")
             f.write(RUtils.getConsoleOutput())
             f.close()
 

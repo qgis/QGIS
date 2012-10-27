@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterTableField import ParameterTableField
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -42,21 +43,24 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.ftools import FToolsUtils as utils
 
 
-class PointsInPolygon(GeoAlgorithm):
+class PointsInPolygonWeighted(GeoAlgorithm):
 
     POLYGONS = "POLYGONS"
     POINTS = "POINTS"
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
+    WEIGHT = "WEIGHT"
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
 
     def defineCharacteristics(self):
-        self.name = "Count points in polygon"
+        self.name = "Count points in polygon(weighted)"
         self.group = "Analysis tools"
+
         self.addParameter(ParameterVector(self.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
         self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterTableField(self.WEIGHT, "Weight field", self.POINTS))
         self.addParameter(ParameterString(self.FIELD, "Count field name", "NUMPOINTS"))
 
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
@@ -65,8 +69,7 @@ class PointsInPolygon(GeoAlgorithm):
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-
-        output = self.getOutputValue(self.OUTPUT)
+        fieldidx = pointLayer.dataProvider().fieldNameIndex(self.getParameterValue(self.WEIGHT))
 
         polyProvider = polyLayer.dataProvider()
         pointProvider = pointLayer.dataProvider()
@@ -111,7 +114,11 @@ class PointsInPolygon(GeoAlgorithm):
                     pointLayer.featureAtId(int(i), ftPoint, True, False)
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        count += 1
+                        try:
+                            weight = float(ftPoint.attributeMap()[fieldidx])
+                        except:
+                            weight = 1
+                        count += weight
 
             outFeat.setGeometry(geom)
             outFeat.setAttributeMap(atMap)

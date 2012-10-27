@@ -263,9 +263,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 f.close()
                 command+=( " -" + param.name + " " + tempTableFile)
             elif isinstance(param, ParameterExtent):
-                #'we have to substract half cell size, since saga is center based, not corner based
+                #'we have to substract/add half cell size, since saga is center based, not corner based
                 halfcell = self.getOutputCellsize() / 2
-                offset = [halfcell, 0, halfcell, 0]
+                offset = [halfcell, -halfcell, halfcell, -halfcell]
                 values = param.value.split(",")
                 for i in range(4):
                     command+=(" -" + self.extentParamNames[i] + " " + str(float(values[i]) + offset[i]));
@@ -326,7 +326,6 @@ class SagaAlgorithm(GeoAlgorithm):
             if param.value is not None and param.name == "USER_SIZE":
                 cellsize = float(param.value)
                 break;
-        QtGui.QMessageBox.critical(None, "", str(cellsize));
         return cellsize
     
     

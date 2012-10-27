@@ -5,7 +5,7 @@
     ftools_utils.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Carson Farmer, Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
+__author__ = 'Carson Farmer, Victor Olaya'
 __date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__copyright__ = '(C) 2012, Carson Farmer, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
