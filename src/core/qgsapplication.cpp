@@ -91,7 +91,8 @@ void QgsApplication::init( QString customConfigPath )
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
-  foreach ( QString path, QStringList() << "" << "/.." << "/bin" )
+  // "/../../.." is for Mac bundled app in build directory
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/path.txt" );
     if ( f.exists() )
