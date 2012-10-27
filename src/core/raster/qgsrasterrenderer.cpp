@@ -40,7 +40,7 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
     : QgsRasterInterface( input )
     , mType( type ), mOpacity( 1.0 ), mRasterTransparency( 0 )
-    , mAlphaBand( -1 ), mInvertColor( false )
+    , mAlphaBand( -1 ) //, mInvertColor( false )
 {
 }
 
@@ -117,7 +117,7 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
   rasterRendererElem.setAttribute( "type", mType );
   rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
-  rasterRendererElem.setAttribute( "invertColor", mInvertColor );
+  //rasterRendererElem.setAttribute( "invertColor", mInvertColor );
 
   if ( mRasterTransparency )
   {
@@ -135,7 +135,7 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   mType = rendererElem.attribute( "type" );
   mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
   mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
-  mInvertColor = rendererElem.attribute( "invertColor", "0" ).toInt();
+  //mInvertColor = rendererElem.attribute( "invertColor", "0" ).toInt();
 
   //todo: read mRasterTransparency
   QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );

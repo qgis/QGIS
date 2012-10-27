@@ -29,6 +29,12 @@ class QDomElement;
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {
   public:
+    enum Gradient
+    {
+      BlackToWhite,
+      WhiteToBlack
+    };
+
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
     QgsRasterInterface * clone() const;
@@ -43,6 +49,9 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     /**Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
+    void setGradient( Gradient theGradient ) { mGradient = theGradient; }
+    Gradient gradient() const { return mGradient; }
+
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
@@ -51,6 +60,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
   private:
     int mGrayBand;
+    Gradient mGradient;
     QgsContrastEnhancement* mContrastEnhancement;
 };
 

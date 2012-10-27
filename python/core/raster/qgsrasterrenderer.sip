@@ -52,9 +52,6 @@ class QgsRasterRenderer : QgsRasterInterface
     void setAlphaBand( int band );
     int alphaBand() const;
 
-    void setInvertColor( bool invert );
-    bool invertColor() const;
-
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 

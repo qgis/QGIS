@@ -63,7 +63,6 @@ QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
 
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setInvertColor( mInvertColor );
   renderer->setRasterTransparency( mRasterTransparency );
 
   return renderer;
@@ -163,14 +162,6 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     {
       outputBlock->setColor( i, myDefaultColor );
       continue;
-    }
-
-    if ( mInvertColor )
-    {
-      // 1.8 was flipping blue and red
-      red = 255 - red;
-      green = 255 - green;
-      blue = 255 - blue;
     }
 
     if ( !hasTransparency )
