@@ -39,7 +39,6 @@ QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
   QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBand, colors(), mNColors );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setInvertColor( mInvertColor );
   renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
@@ -179,14 +178,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
       }
       QColor& currentColor = mColors[val];
 
-      if ( mInvertColor )
-      {
-        outputBlock->setColor( i, qRgba( currentOpacity * currentColor.blue(), currentOpacity * currentColor.green(), currentOpacity * currentColor.red(), currentOpacity * 255 ) );
-      }
-      else
-      {
-        outputBlock->setColor( i, qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 ) );
-      }
+      outputBlock->setColor( i, qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 ) );
     }
   }
 

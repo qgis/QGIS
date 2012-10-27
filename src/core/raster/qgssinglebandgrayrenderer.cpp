@@ -23,7 +23,7 @@
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
-    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
+    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( 0 )
 {
 }
 
@@ -37,7 +37,6 @@ QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
   QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setInvertColor( mInvertColor );
   renderer->setRasterTransparency( mRasterTransparency );
   if ( mContrastEnhancement )
   {
@@ -56,6 +55,11 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
   QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( input, grayBand );
   r->readXML( elem );
+
+  if ( elem.attribute( "gradient" ) == "WhiteToBlack" )
+  {
+    r->setGradient( WhiteToBlack );  // BlackToWhite is default
+  }
 
   QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
   if ( !contrastEnhancementElem.isNull() )
@@ -149,7 +153,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
       grayVal = mContrastEnhancement->enhanceContrast( grayVal );
     }
 
-    if ( mInvertColor )
+    if ( mGradient == WhiteToBlack )
     {
       grayVal = 255 - grayVal;
     }
@@ -184,6 +188,18 @@ void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   _writeXML( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "grayBand", mGrayBand );
+
+  QString gradient;
+  if ( mGradient == BlackToWhite )
+  {
+    gradient = "BlackToWhite";
+  }
+  else
+  {
+    gradient = "WhiteToBlack";
+  }
+  rasterRendererElem.setAttribute( "gradient", gradient );
+
   if ( mContrastEnhancement )
   {
     QDomElement contrastElem = doc.createElement( "contrastEnhancement" );

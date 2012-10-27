@@ -195,6 +195,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 
   //resampling
+  mResamplingGroupBox->setSaveCheckedState( true );
   const QgsRasterRenderer* renderer = mRasterLayer->renderer();
   mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
   mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
@@ -206,12 +207,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   //set combo boxes to current resampling types
   if ( resampleFilter )
   {
-    //invert color map
-    if ( renderer->invertColor() )
-    {
-      mInvertColorMapCheckBox->setCheckState( Qt::Checked );
-    }
-
     const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
@@ -744,9 +739,6 @@ void QgsRasterLayerProperties::apply()
 
     //set global transparency
     rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
-
-    //invert color map
-    rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
   }
 
   QgsDebugMsg( "processing general tab" );
