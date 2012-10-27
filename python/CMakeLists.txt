@@ -147,6 +147,7 @@ SET(PY_FILES
   console_sci.py
   console_help.py
   console_settings.py
+  console_output.py
   utils.py
 )
 FILE(GLOB UI_FILES *.ui)
