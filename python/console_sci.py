@@ -127,14 +127,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     
     def autoComplete(self):
         self.autoCompleteFromAll()
-       
-    def clearConsole(self):
-        """Clear the contents of the console."""
-        self.SendScintilla(QsciScintilla.SCI_CLEARALL)
-        #self.setText('')
-        #self.insertInitText()
-        self.displayPrompt(False)
-        self.setFocus()
         
     def commandConsole(self, command):
         if not self.is_cursor_on_last_line():
@@ -146,23 +138,20 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if command == "iface":
             """Import QgisInterface class"""
             self.append('from qgis.utils import iface')
-            self.move_cursor_to_end()
         elif command == "sextante":
             """Import Sextante class"""
             self.append('from sextante.core.Sextante import Sextante')
-            self.move_cursor_to_end()
         elif command == "cLayer":
             """Retrieve current Layer from map camvas"""
             self.append('cLayer = iface.mapCanvas().currentLayer()')
-            self.move_cursor_to_end()
         elif command == "qtCore":
             """Import QtCore class"""
             self.append('from PyQt4.QtCore import *')
-            self.move_cursor_to_end()
         elif command == "qtGui":
             """Import QtGui class"""
             self.append('from PyQt4.QtGui import *')
-            self.move_cursor_to_end()
+        self.entered()
+        self.move_cursor_to_end()
         self.setFocus()
 
     def setLexers(self):
@@ -479,10 +468,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             line.replace(">>> ", "").replace("... ", "")
             self.insert(line)
             self.move_cursor_to_end()
-            #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             self.runCommand(unicode(self.currentCommand()))
         if pasteList[-1] != "":
-            self.insert(unicode(pasteList[-1]))
+            line = pasteList[-1]
+            line.replace(">>> ", "").replace("... ", "")
+            self.insert(unicode(line))
             self.move_cursor_to_end()
 
 #    def getTextFromEditor(self):
@@ -567,6 +557,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def write_stdout(self, txt):
         if len(txt) > 0:
-            getCmdString = self.text(2)
+            getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')

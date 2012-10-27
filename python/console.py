@@ -79,7 +79,6 @@ class PythonConsole(QDockWidget):
         self.raise_()
         QDockWidget.setFocus(self)
 
-
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -88,11 +87,9 @@ class PythonConsoleWidget(QWidget):
         #self.widgetEditors = QWidget()
         
         self.options = optionsDialog(self)
-        #self.textEdit = QTextEdit()
         
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
-        #self.toolBar.setFont(font)
         self.toolBar.setFocusPolicy(Qt.NoFocus)
         self.toolBar.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LeftToRight)
@@ -100,18 +97,10 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setOrientation(Qt.Vertical)
         self.toolBar.setMovable(True)
         self.toolBar.setFloatable(True)
-        #self.toolBar.setAllowedAreas(Qt.LeftToolBarArea)
-        #self.toolBar.setAllowedAreas(Qt.RightToolBarArea)
-        #self.toolBar.setObjectName(_fromUtf8("toolMappa"))
-
-        #self.gridLayout = QGridLayout(self)
 
         self.b = QGridLayout(self.widgetButton)
-        #self.e = QGridLayout(self.widgetEditors)
         self.f = QGridLayout(self)
 
-        #self.e.setMargin(0)
-        #self.e.setSpacing(0)
         self.f.setMargin(0)
         self.f.setSpacing(0)
         self.b.setMargin(0)
@@ -264,10 +253,6 @@ class PythonConsoleWidget(QWidget):
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit()
         self.textEditOut = EditorOutput()
-
-        #self.textEdit = PythonEditOutput()
-        #self.textEdit.setReadOnly(True)
-        #self.textEdit.setMinimumHeight(80)
         
         self.setFocusProxy(self.edit)
         
@@ -276,8 +261,6 @@ class PythonConsoleWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.widgetButton.sizePolicy().hasHeightForWidth())
         self.widgetButton.setSizePolicy(sizePolicy)
-        #self.e.addWidget(self.textEdit)
-        #self.e.addWidget(self.edit)
 
         self.consoleFrame = QFrame(self)
         self.consoleFrame.setObjectName("consoleFrame")
@@ -296,13 +279,8 @@ class PythonConsoleWidget(QWidget):
         self.edit.setMaximumSize(QSize(16777215, 32))
         self.consoleLayout.addWidget(self.edit)
 
-
         self.f.addWidget(self.widgetButton, 0, 0)
         self.f.addWidget(self.consoleFrame, 0, 1)
-        #self.f.addWidget(self.widgetEditors)
-        
-        #self.f.setStretchFactor(self.widgetEditors, 1)
-        
         
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)

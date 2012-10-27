@@ -24,7 +24,7 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase, 
                         QsciLexerPython)
-
+from console_sci import PythonEdit 
 import sys
               
 class writeOut:
@@ -69,10 +69,11 @@ class EditorOutput(QsciScintilla):
         super(EditorOutput,self).__init__(parent)
         # Enable non-ascii chars for editor
         self.setUtf8(True)
-                
+        
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "traceback")
         
+        self.edit = PythonEdit() 
         self.setLexers()
         self.setReadOnly(True)
         
@@ -139,3 +140,28 @@ class EditorOutput(QsciScintilla):
     def clearConsole(self):
         #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
+        
+    def contextMenuEvent(self, e):   
+        menu = QMenu(self)
+        runAction = menu.addAction("Enter Selected")
+        copyAction = menu.addAction("Copy  CTRL+C")
+        runAction.setEnabled(False)
+        if self.hasSelectedText():
+            runAction.setEnabled(True)
+        action = menu.exec_(self.mapToGlobal(e.pos()))
+        if action == runAction:
+            cmd = self.selectedText()
+            self.edit.insertFromDropPaste(cmd)
+            self.edit.entered()
+        if action == copyAction:
+            self.copy()
+            
+    def copy(self):
+        """Copy text to clipboard... or keyboard interrupt"""
+        if self.hasSelectedText():
+            text = unicode(self.selectedText())
+            text = text.replace('>>> ', '').replace('... ', '').strip() # removing prompts
+            QApplication.clipboard().setText(text)
+        else:
+            self.emit(SIGNAL("keyboard_interrupt()"))
+
