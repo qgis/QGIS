@@ -23,6 +23,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 from console_sci import PythonEdit
+from console_output import EditorOutput
 from console_help import HelpDialog
 from console_settings import optionsDialog
 
@@ -58,20 +59,6 @@ def console_displayhook(obj):
     global _console_output
     _console_output = obj
 
-class QgisOutputCatcher:
-    def __init__(self):
-        self.data = ''
-    def write(self, stuff):
-        self.data += stuff
-    def get_and_clean_data(self):
-        tmp = self.data
-        self.data = ''
-        return tmp
-    def flush(self):
-        pass
-
-sys.stdout = QgisOutputCatcher()    
-
 class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)
@@ -92,18 +79,17 @@ class PythonConsole(QDockWidget):
         self.raise_()
         QDockWidget.setFocus(self)
 
-
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))        
         self.widgetButton = QWidget()
+        #self.widgetEditors = QWidget()
+        
         self.options = optionsDialog(self)
         
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
-        #self.toolBar.setFont(font)
         self.toolBar.setFocusPolicy(Qt.NoFocus)
         self.toolBar.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LeftToRight)
@@ -111,16 +97,14 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setOrientation(Qt.Vertical)
         self.toolBar.setMovable(True)
         self.toolBar.setFloatable(True)
-        #self.toolBar.setAllowedAreas(Qt.LeftToolBarArea)
-        #self.toolBar.setAllowedAreas(Qt.RightToolBarArea)
-        #self.toolBar.setObjectName(_fromUtf8("toolMappa"))
 
-        self.b = QVBoxLayout(self.widgetButton)
-        self.e = QHBoxLayout(self)
+        self.b = QGridLayout(self.widgetButton)
+        self.f = QGridLayout(self)
 
-        self.e.setMargin(0)
-        self.e.setSpacing(0)
+        self.f.setMargin(0)
+        self.f.setSpacing(0)
         self.b.setMargin(0)
+        self.b.setSpacing(0)
 
         ## Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear console")
@@ -268,12 +252,37 @@ class PythonConsoleWidget(QWidget):
 
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit()
-        self.setFocusProxy( self.edit )
-
-        self.e.addWidget(self.widgetButton)
-        self.e.addWidget(self.edit)
+        self.textEditOut = EditorOutput()
         
-        self.clearButton.triggered.connect(self.edit.clearConsole)
+        self.setFocusProxy(self.edit)
+        
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widgetButton.sizePolicy().hasHeightForWidth())
+        self.widgetButton.setSizePolicy(sizePolicy)
+
+        self.consoleFrame = QFrame(self)
+        self.consoleFrame.setObjectName("consoleFrame")
+        self.consoleLayout = QVBoxLayout(self.consoleFrame)
+        self.consoleLayout.setSpacing(0)
+        self.consoleLayout.setMargin(0)
+
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textEditOut.sizePolicy().hasHeightForWidth())
+        self.textEditOut.setSizePolicy(sizePolicy)
+        self.consoleLayout.addWidget(self.textEditOut)
+
+        self.edit.setMinimumSize(QSize(0, 32))
+        self.edit.setMaximumSize(QSize(16777215, 32))
+        self.consoleLayout.addWidget(self.edit)
+
+        self.f.addWidget(self.widgetButton, 0, 0)
+        self.f.addWidget(self.consoleFrame, 0, 1)
+        
+        self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
         self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
@@ -326,7 +335,7 @@ class PythonConsoleWidget(QWidget):
             if not filename.endswith(".py"):
                 fName += ".py"
             sF = open(fName,'w')
-            listText = self.edit.getTextFromEditor()
+            listText = self.textEditOut.getTextFromEditor()
             is_first_line = True
             for s in listText:
                 if s[0:3] in (">>>", "..."):
@@ -337,7 +346,7 @@ class PythonConsoleWidget(QWidget):
                         sF.write('\n')
                     sF.write(s)
             sF.close()
-
+        
     def openHelp(self):
         dlg = HelpDialog()
         dlg.exec_()
@@ -348,6 +357,7 @@ class PythonConsoleWidget(QWidget):
         
     def prefChanged(self):
         self.edit.refreshLexerProperties()
+        self.textEditOut.refreshLexerProperties()
 
     def closeEvent(self, event):
         self.edit.writeHistoryFile()
