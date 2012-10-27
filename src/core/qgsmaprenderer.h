@@ -136,6 +136,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
+    //! Scale denominator
     double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
@@ -288,7 +289,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! map units per pixel
     double mMapUnitsPerPixel;
 
-    //! Map scale at its current zoom level
+    //! Map scale denominator at its current zoom level
     double mScale;
 
     //! scale calculator

@@ -3,4 +3,6 @@ FILE(GLOB OTHER_FILES *.js)
 FILE(GLOB IMAGE_FILES _images/*.*)
 FILE(GLOB STATIC_FILES _static/*.*)
 
-PLUGIN_INSTALL(sextante ./help ${HTML_FILES} ${OTHER_FILES} ${IMAGE_FILES} ${STATIC_FILES})
+PLUGIN_INSTALL(sextante ./help ${HTML_FILES} ${OTHER_FILES})
+PLUGIN_INSTALL(sextante ./help/images ${IMAGE_FILES})
+PLUGIN_INSTALL(sextante ./help/_static ${STATIC_FILES})

@@ -26,6 +26,7 @@
 #include "qgsdelattrdialog.h"
 #include "qgsattributetypedialog.h"
 #include "qgsfield.h"
+#include "qgslegenditem.h"
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -135,10 +136,14 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
 
+    void on_mMinimumScaleSetCurrentPushButton_clicked();
+    void on_mMaximumScaleSetCurrentPushButton_clicked();
+
   signals:
 
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
+    void refreshLegend( QString layerID, QgsLegendItem::Expansion expandItem );
 
     void toggleEditing( QgsMapLayer * );
 

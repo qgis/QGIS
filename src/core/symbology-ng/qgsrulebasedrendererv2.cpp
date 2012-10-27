@@ -140,6 +140,8 @@ bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f ) const
 
 bool QgsRuleBasedRendererV2::Rule::isScaleOK( double scale ) const
 {
+  if ( scale == 0 ) // so that we can count features in classes without scale context
+    return true;
   if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
     return true;
   if ( mScaleMinDenom != 0 && mScaleMinDenom > scale )

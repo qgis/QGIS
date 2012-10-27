@@ -34,6 +34,7 @@
 #include "qgslabeldialog.h"
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
+#include "qgslegenditem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -881,7 +882,7 @@ void QgsVectorLayerProperties::apply()
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
   // update symbology
-  emit refreshLegend( layer->id(), false );
+  emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
 
   //no need to delete the old one, maplayer will do it if needed
   layer->setCacheImage( 0 );
@@ -889,7 +890,6 @@ void QgsVectorLayerProperties::apply()
   layer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
-
 }
 
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
@@ -1378,4 +1378,12 @@ void QgsVectorLayerProperties::enableLabelOptions( bool theFlag )
   labelOptionsFrame->setEnabled( theFlag );
 }
 
+void QgsVectorLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
+{
+  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+}
 
+void QgsVectorLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
+{
+  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+}

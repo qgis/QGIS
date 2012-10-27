@@ -57,6 +57,13 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       NO_ACTION //do nothing
     };
 
+    enum Expansion
+    {
+      Expand,
+      Collapse,
+      DontChange   // keep current state
+    };
+
     virtual LEGEND_ITEM_TYPE type() const { return mType; }
 
     /**Subclasses which allow insertion of other items may implement this method.

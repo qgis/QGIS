@@ -34,6 +34,7 @@ SET ( qgis_mapserv_SRCS
   qgsbetweenfilter.cpp
   qgscomparisonfilter.cpp
   qgslogicalfilter.cpp
+  qgsspatialfilter.cpp
   qgsftptransaction.cpp
   qgsmslayerbuilder.cpp 
   qgshostedvdsbuilder.cpp

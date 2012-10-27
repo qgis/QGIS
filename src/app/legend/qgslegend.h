@@ -23,9 +23,10 @@
 #include <QPair>
 #include <set>
 
+#include "qgslegenditem.h"
+
 class QgsLegendGroup;
 class QgsLegendLayer;
-class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QDomDocument;
@@ -220,6 +221,7 @@ class QgsLegend : public QTreeWidget
 
     /**Updates symbology items for a layer*/
     void refreshLayerSymbology( QString key, bool expandItem = true );
+    void refreshLayerSymbology( QString key, QgsLegendItem::Expansion expandItem );
 
     /*!
       * Slot called to clear the tree of all items

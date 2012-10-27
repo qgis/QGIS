@@ -176,6 +176,9 @@ class QgsWMSServer
     /**Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)*/
     void addXMLDeclaration( QDomDocument& doc ) const;
 
+    /**Converts a feature info xml document to SIA2045 norm*/
+    void convertFeatureInfoToSIA2045( QDomDocument& doc );
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

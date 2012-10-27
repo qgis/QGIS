@@ -598,15 +598,21 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
-
   layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
   QgsFeature f;
-  QgsSymbolV2* currentSymbol = 0;
+
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  renderer->startRender( renderContext, layer );
 
   while ( layer->nextFeature( f ) )
   {
-    currentSymbol = renderer->symbolForFeature( f );
-    mSymbolCountMap[currentSymbol] += 1;
+    QgsSymbolV2List symbolList = renderer->symbolsForFeature( f );
+    for ( QgsSymbolV2List::iterator symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
+    {
+      mSymbolCountMap[*symbolIt] += 1;
+    }
     ++featuresCounted;
     if ( featuresCounted % 50 == 0 )
     {
@@ -621,6 +627,7 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
       }
     }
   }
+  renderer->stopRender( renderContext );
   p.setValue( nFeatures );
 
   QMap<QString, QPixmap> itemMap;
@@ -631,7 +638,6 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   }
   itemList.clear();
 
-  //
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {

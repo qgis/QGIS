@@ -234,7 +234,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return MoreSymbolsPerFeature; }
+    virtual int capabilities() { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 
