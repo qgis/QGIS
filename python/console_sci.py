@@ -119,9 +119,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.showHistory)
         self.connect(self, SIGNAL('userListActivated(int, const QString)'),
                      self.completion_list_selected)
-        
-        self.createStandardContextMenu()
-    
+            
     def showHistory(self):
         self.showUserList(1, QStringList(self.history))
     
@@ -413,13 +411,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             
     def contextMenuEvent(self, e):     
         menu = QMenu(self)
-        copyAction = menu.addAction("Copy  CTRL+C")
-        pasteAction = menu.addAction("Paste CTRL+V")
+        copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
+        pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        copyAction.setEnabled(False)
+        if self.hasSelectedText():
+            copyAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        if action == copyAction:
-            self.copy()
-        elif action == pasteAction:
-            self.paste()
                 
     def mousePressEvent(self, e):
         """
