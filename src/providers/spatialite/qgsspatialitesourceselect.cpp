@@ -61,7 +61,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setEnabled( false );
 

@@ -1387,7 +1387,7 @@ def mmqgisx_hub_distance(progress, sourcelayer, hubslayer, nameattributename, un
 		source = feature.geometry().boundingBox().center()
 		distance = QgsDistanceArea()
 		distance.setSourceCrs(sourcelayer.dataProvider().crs().srsid())
-		distance.setProjectionsEnabled(1)
+		distance.setEllipsoidalMode(True)
 
 		closest = hubs[0]
 		hubdist = distance.measureLine(source, closest.point)

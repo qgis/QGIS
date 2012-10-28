@@ -151,7 +151,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             if method == 2:
                 measure.setSourceCrs(crs)
                 measure.setEllipsoid(ellips)
-                measure.setProjectionsEnabled(True)
+                measure.setEllipsoidalMode(True)
 
             attr1 = measure.measure(geom)
             if geom.type() == QGis.Polygon:

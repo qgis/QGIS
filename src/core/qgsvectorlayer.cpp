@@ -102,6 +102,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
+    , mEditorLayout( GeneratedLayout )
     , mFetching( false )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
@@ -2512,16 +2513,13 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
         if ( mDataProvider )
         {
-          //use default value where possible (primary key issue), otherwise the value from the original (split) feature
           QgsAttributeMap newAttributes = select_it->attributeMap();
-          QVariant defaultValue;
-          foreach ( int j, newAttributes.keys() )
+
+          // overwrite primary key field with default values
+          foreach ( int idx, pendingPkAttributesList() )
           {
-            defaultValue = mDataProvider->defaultValue( j );
-            if ( !defaultValue.isNull() )
-            {
-              newAttributes.insert( j, defaultValue );
-            }
+	    if( newAttributes.contains( idx ) )
+              newAttributes.insert( idx, mDataProvider->defaultValue( idx ) );
           }
 
           newFeature.setAttributeMap( newAttributes );
@@ -3129,28 +3127,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
-    // tab display
-    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
-    if ( editorLayoutNode.isNull() )
-    {
-      mEditorLayout = GeneratedLayout;
-    }
-    else
-    {
-      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
-      {
-        mEditorLayout = UiFileLayout;
-      }
-      else if ( editorLayoutNode.toElement().text() == "tablayout" )
-      {
-        mEditorLayout = TabLayout;
-      }
-      else
-      {
-        mEditorLayout = GeneratedLayout;
-      }
-    }
-
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -3330,6 +3306,27 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+  // tab display
+  QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+  if ( editorLayoutNode.isNull() )
+  {
+    mEditorLayout = GeneratedLayout;
+  }
+  else
+  {
+    if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+    {
+      mEditorLayout = UiFileLayout;
+    }
+    else if ( editorLayoutNode.toElement().text() == "tablayout" )
+    {
+      mEditorLayout = TabLayout;
+    }
+    else
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+  }
 
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
@@ -3390,7 +3387,9 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
   }
   else if ( elem.tagName() == "attributeEditorField" )
   {
-    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+    QString name = elem.attribute( "name" );
+    int idx = *( dataProvider()->fieldNameMap() ).find( name );
+    newElement = new QgsAttributeEditorField( name, idx, parent );
   }
 
   return newElement;
@@ -3445,26 +3444,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
-
-    // tab display
-    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-    switch ( mEditorLayout )
-    {
-      case UiFileLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-        break;
-
-      case TabLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-        break;
-
-      case GeneratedLayout:
-      default:
-        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-        break;
-    }
-
-    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3607,6 +3586,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
   afField.appendChild( afText );
   node.appendChild( afField );
+
+  // tab display
+  QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+  switch ( mEditorLayout )
+  {
+    case UiFileLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+      break;
+
+    case TabLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+      break;
+
+    case GeneratedLayout:
+    default:
+      editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+      break;
+  }
+
+  node.appendChild( editorLayoutElem );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
@@ -3890,6 +3889,21 @@ QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
   return mUpdatedFields.keys();
 }
 
+QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
+{
+  QgsAttributeList pkAttributesList;
+
+  foreach ( int idx, mDataProvider->pkAttributeIndexes() )
+  {
+    if ( !mUpdatedFields.contains( idx ) )
+      continue;
+
+    pkAttributesList << idx;
+  }
+
+  return pkAttributesList;
+}
+
 int QgsVectorLayer::pendingFeatureCount()
 {
   return mDataProvider->featureCount()
@@ -3970,6 +3984,23 @@ bool QgsVectorLayer::commitChanges()
     }
   }
 
+  // collect new feature ids that weren't deleted again and forget still
+  // pending updates for deleted features
+  QHash<QgsFeatureId, int> addedFeaturesIdx;
+  for ( int i = 0; i < mAddedFeatures.size(); i++ )
+  {
+    const QgsFeature &f = mAddedFeatures.at( i );
+    if ( !mDeletedFeatureIds.remove( f.id() ) )
+    {
+      addedFeaturesIdx.insert( f.id(), i );
+    }
+    else
+    {
+      mChangedAttributeValues.remove( f.id() );
+      mChangedGeometries.remove( f.id() );
+    }
+  }
+
   //
   // remap changed and attributes of added features
   //
@@ -3977,7 +4008,7 @@ bool QgsVectorLayer::commitChanges()
   if ( attributesChanged )
   {
     // map updates field indexes to names
-    QMap<int, QString> src;
+    QHash<int, QString> src;
     for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
     {
       src[ it.key()] = it.value().name();
@@ -3987,7 +4018,7 @@ bool QgsVectorLayer::commitChanges()
     const QgsFieldMap &pFields = mDataProvider->fields();
 
     // map provider table names to field indexes
-    QMap<QString, int> dst;
+    QHash<QString, int> dst;
     for ( QgsFieldMap::const_iterator it = pFields.begin(); it != pFields.end(); it++ )
     {
       dst[ it.value().name()] = it.key();
@@ -4019,8 +4050,8 @@ bool QgsVectorLayer::commitChanges()
     }
 
     // map updated fields to provider fields
-    QMap<int, int> remap;
-    for ( QMap<int, QString>::const_iterator it = src.begin(); it != src.end(); it++ )
+    QHash<int, int> remap;
+    for ( QHash<int, QString>::const_iterator it = src.begin(); it != src.end(); it++ )
     {
       if ( dst.contains( it.value() ) )
       {
@@ -4060,7 +4091,7 @@ bool QgsVectorLayer::commitChanges()
     QgsFieldMap attributes;
 
     // update private field map
-    for ( QMap<int, int>::iterator it = remap.begin(); it != remap.end(); it++ )
+    for ( QHash<int, int>::iterator it = remap.begin(); it != remap.end(); it++ )
       attributes[ it.value()] = mUpdatedFields[ it.key()];
 
     mUpdatedFields = attributes;
@@ -4089,20 +4120,41 @@ bool QgsVectorLayer::commitChanges()
     }
 
     //
+    // delete features
+    //
+    if ( mDeletedFeatureIds.size() > 0 )
+    {
+      if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
+      {
+        mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
+        foreach ( const QgsFeatureId &id, mDeletedFeatureIds )
+        {
+          mChangedAttributeValues.remove( id );
+          mChangedGeometries.remove( id );
+        }
+
+        emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
+
+        mDeletedFeatureIds.clear();
+      }
+      else
+      {
+        mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
+        success = false;
+      }
+    }
+
+    //
     //  add features
     //
     if ( mAddedFeatures.size() > 0 )
     {
-      for ( int i = 0; i < mAddedFeatures.size(); i++ )
+      foreach ( int i, addedFeaturesIdx.values() )
       {
         QgsFeature &f = mAddedFeatures[i];
 
-        if ( mDeletedFeatureIds.contains( f.id() ) )
+        if ( mDeletedFeatureIds.remove( f.id() ) )
         {
-          mDeletedFeatureIds.remove( f.id() );
-
-          if ( mChangedGeometries.contains( f.id() ) )
-            mChangedGeometries.remove( f.id() );
 
           mAddedFeatures.removeAt( i-- );
           continue;
@@ -4170,31 +4222,6 @@ bool QgsVectorLayer::commitChanges()
     else
     {
       mCommitErrors << tr( "ERROR: %n geometries not changed.", "not changed geometries count", mChangedGeometries.size() );
-      success = false;
-    }
-  }
-
-  //
-  // delete features
-  //
-  if ( mDeletedFeatureIds.size() > 0 )
-  {
-    if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
-      for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
-      {
-        mChangedAttributeValues.remove( *it );
-        mChangedGeometries.remove( *it );
-      }
-
-      emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
-
-      mDeletedFeatureIds.clear();
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
       success = false;
     }
   }
@@ -5776,6 +5803,18 @@ QString QgsVectorLayer::metadata()
 
     myMetadata += "<tr><td>";
     myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
+    myMetadata += "</td></tr>";
+  }
+
+  QgsAttributeList pkAttrList = pendingPkAttributesList();
+  if ( !pkAttrList.isEmpty() )
+  {
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "Primary key attributes: " );
+    foreach( int idx, pkAttrList )
+    {
+      myMetadata += pendingFields()[ idx ].name() + " ";
+    }
     myMetadata += "</td></tr>";
   }
 

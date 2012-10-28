@@ -152,6 +152,10 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! @note added in 1.4
     static const QStringList svgPaths();
 
+    //! Returns the system environment variables passed to application.
+    //! @note added in 1.9
+    static const QMap<QString, QString> systemEnvVars();
+
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();
 

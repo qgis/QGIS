@@ -57,6 +57,7 @@ class SextanteVectorWriter:
                 uri += "?crs=" + crs.authid()
             self.memLayer = QgsVectorLayer(uri, self.fileName, "memory")
             self.writer = self.memLayer.dataProvider()
+            # FIXME: addAttributes was deprecated and removed
             self.writer.addAttributes(fields.values())
             self.memLayer.updateFieldMap()
         else:

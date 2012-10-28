@@ -22,6 +22,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+class QProgressDialog;
+
 /** \ingroup core
   * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
@@ -59,7 +61,8 @@ class CORE_EXPORT QgsVectorLayerImport
                                     bool onlySelected = false,
                                     QString *errorMessage = 0,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = 0
+                                    QMap<QString, QVariant> *options = 0,
+                                    QProgressDialog *progress = 0
                                   );
 
     /** create a empty layer and add fields to it */
@@ -69,7 +72,8 @@ class CORE_EXPORT QgsVectorLayerImport
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0
+                          const QMap<QString, QVariant> *options = 0,
+                          QProgressDialog *progress = 0
                         );
 
     /** checks whether there were any errors */
@@ -102,6 +106,7 @@ class CORE_EXPORT QgsVectorLayerImport
     QMap<int, int> mOldToNewAttrIdx;
 
     QgsFeatureList mFeatureBuffer;
+    QProgressDialog *mProgress;
 };
 
 #endif

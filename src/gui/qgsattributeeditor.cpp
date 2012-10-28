@@ -26,6 +26,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgslogger.h>
 
+#include <QScrollArea>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -987,13 +988,23 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         QGroupBox* groupBox = new QGroupBox( parent );
         groupBox->setTitle( container->name() );
         myContainer = groupBox;
+        newWidget = myContainer;
       }
       else
       {
-        myContainer = new QWidget( parent );
+        QScrollArea *scrollArea = new QScrollArea( parent );
+
+        myContainer = new QWidget( scrollArea );
+
+        scrollArea->setWidget( myContainer );
+        scrollArea->setWidgetResizable( true );
+        scrollArea->setFrameShape( QFrame::NoFrame );
+
+        newWidget = scrollArea;
       }
 
       QGridLayout* gbLayout = new QGridLayout( myContainer );
+      myContainer->setLayout( gbLayout );
 
       int index = 0;
 
@@ -1010,9 +1021,15 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         }
         else
         {
+          const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( childDef );
+
+          //show attribute alias if available
+          QString myFieldName = vl->attributeDisplayName( fieldDef->idx() );
           QLabel * mypLabel = new QLabel( myContainer );
           gbLayout->addWidget( mypLabel, index, 0 );
-          mypLabel->setText( childDef->name() );
+          mypLabel->setText( myFieldName );
+
+          // add editor widget
           gbLayout->addWidget( editor, index, 1 );
         }
 
@@ -1020,7 +1037,6 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       }
       gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
 
-      newWidget = myContainer;
       break;
     }
 

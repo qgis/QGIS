@@ -1368,11 +1368,11 @@ QString QgsProject::readPath( QString src ) const
     // That means that it was saved with an earlier version of "relative path support",
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
-    QFileInfo pfi( fileName() );
-    if ( !pfi.exists() )
+    QString home = homePath();
+    if( home.isNull() )
       return src;
 
-    QFileInfo fi( pfi.canonicalPath() + "/" + src );
+    QFileInfo fi( home + "/" + src );
 
     if ( !fi.exists() )
     {
@@ -1763,4 +1763,11 @@ void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers
   // just ignore any bad layers
 }
 
+QString QgsProject::homePath() const
+{
+  QFileInfo pfi( fileName() );
+  if ( !pfi.exists() )
+    return QString::null;
 
+  return pfi.canonicalPath();
+}

@@ -301,6 +301,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QgsAttributeList attributeIndexes();
 
     /**
+     * Return list of indexes of fields that make up the primary key
+     * @note added in 2.0
+     */
+    virtual QgsAttributeList pkAttributeIndexes() { return QgsAttributeList(); }
+
+    /**
      * Set whether provider should also return features that don't have
      * associated geometry. false by default
      */

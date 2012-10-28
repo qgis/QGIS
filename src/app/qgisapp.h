@@ -1048,7 +1048,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
     //! shows the paste-transformations dialog
-    void pasteTransformations();
+    // void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)

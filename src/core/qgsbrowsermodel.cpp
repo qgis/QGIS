@@ -24,6 +24,7 @@
 #include "qgsproviderregistry.h"
 
 #include "qgsbrowsermodel.h"
+#include "qgsproject.h"
 
 #include <QSettings>
 
@@ -40,8 +41,18 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::addRootItems()
 {
-  // give the home directory a prominent first place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
+  QgsDirectoryItem *item;
+
+  QString home = QgsProject::instance()->homePath();
+
+  if( !home.isNull() )
+  {
+    item = new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+    mRootItems << item;
+  }
+
+  // give the home directory a prominent second place
+  item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );

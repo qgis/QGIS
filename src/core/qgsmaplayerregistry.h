@@ -45,6 +45,9 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     //! Retrieve a pointer to a loaded layer by id
     QgsMapLayer *mapLayer( QString theLayerId );
 
+    //! Retrieve a pointer to a loaded layer by name
+    QList<QgsMapLayer *> mapLayersByName( QString layerName );
+
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
     QMap<QString, QgsMapLayer*> & mapLayers();
 

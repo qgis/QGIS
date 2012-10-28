@@ -38,7 +38,9 @@ class writeOut:
 
     def write(self, m):
         if self.style == "traceback":
-            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            # Show errors in red
+            pos = self.outputArea.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
+            self.outputArea.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
             self.outputArea.append(m)
             self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
