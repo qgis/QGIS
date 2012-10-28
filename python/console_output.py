@@ -110,6 +110,9 @@ class EditorOutput(QsciScintilla):
         
         self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runShortcut.activated.connect(self.enteredSelected)
+        # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
+        self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self)
+        self.copyShortcut.activated.connect(self.copy)
     
     def refreshLexerProperties(self):
         self.setLexers()
