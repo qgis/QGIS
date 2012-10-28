@@ -55,7 +55,7 @@ class FieldsPyculator(GeoAlgorithm):
         self.name = "Field Pyculator"
         self.group = "Algorithms for vector layers"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features", False))
+        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features (all if noone selected)", False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
         self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
@@ -116,8 +116,12 @@ class FieldsPyculator(GeoAlgorithm):
                                  (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
 
+        QtGui.QMessageBox.critical(None, "", str(vprovider))
         #run
-        if not useSelected:
+        
+        features = layer.selectedFeatures()
+        nFeatures = len(features)
+        if not useSelected or nFeatures == 0:
             feat = QgsFeature()
             if need_attrs:
                 attr_ind = vprovider.attributeIndexes()
