@@ -152,9 +152,21 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      *  @param limit maximum number of values (added in 1.4) */
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 );
 
+    /** Returns the possible enum values of an attribute. 
+	 * Returns an empty stringlist if a provider does not support enum types 
+	 * or if the given attribute is not an enum type.
+	 * @param index the index of the attribute
+	 * @param enumList reference to the list to fill
+	 * @note: added in version 1.2
+	 * SQLAnywhere does not currently support enumerated types.
+	 */
+	//virtual void enumValues( int index, QStringList& enumList );
+
     /**Returns true if layer is valid
     */
     bool isValid() { return mValid; }
+
+    QgsAttributeList attributeIndexes();
 
     /**Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) { return mAttributeDefaults[fieldId]; }
