@@ -18,6 +18,7 @@
 #include "qgsconfigparser.h"
 #include "qgscrscache.h"
 #include "qgsfield.h"
+#include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -430,18 +431,41 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           else
           {
-            QgsFilter* mFilter = QgsFilter::createFilterFromXml( filterElem.firstChild().toElement(), layer );
+            QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+            if (mFilter->hasParserError())
+            {
+              throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+            }
             if ( mFilter )
             {
               while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
               {
-                if ( mFilter->evaluate( feature ) )
+                QVariant res = mFilter->evaluate( &feature, fields );
+                if (mFilter->hasEvalError())
                 {
-                  sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+                  throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+                }
+                if ( res.toInt() != 0 )
+                {
+                  sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
+                  ++featureCounter;
                   ++featCounter;
+                }
+              }
+              /*
+                 QgsFilter* mFilter = QgsFilter::createFilterFromXml( filterElem.firstChild().toElement(), layer );
+                 if ( mFilter )
+                 {
+                 while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+                 {
+                 if ( mFilter->evaluate( feature ) )
+                 {
+                 sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+                 ++featCounter;
                   ++featureCounter;
                 }
               }
+            */
             }
           }
         }
@@ -635,12 +659,22 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       provider->select( attrIndexes, searchRect, mWithGeom, true );
       try
       {
-        QgsFilter* mFilter = QgsFilter::createFilterFromXml( filter.firstChild().toElement().firstChild().toElement(), layer );
+        QDomElement filterElem = filter.firstChildElement();
+        QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+        if (mFilter->hasParserError())
+        {
+          throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+        }
         while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
         {
           if ( mFilter )
           {
-            if ( mFilter->evaluate( feature ) )
+            QVariant res = mFilter->evaluate( &feature, fields );
+            if (mFilter->hasEvalError())
+            {
+              throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+            }
+            if ( res.toInt() != 0 )
             {
               sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
               ++featureCounter;

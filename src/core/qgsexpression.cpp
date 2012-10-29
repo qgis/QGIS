@@ -226,6 +226,15 @@ const char* QgsExpression::UnaryOgcOperatorText[] =
   "Not", ""
 };
 
+const char* QgsExpression::SpatialOgcOperatorText[] =
+{
+  "BBOX", "Intersects",
+  "Contians", "Crosses",
+  "Equals", "Disjoint",
+  "Overlaps", "Touches",
+  "Within"
+};
+
 ///////////////////////////////////////////////
 // functions
 
@@ -1250,7 +1259,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() == ogcOperatorName )
+    if ( element.tagName() == ogcOperatorName )
     {
       QgsExpression::Node *node = QgsExpression::NodeUnaryOperator::createFromOgcFilter( element, errorMessage );
       if ( node )
@@ -1268,7 +1277,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() == ogcOperatorName )
+    if ( element.tagName() == ogcOperatorName )
     {
       QgsExpression::Node *node = QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
       if ( node )
@@ -1278,25 +1287,43 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     }
   }
 
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.tagName() == ogcOperatorName )
+    {
+      QgsExpression::Node *node = QgsExpression::NodeSpatialOperator::createFromOgcFilter( element, errorMessage );
+      if ( node )
+        return node;
+
+      return NULL;
+    }
+  }
+
   // check for other OGC operators, convert them to expressions
 
-  if ( element.localName() == "PropertyIsNull" )
+  if ( element.tagName() == "PropertyIsNull" )
   {
     return QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "Literal" )
+  else if ( element.tagName() == "Literal" )
   {
     return QgsExpression::NodeLiteral::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "Function" )
+  else if ( element.tagName() == "Function" )
   {
     return QgsExpression::NodeFunction::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "PropertyName" )
+  else if ( element.tagName() == "PropertyName" )
   {
     return QgsExpression::NodeColumnRef::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "PropertyIsBetween" )
+  else if ( element.tagName() == "PropertyIsBetween" )
   {
     // <ogc:PropertyIsBetween> encode a Range check
     QgsExpression::Node *operand = 0, *lowerBound = 0;
@@ -1305,12 +1332,12 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     QDomElement operandElem = element.firstChildElement();
     while ( !operandElem.isNull() )
     {
-      if ( operandElem.localName() == "LowerBoundary" )
+      if ( operandElem.tagName() == "LowerBoundary" )
       {
         QDomElement lowerBoundElem = operandElem.firstChildElement();
         lowerBound = createFromOgcFilter( lowerBoundElem, errorMessage );
       }
-      else if ( operandElem.localName() ==  "UpperBoundary" )
+      else if ( operandElem.tagName() ==  "UpperBoundary" )
       {
         QDomElement upperBoundElem = operandElem.firstChildElement();
         upperBound = createFromOgcFilter( upperBoundElem, errorMessage );
@@ -1449,7 +1476,7 @@ QgsExpression::Node* QgsExpression::NodeUnaryOperator::createFromOgcFilter( QDom
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() != ogcOperatorName )
+    if ( element.tagName() != ogcOperatorName )
       continue;
 
     QDomElement operandElem = element.firstChildElement();
@@ -1811,7 +1838,7 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
   QgsExpression::Node* opRight = 0;
 
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
-  if ( element.localName() == "PropertyIsNull" )
+  if ( element.tagName() == "PropertyIsNull" )
   {
     QDomElement operandElem = element.firstChildElement();
     opLeft = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
@@ -1830,7 +1857,7 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() != ogcOperatorName )
+    if ( element.tagName() != ogcOperatorName )
       continue;
 
     QDomElement operandElem = element.firstChildElement();
@@ -1866,6 +1893,167 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
   if ( opRight )
     delete opRight;
 
+  return NULL;
+}
+
+//
+
+QVariant QgsExpression::NodeSpatialOperator::eval( QgsExpression* parent, QgsFeature* f )
+{  
+  QgsGeometry* geom = f->geometry();
+  
+  switch ( mOp )
+  {
+    case soBbox:
+      return geom->intersects( mOpGeometry->boundingBox() ) ? TVL_True : TVL_False;
+    case soIntersects:
+      return geom->intersects( mOpGeometry ) ? TVL_True : TVL_False;
+    case soContains:
+      return geom->contains( mOpGeometry ) ? TVL_True : TVL_False;
+    case soCrosses:
+      return geom->crosses( mOpGeometry ) ? TVL_True : TVL_False;
+    case soEquals:
+      return geom->equals( mOpGeometry ) ? TVL_True : TVL_False;
+    case soDisjoint:
+      return geom->disjoint( mOpGeometry ) ? TVL_True : TVL_False;
+    case soOverlaps:
+      return geom->overlaps( mOpGeometry ) ? TVL_True : TVL_False;
+    case soTouches:
+      return geom->touches( mOpGeometry ) ? TVL_True : TVL_False;
+    case soWithin:
+      return geom->within( mOpGeometry ) ? TVL_True : TVL_False;
+  }
+  return TVL_False;
+}
+
+bool QgsExpression::NodeSpatialOperator::prepare( QgsExpression* /*parent*/, const QgsFieldMap& /*fields*/ )
+{
+  return true;
+}
+
+QString QgsExpression::NodeSpatialOperator::dump() const
+{
+  switch ( mOp )
+  {
+    case soBbox:
+      return QString( "Intersects('%1')" ).arg( mOpGeometry->boundingBox().asWktPolygon() );
+    case soIntersects:
+      return QString( "Intersects('%1')" ).arg( mOpGeometry->exportToWkt() );
+  }
+  return "";
+}
+
+QgsExpression::Node* QgsExpression::NodeSpatialOperator::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  bool geomOk = false;
+  QgsGeometry* geom = new QgsGeometry();
+
+  QDomNodeList bNodes = element.elementsByTagName( "Box" );
+  if ( bNodes.size() > 0 ) {
+    QDomElement bElem = bNodes.at( 0 ).toElement().firstChild().toElement();
+    QString coordSeparator = ",";
+    QString tupelSeparator = " ";
+    if ( bElem.hasAttribute( "cs" ) )
+    {
+      coordSeparator = bElem.attribute( "cs" );
+    }
+    if ( bElem.hasAttribute( "ts" ) )
+    {
+      tupelSeparator = bElem.attribute( "ts" );
+    }
+
+    QString bString = bElem.text();
+    bool conversionSuccess;
+    double minx = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    double miny = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+    double maxx = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    double maxy = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+    QgsRectangle* rect = new QgsRectangle( minx, miny, maxx, maxy );
+    geom = QgsGeometry::fromRect( *rect );
+    geomOk = true;
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "MultiPolygon" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "MultiLineString" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "MultiPoint" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "Polygon" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "LineString" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    QDomNodeList gNodes = element.elementsByTagName( "Point" );
+    if ( gNodes.size() > 0 ) {
+      QDomElement gElem = gNodes.at( 0 ).toElement();
+      geom = QgsGeometry::fromGML2( gElem );
+      geomOk = true;
+    }
+  }
+
+  if ( !geomOk )
+  {
+    errorMessage = QString( "invalid geometry" );
+    return NULL;
+  }
+
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.tagName() != ogcOperatorName )
+      continue;
+
+    return new QgsExpression::NodeSpatialOperator(( SpatialOperator ) i, geom );
+  }
   return NULL;
 }
 
@@ -2024,7 +2212,7 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "Function" )
+  if ( element.tagName() != "Function" )
   {
     errorMessage = QString( "ogc:Function expected, got %1" ).arg( element.tagName() );
     return NULL;
@@ -2116,7 +2304,7 @@ QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElemen
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "Literal" )
+  if ( element.tagName() != "Literal" )
   {
     errorMessage = QString( "ogc:Literal expected, got %1" ).arg( element.tagName() );
     return NULL;
@@ -2223,7 +2411,7 @@ QgsExpression::Node* QgsExpression::NodeColumnRef::createFromOgcFilter( QDomElem
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "PropertyName" )
+  if ( element.tagName() != "PropertyName" )
   {
     errorMessage = QString( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
     return NULL;

@@ -554,35 +554,35 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ) )
     return 0;
 
-  if ( geomType == "Point" )
+  if ( geomType == "Point" && g->setFromGML2Point( geometryTypeElement ) )
   {
-    g->setFromGML2Point( geometryTypeElement );
+    return g;
   }
-  else if ( geomType == "LineString" )
+  else if ( geomType == "LineString" && g->setFromGML2LineString( geometryTypeElement ) )
   {
-    g->setFromGML2LineString( geometryTypeElement );
+    return g;
   }
-  else if ( geomType == "Polygon" )
+  else if ( geomType == "Polygon" && g->setFromGML2Polygon( geometryTypeElement ) )
   {
-    g->setFromGML2Polygon( geometryTypeElement );
+    return g;
   }
-  else if ( geomType == "MultiPoint" )
+  else if ( geomType == "MultiPoint" && g->setFromGML2MultiPoint( geometryTypeElement ) )
   {
-    g->setFromGML2MultiPoint( geometryTypeElement );
+    return g;
   }
-  else if ( geomType == "MultiLineString" )
+  else if ( geomType == "MultiLineString" && g->setFromGML2MultiLineString( geometryTypeElement ) )
   {
-    g->setFromGML2MultiLineString( geometryTypeElement );
+    return g;
   }
-  else if ( geomType == "MultiPolygon" )
+  else if ( geomType == "MultiPolygon" && g->setFromGML2MultiPolygon( geometryTypeElement ) )
   {
-    g->setFromGML2MultiPolygon( geometryTypeElement );
+    return g;
   }
   else //unknown type
   {
     return 0;
   }
-  return g;
+  return 0;
 }
 
 bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )
