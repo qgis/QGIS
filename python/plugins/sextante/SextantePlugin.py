@@ -42,8 +42,6 @@ from sextante.gui.ResultsDialog import ResultsDialog
 
 from sextante.modeler.ModelerDialog import ModelerDialog
 
-from sextante.about.AboutDialog import AboutDialog
-
 import resources_rc
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
