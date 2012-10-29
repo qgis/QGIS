@@ -102,12 +102,6 @@ class SextantePlugin:
         QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
         self.menu.addAction(self.helpAction)
 
-        self.aboutAction = QAction(QIcon(":/sextante/images/info.png"),
-            QCoreApplication.translate("SEXTANTE", "&About SEXTANTE"),
-            self.iface.mainWindow())
-        QObject.connect(self.aboutAction, SIGNAL("triggered()"), self.openAbout)
-        self.menu.addAction(self.aboutAction)
-
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
 
@@ -143,10 +137,6 @@ class SextantePlugin:
 
     def openConfig(self):
         dlg = ConfigDialog(self.toolbox)
-        dlg.exec_()
-
-    def openAbout(self):
-        dlg = AboutDialog()
         dlg.exec_()
 
     def openHelp(self):
