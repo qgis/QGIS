@@ -35,7 +35,7 @@ except AttributeError:
 
 class MultipleInputPanel(QtGui.QWidget):
 
-    def __init__(self, options, datatype, parent = None):
+    def __init__(self, options, datatype = None, parent = None):
         super(MultipleInputPanel, self).__init__(parent)
         self.options = options
         self.datatype = datatype
@@ -54,17 +54,18 @@ class MultipleInputPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
-            options = QGisLayers.getRasterLayers()
-        elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-            options = QGisLayers.getVectorLayers()
-        else:
-            options = QGisLayers.getVectorLayers(self.datatype)
-        opts = []
-        for opt in options:
-            opts.append(opt.name())
-        self.options = opts
-        
+        #If there is a datatype, we use it to create the list of options
+        if self.datatype is not None:
+            if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+                options = QGisLayers.getRasterLayers()
+            elif self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                options = QGisLayers.getVectorLayers()
+            else:
+                options = QGisLayers.getVectorLayers(self.datatype)
+            opts = []
+            for opt in options:
+                opts.append(opt.name())
+            self.options = opts        
         dlg = MultipleInputDialog(self.options, self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions != None:
