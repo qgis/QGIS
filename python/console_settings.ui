@@ -86,7 +86,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label_2">
@@ -107,17 +107,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="preloadAPI">
-     <property name="text">
-      <string>Use preloaded API file</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QTableWidget" name="tableWidget">
@@ -219,7 +209,7 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -229,19 +219,20 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="preloadAPI">
+     <property name="text">
+      <string>Use preloaded API file</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget_2</zorder>
-  <zorder>layoutWidget_3</zorder>
-  <zorder>label</zorder>
-  <zorder>fontComboBox</zorder>
-  <zorder>label_3</zorder>
-  <zorder>fontComboBox</zorder>
-  <zorder>label</zorder>
-  <zorder>label_3</zorder>
-  <zorder>preloadAPI</zorder>
   <zorder>verticalSpacer_2</zorder>
+  <zorder>preloadAPI</zorder>
  </widget>
  <resources/>
  <connections>
