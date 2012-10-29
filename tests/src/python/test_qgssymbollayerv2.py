@@ -34,27 +34,39 @@ from PyQt4.QtCore import (QString,
                           Qt)
 from PyQt4.QtXml import QDomDocument
 
-from qgis.core import (QgsSymbolLayerV2,
-                       QgsSimpleFillSymbolLayerV2,
-                       QgsVectorFieldSymbolLayer,
-                       QgsMarkerSymbolLayerV2,
-                       QgsFontMarkerSymbolLayerV2,
-                       QgsCentroidFillSymbolLayerV2,
-                       QgsPointPatternFillSymbolLayer,
-                       QgsSVGFillSymbolLayer,
-                       QgsLinePatternFillSymbolLayer,
-                       QgsMarkerLineSymbolLayerV2,
+from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsEllipseSymbolLayerV2,
-                       QgsSvgMarkerSymbolLayerV2,
-                       QgsCentroidFillSymbolLayerV2,
+                       QgsFontMarkerSymbolLayerV2,
+                       QgsLineDecorationSymbolLayerV2,
                        QgsLinePatternFillSymbolLayer,
-                       QgsCentroidFillSymbolLayerV2,
                        QgsMarkerLineSymbolLayerV2,
-                       QgsSimpleMarkerSymbolLayerV2,
+                       QgsMarkerSymbolLayerV2,
+                       QgsPointPatternFillSymbolLayer,
                        QgsSimpleFillSymbolLayerV2,
                        QgsSimpleLineSymbolLayerV2,
-                       QgsLineDecorationSymbolLayerV2
-                       )
+                       QgsSimpleMarkerSymbolLayerV2,
+                       QgsSVGFillSymbolLayer,
+                       QgsSvgMarkerSymbolLayerV2,
+                       QgsSymbolLayerV2,
+                       QgsVectorFieldSymbolLayer,
+                       QgsCentroidFillSymbolLayerV2,
+                       QgsEllipseSymbolLayerV2,
+                       QgsFillSymbolLayerV2,
+                       QgsFontMarkerSymbolLayerV2,
+                       QgsImageFillSymbolLayer,
+                       QgsLineDecorationSymbolLayerV2,
+                       QgsLinePatternFillSymbolLayer,
+                       QgsLineSymbolLayerV2,
+                       QgsMarkerLineSymbolLayerV2,
+                       QgsMarkerSymbolLayerV2,
+                       QgsPointPatternFillSymbolLayer,
+                       QgsSimpleFillSymbolLayerV2,
+                       QgsSimpleLineSymbolLayerV2,
+                       QgsSimpleMarkerSymbolLayerV2,
+                       QgsSVGFillSymbolLayer,
+                       QgsSvgMarkerSymbolLayerV2,
+                       QgsVectorFieldSymbolLayer,
+                      )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
@@ -78,11 +90,6 @@ class TestQgsSymbolLayerV2(TestCase):
         returns NULL
     '''
 
-    # Currently fails with:    
-    # 49:   File "/home/timlinux/dev/cpp/Quantum-GIS/tests/src/python/test_qgssymbollayerv2.py", line 94, in testBinding
-    # 49:     assert mExpectedType == mType, mMessage
-    # 49: AssertionError: Expected "<type 'PyQt4.QtCore.pyqtWrapperType'>" got "None"
-    @expectedFailure
     def testBinding(self):
         '''Test python bindings existance.'''
         mType = type(QgsSymbolLayerV2)
