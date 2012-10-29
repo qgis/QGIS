@@ -40,10 +40,6 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
         self.fontConfig()
         
         self.lineEdit.setReadOnly(True)
-        self.tabWidget.setTabText(0, QCoreApplication.translate("PythonConsole", "General"))
-        self.tabWidget.setTabIcon(0, QIcon(":/images/themes/default/propertyicons/general.png"))
-        self.tabWidget.setTabText(1, QCoreApplication.translate("PythonConsole", "About"))
-        self.tabWidget.setTabIcon(1, QIcon(":/images/console/iconAboutConsole.png"))
         
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))

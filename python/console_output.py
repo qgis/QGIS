@@ -108,6 +108,12 @@ class EditorOutput(QsciScintilla):
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)  
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         
+        self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
+        self.runShortcut.activated.connect(self.enteredSelected)
+        # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
+        self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self)
+        self.copyShortcut.activated.connect(self.copy)
+    
     def refreshLexerProperties(self):
         self.setLexers()
         
@@ -143,18 +149,16 @@ class EditorOutput(QsciScintilla):
         
     def contextMenuEvent(self, e):   
         menu = QMenu(self)
-        runAction = menu.addAction("Enter Selected")
-        copyAction = menu.addAction("Copy  CTRL+C")
+        iconRun = QIcon(":/images/console/iconRunConsole.png")
+        runAction = menu.addAction(iconRun, "Enter Selected", self.enteredSelected, QKeySequence(Qt.CTRL + Qt.Key_E))
+        menu.addSeparator()
+        copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
         runAction.setEnabled(False)
+        copyAction.setEnabled(False)
         if self.hasSelectedText():
             runAction.setEnabled(True)
+            copyAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        if action == runAction:
-            cmd = self.selectedText()
-            self.edit.insertFromDropPaste(cmd)
-            self.edit.entered()
-        if action == copyAction:
-            self.copy()
             
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
@@ -165,3 +169,8 @@ class EditorOutput(QsciScintilla):
         else:
             self.emit(SIGNAL("keyboard_interrupt()"))
 
+    def enteredSelected(self):
+        cmd = self.selectedText()
+        self.edit.insertFromDropPaste(cmd)
+        self.edit.entered()
+        

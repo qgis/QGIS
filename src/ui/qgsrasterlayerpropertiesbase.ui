@@ -72,7 +72,7 @@
    <item row="0" column="0" colspan="4">
     <widget class="QTabWidget" name="tabBar">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -252,69 +252,6 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QGroupBox" name="gboxNoDataValue">
-           <property name="title">
-            <string>No data value</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <item row="0" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <property name="leftMargin">
-               <number>1</number>
-              </property>
-              <item>
-               <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
-                <property name="toolTip">
-                 <string>Use original source no data value.</string>
-                </property>
-                <property name="text">
-                 <string>No data value:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="lblSrcNoDataValue">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Original data source no data value, if exists.</string>
-                </property>
-                <property name="text">
-                 <string>&lt;src no data value&gt;</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="1" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <widget class="QLabel" name="lblUserNoDataValueLabel">
-                <property name="toolTip">
-                 <string>Additional user defined no data value.</string>
-                </property>
-                <property name="text">
-                 <string>Additional no data value</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="leNoDataValue">
-                <property name="toolTip">
-                 <string>Additional user defined no data value.</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
           <widget class="QGroupBox" name="groupBox_4">
            <property name="title">
             <string>Global transparency</string>
@@ -391,6 +328,69 @@
                <string>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</string>
               </property>
              </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="gboxNoDataValue">
+           <property name="title">
+            <string>No data value</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="leftMargin">
+               <number>1</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
+                <property name="toolTip">
+                 <string>Use original source no data value.</string>
+                </property>
+                <property name="text">
+                 <string>No data value:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblSrcNoDataValue">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Original data source no data value, if exists.</string>
+                </property>
+                <property name="text">
+                 <string>&lt;src no data value&gt;</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="lblUserNoDataValueLabel">
+                <property name="toolTip">
+                 <string>Additional user defined no data value.</string>
+                </property>
+                <property name="text">
+                 <string>Additional no data value</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="leNoDataValue">
+                <property name="toolTip">
+                 <string>Additional user defined no data value.</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>

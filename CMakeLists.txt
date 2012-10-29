@@ -388,12 +388,9 @@ ELSE (WIN32)
     SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
-    # path for framework references
-    IF (ENABLE_TESTS)
-      SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-    ELSE (ENABLE_TESTS)
-      SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
-    ENDIF (ENABLE_TESTS)
+    # path for framework references when running from build directory
+    # changed later to reference in-app resources upon install
+    SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
     IF (WITH_GLOBE)
         SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
     ENDIF (WITH_GLOBE)
@@ -479,16 +476,6 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
 FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/path.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
-
-# symlink extra provider plugin frameworks for Mac unit tests
-IF (APPLE AND ENABLE_TESTS)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgisgrass.framework"
-    "${CMAKE_BINARY_DIR}/output/lib/qgisgrass.framework")
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgissqlanyconnection.framework"
-    "${CMAKE_BINARY_DIR}/output/lib/qgissqlanyconnection.framework")
-ENDIF (APPLE AND ENABLE_TESTS)
 
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
@@ -625,11 +612,12 @@ IF (APPLE)
   # must be last for install, so install_name_tool can do its work
   ADD_SUBDIRECTORY(mac)
 
-  # make hard link to embedded app bundle binary (symlink won't work)
-  # allows QGIS to be run directly from build directory
-  ADD_CUSTOM_TARGET(mac_hardlink ALL
-    COMMAND /bin/ln -f QGIS.app/Contents/MacOS/QGIS QGIS
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/output/bin"
+  # allow QGIS to be run directly from build directory and to run unit tests
+  ADD_CUSTOM_TARGET(mac_run_from_build ALL
+    # make symlinks to extra provider-plugin
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgissqlanyconnection.framework lib/
+    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
     DEPENDS QGIS
   )
 ENDIF (APPLE)
