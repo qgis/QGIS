@@ -1723,6 +1723,8 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
   if ( !keywordListElem.isNull() )
   {
+    bool siaFormat = featureInfoFormatSIA2045();
+
     QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
     QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
     for ( int i = 0; i < keywordList.size(); ++i )
@@ -1730,6 +1732,10 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
       QDomElement keywordElem = doc.createElement( "Keyword" );
       QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
       keywordElem.appendChild( keywordText );
+      if ( siaFormat )
+      {
+        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
       wmsKeywordElem.appendChild( keywordElem );
     }
 
