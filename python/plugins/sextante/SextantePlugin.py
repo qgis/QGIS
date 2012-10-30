@@ -42,7 +42,7 @@ from sextante.gui.ResultsDialog import ResultsDialog
 
 from sextante.modeler.ModelerDialog import ModelerDialog
 
-import resources_rc
+import sextante.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -58,7 +58,8 @@ class SextantePlugin:
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
-        self.toolbox.setVisible(False)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
+        self.toolbox.hide()
         Sextante.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow())
@@ -119,7 +120,10 @@ class SextantePlugin:
                 pass
 
     def openToolbox(self):
-        self.toolbox.setVisible(True)
+        if self.toolbox.isVisible():
+            self.toolbox.hide()
+        else:
+            self.toolbox.show()
 
     def openModeler(self):
         dlg = ModelerDialog()

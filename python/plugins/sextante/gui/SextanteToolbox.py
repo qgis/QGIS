@@ -40,17 +40,32 @@ from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
+from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
+
+import sextante.resources_rc
+
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-
-class SextanteToolbox(QDockWidget):
+class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
     def __init__(self, iface):
-        QDialog.__init__(self)
+        QDockWidget.__init__(self, None)
+        self.setupUi(self)
+        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+
         self.iface=iface
-        self.setupUi()
+
+        self.btnClear.setIcon(QIcon(":/sextante/images/clear.png"))
+
+        self.externalAppsButton.clicked.connect(self.configureProviders)
+        self.searchBox.textChanged.connect(self.fillTree)
+        self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
+        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
+        self.btnClear.clicked.connect(self.clearFilter)
+
+        self.fillTree()
 
     def algsListHasChanged(self):
         self.fillTree()
@@ -58,33 +73,8 @@ class SextanteToolbox(QDockWidget):
     def updateTree(self):
         Sextante.updateAlgsList()
 
-    def setupUi(self):
-        self.setObjectName("SEXTANTE_Toolbox")
-        self.setFloating(False)
-        self.resize(400, 500)
-        self.setWindowTitle(self.tr("SEXTANTE Toolbox"))
-        self.contents = QWidget()
-        self.verticalLayout = QVBoxLayout(self.contents)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.externalAppsButton = QPushButton()
-        self.externalAppsButton.setText(self.tr("Click here to configure\nadditional algorithm providers"))
-        QObject.connect(self.externalAppsButton, SIGNAL("clicked()"), self.configureProviders)
-        self.verticalLayout.addWidget(self.externalAppsButton)
-        self.searchBox = QLineEdit(self.contents)
-        self.searchBox.textChanged.connect(self.fillTree)
-        self.verticalLayout.addWidget(self.searchBox)
-        self.algorithmTree = QTreeWidget(self.contents)
-        self.algorithmTree.setHeaderHidden(True)
-        self.algorithmTree.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.fillTree()
-        self.connect(self.algorithmTree, SIGNAL('customContextMenuRequested(QPoint)'),
-                     self.showPopupMenu)
-        self.verticalLayout.addWidget(self.algorithmTree)
-        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
-        self.setWidget(self.contents)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self)
-        QMetaObject.connectSlotsByName(self)
+    def clearFilter(self):
+        self.searchBox.clear()
 
     def configureProviders(self):
         webbrowser.open("http://docs.qgis.org/html/en/user_manual/sextante/3rdParty.html")
