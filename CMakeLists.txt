@@ -613,12 +613,14 @@ IF (APPLE)
   ADD_SUBDIRECTORY(mac)
 
   # allow QGIS to be run directly from build directory and to run unit tests
-  ADD_CUSTOM_TARGET(mac_run_from_build ALL
-    # make symlinks to extra provider-plugin
+  EXECUTE_PROCESS(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
+  EXECUTE_PROCESS(
     COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
+    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
+  )
+  EXECUTE_PROCESS(
     COMMAND /bin/ln -fs ../../Plugins/qgis/qgissqlanyconnection.framework lib/
     WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
-    DEPENDS QGIS
   )
 ENDIF (APPLE)
 
