@@ -23,38 +23,22 @@ __copyright__ = '(C) 2012, Salvatore Larosa'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt4.QtWebKit import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from ui_console_help import Ui_Help
 from qgis.core import QgsApplication
 import os
 
-class HelpDialog(QtGui.QDialog):
-
-    def __init__(self):
-        QtGui.QDialog.__init__(self)
+class HelpDialog(QDialog, Ui_Help):
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.setModal(True)
-        self.setupUi()
+        self.setupUi(self)
 
-    def setupUi(self):
-        self.setMaximumSize(500, 300)
-        self.webView = QtWebKit.QWebView()
         self.setWindowTitle(QCoreApplication.translate("PythonConsole","Help Python Console"))
-        self.verticalLayout= QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.addWidget(self.webView)
-        self.closeButton = QtGui.QPushButton()
-        self.closeButton.setText("Close")
-        self.closeButton.setMaximumWidth(150)
-        self.horizontalLayout= QtGui.QHBoxLayout()
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.addStretch(1000)
-        self.horizontalLayout.addWidget(self.closeButton)
-        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.setLayout(self.verticalLayout)
+        self.setMaximumSize(500, 300)
+        
         qgisDataDir = QgsApplication.pkgDataPath()
         listFile = os.listdir(qgisDataDir + "/python/console_help/i18n")
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
@@ -70,6 +54,3 @@ class HelpDialog(QtGui.QDialog):
 
         url = QtCore.QUrl(filename)
         self.webView.load(url)
-
-    def closeWindow(self):
-        self.close()
