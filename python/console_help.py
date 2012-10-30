@@ -52,5 +52,5 @@ class HelpDialog(QDialog, Ui_Help):
                                                 lang=" + locale \
                                                 + "&pkgDir=" + qgisDataDir
 
-        url = QtCore.QUrl(filename)
+        url = QUrl(filename)
         self.webView.load(url)
