@@ -28,7 +28,6 @@ from PyQt4.Qsci import (QsciScintilla,
 
 import sys
 import os
-import traceback
 import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
