@@ -121,8 +121,8 @@ class EditorOutput(QsciScintilla):
         self.lexer = QsciLexerPython()
         
         settings = QSettings()
-        loadFont = settings.value("pythonConsole/fontfamilytext").toString()
-        fontSize = settings.value("pythonConsole/fontsize").toInt()[0]
+        loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
+        fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
