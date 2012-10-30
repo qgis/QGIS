@@ -42,8 +42,6 @@ from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
 from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
 
-import sextante.resources_rc
-
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:
@@ -57,13 +55,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 
         self.iface=iface
 
-        self.btnClear.setIcon(QIcon(":/sextante/images/clear.png"))
-
         self.externalAppsButton.clicked.connect(self.configureProviders)
         self.searchBox.textChanged.connect(self.fillTree)
         self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
-        self.btnClear.clicked.connect(self.clearFilter)
 
         self.fillTree()
 
@@ -72,9 +67,6 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 
     def updateTree(self):
         Sextante.updateAlgsList()
-
-    def clearFilter(self):
-        self.searchBox.clear()
 
     def configureProviders(self):
         webbrowser.open("http://docs.qgis.org/html/en/user_manual/sextante/3rdParty.html")
