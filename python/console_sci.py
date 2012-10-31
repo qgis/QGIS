@@ -393,6 +393,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 # fix the cursor position
                 self.insert( cmd[:3-newindex] + " " )
                 self.setCursorPosition(line, 4)
+            self.recolor()
 
         elif e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
                 e.key() == Qt.Key_V:
