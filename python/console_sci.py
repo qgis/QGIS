@@ -50,7 +50,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
         self.buffer = []
         
-        #self.insertInitText()
+        self.insertInitText()
         self.displayPrompt(False)
         
         for line in _init_commands:
@@ -94,10 +94,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         self.SendScintilla(QsciScintilla.SCI_SETVSCROLLBAR, 0)
 
-    
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(32)
+        self.setMinimumHeight(50)
         
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -553,6 +552,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def write_stdout(self, txt):
         if len(txt) > 0:
-            getCmdString = self.text()
+            getCmdString = self.text(2)
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')

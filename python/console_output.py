@@ -94,6 +94,7 @@ class EditorOutput(QsciScintilla):
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
 
+        self.setMinimumHeight(80)
 
         # Folding
         #self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
