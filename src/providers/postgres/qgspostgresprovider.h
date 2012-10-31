@@ -413,6 +413,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     enum { pktUnknown, pktInt, pktTid, pktOid, pktFidMap } mPrimaryKeyType;
 
     /**
+     * Data type for the spatial column
+     */
+    enum { sctUnknown, sctGeometry, sctGeography, sctTopoGeometry } mSpatialColType;
+
+    /**
      * List of primary key attributes for fetching features.
      */
     QList<int> mPrimaryKeyAttrs;

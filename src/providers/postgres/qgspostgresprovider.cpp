@@ -39,11 +39,21 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 int QgsPostgresProvider::sProviderIds = 0;
 const int QgsPostgresProvider::sFeatureQueueSize = 2000;
 
+namespace {
+  char *spatialColTypes[] = {
+    "UNKNOWN",
+    "Geometry",
+    "Geography",
+    "TopoGeometry"
+  };
+}
+
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
     , mFetching( false )
     , mValid( false )
     , mPrimaryKeyType( pktUnknown )
+    , mSpatialColType( sctUnknown )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
     , mFeatureQueueSize( sFeatureQueueSize )
@@ -117,7 +127,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  if ( !getGeometryDetails() ) // gets srid and geometry type
+  if ( !getGeometryDetails() ) // gets srid, geometry and data type
   {
     // the table is not a geometry table
     QgsMessageLog::logMessage( tr( "invalid PostgreSQL layer" ), tr( "PostGIS" ) );
@@ -2681,6 +2691,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   QString schemaName = mSchemaName;
   QString tableName = mTableName;
   QString geomCol = mGeometryColumn;
+  QString geomColType;
 
   if ( mIsQuery )
   {
@@ -2705,11 +2716,16 @@ bool QgsPostgresProvider::getGeometryDetails()
           schemaName = result.PQgetvalue( 0, 0 );
           tableName = result.PQgetvalue( 0, 1 );
 
-          sql = QString( "SELECT attname FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" ).arg( tableoid ).arg( column );
+          sql = QString( "SELECT a.attname, t.typname FROM pg_attribute a, pg_type t WHERE a.attrelid=%1 AND a.attnum=%2 AND a.atttypid = t.oid" ).arg( tableoid ).arg( column );
           result = mConnectionRO->PQexec( sql );
           if ( PGRES_TUPLES_OK == result.PQresultStatus() && 1 == result.PQntuples() )
           {
             geomCol = result.PQgetvalue( 0, 0 );
+            geomColType = result.PQgetvalue( 0, 1 );
+            if ( geomColType == "geometry" ) mSpatialColType = sctGeometry;
+            else if ( geomColType == "geography" ) mSpatialColType = sctGeography;
+            else if ( geomColType == "topogeometry" ) mSpatialColType = sctTopoGeometry;
+            // else it's still unknown...
           }
           else
           {
@@ -2750,6 +2766,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       detectedType = result.PQgetvalue( 0, 0 );
       detectedSrid = result.PQgetvalue( 0, 1 );
+      mSpatialColType = sctGeometry;
     }
     else
     {
@@ -2772,7 +2789,65 @@ bool QgsPostgresProvider::getGeometryDetails()
       {
         detectedType = result.PQgetvalue( 0, 0 );
         detectedSrid = result.PQgetvalue( 0, 1 );
-        mIsGeography = true;
+        mIsGeography = true; // TODO: drop, use mSpatialColType instead
+        mSpatialColType = sctGeography;
+      }
+      else
+      {
+        mConnectionRO->PQexecNR( "COMMIT" );
+      }
+    }
+
+    if ( detectedType.isEmpty() && mConnectionRO->hasTopology() )
+    {
+      // check topology.layer
+      sql = QString( "SELECT CASE "
+                   "WHEN l.feature_type = 1 THEN 'MULTIPOINT' "
+                   "WHEN l.feature_type = 2 THEN 'MULTILINESTRING' "
+                   "WHEN l.feature_type = 3 THEN 'MULTIPOLYGON' "
+                   "WHEN l.feature_type = 4 THEN 'GEOMETRYCOLLECTION' "
+                   "END AS type, t.srid FROM topology.layer l, topology.topology t "
+                   "WHERE l.topology_id = t.id AND l.schema_name=%3 "
+                   "AND l.table_name=%1 AND l.feature_column=%2" )
+            .arg( quotedValue( tableName ) )
+            .arg( quotedValue( geomCol ) )
+            .arg( quotedValue( schemaName ) );
+
+      QgsDebugMsg( QString( "Getting TopoGeometry column: %1" ).arg( sql ) );
+      result = mConnectionRO->PQexec( sql, false );
+      QgsDebugMsg( QString( "TopoGeometry column query returned %1" ).arg( result.PQntuples() ) );
+
+      if ( result.PQntuples() == 1 )
+      {
+        detectedType = result.PQgetvalue( 0, 0 );
+        detectedSrid = result.PQgetvalue( 0, 1 );
+        mSpatialColType = sctTopoGeometry;
+      }
+      else
+      {
+        mConnectionRO->PQexecNR( "COMMIT" );
+      }
+    }
+
+    if ( mSpatialColType == sctUnknown )
+    {
+      sql = QString( "SELECT t.typname FROM "
+              "pg_attribute a, pg_class c, pg_namespace n, pg_type t "
+              "WHERE a.attrelid=c.oid AND c.relnamespace=n.oid "
+              "AND a.atttypid=t.oid "
+              "AND n.nspname=%3 AND c.relname=%1 AND a.attname=%2" )
+            .arg( quotedValue( tableName ) )
+            .arg( quotedValue( geomCol ) )
+            .arg( quotedValue( schemaName ) );
+      QgsDebugMsg( QString( "Getting column datatype: %1" ).arg( sql ) );
+      result = mConnectionRO->PQexec( sql, false );
+      QgsDebugMsg( QString( "Column datatype query returned %1" ).arg( result.PQntuples() ) );
+      if ( result.PQntuples() == 1 )
+      {
+        geomColType = result.PQgetvalue( 0, 0 );
+        if ( geomColType == "geometry" ) mSpatialColType = sctGeometry;
+        else if ( geomColType == "geography" ) mSpatialColType = sctGeography;
+        else if ( geomColType == "topogeometry" ) mSpatialColType = sctTopoGeometry;
       }
       else
       {
@@ -2888,6 +2963,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType()] ) );
   QgsDebugMsg( QString( "Geometry is geography %1" ).arg( mIsGeography ) );
+  QgsDebugMsg( QString( "Spatial column type is %1" ).arg( spatialColTypes[mSpatialColType] ) );
 
   return mValid;
 }
