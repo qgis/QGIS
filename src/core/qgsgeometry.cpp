@@ -47,6 +47,30 @@ email                : morb at ozemail dot com dot au
     return r; \
   }
 
+#define ENSURE_GEOS(o,r) \
+  do { \
+    if ( o->mDirtyGeos ) \
+    { \
+      if ( !o->exportWkbToGeos() || !o->mGeos ) \
+      { \
+        QgsDebugMsg( "could not export to GEOS geometry" ); \
+        return r; \
+      } \
+    } \
+  } while(0)
+
+#define ENSURE_WKB(o,r) \
+  do { \
+    if ( o->mDirtyWkb ) \
+    { \
+      if ( !o->exportGeosToWkb() || !o->mGeometry ) \
+      { \
+        QgsDebugMsg( "could not export to WKB geometry" ); \
+        return r; \
+      } \
+    } \
+  } while(0)
+
 class GEOSException
 {
   public:
@@ -1194,34 +1218,21 @@ void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
 
 unsigned char * QgsGeometry::asWkb()
 {
-  if ( mDirtyWkb )
-  {
-    // convert from GEOS
-    exportGeosToWkb();
-  }
-
+  //make sure this wkb geometry is up to date
+  ENSURE_GEOS( this, 0 );
   return mGeometry;
 }
 
 size_t QgsGeometry::wkbSize()
 {
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
-
+  //make sure this wkb geometry is up to date
+  ENSURE_GEOS( this, (size_t)0 );
   return mGeometrySize;
 }
 
 GEOSGeometry* QgsGeometry::asGeos()
 {
-  if ( mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-    {
-      return 0;
-    }
-  }
+  ENSURE_GEOS( this, 0 );
   return mGeos;
 }
 
@@ -1244,11 +1255,7 @@ QGis::WkbType QgsGeometry::wkbType()
 
 QGis::GeometryType QgsGeometry::type()
 {
-  if ( mDirtyWkb )
-  {
-    // convert from GEOS
-    exportGeosToWkb();
-  }
+  ENSURE_GEOS( this, QGis::UnknownGeometry );
 
   QGis::WkbType type = wkbType();
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D ||
@@ -1266,11 +1273,7 @@ QGis::GeometryType QgsGeometry::type()
 
 bool QgsGeometry::isMultipart()
 {
-  if ( mDirtyWkb )
-  {
-    // convert from GEOS
-    exportGeosToWkb();
-  }
+  ENSURE_GEOS( this, false );
 
   QGis::WkbType type = wkbType();
   if ( type == QGis::WKBMultiPoint ||
@@ -1309,16 +1312,8 @@ void QgsGeometry::fromGeos( GEOSGeometry* geos )
 QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist )
 {
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QgsPoint( 0, 0 );
-  }
+  ENSURE_WKB( this, QgsPoint( 0, 0 ) );
 
   int vertexnr = -1;
   int vertexcounter = 0;
@@ -1587,19 +1582,11 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
 void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex )
 {
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
   beforeVertex = -1;
   afterVertex = -1;
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return;
-  }
+  ENSURE_WKB( this, );
 
   int vertexcounter = 0;
 
@@ -1870,16 +1857,8 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
   int vertexnr = atVertex;
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return false;
-  }
+  ENSURE_WKB( this, false );
 
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -2120,16 +2099,8 @@ bool QgsGeometry::deleteVertex( int atVertex )
   bool success = false;
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return false;
-  }
+  ENSURE_WKB( this, false );
 
   //create a new geometry buffer for the modified geometry
   unsigned char* newbuffer;
@@ -2449,16 +2420,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   bool success = false;
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return false;
-  }
+  ENSURE_WKB( this, false );
 
   //create a new geometry buffer for the modified geometry
   unsigned char* newbuffer;
@@ -2752,16 +2715,7 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
 {
   double x, y;
 
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
-
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QgsPoint( 0, 0 );
-  }
+  ENSURE_WKB( this, QgsPoint( 0, 0 ) );
 
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -2977,9 +2931,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
     // Initialise some stuff
     int closestVertexIndex = 0;
 
-    // set up the GEOS geometry
-    if ( !exportWkbToGeos() )
-      return -1;
+    ENSURE_GEOS( this, -1 );
 
     const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
     if ( !g )
@@ -3039,16 +2991,8 @@ double QgsGeometry::closestSegmentWithContext(
   double sqrDist = std::numeric_limits<double>::max();
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb ) //convert latest geos to mGeometry
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return -1;
-  }
+  ENSURE_WKB( this, -1 );
 
   memcpy( &wkbType, ( mGeometry + 1 ), sizeof( int ) );
 
@@ -3275,10 +3219,7 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   if ( ring.first() != ring.last() )
     return 2;
 
-  //create geos geometry from wkb if not already there
-  if ( !mGeos || mDirtyGeos )
-    if ( !exportWkbToGeos() )
-      return 6;
+  ENSURE_GEOS( this, 6 );
 
   int type = GEOSGeomTypeId( mGeos );
 
@@ -3504,15 +3445,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
     return 1;
   }
 
-  //create geos geometry from wkb if not already there
-  if ( !mGeos || mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-    {
-      QgsDebugMsg( "could not export to GEOS geometry" );
-      return 4;
-    }
-  }
+  ENSURE_GEOS( this, 4 );
 
   int geosType = GEOSGeomTypeId( mGeos );
   GEOSGeometry *newPart = 0;
@@ -3615,16 +3548,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
 
 int QgsGeometry::translate( double dx, double dy )
 {
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
-
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return 1;
-  }
+  ENSURE_WKB( this, 1 );
 
   QGis::WkbType wkbType;
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
@@ -3741,16 +3665,7 @@ int QgsGeometry::translate( double dx, double dy )
 
 int QgsGeometry::transform( const QgsCoordinateTransform& ct )
 {
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
-
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return 1;
-  }
+  ENSURE_WKB( this, 1 );
 
   QGis::WkbType wkbType;
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
@@ -3876,16 +3791,9 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   }
 
   //make sure, mGeos and mWkb are there and up-to-date
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
-
-  if ( !mGeos || mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-      return 1;
-  }
+  // XXX why updating the WKB geometry? it seems not used...
+  //exportGeosToWkb();
+  ENSURE_GEOS( this, 1 );
 
   if ( !GEOSisValid( mGeos ) )
   {
@@ -3954,11 +3862,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 
   GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
 
-  //make sure this geos geometry is up-to-date
-  if ( !mGeos || mDirtyGeos )
-  {
-    exportWkbToGeos();
-  }
+  ENSURE_GEOS( this, 1 );
 
   //single or multi?
   int numGeoms = GEOSGetNumGeometries( mGeos );
@@ -4066,16 +3970,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 
 int QgsGeometry::makeDifference( QgsGeometry* other )
 {
-  //make sure geos geometry is up to date
-  if ( !mGeos || mDirtyGeos )
-  {
-    exportWkbToGeos();
-  }
-
-  if ( !mGeos )
-  {
-    return 1;
-  }
+  ENSURE_GEOS( this, 1 );
 
   if ( !GEOSisValid( mGeos ) )
   {
@@ -4087,16 +3982,7 @@ int QgsGeometry::makeDifference( QgsGeometry* other )
     return 3;
   }
 
-  //convert other geometry to geos
-  if ( !other->mGeos || other->mDirtyGeos )
-  {
-    other->exportWkbToGeos();
-  }
-
-  if ( !other->mGeos )
-  {
-    return 4;
-  }
+  ENSURE_GEOS( other, 4 );
 
   //make geometry::difference
   try
@@ -4151,16 +4037,9 @@ QgsRectangle QgsGeometry::boundingBox()
   bool hasZValue = false;
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QgsRectangle( 0, 0, 0, 0 );
-  }
+  ENSURE_WKB( this, QgsRectangle( 0, 0, 0, 0 ) );
+
   // consider endian when fetching feature type
   //wkbType = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4]; //MH: Does not work for 25D geometries
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
@@ -4422,14 +4301,8 @@ bool QgsGeometry::intersects( QgsGeometry* geometry )
   try // geos might throw exception on error
   {
     // ensure that both geometries have geos geometry
-    exportWkbToGeos();
-    geometry->exportWkbToGeos();
-
-    if ( !mGeos || !geometry->mGeos )
-    {
-      QgsDebugMsg( "GEOS geometry not available!" );
-      return false;
-    }
+    ENSURE_GEOS( this, false );
+    ENSURE_GEOS( geometry, false );
 
     return GEOSIntersects( mGeos, geometry->mGeos );
   }
@@ -4439,13 +4312,7 @@ bool QgsGeometry::intersects( QgsGeometry* geometry )
 
 bool QgsGeometry::contains( QgsPoint* p )
 {
-  exportWkbToGeos();
-
-  if ( !mGeos )
-  {
-    QgsDebugMsg( "GEOS geometry not available!" );
-    return false;
-  }
+  ENSURE_GEOS( this, false );
 
   GEOSGeometry *geosPoint = 0;
 
@@ -4529,16 +4396,8 @@ QString QgsGeometry::exportToWkt()
   QgsDebugMsg( "entered." );
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QString::null;
-  }
+  ENSURE_WKB( this, QString::null );
 
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -4809,16 +4668,8 @@ QString QgsGeometry::exportToGeoJSON()
   QgsDebugMsg( "entered." );
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QString::null;
-  }
+  ENSURE_WKB( this, QString::null );
 
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -5099,16 +4950,8 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
   QgsDebugMsg( "entered." );
 
   // TODO: implement with GEOS
-  if ( mDirtyWkb )
-  {
-    exportGeosToWkb();
-  }
 
-  if ( !mGeometry )
-  {
-    QgsDebugMsg( "WKB geometry not available!" );
-    return QDomElement();
-  }
+  ENSURE_WKB( this, QDomElement() );
 
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -6173,11 +6016,7 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
     return 2;
   }
 
-  if ( !mGeos || mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-      return 5;
-  }
+  ENSURE_GEOS( this, 5 );
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects( splitLine, mGeos ) )
@@ -6234,11 +6073,7 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
     return 2;
   }
 
-  if ( !mGeos || mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-      return 5;
-  }
+  ENSURE_GEOS( this, 5 );
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects( splitLine, mGeos ) )
@@ -6939,11 +6774,7 @@ int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
 
 int QgsGeometry::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult )
 {
-  if ( !mGeos || mDirtyGeos )
-  {
-    if ( !exportWkbToGeos() )
-      return 1;
-  }
+  ENSURE_GEOS( this, 1 );
 
   //convert mGeos to geometry collection
   int type = GEOSGeomTypeId( mGeos );
@@ -7198,10 +7029,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon()
 
 double QgsGeometry::area()
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
+  ENSURE_GEOS( this, -1.0 );
 
   double area;
 
@@ -7217,10 +7045,7 @@ double QgsGeometry::area()
 
 double QgsGeometry::length()
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
+  ENSURE_GEOS( this, -1.0 );
 
   double length;
 
@@ -7235,18 +7060,9 @@ double QgsGeometry::length()
 }
 double QgsGeometry::distance( QgsGeometry& geom )
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-
-  if ( !geom.mGeos )
-  {
-    geom.exportWkbToGeos();
-  }
-
-  if ( !mGeos || !geom.mGeos )
-    return -1.0;
+  // ensure that both geometries have geos geometry
+  ENSURE_GEOS( this, -1.0 );
+  ENSURE_GEOS( (&geom), -1.0 );
 
   double dist = -1.0;
 
@@ -7262,14 +7078,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
 
 QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !mGeos )
-  {
-    return 0;
-  }
+  ENSURE_GEOS( this, 0 );
 
   try
   {
@@ -7280,14 +7089,8 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !mGeos )
-  {
-    return 0;
-  }
+  ENSURE_GEOS( this, 0 );
+
   try
   {
     return fromGeosGeom( GEOSSimplify( mGeos, tolerance ) );
@@ -7297,14 +7100,8 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
 
 QgsGeometry* QgsGeometry::centroid()
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !mGeos )
-  {
-    return 0;
-  }
+  ENSURE_GEOS( this, 0 );
+
   try
   {
     return fromGeosGeom( GEOSGetCentroid( mGeos ) );
@@ -7314,14 +7111,7 @@ QgsGeometry* QgsGeometry::centroid()
 
 QgsGeometry* QgsGeometry::convexHull()
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !mGeos )
-  {
-    return 0;
-  }
+  ENSURE_GEOS( this, 0 );
 
   try
   {
@@ -7334,14 +7124,7 @@ QgsGeometry* QgsGeometry::interpolate( double distance )
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=2)))
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !mGeos )
-  {
-    return 0;
-  }
+  ENSURE_GEOS( this, 0 );
 
   try
   {
@@ -7359,18 +7142,10 @@ QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !geometry->mGeos )
-  {
-    geometry->exportWkbToGeos();
-  }
-  if ( !mGeos || !geometry->mGeos )
-  {
-    return 0;
-  }
+
+  // ensure that both geometries have geos geometry
+  ENSURE_GEOS( this, 0 );
+  ENSURE_GEOS( geometry, 0 );
 
   try
   {
@@ -7385,18 +7160,10 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !geometry->mGeos )
-  {
-    geometry->exportWkbToGeos();
-  }
-  if ( !mGeos || !geometry->mGeos )
-  {
-    return 0;
-  }
+
+  // ensure that both geometries have geos geometry
+  ENSURE_GEOS( this, 0 );
+  ENSURE_GEOS( geometry, 0 );
 
   try
   {
@@ -7421,18 +7188,10 @@ QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !geometry->mGeos )
-  {
-    geometry->exportWkbToGeos();
-  }
-  if ( !mGeos || !geometry->mGeos )
-  {
-    return 0;
-  }
+
+  // ensure that both geometries have geos geometry
+  ENSURE_GEOS( this, 0 );
+  ENSURE_GEOS( geometry, 0 );
 
   try
   {
@@ -7447,18 +7206,10 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-  }
-  if ( !geometry->mGeos )
-  {
-    geometry->exportWkbToGeos();
-  }
-  if ( !mGeos || !geometry->mGeos )
-  {
-    return 0;
-  }
+
+  // ensure that both geometries have geos geometry
+  ENSURE_GEOS( this, 0 );
+  ENSURE_GEOS( geometry, 0 );
 
   try
   {
@@ -7469,12 +7220,7 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
 
 QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 {
-  if ( !mGeos )
-  {
-    exportWkbToGeos();
-    if ( !mGeos )
-      return QList<QgsGeometry*>();
-  }
+  ENSURE_GEOS( this, QList<QgsGeometry*>() );
 
   int type = GEOSGeomTypeId( mGeos );
   QgsDebugMsg( "geom type: " + QString::number( type ) );
