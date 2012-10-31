@@ -466,10 +466,12 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   mRenderer->stopRender( renderContext );
 
+#ifdef QGISDEBUG
   foreach ( QgsRuleBasedRendererV2::Rule *rule, countMap.keys() )
   {
     QgsDebugMsg( QString( "rule: %1 count %2" ).arg( rule->label() ).arg( countMap[rule].count ) );
   }
+#endif
 
   mModel->setFeatureCounts( countMap );
 }
@@ -940,7 +942,7 @@ void QgsRuleBasedRendererV2Model::updateRule( const QModelIndex& idx )
   emit dataChanged( index( 0, 0, idx ),
                     index( rowCount( idx ) - 1, columnCount( idx ) - 1, idx ) );
 
-  for ( int i; i < rowCount( idx ); i++ )
+  for ( int i = 0; i < rowCount( idx ); i++ )
   {
     updateRule( index( i, 0, idx ) );
   }
