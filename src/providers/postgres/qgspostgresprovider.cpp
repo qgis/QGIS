@@ -76,7 +76,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mSqlWhereClause = mUri.sql();
   mRequestedSrid = mUri.srid();
   mRequestedGeomType = mUri.wkbType();
-  mIsGeography = false;
 
   if ( mSchemaName.isEmpty() && mTableName.startsWith( "(" ) && mTableName.endsWith( ")" ) )
   {
@@ -264,7 +263,7 @@ bool QgsPostgresProvider::declareCursor(
       query += QString( "%1(%2(%3),'%4')" )
                .arg( mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
                .arg( mConnectionRO->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
-               .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
+               .arg( quotedIdentifier( mGeometryColumn, ( mSpatialColType == sctGeography ) ) )
                .arg( endianString() );
       delim = ",";
     }
@@ -532,7 +531,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
   if ( !rect.isEmpty() && !mGeometryColumn.isNull() )
   {
-    if ( mIsGeography )
+    if ( mSpatialColType == sctGeography )
     {
       rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
       if ( !rect.isFinite() )
@@ -565,7 +564,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       {
         whereClause += QString( " AND %1(%2,%3)" )
                        .arg( mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                       .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
+                       .arg( quotedIdentifier( mGeometryColumn, ( mSpatialColType == sctGeography ) ) )
                        .arg( qBox );
       }
     }
@@ -574,13 +573,13 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
     {
       whereClause += QString( " AND %1(%2)=%3" )
                      .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
-                     .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
+                     .arg( quotedIdentifier( mGeometryColumn, ( mSpatialColType == sctGeography ) ) )
                      .arg( mRequestedSrid );
     }
 
     if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
     {
-      whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mIsGeography ) );
+      whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, ( mSpatialColType == sctGeography ) ) );
     }
   }
 
@@ -2567,7 +2566,7 @@ QgsRectangle QgsPostgresProvider::extent()
   if ( mGeometryColumn.isNull() )
     return QgsRectangle();
 
-  if ( mIsGeography )
+  if ( ( mSpatialColType == sctGeography ) )
     return QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
 
   if ( mLayerExtent.isEmpty() )
@@ -2789,7 +2788,6 @@ bool QgsPostgresProvider::getGeometryDetails()
       {
         detectedType = result.PQgetvalue( 0, 0 );
         detectedSrid = result.PQgetvalue( 0, 1 );
-        mIsGeography = true; // TODO: drop, use mSpatialColType instead
         mSpatialColType = sctGeography;
       }
       else
@@ -2870,7 +2868,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       layerProperty.tableName = mQuery;
     }
     layerProperty.geometryColName = mGeometryColumn;
-    layerProperty.isGeography = mIsGeography;
+    layerProperty.isGeography = ( mSpatialColType == sctGeography );
 
     QString delim = "";
 
@@ -2962,7 +2960,6 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
 
   QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType()] ) );
-  QgsDebugMsg( QString( "Geometry is geography %1" ).arg( mIsGeography ) );
   QgsDebugMsg( QString( "Spatial column type is %1" ).arg( spatialColTypes[mSpatialColType] ) );
 
   return mValid;
