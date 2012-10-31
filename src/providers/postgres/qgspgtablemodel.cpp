@@ -27,7 +27,8 @@ QgsPgTableModel::QgsPgTableModel()
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
   headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry column" );
+  headerLabels << tr( "Geometry Type" );
+  headerLabels << tr( "Geometry Column" );
   headerLabels << tr( "SRID" );
   headerLabels << tr( "Primary key column" );
   headerLabels << tr( "Select at id" );
@@ -41,11 +42,12 @@ QgsPgTableModel::~QgsPgTableModel()
 
 void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
 {
-  QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
+  QgsDebugMsg( QString( "%1.%2.%3 type=%4 geomType=%5 srid=%6 pk=%7 sql=%8" )
                .arg( layerProperty.schemaName )
                .arg( layerProperty.tableName )
                .arg( layerProperty.geometryColName )
                .arg( layerProperty.type )
+               .arg( layerProperty.geometryColType )
                .arg( layerProperty.srid )
                .arg( layerProperty.pkCols.join( "," ) )
                .arg( layerProperty.sql ) );
@@ -85,6 +87,8 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
+  QStandardItem *geomTypeItem = new QStandardItem( QgsPostgresConn::displayStringForGeomType( layerProperty.geometryColType ) );
+
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
@@ -115,6 +119,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   childItemList << schemaNameItem;
   childItemList << tableItem;
   childItemList << typeItem;
+  childItemList << geomTypeItem;
   childItemList << geomItem;
   childItemList << sridItem;
   childItemList << pkItem;

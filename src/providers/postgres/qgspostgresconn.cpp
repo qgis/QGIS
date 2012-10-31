@@ -309,6 +309,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   for ( int i = 0; i < 3; i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
+    QgsPostgresGeometryColumnType columnType;
 
     if ( i == 0 )
     {
@@ -318,6 +319,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       typeName   = "upper(l.type)";
       sridName   = "l.srid";
       gtableName = "geometry_columns";
+      columnType = sctGeometry;
     }
     else if ( i == 1 )
     {
@@ -327,6 +329,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       typeName   = "upper(l.type)";
       sridName   = "l.srid";
       gtableName = "geography_columns";
+      columnType = sctGeography;
     }
     else if ( i == 2 )
     {
@@ -341,6 +344,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    "END AS type";
       sridName   = "(SELECT srid FROM topology.topology t WHERE l.topology_id=t.id)";
       gtableName = "topology.layer";
+      columnType = sctTopoGeometry;
     }
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
@@ -388,6 +392,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
+      layerProperty.geometryColType = columnType;
 
       if ( relkind == "v" )
       {
@@ -400,7 +405,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       }
       layerProperty.srid = srid;
       layerProperty.sql = "";
-      layerProperty.isGeography = i == 1;
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -418,46 +422,44 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   if ( !searchGeometryColumnsOnly )
   {
     // Now have a look for geometry columns that aren't in the geometry_columns table.
-    QString sql = "SELECT "
-                  "pg_class.relname"
-                  ",pg_namespace.nspname"
-                  ",pg_attribute.attname"
-                  ",pg_class.relkind"
-                  " FROM "
-                  "pg_attribute,pg_class,pg_namespace"
-                  " WHERE pg_namespace.oid=pg_class.relnamespace"
-                  " AND pg_attribute.attrelid = pg_class.oid"
-                  " AND ("
-                  " EXISTS (SELECT * FROM pg_type WHERE pg_type.oid=pg_attribute.atttypid AND pg_type.typname IN ('geometry','geography','topogeometry'))"
-                  " OR pg_attribute.atttypid IN (SELECT oid FROM pg_type a WHERE EXISTS (SELECT * FROM pg_type b WHERE a.typbasetype=b.oid AND b.typname IN ('geometry','geography','topogeometry')))"
-                  ")"
-                  " AND has_schema_privilege( pg_namespace.nspname, 'usage' )"
-                  " AND has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )";
+    QString sql = "SELECT"
+                  " c.relname"
+                  ",n.nspname"
+                  ",a.attname"
+                  ",c.relkind"
+                  ",CASE WHEN t.typname IN ('geometry','geography','topogeometry') THEN t.typname ELSE b.typname END AS coltype"
+                  " FROM pg_attribute a"
+                  " JOIN pg_class c ON c.oid=a.attrelid"
+                  " JOIN pg_namespace n ON n.oid=c.relnamespace"
+                  " JOIN pg_type t ON t.oid=a.atttypid"
+                  " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
+                  " WHERE c.relkind IN ('v','r')"
+                  " AND has_schema_privilege( n.nspname, 'usage' )"
+                  " AND has_table_privilege( '\"' || n.nspname || '\".\"' || c.relname || '\"', 'select' )"
+                  " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry'))";
 
     // user has select privilege
     if ( searchPublicOnly )
-      sql += " AND pg_namespace.nspname='public'";
+      sql += " AND n.nspname='public'";
 
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
     {
       if ( foundInTables & 1 )
       {
-        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
+        sql += " AND (n.nspname,c.relname,a.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geometry_column FROM geometry_columns)";
       }
 
       if ( foundInTables & 2 )
       {
-        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geography_column FROM geography_columns)";
+        sql += " AND (n.nspname,c.relname,a.attname) NOT IN (SELECT f_table_schema,f_table_name,f_geography_column FROM geography_columns)";
       }
 
       if ( foundInTables & 4 )
       {
-        sql += " AND (pg_namespace.nspname,pg_class.relname,pg_attribute.attname) NOT IN (SELECT schema_name,table_name,feature_column FROM topology.layer)";
+        sql += " AND (n.nspname,c.relname,a.attname) NOT IN (SELECT schema_name,table_name,feature_column FROM topology.layer)";
       }
     }
-
-    sql += " AND pg_class.relkind IN ('v','r')"; // only from views and relations (tables)
 
     QgsDebugMsg( "sql: " + sql );
 
@@ -485,6 +487,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString schemaName = result.PQgetvalue( i, 1 ); // nspname
       QString column     = result.PQgetvalue( i, 2 ); // attname
       QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
+      QString coltype    = result.PQgetvalue( i, 4 ); // column type
 
       QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
@@ -492,6 +495,23 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
+      if ( coltype == "geometry" )
+      {
+        layerProperty.geometryColType = sctGeometry;
+      }
+      else if ( coltype == "geography" )
+      {
+        layerProperty.geometryColType = sctGeography;
+      }
+      else if ( coltype == "topogeometry" )
+      {
+        layerProperty.geometryColType = sctTopoGeometry;
+      }
+      else
+      {
+        Q_ASSERT( !"Unknown geometry type" );
+      }
+
       if ( relkind == "v" )
       {
         layerProperty.pkCols = pkCandidates( schemaName, tableName );
@@ -501,8 +521,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           continue;
         }
       }
+
       layerProperty.sql = "";
-      layerProperty.isGeography = false; // TODO might be geography after all
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -552,10 +572,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
+      layerProperty.geometryColType = sctNone;
       layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
       layerProperty.srid = "";
       layerProperty.sql = "";
-      layerProperty.isGeography = false;
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -695,12 +715,10 @@ QString QgsPostgresConn::postgisVersion()
   return mPostgisVersionInfo;
 }
 
-QString QgsPostgresConn::quotedIdentifier( QString ident, bool isGeography )
+QString QgsPostgresConn::quotedIdentifier( QString ident )
 {
   ident.replace( '"', "\"\"" );
   ident = ident.prepend( "\"" ).append( "\"" );
-  if ( isGeography )
-    ident += "::geometry";
   return ident;
 }
 
@@ -1093,13 +1111,14 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
                            " WHEN %2 THEN 'LINESTRING'"
                            " WHEN %3 THEN 'POLYGON'"
                            " END,"
-                           " %4(%5)"
-                           " FROM %6" )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.isGeography ) )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.isGeography ) )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.isGeography ) )
+                           " %4(%5%6)"
+                           " FROM %7" )
+                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
+                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
+                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) )
                   .arg( majorVersion() < 2 ? "srid" : "st_srid" )
-                  .arg( quotedIdentifier( layerProperty.geometryColName, layerProperty.isGeography ) )
+                  .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                  .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" )
                   .arg( table );
 
   QgsDebugMsg( "Retrieving geometry types: " + query );
@@ -1196,7 +1215,9 @@ QString QgsPostgresConn::postgisWkbTypeName( QGis::WkbType wkbType )
 
 QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QGis::WkbType geomType, bool isGeography )
 {
-  geomCol = quotedIdentifier( geomCol, isGeography );
+  geomCol = quotedIdentifier( geomCol );
+  if ( isGeography )
+    geomCol += "::geometry";
 
   switch ( geomType )
   {
@@ -1328,6 +1349,24 @@ QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )
   }
 
   Q_ASSERT( !"unexpected wkbType" );
+  return QString::null;
+}
+
+QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType type )
+{
+  switch ( type )
+  {
+    case sctNone:
+      return tr( "None" );
+    case sctGeometry:
+      return tr( "Geometry" );
+    case sctGeography:
+      return tr( "Geography" );
+    case sctTopoGeometry:
+      return tr( "Topology" );
+  }
+
+  Q_ASSERT( !"unexpected geometry column type" );
   return QString::null;
 }
 

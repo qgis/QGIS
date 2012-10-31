@@ -50,6 +50,7 @@ class QgsPgTableModel : public QStandardItemModel
       dbtmSchema = 0,
       dbtmTable,
       dbtmType,
+      dbtmGeomType,
       dbtmGeomCol,
       dbtmSrid,
       dbtmPkCol,

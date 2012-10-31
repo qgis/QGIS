@@ -410,7 +410,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Data type for the spatial column
      */
-    enum { sctUnknown, sctGeometry, sctGeography, sctTopoGeometry } mSpatialColType;
+    QgsPostgresGeometryColumnType mSpatialColType;
 
     /**
      * List of primary key attributes for fetching features.
@@ -493,7 +493,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident, bool isGeography = false ) { return QgsPostgresConn::quotedIdentifier( ident, isGeography ); }
+    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     static int sProviderIds;
