@@ -106,7 +106,7 @@ class EditorOutput(QsciScintilla):
         #self.setEdgeColumn(80)
         #self.setEdgeColor(QColor("#FF0000")) 
         
-        self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)  
+        self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         
         self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)

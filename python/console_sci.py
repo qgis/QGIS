@@ -92,13 +92,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         # Use raw message to Scintilla here (all messages are documented
         # here: http://www.scintilla.org/ScintillaDoc.html)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-        self.SendScintilla(QsciScintilla.SCI_SETVSCROLLBAR, 1)
 
         # not too small
         #self.setMinimumSize(500, 300)
         self.setMinimumHeight(50)
-        
-        self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)
+
+        self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
         
         ## Disable command key

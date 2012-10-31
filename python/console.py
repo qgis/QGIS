@@ -281,6 +281,9 @@ class PythonConsoleWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.textEditOut.sizePolicy().hasHeightForWidth())
         self.textEditOut.setSizePolicy(sizePolicy)
+
+        self.textEditOut.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.edit.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
