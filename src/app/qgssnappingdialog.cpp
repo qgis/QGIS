@@ -287,20 +287,20 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   int idx = layerIdList.indexOf( currentVectorLayer->id() );
   if ( idx < 0 )
   {
-      if ( myDockFlag )
-      {
-        connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
-        connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
-        connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
-        connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+    if ( myDockFlag )
+    {
+      connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+      connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+      connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+      connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
 
-        if ( cbxAvoidIntersection )
-        {
-          connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
-        }
-                setTopologicalEditingState();
-        setIntersectionSnappingState();
+      if ( cbxAvoidIntersection )
+      {
+        connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
       }
+      setTopologicalEditingState();
+      setIntersectionSnappingState();
+    }
     // no settings for this layer yet
     return;
   }

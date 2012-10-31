@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright Tim (xtimor@gmail.com)
 *
 * NMEA library is free software; you can redistribute it and/or modify

@@ -99,7 +99,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     QgsGeometry* geom;
 
     QDomNodeList bNodes = filterElem.elementsByTagName( "Box" );
-    if ( bNodes.size() > 0 ) {
+    if ( bNodes.size() > 0 )
+    {
       QDomElement bElem = bNodes.at( 0 ).toElement().firstChild().toElement();
       QString coordSeparator = ",";
       QString tupelSeparator = " ";
@@ -125,7 +126,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "Point" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }
@@ -134,7 +136,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "LineString" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }
@@ -143,7 +146,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "Polygon" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }
@@ -152,7 +156,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "MultiPoint" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }
@@ -161,7 +166,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "MultiLineString" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }
@@ -170,7 +176,8 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
     if ( !geom )
     {
       QDomNodeList gNodes = filterElem.elementsByTagName( "MultiPolygon" );
-      if ( gNodes.size() > 0 ) {
+      if ( gNodes.size() > 0 )
+      {
         QDomElement gElem = gNodes.at( 0 ).toElement();
         geom = QgsGeometry::fromGML2( gElem );
       }

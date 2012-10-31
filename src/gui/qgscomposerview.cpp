@@ -311,13 +311,13 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       if ( composition() )
       {
-	QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
-	composition()->addComposerMap( composerMap );
-	scene()->removeItem( mRubberBandItem );
-	delete mRubberBandItem;
-	mRubberBandItem = 0;
-	emit actionFinished();
-	composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
+        QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        composition()->addComposerMap( composerMap );
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        mRubberBandItem = 0;
+        emit actionFinished();
+        composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
       }
       break;
 

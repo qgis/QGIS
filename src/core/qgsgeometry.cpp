@@ -540,7 +540,7 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   QDomElement geometryTypeElement = geometryNode.toElement();
   QString geomType = geometryTypeElement.tagName();
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon") )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ) )
   {
     QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
@@ -551,7 +551,7 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
     geomType = geometryTypeElement.tagName();
   }
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon") )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ) )
     return 0;
 
   if ( geomType == "Point" )
@@ -594,7 +594,7 @@ bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )
   }
   QDomElement coordElement = coordList.at( 0 ).toElement();
   std::list<QgsPoint> pointCoordinate;
-  if ( readGML2Coordinates( pointCoordinate, coordElement ) != 0)
+  if ( readGML2Coordinates( pointCoordinate, coordElement ) != 0 )
   {
     return false;
   }
@@ -603,7 +603,7 @@ bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )
   {
     return false;
   }
-  
+
   std::list<QgsPoint>::const_iterator point_it = pointCoordinate.begin();
   //char e = QgsApplication::endian();
   char e = ( htonl( 1 ) == 1 ) ? 0 : 1 ;
@@ -5131,10 +5131,10 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
       coordElem.setAttribute( "ts", " " );
       QString coordString;
       x = ( double * )( mGeometry + 5 );
-      coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+      coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
       coordString += ",";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+      coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
       QDomText coordText = doc.createTextNode( coordString );
       coordElem.appendChild( coordText );
       pointElem.appendChild( coordElem );
@@ -5161,11 +5161,11 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
         coordElem.setAttribute( "ts", " " );
         QString coordString;
         x = ( double * )( ptr );
-        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
         coordString += ",";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
         QDomText coordText = doc.createTextNode( coordString );
         coordElem.appendChild( coordText );
         pointElem.appendChild( coordElem );
@@ -5205,11 +5205,11 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
           coordString += " ";
         }
         x = ( double * ) ptr;
-        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
         coordString += ",";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -5251,11 +5251,11 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
             coordString += " ";
           }
           x = ( double * ) ptr;
-          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
           ptr += sizeof( double );
           coordString += ",";
           y = ( double * ) ptr;
-          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -5315,11 +5315,11 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
             coordString += " ";
           }
           x = ( double * ) ptr;
-          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
           coordString += ",";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -5378,11 +5378,11 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
               coordString += " ";
             }
             x = ( double * ) ptr;
-            coordString += QString::number( *x, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+            coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
             ptr += sizeof( double );
             coordString += ",";
             y = ( double * ) ptr;
-            coordString += QString::number( *y, 'f', 8 ).remove( QRegExp("[0]{1,7}$") );
+            coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
             ptr += sizeof( double );
             if ( hasZValue )
             {

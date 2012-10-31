@@ -574,7 +574,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
-    QDomElement gmlElem = (&geomIt.value())->exportToGML2( transactionDoc );
+    QDomElement gmlElem = ( &geomIt.value() )->exportToGML2( transactionDoc );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );

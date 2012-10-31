@@ -670,7 +670,7 @@ void QgsStyleV2ManagerDialog::removeItem()
 bool QgsStyleV2ManagerDialog::removeSymbol()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  foreach( QModelIndex index, indexes )
+  foreach ( QModelIndex index, indexes )
   {
     QString symbolName = index.data().toString();
     // delete from style and update list

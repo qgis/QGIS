@@ -78,7 +78,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposerView *view( void );
 
     //! Return current composition
-    QgsComposition* composition(void){ return mComposition; }
+    QgsComposition* composition( void ) { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();

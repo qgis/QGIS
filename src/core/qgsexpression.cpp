@@ -802,7 +802,7 @@ static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExp
 static QVariant fcnFormatDate( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
   QDateTime dt = getDateTimeValue( values.at( 0 ), parent );
-  QString format = getStringValue( values.at( 1 ), parent );  
+  QString format = getStringValue( values.at( 1 ), parent );
   return dt.toString( format );
 }
 
@@ -882,7 +882,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
     << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
-      // private functions
+    // private functions
     << FunctionDef( "_specialcol_", 1, fcnSpecialColumn, QObject::tr( "Special" ) )
     ;
   }
@@ -933,7 +933,7 @@ QList<QgsExpression::FunctionDef> QgsExpression::specialColumns()
   QList<FunctionDef> defs;
   for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
   {
-    defs << FunctionDef( it.key(), 0, 0, QObject::tr( "Record" ));
+    defs << FunctionDef( it.key(), 0, 0, QObject::tr( "Record" ) );
   }
   return defs;
 }
@@ -1126,7 +1126,7 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
     {
       QVariant oldValue = QgsExpression::specialColumn( sit.key() );
       if ( !oldValue.isNull() )
-	savedValues.insert( sit.key(), oldValue );
+        savedValues.insert( sit.key(), oldValue );
 
       // set the new value
       QgsExpression::setSpecialColumn( sit.key(), sit.value() );
@@ -2146,7 +2146,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeatu
   {
     return f->attributeMap()[mIndex];
   }
-  return QVariant("[" + mName + "]");
+  return QVariant( "[" + mName + "]" );
 }
 
 bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFieldMap& fields )

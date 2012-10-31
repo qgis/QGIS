@@ -2408,20 +2408,23 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     QString update;
 
-    if ( mSpatialColType == sctTopoGeometry ) {
+    if ( mSpatialColType == sctTopoGeometry )
+    {
       // NOTE: We are creating a new TopoGeometry objects with the new shape.
       // TODO: _replace_ the initial TopoGeometry instead, so that it keeps
       //       the same identifier and thus still partecipates in any
       //       hierarchical definition. Also creating a new object results
       //       in orphaned topogeometries!
       update = QString( "UPDATE %1 SET %2=toTopoGeom(%3,t.name,layer_id(%2))"
-               " FROM topology.topology t WHERE t.id = topology_id(%2)"
-               " AND %4" )
+                        " FROM topology.topology t WHERE t.id = topology_id(%2)"
+                        " AND %4" )
                .arg( mQuery )
                .arg( quotedIdentifier( mGeometryColumn ) )
                .arg( geomParam( 1 ) )
                .arg( pkParamWhereClause( 2 ) );
-    } else {
+    }
+    else
+    {
       update = QString( "UPDATE %1 SET %2=%3 WHERE %4" )
                .arg( mQuery )
                .arg( quotedIdentifier( mGeometryColumn ) )

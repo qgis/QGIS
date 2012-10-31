@@ -48,7 +48,7 @@ class QgsSpatialFilter: public QgsFilter
       WITHIN,
       UNKNOWN
     };
-    
+
     QgsSpatialFilter();
     QgsSpatialFilter( SPATIAL_TYPE st, QgsGeometry* geom );
     ~QgsSpatialFilter();

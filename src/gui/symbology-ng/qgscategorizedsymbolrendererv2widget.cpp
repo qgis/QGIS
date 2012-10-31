@@ -166,9 +166,9 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach( QModelIndex idx, selectedIndexes )
+    foreach ( QModelIndex idx, selectedIndexes )
     {
-      if( idx.isValid() )
+      if ( idx.isValid() )
       {
         int catIdx = mRenderer->categoryIndexForValue( idx.data( Qt::UserRole + 1 ) );
         QgsSymbolV2* newCatSymbol = newSymbol->clone();
@@ -452,9 +452,9 @@ QList<QVariant> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
   QModelIndexList rows = viewCategories->selectionModel()->selectedRows();
   QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
 
-  foreach( QModelIndex r, rows )
+  foreach ( QModelIndex r, rows )
   {
-    if( r.isValid() )
+    if ( r.isValid() )
     {
       categories.append( m->item( r.row(), 1 )->data() );
     }
@@ -470,7 +470,7 @@ void QgsCategorizedSymbolRendererV2Widget::deleteCategory()
   if ( !categories.size() )
     return;
 
-  foreach( const QVariant k, categories )
+  foreach ( const QVariant k, categories )
   {
     if ( k.isValid() )
     {

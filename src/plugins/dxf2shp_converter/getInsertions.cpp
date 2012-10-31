@@ -34,7 +34,7 @@
 //    http://www.happysquirrel.com/index.php?feature=hs_questions
 //
 // Thank you!
-// 
+//
 
 // getInsertions.cpp: The class which retrieves the block insertions from the DXF file
 

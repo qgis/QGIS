@@ -25,15 +25,15 @@ class QgsComposerItem;
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:
-    public QWidget,
-    private Ui::QgsAtlasCompositionWidgetBase
+      public QWidget,
+      private Ui::QgsAtlasCompositionWidgetBase
 {
     Q_OBJECT
-    public:
+  public:
     QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c );
     ~QgsAtlasCompositionWidget();
-				
-public slots:
+
+  public slots:
     void on_mUseAtlasCheckBox_stateChanged( int state );
     void on_mComposerMapComboBox_currentIndexChanged( int index );
     void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
@@ -42,17 +42,17 @@ public slots:
     void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
     void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
-							      
-private slots:
+
+  private slots:
     void onLayerRemoved( QString );
     void onLayerAdded( QgsMapLayer* );
     void onComposerMapAdded( QgsComposerMap* );
     void onItemRemoved( QgsComposerItem* );
 
     void updateGuiElements();
-    
-private:
+
+  private:
     QgsComposition* mComposition;
-    
+
     void blockAllSignals( bool b );
 };

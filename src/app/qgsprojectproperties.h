@@ -139,7 +139,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cbxProjectionEnabled_stateChanged( int state );
-    
+
     /*!
      * Slot to link WFS checkboxes
      */

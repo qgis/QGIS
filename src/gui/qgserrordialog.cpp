@@ -25,29 +25,29 @@ QgsErrorDialog::QgsErrorDialog( const QgsError & theError, const QString & theTi
 {
   setupUi( this );
   QString title = theTitle;
-  if ( title.isEmpty() ) title = tr("Error");
+  if ( title.isEmpty() ) title = tr( "Error" );
   setWindowTitle( title );
 
   // QMessageBox has static standardIcon( Icon icon ), but it is marked as obsolete
   QMessageBox messageBox( QMessageBox::Critical, "", "" );
   mIconLabel->setPixmap( messageBox.iconPixmap() );
-  mSummaryTextBrowser->setOpenExternalLinks ( true );
-  mDetailTextBrowser->setOpenExternalLinks ( true );
+  mSummaryTextBrowser->setOpenExternalLinks( true );
+  mDetailTextBrowser->setOpenExternalLinks( true );
   mDetailTextBrowser->hide();
 
   QPalette p = palette();
-  p.setColor(QPalette::Base, Qt::transparent);
-  mSummaryTextBrowser->setPalette(p);
+  p.setColor( QPalette::Base, Qt::transparent );
+  mSummaryTextBrowser->setPalette( p );
 
   mDetailCheckBox->hide();
 
-  mSummaryTextBrowser->setText ( mError.summary() );
+  mSummaryTextBrowser->setText( mError.summary() );
   mDetailTextBrowser->setText( mError.message( QgsErrorMessage::Html ) );
 
-  resize( width(), 150);
+  resize( width(), 150 );
 
   QSettings settings;
-  Qt::CheckState state = (Qt::CheckState) settings.value( "/Error/dialog/detail", 0 ).toInt();
+  Qt::CheckState state = ( Qt::CheckState ) settings.value( "/Error/dialog/detail", 0 ).toInt();
   mDetailCheckBox->setCheckState( state );
   if ( state == Qt::Checked ) on_mDetailPushButton_clicked();
 }
@@ -56,7 +56,7 @@ QgsErrorDialog::~QgsErrorDialog()
 {
 }
 
-void QgsErrorDialog::show ( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WFlags fl )
+void QgsErrorDialog::show( const QgsError & theError, const QString & theTitle, QWidget *parent, Qt::WFlags fl )
 {
   QgsErrorDialog d( theError, theTitle, parent, fl );
   d.exec();
@@ -68,10 +68,10 @@ void QgsErrorDialog::on_mDetailPushButton_clicked()
   mDetailTextBrowser->show();
   mDetailCheckBox->show();
   mDetailPushButton->hide();
-  resize( width(), 400);
+  resize( width(), 400 );
 }
 
-void QgsErrorDialog::on_mDetailCheckBox_stateChanged ( int state )
+void QgsErrorDialog::on_mDetailCheckBox_stateChanged( int state )
 {
   QSettings settings;
   settings.setValue( "/Error/dialog/detail", state );

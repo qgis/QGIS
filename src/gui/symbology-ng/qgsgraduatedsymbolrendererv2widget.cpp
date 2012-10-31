@@ -351,9 +351,9 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach( QModelIndex idx, selectedIndexes )
+    foreach ( QModelIndex idx, selectedIndexes )
     {
-      if( idx.isValid() )
+      if ( idx.isValid() )
       {
         int rangeIdx = idx.row();
         QgsSymbolV2* newRangeSymbol = newSymbol->clone();

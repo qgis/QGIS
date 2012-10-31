@@ -406,22 +406,22 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         //map extent
         QgsRectangle searchRect = layer->extent();
         searchRect.set( searchRect.xMinimum() - 0.000001
-                      , searchRect.yMinimum() - 0.000001
-                      , searchRect.xMaximum() + 0.000001
-                      , searchRect.yMaximum() + 0.000001 );
+                        , searchRect.yMinimum() - 0.000001
+                        , searchRect.xMaximum() + 0.000001
+                        , searchRect.yMaximum() + 0.000001 );
         QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
         if ( maxFeatures == 0 )
           maxFeat += layer->featureCount();
-        
+
         provider->select( attrIndexes, searchRect, mWithGeom, true );
-        
+
         if ( i == 0 )
           startGetFeature( request, format, layerCrs, &searchRect );
 
         long featCounter = 0;
         QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
-        if (filterNodes.size() > 0 )
+        if ( filterNodes.size() > 0 )
         {
           QDomElement filterElem = filterNodes.at( 0 ).toElement();
           QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
@@ -436,7 +436,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               ++featCounter;
               ++featureCounter;
             }
-          } 
+          }
           else
           {
             QgsFilter* mFilter = QgsFilter::createFilterFromXml( filterElem.firstChild().toElement(), layer );

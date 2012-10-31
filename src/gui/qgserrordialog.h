@@ -30,14 +30,14 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
     QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsErrorDialog();
 
-  /** Show dialog with error 
-   * @param theError error
-   */
-  static void show ( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    /** Show dialog with error
+     * @param theError error
+     */
+    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
   public slots:
     void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged ( int state );
+    void on_mDetailCheckBox_stateChanged( int state );
 
   private:
     QgsError mError;
