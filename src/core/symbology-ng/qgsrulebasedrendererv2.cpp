@@ -415,6 +415,22 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& fea
   return lst;
 }
 
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( QgsFeature& feat )
+{
+  RuleList lst;
+  if ( !isFilterOK( feat ) )
+    return lst;
+
+  if ( mSymbol )
+    lst.append( this );
+
+  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  {
+    Rule* rule = *it;
+    lst += rule->rulesForFeature( feat );
+  }
+  return lst;
+}
 
 void QgsRuleBasedRendererV2::Rule::stopRender( QgsRenderContext& context )
 {
