@@ -23,6 +23,8 @@
 #include <QList>
 #include <QPair>
 
+class QTextDocument;
+
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
 //value: containter with layer ids contained in the group
@@ -123,6 +125,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Return feature info in format SIA2045?*/
     bool featureInfoFormatSIA2045() const;
 
+    /**Draw text annotation items from the QGIS projectfile*/
+    void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
+
   private:
 
     //forbidden
@@ -144,6 +149,8 @@ class QgsProjectParser: public QgsConfigParser
     QHash< QString, QDomElement > mProjectLayerElementsByName;
     /**Names of layers and groups which should not be published*/
     QSet<QString> mRestrictedLayers;
+    /**Watermark text items*/
+    QList< QPair< QTextDocument*, QDomElement > > mTextAnnotationItems;
 
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
@@ -206,6 +213,29 @@ class QgsProjectParser: public QgsConfigParser
     QSet<QString> restrictedLayers() const;
     /**Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
+    /**Returns visible extent from the project file (or an empty rectangle in case of error)*/
+    QgsRectangle projectExtent() const;
+
+    void createTextAnnotationItems();
+    void cleanupTextAnnotationItems();
+    /**Calculates annotation position to provide the same distance to the lower right corner as in the QGIS project file
+    @param width output image pixel width
+    @param height output image pixel height
+    @param itemWidth item width in pixels in the QGIS project (screen pixels)
+    @param itemHeight item height in pixels in the QGIS project (screen pixels)
+    @param xPos out: x-coordinate of the item in the output image
+    @param yPos out: y-coordinate of the item in the output image*/
+    static bool annotationPosition( const QDomElement& elem, double scaleFactor, const QgsRectangle& projectExtent, int width, int height,
+                                    int itemWidth, int itemHeight, double& xPos, double& yPos );
+
+    /**Draws background rectangle and frame for an annotation
+    @param elem <Annotation> xml element
+    @param scaleFactor dpi related scale factor
+    @param xPos x-position of the item
+    @param yPos y-position of the item
+    @param itemWidth item width in pixels in the QGIS project (screen pixels)
+    @param itemHeight item height in pixels in the QGIS project (screen pixels)*/
+    static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
 };
 
 #endif // QGSPROJECTPARSER_H

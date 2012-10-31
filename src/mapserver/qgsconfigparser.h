@@ -142,6 +142,12 @@ class QgsConfigParser
     /**Return feature info in format SIA2045?*/
     virtual bool featureInfoFormatSIA2045() const { return false; }
 
+    /**Possibility to draw specific items on a WMS image (e.g. annotation items from the QGIS project file)
+        @param dpi resolution of the output image
+        @param width width of output image
+        @param height height of output image*/
+    virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const { Q_UNUSED( p ); Q_UNUSED( dpi ); Q_UNUSED( width ); Q_UNUSED( height ); }
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;

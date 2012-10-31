@@ -38,6 +38,7 @@
 #include "qgscomposershape.h"
 
 #include "QFileInfo"
+#include <QTextDocument>
 #include "QTextStream"
 
 
@@ -48,7 +49,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   setSelectionColor();
   setMaxWidthHeight();
 
-  //accelerate search for layers and groups
+  //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )
   {
     QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
@@ -73,6 +74,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
     }
 
     mRestrictedLayers = restrictedLayers();
+    createTextAnnotationItems();
   }
 }
 
@@ -83,6 +85,7 @@ QgsProjectParser::QgsProjectParser(): mXMLDoc( 0 )
 QgsProjectParser::~QgsProjectParser()
 {
   delete mXMLDoc;
+  cleanupTextAnnotationItems();
 }
 
 int QgsProjectParser::numberOfLayers() const
@@ -2395,4 +2398,145 @@ void QgsProjectParser::sublayersOfEmbeddedGroup( const QString& projectFilePath,
       }
     }
   }
+}
+
+QgsRectangle QgsProjectParser::projectExtent() const
+{
+  QgsRectangle extent;
+  if ( !mXMLDoc )
+  {
+    return extent;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomElement mapCanvasElem = qgisElem.firstChildElement( "mapcanvas" );
+  if ( mapCanvasElem.isNull() )
+  {
+    return extent;
+  }
+
+  QDomElement extentElem = mapCanvasElem.firstChildElement( "extent" );
+  bool xminOk, xmaxOk, yminOk, ymaxOk;
+  double xMin = extentElem.firstChildElement( "xmin" ).text().toDouble( &xminOk );
+  double xMax = extentElem.firstChildElement( "xmax" ).text().toDouble( &xmaxOk );
+  double yMin = extentElem.firstChildElement( "ymin" ).text().toDouble( &yminOk );
+  double yMax = extentElem.firstChildElement( "ymax" ).text().toDouble( &ymaxOk );
+
+  if ( xminOk && xmaxOk && yminOk && ymaxOk )
+  {
+    extent = QgsRectangle( xMin, yMin, xMax, yMax );
+  }
+
+  return extent;
+}
+
+void QgsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+{
+  //consider DPI
+  double scaleFactor = dpi / 88.0; //assume 88 as standard dpi
+  QgsRectangle prjExtent = projectExtent();
+
+  //text annotations
+  QList< QPair< QTextDocument*, QDomElement > >::const_iterator textIt = mTextAnnotationItems.constBegin();
+  for ( ; textIt != mTextAnnotationItems.constEnd(); ++textIt )
+  {
+    QDomElement annotationElem = textIt->second;
+    if ( annotationElem.isNull() )
+    {
+      continue;
+    }
+
+    int itemWidth = annotationElem.attribute( "frameWidth", "0" ).toInt();
+    int itemHeight = annotationElem.attribute( "frameHeight", "0" ).toInt();
+
+    //calculate item position
+    double xPos, yPos;
+    if ( !annotationPosition( annotationElem, scaleFactor, prjExtent, width, height, itemWidth, itemHeight, xPos, yPos ) )
+    {
+      continue;
+    }
+
+    drawAnnotationRectangle( p, annotationElem, scaleFactor, xPos, yPos, itemWidth, itemHeight );
+
+    //draw annotation contents
+    p->translate( xPos / scaleFactor, yPos / scaleFactor );
+    textIt->first->drawContents( p, QRectF( 0, 0, itemWidth, itemHeight ) );
+  }
+}
+
+void QgsProjectParser::createTextAnnotationItems()
+{
+  cleanupTextAnnotationItems();
+
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  //text annotations
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomNodeList textAnnotationList = qgisElem.elementsByTagName( "TextAnnotationItem" );
+  QDomElement textAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < textAnnotationList.size(); ++i )
+  {
+    textAnnotationElem = textAnnotationList.at( i ).toElement();
+    annotationElem = textAnnotationElem.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
+    {
+      QTextDocument* textDoc = new QTextDocument();
+      textDoc->setHtml( textAnnotationElem.attribute( "document" ) );
+      mTextAnnotationItems.push_back( qMakePair( textDoc, annotationElem ) );
+    }
+  }
+}
+
+void QgsProjectParser::cleanupTextAnnotationItems()
+{
+  QList< QPair< QTextDocument*, QDomElement > >::const_iterator it = mTextAnnotationItems.constBegin();
+  for ( ; it != mTextAnnotationItems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mTextAnnotationItems.clear();
+}
+
+bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor, const QgsRectangle& projectExtent, int width, int height,
+    int itemWidth, int itemHeight, double& xPos, double& yPos )
+{
+  if ( projectExtent.isEmpty() )
+  {
+    return false;
+  }
+
+  double itemMapPosX = elem.attribute( "mapPosX" ).toDouble();
+  double itemCanvasPosX = elem.attribute( "canvasPosX" ).toDouble();
+  int maxCanvasX = itemCanvasPosX / ( itemMapPosX - projectExtent.xMinimum() ) * projectExtent.width();
+  xPos = width - ( maxCanvasX - itemCanvasPosX ) * scaleFactor - itemWidth / 2.0 + 100;
+
+  double itemMapPosY = elem.attribute( "mapPosY" ).toDouble();
+  double itemCanvasPosY = elem.attribute( "canvasPosY" ).toDouble();
+  int maxCanvasY = itemCanvasPosY / ( projectExtent.yMaximum() - itemMapPosY ) * projectExtent.height();
+  yPos = height - ( maxCanvasY - itemCanvasPosY ) * scaleFactor - itemHeight + 100;
+  return true;
+}
+
+void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight )
+{
+  if ( !p )
+  {
+    return;
+  }
+
+  QColor backgroundColor( elem.attribute( "frameBackgroundColor", "#000000" ) );
+  backgroundColor.setAlpha( elem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
+  p->setBrush( QBrush( backgroundColor ) );
+  QPen framePen( QColor( elem.attribute( "frameColor", "#000000" ) ) );
+  framePen.setWidth( elem.attribute( "frameBorderWidth", "1" ).toInt() );
+  p->setPen( framePen );
+
+  p->save();
+  p->scale( scaleFactor, scaleFactor );
+  p->drawRect( QRectF( xPos / scaleFactor, yPos / scaleFactor, itemWidth, itemHeight ) );
+  p->restore();
 }

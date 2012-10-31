@@ -24,6 +24,8 @@
 #include "qgsmapcanvas.h"
 #include "qgstextannotationdialog.h"
 #include "qgstextannotationitem.h"
+#include "qgssvgannotationdialog.h"
+#include "qgssvgannotationitem.h"
 #include <QDialog>
 #include <QMouseEvent>
 
@@ -66,6 +68,12 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
   if ( hItem )
   {
     return new QgsHtmlAnnotationDialog( hItem );
+  }
+
+  QgsSVGAnnotationItem* sItem = dynamic_cast<QgsSVGAnnotationItem*>( item );
+  if ( sItem )
+  {
+    return new QgsSVGAnnotationDialog( sItem );
   }
 
   return 0;

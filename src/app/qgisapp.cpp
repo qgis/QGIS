@@ -177,6 +177,7 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
+#include "qgssvgannotationitem.h"
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
@@ -233,6 +234,7 @@
 #include "qgsmaptoolselectfreehand.h"
 #include "qgsmaptoolselectpolygon.h"
 #include "qgsmaptoolselectradius.h"
+#include "qgsmaptoolsvgannotation.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolsplitfeatures.h"
@@ -734,6 +736,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mTextAnnotation;
   delete mMapTools.mFormAnnotation;
   delete mMapTools.mHtmlAnnotation;
+  delete mMapTools.mSvgAnnotation;
   delete mMapTools.mAnnotation;
   delete mMapTools.mAddFeature;
   delete mMapTools.mMoveFeature;
@@ -938,6 +941,7 @@ void QgisApp::createActions()
   connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
   connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
   connect( mActionHtmlAnnotation, SIGNAL( triggered() ), this, SLOT( addHtmlAnnotation() ) );
+  connect( mActionSvgAnnotation, SIGNAL( triggered() ), this, SLOT( addSvgAnnotation() ) );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
   connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
 
@@ -1402,6 +1406,7 @@ void QgisApp::createToolBars()
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
   bt->addAction( mActionHtmlAnnotation );
+  bt->addAction( mActionSvgAnnotation );
   bt->addAction( mActionAnnotation );
 
   QAction* defAnnotationAction = mActionTextAnnotation;
@@ -1840,6 +1845,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
   mMapTools.mHtmlAnnotation = new QgsMapToolHtmlAnnotation( mMapCanvas );
   mMapTools.mHtmlAnnotation->setAction( mActionHtmlAnnotation );
+  mMapTools.mSvgAnnotation = new QgsMapToolSvgAnnotation( mMapCanvas );
+  mMapTools.mSvgAnnotation->setAction( mActionSvgAnnotation );
   mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
   mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas );
@@ -3932,6 +3939,11 @@ void QgisApp::addTextAnnotation()
   mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
 }
 
+void QgisApp::addSvgAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mSvgAnnotation );
+}
+
 void QgisApp::modifyAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mAnnotation );
@@ -4467,6 +4479,13 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   {
     QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
     newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
+  }
+
+  QDomNodeList svgItemList = doc.elementsByTagName( "SVGAnnotationItem" );
+  for ( int i = 0; i < svgItemList.size(); ++i )
+  {
+    QgsSVGAnnotationItem* newSvgItem = new QgsSVGAnnotationItem( mMapCanvas );
+    newSvgItem->readXML( doc, svgItemList.at( i ).toElement() );
   }
   return true;
 }

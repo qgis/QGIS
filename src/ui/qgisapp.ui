@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -1810,6 +1810,9 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionHtmlAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
@@ -1819,6 +1822,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Html Annotation</string>
+   </property>
+  </action>
+  <action name="mActionSvgAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text">
+    <string>SVG annotation</string>
    </property>
   </action>
  </widget>

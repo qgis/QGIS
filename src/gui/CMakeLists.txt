@@ -89,6 +89,7 @@ qgsrasterformatsaveoptionswidget.cpp
 qgsrasterpyramidsoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
+qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
