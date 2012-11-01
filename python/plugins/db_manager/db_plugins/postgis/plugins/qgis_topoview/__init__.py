@@ -97,6 +97,15 @@ def run(item, action, mainwindow):
 		provider = db.dbplugin().providerName()
 		uri = db.uri();
 
+	  # face
+		layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
+								'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)), 
+								'geom', 'face_id', u'%s.face' % toponame)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
 	  # node
 		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.nodes' % toponame, provider)
@@ -150,7 +159,6 @@ def run(item, action, mainwindow):
 		legend.setLayerVisible(layer, False)
 		legend.moveLayer(layer, group)
 
-	  # TODO: add full faces ?
 	  # TODO: add polygon0, polygon1 and polygon2 ?
 
 	finally:
