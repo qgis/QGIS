@@ -23,6 +23,7 @@
 %Include qgsexpressionhighlighter.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfiledropedit.sip
+%Include qgsfilterlineedit.sip
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgshtmlannotationitem.sip

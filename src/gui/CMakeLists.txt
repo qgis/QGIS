@@ -98,6 +98,7 @@ qgsexpressionbuilderdialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
+qgsfilterlineedit.cpp
 )
 
 IF (WITH_TOUCH)
@@ -186,6 +187,7 @@ qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -225,6 +227,7 @@ qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h
