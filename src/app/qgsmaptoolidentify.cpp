@@ -194,7 +194,7 @@ bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
 
 bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int y )
 {
-  if ( !layer || !layer->rendererV2() )
+  if ( !layer )
     return false;
 
   if ( layer->hasScaleBasedVisibility() &&
@@ -204,8 +204,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     QgsDebugMsg( "Out of scale limits" );
     return false;
   }
-
-  QgsFeatureRendererV2* renderer = layer->rendererV2();
 
   QMap< QString, QString > attributes, derivedAttributes;
 
@@ -263,18 +261,22 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   }
   QgsFeatureList::iterator f_it = featureList.begin();
 
-  if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  bool filter = false;
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     // setup scale for scale dependent visibility (rule based)
     renderer->startRender( *( mCanvas->mapRenderer()->rendererContext() ), layer );
+    filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
-  bool filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
 
   for ( ; f_it != featureList.end(); ++f_it )
   {
     QgsFeatureId fid = f_it->id();
 
-    if ( filter && !renderer->willRenderFeature( *f_it ) ) continue;
+    if ( filter && !renderer->willRenderFeature( *f_it ) )
+      continue;
 
     featureCount++;
 
@@ -328,7 +330,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     results()->addFeature( layer, *f_it, derivedAttributes );
   }
 
-  if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
     renderer->stopRender( *( mCanvas->mapRenderer()->rendererContext() ) );
   }

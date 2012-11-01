@@ -285,42 +285,44 @@ void QgsAttributeTableModel::loadLayer()
   }
   else
   {
+    bool filter = false;
     QgsRectangle rect;
+    QgsAttributeList attributeList;
+    QgsRenderContext renderContext;
+    QgsFeatureRendererV2* renderer = mLayer->rendererV2();
     if ( behaviour == 2 )
     {
       // current canvas only
       rect = mCurrentExtent;
-    }
 
-    QgsFeatureRendererV2* renderer = mLayer->rendererV2();
-    if ( !renderer )
-    {
-      QgsDebugMsg( "Cannot get renderer" );
-    }
-    else if ( mLayer->hasScaleBasedVisibility() &&
-              ( mLayer->minimumScale() > mCanvas->mapRenderer()->scale() ||
-                mLayer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
-    {
-      QgsDebugMsg( "Out of scale limits" );
-    }
-    else
-    {
-      QgsRenderContext renderContext;
-      if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+      if ( !renderer )
       {
-        // setup scale
-        // mapRenderer()->renderContext()->scale is not automaticaly updated when
-        // render extent changes (because it's scale is used to identify if changed
-        // since last render) -> use local context
-        renderContext.setExtent( mCanvas->mapRenderer()->rendererContext()->extent() );
-        renderContext.setMapToPixel( mCanvas->mapRenderer()->rendererContext()->mapToPixel() );
-        renderContext.setRendererScale( mCanvas->mapRenderer()->scale() );
-        renderer->startRender( renderContext, mLayer );
+        QgsDebugMsg( "Cannot get renderer" );
       }
 
-      bool filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
+      if ( mLayer->hasScaleBasedVisibility() &&
+           ( mLayer->minimumScale() > mCanvas->mapRenderer()->scale() ||
+             mLayer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
+      {
+        QgsDebugMsg( "Out of scale limits" );
+      }
+      else
+      {
+        if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+        {
+          // setup scale
+          // mapRenderer()->renderContext()->scale is not automaticaly updated when
+          // render extent changes (because it's scale is used to identify if changed
+          // since last render) -> use local context
+          renderContext.setExtent( mCanvas->mapRenderer()->rendererContext()->extent() );
+          renderContext.setMapToPixel( mCanvas->mapRenderer()->rendererContext()->mapToPixel() );
+          renderContext.setRendererScale( mCanvas->mapRenderer()->scale() );
+          renderer->startRender( renderContext, mLayer );
+        }
 
-      QgsAttributeList attributeList = QgsAttributeList();
+        filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
+      }
+
       if ( filter )
       {
         QList<QString> attributeNameList = renderer->usedAttributes();
@@ -329,31 +331,34 @@ void QgsAttributeTableModel::loadLayer()
           attributeList.append( mLayer->fieldNameIndex( attributeName ) );
         }
       }
-      mLayer->select( attributeList, rect, false );
+    }
 
-      QgsFeature f;
-      for ( i = 0; mLayer->nextFeature( f ); ++i )
+    mLayer->select( attributeList, rect, false );
+
+    QgsFeature f;
+    for ( i = 0; mLayer->nextFeature( f ); ++i )
+    {
+      if ( !filter || renderer->willRenderFeature( f ) )
       {
-        if ( !filter || renderer->willRenderFeature( f ) )
-        {
-          featureAdded( f.id() );
-        }
-
-        if ( t.elapsed() > 5000 )
-        {
-          bool cancel = false;
-          emit progress( i, cancel );
-          if ( cancel )
-            break;
-
-          t.restart();
-        }
+        featureAdded( f.id() );
       }
-      if ( renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+
+      if ( t.elapsed() > 5000 )
       {
-        renderer->stopRender( renderContext );
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
       }
     }
+
+    if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+    {
+      renderer->stopRender( renderContext );
+    }
+
     emit finished();
   }
 

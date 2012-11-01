@@ -1230,8 +1230,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
                        "has_table_privilege(%1,'DELETE'),"
                        "has_any_column_privilege(%1,'UPDATE'),"
                        "%2"
-                       "has_table_privilege(%1,'INSERT'),"
-                       "current_schema()" )
+                       "has_table_privilege(%1,'INSERT')" )
               .arg( quotedValue( mQuery ) )
               .arg( mGeometryColumn.isNull()
                     ? QString( "'f'," )
@@ -1246,8 +1245,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
                        "has_table_privilege(%1,'DELETE'),"
                        "has_table_privilege(%1,'UPDATE'),"
                        "has_table_privilege(%1,'UPDATE'),"
-                       "has_table_privilege(%1,'INSERT'),"
-                       "current_schema()" )
+                       "has_table_privilege(%1,'INSERT')" )
               .arg( quotedValue( mQuery ) );
       }
 
