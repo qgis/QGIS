@@ -140,21 +140,14 @@ IF(WITH_QSCIAPI)
   INSTALL(FILES ${QGIS_PYTHON_API_FILE} DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
 ENDIF(WITH_QSCIAPI)
 
-# PyQGIS console and plugin utilities
-# files to copy to staging or install
+# Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
-  console.py
-  console_sci.py
-  console_help.py
-  console_settings.py
-  console_output.py
   utils.py
 )
-FILE(GLOB UI_FILES *.ui)
-PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES}) # returns absolute paths
-ADD_CUSTOM_TARGET(pyutils ALL DEPENDS ${PYUI_FILES})
-INSTALL(FILES ${PY_FILES} ${PYUI_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
+
+ADD_CUSTOM_TARGET(pyutils ALL)
+INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
 
 # stage to output to make available when QGIS is run from build directory
 FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
@@ -166,7 +159,7 @@ FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
   )
 ENDFOREACH(pyfile)
 
-ADD_SUBDIRECTORY(console_help)
+ADD_SUBDIRECTORY(console)
 
 # Byte-compile staged PyQGIS utilities
 IF(WITH_PY_COMPILE)
