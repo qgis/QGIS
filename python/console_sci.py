@@ -50,7 +50,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
         self.buffer = []
         
-        #self.insertInitText()
+        self.insertInitText()
         self.displayPrompt(False)
         
         for line in _init_commands:
@@ -92,14 +92,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         # Use raw message to Scintilla here (all messages are documented
         # here: http://www.scintilla.org/ScintillaDoc.html)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-        self.SendScintilla(QsciScintilla.SCI_SETVSCROLLBAR, 0)
 
-    
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(32)
-        
-        self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 2)
+        self.setMinimumHeight(50)
+
+        self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
         
         ## Disable command key
@@ -394,6 +392,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 # fix the cursor position
                 self.insert( cmd[:3-newindex] + " " )
                 self.setCursorPosition(line, 4)
+            self.recolor()
 
         elif e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
                 e.key() == Qt.Key_V:
@@ -553,6 +552,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def write_stdout(self, txt):
         if len(txt) > 0:
-            getCmdString = self.text()
+            getCmdString = self.text(2)
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')
