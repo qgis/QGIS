@@ -94,45 +94,48 @@ def run(item, action, mainwindow):
 	try:
 		group = legend.addGroup(u'%s topology' % toponame)
 
+		provider = db.dbplugin().providerName()
+		uri = db.uri();
+
 	  # node
-		layer = db.toSqlLayer(u'SELECT * FROM %s.node' % quoteId(toponame),
-								'geom', 'node_id', u'%s.nodes' % toponame)
+		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.nodes' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
 	  # edge
-		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
-								'geom', 'edge_id', u'%s.edges' % toponame) 
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.edges' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
 	  # face_left
-		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
-								'geom', 'edge_id', u'%s.face_left' % toponame) 
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.face_left' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
 	  # face_right
-		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
-								'geom', 'edge_id', u'%s.face_right' % toponame) 
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.face_right' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
 	  # next_left
-		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % quoteId(toponame),
-								'geom', 'edge_id', u'%s.next_left' % toponame) 
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.next_left' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # next_right
-		layer = db.toSqlLayer(u'SELECT * FROM %s.edge_data' % toponame,
-								'geom', 'edge_id', u'%s.next_right' % toponame) 
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.next_right' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
