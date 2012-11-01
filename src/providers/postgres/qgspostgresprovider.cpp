@@ -1287,15 +1287,6 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
         mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
       }
 
-      mCurrentSchema = testAccess.PQgetvalue( 0, 4 );
-      if ( mCurrentSchema == mSchemaName )
-      {
-        mUri.clearSchema();
-      }
-
-      if ( mSchemaName == "" )
-        mSchemaName = mCurrentSchema;
-
       sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
                      "pg_class.relnamespace=pg_namespace.oid AND "
                      "pg_get_userbyid(relowner)=current_user AND "
