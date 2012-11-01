@@ -2252,7 +2252,14 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
     {
       QString layerName = layerNodeList.at( i ).toElement().attribute( "name" );
       int order = layerNodeList.at( i ).toElement().attribute( "drawingOrder" ).toInt();
-      orderedLayerNames.insert( order, layerName );
+      if ( order == -1 )
+      {
+        layerList.prepend( layerName );
+      }
+      else
+      {
+        orderedLayerNames.insert( order, layerName );
+      }
     }
 
     QMap<int, QString>::const_iterator orderIt = orderedLayerNames.constBegin();
