@@ -456,7 +456,7 @@ int main( int argc, char * argv[] )
           continue;
         }
         capabilitiesCache.insertCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version, &doc );
-        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       }
       else
       {
