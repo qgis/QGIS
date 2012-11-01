@@ -290,6 +290,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    /** @note added in 2.0 */
+    QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -543,6 +545,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+    /** Duplicate map layer(s) in legend
+     * @note added in 2.0 */
+    void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set CRS of a layer
     void setLayerCRS();
     //! Assign layer CRS to project

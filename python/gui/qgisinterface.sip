@@ -364,6 +364,8 @@ class QgisInterface : QObject
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
+    /** @note added in 2.0 */
+    virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
     virtual QAction *actionLayerSeparator2() = 0 /Deprecated/;
     virtual QAction *actionAddToOverview() = 0;

@@ -313,6 +313,8 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
+    /** @note added in 2.0 */
+    virtual QAction *actionDuplicateLayer();
     virtual QAction *actionLayerProperties();
     virtual QAction *actionLayerSeparator2();
     virtual QAction *actionAddToOverview();

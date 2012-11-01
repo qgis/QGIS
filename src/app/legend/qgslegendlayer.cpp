@@ -430,6 +430,9 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   // remove from canvas
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
+  // duplicate layer
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionAddMap.png" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+
   // set layer crs
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 

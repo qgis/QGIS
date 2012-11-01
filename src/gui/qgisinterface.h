@@ -466,6 +466,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
+    /** @note added in 2.0 */
+    virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED

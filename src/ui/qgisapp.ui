@@ -168,6 +168,7 @@
     <addaction name="mActionLayerSaveAs"/>
     <addaction name="mActionLayerSelectionSaveAs"/>
     <addaction name="mActionRemoveLayer"/>
+    <addaction name="mActionDuplicateLayer"/>
     <addaction name="mActionSetLayerCRS"/>
     <addaction name="mActionSetProjectCRSFromLayer"/>
     <addaction name="mActionLayerProperties"/>
@@ -1819,6 +1820,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Html Annotation</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+   </property>
+   <property name="text">
+    <string>Duplicate Layer(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate Layer(s)</string>
    </property>
   </action>
  </widget>

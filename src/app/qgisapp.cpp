@@ -961,6 +961,7 @@ void QgisApp::createActions()
   connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
+  connect( mActionDuplicateLayer, SIGNAL( triggered() ), this, SLOT( duplicateLayers() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
   connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
@@ -1630,6 +1631,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
   mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ) );
+  mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.png" ) );
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
@@ -5341,6 +5343,77 @@ void QgisApp::removeLayer()
   mMapCanvas->refresh();
 }
 
+void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  if ( !mMapLegend )
+  {
+    return;
+  }
+
+  QList<QgsMapLayer *> selectedLyrs = lyrList.empty() ? mMapLegend->selectedLayers() : lyrList;
+  if ( selectedLyrs.empty() )
+  {
+    return;
+  }
+
+  mMapCanvas->freeze();
+  QgsMapLayer *dupLayer;
+  foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
+  {
+    dupLayer = 0;
+    QString layerDupName = selectedLyr->name() + " " + tr( "copy" );
+
+    // duplicate the layer's basic parameters
+
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( selectedLyr );
+    // TODO: check for other layer types that won't duplicate correctly
+    // currently memory and plugin layers are skipped
+    if ( vlayer && vlayer->storageType() != "Memory storage" )
+    {
+      dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+    }
+
+    if ( !dupLayer )
+    {
+      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( selectedLyr );
+      if ( rlayer )
+      {
+        dupLayer = new QgsRasterLayer( rlayer->source(), layerDupName );
+      }
+    }
+
+    if ( dupLayer && !dupLayer->isValid() )
+    {
+      QgsDebugMsg( "Duplicated layer was invalid" );
+      continue;
+    }
+
+    if ( !dupLayer )
+    {
+      QMessageBox::information( this,
+                                tr( "Unsupported Layer" ),
+                                tr( "%1\n\nDuplication of layer type is unsupported." ).arg( selectedLyr->name() ) );
+      continue;
+    }
+
+    // add layer to project and layer registry
+    addMapLayer( dupLayer );
+
+    // duplicate the layer style
+    copyStyle( selectedLyr );
+    pasteStyle( dupLayer );
+  }
+
+  dupLayer = 0;
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
+}
+
 void QgisApp::setLayerCRS()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -6833,6 +6906,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
 void QgisApp::legendLayerSelectionChanged( void )
 {
   mActionRemoveLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
+  mActionDuplicateLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
   mActionSetLayerCRS->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
   mActionSetProjectCRSFromLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() == 1 );
 }
