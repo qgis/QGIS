@@ -148,7 +148,7 @@ QMenu::item:selected {  background-color: gray; } */
         </spacer>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="searchBox">
+        <widget class="QgsFilterLineEdit" name="searchBox">
          <property name="text">
           <string/>
          </property>
@@ -387,6 +387,13 @@ QMenu::item:selected {  background-color: gray; } */
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
