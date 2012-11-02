@@ -49,9 +49,9 @@ class QgsPgTableModel : public QStandardItemModel
     {
       dbtmSchema = 0,
       dbtmTable,
-      dbtmType,
-      dbtmGeomType,
       dbtmGeomCol,
+      dbtmGeomType, // Data type (geometry, geography, topogeometry, ...)
+      dbtmType, // Spatial type (point, line, polygon, ...)
       dbtmSrid,
       dbtmPkCol,
       dbtmSelectAtId,
