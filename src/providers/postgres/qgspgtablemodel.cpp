@@ -26,11 +26,11 @@ QgsPgTableModel::QgsPgTableModel()
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
   headerLabels << tr( "Table" );
-  headerLabels << tr( "Type" );
-  headerLabels << tr( "Geometry Type" );
-  headerLabels << tr( "Geometry Column" );
+  headerLabels << tr( "Column" );
+  headerLabels << tr( "Data Type" );
+  headerLabels << tr( "Spatial Type" );
   headerLabels << tr( "SRID" );
-  headerLabels << tr( "Primary key column" );
+  headerLabels << tr( "Primary Key" );
   headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
@@ -118,9 +118,9 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
 
   childItemList << schemaNameItem;
   childItemList << tableItem;
-  childItemList << typeItem;
-  childItemList << geomTypeItem;
   childItemList << geomItem;
+  childItemList << geomTypeItem;
+  childItemList << typeItem;
   childItemList << sridItem;
   childItemList << pkItem;
   childItemList << selItem;
