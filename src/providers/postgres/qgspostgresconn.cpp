@@ -1363,7 +1363,7 @@ QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType
     case sctGeography:
       return tr( "Geography" );
     case sctTopoGeometry:
-      return tr( "Topology" );
+      return tr( "TopoGeometry" );
   }
 
   Q_ASSERT( !"unexpected geometry column type" );
