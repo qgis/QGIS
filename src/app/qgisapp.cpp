@@ -5362,11 +5362,19 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   }
 
   mMapCanvas->freeze();
+//  int startCount = QgsMapLayerRegistry::instance()->count();
   QgsMapLayer *dupLayer;
+
   foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
     dupLayer = 0;
     QString layerDupName = selectedLyr->name() + " " + tr( "copy" );
+
+    // setup for placing duplicated layer below source layer, regardless of group depth
+    mMapLegend->blockSignals( true );
+    mMapLegend->setCurrentLayer( selectedLyr );
+    mMapLegend->blockSignals( false );
+    QTreeWidgetItem *sourceItem = mMapLegend->currentItem();
 
     // duplicate the layer's basic parameters
 
@@ -5389,6 +5397,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
     if ( dupLayer && !dupLayer->isValid() )
     {
+      // addMapLayer() also checks layer validity, but do it now to skip canvas refresh
       QgsDebugMsg( "Duplicated layer was invalid" );
       continue;
     }
@@ -5402,16 +5411,37 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     }
 
     // add layer to project and layer registry
-    addMapLayer( dupLayer );
+    QList<QgsMapLayer *> myList;
+    myList << dupLayer;
+    QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
     // duplicate the layer style
     copyStyle( selectedLyr );
     pasteStyle( dupLayer );
+
+    // move layer to just below source layer
+    QTreeWidgetItem *dupItem = mMapLegend->currentItem();
+    mMapLegend->moveItem( dupItem, sourceItem );
+
+    // always set duplicated layers to not visible
+    // so layer can be configured before being turned on,
+    // and no map canvas refresh needed when doing multiple duplications
+    mMapLegend->setLayerVisible( dupLayer, false );
+    // OR, set visible property from source layer? (will require canvas refresh)
+    //mMapLegend->setLayerVisible( dupLayer, mMapLegend->layerCheckState( selectedLyr ) == Qt::Checked );
   }
 
   dupLayer = 0;
+
+  // update UI
+  qApp->processEvents();
+
   mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+//  if ( QgsMapLayerRegistry::instance()->count() > startCount )
+//  {
+//    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+//    mMapCanvas->refresh();
+//  }
 }
 
 void QgisApp::setLayerCRS()
