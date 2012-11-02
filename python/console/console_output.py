@@ -24,7 +24,7 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase, 
                         QsciLexerPython)
-from console_sci import PythonEdit 
+
 import sys
               
 class writeOut:
@@ -32,17 +32,17 @@ class writeOut:
         """
         This class allow to write stdout and stderr
         """
-        self.editor = edit
+        self.outputArea = edit
         self.out = None
         self.style = style
 
     def write(self, m):
         if self.style == "traceback":
-            self.editor.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
-            self.editor.append(m)
-            self.editor.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            self.outputArea.append(m)
+            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
-            self.editor.append(m)
+            self.outputArea.append(m)
         self.move_cursor_to_end()
 
         if self.out:
@@ -51,14 +51,14 @@ class writeOut:
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
         line, index = self.get_end_pos()
-        self.editor.setCursorPosition(line, index)
-        self.editor.ensureCursorVisible()
-        self.editor.ensureLineVisible(line)
+        self.outputArea.setCursorPosition(line, index)
+        self.outputArea.ensureCursorVisible()
+        self.outputArea.ensureLineVisible(line)
         
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
-        line = self.editor.lines() - 1
-        return (line, self.editor.text(line).length())
+        line = self.outputArea.lines() - 1
+        return (line, self.outputArea.text(line).length())
     
     def flush(self):
         pass
@@ -67,13 +67,15 @@ class EditorOutput(QsciScintilla):
     def __init__(self, parent=None):
         #QsciScintilla.__init__(self, parent)
         super(EditorOutput,self).__init__(parent)
-        # Enable non-ascii chars for editor
+        self.parent = parent
+        self.edit = self.parent.edit
+        
+        # Enable non-ascii chars for editor        
         self.setUtf8(True)
         
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "traceback")
         
-        self.edit = PythonEdit() 
         self.setLexers()
         self.setReadOnly(True)
         
@@ -101,7 +103,7 @@ class EditorOutput(QsciScintilla):
         #self.setFoldMarginColors(QColor("#99CC66"),QColor("#333300"))
         #self.setWrapMode(QsciScintilla.WrapCharacter)
         
-         ## Edge Mode : does not seems to work
+        ## Edge Mode
         #self.setEdgeMode(QsciScintilla.EdgeLine)
         #self.setEdgeColumn(80)
         #self.setEdgeColor(QColor("#FF0000")) 
@@ -114,7 +116,7 @@ class EditorOutput(QsciScintilla):
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self)
         self.copyShortcut.activated.connect(self.copy)
-    
+
     def refreshLexerProperties(self):
         self.setLexers()
         
@@ -174,4 +176,15 @@ class EditorOutput(QsciScintilla):
         cmd = self.selectedText()
         self.edit.insertFromDropPaste(cmd)
         self.edit.entered()
-        
+                
+    def keyPressEvent(self, e):
+        # empty text indicates possible shortcut key sequence so stay in output
+        txt = e.text()
+        if txt.length() and txt >= " ":
+            self.edit.append(txt)
+            self.edit.move_cursor_to_end()
+            self.edit.setFocus()
+            e.ignore()
+        else:
+            # possible shortcut key sequence, accept it
+            e.accept()
