@@ -510,6 +510,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   readSettings();
   updateRecentProjectPaths();
   updateProjectFromTemplates();
+  legendLayerSelectionChanged();
   activateDeactivateLayerRelatedActions( NULL );
 
   // create the notification widget for macros
