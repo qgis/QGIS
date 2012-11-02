@@ -279,12 +279,14 @@ class GrassAlgorithm(GeoAlgorithm):
                 # add output file to exported layers, to indicate that they are present in GRASS
                 self.exportedLayers[filename]= out.name
             if isinstance(out, OutputVector):
+                filename = out.value
                 command = "v.out.ogr -ce input=" + out.name
                 command += " dsn=\"" + os.path.dirname(out.value) + "\""
                 command += " format=ESRI_Shapefile"
                 command += " olayer=" + os.path.basename(out.value)[:-4]
                 command += " type=auto"
                 commands.append(command)
+                # add output file to exported layers
                 self.exportedLayers[filename]= out.name
                 
         #4 Run GRASS
