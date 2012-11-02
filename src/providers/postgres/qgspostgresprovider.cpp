@@ -2396,21 +2396,47 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     mConnectionRW->PQexecNR( "BEGIN" );
 
     QString update;
+    QgsPostgresResult result;
 
     if ( mSpatialColType == sctTopoGeometry )
     {
-      // NOTE: We are creating a new TopoGeometry objects with the new shape.
-      // TODO: _replace_ the initial TopoGeometry instead, so that it keeps
-      //       the same identifier and thus still partecipates in any
-      //       hierarchical definition. Also creating a new object results
-      //       in orphaned topogeometries!
+      // We will create a new TopoGeometry object with the new shape.
+      // Later, we'll replace the old TopoGeometry with the new one,
+      // to avoid orphans and retain higher level in an eventual
+      // hierarchical definition
       update = QString( "UPDATE %1 SET %2=toTopoGeom(%3,t.name,layer_id(%2))"
                         " FROM topology.topology t WHERE t.id = topology_id(%2)"
-                        " AND %4" )
+                        " AND %4 RETURNING layer_id(%2), id(%2), t.name" )
                .arg( mQuery )
                .arg( quotedIdentifier( mGeometryColumn ) )
                .arg( geomParam( 1 ) )
                .arg( pkParamWhereClause( 2 ) );
+
+      QString getid = QString( "SELECT id(%1) FROM %2 WHERE %3" )
+             .arg( quotedIdentifier( mGeometryColumn ) )
+             .arg( mQuery )
+             .arg( pkParamWhereClause( 1 ) );
+
+      QgsDebugMsg( "getting old topogeometry id: " + getid );
+
+      result = mConnectionRO->PQprepare( "getid", getid, 1, NULL );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
+        QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(getid) );
+        throw PGException( result );
+      }
+
+      QString replace = QString( "UPDATE %1 SET %2="
+                        "( topology_id(%2),layer_id(%2),$1,type(%2) )"
+                        "WHERE %3" )
+               .arg( mQuery )
+               .arg( quotedIdentifier( mGeometryColumn ) )
+               .arg( pkParamWhereClause( 2 ) );
+      result = mConnectionRW->PQprepare( "replacetopogeom", replace, 2, NULL );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
+        QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+        throw PGException( result );
+      }
+
     }
     else
     {
@@ -2423,9 +2449,11 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     QgsDebugMsg( "updating: " + update );
 
-    QgsPostgresResult result = mConnectionRW->PQprepare( "updatefeatures", update, 2, NULL );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    result = mConnectionRW->PQprepare( "updatefeatures", update, 2, NULL );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
+      QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(update) );
       throw PGException( result );
+    }
 
     for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
           iter != geometry_map.end();
@@ -2441,16 +2469,85 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
 
+      // Save the id of the current topogeometry
+      long old_tg_id;
+      if ( mSpatialColType == sctTopoGeometry )
+      {
+        QStringList params;
+        appendPkParams( iter.key(), params );
+        result = mConnectionRO->PQexecPrepared( "getid", params );
+        if ( result.PQresultStatus() != PGRES_TUPLES_OK ) {
+          QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK) );
+          throw PGException( result );
+        }
+        // TODO: watch out for NULL , handle somehow
+        old_tg_id = result.PQgetvalue( 0, 0 ).toLong(); 
+        QgsDebugMsg( QString("Old TG id is %1").arg(old_tg_id) );
+      }
+
       QStringList params;
       appendGeomParam( &*iter, params );
       appendPkParams( iter.key(), params );
 
       result = mConnectionRW->PQexecPrepared( "updatefeatures", params );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      int expected_status = ( mSpatialColType == sctTopoGeometry ) ? PGRES_TUPLES_OK : PGRES_COMMAND_OK;
+      if ( result.PQresultStatus() != expected_status )
+      {
+        QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(expected_status) );
         throw PGException( result );
+      }
+
+      if ( mSpatialColType == sctTopoGeometry )
+      {
+        long layer_id = result.PQgetvalue( 0, 0 ).toLong(); // new layer_id == old layer_id
+        long new_tg_id = result.PQgetvalue( 0, 1 ).toLong(); // new topogeo_id
+        QString toponame = result.PQgetvalue( 0, 2 ); // new topology name == old topology name
+
+        // Replace old TopoGeom with new TopoGeom, so that
+        // any hierarchically defined TopoGeom will still have its
+        // definition and we'll leave no orphans
+        QString replace = QString( "DELETE FROM %1.relation WHERE "
+                                   "layer_id = %2 AND topogeo_id = %3" )
+                          .arg( quotedIdentifier(toponame) )
+                          .arg( layer_id )
+                          .arg( old_tg_id );
+        result = mConnectionRW->PQexec( replace );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
+          QgsDebugMsg( QString("Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+          throw PGException( result );
+        }
+        replace = QString( "UPDATE %1.relation SET topogeo_id = %2 "
+                           "WHERE layer_id = %3 AND topogeo_id = %4" )
+                  .arg( quotedIdentifier(toponame) )
+                  .arg( old_tg_id )
+                  .arg( layer_id )
+                  .arg( new_tg_id );
+        QgsDebugMsg( "relation swap: " + replace );
+        result = mConnectionRW->PQexec( replace );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
+          QgsDebugMsg( QString("Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+          throw PGException( result );
+        }
+        // Change the ID of the TopoGeometry object put in the table again
+        params = QStringList();
+        params << QString::number( old_tg_id );
+        appendPkParams( iter.key(), params );
+        QgsDebugMsg( "Replacing topogeom reference to use id " + QString::number(old_tg_id) );
+        result = mConnectionRW->PQexecPrepared( "replacetopogeom", params );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+        {
+          QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'replacetopogeom' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK) );
+          throw PGException( result );
+        }
+      } // if TopoGeometry
+
     } // for each feature
 
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
+    if ( mSpatialColType == sctTopoGeometry ) {
+      mConnectionRO->PQexecNR( "DEALLOCATE getid" );
+      mConnectionRW->PQexecNR( "DEALLOCATE replacetopogeom" );
+    }
     mConnectionRW->PQexecNR( "COMMIT" );
   }
   catch ( PGException &e )
@@ -2458,6 +2555,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
+    if ( mSpatialColType == sctTopoGeometry ) {
+      mConnectionRO->PQexecNR( "DEALLOCATE getid" );
+      mConnectionRW->PQexecNR( "DEALLOCATE replacetopogeom" );
+    }
     returnvalue = false;
   }
 
