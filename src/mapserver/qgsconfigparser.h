@@ -88,6 +88,7 @@ class QgsConfigParser
 
     double legendBoxSpace() const { return mLegendBoxSpace; }
     double legendLayerSpace() const { return mLegendLayerSpace; }
+    double legendLayerTitleSpace() const { return mLegendLayerTitleSpace; }
     double legendSymbolSpace() const { return mLegendSymbolSpace; }
     double legendIconLabelSpace() const { return mLegendIconLabelSpace; }
     double legendSymbolWidth() const { return mLegendSymbolWidth; }
@@ -174,6 +175,7 @@ class QgsConfigParser
     //various parameters used for GetLegendGraphics
     double mLegendBoxSpace;
     double mLegendLayerSpace;
+    double mLegendLayerTitleSpace;
     double mLegendSymbolSpace;
     double mLegendIconLabelSpace;
     double mLegendSymbolWidth;
