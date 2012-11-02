@@ -2978,8 +2978,15 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
     int closestVertexIndex = 0;
 
     // set up the GEOS geometry
-    if ( !exportWkbToGeos() )
-      return -1;
+    if ( mDirtyGeos )
+    {
+      exportWkbToGeos();
+    }
+
+    if ( !mGeos )
+    {
+        return -1;
+    }
 
     const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
     if ( !g )
@@ -3276,9 +3283,15 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
     return 2;
 
   //create geos geometry from wkb if not already there
-  if ( !mGeos || mDirtyGeos )
-    if ( !exportWkbToGeos() )
+  if ( mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
       return 6;
+  }
 
   int type = GEOSGeomTypeId( mGeos );
 
@@ -3505,13 +3518,15 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
   }
 
   //create geos geometry from wkb if not already there
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
-    if ( !exportWkbToGeos() )
-    {
-      QgsDebugMsg( "could not export to GEOS geometry" );
-      return 4;
-    }
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    QgsDebugMsg( "GEOS geometry not available!" );
+    return 4;
   }
 
   int geosType = GEOSGeomTypeId( mGeos );
@@ -3881,10 +3896,14 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     exportGeosToWkb();
   }
 
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
-    if ( !exportWkbToGeos() )
-      return 1;
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    return 1;
   }
 
   if ( !GEOSisValid( mGeos ) )
@@ -3955,9 +3974,14 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
   GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
 
   //make sure this geos geometry is up-to-date
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    return 1;
   }
 
   //single or multi?
@@ -4067,7 +4091,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 int QgsGeometry::makeDifference( QgsGeometry* other )
 {
   //make sure geos geometry is up to date
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -4088,7 +4112,7 @@ int QgsGeometry::makeDifference( QgsGeometry* other )
   }
 
   //convert other geometry to geos
-  if ( !other->mGeos || other->mDirtyGeos )
+  if ( other->mDirtyGeos )
   {
     other->exportWkbToGeos();
   }
@@ -4161,6 +4185,7 @@ QgsRectangle QgsGeometry::boundingBox()
     QgsDebugMsg( "WKB geometry not available!" );
     return QgsRectangle( 0, 0, 0, 0 );
   }
+
   // consider endian when fetching feature type
   //wkbType = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4]; //MH: Does not work for 25D geometries
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
@@ -6173,10 +6198,14 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
     return 2;
   }
 
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
-    if ( !exportWkbToGeos() )
-      return 5;
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    return 5;
   }
 
   //first test if linestring intersects geometry. If not, return straight away
@@ -6234,10 +6263,14 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
     return 2;
   }
 
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
-    if ( !exportWkbToGeos() )
-      return 5;
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    return 5;
   }
 
   //first test if linestring intersects geometry. If not, return straight away
@@ -6939,10 +6972,14 @@ int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
 
 int QgsGeometry::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult )
 {
-  if ( !mGeos || mDirtyGeos )
+  if ( mDirtyGeos )
   {
-    if ( !exportWkbToGeos() )
-      return 1;
+    exportWkbToGeos();
+  }
+
+  if ( !mGeos )
+  {
+    return 1;
   }
 
   //convert mGeos to geometry collection
@@ -7198,9 +7235,13 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon()
 
 double QgsGeometry::area()
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
+  }
+  if ( !mGeos )
+  {
+    return -1.0;
   }
 
   double area;
@@ -7217,9 +7258,13 @@ double QgsGeometry::area()
 
 double QgsGeometry::length()
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
+  }
+  if ( !mGeos )
+  {
+    return -1.0;
   }
 
   double length;
@@ -7235,12 +7280,11 @@ double QgsGeometry::length()
 }
 double QgsGeometry::distance( QgsGeometry& geom )
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
-
-  if ( !geom.mGeos )
+  if ( geom.mDirtyGeos )
   {
     geom.exportWkbToGeos();
   }
@@ -7262,7 +7306,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
 
 QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -7280,7 +7324,7 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -7297,7 +7341,7 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
 
 QgsGeometry* QgsGeometry::centroid()
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -7314,7 +7358,7 @@ QgsGeometry* QgsGeometry::centroid()
 
 QgsGeometry* QgsGeometry::convexHull()
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -7334,7 +7378,7 @@ QgsGeometry* QgsGeometry::interpolate( double distance )
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=2)))
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
@@ -7359,14 +7403,17 @@ QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
+
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
-  if ( !geometry->mGeos )
+  if ( geometry->mDirtyGeos )
   {
     geometry->exportWkbToGeos();
   }
+
+
   if ( !mGeos || !geometry->mGeos )
   {
     return 0;
@@ -7385,14 +7432,16 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
+
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
-  if ( !geometry->mGeos )
+  if ( geometry->mDirtyGeos )
   {
     geometry->exportWkbToGeos();
   }
+
   if ( !mGeos || !geometry->mGeos )
   {
     return 0;
@@ -7421,14 +7470,16 @@ QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
+
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
-  if ( !geometry->mGeos )
+  if ( geometry->mDirtyGeos )
   {
     geometry->exportWkbToGeos();
   }
+
   if ( !mGeos || !geometry->mGeos )
   {
     return 0;
@@ -7447,14 +7498,16 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
   {
     return NULL;
   }
-  if ( !mGeos )
+
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
   }
-  if ( !geometry->mGeos )
+  if ( geometry->mDirtyGeos )
   {
     geometry->exportWkbToGeos();
   }
+
   if ( !mGeos || !geometry->mGeos )
   {
     return 0;
@@ -7469,11 +7522,14 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
 
 QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 {
-  if ( !mGeos )
+  if ( mDirtyGeos )
   {
     exportWkbToGeos();
-    if ( !mGeos )
-      return QList<QgsGeometry*>();
+  }
+
+  if ( !mGeos )
+  {
+    return QList<QgsGeometry*>();
   }
 
   int type = GEOSGeomTypeId( mGeos );
