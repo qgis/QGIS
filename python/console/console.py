@@ -78,6 +78,10 @@ class PythonConsole(QDockWidget):
         self.activateWindow()
         self.raise_()
         QDockWidget.setFocus(self)
+        
+    def closeEvent(self, event):
+        self.console.edit.writeHistoryFile()
+        QWidget.closeEvent(self, event)
 
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
@@ -256,8 +260,8 @@ class PythonConsoleWidget(QWidget):
         sM.setPopupMode(QToolButton.InstantPopup)
 
         self.b.addWidget(self.toolBar)
-        self.edit = PythonEdit()
-        self.textEditOut = EditorOutput()
+        self.edit = PythonEdit(self)
+        self.textEditOut = EditorOutput(self)
         
         self.setFocusProxy(self.edit)
         
@@ -361,10 +365,6 @@ class PythonConsoleWidget(QWidget):
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()
-
-    def closeEvent(self, event):
-        self.edit.writeHistoryFile()
-        QWidget.closeEvent(self, event)
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
