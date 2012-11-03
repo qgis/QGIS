@@ -41,6 +41,8 @@
 #include <QMenuBar>
 #include <QPushButton>
 #include <QWebView>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
 
@@ -286,6 +288,13 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
     QWebView *wv = new QWebView( attrItem->treeWidget() );
     wv->setHtml( attributes.begin().value() );
     wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+
+    QAction *action = new QAction( tr( "Print" ), wv );
+    connect( action, SIGNAL( triggered() ), this, SLOT( print() ) );
+    wv->insertAction( 0, action );
+
+    wv->setContextMenuPolicy( Qt::ActionsContextMenu );
+
     connect( wv, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
     attrItem->treeWidget()->setItemWidget( attrItem, 1, wv );
   }
@@ -1018,6 +1027,22 @@ void QgsIdentifyResults::openUrl( const QUrl &url )
   {
     QMessageBox::warning( this, tr( "Could not open url" ), tr( "Could not open URL '%1'" ).arg( url.toString() ) );
   }
+}
+
+void QgsIdentifyResults::print()
+{
+  QAction *action = qobject_cast<QAction*>( sender() );
+  if ( !action )
+    return;
+
+  QWebView *wv = qobject_cast<QWebView*>( action->parent() );
+  if ( !wv )
+    return;
+
+  QPrinter printer;
+  QPrintDialog *dialog = new QPrintDialog( &printer );
+  if ( dialog->exec() == QDialog::Accepted )
+    wv->print( &printer );
 }
 
 void QgsIdentifyResults:: on_mExpandNewToolButton_toggled( bool checked )

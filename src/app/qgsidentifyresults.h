@@ -119,6 +119,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void on_mCollapseToolButton_clicked( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
 
     void openUrl( const QUrl &url );
+    void print();
 
   private:
     QMenu *mActionPopup;
