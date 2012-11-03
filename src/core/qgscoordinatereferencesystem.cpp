@@ -494,7 +494,7 @@ bool QgsCoordinateReferenceSystem::isValid() const
   return mIsValidFlag;
 }
 
-bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String )
+bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String, bool save )
 {
   //
   // Examples:

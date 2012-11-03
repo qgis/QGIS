@@ -154,7 +154,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theProjString A proj4 format string
      * @return bool TRUE if success else false
      */
-    bool createFromProj4( const QString theProjString );
+    bool createFromProj4( const QString theProjString, bool save=true );
 
     /*! Set up this srs from a string definition, by default a WKT definition.  Otherwise
      * the string defines a authority, followed by a colon, followed by the definition.
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long    mSRID;
     //!If available the authority identifier for this srs
     QString mAuthId;
-    //! Wehter this srs is properly defined and valid
+    //! Wheter this srs is properly defined and valid
     bool mIsValidFlag;
 
     //! Work out the projection units and set the appropriate local variable
