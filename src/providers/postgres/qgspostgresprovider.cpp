@@ -1166,7 +1166,7 @@ bool QgsPostgresProvider::loadFields()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
       continue;
     }
 
@@ -2413,27 +2413,31 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                .arg( pkParamWhereClause( 2 ) );
 
       QString getid = QString( "SELECT id(%1) FROM %2 WHERE %3" )
-             .arg( quotedIdentifier( mGeometryColumn ) )
-             .arg( mQuery )
-             .arg( pkParamWhereClause( 1 ) );
+                      .arg( quotedIdentifier( mGeometryColumn ) )
+                      .arg( mQuery )
+                      .arg( pkParamWhereClause( 1 ) );
 
       QgsDebugMsg( "getting old topogeometry id: " + getid );
 
       result = mConnectionRO->PQprepare( "getid", getid, 1, NULL );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
-        QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(getid) );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      {
+        QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                     .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( getid ) );
         throw PGException( result );
       }
 
       QString replace = QString( "UPDATE %1 SET %2="
-                        "( topology_id(%2),layer_id(%2),$1,type(%2) )"
-                        "WHERE %3" )
-               .arg( mQuery )
-               .arg( quotedIdentifier( mGeometryColumn ) )
-               .arg( pkParamWhereClause( 2 ) );
+                                 "( topology_id(%2),layer_id(%2),$1,type(%2) )"
+                                 "WHERE %3" )
+                        .arg( mQuery )
+                        .arg( quotedIdentifier( mGeometryColumn ) )
+                        .arg( pkParamWhereClause( 2 ) );
       result = mConnectionRW->PQprepare( "replacetopogeom", replace, 2, NULL );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
-        QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      {
+        QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                     .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( replace ) );
         throw PGException( result );
       }
 
@@ -2450,8 +2454,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QgsDebugMsg( "updating: " + update );
 
     result = mConnectionRW->PQprepare( "updatefeatures", update, 2, NULL );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
-      QgsDebugMsg( QString("Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(update) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      QgsDebugMsg( QString( "Exception thrown due to PQprepare of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                   .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( update ) );
       throw PGException( result );
     }
 
@@ -2476,13 +2482,15 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         QStringList params;
         appendPkParams( iter.key(), params );
         result = mConnectionRO->PQexecPrepared( "getid", params );
-        if ( result.PQresultStatus() != PGRES_TUPLES_OK ) {
-          QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK) );
+        if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+        {
+          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
           throw PGException( result );
         }
         // TODO: watch out for NULL , handle somehow
-        old_tg_id = result.PQgetvalue( 0, 0 ).toLong(); 
-        QgsDebugMsg( QString("Old TG id is %1").arg(old_tg_id) );
+        old_tg_id = result.PQgetvalue( 0, 0 ).toLong();
+        QgsDebugMsg( QString( "Old TG id is %1" ).arg( old_tg_id ) );
       }
 
       QStringList params;
@@ -2493,7 +2501,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       int expected_status = ( mSpatialColType == sctTopoGeometry ) ? PGRES_TUPLES_OK : PGRES_COMMAND_OK;
       if ( result.PQresultStatus() != expected_status )
       {
-        QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(expected_status) );
+        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
+                     .arg( result.PQresultStatus() ).arg( expected_status ) );
         throw PGException( result );
       }
 
@@ -2508,35 +2517,40 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         // definition and we'll leave no orphans
         QString replace = QString( "DELETE FROM %1.relation WHERE "
                                    "layer_id = %2 AND topogeo_id = %3" )
-                          .arg( quotedIdentifier(toponame) )
+                          .arg( quotedIdentifier( toponame ) )
                           .arg( layer_id )
                           .arg( old_tg_id );
         result = mConnectionRW->PQexec( replace );
-        if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
-          QgsDebugMsg( QString("Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+        {
+          QgsDebugMsg( QString( "Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( replace ) );
           throw PGException( result );
         }
         replace = QString( "UPDATE %1.relation SET topogeo_id = %2 "
                            "WHERE layer_id = %3 AND topogeo_id = %4" )
-                  .arg( quotedIdentifier(toponame) )
+                  .arg( quotedIdentifier( toponame ) )
                   .arg( old_tg_id )
                   .arg( layer_id )
                   .arg( new_tg_id );
         QgsDebugMsg( "relation swap: " + replace );
         result = mConnectionRW->PQexec( replace );
-        if ( result.PQresultStatus() != PGRES_COMMAND_OK ) {
-          QgsDebugMsg( QString("Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK).arg(replace) );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+        {
+          QgsDebugMsg( QString( "Exception thrown due to PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( replace ) );
           throw PGException( result );
         }
         // Change the ID of the TopoGeometry object put in the table again
         params = QStringList();
         params << QString::number( old_tg_id );
         appendPkParams( iter.key(), params );
-        QgsDebugMsg( "Replacing topogeom reference to use id " + QString::number(old_tg_id) );
+        QgsDebugMsg( "Replacing topogeom reference to use id " + QString::number( old_tg_id ) );
         result = mConnectionRW->PQexecPrepared( "replacetopogeom", params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         {
-          QgsDebugMsg( QString("Exception thrown due to PQexecPrepared of 'replacetopogeom' returning != PGRES_COMMAND_OK (%1 != expected %2)").arg(result.PQresultStatus()).arg(PGRES_COMMAND_OK) );
+          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'replacetopogeom' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
           throw PGException( result );
         }
       } // if TopoGeometry
@@ -2544,7 +2558,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     } // for each feature
 
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
-    if ( mSpatialColType == sctTopoGeometry ) {
+    if ( mSpatialColType == sctTopoGeometry )
+    {
       mConnectionRO->PQexecNR( "DEALLOCATE getid" );
       mConnectionRW->PQexecNR( "DEALLOCATE replacetopogeom" );
     }
@@ -2555,7 +2570,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
-    if ( mSpatialColType == sctTopoGeometry ) {
+    if ( mSpatialColType == sctTopoGeometry )
+    {
       mConnectionRO->PQexecNR( "DEALLOCATE getid" );
       mConnectionRW->PQexecNR( "DEALLOCATE replacetopogeom" );
     }
