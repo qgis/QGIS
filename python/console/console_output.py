@@ -106,19 +106,17 @@ class EditorOutput(QsciScintilla):
         #self.setEdgeMode(QsciScintilla.EdgeLine)
         #self.setEdgeColumn(80)
         #self.setEdgeColor(QColor("#FF0000")) 
-                        
+        
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-                
+        
         self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runShortcut.activated.connect(self.enteredSelected)
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
-        self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self)
+        self.copyShortcut = QShortcut(QKeySequence.Copy, self)
         self.copyShortcut.activated.connect(self.copy)
-        self.selectAllShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_A), self)
+        self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
         self.selectAllShortcut.activated.connect(self.selectAll)
-        self.pastebinShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_V), self)
-        self.pastebinShortcut.activated.connect(self.pastebin)
 
     def refreshLexerProperties(self):
         self.setLexers()
@@ -158,13 +156,24 @@ class EditorOutput(QsciScintilla):
         iconRun = QIcon(":/images/console/iconRunConsole.png")
         iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
         iconClear = QIcon(":/images/console/iconClearConsole.png")
-        runAction = menu.addAction(iconRun, "Enter Selected", self.enteredSelected, QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(iconClear, "Clear console", self.clearConsole)
+        runAction = menu.addAction(iconRun, 
+                                   "Enter Selected", 
+                                   self.enteredSelected, 
+                                   QKeySequence(Qt.CTRL + Qt.Key_E))
+        clearAction = menu.addAction(iconClear, 
+                                     "Clear console", 
+                                     self.clearConsole)
         menu.addSeparator()
-        copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
-        pastebinAction = menu.addAction(iconPastebin, "Share on codepad", self.pastebin, QKeySequence.Paste)
+        copyAction = menu.addAction("Copy", 
+                                    self.copy, 
+                                    QKeySequence.Copy)
+        pastebinAction = menu.addAction(iconPastebin, 
+                                        "Share on codepad", 
+                                        self.pastebin)
         menu.addSeparator()
-        selectAllAction = menu.addAction("Select All", self.selectAll, QKeySequence.SelectAll)
+        selectAllAction = menu.addAction("Select All", 
+                                         self.selectAll, 
+                                         QKeySequence.SelectAll)
         runAction.setEnabled(False)
         copyAction.setEnabled(False)
         pastebinAction.setEnabled(False)
