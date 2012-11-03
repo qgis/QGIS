@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+/* $Id: qgsdelimitedtextprovider.h 15616 2011-03-27 15:43:17Z jef $ */
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
@@ -175,10 +176,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
-
-    static QString readLine( QTextStream *stream );
-    static QStringList splitLine( QString line, QString delimiterType, QString delimiter );
-
   private:
 
     //! Fields
@@ -226,7 +223,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     long mNumberFeatures;
     int mSkipLines;
     int mFirstDataLine; // Actual first line of data (accounting for blank lines)
-    QString mDecimalPoint;
 
     //! Storage for any lines in the file that couldn't be loaded
     QStringList mInvalidLines;
@@ -250,5 +246,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QGis::WkbType mWkbType;
 
-    QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
+    QString readLine( QTextStream *stream );
+    QStringList splitLine( QString line );
 };
