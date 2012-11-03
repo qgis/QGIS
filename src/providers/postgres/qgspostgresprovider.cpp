@@ -2476,7 +2476,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
 
       // Save the id of the current topogeometry
-      long old_tg_id;
+      long old_tg_id = -1;
       if ( mSpatialColType == sctTopoGeometry )
       {
         QStringList params;

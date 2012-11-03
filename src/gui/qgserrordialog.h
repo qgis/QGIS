@@ -32,6 +32,9 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
 
     /** Show dialog with error
      * @param theError error
+     * @param theTitle title
+     * @param parent parent object
+     * @param fl widget flags
      */
     static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 

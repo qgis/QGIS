@@ -881,7 +881,7 @@ bool QgsStyleV2::detagSymbol( StyleEntity type, QString symbol, QStringList tags
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
 
-  int symbolid;
+  int symbolid = 0;
   if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     symbolid = sqlite3_column_int( ppStmt, 0 );

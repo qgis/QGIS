@@ -96,7 +96,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
   // if the filter is spatial
   if ( filterName == "BBOX" || filterName == "CONTAINS" || filterName == "CROSSES" || filterName == "DISJOINT" || filterName == "EQUALS" || filterName == "INTERSECTS" || filterName == "OVERLAPS" || filterName == "TOUCHES" || filterName == "WITHIN" )
   {
-    QgsGeometry* geom;
+    QgsGeometry *geom = 0;
 
     QDomNodeList bNodes = filterElem.elementsByTagName( "Box" );
     if ( bNodes.size() > 0 )

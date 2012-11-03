@@ -860,8 +860,10 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
   mType = Directory;
   mValid = QDir( QgsCptCityArchive::defaultBaseDir() ).exists();
   if ( ! mValid )
+  {
     QgsDebugMsg( "created invalid dir item, path = " + QgsCptCityArchive::defaultBaseDir()
                  + QDir::separator() + mPath );
+  }
 
   // parse DESC.xml to get mInfo
   mInfo = "";

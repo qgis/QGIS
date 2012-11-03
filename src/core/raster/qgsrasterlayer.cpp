@@ -919,12 +919,12 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
 }
 #endif
 
+#if 0
 /**
  * @param thePoint the QgsPoint for which to obtain pixel values
  * @param theResults QMap to hold the pixel values at thePoint for each layer in the raster file
  * @return False if WMS layer and true otherwise
  */
-#if 0
 bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   theResults.clear();
@@ -1019,10 +1019,6 @@ QString QgsRasterLayer::identifyAsHtml( const QgsPoint& thePoint )
 }
 #endif
 
-/**
- * @note Note implemented yet
- * @return Always returns false
- */
 bool QgsRasterLayer::isEditable() const
 {
   return false;

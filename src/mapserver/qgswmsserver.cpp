@@ -1445,6 +1445,7 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
                                         double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor,
                                         double dpi ) const
 {
+  Q_UNUSED( layerSpace );
   if ( !item )
   {
     return;
