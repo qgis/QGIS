@@ -5363,31 +5363,49 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   }
 
   mMapCanvas->freeze();
-//  int startCount = QgsMapLayerRegistry::instance()->count();
   QgsMapLayer *dupLayer;
+  QString layerDupName, unSppType;
 
   foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
     dupLayer = 0;
-    QString layerDupName = selectedLyr->name() + " " + tr( "copy" );
+    unSppType = QString( "" );
+    layerDupName = selectedLyr->name() + " " + tr( "copy" );
 
     // setup for placing duplicated layer below source layer, regardless of group depth
     mMapLegend->blockSignals( true );
-    mMapLegend->setCurrentLayer( selectedLyr );
+    if ( !mMapLegend->setCurrentLayer( selectedLyr ) )
+    {
+      mMapLegend->blockSignals( false );
+      continue; // legend item doesn't exist for map layer
+    }
     mMapLegend->blockSignals( false );
-    QTreeWidgetItem *sourceItem = mMapLegend->currentItem();
+    QgsLegendLayer *sourcellayer = mMapLegend->currentLegendLayer();
+
+    if ( selectedLyr->type() == QgsMapLayer::PluginLayer )
+    {
+      unSppType = tr( "Plugin layer" );
+    }
 
     // duplicate the layer's basic parameters
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( selectedLyr );
-    // TODO: check for other layer types that won't duplicate correctly
-    // currently memory and plugin layers are skipped
-    if ( vlayer && vlayer->storageType() != "Memory storage" )
+    if ( unSppType.isEmpty() )
     {
-      dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( selectedLyr );
+      // TODO: check for other layer types that won't duplicate correctly
+      // currently memory and plugin layers are skipped
+      if ( vlayer && vlayer->storageType() == "Memory storage" )
+      {
+        unSppType = tr( "Memory layer" );
+      }
+      else if ( vlayer )
+      {
+        dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+      }
     }
 
-    if ( !dupLayer )
+
+    if ( unSppType.isEmpty() && !dupLayer )
     {
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer*>( selectedLyr );
       if ( rlayer )
@@ -5396,18 +5414,21 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       }
     }
 
-    if ( dupLayer && !dupLayer->isValid() )
+    if ( unSppType.isEmpty() && dupLayer && !dupLayer->isValid() )
     {
-      // addMapLayer() also checks layer validity, but do it now to skip canvas refresh
-      QgsDebugMsg( "Duplicated layer was invalid" );
+      QMessageBox::information( this,
+                                tr( "Invalid Layer" ),
+                                tr( "%1\n\nDuplication resulted in invalid layer." ).arg( selectedLyr->name() ) );
       continue;
     }
 
-    if ( !dupLayer )
+    if ( !unSppType.isEmpty() || !dupLayer )
     {
       QMessageBox::information( this,
                                 tr( "Unsupported Layer" ),
-                                tr( "%1\n\nDuplication of layer type is unsupported." ).arg( selectedLyr->name() ) );
+                                tr( "%1\n%2\n\nDuplication of layer type is unsupported." )
+                                .arg( selectedLyr->name() )
+                                .arg( !unSppType.isEmpty() ? QString( " (" ) + unSppType + QString( ")" ) : "" ) );
       continue;
     }
 
@@ -5421,15 +5442,13 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     pasteStyle( dupLayer );
 
     // move layer to just below source layer
-    QTreeWidgetItem *dupItem = mMapLegend->currentItem();
-    mMapLegend->moveItem( dupItem, sourceItem );
+    QgsLegendLayer *dupllayer = mMapLegend->currentLegendLayer();
+    mMapLegend->moveItem( dupllayer, sourcellayer );
 
     // always set duplicated layers to not visible
     // so layer can be configured before being turned on,
     // and no map canvas refresh needed when doing multiple duplications
     mMapLegend->setLayerVisible( dupLayer, false );
-    // OR, set visible property from source layer? (will require canvas refresh)
-    //mMapLegend->setLayerVisible( dupLayer, mMapLegend->layerCheckState( selectedLyr ) == Qt::Checked );
   }
 
   dupLayer = 0;
@@ -5438,11 +5457,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   qApp->processEvents();
 
   mMapCanvas->freeze( false );
-//  if ( QgsMapLayerRegistry::instance()->count() > startCount )
-//  {
-//    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-//    mMapCanvas->refresh();
-//  }
 }
 
 void QgisApp::setLayerCRS()

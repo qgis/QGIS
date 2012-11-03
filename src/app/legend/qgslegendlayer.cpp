@@ -431,7 +431,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // duplicate layer
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionAddMap.png" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+  QAction* duplicateLayersAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mActionAddMap.png" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
   // set layer crs
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
@@ -460,6 +460,12 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       }
     }
 
+    // disable duplication of memory layers
+    if ( vlayer->storageType() == "Memory storage" && legend()->selectedLayers().count() == 1 )
+    {
+      duplicateLayersAction->setEnabled( false );
+    }
+
     // save as vector file
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
@@ -484,6 +490,11 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+  }
+  else if ( lyr->type() == QgsMapLayer::PluginLayer && legend()->selectedLayers().count() == 1 )
+  {
+    // disable duplication of plugin layers
+    duplicateLayersAction->setEnabled( false );
   }
 
   // properties goes on bottom of menu for consistency with normal ui standards
