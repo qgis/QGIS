@@ -91,7 +91,7 @@
       <item>
        <widget class="QToolButton" name="mBtnFilterShow">
         <property name="toolTip">
-         <string>FIlter Files</string>
+         <string>Filter Files</string>
         </property>
         <property name="text">
          <string>...</string>
