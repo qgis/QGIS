@@ -46,7 +46,6 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
     void showFilterWidget( bool visible );
     void setFilterSyntax( QAction * );
     void setFilter();
-    void clearFilter();
 
     // layer menu items
     void addCurrentLayer();

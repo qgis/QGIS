@@ -31,6 +31,9 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   public:
     QgsFilterLineEdit( QWidget* parent = 0 );
 
+  signals:
+    void cleared();
+
   protected:
     void resizeEvent( QResizeEvent * );
 

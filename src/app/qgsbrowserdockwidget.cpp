@@ -83,6 +83,9 @@ class QgsBrowserTreeView : public QTreeView
     }
 };
 
+/**
+Utility class for filtering browser items
+ */
 class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 {
   public:
@@ -125,7 +128,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       if ( mPatternSyntax == QRegExp::Wildcard ||
            mPatternSyntax == QRegExp::WildcardUnix )
       {
-        foreach( QString f, mFilter.split( "|" ) )
+        foreach ( QString f, mFilter.split( "|" ) )
         {
           QRegExp rx( f.trimmed() );
           rx.setPatternSyntax( mPatternSyntax );
@@ -150,11 +153,10 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     bool filterAcceptsString( const QString & value ) const
     {
-      // return ( filterRegExp().exactMatch( fileInfo.fileName() ) );
       if ( mPatternSyntax == QRegExp::Wildcard ||
            mPatternSyntax == QRegExp::WildcardUnix )
       {
-        foreach( QRegExp rx, mREList )
+        foreach ( QRegExp rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.exactMatch( value ) ) );
           if ( rx.exactMatch( value ) )
@@ -163,15 +165,9 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       }
       else
       {
-        foreach( QRegExp rx, mREList )
+        foreach ( QRegExp rx, mREList )
         {
           QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.indexIn( value ) ) );
-          QRegExp rx2( "\\b(mail|letter|correspondence)\\b" );
-          QgsDebugMsg( QString( "value: [%1] rx2: [%2] match: %3" ).arg( value ).arg( rx2.pattern() ).arg( rx2.indexIn( value ) ) );
-          QgsDebugMsg( QString( "T1 %1" ).arg( rx2.indexIn( "I sent you an email" ) ) );     // returns -1 (no match)
-          QgsDebugMsg( QString( "T2 %2" ).arg( rx2.indexIn( "Please write the letter" ) ) );     // returns -1 (no match)
-          QgsDebugMsg( QString( "T3 %2" ).arg( rx.indexIn( "Please write the letter" ) ) );     // returns -1 (no match)
-
           if ( rx.indexIn( value ) != -1 )
             return true;
         }
@@ -226,15 +222,14 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   mBrowserView = new QgsBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
 
-  mBtnRefresh->setIcon( QgisApp::instance()->getThemeIcon( "mActionRefresh.png" ) );
-  mBtnAddLayers->setIcon( QgisApp::instance()->getThemeIcon( "mActionAdd.png" ) );
-  mBtnCollapse->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
+  mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionRefresh.png" ) );
+  mBtnAddLayers->setIcon( QgsApplication::getThemeIcon( "mActionAdd.png" ) );
+  mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
 
   mWidgetFilter->hide();
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
-  mBtnFilterShow->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilter.png" ) );
-  mBtnFilter->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilter.png" ) );
-  mBtnFilterClear->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilterDelete.png" ) );
+  mBtnFilterShow->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
+  mBtnFilter->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
 
   QMenu* menu = new QMenu( this );
   menu->setSeparatorsCollapsible( false );
@@ -243,19 +238,15 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   QAction* action = new QAction( tr( "Filter Pattern Syntax" ), group );
   action->setSeparator( true );
   menu->addAction( action );
-  // group->addAction( action );
   action = new QAction( tr( "Wildcard(s)" ), group );
   action->setData( QVariant(( int ) QRegExp::Wildcard ) );
   action->setCheckable( true );
   action->setChecked( true );
   menu->addAction( action );
-  // group->addAction( action );
-  // menu->addSeparator()->setText( tr( "Pattern Syntax" ) );
   action = new QAction( tr( "Regular Expression" ), group );
   action->setData( QVariant(( int ) QRegExp::RegExp ) );
   action->setCheckable( true );
   menu->addAction( action );
-  // group->addAction( action );
 
   connect( mBtnRefresh, SIGNAL( clicked() ), this, SLOT( refresh() ) );
   connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
@@ -263,7 +254,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
   connect( mBtnFilter, SIGNAL( clicked() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
-  connect( mBtnFilterClear, SIGNAL( clicked() ), this, SLOT( clearFilter() ) );
+  connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
+  // connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
   connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
@@ -624,7 +616,10 @@ void QgsBrowserDockWidget::showFilterWidget( bool visible )
 {
   mWidgetFilter->setVisible( visible );
   if ( ! visible )
-    clearFilter();
+  {
+    mLeFilter->setText( "" );
+    setFilter();
+  }
 }
 
 void QgsBrowserDockWidget::setFilter( )
@@ -639,12 +634,6 @@ void QgsBrowserDockWidget::setFilterSyntax( QAction * action )
   if ( !action || ! mProxyModel )
     return;
   mProxyModel->setFilterSyntax(( QRegExp::PatternSyntax ) action->data().toInt() );
-}
-
-void QgsBrowserDockWidget::clearFilter( )
-{
-  mLeFilter->setText( "" );
-  setFilter();
 }
 
 QgsDataItem* QgsBrowserDockWidget::dataItem( const QModelIndex& index )

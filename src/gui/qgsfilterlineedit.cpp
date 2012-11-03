@@ -25,17 +25,18 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent ) : QLineEdit( parent )
 {
   btnClear = new QToolButton( this );
   btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.png" ) );
-  btnClear->setCursor(Qt::ArrowCursor);
+  btnClear->setCursor( Qt::ArrowCursor );
   btnClear->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
   btnClear->hide();
 
   connect( btnClear, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( btnClear, SIGNAL( clicked() ), this, SIGNAL( cleared() ) );
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( toggleClearButton( const QString& ) ) );
 
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   setStyleSheet( QString( "QLineEdit { padding-right: %1px; } " )
-               .arg( btnClear->sizeHint().width() + frameWidth + 1 ) );
+                 .arg( btnClear->sizeHint().width() + frameWidth + 1 ) );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ),
