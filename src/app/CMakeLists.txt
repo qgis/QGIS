@@ -409,9 +409,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
+  ${QEXTSERIALPORT_INCLUDE_DIR}
   ../analysis/raster
   ../core
-  ../core/gps ../core/gps/qextserialport
+  ../core/gps
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
   ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
@@ -420,7 +421,7 @@ INCLUDE_DIRECTORIES(
   )
 
 IF (ANDROID)
-    INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+  INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
 
 IF (HAVE_SPATIALITE)

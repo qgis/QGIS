@@ -5,9 +5,6 @@
 
 SET(QGIS_CORE_SRCS
 
-  gps/qextserialport/qextserialport.cpp
-  gps/qextserialport/qextserialenumerator.cpp
-
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -212,23 +209,29 @@ SET(QGIS_CORE_SRCS
   qgsscaleutils.cpp
 )
 
-IF(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/win_qextserialport.cpp
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qextserialport/qextserialport.cpp
+    gps/qextserialport/qextserialenumerator.cpp
   )
-  ADD_DEFINITIONS(-D_TTY_WIN_)
-ELSE(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/posix_qextserialport.cpp
-  )
-  ADD_DEFINITIONS(-D_TTY_POSIX_)
-ENDIF(WIN32)
+
+  IF(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/win_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_WIN_)
+  ELSE(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/posix_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_POSIX_)
+  ENDIF(WIN32)
+ELSE (WITH_INTERNAL_QEXTSERIALPORT)
+  INCLUDE_DIRECTORIES(${QEXTSERIALPORT_INCLUDE_DIR})
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -250,8 +253,7 @@ IF (WITH_INTERNAL_SPATIALITE)
   ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
   ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
 
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     spatialite/sqlite3.c
     spatialite/spatialite.c
     )
@@ -316,16 +318,19 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
-  gps/qextserialport/qextserialport.h
-  gps/qextserialport/qextserialenumerator.h
 
   symbology-ng/qgscptcityarchive.h
 )
 
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    gps/qextserialport/qextserialport.h
+    gps/qextserialport/qextserialenumerator.h
+  )
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_MOC_HDRS
-    ${QGIS_CORE_MOC_HDRS}
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -474,8 +479,7 @@ SET(QGIS_CORE_HDRS
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_HDRS
-    ${QGIS_CORE_HDRS}
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -557,6 +561,10 @@ ENDIF (WIN32)
 IF(APPLE)
   TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
 ENDIF(APPLE)
+
+IF (NOT WITH_INTERNAL_QEXTSERIALPORT)
+  TARGET_LINK_LIBRARIES(qgis_core ${QEXTSERIALPORT_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
     TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
