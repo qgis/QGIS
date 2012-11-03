@@ -480,6 +480,7 @@
     <file>console/iconQtGuiConsole.png</file>
     <file>console/iconRunConsole.png</file>
     <file>console/iconAboutConsole.png</file>
+    <file>console/iconCodepadConsole.png</file>
     <file>flags/sr_Cyrl.png</file>
     <file>flags/sr_Latn.png</file>
   </qresource>

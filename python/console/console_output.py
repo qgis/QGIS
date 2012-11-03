@@ -24,7 +24,6 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase, 
                         QsciLexerPython)
-
 import sys
               
 class writeOut:
@@ -107,15 +106,19 @@ class EditorOutput(QsciScintilla):
         #self.setEdgeMode(QsciScintilla.EdgeLine)
         #self.setEdgeColumn(80)
         #self.setEdgeColor(QColor("#FF0000")) 
-        
+                        
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-        
+                
         self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runShortcut.activated.connect(self.enteredSelected)
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self)
         self.copyShortcut.activated.connect(self.copy)
+        self.selectAllShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_A), self)
+        self.selectAllShortcut.activated.connect(self.selectAll)
+        self.pastebinShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_V), self)
+        self.pastebinShortcut.activated.connect(self.pastebin)
 
     def refreshLexerProperties(self):
         self.setLexers()
@@ -153,14 +156,25 @@ class EditorOutput(QsciScintilla):
     def contextMenuEvent(self, e):   
         menu = QMenu(self)
         iconRun = QIcon(":/images/console/iconRunConsole.png")
+        iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
+        iconClear = QIcon(":/images/console/iconClearConsole.png")
         runAction = menu.addAction(iconRun, "Enter Selected", self.enteredSelected, QKeySequence(Qt.CTRL + Qt.Key_E))
+        clearAction = menu.addAction(iconClear, "Clear console", self.clearConsole)
         menu.addSeparator()
         copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
+        pastebinAction = menu.addAction(iconPastebin, "Share on codepad", self.pastebin, QKeySequence.Paste)
+        menu.addSeparator()
+        selectAllAction = menu.addAction("Select All", self.selectAll, QKeySequence.SelectAll)
         runAction.setEnabled(False)
         copyAction.setEnabled(False)
+        pastebinAction.setEnabled(False)
+        selectAllAction.setEnabled(False)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
+            pastebinAction.setEnabled(True)
+        if not self.text() == '':
+            selectAllAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
             
     def copy(self):
@@ -188,3 +202,35 @@ class EditorOutput(QsciScintilla):
         else:
             # possible shortcut key sequence, accept it
             e.accept()
+
+    def pastebin(self):
+        import urllib2, urllib
+        #listText = self.getTextFromEditor()
+        listText = self.selectedText().split('\n')
+        getCmd = []
+        for s in listText:
+            if s[0:3] in (">>>", "..."):
+                if not s[4] == "_":
+                    s.replace(">>> ", "").replace("... ", "")
+                    getCmd.append(unicode(s))
+        pasteText= u"\n".join(getCmd)
+        url = 'http://codepad.org'
+        values = {'lang' : 'Python',
+                  'code' : pasteText,
+                  'submit':'Submit'}
+        try:
+            response = urllib2.urlopen(url, urllib.urlencode(values))
+            url = response.read()
+            for href in url.split("</a>"):
+                if "Link:" in href:
+                    ind=href.index('Link:')
+                    found = href[ind+5:]
+                    for i in found.split('">'):
+                        if '<a href=' in i:
+                             link = i.replace('<a href="',"").strip()
+            if link:
+                QApplication.clipboard().setText(link)
+                print "## URL copied to clipboard ##"
+        except urllib2.URLError, e:
+            print "## Connection error ##"
+            print "## " + str(e.args) + " ##"

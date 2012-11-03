@@ -412,8 +412,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
+        pasteAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
+        if QApplication.clipboard().text() != "":
+            pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
                 
     def mousePressEvent(self, e):
@@ -509,7 +512,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         selCmdLenght = self.text(line).length()
         self.setSelection(line, 0, line, selCmdLenght)
         self.removeSelectedText()
-        #self.SendScintilla(QsciScintilla.SCI_NEWLINE)
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
@@ -520,18 +522,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 print QCoreApplication.translate("PythonConsole", 
                                                  "## History cleared successfully ##")
             elif cmd == '_clearAll':
-                res = QMessageBox.question(self, "Python Console", 
-                                           QCoreApplication.translate("PythonConsole", 
-                                                                      "Are you sure you want to completely\n"
-                                                                      "delete the command history ?"),
-                                                                      QMessageBox.Yes | QMessageBox.No)
-                if res == QMessageBox.No:
-                    self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-                    return
                 self.history = QStringList()
                 self.clearHistoryFile()
                 print QCoreApplication.translate("PythonConsole", 
-                                                 "## History cleared successfully ##")
+                                                 "## Session and file history cleared successfully ##")
             elif cmd == '_pyqgis':
                 webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':
