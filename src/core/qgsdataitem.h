@@ -266,7 +266,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 // ---------
 
-class QgsDirectoryParamWidget : public QTreeWidget
+class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
     Q_OBJECT
 
