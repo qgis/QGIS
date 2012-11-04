@@ -812,81 +812,95 @@ static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/,
   return QgsExpression::specialColumn( varName );
 }
 
-QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
+bool QgsExpression::registerFunction( QgsExpression::FunctionDef* function )
+{
+  /* Remove then add.  Means we can reload a python module and register
+     it again. This also means we can override one of the built on methods!
+     Should we allow this?
+  */
+  int fnIdx = functionIndex( function->mName );
+  if ( fnIdx != -1 )
+  {
+    QgsExpression::gmBuiltinFunctions.removeAt( fnIdx );
+  }
+  QgsExpression::gmBuiltinFunctions.append( function );
+  return true;
+}
 
-const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
+void QgsExpression::unregisterFunction( QString name )
+{
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    QgsExpression::gmBuiltinFunctions.removeAt( fnIdx );
+  }
+}
+
+QList<QgsExpression::FunctionDef*> QgsExpression::gmBuiltinFunctions;
+
+const QList<QgsExpression::FunctionDef*> &QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
-    // math
     gmBuiltinFunctions
-    << FunctionDef( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
-    << FunctionDef( "sin", 1, fcnSin, QObject::tr( "Math" ) )
-    << FunctionDef( "cos", 1, fcnCos, QObject::tr( "Math" ) )
-    << FunctionDef( "tan", 1, fcnTan, QObject::tr( "Math" ) )
-    << FunctionDef( "asin", 1, fcnAsin, QObject::tr( "Math" ) )
-    << FunctionDef( "acos", 1, fcnAcos, QObject::tr( "Math" ) )
-    << FunctionDef( "atan", 1, fcnAtan, QObject::tr( "Math" ) )
-    << FunctionDef( "atan2", 2, fcnAtan2, QObject::tr( "Math" ) )
-    << FunctionDef( "exp", 1, fcnExp, QObject::tr( "Math" ) )
-    << FunctionDef( "ln", 1, fcnLn, QObject::tr( "Math" ) )
-    << FunctionDef( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
-    << FunctionDef( "log", 2, fcnLog, QObject::tr( "Math" ) )
-    << FunctionDef( "round", -1, fcnRound, QObject::tr( "Math" ) )
-    // casts
-    << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
-    << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
-    << FunctionDef( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
-    << FunctionDef( "todatetime", 1, fcnToDateTime, QObject::tr( "Conversions" ) )
-    << FunctionDef( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
-    << FunctionDef( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
-    << FunctionDef( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
-    // conditionals
-    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
-    // Date and Time
-    << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "month", 1, fcnMonth, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "week", 1, fcnWeek, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "day", 1, fcnDay, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "hour", 1, fcnHour, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "minute", 1, fcnMinute, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "second", 1, fcnSeconds, QObject::tr( "Date and Time" ) )
-    // string manipulation
-    << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
-    << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
-    << FunctionDef( "title", 1, fcnTitle, QObject::tr( "String" ) )
-    << FunctionDef( "length", 1, fcnLength, QObject::tr( "String" ) )
-    << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
-    << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
-    << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
-    << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
-    << FunctionDef( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
-    << FunctionDef( "left", 2, fcnLeft, QObject::tr( "String" ) )
-    << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
-    << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
-    << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
-    << FunctionDef( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
-    << FunctionDef( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
-
-    // geometry accessors
-    << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$length", 0, fcnGeomLength, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
-    // special columns
-    << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
-    << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
-    << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
-    // private functions
-    << FunctionDef( "_specialcol_", 1, fcnSpecialColumn, QObject::tr( "Special" ) )
+    << new Function( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
+    << new Function( "cos", 1, fcnCos, QObject::tr( "Math" ) )
+    << new Function( "sin", 1, fcnSin, QObject::tr( "Math" ) )
+    << new Function( "tan", 1, fcnTan, QObject::tr( "Math" ) )
+    << new Function( "asin", 1, fcnAsin, QObject::tr( "Math" ) )
+    << new Function( "acos", 1, fcnAcos, QObject::tr( "Math" ) )
+    << new Function( "atan", 1, fcnAtan, QObject::tr( "Math" ) )
+    << new Function( "atan2", 2, fcnAtan2, QObject::tr( "Math" ) )
+    << new Function( "exp", 1, fcnExp, QObject::tr( "Math" ) )
+    << new Function( "ln", 1, fcnLn, QObject::tr( "Math" ) )
+    << new Function( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
+    << new Function( "log", 2, fcnLog, QObject::tr( "Math" ) )
+    << new Function( "round", -1, fcnRound, QObject::tr( "Math" ) )
+    << new Function( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
+    << new Function( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
+    << new Function( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
+    << new Function( "todatetime", 1, fcnToDateTime, QObject::tr( "Conversions" ) )
+    << new Function( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
+    << new Function( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
+    << new Function( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
+    << new Function( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
+    << new Function( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
+    << new Function( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
+    << new Function( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
+    << new Function( "month", 1, fcnMonth, QObject::tr( "Date and Time" ) )
+    << new Function( "week", 1, fcnWeek, QObject::tr( "Date and Time" ) )
+    << new Function( "day", 1, fcnDay, QObject::tr( "Date and Time" ) )
+    << new Function( "hour", 1, fcnHour, QObject::tr( "Date and Time" ) )
+    << new Function( "minute", 1, fcnMinute, QObject::tr( "Date and Time" ) )
+    << new Function( "second", 1, fcnSeconds, QObject::tr( "Date and Time" ) )
+    << new Function( "lower", 1, fcnLower, QObject::tr( "String" ) )
+    << new Function( "upper", 1, fcnUpper, QObject::tr( "String" ) )
+    << new Function( "title", 1, fcnTitle, QObject::tr( "String" ) )
+    << new Function( "length", 1, fcnLength, QObject::tr( "String" ) )
+    << new Function( "replace", 3, fcnReplace, QObject::tr( "String" ) )
+    << new Function( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
+    << new Function( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
+    << new Function( "concat", -1, fcnConcat, QObject::tr( "String" ) )
+    << new Function( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
+    << new Function( "left", 2, fcnLeft, QObject::tr( "String" ) )
+    << new Function( "right", 2, fcnRight, QObject::tr( "String" ) )
+    << new Function( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
+    << new Function( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+    << new Function( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
+    << new Function( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
+    << new Function( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
+    << new Function( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
+    << new Function( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
+    << new Function( "$length", 0, fcnGeomLength, QObject::tr( "Geometry" ), "", true )
+    << new Function( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
+    << new Function( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
+    << new Function( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
+    << new Function( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
+    << new Function( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
+    << new Function( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
+    << new Function( "_specialcol_", 1, fcnSpecialColumn, QObject::tr( "Special" ) )
     ;
   }
-
   return gmBuiltinFunctions;
 }
 
@@ -928,12 +942,12 @@ QVariant QgsExpression::specialColumn( const QString& name )
   return it.value();
 }
 
-QList<QgsExpression::FunctionDef> QgsExpression::specialColumns()
+QList<QgsExpression::FunctionDef*> QgsExpression::specialColumns()
 {
-  QList<FunctionDef> defs;
+  QList<FunctionDef*> defs;
   for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
   {
-    defs << FunctionDef( it.key(), 0, 0, QObject::tr( "Record" ) );
+    defs << new Function( it.key(), 0, 0, QObject::tr( "Record" ) );
   }
   return defs;
 }
@@ -948,7 +962,7 @@ int QgsExpression::functionIndex( QString name )
   int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    if ( QString::compare( name, BuiltinFunctions()[i].mName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( name, BuiltinFunctions()[i]->mName, Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
@@ -1919,7 +1933,7 @@ void QgsExpression::NodeInOperator::toOgcFilter( QDomDocument &doc, QDomElement 
 
 QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f )
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
+  FunctionDef* fd = BuiltinFunctions()[mFnIndex];
 
   // evaluate arguments
   QVariantList argValues;
@@ -1929,14 +1943,14 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
     {
       QVariant v = n->eval( parent, f );
       ENSURE_NO_EVAL_ERROR;
-      if ( isNull( v ) && fd.mFcn != fcnCoalesce )
+      if ( isNull( v ) && fd->mName != "coalesce" )
         return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
       argValues.append( v );
     }
   }
 
   // run the function
-  QVariant res = fd.mFcn( argValues, f, parent );
+  QVariant res = fd->func( argValues, f, parent );
   ENSURE_NO_EVAL_ERROR;
 
   // everything went fine
@@ -1958,21 +1972,21 @@ bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsField
 
 QString QgsExpression::NodeFunction::dump() const
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
-  if ( fd.mParams == 0 )
-    return fd.mName; // special column
+  FunctionDef* fd = BuiltinFunctions()[mFnIndex];
+  if ( fd->mParams == 0 )
+    return fd->mName; // special column
   else
-    return QString( "%1(%2)" ).arg( fd.mName ).arg( mArgs ? mArgs->dump() : QString() ); // function
+    return QString( "%1(%2)" ).arg( fd->mName ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }
 
 void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
-  if ( fd.mParams == 0 )
+  FunctionDef* fd = BuiltinFunctions()[mFnIndex];
+  if ( fd->mParams == 0 )
     return; // TODO: special column
 
   QDomElement funcElem = doc.createElement( "ogc:Function" );
-  funcElem.setAttribute( "name", fd.mName );
+  funcElem.setAttribute( "name", fd->mName );
   mArgs->toOgcFilter( doc, funcElem );
   element.appendChild( funcElem );
 }
@@ -1990,9 +2004,9 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
 
   for ( int i = 0; i < BuiltinFunctions().size(); i++ )
   {
-    QgsExpression::FunctionDef funcDef = BuiltinFunctions()[i];
+    QgsExpression::FunctionDef* funcDef = BuiltinFunctions()[i];
 
-    if ( element.attribute( "name" ) != funcDef.mName )
+    if ( element.attribute( "name" ) != funcDef->mName )
       continue;
 
     QgsExpression::NodeList *args = new QgsExpression::NodeList();

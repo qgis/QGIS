@@ -28,8 +28,9 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication,QLocale
-from qgis.core import QGis
+from PyQt4.QtCore import QCoreApplication,QLocale, QString
+from qgis.core import QGis, QgsExpression
+from string import Template
 import sys
 import traceback
 import glob
@@ -370,6 +371,34 @@ def closeProjectMacro():
   if hasattr(mod, 'closeProject'):
     mod.closeProject()
 
+
+helptemplate = Template("""<h3>$name function</h3>
+$doc""")
+
+class QgsExpressionFunction(QgsExpression.FunctionDef):
+  def __init__(self, name, args, group, helptext=''):
+    QgsExpression.FunctionDef.__init__(self, name, args, group, QString(helptext))
+
+  def func(self, values, feature, parent):
+    pass
+
+def qgsfunction(args, group, **kwargs):
+  def wrapper(func):
+    name = kwargs.get('name', func.__name__)
+    help = func.__doc__ or ''
+    help = help.strip()
+    usegeom = kwargs.get('usegeom', False)
+    if args == 0 and not name[0] == '$':
+      name = '${0}'.format(name)
+    func.__name__ = name
+    help = helptemplate.safe_substitute(name=name, doc=help)
+    f = QgsExpressionFunction(name, args, group, help)
+    f.func = func
+    register = kwargs.get('register', True)
+    if register:
+      QgsExpression.registerFunction(f)
+    return f
+  return wrapper
 
 #######################
 # IMPORT wrapper

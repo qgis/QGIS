@@ -117,24 +117,29 @@ class QgsExpression
     // static const char* BinaryOgcOperatorText[];
     // static const char* UnaryOgcOperatorText[];
 
-    struct FunctionDef /NoDefaultCtors/
+    class FunctionDef 
     {
-      //FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false );
-      /** The name of the function. */
-      QString mName;
-      /** The number of parameters this function takes. */
-      int mParams;
-      /** Pointer to function. */
-      //FcnEval mFcn;
-      /** Does this function use a geometry object. */
-      bool mUsesGeometry;
-      /** The group the function belongs to. */
-      QString mGroup;
-      /** The help text for the function. */
-      QString mHelpText;
+      public:
+        FunctionDef( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false );
+        /** The name of the function. */
+        QString mName;
+        /** The number of parameters this function takes. */
+        int mParams;
+        
+        virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent) = 0;
+
+        /** Does this function use a geometry object. */
+        bool mUsesGeometry;
+        /** The group the function belongs to. */
+        QString mGroup;
+        /** The help text for the function. */
+        QString mHelpText;
     };
 
-    static const QList<QgsExpression::FunctionDef> &BuiltinFunctions();
+    static const QList<QgsExpression::FunctionDef *> &BuiltinFunctions();
+
+    static bool registerFunction(FunctionDef* function);
+    static void unregisterFunction(QString name);
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
@@ -150,7 +155,7 @@ class QgsExpression
     /**
      * Returns a list of special Column definitions
      */
-    static QList<QgsExpression::FunctionDef> specialColumns();
+    static QList<QgsExpression::FunctionDef *> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
