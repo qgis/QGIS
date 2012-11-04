@@ -50,7 +50,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
         self.buffer = []
         
-        self.insertInitText()
         self.displayPrompt(False)
         
         for line in _init_commands:
@@ -95,7 +94,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
         # not too small
         #self.setMinimumSize(500, 300)
-        self.setMinimumHeight(50)
+        self.setMinimumHeight(20)
 
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
@@ -174,7 +173,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setFont(font, 4)
         
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = settings.value( "pythonConsole/preloadAPI" ).toBool()
+        chekBoxAPI = settings.value("pythonConsole/preloadAPI", True).toBool()
         if chekBoxAPI:
             self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
         else:
@@ -198,13 +197,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.setSelection(line, 4, line, selCmdLength)
             self.removeSelectedText()
             self.insert(txt)
-
-    def insertInitText(self):
-        #self.setLexers(False)
-        txtInit = QCoreApplication.translate("PythonConsole", "## Interactive Python Console for Quantum GIS\n\n")
-                                             #"## To access Quantum GIS environment from this console\n"
-                                             #"## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
-        initText = self.setText(txtInit)
 
     def getText(self):
         """ Get the text as a unicode string. """
@@ -546,6 +538,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def write_stdout(self, txt):
         if len(txt) > 0:
-            getCmdString = self.text(2)
+            getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')
