@@ -5,6 +5,7 @@ SET(QGIS_APP_SRCS
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
+  qgsaddtaborgroup.cpp
   qgsaddjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
@@ -34,6 +35,7 @@ SET(QGIS_APP_SRCS
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
+  qgsfieldsproperties.cpp
   qgsgraduatedsymboldialog.cpp
   qgsidentifyresults.cpp
   qgsfeatureaction.cpp
@@ -165,6 +167,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h
+  qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
@@ -191,6 +194,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdisplayangle.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
+  qgsfieldsproperties.h
   qgsformannotationdialog.h
   qgshtmlannotationdialog.h
   qgsgraduatedsymboldialog.h

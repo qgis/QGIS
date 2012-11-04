@@ -46,6 +46,8 @@
     <file>themes/default/mActionAnnotation.png</file>
     <file>themes/default/mActionArrowDown.png</file>
     <file>themes/default/mActionArrowUp.png</file>
+    <file>themes/default/mActionArrowLeft.png</file>
+    <file>themes/default/mActionArrowRight.png</file>
     <file>themes/default/mActionCalculateField.png</file>
     <file>themes/default/mActionCaptureLine.png</file>
     <file>themes/default/mActionCapturePoint.png</file>
@@ -151,6 +153,8 @@
     <file>themes/default/mActionSelectPolygon.svg</file>
     <file>themes/default/mActionSelectRadius.png</file>
     <file>themes/default/mActionSelectRectangle.png</file>
+    <file>themes/default/mActionSignPlus.png</file>
+    <file>themes/default/mActionSignMinus.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
     <file>themes/default/mActionShowHideLabels.svg</file>
@@ -175,7 +179,7 @@
     <file>themes/default/mIconClose.png</file>
     <file>themes/default/mIconCollapse.png</file>
     <file>themes/default/mIconConnect.png</file>
-        <file>themes/default/mIconClear.png</file>
+    <file>themes/default/mIconClear.png</file>
     <file>themes/default/mIconDbSchema.png</file>
     <file>themes/default/mIconDelete.png</file>
     <file>themes/default/mIconEditable.png</file>
