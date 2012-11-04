@@ -203,33 +203,72 @@ class CORE_EXPORT QgsExpression
 
     typedef QVariant( *FcnEval )( const QVariantList& values, QgsFeature* f, QgsExpression* parent );
 
-    struct FunctionDef
+
+    /**
+      * A abstract base class for defining QgsExpression functions.
+      */
+    class CORE_EXPORT Function
     {
-      FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
-          : mName( fnname ), mParams( params ), mFcn( fcn ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
+      public:
+      Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false )
+          : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
       /** The name of the function. */
-      QString mName;
+      QString name() { return mName; }
       /** The number of parameters this function takes. */
-      int mParams;
-      /** Pointer to funntion.
-        * @note not available in python bindings
-         */
-      FcnEval mFcn;
+      int params() { return mParams; }
       /** Does this function use a geometry object. */
-      bool mUsesGeometry;
+      bool usesgeometry() { return mUsesGeometry; }
       /** The group the function belongs to. */
-      QString mGroup;
+      QString group() { return mGroup; }
       /** The help text for the function. */
+      QString helptext() { return mHelpText; }
+
+      virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent) = 0;
+
+      bool operator==(const Function& other) const
+      {
+        if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
+          return true;
+
+        return false;
+      }
+
+    private:
+      QString mName;
+      int mParams;
+      bool mUsesGeometry;
+      QString mGroup;
       QString mHelpText;
     };
 
-    static const QList<FunctionDef> &BuiltinFunctions();
-    static QList<FunctionDef> gmBuiltinFunctions;
+    class StaticFunction : public Function
+    {
+      public:
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
+          : Function( fnname, params, group, helpText, usesGeometry), mFnc( fcn ) {}
 
+      virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent)
+      {
+        return mFnc(values,f, parent);
+      } 
+
+      private:
+        FcnEval mFnc;
+    };
+
+    const static QList<Function*> &Functions();
+    static QList<Function*> gmFunctions;
+    
+    static QStringList gmBuiltinFunctions;
+    const static QStringList &BuiltinFunctions();
+
+    static bool registerFunction(Function* function);
+    static bool unregisterFunction(QString name);
+    
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 
-    // return index of the function in BuiltinFunctions array
+    // return index of the function in Functions array
     static int functionIndex( QString name );
 
     /**  Returns the number of functions defined in the parser
@@ -240,7 +279,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns a list of special Column definitions
      */
-    static QList<FunctionDef> specialColumns();
+    static QList<Function*> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
@@ -422,7 +461,7 @@ class CORE_EXPORT QgsExpression
         static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach ( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) { v.visit( this ); }
 
       protected:

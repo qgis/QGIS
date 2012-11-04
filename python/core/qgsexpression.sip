@@ -117,29 +117,33 @@ class QgsExpression
     // static const char* BinaryOgcOperatorText[];
     // static const char* UnaryOgcOperatorText[];
 
-    struct FunctionDef /NoDefaultCtors/
+    class Function
     {
-      //FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false );
-      /** The name of the function. */
-      QString mName;
-      /** The number of parameters this function takes. */
-      int mParams;
-      /** Pointer to function. */
-      //FcnEval mFcn;
-      /** Does this function use a geometry object. */
-      bool mUsesGeometry;
-      /** The group the function belongs to. */
-      QString mGroup;
-      /** The help text for the function. */
-      QString mHelpText;
+      public:
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false );
+        /** The name of the function. */
+        QString name();
+        /** The number of parameters this function takes. */
+        int params();
+        /** Does this function use a geometry object. */
+        bool usesgeometry();
+        /** The group the function belongs to. */
+        QString group();
+        /** The help text for the function. */
+        QString helptext();
+
+        virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent) = 0;
     };
 
-    static const QList<QgsExpression::FunctionDef> &BuiltinFunctions();
+    static const QList<QgsExpression::Function *> &Functions();
+
+    static bool registerFunction(Function* function);
+    static bool unregisterFunction(QString name);
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 
-    // return index of the function in BuiltinFunctions array
+    // return index of the function in Functions array
     static int functionIndex( QString name );
 
     /**  Returns the number of functions defined in the parser
@@ -150,7 +154,7 @@ class QgsExpression
     /**
      * Returns a list of special Column definitions
      */
-    static QList<QgsExpression::FunctionDef> specialColumns();
+    static QList<QgsExpression::Function *> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
