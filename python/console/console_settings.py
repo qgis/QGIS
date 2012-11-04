@@ -138,7 +138,7 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize").toInt()[0])
-        self.preloadAPI.setChecked(settings.value( "pythonConsole/preloadAPI" ).toBool())
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
         itemTable = settings.value("pythonConsole/userAPI").toStringList()
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)

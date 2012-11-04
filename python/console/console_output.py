@@ -75,6 +75,7 @@ class EditorOutput(QsciScintilla):
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "traceback")
         
+        self.insertInitText()
         self.setLexers()
         self.setReadOnly(True)
         
@@ -95,7 +96,7 @@ class EditorOutput(QsciScintilla):
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
 
-        self.setMinimumHeight(80)
+        self.setMinimumHeight(120)
 
         # Folding
         #self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
@@ -117,7 +118,13 @@ class EditorOutput(QsciScintilla):
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
         self.selectAllShortcut.activated.connect(self.selectAll)
-
+        
+    def insertInitText(self):
+        txtInit = QCoreApplication.translate("PythonConsole",
+                                             "## To access Quantum GIS environment from this console\n"
+                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
+        initText = self.setText(txtInit)
+                
     def refreshLexerProperties(self):
         self.setLexers()
         
@@ -150,6 +157,7 @@ class EditorOutput(QsciScintilla):
     def clearConsole(self):
         #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
+        self.insertInitText()
         
     def contextMenuEvent(self, e):   
         menu = QMenu(self)
@@ -175,6 +183,7 @@ class EditorOutput(QsciScintilla):
                                          self.selectAll, 
                                          QKeySequence.SelectAll)
         runAction.setEnabled(False)
+        clearAction.setEnabled(False)
         copyAction.setEnabled(False)
         pastebinAction.setEnabled(False)
         selectAllAction.setEnabled(False)
@@ -184,6 +193,7 @@ class EditorOutput(QsciScintilla):
             pastebinAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
+            clearAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
             
     def copy(self):
@@ -214,14 +224,15 @@ class EditorOutput(QsciScintilla):
 
     def pastebin(self):
         import urllib2, urllib
-        #listText = self.getTextFromEditor()
         listText = self.selectedText().split('\n')
         getCmd = []
-        for s in listText:
-            if s[0:3] in (">>>", "..."):
-                if not s[4] == "_":
-                    s.replace(">>> ", "").replace("... ", "")
-                    getCmd.append(unicode(s))
+        for strLine in listText:
+            if strLine != "":
+            #if s[0:3] in (">>>", "..."):
+                # filter for special command (_save,_clear) and comment
+                if strLine[4] != "_" and strLine[:2] != "##":
+                    strLine.replace(">>> ", "").replace("... ", "")
+                    getCmd.append(unicode(strLine))
         pasteText= u"\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang' : 'Python',
