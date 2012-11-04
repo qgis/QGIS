@@ -60,7 +60,6 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
      * Creates a widget form a QgsAttributeEditorElement definition. Will recursively generate containers and widgets.
      * @param widgetDef The definition for the widget
      * @param parent The parent object
-     * @param editor The widget to prepare. Set to null if it should be generated
      * @param vl The vector layer to use as data source
      * @param attrs Attributes for the current feature.
      * @param proxyWidgets An array of widgets, which will act as a value proxy if the same field is inserted multiple times

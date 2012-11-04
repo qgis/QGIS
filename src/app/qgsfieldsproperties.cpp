@@ -176,16 +176,6 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
   }
 }
 
-
-
-
-
-
-
-
-
-
-
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent ), mLayer( layer )
 {

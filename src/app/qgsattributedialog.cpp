@@ -208,7 +208,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     // Set focus to first widget in list, to help entering data without moving the mouse.
     if ( mProxyWidgets.size() > 0 )
     {
-      (*mProxyWidgets.begin())->setFocus( Qt::OtherFocusReason );
+      ( *mProxyWidgets.begin() )->setFocus( Qt::OtherFocusReason );
     }
   }
   else

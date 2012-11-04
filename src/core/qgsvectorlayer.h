@@ -221,7 +221,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     {
       GroupData() {}
       GroupData( QString name , QList<QString> fields )
-         : mName ( name ), mFields( fields ) {}
+          : mName( name ), mFields( fields ) {}
       QString mName;
       QList<QString> mFields;
     };
@@ -229,8 +229,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct TabData
     {
       TabData() {}
-      TabData( QString name , QList<QString> fields , QList<GroupData> groups)
-         : mName ( name ), mFields( fields ), mGroups( groups ) {}
+      TabData( QString name , QList<QString> fields , QList<GroupData> groups )
+          : mName( name ), mFields( fields ), mGroups( groups ) {}
       QString mName;
       QList<QString> mFields;
       QList<GroupData> mGroups;

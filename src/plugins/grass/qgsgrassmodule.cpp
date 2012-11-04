@@ -371,7 +371,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   if ( reg.indexIn( xmlDeclaration ) != -1 )
   {
     QByteArray enc = reg.cap( 2 ).toLocal8Bit();
-    QgsDebugMsg( QString( "found encoding name '%1'" ).arg( enc ) );
+    QgsDebugMsg( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ) );
 
     codec = QTextCodec::codecForName( enc );
     if ( !codec )
@@ -393,11 +393,11 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   if ( codec )
   {
-    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec..." ).arg( codec->name() ) );
+    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec..." ).arg( QString::fromUtf8( codec->name() ) ) );
     ok = gDoc.setContent( codec->toUnicode( baDesc ), false, &err, &line, &column );
     if ( !ok )
     {
-      QgsDebugMsg( "parse FAILED using '%1' codec. Will let Qt detects encoding" );
+      QgsDebugMsg( "parse FAILED. Will let Qt detects encoding" );
       codec = 0;
     }
   }
