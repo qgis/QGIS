@@ -65,9 +65,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   QDialogButtonBox *buttonBox = NULL;
 
-  // UI-File defined layout
-  if ( !vl->editorLayout() == QgsVectorLayer::UiFileLayout && !vl->editForm().isEmpty() )
+  if ( vl->editorLayout() == QgsVectorLayer::UiFileLayout && !vl->editForm().isEmpty() )
   {
+    // UI-File defined layout
     QFile file( vl->editForm() );
 
     if ( file.open( QFile::ReadOnly ) )
@@ -83,9 +83,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       buttonBox = myWidget->findChild<QDialogButtonBox*>();
     }
   }
-  // Tab display
-  if ( vl->editorLayout() == QgsVectorLayer::TabLayout )
+  else if ( vl->editorLayout() == QgsVectorLayer::TabLayout )
   {
+    // Tab display
     mDialog = new QDialog( QgisApp::instance() );
 
     QGridLayout *gridLayout;
@@ -149,19 +149,24 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //
     QVBoxLayout *mypOuterLayout = new QVBoxLayout();
     mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-    //transfers layout ownership so no need to call delete
 
+    //transfers layout ownership so no need to call delete
     mFrame->setLayout( mypOuterLayout );
+
     QScrollArea *mypScrollArea = new QScrollArea();
     mypScrollArea->setFrameShape( QFrame::NoFrame );
     mypScrollArea->setFrameShadow( QFrame::Plain );
+
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
+
     QFrame *mypInnerFrame = new QFrame();
     mypInnerFrame->setFrameShape( QFrame::NoFrame );
     mypInnerFrame->setFrameShadow( QFrame::Plain );
+
     //transfers frame ownership so no need to call delete
     mypScrollArea->setWidget( mypInnerFrame );
+
     mypScrollArea->setWidgetResizable( true );
     QGridLayout *mypInnerLayout = new QGridLayout( mypInnerFrame );
 

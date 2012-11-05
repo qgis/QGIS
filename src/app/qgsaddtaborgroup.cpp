@@ -77,5 +77,5 @@ void QgsAddTabOrGroup::on_mGroupButton_toggled( bool checked )
 
 void QgsAddTabOrGroup::on_mTabButton_toggled( bool checked )
 {
-  mTabList->setEnabled( not checked );
+  mTabList->setEnabled( !checked );
 }
