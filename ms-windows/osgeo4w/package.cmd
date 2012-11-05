@@ -1,5 +1,5 @@
 @echo off
-set GRASS_VERSION=6.4.2
+set GRASS_VERSION=6.4.3RC1
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -13,7 +13,7 @@ set PACKAGE=%2
 set PACKAGENAME=%3
 if "%VERSION%"=="" goto error
 if "%PACKAGE%"=="" goto error
-if "%PACKAGENAME%"=="" set PACKAGENAME=qgis-dev
+if "%PACKAGENAME%"=="" set PACKAGENAME=qgis
 
 path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin
 set PYTHONPATH=
