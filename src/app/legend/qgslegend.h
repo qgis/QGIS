@@ -443,6 +443,7 @@ class QgsLegend : public QTreeWidget
     /** toogle update drawing order */
     void toggleDrawingOrderUpdate();
     void handleItemChange( QTreeWidgetItem* item, int row );
+    void handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
     /**Calls openPersistentEditor for the current item*/
