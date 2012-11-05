@@ -38,6 +38,7 @@
 #include "qgscomposershape.h"
 
 #include "QFileInfo"
+#include <QSvgRenderer>
 #include <QTextDocument>
 #include "QTextStream"
 
@@ -75,6 +76,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
 
     mRestrictedLayers = restrictedLayers();
     createTextAnnotationItems();
+    createSvgAnnotationItems();
   }
 }
 
@@ -86,6 +88,7 @@ QgsProjectParser::~QgsProjectParser()
 {
   delete mXMLDoc;
   cleanupTextAnnotationItems();
+  cleanupSvgAnnotationItems();
 }
 
 int QgsProjectParser::numberOfLayers() const
@@ -2451,7 +2454,7 @@ void QgsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height
 
     //calculate item position
     double xPos, yPos;
-    if ( !annotationPosition( annotationElem, scaleFactor, prjExtent, width, height, itemWidth, itemHeight, xPos, yPos ) )
+    if ( !annotationPosition( annotationElem, scaleFactor, xPos, yPos ) )
     {
       continue;
     }
@@ -2459,8 +2462,52 @@ void QgsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height
     drawAnnotationRectangle( p, annotationElem, scaleFactor, xPos, yPos, itemWidth, itemHeight );
 
     //draw annotation contents
-    p->translate( xPos / scaleFactor, yPos / scaleFactor );
-    textIt->first->drawContents( p, QRectF( 0, 0, itemWidth, itemHeight ) );
+    p->translate( xPos, yPos );
+    p->scale( scaleFactor, scaleFactor );
+    textIt->first->drawContents( p, QRectF( 0, 0, itemWidth / scaleFactor, itemHeight / scaleFactor ) );
+    p->restore();
+  }
+
+  //svg annotations
+  QList< QPair< QSvgRenderer*, QDomElement > >::const_iterator svgIt = mSvgAnnotationElems.constBegin();
+  QDomElement annotationElem;
+  for ( ; svgIt != mSvgAnnotationElems.constEnd(); ++svgIt )
+  {
+    annotationElem = svgIt->second;
+    int itemWidth = annotationElem.attribute( "frameWidth", "0" ).toInt() * scaleFactor;
+    int itemHeight = annotationElem.attribute( "frameHeight", "0" ).toInt() * scaleFactor;
+
+    //calculate item position
+    double xPos, yPos;
+    if ( !annotationPosition( annotationElem, scaleFactor, xPos, yPos ) )
+    {
+      continue;
+    }
+
+    drawAnnotationRectangle( p, annotationElem, scaleFactor, xPos, yPos, itemWidth, itemHeight );
+
+    //keep width/height ratio of svg
+    QRect viewBox = svgIt->first->viewBox();
+    if ( viewBox.isValid() )
+    {
+      double widthRatio = ( double )( itemWidth ) / ( double )( viewBox.width() );
+      double heightRatio = ( double )( itemHeight ) / ( double )( viewBox.height() );
+      double renderWidth = 0;
+      double renderHeight = 0;
+      if ( widthRatio <= heightRatio )
+      {
+        renderWidth = itemWidth;
+        renderHeight = viewBox.height() * itemWidth / viewBox.width() ;
+      }
+      else
+      {
+        renderHeight = itemHeight;
+        renderWidth = viewBox.width() * itemHeight / viewBox.height() ;
+      }
+
+      svgIt->first->render( p, QRectF( xPos, yPos, renderWidth,
+                                       renderHeight ) );
+    }
   }
 }
 
@@ -2491,6 +2538,44 @@ void QgsProjectParser::createTextAnnotationItems()
   }
 }
 
+void QgsProjectParser::createSvgAnnotationItems()
+{
+  mSvgAnnotationElems.clear();
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomNodeList svgAnnotationList = qgisElem.elementsByTagName( "SVGAnnotationItem" );
+  QDomElement svgAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < svgAnnotationList.size(); ++i )
+  {
+    svgAnnotationElem = svgAnnotationList.at( i ).toElement();
+    annotationElem = svgAnnotationElem.firstChildElement( "AnnotationItem" );
+    QSvgRenderer* svg = new QSvgRenderer();
+    if ( svg->load( convertToAbsolutePath( svgAnnotationElem.attribute( "file" ) ) ) )
+    {
+      mSvgAnnotationElems.push_back( qMakePair( svg, annotationElem ) );
+    }
+    else
+    {
+      delete svg;
+    }
+  }
+}
+
+void QgsProjectParser::cleanupSvgAnnotationItems()
+{
+  QList< QPair< QSvgRenderer*, QDomElement > >::const_iterator it = mSvgAnnotationElems.constBegin();
+  for ( ; it != mSvgAnnotationElems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mSvgAnnotationElems.clear();
+}
+
 void QgsProjectParser::cleanupTextAnnotationItems()
 {
   QList< QPair< QTextDocument*, QDomElement > >::const_iterator it = mTextAnnotationItems.constBegin();
@@ -2501,23 +2586,11 @@ void QgsProjectParser::cleanupTextAnnotationItems()
   mTextAnnotationItems.clear();
 }
 
-bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor, const QgsRectangle& projectExtent, int width, int height,
-    int itemWidth, int itemHeight, double& xPos, double& yPos )
+bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor,
+    double& xPos, double& yPos )
 {
-  if ( projectExtent.isEmpty() )
-  {
-    return false;
-  }
-
-  double itemMapPosX = elem.attribute( "mapPosX" ).toDouble();
-  double itemCanvasPosX = elem.attribute( "canvasPosX" ).toDouble();
-  int maxCanvasX = itemCanvasPosX / ( itemMapPosX - projectExtent.xMinimum() ) * projectExtent.width();
-  xPos = width - ( maxCanvasX - itemCanvasPosX ) * scaleFactor - itemWidth / 2.0 + 100;
-
-  double itemMapPosY = elem.attribute( "mapPosY" ).toDouble();
-  double itemCanvasPosY = elem.attribute( "canvasPosY" ).toDouble();
-  int maxCanvasY = itemCanvasPosY / ( projectExtent.yMaximum() - itemMapPosY ) * projectExtent.height();
-  yPos = height - ( maxCanvasY - itemCanvasPosY ) * scaleFactor - itemHeight + 100;
+  xPos = elem.attribute( "canvasPosX" ).toDouble() / scaleFactor;
+  yPos = elem.attribute( "canvasPosY" ).toDouble() / scaleFactor;
   return true;
 }
 
@@ -2535,8 +2608,5 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
   framePen.setWidth( elem.attribute( "frameBorderWidth", "1" ).toInt() );
   p->setPen( framePen );
 
-  p->save();
-  p->scale( scaleFactor, scaleFactor );
-  p->drawRect( QRectF( xPos / scaleFactor, yPos / scaleFactor, itemWidth, itemHeight ) );
-  p->restore();
+  p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
 }

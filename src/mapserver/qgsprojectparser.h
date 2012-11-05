@@ -23,6 +23,7 @@
 #include <QList>
 #include <QPair>
 
+class QSvgRenderer;
 class QTextDocument;
 
 //Information about relationship between groups and layers
@@ -151,6 +152,8 @@ class QgsProjectParser: public QgsConfigParser
     QSet<QString> mRestrictedLayers;
     /**Watermark text items*/
     QList< QPair< QTextDocument*, QDomElement > > mTextAnnotationItems;
+    /**Watermark items (content cached in QgsSVGCache)*/
+    QList< QPair< QSvgRenderer*, QDomElement > > mSvgAnnotationElems;
 
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
@@ -217,7 +220,11 @@ class QgsProjectParser: public QgsConfigParser
     QgsRectangle projectExtent() const;
 
     void createTextAnnotationItems();
+    void createSvgAnnotationItems();
+
+    void cleanupSvgAnnotationItems();
     void cleanupTextAnnotationItems();
+
     /**Calculates annotation position to provide the same distance to the lower right corner as in the QGIS project file
     @param width output image pixel width
     @param height output image pixel height
@@ -225,8 +232,7 @@ class QgsProjectParser: public QgsConfigParser
     @param itemHeight item height in pixels in the QGIS project (screen pixels)
     @param xPos out: x-coordinate of the item in the output image
     @param yPos out: y-coordinate of the item in the output image*/
-    static bool annotationPosition( const QDomElement& elem, double scaleFactor, const QgsRectangle& projectExtent, int width, int height,
-                                    int itemWidth, int itemHeight, double& xPos, double& yPos );
+    static bool annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos );
 
     /**Draws background rectangle and frame for an annotation
     @param elem <Annotation> xml element
