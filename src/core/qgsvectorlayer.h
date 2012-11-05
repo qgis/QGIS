@@ -54,7 +54,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 /** @note Added in 1.9 */
-class QgsAttributeEditorElement : public QObject
+class CORE_EXPORT QgsAttributeEditorElement : public QObject
 {
     Q_OBJECT
   public:
@@ -82,7 +82,7 @@ class QgsAttributeEditorElement : public QObject
 };
 
 /** @note Added in 1.9 */
-class QgsAttributeEditorContainer : public QgsAttributeEditorElement
+class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorContainer( QString name, QObject *parent )
@@ -99,7 +99,7 @@ class QgsAttributeEditorContainer : public QgsAttributeEditorElement
 };
 
 /** @note Added in 1.9 */
-class QgsAttributeEditorField : public QgsAttributeEditorElement
+class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
     QgsAttributeEditorField( QString name , int idx, QObject *parent )
