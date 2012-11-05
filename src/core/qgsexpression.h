@@ -430,31 +430,6 @@ class CORE_EXPORT QgsExpression
         Node* mOpRight;
     };
 
-    class CORE_EXPORT NodeSpatialOperator : public Node
-    {
-      public:
-        NodeSpatialOperator( SpatialOperator op, QgsGeometry* opGeom ) : mOp( op ), mOpGeometry( 0 ) { if ( opGeom ) mOpGeometry = opGeom; }
-        ~NodeSpatialOperator() { }
-
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
-        virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
-        virtual QString dump() const;
-
-        virtual void toOgcFilter( QDomDocument& /*doc*/, QDomElement& /*element*/ ) const {};
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
-
-        SpatialOperator op() { return mOp; }
-        QgsGeometry* opGeometry() { return mOpGeometry; }
-
-        virtual QStringList referencedColumns() const { QStringList lst; return lst; }
-        virtual bool needsGeometry() const { return true; }
-        virtual void accept( Visitor& /*v*/ ) { }
-
-      protected:
-        SpatialOperator mOp;
-        QgsGeometry* mOpGeometry;
-    };
-
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:

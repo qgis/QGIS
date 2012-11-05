@@ -330,6 +330,15 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
   return QgsExpression::Interval::invalidInterVal();
 }
 
+static QgsGeometry* getGeometry( const QVariant& value, QgsExpression* parent)
+{
+  if ( value.canConvert<QgsGeometry*>() )
+    return value.value<QgsGeometry*>();
+
+  parent->setEvalErrorString( "Cannot convert to QgsGeometry" );
+  return 0;
+}
+
 
 // this handles also NULL values
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
@@ -782,7 +791,34 @@ static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExp
   if ( !doc.setContent( gml, true, &errorMsg ) )
     return QVariant();
 
-  QgsGeometry* geom = QgsGeometry::fromGML2( doc.documentElement() );
+  QgsGeometry* geom = 0;
+  QDomElement elem = doc.documentElement();
+  if ( elem.tagName() == "Box" )
+  {
+    QDomElement bElem = elem.firstChild().toElement();
+    QString coordSeparator = ",";
+    QString tupelSeparator = " ";
+    if ( bElem.hasAttribute( "cs" ) )
+    {
+      coordSeparator = bElem.attribute( "cs" );
+    }
+    if ( bElem.hasAttribute( "ts" ) )
+    {
+      tupelSeparator = bElem.attribute( "ts" );
+    }
+
+    QString bString = bElem.text();
+    bool conversionSuccess;
+    double minx = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    double miny = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+    double maxx = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    double maxy = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+    QgsRectangle* rect = new QgsRectangle( minx, miny, maxx, maxy );
+    geom = QgsGeometry::fromRect( *rect );
+  }
+  else
+    geom = QgsGeometry::fromGML2( doc.documentElement() );
+
   if ( geom )
     return QVariant::fromValue( geom );
   else
@@ -806,6 +842,71 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
   return QVariant( calc->measurePerimeter( f->geometry() ) );
+}
+
+static QVariant fcnBbox( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->intersects( sGeom->boundingBox() ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnDisjoint( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->disjoint( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnIntersects( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->intersects( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnTouches( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->touches( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnCrosses( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->crosses( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnContains( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->contains( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnOverlaps( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->overlaps( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
+}
+static QVariant fcnWithin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
+  if ( fGeom && sGeom )
+    return fGeom->within( sGeom ) ? TVL_True : TVL_False;
+  return QVariant();
 }
 
 static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
@@ -966,6 +1067,14 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$geometry", 0, fcnGeometry, QObject::tr( "Geometry" ), "" , true )
     << new StaticFunction( "GeomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
     << new StaticFunction( "GeomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "bbox", 2, fcnBbox, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "disjoint", 2, fcnDisjoint, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "intersects", 2, fcnIntersects, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "touches", 2, fcnTouches, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "crosses", 2, fcnCrosses, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "contains", 2, fcnContains, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "overlaps", 2, fcnOverlaps, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "within", 2, fcnWithin, QObject::tr( "Geometry" ) )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << new StaticFunction( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
     << new StaticFunction( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
@@ -1331,7 +1440,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
 
     if ( element.tagName() == ogcOperatorName )
     {
-      QgsExpression::Node *node = QgsExpression::NodeSpatialOperator::createFromOgcFilter( element, errorMessage );
+      QgsExpression::Node *node = QgsExpression::NodeFunction::createFromOgcFilter( element, errorMessage );
       if ( node )
         return node;
 
@@ -1929,168 +2038,6 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
 
   return NULL;
 }
-
-//
-
-QVariant QgsExpression::NodeSpatialOperator::eval( QgsExpression* parent, QgsFeature* f )
-{  
-  QgsGeometry* geom = f->geometry();
-  
-  switch ( mOp )
-  {
-    case soBbox:
-      return geom->intersects( mOpGeometry->boundingBox() ) ? TVL_True : TVL_False;
-    case soIntersects:
-      return geom->intersects( mOpGeometry ) ? TVL_True : TVL_False;
-    case soContains:
-      return geom->contains( mOpGeometry ) ? TVL_True : TVL_False;
-    case soCrosses:
-      return geom->crosses( mOpGeometry ) ? TVL_True : TVL_False;
-    case soEquals:
-      return geom->equals( mOpGeometry ) ? TVL_True : TVL_False;
-    case soDisjoint:
-      return geom->disjoint( mOpGeometry ) ? TVL_True : TVL_False;
-    case soOverlaps:
-      return geom->overlaps( mOpGeometry ) ? TVL_True : TVL_False;
-    case soTouches:
-      return geom->touches( mOpGeometry ) ? TVL_True : TVL_False;
-    case soWithin:
-      return geom->within( mOpGeometry ) ? TVL_True : TVL_False;
-  }
-  return TVL_False;
-}
-
-bool QgsExpression::NodeSpatialOperator::prepare( QgsExpression* /*parent*/, const QgsFieldMap& /*fields*/ )
-{
-  return true;
-}
-
-QString QgsExpression::NodeSpatialOperator::dump() const
-{
-  switch ( mOp )
-  {
-    case soBbox:
-      return QString( "Intersects('%1')" ).arg( mOpGeometry->boundingBox().asWktPolygon() );
-    case soIntersects:
-      return QString( "Intersects('%1')" ).arg( mOpGeometry->exportToWkt() );
-  }
-  return "";
-}
-
-QgsExpression::Node* QgsExpression::NodeSpatialOperator::createFromOgcFilter( QDomElement &element, QString &errorMessage )
-{
-  if ( element.isNull() )
-    return NULL;
-
-  bool geomOk = false;
-  QgsGeometry* geom = new QgsGeometry();
-
-  QDomNodeList bNodes = element.elementsByTagName( "Box" );
-  if ( bNodes.size() > 0 ) {
-    QDomElement bElem = bNodes.at( 0 ).toElement().firstChild().toElement();
-    QString coordSeparator = ",";
-    QString tupelSeparator = " ";
-    if ( bElem.hasAttribute( "cs" ) )
-    {
-      coordSeparator = bElem.attribute( "cs" );
-    }
-    if ( bElem.hasAttribute( "ts" ) )
-    {
-      tupelSeparator = bElem.attribute( "ts" );
-    }
-
-    QString bString = bElem.text();
-    bool conversionSuccess;
-    double minx = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
-    double miny = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
-    double maxx = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
-    double maxy = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
-    QgsRectangle* rect = new QgsRectangle( minx, miny, maxx, maxy );
-    geom = QgsGeometry::fromRect( *rect );
-    geomOk = true;
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "MultiPolygon" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "MultiLineString" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "MultiPoint" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "Polygon" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "LineString" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    QDomNodeList gNodes = element.elementsByTagName( "Point" );
-    if ( gNodes.size() > 0 ) {
-      QDomElement gElem = gNodes.at( 0 ).toElement();
-      geom = QgsGeometry::fromGML2( gElem );
-      geomOk = true;
-    }
-  }
-
-  if ( !geomOk )
-  {
-    errorMessage = QString( "invalid geometry" );
-    return NULL;
-  }
-
-  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
-  for ( int i = 0; i < spatialOpCount; i++ )
-  {
-    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
-    if ( ogcOperatorName.isEmpty() )
-      continue;
-
-    if ( element.tagName() != ogcOperatorName )
-      continue;
-
-    return new QgsExpression::NodeSpatialOperator(( SpatialOperator ) i, geom );
-  }
-  return NULL;
-}
-
 //
 
 QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature* f )
@@ -2235,16 +2182,127 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
   if ( fd->params() == 0 )
     return; // TODO: special column
 
-  QDomElement funcElem = doc.createElement( "ogc:Function" );
-  funcElem.setAttribute( "name", fd->name() );
-  mArgs->toOgcFilter( doc, funcElem );
-  element.appendChild( funcElem );
+  bool isSpatial = false;
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( fd.mName == ogcOperatorName.toLower() )
+    {
+      isSpatial = true;
+      QDomElement funcElem = doc.createElement( "ogc:"+ogcOperatorName );
+      QDomElement geomProperty = doc.createElement( "ogc:PropertyName" );
+      geomProperty.appendChild( doc.createTextNode( "geometry" ) );
+      funcElem.appendChild( geomProperty );
+
+      QDomDocument tmpDoc;
+      QDomElement tmpElem = tmpDoc.createElement( "tmp" );
+      mArgs->toOgcFilter( tmpDoc, tmpElem );
+      QDomElement childElem = funcElem.firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        if ( childElem.tagName() == "Function" )
+        {
+          if ( childElem.attribute( "name" ) == "geomFromWKT" )
+          {
+            QgsGeometry* geom = 0;
+            geom = QgsGeometry::fromWkt( childElem.firstChildElement().text() );
+            if ( geom )
+              funcElem.appendChild( geom->exportToGML2( doc ) );
+
+          }
+          else if ( childElem.attribute( "name" ) == "geomFromGML2" )
+          {
+            QDomDocument geomDoc;
+            QString errorMsg;
+            QString gml = childElem.firstChildElement().text();  
+            if ( geomDoc.setContent( gml, true, &errorMsg ) )
+              funcElem.appendChild( doc.documentElement() );
+          }
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      
+      element.appendChild( funcElem );
+    }
+  }
+
+  if ( !isSpatial )
+  {
+    QDomElement funcElem = doc.createElement( "ogc:Function" );
+    funcElem.setAttribute( "name", fd.mName );
+    mArgs->toOgcFilter( doc, funcElem );
+    element.appendChild( funcElem );
+  }
 }
 
 QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
   if ( element.isNull() )
     return NULL;
+
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.tagName() == ogcOperatorName )
+    {
+      int geomIdx = 0;
+      int gml2Idx = 0;
+      int opeIdx = 0;
+      for ( int j = 0; j < BuiltinFunctions().size(); j++ )
+      {
+        QgsExpression::FunctionDef funcDef = BuiltinFunctions()[j];
+        if ( funcDef.mName == "$geometry" )
+          geomIdx = j;
+        else if ( funcDef.mName == "geomFromGML2" )
+          gml2Idx = j;
+        else if ( funcDef.mName == ogcOperatorName.toLower() )
+          opeIdx = j;
+      }
+
+      if (geomIdx == 0 || gml2Idx == 0 || opeIdx == 0 )
+      {
+        errorMessage = QString( "spatial functions not find, got %1, %2, %3" ).arg( geomIdx ).arg( gml2Idx ).arg( opeIdx );
+        return NULL;
+      }
+
+      QgsExpression::NodeList *gml2Args = new QgsExpression::NodeList();
+      QDomElement childElem = element.firstChildElement();
+      QString gml2Str = "";
+      while ( !childElem.isNull() && gml2Str == "" ) {
+        if ( childElem.tagName() != "PropertyName" )
+        {
+          QTextStream gml2Stream( &gml2Str );
+          childElem.save( gml2Stream, 0 );
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      if ( gml2Str != "" )
+      {
+        gml2Args->append( new QgsExpression::NodeLiteral( QVariant( gml2Str.remove( "\n" ) ) ) );
+      }
+      else
+      {
+        errorMessage = QString( "No OGC Geometry found" );
+        return NULL;
+      }
+
+      QgsExpression::NodeList *opeArgs = new QgsExpression::NodeList();
+      opeArgs->append( new QgsExpression::NodeFunction( geomIdx, new QgsExpression::NodeList() ) );
+      opeArgs->append( new QgsExpression::NodeFunction( gml2Idx, gml2Args ) );
+
+      return new QgsExpression::NodeFunction( opeIdx, opeArgs );
+    }
+  }
 
   if ( element.tagName() != "Function" )
   {

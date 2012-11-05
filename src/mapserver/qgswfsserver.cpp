@@ -251,12 +251,14 @@ QDomDocument QgsWFSServer::getCapabilities()
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Crosses"/*ogc:Crosses*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Contains"/*ogc:Contains*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Overlaps"/*ogc:Overlaps*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Within"/*ogc:Within*/ ) );
   QDomElement scalarCapabilitiesElement = doc.createElement( "ogc:Scalar_Capabilities"/*ogc:Scalar_Capabilities*/ );
   filterCapabilitiesElement.appendChild( scalarCapabilitiesElement );
   QDomElement comparisonOperatorsElement = doc.createElement( "ogc:Comparison_Operators"/*ogc:Comparison_Operators*/ );
   scalarCapabilitiesElement.appendChild( comparisonOperatorsElement );
   comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Simple_Comparisons"/*ogc:Simple_Comparisons*/ ) );
-  comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Between"/*ogc:Simple_Comparisons*/ ) );
+  comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Between"/*ogc:Between*/ ) );
+  comparisonOperatorsElement.appendChild( doc.createElement( "ogc:Like"/*ogc:Like*/ ) );
   return doc;
 }
 
@@ -452,20 +454,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                   ++featCounter;
                 }
               }
-              /*
-                 QgsFilter* mFilter = QgsFilter::createFilterFromXml( filterElem.firstChild().toElement(), layer );
-                 if ( mFilter )
-                 {
-                 while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
-                 {
-                 if ( mFilter->evaluate( feature ) )
-                 {
-                 sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
-                 ++featCounter;
-                  ++featureCounter;
-                }
-              }
-            */
             }
           }
         }
@@ -1255,12 +1243,12 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   return resp;
 }
 
-QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVectorLayer* layer )
+QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, QgsVectorLayer* layer )
 {
   QgsFeatureIds fids;
 
   QgsVectorDataProvider* provider = layer->dataProvider();
-  QDomNodeList fidNodes = filter.elementsByTagName( "FeatureId" );
+  QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
 
   if ( fidNodes.size() != 0 )
   {
@@ -1274,13 +1262,23 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filter, QgsVect
   }
   else
   {
-    QgsFeature feature;
-    QgsFilter* mFilter = QgsFilter::createFilterFromXml( filter, layer );
-    while ( provider->nextFeature( feature ) )
+    QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+    if (mFilter->hasParserError())
     {
-      if ( mFilter )
+      throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+    }
+    if ( mFilter )
+    {
+      QgsFeature feature;
+      const QgsFieldMap& fields = provider->fields();
+      while ( provider->nextFeature( feature ) )
       {
-        if ( mFilter->evaluate( feature ) )
+        QVariant res = mFilter->evaluate( &feature, fields );
+        if (mFilter->hasEvalError())
+        {
+          throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+        }
+        if ( res.toInt() != 0 )
         {
           fids.insert( feature.id() );
         }
