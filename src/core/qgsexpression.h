@@ -434,7 +434,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeSpatialOperator( SpatialOperator op, QgsGeometry* opGeom ) : mOp( op ), mOpGeometry( 0 ) { if ( opGeom ) mOpGeometry = opGeom; }
-        ~NodeSpatialOperator() { delete mOpGeometry; }
+        ~NodeSpatialOperator() { }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -630,6 +630,7 @@ class CORE_EXPORT QgsExpression
     QgsDistanceArea* mCalc;
 };
 
-Q_DECLARE_METATYPE( QgsExpression::Interval )
+Q_DECLARE_METATYPE( QgsExpression::Interval );
+Q_DECLARE_METATYPE( QgsGeometry * );
 
 #endif // QGSEXPRESSION_H

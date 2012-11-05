@@ -757,6 +757,37 @@ static QVariant fcnYat( const QVariantList& values, QgsFeature* f, QgsExpression
   else
     return QVariant();
 }
+static QVariant fcnGeometry( const QVariantList& , QgsFeature* f, QgsExpression* )
+{
+  QgsGeometry* geom = f->geometry();
+  if ( geom )
+    return  QVariant::fromValue( geom );
+  else
+    return QVariant();
+}
+static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QString wkt = getStringValue( values.at( 0 ), parent );  
+  QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
+  if ( geom )
+    return QVariant::fromValue( geom );
+  else
+    return QVariant();
+}
+static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QDomDocument doc;
+  QString errorMsg;
+  QString gml = getStringValue( values.at( 0 ), parent );  
+  if ( !doc.setContent( gml, true, &errorMsg ) )
+    return QVariant();
+
+  QgsGeometry* geom = QgsGeometry::fromGML2( doc.documentElement() );
+  if ( geom )
+    return QVariant::fromValue( geom );
+  else
+    return QVariant();
+}
 
 static QVariant fcnGeomArea( const QVariantList& , QgsFeature* f, QgsExpression* parent )
 {
@@ -932,6 +963,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
+    << new StaticFunction( "$geometry", 0, fcnGeometry, QObject::tr( "Geometry" ), "" , true )
+    << new StaticFunction( "GeomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "GeomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << new StaticFunction( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
     << new StaticFunction( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
