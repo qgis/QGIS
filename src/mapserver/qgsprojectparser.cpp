@@ -2554,14 +2554,17 @@ void QgsProjectParser::createSvgAnnotationItems()
   {
     svgAnnotationElem = svgAnnotationList.at( i ).toElement();
     annotationElem = svgAnnotationElem.firstChildElement( "AnnotationItem" );
-    QSvgRenderer* svg = new QSvgRenderer();
-    if ( svg->load( convertToAbsolutePath( svgAnnotationElem.attribute( "file" ) ) ) )
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
     {
-      mSvgAnnotationElems.push_back( qMakePair( svg, annotationElem ) );
-    }
-    else
-    {
-      delete svg;
+      QSvgRenderer* svg = new QSvgRenderer();
+      if ( svg->load( convertToAbsolutePath( svgAnnotationElem.attribute( "file" ) ) ) )
+      {
+        mSvgAnnotationElems.push_back( qMakePair( svg, annotationElem ) );
+      }
+      else
+      {
+        delete svg;
+      }
     }
   }
 }
