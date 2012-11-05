@@ -110,6 +110,7 @@ def run(item, action, mainwindow):
 		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.nodes' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
+		legend.setLayerVisible(layer, False)
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
@@ -117,6 +118,7 @@ def run(item, action, mainwindow):
 		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.edges' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
+		legend.setLayerVisible(layer, False)
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
@@ -124,6 +126,7 @@ def run(item, action, mainwindow):
 		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.face_left' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
+		legend.setLayerVisible(layer, False)
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
@@ -131,6 +134,7 @@ def run(item, action, mainwindow):
 		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.face_right' % toponame, provider)
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
+		legend.setLayerVisible(layer, False)
 		registry.addMapLayer(layer)
 		legend.moveLayer(layer, group)
 
