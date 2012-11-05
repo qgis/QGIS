@@ -66,6 +66,27 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
+    static WkbType flatType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBMultiPoint:
+          return WKBPoint;
+        case WKBMultiLineString:
+          return WKBLineString;
+        case WKBMultiPolygon:
+          return WKBPolygon;
+        case WKBMultiPoint25D:
+          return WKBPoint25D;
+        case WKBMultiLineString25D:
+          return WKBLineString25D;
+        case WKBMultiPolygon25D:
+          return WKBPolygon25D;
+        default:
+          return type;
+      }
+    }
+
     enum GeometryType
     {
       Point,

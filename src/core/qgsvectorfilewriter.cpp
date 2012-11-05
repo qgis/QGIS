@@ -482,6 +482,13 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   {
     // build geometry from WKB
     QgsGeometry *geom = feature.geometry();
+
+    // turn single geoemetry to multi geometry if needed
+    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::flatType( mWkbType ) )
+    {
+      geom->convertToMultiType();
+    }
+
     if ( geom && geom->wkbType() != mWkbType )
     {
       // there's a problem when layer type is set as wkbtype Polygon

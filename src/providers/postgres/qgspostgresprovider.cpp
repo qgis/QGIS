@@ -683,7 +683,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
   QString whereClause;
 
   QString aliased;
-  if ( alias ) aliased = QString("%1.").arg( alias );
+  if ( alias ) aliased = QString( "%1." ).arg( alias );
 
   switch ( mPrimaryKeyType )
   {
