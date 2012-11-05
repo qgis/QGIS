@@ -88,6 +88,9 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
            this, SLOT( handleItemChange( QTreeWidgetItem*, int ) ) );
 
+  connect( itemDelegate(), SIGNAL( closeEditor( QWidget *, QAbstractItemDelegate::EndEditHint ) ),
+           this, SLOT( handleCloseEditor( QWidget *, QAbstractItemDelegate::EndEditHint ) ) );
+
   connect( this, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
            this, SLOT( handleCurrentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
@@ -2153,6 +2156,14 @@ void QgsLegend::removePixmapHeightValue( int height )
   //todo: adapt the icon size if height is the largest value and the size of the next element is higher than the minimum
 }
 
+void QgsLegend::handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint )
+{
+  QgsLegendItem *item = dynamic_cast<QgsLegendItem *>( currentItem() );
+  if ( item )
+  {
+    item->afterEdit();
+  }
+}
 
 void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 {
@@ -2185,8 +2196,10 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
   if ( ll )
   {
     //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
-    // TODO: is this still necessary?
-    ll->layer()->setLayerName( ll->text( 0 ) );
+    if ( ll->layerName() != ll->layer()->name() )
+    {
+      ll->layer()->setLayerName( ll->layerName() );
+    }
   }
 
   bool changing = mChanging;
@@ -2257,11 +2270,12 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 
 void QgsLegend::openEditor()
 {
-  QTreeWidgetItem* theItem = currentItem();
+  QgsLegendItem* theItem = dynamic_cast<QgsLegendItem*>( currentItem() );
   if ( theItem )
   {
     if ( !groupEmbedded( theItem ) && !parentGroupEmbedded( theItem ) )
     {
+      theItem->beforeEdit();
       editItem( theItem, 0 );
     }
   }

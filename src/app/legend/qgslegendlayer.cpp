@@ -51,6 +51,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     , mLyr( layer )
     , mDrawingOrder( -1 )
     , mShowFeatureCount( false )
+    , mFeatureCount( -1 )
 {
   mType = LEGEND_LAYER;
 
@@ -66,7 +67,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
 
   setCheckState( 0, Qt::Checked );
 
-  setText( 0, layer->name() );
+  layerNameChanged();
   setupFont();
 
   // Set the initial visibility flag for layers
@@ -296,6 +297,7 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
     }
 
     changeSymbologySettings( layer, itemList );
+    layerNameChanged(); // update total count
   }
 }
 
@@ -556,10 +558,41 @@ QgsMapCanvasLayer& QgsLegendLayer::canvasLayer()
   return mLyr;
 }
 
-void QgsLegendLayer::layerNameChanged()
+QString QgsLegendLayer::label() const
 {
   QString name = mLyr.layer()->name();
-  setText( 0, name );
+  if ( mShowFeatureCount && mFeatureCount >= 0 )
+  {
+    name += QString( " [%1]" ).arg( mFeatureCount );
+  }
+  return name;
+}
+
+void QgsLegendLayer::layerNameChanged()
+{
+  setText( 0, label() );
+}
+
+void QgsLegendLayer::beforeEdit()
+{
+  // Reset to layer name without possible feature count
+  setText( 0, mLyr.layer()->name() );
+}
+
+void QgsLegendLayer::afterEdit()
+{
+  // Reset label with possible feature count, important if text was not changed
+  layerNameChanged();
+}
+
+QString QgsLegendLayer::layerName() const
+{
+  // The text could be edited (Rename), in that case we have to return the new name
+  if ( text( 0 ) != label() && text( 0 ) != mLyr.layer()->name() )
+  {
+    return text( 0 );
+  }
+  return mLyr.layer()->name();
 }
 
 void QgsLegendLayer::updateAfterLayerModification()
@@ -580,10 +613,12 @@ void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
     widthScale = canvas->map()->paintDevice().logicalDpiX() / 25.4;
   }
   refreshSymbology( mLyr.layer()->id(), widthScale );
+  layerNameChanged();
 }
 
 void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer )
 {
+  mFeatureCount = -1;
   if ( !layer )
   {
     return;
@@ -598,12 +633,12 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   renderer->startRender( dummyContext, layer );
 
   //create map holding the symbol count
-  QMap< QgsSymbolV2*, int > mSymbolCountMap;
+  QMap< QgsSymbolV2*, int > symbolCountMap;
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    mSymbolCountMap.insert( symbolIt->second, 0 );
+    symbolCountMap.insert( symbolIt->second, 0 );
   }
 
   //go through all features and count the number of occurrences
@@ -625,7 +660,7 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
     QgsSymbolV2List symbolList = renderer->symbolsForFeature( f );
     for ( QgsSymbolV2List::iterator symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
     {
-      mSymbolCountMap[*symbolIt] += 1;
+      symbolCountMap[*symbolIt] += 1;
     }
     ++featuresCounted;
     if ( featuresCounted % 50 == 0 )
@@ -637,9 +672,11 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
       p.setValue( featuresCounted );
       if ( p.wasCanceled() )
       {
+        mFeatureCount = -1;
         return;
       }
     }
+    mFeatureCount++;
   }
   renderer->stopRender( renderContext );
   p.setValue( nFeatures );
@@ -655,7 +692,7 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( mSymbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
+    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( symbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
   }
 }
 
