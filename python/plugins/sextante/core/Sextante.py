@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.servertools.GeoServerToolsAlgorithmProvider import GeoServerToolsAlgorithmProvider
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -42,11 +40,8 @@ from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
-
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
-
 from sextante.parameters.ParameterSelection import ParameterSelection
-
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
 from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
@@ -58,6 +53,9 @@ from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from sextante.servertools.GeoServerToolsAlgorithmProvider import GeoServerToolsAlgorithmProvider
+
+
 
 class Sextante:
 
