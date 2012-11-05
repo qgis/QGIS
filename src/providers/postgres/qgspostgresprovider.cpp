@@ -2407,9 +2407,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       // Later, we'll replace the old TopoGeometry with the new one,
       // to avoid orphans and retain higher level in an eventual
       // hierarchical definition
-      update = QString( "UPDATE %1 o SET %2 = toTopoGeom(%3, t.name, layer_id(%2))"
-                        " FROM topology.topology t WHERE t.id = topology_id(%2)"
-                        " AND %4 RETURNING layer_id(%2), id(%2), t.name" )
+      update = QString( "WITH tg AS ( SELECT t.name, "
+                        " toTopoGeom(%3, t.name, layer_id(o.%2)) as tg"
+                        " FROM %1 o, topology.topology t WHERE t.id = topology_id(o.%2)"
+                        " AND %4 ) SELECT layer_id(tg.tg), id(tg.tg), tg.name FROM tg" )
                .arg( mQuery )
                .arg( quotedIdentifier( mGeometryColumn ) )
                .arg( geomParam( 1 ) )
@@ -2531,6 +2532,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( replace ) );
           throw PGException( result );
         }
+        // TODO: use prepared query here
         replace = QString( "UPDATE %1.relation SET topogeo_id = %2 "
                            "WHERE layer_id = %3 AND topogeo_id = %4" )
                   .arg( quotedIdentifier( toponame ) )
@@ -2545,20 +2547,6 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ).arg( replace ) );
           throw PGException( result );
         }
-        // Change the ID of the TopoGeometry object put in the table again
-        params = QStringList();
-        params << QString::number( old_tg_id );
-        appendPkParams( iter.key(), params );
-        QgsDebugMsg( "Replacing topogeom reference to use id " + QString::number( old_tg_id ) );
-        QgsDebugMsg( "Params are: " + params.join(","));
-        result = mConnectionRW->PQexecPrepared( "replacetopogeom", params );
-        if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-        {
-          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'replacetopogeom' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
-                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
-          throw PGException( result );
-        }
-        QgsDebugMsg( QString( "TopoGeom swap affected " + QString::number(result.PQntuples())) );
       } // if TopoGeometry
 
     } // for each feature
