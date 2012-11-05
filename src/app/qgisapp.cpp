@@ -1414,8 +1414,10 @@ void QgisApp::createToolBars()
   {
     case 0: defAnnotationAction = mActionTextAnnotation; break;
     case 1: defAnnotationAction = mActionFormAnnotation; break;
-    case 2: defAnnotationAction =  mActionAnnotation; break;
-    case 3: defAnnotationAction =  mActionHtmlAnnotation; break;
+    case 2: defAnnotationAction = mActionHtmlAnnotation; break;
+    case 3: defAnnotationAction = mActionSvgAnnotation; break;
+    case 4: defAnnotationAction =  mActionAnnotation; break;
+
   }
   bt->setDefaultAction( defAnnotationAction );
   QAction* annotationAction = mAttributesToolBar->addWidget( bt );
@@ -8001,11 +8003,12 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 0 );
   else if ( action == mActionFormAnnotation )
     settings.setValue( "/UI/annotationTool", 1 );
-  else if ( action == mActionAnnotation )
-    settings.setValue( "/UI/annotationTool", 2 );
   else if ( action == mActionHtmlAnnotation )
-    settings.setValue( "/UI/annotationTool", 3 );
-
+    settings.setValue( "/UI/annotationTool", 2 );
+  else if ( action == mActionSvgAnnotation )
+    settings.setValue( "UI/annotationTool", 3 );
+  else if ( action == mActionAnnotation )
+    settings.setValue( "/UI/annotationTool", 4 );
   bt->setDefaultAction( action );
 }
 
