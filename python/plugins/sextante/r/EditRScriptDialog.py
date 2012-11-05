@@ -92,7 +92,7 @@ class EditRScriptDialog(QtGui.QDialog):
 
         if self.filename:
             if not self.filename.endswith(".rsx"):
-                    self.filename += ".rsx"
+                self.filename += ".rsx"
             text = str(self.text.toPlainText())
             if self.alg is not None:
                 self.alg.script = text

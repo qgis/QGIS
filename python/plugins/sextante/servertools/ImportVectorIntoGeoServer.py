@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.LayerExporter import LayerExporter
-from sextante.parameters.ParameterString import ParameterString
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -26,10 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-import os
+from sextante.core.LayerExporter import LayerExporter
+from sextante.parameters.ParameterString import ParameterString
+from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
 

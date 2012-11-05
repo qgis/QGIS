@@ -24,17 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 from qgis.core import *
-from PyQt4 import QtGui
 from sextante.parameters.ParameterString import ParameterString
 
 class DeleteWorkspace(GeoServerToolsAlgorithm):
     
     WORKSPACE = "WORKSPACE"
-
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")
 
     def processAlgorithm(self, progress):
         self.createCatalog()

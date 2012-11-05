@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ImportVectorIntoGeoServer.py
+    DeleteDatastore.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -26,35 +26,31 @@ __revision__ = '$Format:%H$'
 from qgis.core import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
-from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 
-class ImportRasterIntoGeoServer(GeoServerToolsAlgorithm):
-
-    INPUT = "INPUT"
-    WORKSPACE = "WORKSPACE"
+class StyleGeoServerLayer(GeoServerToolsAlgorithm):
+    
+    STYLE = "STYLE"
+    OVERWRITE = "OVERWRITE"
     NAME = "NAME"
 
-    def exportRasterLayer(self, inputFilename):
-        return inputFilename
-    
-    def processAlgorithm(self, progress):  
-        self.createCatalog()   
-        inputFilename = self.getParameterValue(self.INPUT)
-        name = self.getParameterValue(self.NAME)            
-        workspaceName = self.getParameterValue(self.WORKSPACE)                            
-        filename = self.exportRasterLayer(inputFilename)                    
-        workspace = self.catalog.get_workspace(workspaceName)
-        ds = self.catalog.create_coveragestore2(name, workspace)
-        ds.data_url = "file:" + filename;
-        self.catalog.save(ds)
+    def processAlgorithm(self, progress):
+        self.createCatalog()
+        stylefile = self.getParameterValue(self.STYLE)
+        overwrite = self.getParameterValue(self.OVERWRITE)
+        name = self.getParameterValue(self.NAME)                                            
+        self.catalog.create_style(name, stylefile, overwrite)
 
         
     def defineCharacteristics(self):
         self.addBaseParameters()
-        self.name = "Import raster into GeoServer"
-        self.group = "GeoServer management tools"
-        self.addParameter(ParameterRaster(self.INPUT, "Layer to import"))
-        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
-        self.addParameter(ParameterString(self.NAME, "Store name"))     
+        self.name = "Add style"
+        self.group = "GeoServer management tools"        
+        self.addParameter(ParameterString(self.NAME, "Style name"))
+        self.addParameter(ParameterFile(self.STYLE, "Style SLD file"))
+        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite"))
+
+                  
 
