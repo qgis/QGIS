@@ -31,7 +31,7 @@ QgsMapToolSvgAnnotation::~QgsMapToolSvgAnnotation()
 
 QgsAnnotationItem* QgsMapToolSvgAnnotation::createItem( QMouseEvent* e )
 {
-    QgsSVGAnnotationItem* svgItem = new QgsSVGAnnotationItem( mCanvas );
+    QgsSvgAnnotationItem* svgItem = new QgsSvgAnnotationItem( mCanvas );
     svgItem->setMapPosition( toMapCoordinates( e->pos() ) );
     svgItem->setSelected( true );
     svgItem->setFrameSize( QSizeF( 200, 100 ) );

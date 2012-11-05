@@ -70,10 +70,10 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
     return new QgsHtmlAnnotationDialog( hItem );
   }
 
-  QgsSVGAnnotationItem* sItem = dynamic_cast<QgsSVGAnnotationItem*>( item );
+  QgsSvgAnnotationItem* sItem = dynamic_cast<QgsSvgAnnotationItem*>( item );
   if ( sItem )
   {
-    return new QgsSVGAnnotationDialog( sItem );
+    return new QgsSvgAnnotationDialog( sItem );
   }
 
   return 0;

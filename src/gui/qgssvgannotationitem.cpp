@@ -21,17 +21,17 @@
 #include <QDomElement>
 
 
-QgsSVGAnnotationItem::QgsSVGAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas )
+QgsSvgAnnotationItem::QgsSvgAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas )
 {
 
 }
 
-QgsSVGAnnotationItem::~QgsSVGAnnotationItem()
+QgsSvgAnnotationItem::~QgsSvgAnnotationItem()
 {
 
 }
 
-void QgsSVGAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsSvgAnnotationItem::writeXML( QDomDocument& doc ) const
 {
     QDomElement documentElem = doc.documentElement();
     if ( documentElem.isNull() )
@@ -45,7 +45,7 @@ void QgsSVGAnnotationItem::writeXML( QDomDocument& doc ) const
     documentElem.appendChild( svgAnnotationElem );
 }
 
-void QgsSVGAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsSvgAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
 {
     QString filePath = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
     setFilePath( filePath );
@@ -56,7 +56,7 @@ void QgsSVGAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& 
     }
 }
 
-void QgsSVGAnnotationItem::paint( QPainter* painter )
+void QgsSvgAnnotationItem::paint( QPainter* painter )
 {
     if( !painter )
     {
@@ -97,7 +97,7 @@ void QgsSVGAnnotationItem::paint( QPainter* painter )
     }
 }
 
-void QgsSVGAnnotationItem::setFilePath( const QString& file )
+void QgsSvgAnnotationItem::setFilePath( const QString& file )
 {
     mFilePath = file;
     mSvgRenderer.load( mFilePath );

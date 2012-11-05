@@ -22,7 +22,7 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsSVGAnnotationDialog::QgsSVGAnnotationDialog( QgsSVGAnnotationItem* item, QWidget * parent, Qt::WindowFlags f):
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f):
     QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
 {
     setupUi( this );
@@ -42,17 +42,17 @@ QgsSVGAnnotationDialog::QgsSVGAnnotationDialog( QgsSVGAnnotationItem* item, QWid
     mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsSVGAnnotationDialog::QgsSVGAnnotationDialog(): QDialog(), mItem( 0 ), mEmbeddedWidget( 0 )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( 0 ), mEmbeddedWidget( 0 )
 {
 
 }
 
-QgsSVGAnnotationDialog::~QgsSVGAnnotationDialog()
+QgsSvgAnnotationDialog::~QgsSvgAnnotationDialog()
 {
 
 }
 
-void QgsSVGAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
 {
     QString directory;
     QFileInfo fi( mFileLineEdit->text() );
@@ -64,7 +64,7 @@ void QgsSVGAnnotationDialog::on_mBrowseToolButton_clicked()
     mFileLineEdit->setText( filename );
 }
 
-void QgsSVGAnnotationDialog::applySettingsToItem()
+void QgsSvgAnnotationDialog::applySettingsToItem()
 {
     if ( mEmbeddedWidget )
     {
@@ -79,7 +79,7 @@ void QgsSVGAnnotationDialog::applySettingsToItem()
 
 }
 
-void QgsSVGAnnotationDialog::deleteItem()
+void QgsSvgAnnotationDialog::deleteItem()
 {
     QGraphicsScene* scene = mItem->scene();
     if ( scene )

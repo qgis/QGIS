@@ -21,12 +21,12 @@
 #include "qgsannotationitem.h"
 #include <QSvgRenderer>
 
-class QgsSVGAnnotationItem: public QgsAnnotationItem
+class QgsSvgAnnotationItem: public QgsAnnotationItem
 {
     public:
 
-    QgsSVGAnnotationItem( QgsMapCanvas* canvas );
-    ~QgsSVGAnnotationItem();
+    QgsSvgAnnotationItem( QgsMapCanvas* canvas );
+    ~QgsSvgAnnotationItem();
 
         void writeXML( QDomDocument& doc ) const;
         void readXML( const QDomDocument& doc, const QDomElement& itemElem );

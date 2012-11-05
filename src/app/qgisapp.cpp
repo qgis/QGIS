@@ -4484,7 +4484,7 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   QDomNodeList svgItemList = doc.elementsByTagName( "SVGAnnotationItem" );
   for ( int i = 0; i < svgItemList.size(); ++i )
   {
-    QgsSVGAnnotationItem* newSvgItem = new QgsSVGAnnotationItem( mMapCanvas );
+    QgsSvgAnnotationItem* newSvgItem = new QgsSvgAnnotationItem( mMapCanvas );
     newSvgItem->readXML( doc, svgItemList.at( i ).toElement() );
   }
   return true;

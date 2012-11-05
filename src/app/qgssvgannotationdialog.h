@@ -20,15 +20,15 @@
 
 #include "ui_qgsformannotationdialogbase.h"
 
-class QgsSVGAnnotationItem;
+class QgsSvgAnnotationItem;
 class QgsAnnotationWidget;
 
-class QgsSVGAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
+class QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
     public:
-        QgsSVGAnnotationDialog( QgsSVGAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0);
-        ~QgsSVGAnnotationDialog();
+        QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0);
+        ~QgsSvgAnnotationDialog();
 
     private slots:
         void on_mBrowseToolButton_clicked();
@@ -36,9 +36,9 @@ class QgsSVGAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialo
         void deleteItem();
 
     private:
-        QgsSVGAnnotationDialog(); //forbidden
+        QgsSvgAnnotationDialog(); //forbidden
 
-        QgsSVGAnnotationItem* mItem;
+        QgsSvgAnnotationItem* mItem;
         QgsAnnotationWidget* mEmbeddedWidget;
 };
 
