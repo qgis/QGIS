@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.grass.nviz import nviz
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,10 +38,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #=======================================================================
-        # self.actions.append(DefineGrassRegionAction())
-        # self.actions.append(DefineGrassRegionFromLayerAction())
-        #=======================================================================
         self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):
@@ -76,7 +73,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
-        #self.preloadedAlgs.append(nviz())
+        self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs

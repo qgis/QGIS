@@ -36,7 +36,7 @@ class PymorphAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #self.readAlgNames()
+        self.activate = False
         self.createAlgsList()
 
     def scriptsFolder(self):

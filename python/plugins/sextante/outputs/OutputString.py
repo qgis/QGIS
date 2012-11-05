@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    SextanteExampleProviderPlugin.py
+    OutputString.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Tim Sutton
-    Email                : tim at linfiniti dot com
+    Date                 : October 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,30 +17,18 @@
 ***************************************************************************
 """
 
-__author__ = 'Tim Sutton'
+__author__ = 'Victor Olaya'
 __date__ = 'August 2012'
-__copyright__ = '(C) 2012, Tim Sutton'
+__copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
-import os, sys
-import inspect
-from sextante.core.Sextante import Sextante
-from sextanteexampleprovider.ExampleAlgorithmProvider import ExampleAlgorithmProvider
+from sextante.outputs.Output import Output
 
+class OutputString(Output):
 
-cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
-
-class SextanteExampleProviderPlugin:
-
-    def __init__(self):
-        self.provider = ExampleAlgorithmProvider()
-    def initGui(self):
-        Sextante.addProvider(self.provider)
-
-    def unload(self):
-        Sextante.removeProvider(self.provider)
-
+    def __init__(self, name="", description=""):
+        self.name = name
+        self.description = description
+        self.value = None
+        self.hidden = True

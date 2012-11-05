@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.servertools.GeoServerToolsAlgorithmProvider import GeoServerToolsAlgorithmProvider
 
 
 __author__ = 'Victor Olaya'
@@ -130,6 +131,7 @@ class Sextante:
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.addProvider(TauDEMAlgorithmProvider())
+        Sextante.addProvider(GeoServerToolsAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()

@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    ModelerUtils.py
+    DatabaseToolProvider.py
     ---------------------
-    Date                 : August 2012
+    Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
@@ -18,42 +18,40 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
+__date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from sextante.core.AlgorithmProvider import AlgorithmProvider
+from PyQt4 import QtGui
 import os
-from sextante.core.SextanteUtils import mkdir
-from sextante.core.SextanteConfig import SextanteConfig
 
-class ModelerUtils:
+class DatabaseToolsAlgorithmProvider(AlgorithmProvider):
 
-    MODELS_FOLDER = "MODELS_FOLDER"
-    ACTIVATE_MODELS = "ACTIVATE_MODELS"
+    def __init__(self):
+        AlgorithmProvider.__init__(self)
+        self.alglist = []#PostGISSQL(), ImportIntoPostGIS(), CreateTable()]
 
-    @staticmethod
-    def modelsFolder():
-        folder = SextanteConfig.getSetting(ModelerUtils.MODELS_FOLDER)
-        if folder == None:
-            folder = os.path.join(os.path.dirname(__file__), "models")
-        mkdir(folder)
-
-        return folder
-
-    @staticmethod
-    def getAlgorithm(name):
-        for provider in ModelerUtils.allAlgs.values():
-            if name in provider:
-                return provider[name]
-        return None
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
 
 
-    @staticmethod
-    def getAlgorithms():
-        return ModelerUtils.allAlgs
+    def unload(self):
+        AlgorithmProvider.unload(self)
 
 
+    def getName(self):
+        return "database"
 
+    def getDescription(self):
+        return "Database tools"
 
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/postgis.png")
 
+    def _loadAlgorithms(self):
+        self.algs = self.alglist
+
+    def supportsNonFileBasedOutput(self):
+        return True

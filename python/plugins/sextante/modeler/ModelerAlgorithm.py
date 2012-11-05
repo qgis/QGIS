@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -436,6 +437,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     return "output html"
                 elif isinstance(out, OutputNumber):
                     return "output number"
+                elif isinstance(out, OutputString):
+                    return "output string"
 
 
     def getAsPythonCode(self):

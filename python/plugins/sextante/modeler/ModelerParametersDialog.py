@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -317,6 +318,20 @@ class ModelerParametersDialog(QtGui.QDialog):
         for param in params:
             if isinstance(param, ParameterString):
                 strings.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+            dependent.append(self.algIndex)
+            
+        i=0
+        for alg in self.model.algs:
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputString):
+                        strings.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            i+=1                
         return strings
 
     def getTableFields(self):

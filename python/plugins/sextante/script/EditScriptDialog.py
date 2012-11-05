@@ -91,6 +91,8 @@ class EditScriptDialog(QtGui.QDialog):
             self.filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
 
         if self.filename:
+            if not self.filename.endswith(".py"):
+                self.filename += ".py"
             text = str(self.text.toPlainText())
             if self.alg is not None:
                 self.alg.script = text

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterString import ParameterString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,6 +35,7 @@ class translate(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
+    EXTRA = "EXTRA"
 
     def getIcon(self):
         filepath = os.path.dirname(__file__) + "/icons/translate.png"
@@ -43,14 +45,18 @@ class translate(GeoAlgorithm):
         self.name = "translate"
         self.group = "Conversion"
         self.addParameter(ParameterRaster(translate.INPUT, "Input layer", False))
+        self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters"))
         self.addOutput(OutputRaster(translate.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
         commands = ["gdal_translate"]
         commands.append("-of")
         out = self.getOutputValue(translate.OUTPUT)
+        extra = self.getOutputValue(translate.EXTRA)
         commands.append(GdalUtils.getFormatShortNameFromFilename(out))
+        commands.append(extra)
         commands.append(self.getParameterValue(translate.INPUT))
         commands.append(out)
+        
 
         GdalUtils.runGdal(commands, progress)

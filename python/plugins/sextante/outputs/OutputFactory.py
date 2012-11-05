@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,12 +28,13 @@ from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.outputs.OutputFile import OutputFile
+from sextante.outputs.OutputString import OutputString
 
 class OutputFactory():
 
     @staticmethod
     def getFromString(s):
-        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML, OutputNumber, OutputFile]
+        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML, OutputNumber, OutputFile, OutputString]
         for clazz in classes:
             if s.startswith(clazz().outputTypeName()):
                 tokens = s[len(clazz().outputTypeName())+1:].split("|")
