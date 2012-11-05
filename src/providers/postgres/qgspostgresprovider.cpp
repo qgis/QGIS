@@ -678,23 +678,26 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   return true;
 }
 
-QString QgsPostgresProvider::pkParamWhereClause( int offset ) const
+QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias ) const
 {
   QString whereClause;
+
+  QString aliased;
+  if ( alias ) aliased = QString("%1.").arg( alias );
 
   switch ( mPrimaryKeyType )
   {
     case pktTid:
-      whereClause = QString( "ctid=$%1" ).arg( offset );
+      whereClause = QString( "%2ctid=$%1" ).arg( offset ).arg( aliased );
       break;
 
     case pktOid:
-      whereClause = QString( "oid=$%1" ).arg( offset );
+      whereClause = QString( "%2oid=$%1" ).arg( offset ).arg( aliased );
       break;
 
     case pktInt:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
-      whereClause = QString( "%1=$%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset );
+      whereClause = QString( "%3%1=$%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset ).arg( aliased );
       break;
 
     case pktFidMap:
@@ -705,7 +708,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset ) const
         int idx = mPrimaryKeyAttrs[i];
         const QgsField &fld = field( idx );
 
-        whereClause += delim + QString( "%1=$%2" ).arg( mConnectionRO->fieldExpression( fld ) ).arg( offset++ );
+        whereClause += delim + QString( "%3%1=$%2" ).arg( mConnectionRO->fieldExpression( fld ) ).arg( offset++ ).arg( aliased );
         delim = " AND ";
       }
     }
@@ -2404,13 +2407,13 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       // Later, we'll replace the old TopoGeometry with the new one,
       // to avoid orphans and retain higher level in an eventual
       // hierarchical definition
-      update = QString( "UPDATE %1 SET %2=toTopoGeom(%3,t.name,layer_id(%2))"
+      update = QString( "UPDATE %1 o SET %2 = toTopoGeom(%3, t.name, layer_id(%2))"
                         " FROM topology.topology t WHERE t.id = topology_id(%2)"
                         " AND %4 RETURNING layer_id(%2), id(%2), t.name" )
                .arg( mQuery )
                .arg( quotedIdentifier( mGeometryColumn ) )
                .arg( geomParam( 1 ) )
-               .arg( pkParamWhereClause( 2 ) );
+               .arg( pkParamWhereClause( 2, "o" ) );
 
       QString getid = QString( "SELECT id(%1) FROM %2 WHERE %3" )
                       .arg( quotedIdentifier( mGeometryColumn ) )
@@ -2433,6 +2436,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                         .arg( mQuery )
                         .arg( quotedIdentifier( mGeometryColumn ) )
                         .arg( pkParamWhereClause( 2 ) );
+      QgsDebugMsg( "TopoGeom swap: " + replace );
       result = mConnectionRW->PQprepare( "replacetopogeom", replace, 2, NULL );
       if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       {
@@ -2546,6 +2550,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         params << QString::number( old_tg_id );
         appendPkParams( iter.key(), params );
         QgsDebugMsg( "Replacing topogeom reference to use id " + QString::number( old_tg_id ) );
+        QgsDebugMsg( "Params are: " + params.join(","));
         result = mConnectionRW->PQexecPrepared( "replacetopogeom", params );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         {
@@ -2553,6 +2558,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                        .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
           throw PGException( result );
         }
+        QgsDebugMsg( QString( "TopoGeom swap affected " + QString::number(result.PQntuples())) );
       } // if TopoGeometry
 
     } // for each feature

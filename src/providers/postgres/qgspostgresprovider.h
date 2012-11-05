@@ -335,7 +335,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      const QgsAttributeList &fetchAttributes );
 
     QString geomParam( int offset ) const;
-    QString pkParamWhereClause( int offset ) const;
+    /** Get parametrized primary key clause
+     * @param offset specifies offset to use for the pk value parameter
+     * @param alias specifies an optional alias given to the subject table
+     */
+    QString pkParamWhereClause( int offset, const char* alias=0 ) const;
     QString whereClause( QgsFeatureId featureId ) const;
 
     bool hasSufficientPermsAndCapabilities();
