@@ -252,7 +252,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             else:
                 self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
                 if iterateParam:
-                    UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
+                    if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self):   
+                        self.finish()
+                    else:
+                        QApplication.restoreOverrideCursor()
+                        if not keepOpen:
+                            self.close()
+                        else:
+                            self.resetGUI()
                 else:
                     command = self.alg.getAsCommand()
                     if command:
