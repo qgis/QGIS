@@ -89,6 +89,9 @@ class QgsSLDParser: public QgsConfigParser
     /**Return feature info in format SIA2045?*/
     bool featureInfoFormatSIA2045() const;
 
+    /**Forward to fallback parser*/
+    void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
+
   private:
     /**Don't use the default constructor*/
     QgsSLDParser();

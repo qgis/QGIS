@@ -79,6 +79,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
+  qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp
 
@@ -104,6 +105,7 @@ SET(QGIS_APP_SRCS
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
+  qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
@@ -251,6 +253,7 @@ SET (QGIS_APP_MOC_HDRS
   qgssinglesymboldialog.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
   qgstipfactory.h

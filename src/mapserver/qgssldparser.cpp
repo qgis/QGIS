@@ -1564,6 +1564,14 @@ bool QgsSLDParser::featureInfoFormatSIA2045() const
   return false;
 }
 
+void QgsSLDParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
+}
+
 #ifdef DIAGRAMSERVER
 int QgsSLDParser::overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {

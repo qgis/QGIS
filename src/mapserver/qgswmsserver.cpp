@@ -550,6 +550,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
     QImage image = c->printPageAsRaster( 0 ); //can only return the first page if pixmap is requested
+
     ba = new QByteArray();
     QBuffer buffer( ba );
     buffer.open( QIODevice::WriteOnly );
@@ -613,6 +614,11 @@ QImage* QgsWMSServer::getMap()
   QStringList selectedLayerIdList = applyFeatureSelections( layersList );
 
   mMapRenderer->render( &thePainter );
+  if ( mConfigParser )
+  {
+    //draw configuration format specific overlay items
+    mConfigParser->drawOverlays( &thePainter, theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
+  }
 
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
