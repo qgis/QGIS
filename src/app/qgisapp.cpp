@@ -515,20 +515,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   legendLayerSelectionChanged();
   activateDeactivateLayerRelatedActions( NULL );
 
-  // create the notification widget for macros
-  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
-                tr( "macros have been disabled." ),
-                QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                mInfoBar );
-
-  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
-  btnEnableMacros->setText( tr( "Enable" ) );
-  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
-  btnEnableMacros->setCursor( Qt::PointingHandCursor );
-  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
-  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
-  mMacrosWarn->layout()->addWidget( btnEnableMacros );
-
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
@@ -3368,8 +3354,24 @@ bool QgisApp::addProject( QString projectFile )
       }
       else if ( enableMacros == 1 ) // ask
       {
+        // create the notification widget for macros
+
+        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning:" ),
+                            tr( "project macros have been disabled." ),
+                            QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                            mInfoBar );
+
+        QToolButton *btnEnableMacros = new QToolButton( macroMsg );
+        btnEnableMacros->setText( tr( "Enable macros" ) );
+        btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+        btnEnableMacros->setCursor( Qt::PointingHandCursor );
+        btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+        connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
+        connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
+        macroMsg->layout()->addWidget( btnEnableMacros );
+
         // display the macros notification widget
-        mInfoBar->pushWidget( mMacrosWarn, 1 );
+        mInfoBar->pushWidget( macroMsg, 1 );
       }
     }
   }
@@ -5386,6 +5388,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   mMapCanvas->freeze();
   QgsMapLayer *dupLayer;
   QString layerDupName, unSppType;
+  QList<QWidget *> msgBars;
 
   foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
@@ -5437,19 +5440,23 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
     if ( unSppType.isEmpty() && dupLayer && !dupLayer->isValid() )
     {
-      QMessageBox::information( this,
-                                tr( "Invalid Layer" ),
-                                tr( "%1\n\nDuplication resulted in invalid layer." ).arg( selectedLyr->name() ) );
+      msgBars.append( QgsMessageBar::createMessage(
+                        tr( "Duplicate layer: " ),
+                        tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
+                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                        mInfoBar ) );
       continue;
     }
 
     if ( !unSppType.isEmpty() || !dupLayer )
     {
-      QMessageBox::information( this,
-                                tr( "Unsupported Layer" ),
-                                tr( "%1\n%2\n\nDuplication of layer type is unsupported." )
-                                .arg( selectedLyr->name() )
-                                .arg( !unSppType.isEmpty() ? QString( " (" ) + unSppType + QString( ")" ) : "" ) );
+      msgBars.append( QgsMessageBar::createMessage(
+                        tr( "Duplicate layer: " ),
+                        tr( "%1 (%2type unsupported)" )
+                        .arg( selectedLyr->name() )
+                        .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
+                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                        mInfoBar ) );
       continue;
     }
 
@@ -5478,6 +5485,13 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   qApp->processEvents();
 
   mMapCanvas->freeze( false );
+
+  // display errors in message bar after duplication of layers
+  foreach ( QWidget * msgBar, msgBars )
+  {
+    mInfoBar->pushWidget( msgBar, 1 );
+  }
+
 }
 
 void QgisApp::setLayerCRS()
@@ -6096,8 +6110,8 @@ void QgisApp::closeProject()
     QgsPythonRunner::run( "qgis.utils.unloadProjectMacros();" );
   }
 
-  // remove the warning message from the bar if present
-  mInfoBar->popWidget( mMacrosWarn );
+  // remove any message widgets from the message bar
+  mInfoBar->clearWidgets();
 
   mTrustedMacros = false;
 

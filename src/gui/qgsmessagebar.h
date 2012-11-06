@@ -27,7 +27,10 @@
 
 class QWidget;
 class QGridLayout;
+class QMenu;
 class QToolButton;
+class QLabel;
+class QAction;
 
 /** \ingroup gui
  * A bar for displaying non-blocking messages to the user.
@@ -65,7 +68,10 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QWidget* createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent = 0 );
 
   signals:
-    //! emitted when a widget was removed from the bar
+    //! emitted when a message widget is added to the bar
+    void widgetAdded( QWidget *widget );
+
+    //! emitted when a message widget was removed from the bar
     void widgetRemoved( QWidget *widget );
 
   public slots:
@@ -74,6 +80,11 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget();
+
+    /*! remove all items from the bar's widget list
+     *  @return true if all items were removed, false otherwise
+     */
+    bool clearWidgets();
 
   private:
     class QgsMessageBarItem
@@ -99,8 +110,15 @@ class GUI_EXPORT QgsMessageBar: public QFrame
 
     QgsMessageBarItem *mCurrentItem;
     QList<QgsMessageBarItem *> mList;
+    QMenu *mCloseMenu;
     QToolButton *mCloseBtn;
     QGridLayout *mLayout;
+    QLabel *mItemCount;
+    QAction *mActionCloseAll;
+
+  private slots:
+    //! updates count of items in widget list
+    void updateItemCount();
 };
 
 #endif
