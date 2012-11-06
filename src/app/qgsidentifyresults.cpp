@@ -94,6 +94,7 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
   mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
   mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
   mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
+  mPrintToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
 
   QSettings mySettings;
   restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
@@ -120,6 +121,9 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
 
   connect( lstResults, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
            this, SLOT( itemClicked( QTreeWidgetItem*, int ) ) );
+
+  connect( mPrintToolButton, SIGNAL( clicked() ),
+           this, SLOT( printCurrentItem() ) );
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -294,6 +298,7 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
     wv->insertAction( 0, action );
 
     wv->setContextMenuPolicy( Qt::ActionsContextMenu );
+    mPrintToolButton->setVisible( true );
 
     connect( wv, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
     attrItem->treeWidget()->setItemWidget( attrItem, 1, wv );
@@ -546,6 +551,9 @@ void QgsIdentifyResults::clear()
 
   lstResults->clear();
   clearHighlights();
+
+  mPrintToolButton->setDisabled( true );
+  mPrintToolButton->setHidden( true );
 }
 
 void QgsIdentifyResults::activate()
@@ -698,6 +706,9 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTr
     emit selectedFeatureChanged( 0, 0 );
     return;
   }
+
+  QWebView *wv = qobject_cast<QWebView*>( current->treeWidget()->itemWidget( current, 1 ) );
+  mPrintToolButton->setEnabled( wv != 0 );
 
   QTreeWidgetItem *layItem = layerItem( current );
 
@@ -1036,6 +1047,22 @@ void QgsIdentifyResults::print()
     return;
 
   QWebView *wv = qobject_cast<QWebView*>( action->parent() );
+  if ( !wv )
+    return;
+
+  QPrinter printer;
+  QPrintDialog *dialog = new QPrintDialog( &printer );
+  if ( dialog->exec() == QDialog::Accepted )
+    wv->print( &printer );
+}
+
+void QgsIdentifyResults::printCurrentItem()
+{
+  QTreeWidgetItem *item = lstResults->currentItem();
+  if ( !item )
+    return;
+
+  QWebView *wv = qobject_cast<QWebView*>( item->treeWidget()->itemWidget( item, 1 ) );
   if ( !wv )
     return;
 

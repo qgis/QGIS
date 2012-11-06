@@ -120,6 +120,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void openUrl( const QUrl &url );
     void print();
+    void printCurrentItem();
 
   private:
     QMenu *mActionPopup;
