@@ -2158,6 +2158,8 @@ void QgsLegend::removePixmapHeightValue( int height )
 
 void QgsLegend::handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint )
 {
+  Q_UNUSED( editor );
+  Q_UNUSED( hint );
   QgsLegendItem *item = dynamic_cast<QgsLegendItem *>( currentItem() );
   if ( item )
   {

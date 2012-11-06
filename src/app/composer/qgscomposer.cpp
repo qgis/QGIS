@@ -267,6 +267,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mPanelMenu->addAction( mUndoDock->toggleViewAction() );
   mAtlasDock = new QDockWidget( tr( "Atlas generation" ), this );
   mAtlasDock->setObjectName( "AtlasDock" );
+  mPanelMenu->addAction( mAtlasDock->toggleViewAction() );
 
   mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );

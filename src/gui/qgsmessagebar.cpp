@@ -44,7 +44,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
 
   mCloseBtn = new QToolButton( this );
   mCloseBtn->setToolTip( tr( "Close" ) );
-  mCloseBtn->setStyleSheet( "background-color: rgba(255, 255, 255, 0);" );
+  mCloseBtn->setStyleSheet( "QToolButton {background-color: rgba(255, 255, 255, 0);}" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
