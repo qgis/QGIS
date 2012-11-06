@@ -1814,31 +1814,69 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
 
 QString QgsPostgresProvider::geomParam( int offset ) const
 {
+  // TODO: retrive these at construction time
+  QString toponame;
+  long layer_id;
+
+  if ( mSpatialColType == sctTopoGeometry )
+  {
+    QString sql = QString( "SELECT t.name, l.layer_id FROM topology.layer l, topology.topology t "
+                     "WHERE l.topology_id = t.id AND l.schema_name=%1 "
+                     "AND l.table_name=%2 AND l.feature_column=%3" )
+            .arg( quotedValue( mSchemaName ) )
+            .arg( quotedValue( mTableName ) )
+            .arg( quotedValue( mGeometryColumn ) );
+    QgsPostgresResult result = mConnectionRO->PQexec( sql );
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+    {
+      throw PGException( result ); // we should probably not do this
+    }
+    if ( result.PQntuples() < 1 )
+    {
+        QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" )
+                                     .arg( quotedValue( mSchemaName ) )
+                                     .arg( quotedValue( mTableName ) )
+                                     .arg( quotedValue( mGeometryColumn ) ),
+                                   tr( "PostGIS" ) );
+    }
+    toponame = result.PQgetvalue( 0, 0 ); 
+    layer_id = result.PQgetvalue( 0, 1 ).toLong(); 
+
+  }
+
   QString geometry;
 
   bool forceMulti = false;
 
-  switch ( geometryType() )
+  if ( mSpatialColType != sctTopoGeometry )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBLineString:
-    case QGis::WKBPolygon:
-    case QGis::WKBPoint25D:
-    case QGis::WKBLineString25D:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBUnknown:
-    case QGis::WKBNoGeometry:
-      forceMulti = false;
-      break;
+    switch ( geometryType() )
+    {
+      case QGis::WKBPoint:
+      case QGis::WKBLineString:
+      case QGis::WKBPolygon:
+      case QGis::WKBPoint25D:
+      case QGis::WKBLineString25D:
+      case QGis::WKBPolygon25D:
+      case QGis::WKBUnknown:
+      case QGis::WKBNoGeometry:
+        forceMulti = false;
+        break;
 
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPoint25D:
-    case QGis::WKBMultiLineString25D:
-    case QGis::WKBMultiPolygon25D:
-      forceMulti = true;
-      break;
+      case QGis::WKBMultiPoint:
+      case QGis::WKBMultiLineString:
+      case QGis::WKBMultiPolygon:
+      case QGis::WKBMultiPoint25D:
+      case QGis::WKBMultiLineString25D:
+      case QGis::WKBMultiPolygon25D:
+        forceMulti = true;
+        break;
+    }
+  }
+
+  if ( mSpatialColType == sctTopoGeometry )
+  {
+    geometry += QString( "toTopoGeom(" );
   }
 
   if ( forceMulti )
@@ -1855,6 +1893,13 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   if ( forceMulti )
   {
     geometry += ")";
+  }
+
+  if ( mSpatialColType == sctTopoGeometry )
+  {
+    geometry += QString( ",%1,%2)" )
+                .arg( quotedValue(toponame) )
+                .arg( layer_id );
   }
 
   return geometry;
