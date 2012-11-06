@@ -136,7 +136,9 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
 
 int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer )
 {
-  if ( !layerItem || !vlayer )
+  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
+
+  if ( !layerItem || !lItem || !vlayer )
   {
     return 1;
   }
@@ -147,11 +149,24 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     return 2;
   }
 
+  if ( lItem->showFeatureCount() )
+  {
+    if ( !vlayer->countSymbolFeatures() )
+    {
+      QgsDebugMsg( "Cannot get feature counts" );
+    }
+  }
+
   QgsLegendSymbolList lst = renderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( symbolIt->first );
+    QString label = symbolIt->first;
+    if ( lItem->showFeatureCount() )
+    {
+      label += QString( " [%1]" ).arg( vlayer->featureCount( symbolIt->second ) );
+    }
+    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( label );
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     if ( symbolIt->second )
     {
@@ -282,6 +297,7 @@ void QgsLegendModel::updateItem( QStandardItem* item )
 
 void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 {
+  QgsDebugMsg( "Entered." );
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
   if ( lItem )
   {
@@ -295,10 +311,16 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
         lItem->removeRow( i );
       }
 
-      //set layer name as item text
-      layerItem->setText( mapLayer->name() );
-
       QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+
+      //set layer name as item text
+      QString label = mapLayer->name();
+      if ( vLayer && lItem->showFeatureCount() )
+      {
+        label += QString( " [%1]" ).arg( vLayer->featureCount() );
+      }
+      layerItem->setText( label );
+
       if ( vLayer )
       {
         if ( vLayer->isUsingRendererV2() )

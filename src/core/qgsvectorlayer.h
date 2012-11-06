@@ -49,6 +49,7 @@ class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
+class QgsSymbolV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -416,6 +417,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return long containing number of features
      */
     virtual long featureCount() const;
+
+    /**
+     * Number of features rendered with specified symbol. Features must be first
+     * calculated by countSymbolFeatures()
+     * @param symbol the symbol
+     * @return number of features rendered by symbol or -1 if failed or counts are not available
+     */
+    long featureCount( QgsSymbolV2* symbol );
+
+    /**
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * @param showProgress show progress dialog
+     * @return true if calculated, false if failed or was canceled by user
+     */
+    bool countSymbolFeatures( bool showProgress = true );
 
     /** This function does nothing useful, it's kept only for compatibility.
      * @todo to be removed
@@ -1165,6 +1181,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
+
+    // Features in renderer classes counted
+    bool mSymbolFeatureCounted;
+
+    // Feature counts for each renderer symbol
+    QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
 };
 
 #endif

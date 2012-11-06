@@ -61,9 +61,12 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mRemoveToolButton_clicked();
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
+    void on_mCountToolButton_clicked( bool checked );
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupButton_clicked();
+
+    void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 
   protected:
     void showEvent( QShowEvent * event );

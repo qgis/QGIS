@@ -51,7 +51,6 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     , mLyr( layer )
     , mDrawingOrder( -1 )
     , mShowFeatureCount( false )
-    , mFeatureCount( -1 )
 {
   mType = LEGEND_LAYER;
 
@@ -558,12 +557,13 @@ QgsMapCanvasLayer& QgsLegendLayer::canvasLayer()
   return mLyr;
 }
 
-QString QgsLegendLayer::label() const
+QString QgsLegendLayer::label()
 {
   QString name = mLyr.layer()->name();
-  if ( mShowFeatureCount && mFeatureCount >= 0 )
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
+  if ( mShowFeatureCount && vlayer && vlayer->featureCount() >= 0 )
   {
-    name += QString( " [%1]" ).arg( mFeatureCount );
+    name += QString( " [%1]" ).arg( vlayer->featureCount() );
   }
   return name;
 }
@@ -585,7 +585,7 @@ void QgsLegendLayer::afterEdit()
   layerNameChanged();
 }
 
-QString QgsLegendLayer::layerName() const
+QString QgsLegendLayer::layerName()
 {
   // The text could be edited (Rename), in that case we have to return the new name
   if ( text( 0 ) != label() && text( 0 ) != mLyr.layer()->name() )
@@ -618,7 +618,6 @@ void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 
 void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer )
 {
-  mFeatureCount = -1;
   if ( !layer )
   {
     return;
@@ -629,57 +628,13 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   {
     return;
   }
-  QgsRenderContext dummyContext;
-  renderer->startRender( dummyContext, layer );
 
-  //create map holding the symbol count
-  QMap< QgsSymbolV2*, int > symbolCountMap;
-  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  // Count features
+  if ( !layer->countSymbolFeatures() )
   {
-    symbolCountMap.insert( symbolIt->second, 0 );
+    QgsDebugMsg( "Cannot get feature counts" );
+    return;
   }
-
-  //go through all features and count the number of occurrences
-  int nFeatures = layer->pendingFeatureCount();
-  QProgressDialog p( tr( "Updating feature count for layer %1" ).arg( layer->name() ), tr( "Abort" ), 0, nFeatures );
-  p.setWindowModality( Qt::WindowModal );
-  int featuresCounted = 0;
-
-  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
-  QgsFeature f;
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderer->startRender( renderContext, layer );
-
-  while ( layer->nextFeature( f ) )
-  {
-    QgsSymbolV2List symbolList = renderer->symbolsForFeature( f );
-    for ( QgsSymbolV2List::iterator symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
-    {
-      symbolCountMap[*symbolIt] += 1;
-    }
-    ++featuresCounted;
-    if ( featuresCounted % 50 == 0 )
-    {
-      if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-      {
-        p.setMaximum( 0 );
-      }
-      p.setValue( featuresCounted );
-      if ( p.wasCanceled() )
-      {
-        mFeatureCount = -1;
-        return;
-      }
-    }
-    mFeatureCount++;
-  }
-  renderer->stopRender( renderContext );
-  p.setValue( nFeatures );
 
   QMap<QString, QPixmap> itemMap;
   SymbologyList::const_iterator symbologyIt = itemList.constBegin();
@@ -687,12 +642,15 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   {
     itemMap.insert( symbologyIt->first, symbologyIt->second );
   }
+
   itemList.clear();
 
+  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( symbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
+    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( layer->featureCount( symbolIt->second ) ) + "]", itemMap[symbolIt->first] ) );
   }
 }
 

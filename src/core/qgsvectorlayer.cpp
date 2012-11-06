@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QString>
 #include <QDomNode>
@@ -106,6 +107,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mSymbolFeatureCounted( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -1451,8 +1453,6 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   return retval;
 }
 
-
-
 long QgsVectorLayer::featureCount() const
 {
   if ( !mDataProvider )
@@ -1462,6 +1462,82 @@ long QgsVectorLayer::featureCount() const
   }
 
   return mDataProvider->featureCount();
+}
+
+long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
+{
+  if ( !mSymbolFeatureCounted ) return -1;
+  return mSymbolFeatureCountMap.value( symbol );
+}
+
+bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+{
+  if ( mSymbolFeatureCounted ) return true;
+  mSymbolFeatureCountMap.clear();
+
+  if ( !mDataProvider )
+  {
+    QgsDebugMsg( "invoked with null mDataProvider" );
+    return false;
+  }
+  if ( !mRendererV2 )
+  {
+    QgsDebugMsg( "invoked with null mRendererV2" );
+    return false;
+  }
+
+  QgsLegendSymbolList symbolList = mRendererV2->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
+
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
+  }
+
+  long nFeatures = pendingFeatureCount();
+  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+  progressDialog.setWindowModality( Qt::WindowModal );
+  int featuresCounted = 0;
+
+  select( pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeature f;
+
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  mRendererV2->startRender( renderContext, this );
+
+  while ( nextFeature( f ) )
+  {
+    QgsSymbolV2List featureSymbolList = mRendererV2->symbolsForFeature( f );
+    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    {
+      mSymbolFeatureCountMap[*symbolIt] += 1;
+    }
+    ++featuresCounted;
+
+    if ( showProgress )
+    {
+      if ( featuresCounted % 50 == 0 )
+      {
+        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
+        {
+          progressDialog.setMaximum( 0 );
+        }
+        progressDialog.setValue( featuresCounted );
+        if ( progressDialog.wasCanceled() )
+        {
+          mSymbolFeatureCountMap.clear();
+          mRendererV2->stopRender( renderContext );
+          return false;
+        }
+      }
+    }
+  }
+  mRendererV2->stopRender( renderContext );
+  progressDialog.setValue( nFeatures );
+  mSymbolFeatureCounted = true;
+  return true;
 }
 
 long QgsVectorLayer::updateFeatureCount() const
@@ -4926,6 +5002,8 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
       setUsingRendererV2( true );
     delete mRendererV2;
     mRendererV2 = r;
+    mSymbolFeatureCounted = false;
+    mSymbolFeatureCountMap.clear();
   }
 }
 bool QgsVectorLayer::isUsingRendererV2()

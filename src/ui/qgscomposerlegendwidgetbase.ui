@@ -44,15 +44,15 @@
        <item row="0" column="0">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>374</width>
-            <height>549</height>
+            <width>370</width>
+            <height>467</height>
            </rect>
           </property>
           <attribute name="label">
@@ -220,8 +220,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
-            <height>162</height>
+            <width>427</width>
+            <height>401</height>
            </rect>
           </property>
           <attribute name="label">
@@ -244,7 +244,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="9">
+           <item row="1" column="0" colspan="10">
             <widget class="QTreeView" name="mItemTreeView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -264,6 +264,9 @@
              <attribute name="headerVisible">
               <bool>false</bool>
              </attribute>
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
             </widget>
            </item>
            <item row="2" column="0">
@@ -276,6 +279,10 @@
              </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -290,6 +297,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -302,6 +313,10 @@
             <widget class="QToolButton" name="mAddToolButton">
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -316,6 +331,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -329,6 +348,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -337,7 +360,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="5">
+           <item row="2" column="6">
             <widget class="QToolButton" name="mUpdatePushButton">
              <property name="text">
               <string>Update</string>
@@ -350,14 +373,14 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="6">
+           <item row="2" column="7">
             <widget class="QToolButton" name="mUpdateAllPushButton">
              <property name="text">
               <string>All</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="8">
+           <item row="2" column="9">
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -370,10 +393,36 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="7">
+           <item row="2" column="8">
             <widget class="QToolButton" name="mAddGroupButton">
              <property name="text">
               <string>Add group</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="5">
+            <widget class="QToolButton" name="mCountToolButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Show feature count for each class of vector layer.</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSum.png</normaloff>:/images/themes/default/mActionSum.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -410,6 +459,8 @@
   <tabstop>mUpdateAllPushButton</tabstop>
   <tabstop>mAddGroupButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

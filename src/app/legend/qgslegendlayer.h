@@ -76,7 +76,7 @@ class QgsLegendLayer : public QgsLegendItem
     int drawingOrder() const { return mDrawingOrder; }
 
     /** Get layer name currently set in legend */
-    QString layerName() const;
+    QString layerName();
 
     /**Called before edit*/
     void beforeEdit();
@@ -130,7 +130,7 @@ class QgsLegendLayer : public QgsLegendItem
     void setupFont();
 
     /** Label, may be layer name or layer name + [feature count] */
-    QString label() const;
+    QString label();
 
   protected:
 
@@ -142,9 +142,6 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**True if number of features per legend class should is shown in the legend items*/
     bool mShowFeatureCount;
-
-    /** Last vector features count, -1 if not counted */
-    int mFeatureCount;
 };
 
 #endif
