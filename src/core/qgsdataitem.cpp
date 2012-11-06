@@ -474,7 +474,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
 
     QString vsiPrefix = QgsZipItem::vsiPrefix( path );
     // vsizip support was added to GDAL/OGR 1.6 but GDAL_VERSION_NUM not available here
-    if (( settings.value( "/qgis/scanZipInBrowser", QVariant( "basic" ) ).toString() != "no" ) &&
+    if (( settings.value( "/qgis/scanZipInBrowser2", QVariant( "basic" ) ).toString() != "no" ) &&
         ( vsiPrefix == "/vsizip/" || vsiPrefix == "/vsitar/" ) )
     {
       QgsDataItem * item = QgsZipItem::itemFromPath( this, path, name );
@@ -857,7 +857,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   QString tmpPath;
   QString childPath;
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
   mZipFileList.clear();
 
@@ -955,7 +955,7 @@ QString QgsZipItem::vsiPrefix( QString path )
 QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QString name )
 {
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
   QString vsiPath = path;
   int zipFileCount = 0;
   QStringList zipFileList;
@@ -1059,7 +1059,7 @@ const QStringList & QgsZipItem::getZipFileList()
 
   QString tmpPath;
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
   QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path() ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
 

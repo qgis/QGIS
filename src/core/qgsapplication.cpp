@@ -583,6 +583,9 @@ void QgsApplication::initQgis()
 
   // create map layer registry if doesn't exist
   QgsMapLayerRegistry::instance();
+
+  // upgrade config options from older version
+  upgradeConfig();
 }
 
 void QgsApplication::exitQgis()
@@ -858,3 +861,87 @@ void QgsApplication::applyGdalSkippedDrivers()
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
+
+void QgsApplication::upgradeConfig()
+{
+  QSettings settings;
+
+  /*  Due to changes in settings storage types for "scan items" and "scan zip" settings,
+      qgis-1.8 and qgis-1.9 have conficting values, so the keys have been renamed
+      Here we do a 1-time check to copy old setting to new setting
+  */
+
+  // use a special settings key so we only check once
+  if ( ! settings.value( "/qgis/scanInBrowserUpgradeChecked", false ).toBool() )
+  {
+    QVariant v;
+    int i;
+    QString s;
+    bool ok;
+
+    // check if new setting is empty
+    if ( settings.value( "/qgis/scanItemsInBrowser2" ).isNull() )
+    {
+      v = settings.value( "/qgis/scanItemsInBrowser" );
+      i = v.toInt( &ok );
+      // check if value was defined in qgis-1.8 (as int)
+      if ( ! v.isNull() && ok )
+      {
+        // convert old setting to new setting
+        switch ( i )
+        {
+          case 0:
+            s = "contents";
+            break;
+          case 1:
+            s = "extension";
+            break;
+          default:
+            s = "";
+            break;
+        }
+        settings.setValue( "/qgis/scanItemsInBrowser2", s );
+      }
+      // check if value was defined in qgis-1.9 (as QString)
+      else if ( ! v.isNull() && !v.toString().isEmpty() )
+      {
+        s = v.toString();
+        settings.setValue( "/qgis/scanItemsInBrowser2", s );
+      }
+    }
+
+    if ( settings.value( "/qgis/scanZipInBrowser2" ).isNull() )
+    {
+      v = settings.value( "/qgis/scanZipInBrowser" );
+      i = v.toInt( & ok );
+      if ( ! v.isNull() && ok )
+      {
+        switch ( i )
+        {
+          case 0:
+            s = "No";
+            break;
+          case 1: // passthru removed, use basic instead
+          case 2:
+            s = "basic";
+            break;
+          case 3:
+            s = "full";
+            break;
+          default:
+            s = "";
+            break;
+        }
+        settings.setValue( "/qgis/scanZipInBrowser2", s );
+      }
+      else if ( ! v.isNull() && !v.toString().isEmpty() )
+      {
+        s = v.toString();
+        settings.setValue( "/qgis/scanZipInBrowser2", s );
+      }
+    }
+
+    settings.setValue( "/qgis/scanInBrowserUpgradeChecked", true );
+  }
+}
+

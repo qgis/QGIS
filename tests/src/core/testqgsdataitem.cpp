@@ -62,7 +62,7 @@ void TestQgsDataItem::initTestCase()
   QCoreApplication::setApplicationName( "QGIS-TEST" );
   // save current scanItemsSetting value
   QSettings settings;
-  mScanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
+  mScanItemsSetting = settings.value( "/qgis/scanItemsInBrowser2", 0 ).toInt();
 
   //create a directory item that will be used in all tests...
   mDirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
@@ -72,7 +72,7 @@ void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
   QSettings settings;
-  settings.setValue( "/qgis/scanItemsInBrowser", mScanItemsSetting );
+  settings.setValue( "/qgis/scanItemsInBrowser2", mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
 }
@@ -96,7 +96,7 @@ void TestQgsDataItem::testDirItemChildren()
   QSettings settings;
   for ( int iSetting = 0 ; iSetting <= 1 ; iSetting++ )
   {
-    settings.setValue( "/qgis/scanItemsInBrowser", iSetting );
+    settings.setValue( "/qgis/scanItemsInBrowser2", iSetting );
     QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 

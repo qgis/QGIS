@@ -270,6 +270,10 @@ class CORE_EXPORT QgsApplication: public QApplication
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
 
+    /** upgrades config options from older version, called by initQGis
+     * @note added in 2.0 */
+    static void upgradeConfig();
+
   signals:
     //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );

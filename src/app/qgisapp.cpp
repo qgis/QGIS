@@ -2546,7 +2546,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   QgsDebugMsg( "askUserForZipItemLayers( " + path + ")" );
 
   // if scanZipBrowser == no: skip to the next file
-  if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() == "no" )
+  if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() == "no" )
   {
     return false;
   }
