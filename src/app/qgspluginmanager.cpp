@@ -211,8 +211,10 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myData.setRenderAsWidget( false );
     myData.setChecked( false ); //start off assuming false
 
-    if ( iconName == "__error__" or iconName.isEmpty() )
+    if ( iconName == "__error__" || iconName.isEmpty() )
+    {
       myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+    }
     else
     {
       bool relative = QFileInfo( iconName ).isRelative();
