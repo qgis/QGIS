@@ -1,4 +1,4 @@
-from sextante.servertools.geoserver.support import xml_property, write_bool, ResourceInfo, url
+from sextante.admintools.geoserver.support import xml_property, write_bool, ResourceInfo, url
 
 def workspace_from_index(catalog, node):
     name = node.find("name")

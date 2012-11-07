@@ -1,4 +1,4 @@
-from sextante.servertools.geoserver.support import ResourceInfo, url, xml_property
+from sextante.admintools.geoserver.support import ResourceInfo, url, xml_property
 
 class Style(ResourceInfo):
     def __init__(self, catalog, name):

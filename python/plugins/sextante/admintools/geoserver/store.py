@@ -1,6 +1,6 @@
-import sextante.servertools.geoserver.workspace as ws
-from sextante.servertools.geoserver.resource import featuretype_from_index, coverage_from_index
-from sextante.servertools.geoserver.support import ResourceInfo, xml_property, key_value_pairs, \
+import sextante.admintools.geoserver.workspace as ws
+from sextante.admintools.geoserver.resource import featuretype_from_index, coverage_from_index
+from sextante.admintools.geoserver.support import ResourceInfo, xml_property, key_value_pairs, \
         write_bool, write_dict, write_string, url
 
 def datastore_from_index(catalog, workspace, node):

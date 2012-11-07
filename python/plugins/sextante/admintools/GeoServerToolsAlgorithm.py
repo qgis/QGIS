@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    DeleteDatastore.py
+    GeoserverToolsAlgorithm.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterString import ParameterString
+from sextante.admintools.geoserver.catalog import Catalog
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -23,29 +25,28 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
-from sextante.parameters.ParameterString import ParameterString
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+import os
+from PyQt4 import QtGui
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 
-class DeleteDatastore(GeoServerToolsAlgorithm):
+class GeoServerToolsAlgorithm(GeoAlgorithm):
+
+    URL = "URL"    
+    USER = "USER"
+    PASSWORD = "PASSWORD"
     
-    DATASTORE = "DATASTORE"
-    WORKSPACE = "WORKSPACE"
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")        
 
-    def processAlgorithm(self, progress):
-        self.createCatalog()
-        datastoreName = self.getParameterValue(self.DATASTORE)
-        workspaceName = self.getParameterValue(self.WORKSPACE)                             
-        ds = self.catalog.get_store(datastoreName, workspaceName)           
-        self.catalog.delete(ds, recurse=True)
+    def addBaseParameters(self):
+        self.addParameter(ParameterString(self.URL, "URL", "http://localhost:8080/geoserver/rest"))
+        self.addParameter(ParameterString(self.USER, "User", "admin"))     
+        self.addParameter(ParameterString(self.PASSWORD, "Password", "geoserver"))          
 
+    def createCatalog(self):
+        url = self.getParameterValue(self.URL)
+        user = self.getParameterValue(self.USER)
+        password = self.getParameterValue(self.PASSWORD)
+        self.catalog = Catalog(url, user, password) 
         
-    def defineCharacteristics(self):
-        self.addBaseParameters()
-        self.name = "Delete datastore"
-        self.group = "GeoServer management tools"        
-        self.addParameter(ParameterString(self.DATASTORE, "Datastore name"))
-        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
-
-                  
-
+        

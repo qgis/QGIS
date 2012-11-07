@@ -1,4 +1,4 @@
-from sextante.servertools.geoserver.support import ResourceInfo, bbox, write_bbox, \
+from sextante.admintools.geoserver.support import ResourceInfo, bbox, write_bbox, \
         write_string, xml_property, url
 
 def _maybe_text(n):

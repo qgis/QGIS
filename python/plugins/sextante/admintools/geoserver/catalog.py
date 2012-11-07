@@ -1,17 +1,17 @@
 from datetime import datetime, timedelta
 import logging
-from sextante.servertools.geoserver.layer import Layer
-from sextante.servertools.geoserver.store import coveragestore_from_index, datastore_from_index, \
+from sextante.admintools.geoserver.layer import Layer
+from sextante.admintools.geoserver.store import coveragestore_from_index, datastore_from_index, \
     UnsavedDataStore, UnsavedCoverageStore
-from sextante.servertools.geoserver.style import Style
-from sextante.servertools.geoserver.support import prepare_upload_bundle, url
-from sextante.servertools.geoserver.layergroup import LayerGroup, UnsavedLayerGroup
-from sextante.servertools.geoserver.workspace import workspace_from_index, Workspace
+from sextante.admintools.geoserver.style import Style
+from sextante.admintools.geoserver.support import prepare_upload_bundle, url
+from sextante.admintools.geoserver.layergroup import LayerGroup, UnsavedLayerGroup
+from sextante.admintools.geoserver.workspace import workspace_from_index, Workspace
 from os import unlink
 from xml.etree.ElementTree import XML
 from xml.parsers.expat import ExpatError
 from urlparse import urlparse
-from sextante.servertools import httplib2
+from sextante.admintools import httplib2
 
 logger = logging.getLogger("gsconfig.catalog")
 

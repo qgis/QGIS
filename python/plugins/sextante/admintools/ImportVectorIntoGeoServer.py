@@ -29,7 +29,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.LayerExporter import LayerExporter
 from sextante.parameters.ParameterString import ParameterString
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
 

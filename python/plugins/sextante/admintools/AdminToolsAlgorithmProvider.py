@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    GeoServerToolsAlgorithmProvider.py
+    AdminToolsAlgorithmProvider.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.admintools.PostGISExecuteSQL import PostGISExecuteSQL
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -25,22 +26,22 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from sextante.servertools.CreateWorkspace import CreateWorkspace
-from sextante.servertools.ImportVectorIntoGeoServer import ImportVectorIntoGeoServer
-from sextante.servertools.ImportRasterIntoGeoServer import ImportRasterIntoGeoServer
-from sextante.servertools.DeleteWorkspace import DeleteWorkspace
-from sextante.servertools.DeleteDatastore import DeleteDatastore
-from sextante.servertools.StyleGeoServerLayer import StyleGeoServerLayer
+from sextante.admintools.ImportVectorIntoGeoServer import ImportVectorIntoGeoServer
+from sextante.admintools.CreateWorkspace import CreateWorkspace
+from sextante.admintools.ImportRasterIntoGeoServer import ImportRasterIntoGeoServer
+from sextante.admintools.DeleteWorkspace import DeleteWorkspace
+from sextante.admintools.DeleteDatastore import DeleteDatastore
+from sextante.admintools.CreateStyleGeoServer import CreateStyleGeoServer
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from PyQt4 import QtGui
 
-class GeoServerToolsAlgorithmProvider(AlgorithmProvider):
+class AdminToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [ImportVectorIntoGeoServer(), ImportRasterIntoGeoServer(), 
                         CreateWorkspace(), DeleteWorkspace(), DeleteDatastore(), 
-                        StyleGeoServerLayer()]#, TruncateSeedGWC()]
+                        CreateStyleGeoServer(), PostGISExecuteSQL()]#, TruncateSeedGWC()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -51,13 +52,15 @@ class GeoServerToolsAlgorithmProvider(AlgorithmProvider):
 
 
     def getName(self):
-        return "geoserver"
+        return "admintools"
 
     def getDescription(self):
-        return "Geoserver management tools"
+        return "Administration tools"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")
+    #===========================================================================
 
     def _loadAlgorithms(self):
         self.algs = self.alglist

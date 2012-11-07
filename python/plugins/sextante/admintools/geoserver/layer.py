@@ -1,5 +1,5 @@
-from sextante.servertools.geoserver.support import ResourceInfo, xml_property, write_bool, url
-from sextante.servertools.geoserver.style import Style
+from sextante.admintools.geoserver.support import ResourceInfo, xml_property, write_bool, url
+from sextante.admintools.geoserver.style import Style
 
 class _attribution(object):
     def __init__(self, title, width, height):

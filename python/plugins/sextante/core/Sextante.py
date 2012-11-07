@@ -53,7 +53,7 @@ from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from sextante.servertools.GeoServerToolsAlgorithmProvider import GeoServerToolsAlgorithmProvider
+from sextante.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorithmProvider
 
 
 
@@ -129,7 +129,7 @@ class Sextante:
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.addProvider(TauDEMAlgorithmProvider())
-        Sextante.addProvider(GeoServerToolsAlgorithmProvider())
+        Sextante.addProvider(AdminToolsAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()

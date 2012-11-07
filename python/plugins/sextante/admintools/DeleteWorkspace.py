@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -26,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import *
 from sextante.parameters.ParameterString import ParameterString
+from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 class DeleteWorkspace(GeoServerToolsAlgorithm):
     

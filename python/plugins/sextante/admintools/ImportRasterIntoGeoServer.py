@@ -25,7 +25,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import *
 from sextante.parameters.ParameterString import ParameterString
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 
 
@@ -44,7 +44,7 @@ class ImportRasterIntoGeoServer(GeoServerToolsAlgorithm):
         name = self.getParameterValue(self.NAME)            
         workspaceName = self.getParameterValue(self.WORKSPACE)                            
         filename = self.exportRasterLayer(inputFilename)                    
-        workspace = self.catalog.get_workspace(workspaceName)
+        workspace = self.catalog.get_workspace(workspaceName)        
         ds = self.catalog.create_coveragestore2(name, workspace)
         ds.data_url = "file:" + filename;
         self.catalog.save(ds)

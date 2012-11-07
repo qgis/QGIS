@@ -3,4 +3,4 @@ FILE(GLOB PY_FILES *.py)
 ADD_SUBDIRECTORY(geoserver)
 ADD_SUBDIRECTORY(httplib2)
 
-PLUGIN_INSTALL(sextante servertools ${PY_FILES})
+PLUGIN_INSTALL(sextante admintools ${PY_FILES})

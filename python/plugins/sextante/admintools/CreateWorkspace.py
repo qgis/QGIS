@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    DeleteDatastore.py
+    CreateWorkspace.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -23,34 +23,31 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.core import *
+from PyQt4 import QtGui
 from sextante.parameters.ParameterString import ParameterString
-from sextante.servertools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
-from sextante.parameters.ParameterFile import ParameterFile
-from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+from sextante.outputs.OutputString import OutputString
 
-
-class StyleGeoServerLayer(GeoServerToolsAlgorithm):
+class CreateWorkspace(GeoServerToolsAlgorithm):
     
-    STYLE = "STYLE"
-    OVERWRITE = "OVERWRITE"
-    NAME = "NAME"
+    WORKSPACE = "WORKSPACE"
+    WORKSPACEURI = "WORKSPACEURI"
 
     def processAlgorithm(self, progress):
         self.createCatalog()
-        stylefile = self.getParameterValue(self.STYLE)
-        overwrite = self.getParameterValue(self.OVERWRITE)
-        name = self.getParameterValue(self.NAME)                                            
-        self.catalog.create_style(name, stylefile, overwrite)
+        workspaceName = self.getParameterValue(self.WORKSPACE)
+        workspaceUri = self.getParameterValue(self.WORKSPACEURI)                        
+        self.catalog.create_workspace(workspaceName, workspaceUri)
 
         
     def defineCharacteristics(self):
         self.addBaseParameters()
-        self.name = "Add style"
+        self.name = "Create workspace"
         self.group = "GeoServer management tools"        
-        self.addParameter(ParameterString(self.NAME, "Style name"))
-        self.addParameter(ParameterFile(self.STYLE, "Style SLD file"))
-        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite"))
-
+        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
+        self.addParameter(ParameterString(self.WORKSPACEURI, "Workspace URI"))  
+        self.addOutput(OutputString(self.WORKSPACE, "Workspace"))   
                   
 
