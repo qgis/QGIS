@@ -387,15 +387,15 @@ def mmqgisx_animate_rows(qgis, layer_names, cumulative, outdir):
 #    mmqgisx_attribute_export - Export attributes to CSV file
 # ----------------------------------------------------------
 
-def mmqgisx_attribute_export(qgis, outfilename, layername, attribute_names, field_delimiter, line_terminator):
+def mmqgisx_attribute_export(qgis, outfilename, layer, attribute_names, field_delimiter, line_terminator):
 	# Error checks
 
 	if (not outfilename) or (len(outfilename) <= 0):
 		return "No output CSV file given"
 	
-	layer = mmqgisx_find_layer(layername)
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Layer " + layername + " not found"
+		return "Layer not found"
 
 	# Find attribute indices
 	attribute_indices = []
@@ -410,7 +410,7 @@ def mmqgisx_attribute_export(qgis, outfilename, layername, attribute_names, fiel
 		for x in range(0, len(attribute_names)):
 			index = layer.dataProvider().fieldNameIndex(attribute_names[x])
 			if index < 0:
-				return "Layer " + layername + " has no attribute " + attribute_names[x]
+				return "Layer has no attribute " + attribute_names[x]
 			attribute_indices.append(index)
 
 	# Create the CSV file
@@ -770,10 +770,10 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 #    mmqgisx_delete_columns - Change text fields to numbers
 # ---------------------------------------------------------
 
-def mmqgisx_delete_columns(qgis, layername, columns, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_delete_columns(qgis, layer, columns, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "No layer specified to modify: " + layername
+		return "No layer specified to modify "
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -842,12 +842,12 @@ def mmqgisx_delete_columns(qgis, layername, columns, savename, addlayer):
 #			while removing duplicate shapes
 # --------------------------------------------------------
 
-def mmqgisx_delete_duplicate_geometries(qgis, layername, savename, addlayer):
+def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 
 	# Initialization and error checking
-	layer = mmqgisx_find_layer(layername)
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Invalid layer name: " + savename
+		return "Invalid layer" 
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -910,12 +910,12 @@ def mmqgisx_delete_duplicate_geometries(qgis, layername, savename, addlayer):
 #    mmqgisx_float_to_text - String format numeric fields
 # ---------------------------------------------------------
 
-def mmqgisx_float_to_text(qgis, layername, attributes, separator, 
+def mmqgisx_float_to_text(qgis, layer, attributes, separator, 
 			decimals, prefix, suffix, savename, addlayer):
 
-	layer = mmqgisx_find_layer(layername)
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Project has no active vector layer to convert: " + layername
+		return "Project has no active vector layer to convert: "
 
 	if decimals < 0:
 		return "Invalid number of decimals: " + unicode(decimals)
@@ -1117,11 +1117,11 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 #		simpler types
 # --------------------------------------------------------
 
-def mmqgisx_geometry_convert(qgis, layername, newtype, splitnodes, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 
 	if (layer == None) and (layer.type() != QgsMapLayer.VectorLayer):
-		return "Invalid Vector Layer " + layername
+		return "Invalid Vector Layer"
 
 	# Create output file
 	if len(savename) <= 0:
@@ -1765,8 +1765,8 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 #    mmqgisx_gridify - Snap shape verticies to grid
 # --------------------------------------------------------
 
-def mmqgisx_gridify_layer(qgis, layername, hspacing, vspacing, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_gridify_layer(qgis, layer, hspacing, vspacing, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if not layer:
 		return "Project has no active vector layer to gridify"
 	
@@ -1911,18 +1911,18 @@ class mmqgisx_hub:
 		self.name = newname
 
 
-def mmqgisx_hub_distance(qgis, sourcename, destname, nameattributename, units, addlines, savename, addlayer):
+def mmqgisx_hub_distance(qgis, sourcelayer, hubslayer, nameattributename, units, addlines, savename, addlayer):
 
 	# Error checks
-	sourcelayer = mmqgisx_find_layer(sourcename)
+	#sourcelayer = mmqgisx_find_layer(sourcename)
 	if (sourcelayer == None) or (sourcelayer.featureCount() <= 0):
-		return "Origin Layer " + sourcename + " not found"
+		return "Origin Layer not found"
 
-	hubslayer = mmqgisx_find_layer(destname)
+	#hubslayer = mmqgisx_find_layer(destname)
 	if (hubslayer == None) or (hubslayer.featureCount() <= 0):
-		return "Hub layer " + destname + " not found"
+		return "Hub layer  not found"
 
-	if sourcename == destname:
+	if sourcelayer == hubslayer:
 		return "Same layer given for both hubs and spokes"
 
 	nameindex = hubslayer.dataProvider().fieldNameIndex(nameattributename)
@@ -2035,19 +2035,18 @@ def mmqgisx_hub_distance(qgis, sourcename, destname, nameattributename, units, a
 # --------------------------------------------------------
 
 
-def mmqgisx_hub_lines(qgis, hubname, hubattr, spokename, spokeattr, savename, addlayer):
-
-	# Find layers
-	if hubname == spokename:
+def mmqgisx_hub_lines(qgis, hublayer, hubattr, spokelayer, spokeattr, savename, addlayer):
+	
+	if hublayer == spokelayer:
 		return "Same layer given for both hubs and spokes"
 
-	hublayer = mmqgisx_find_layer(hubname)
+	#hublayer = mmqgisx_find_layer(hubname)
 	if (hublayer == None) or (hublayer.featureCount() <= 0):
-		return "Hub layer " + destname + " not found"
+		return "Hub layer  not found"
 
-	spokelayer = mmqgisx_find_layer(spokename)
+	#spokelayer = mmqgisx_find_layer(spokename)
 	if spokelayer == None:
-		return "Spoke Point Layer " + sourcename + " not found"
+		return "Spoke Point Layer  not found"
 
 	# Find Hub ID attribute indices
 	hubindex = hublayer.dataProvider().fieldNameIndex(hubattr)
@@ -2135,10 +2134,10 @@ class mmqgisx_label():
 		self.feature_count = 0
 		self.attributes = attributemap
 
-def mmqgisx_label_point(qgis, layername, labelattributename, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_label_point(qgis, layer, labelattributename, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Invalid layer name " . layername
+		return "Invalid layer name "
 
 	labelindex = layer.dataProvider().fieldNameIndex(labelattributename)
 	if labelindex < 0:
@@ -2214,7 +2213,7 @@ def mmqgisx_label_point(qgis, layername, labelattributename, savename, addlayer)
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " label shapefile created from " + layername)
+	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " label shapefile created from " + layer.name())
 
 	return None
 
@@ -2222,16 +2221,16 @@ def mmqgisx_label_point(qgis, layername, labelattributename, savename, addlayer)
 #    mmqgisx_merge - Merge layers to single shapefile
 # --------------------------------------------------------
 
-def mmqgisx_merge(qgis, layernames, savename, addlayer):
+def mmqgisx_merge(qgis, layers, savename, addlayer):
 	fields = {}
-	layers = []
+	#layers = []
 	totalfeaturecount = 0
 
-	for x in range(0, len(layernames)):
-		layername = layernames[x]
-		layer = mmqgisx_find_layer(layername)
+	for x in range(0, len(layers)):
+		layer = layers[x]
+		#layer = mmqgisx_find_layer(layername)
 		if layer == None:
-			return "Layer " + layername + " not found"
+			return "Layer not found"
 
 		# Verify that all layers are the same type (point, polygon, etc)
 		if (len(layers) > 0):
@@ -2314,8 +2313,8 @@ def mmqgisx_merge(qgis, layernames, savename, addlayer):
 #    mmqgisx_select - Select features by attribute
 # ----------------------------------------------------------
 
-def mmqgisx_select(qgis, layername, selectattributename, comparisonvalue, comparisonname, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_select(qgis, layer, selectattributename, comparisonvalue, comparisonname, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
 		return "Project has no active vector layer to select from"
 
@@ -2397,8 +2396,8 @@ def mmqgisx_select(qgis, layername, selectattributename, comparisonvalue, compar
 #    mmqgisx_sort - Sort shapefile by attribute
 # --------------------------------------------------------
 
-def mmqgisx_sort(qgis, layername, sortattributename, savename, direction, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_sort(qgis, layer, sortattributename, savename, direction, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
 		return "Project has no active vector layer to sort"
 
@@ -2702,10 +2701,10 @@ def mmqgisx_searchable_streetname(name):
 #    mmqgisx_text_to_float - Change text fields to numbers
 # ---------------------------------------------------------
 
-def mmqgisx_text_to_float(qgis, layername, attributes, savename, addlayer):
-	layer = mmqgisx_find_layer(layername)
+def mmqgisx_text_to_float(qgis, layer, attributes, savename, addlayer):
+	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Project has no active vector layer to convert: " + layername
+		return "Project has no active vector layer to convert" 
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -2794,10 +2793,10 @@ def mmqgisx_text_to_float(qgis, layername, attributes, savename, addlayer):
 #    mmqgisx_voronoi - Voronoi diagram creation
 # --------------------------------------------------------
 
-def mmqgisx_voronoi_diagram(qgis, sourcelayer, savename, addlayer):
-	layer = mmqgisx_find_layer(sourcelayer)
+def mmqgisx_voronoi_diagram(qgis, layer, savename, addlayer):
+	#layer = mmqgisx_find_layer(sourcelayer)
 	if layer == None:
-		return "Layer " + sourcename + " not found"
+		return "Layer not found"
 	
 	if len(savename) <= 0:
 		return "No output filename given"

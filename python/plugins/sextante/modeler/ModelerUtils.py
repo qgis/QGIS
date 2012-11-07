@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import mkdir
+from sextante.core.SextanteUtils import mkdir, SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 
 class ModelerUtils:

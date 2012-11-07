@@ -64,15 +64,20 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
 
     def _loadAlgorithms(self):
-        folder = ModelerUtils.modelsFolder()
+        folder = ModelerUtils.modelsFolder()  
+        self.loadFromFolder(folder)      
+        folder = os.path.join(os.path.dirname(__file__), "models")
+        self.loadFromFolder(folder)  
+        
+    def loadFromFolder(self,folder):
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("model"):
                 try:
                     alg = ModelerAlgorithm()
-                    fullpath = os.path.join(ModelerUtils.modelsFolder(),descriptionFile)
+                    fullpath = os.path.join(folder ,descriptionFile)
                     alg.openModel(fullpath)
                     if alg.name.strip() != "":
                         alg.provider = self
                         self.algs.append(alg)
                 except WrongModelException,e:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load model " + descriptionFile + "\n" + e.msg)
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load model " + descriptionFile + "\n" + e.msg)                    

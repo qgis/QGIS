@@ -117,7 +117,7 @@ class mmqgisx_attribute_export_dialog(GeoAlgorithm):
 		else:
 			line_terminator = "\r\n"
 
-		message = mmqgisx_attribute_export(qgis, outfilename, layername, None, 
+		message = mmqgisx_attribute_export(qgis, outfilename, layer, None, 
 			field_delimiter, line_terminator)
 
 		if message:
@@ -200,7 +200,7 @@ class mmqgisx_delete_columns_dialog(GeoAlgorithm):
 		column = self.getParameterValue(self.COLUMN)
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_delete_columns(qgis, layername, [ column ], savename, False)
+		message = mmqgisx_delete_columns(qgis, layer, [ column ], savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -231,7 +231,7 @@ class mmqgisx_delete_duplicate_geometries_dialog(GeoAlgorithm):
 
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_delete_duplicate_geometries(qgis, layername, savename, False)
+		message = mmqgisx_delete_duplicate_geometries(qgis, layer, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -332,7 +332,7 @@ class mmqgisx_geometry_convert_dialog(GeoAlgorithm):
 		else:
 			newtype = QGis.WKBPoint
 
-		message = mmqgisx_geometry_convert(qgis, layername, newtype, splitnodes, savename, False)
+		message = mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -525,7 +525,7 @@ class mmqgisx_gridify_dialog(GeoAlgorithm):
 		vspacing = self.getParameterValue(self.VSPACING)
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_gridify_layer(qgis, layername, hspacing, vspacing, savename, False)
+		message = mmqgisx_gridify_layer(qgis, layer, hspacing, vspacing, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -562,18 +562,15 @@ class mmqgisx_hub_distance_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SOURCENAME))
-		sourcename = layer.name()
-
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.DESTNAME))
-		destname = layer.name()
+		layersource = QGisLayers.getObjectFromUri(self.getParameterValue(self.SOURCENAME))	
+		layerdest = QGisLayers.getObjectFromUri(self.getParameterValue(self.DESTNAME))		
 
 		nameattribute = self.getParameterValue(self.NAMEATTRIBUTE)
 		units = self.unitlist[self.getParameterValue(self.UNITS)]
 		addlines = self.getParameterValue(self.SHAPETYPE)
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_hub_distance(qgis, sourcename, destname, nameattribute, units, addlines, savename, False)
+		message = mmqgisx_hub_distance(qgis, layersource, layerdest, nameattribute, units, addlines, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -604,18 +601,15 @@ class mmqgisx_hub_lines_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))
-		hubname = layer.name()
-
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
-		spokename = layer.name()
-
+		hublayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))		
+		spokelayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
+		
 		hubattribute = self.getParameterValue(self.HUBATTRIBUTE)
 		spokeattribute = self.getParameterValue(self.SPOKEATTRIBUTE)
 
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_hub_lines(qgis, hubname, hubattribute, spokename, spokeattribute, savename, False)
+		message = mmqgisx_hub_lines(qgis, hublayer, hubattribute, spokelayer, spokeattribute, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -649,7 +643,7 @@ class mmqgisx_label_point_dialog(GeoAlgorithm):
 
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_label_point(qgis, layername, labelattribute, savename, False)
+		message = mmqgisx_label_point(qgis, layer, labelattribute, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -676,11 +670,8 @@ class mmqgisx_merge_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER1))
-		layer1 = layer.name()
-
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER2))
-		layer2 = layer.name()
+		layer1 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER1))		
+		layer2 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER2))		
 
 		savename = self.getOutputValue(self.SAVENAME)
 
@@ -726,7 +717,7 @@ class mmqgisx_select_dialog(GeoAlgorithm):
 		comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_select(qgis, layername, attribute, comparisonvalue, comparison, savename, False)
+		message = mmqgisx_select(qgis, layer, attribute, comparisonvalue, comparison, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -763,7 +754,7 @@ class mmqgisx_sort_dialog(GeoAlgorithm):
 		direction = self.directions [ self.getParameterValue(self.DIRECTION) ]
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_sort(qgis, layername, attribute, savename, direction, False)
+		message = mmqgisx_sort(qgis, layer, attribute, savename, direction, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -799,7 +790,7 @@ class mmqgisx_text_to_float_dialog(GeoAlgorithm):
 		attribute = self.getParameterValue(self.ATTRIBUTE)
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_text_to_float(qgis, layername, [ attribute ], savename, False)
+		message = mmqgisx_text_to_float(qgis, layer, [ attribute ], savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
@@ -829,7 +820,7 @@ class mmqgisx_voronoi_dialog(GeoAlgorithm):
 
 		savename = self.getOutputValue(self.SAVENAME)
 
-		message = mmqgisx_voronoi_diagram(qgis, layername, savename, False)
+		message = mmqgisx_voronoi_diagram(qgis, layer, savename, False)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
