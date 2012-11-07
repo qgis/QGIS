@@ -57,7 +57,8 @@ using namespace pal;
 class QgsPalGeometry : public PalGeometry
 {
   public:
-    QgsPalGeometry( QgsFeatureId id, QString text, GEOSGeometry* g )
+    QgsPalGeometry( QgsFeatureId id, QString text, GEOSGeometry* g,
+                    qreal ltrSpacing = 0.0, qreal wordSpacing = 0.0, bool curvedLabeling = false )
         : mG( g )
         , mText( text )
         , mId( id )
@@ -65,6 +66,9 @@ class QgsPalGeometry : public PalGeometry
         , mIsDiagram( false )
         , mIsPinned( false )
         , mFontMetrics( NULL )
+        , mLetterSpacing( ltrSpacing )
+        , mWordSpacing( wordSpacing )
+        , mCurvedLabeling( curvedLabeling )
     {
       mStrId = FID_TO_STRING( id ).toAscii();
     }
@@ -102,11 +106,36 @@ class QgsPalGeometry : public PalGeometry
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
       QgsPoint ptSize = xform->toMapCoordinatesF( 0.0, -fm->height() / fontScale );
 
+      // mLetterSpacing/mWordSpacing = 0.0 is default for non-curved labels
+      // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
+      qreal charWidth;
+      qreal wordSpaceFix;
       mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y() );
       for ( int i = 0; i < mText.count(); i++ )
       {
         mInfo->char_info[i].chr = mText[i].unicode();
-        ptSize = xform->toMapCoordinatesF( fm->width( mText[i] ) / fontScale , 0.0 );
+
+        // reconstruct how Qt creates word spacing, then adjust per individual stored character
+        // this will allow PAL to create each candidate width = character width + correct spacing
+        charWidth = fm->width( mText[i] );
+        if ( mCurvedLabeling )
+        {
+          wordSpaceFix = qreal( 0.0 );
+          if ( mText[i] == QString( " " )[0] )
+          {
+            // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
+            int nxt = i + 1;
+            wordSpaceFix = ( nxt < mText.count() && mText[nxt] != QString( " " )[0] ) ? mWordSpacing : qreal( 0.0 );
+          }
+          if ( fm->width( QString( mText[i] ) ) - fm->width( mText[i] ) - mLetterSpacing != qreal( 0.0 ) )
+          {
+            // word spacing applied when it shouldn't be
+            wordSpaceFix -= mWordSpacing;
+          }
+          charWidth = fm->width( QString( mText[i] ) ) + wordSpaceFix;
+        }
+
+        ptSize = xform->toMapCoordinatesF((( double ) charWidth ) / fontScale , 0.0 );
         mInfo->char_info[i].width = ptSize.x() - ptZero.x();
       }
       return mInfo;
@@ -135,6 +164,9 @@ class QgsPalGeometry : public PalGeometry
     bool mIsDiagram;
     bool mIsPinned;
     QFontMetricsF* mFontMetrics;
+    qreal mLetterSpacing; // for use with curved labels
+    qreal mWordSpacing; // for use with curved labels
+    bool mCurvedLabeling; // whether the geometry is to be used for curved labeling placement
     /**Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
@@ -881,7 +913,13 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
   }
 
-  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, geos_geom_clone );
+  QgsPalGeometry* lbl = new QgsPalGeometry(
+    f.id(),
+    labelText,
+    geos_geom_clone,
+    labelFont.letterSpacing(),
+    labelFont.wordSpacing(),
+    placement == QgsPalLayerSettings::Curved );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );

@@ -253,6 +253,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
 
+  mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
+
   updateFontViaStyle( lyr.textNamedStyle );
   updateFont( mRefFont );
 
@@ -728,8 +731,6 @@ void QgsLabelingGui::updateFont( QFont font )
   mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
-  mFontWordSpacingSpinBox->setValue( mRefFont.wordSpacing() );
-  mFontLetterSpacingSpinBox->setValue( mRefFont.letterSpacing() );
   blockFontChangeSignals( false );
 
   // update font name with font face
@@ -1003,25 +1004,14 @@ void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
-  double singleStep = ( index == 1 ) ? 10.0 : 1.0 ; //10 for map units, 1 for mm
-  mFontSizeSpinBox->setSingleStep( singleStep );
-  mFontWordSpacingSpinBox->setSingleStep( singleStep );
-  mFontLetterSpacingSpinBox->setSingleStep( singleStep / 10 );
+  Q_UNUSED( index );
   updateFont( mRefFont );
 }
 
 void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )
 {
-  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
-  spinBufferSize->setSingleStep( singleStep );
+  Q_UNUSED( index );
   updateFont( mRefFont );
-}
-
-void QgsLabelingGui::on_mPointOffsetUnitsComboBox_currentIndexChanged( int index )
-{
-  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
-  mPointOffsetXOffsetSpinBox->setSingleStep( singleStep );
-  mPointOffsetYOffsetSpinBox->setSingleStep( singleStep );
 }
 
 void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )

@@ -62,7 +62,6 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
-    void on_mPointOffsetUnitsComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
 
