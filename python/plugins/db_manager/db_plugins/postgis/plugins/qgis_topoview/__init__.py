@@ -114,6 +114,14 @@ def run(item, action, mainwindow):
 		legend.setLayerVisible(layer, False)
 		legend.moveLayer(layer, group)
 
+	  # node labels
+		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.node label' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
 	  # edge
 		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
 		layer = QgsVectorLayer(uri.uri(), u'%s.edges' % toponame, provider)

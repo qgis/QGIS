@@ -1,23 +1,23 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="1.9.0-Master" minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
-  <transparencyLevelInt>0</transparencyLevelInt>
+<qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
+  <transparencyLevelInt>255</transparencyLevelInt>
   <singlesymbol>
     <symbol>
       <lowervalue></lowervalue>
       <uppervalue></uppervalue>
       <label></label>
       <pointsymbol>hard:circle</pointsymbol>
-      <pointsize>2</pointsize>
+      <pointsize>4</pointsize>
       <pointsizeunits>pixels</pointsizeunits>
       <rotationclassificationfieldname></rotationclassificationfieldname>
       <scaleclassificationfieldname></scaleclassificationfieldname>
       <symbolfieldname></symbolfieldname>
-      <outlinecolor red="133" blue="203" green="231"/>
+      <outlinecolor red="0" blue="0" green="0"/>
       <outlinestyle>SolidLine</outlinestyle>
       <outlinewidth>0.26</outlinewidth>
-      <fillcolor red="0" blue="0" green="0"/>
-      <fillpattern>NoBrush</fillpattern>
-      <texturepath>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</texturepath>
+      <fillcolor red="196" blue="176" green="201"/>
+      <fillpattern>SolidPattern</fillpattern>
+      <texturepath>/../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</texturepath>
     </symbol>
   </singlesymbol>
   <customproperties>
@@ -55,22 +55,22 @@
     <property key="labeling/dataDefinedProperty9" value=""/>
     <property key="labeling/decimals" value="0"/>
     <property key="labeling/displayAll" value="false"/>
-    <property key="labeling/dist" value="3"/>
+    <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
-    <property key="labeling/fieldName" value="next_left_edge || '->'"/>
+    <property key="labeling/fieldName" value="node_id"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="Sans"/>
     <property key="labeling/fontItalic" value="false"/>
     <property key="labeling/fontLetterSpacing" value="0"/>
-    <property key="labeling/fontSize" value="7"/>
+    <property key="labeling/fontSize" value="8"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
     <property key="labeling/fontWeight" value="50"/>
     <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
-    <property key="labeling/isExpression" value="true"/>
+    <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
     <property key="labeling/mergeLines" value="false"/>
@@ -80,17 +80,17 @@
     <property key="labeling/multilineHeight" value="1"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
-    <property key="labeling/placement" value="2"/>
-    <property key="labeling/placementFlags" value="2"/>
+    <property key="labeling/placement" value="1"/>
+    <property key="labeling/placementFlags" value="0"/>
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
-    <property key="labeling/priority" value="2"/>
+    <property key="labeling/priority" value="5"/>
     <property key="labeling/scaleMax" value="0"/>
     <property key="labeling/scaleMin" value="0"/>
-    <property key="labeling/textColorB" value="0"/>
-    <property key="labeling/textColorG" value="170"/>
-    <property key="labeling/textColorR" value="0"/>
+    <property key="labeling/textColorB" value="217"/>
+    <property key="labeling/textColorG" value="41"/>
+    <property key="labeling/textColorR" value="14"/>
     <property key="labeling/textTransp" value="0"/>
     <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
@@ -100,7 +100,7 @@
     <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
   <editorlayout>generatedlayout</editorlayout>
-  <displayfield>edge_id</displayfield>
+  <displayfield>node_id</displayfield>
   <label>0</label>
   <labelattributes>
     <label fieldname="" text="Label"/>
@@ -123,18 +123,13 @@
     <selectedonly on=""/>
   </labelattributes>
   <edittypes>
-    <edittype type="0" name="abs_next_left_edge"/>
-    <edittype type="0" name="abs_next_right_edge"/>
-    <edittype type="0" name="edge_id"/>
-    <edittype type="0" name="end_node"/>
-    <edittype type="0" name="left_face"/>
-    <edittype type="0" name="next_left_edge"/>
-    <edittype type="0" name="next_right_edge"/>
-    <edittype type="0" name="right_face"/>
-    <edittype type="0" name="start_node"/>
+    <edittype type="0" name="containing_face"/>
+    <edittype type="0" name="node_id"/>
   </edittypes>
-  <editform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</editform>
+  <editform>/../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</editform>
   <editforminit></editforminit>
-  <annotationform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</annotationform>
+  <annotationform>/../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</annotationform>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>
