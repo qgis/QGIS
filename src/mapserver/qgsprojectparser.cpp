@@ -41,6 +41,7 @@
 #include <QSvgRenderer>
 #include <QTextDocument>
 #include "QTextStream"
+#include <QUrl>
 
 
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsConfigParser(), mXMLDoc( xmlDoc ), mProjectPath( filePath )
@@ -1303,6 +1304,24 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
           QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
           dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
         }
+      }
+    }
+    else if ( uri.startsWith( "file:" ) ) //a file based datasource in url notation (e.g. delimited text layer)
+    {
+      QString filePath = uri.mid( 5, uri.indexOf( "?" ) - 5 );
+      QString absoluteFilePath = convertToAbsolutePath( filePath );
+      if ( filePath != absoluteFilePath )
+      {
+        QUrl destUrl = QUrl::fromEncoded( uri.toAscii() );
+        destUrl.setScheme( "file" );
+        destUrl.setPath( absoluteFilePath );
+        absoluteUri = destUrl.toEncoded();
+        QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
+        dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
+      }
+      else
+      {
+        absoluteUri = uri;
       }
     }
     else //file based data source
