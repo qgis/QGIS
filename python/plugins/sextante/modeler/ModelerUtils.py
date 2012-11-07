@@ -36,7 +36,8 @@ class ModelerUtils:
     def modelsFolder():
         folder = SextanteConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder == None:
-            folder = os.path.join(os.path.dirname(__file__), "models")
+            #folder = os.path.join(os.path.dirname(__file__), "models")
+            folder = SextanteUtils.userFolder() + os.sep + "models"
         mkdir(folder)
 
         return folder
