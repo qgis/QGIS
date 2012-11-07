@@ -193,19 +193,20 @@ void QgsMessageBar::pushWidget( QWidget *widget, int level )
   if ( level >= 2 )
   {
     stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                 "QLabel#mMsgTitle, QLabel#mMsgText, QLabel#mItemCount { color: white; } ";
+                 "QLabel { color: white; } ";
   }
   else if ( level == 1 )
   {
     stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                 "QLabel#mMsgTitle, QLabel#mMsgText, QLabel#mItemCount { color: black; } ";
+                 "QLabel { color: black; } ";
   }
   else if ( level <= 0 )
   {
     stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                 "QLabel#mMsgTitle, QLabel#mMsgText, QLabel#mItemCount { color: #2554a1; } ";
+                 "QLabel { color: #2554a1; } ";
   }
-  stylesheet += "QLabel#mMsgTitle { font-weight: bold; } QLabel#mItemCount { font-style: italic; }";
+  stylesheet += "QLabel#mMsgTitle { font-weight: bold; } "
+                "QLabel#mItemCount { font-style: italic; }";
   pushWidget( widget, stylesheet );
 }
 
