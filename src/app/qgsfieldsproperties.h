@@ -96,13 +96,13 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void on_mAddAttributeButton_clicked();
     void on_mDeleteAttributeButton_clicked();
     void on_mCalculateFieldButton_clicked();
-    void on_attributeSelectionChanged();
+    void onAttributeSelectionChanged();
     void on_mAttributesList_cellChanged( int row, int column );
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
+
     void addAttribute();
     void deleteAttribute();
-
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
@@ -113,18 +113,17 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void on_mMoveDownItem_clicked();
     void on_mMoveUpItem_clicked();
 
-
-
-  protected:
-    QgsVectorLayer* mLayer;
-    QgsAttributesTree* mAttributesTree;
-    QgsAttributesList* mAttributesList;
-
+  protected slots:
     /** toggle editing of layer */
     void toggleEditing();
 
     /** editing of layer was toggled */
     void editingToggled();
+
+  protected:
+    QgsVectorLayer* mLayer;
+    QgsAttributesTree* mAttributesTree;
+    QgsAttributesList* mAttributesList;
 
     QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
     QMap<int, QMap<QString, QVariant> > mValueMaps;

@@ -214,8 +214,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mAttributesTreeFrame->setLayout( attrTreeLayout );
   mAttributesListFrame->setLayout( attrListLayout );
 
-  connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
-  connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( on_attributeSelectionChanged() ) );
+  connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
+  connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
 
   mAttributesTree->setHeaderLabels( QStringList() << tr( "Label" ) );
 
@@ -233,7 +233,7 @@ void QgsFieldsProperties::init()
   loadRows();
 }
 
-void QgsFieldsProperties::on_attributeSelectionChanged()
+void QgsFieldsProperties::onAttributeSelectionChanged()
 {
   bool isAddPossible = false;
   if ( mAttributesTree->selectedItems().count() == 1 && mAttributesList->selectedItems().count() > 0 )
