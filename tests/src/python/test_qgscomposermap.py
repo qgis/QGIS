@@ -14,9 +14,8 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4.QtCore import (QStringList,
-                          QFileInfo,
-
-                          )
+                          QFileInfo)
+from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
@@ -25,13 +24,13 @@ from qgis.core import (QgsComposerMap,
                        QgsMapRenderer,
                        QgsMapLayerRegistry,
                        QgsMultiBandColorRenderer
-                      )
+                     )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest
                        #expectedFailure
-                       )
+                      )
 from qgscompositionchecker import QgsCompositionChecker
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -43,15 +42,15 @@ class TestQgsComposerMap(TestCase):
     def __init__(self, methodName):
         """Run once on class initialisation."""
         unittest.TestCase.__init__(self, methodName)
-        myPath = os.path.join(TEST_DATA_DIR, "landsat.tif")
+        myPath = os.path.join(TEST_DATA_DIR, 'landsat.tif')
         rasterFileInfo = QFileInfo(myPath)
         mRasterLayer = QgsRasterLayer(rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer(
             mRasterLayer.dataProvider(), 2, 3, 4)
-        mRasterLayer.setRenderer( rasterRenderer )
+        mRasterLayer.setRenderer(rasterRenderer)
         #pipe = mRasterLayer.pipe()
-        #assert pipe.set(rasterRenderer), "Cannot set pipe renderer"
+        #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
         QgsMapLayerRegistry.instance().addMapLayer(mRasterLayer)
 
         # create composition with composer map
@@ -93,16 +92,15 @@ class TestQgsComposerMap(TestCase):
                                                      QgsComposerMap.Bottom)
         checker = QgsCompositionChecker()
         myPath = os.path.join(TEST_DATA_DIR,
-                              "control_images",
-                              "expected_composermap",
-                              "composermap_landsat_grid.png")
-        testResult = checker.testComposition("Composer map grid",
+                              'control_images',
+                              'expected_composermap',
+                              'composermap_landsat_grid.png')
+        myTestResult, myMessage = checker.testComposition('Composer map grid',
                                              self.mComposition, myPath)
         self.mComposerMap.setGridEnabled(False)
         self.mComposerMap.setShowGridAnnotation(False)
 
-        print testResult
-        assert testResult[0] == True
+        assert myTestResult[0] == True, myMessage
 
     def testOverviewMap(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
@@ -118,21 +116,22 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         checker = QgsCompositionChecker()
         myPngPath = os.path.join(TEST_DATA_DIR,
-                                 "control_images",
-                                 "expected_composermap",
-                                 "composermap_landsat_overview.png")
-        testResult = checker.testComposition("Composer map overview",
-                                             self.mComposition,
-                                             myPngPath)
+                                 'control_images',
+                                 'expected_composermap',
+                                 'composermap_landsat_overview.png')
+        myTestResult, myMessage = checker.testComposition(
+                                  'Composer map overview',
+                                  self.mComposition,
+                                  myPngPath)
         self.mComposition.removeComposerItem(overviewMap)
-        assert testResult[0] == True
+        assert myTestResult == True, myMessage
 
 
-    def uniqueId(self,  mComposerMap,  mComposition):
+    def testuniqueId(self,  mComposerMap,  mComposition):
         doc = QDomDocument()
-        documentElement = doc.createElement( "ComposerItemClipboard" )
-        mComposerMap.writeXML( documentElement, doc )
-        mComposition.addItemsFromXML( documentElement, doc, 0, false )
+        documentElement = doc.createElement('ComposerItemClipboard')
+        mComposerMap.writeXML(documentElement, doc)
+        mComposition.addItemsFromXML(documentElement, doc, 0, False)
 
         #test if both composer maps have different ids
         newMap = QgsComposerMap()
@@ -146,22 +145,22 @@ class TestQgsComposerMap(TestCase):
         oldId = mComposerMap.id()
         newId = newMap.id()
 
-        mComposition.removeComposerItem( newMap );
-        print "old: "+str(oldId)
-        print "new "+str(newId)
-        assert oldId != newId
+        mComposition.removeComposerItem(newMap)
+        myMessage = 'old: %s new: %s'  % (oldId, newId)
+        assert oldId != newId, myMessage
 
-    def zebraStyle(self):
-        mComposerMap.setGridFrameStyle( QgsComposerMap.Zebra )
-        mComposerMap.setGridEnabled( True )
+    def testZebraStyle(self):
+        self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
+        self.mComposerMap.setGridEnabled(True)
+        checker = QgsCompositionChecker()
         myPngPath = os.path.join(TEST_DATA_DIR,
-                                 "control_images",
-                                 "expected_composermap",
-                                 "composermap_zebra_style.png")
-        testResult = checker.testComposition("Composer map zebra",
+                                 'control_images',
+                                 'expected_composermap',
+                                 'composermap_zebra_style.png')
+        testResult, myMessage = checker.testComposition('Composer map zebra',
                                              self.mComposition,
                                              myPngPath)
-        assert testResult[0] == True
+        assert testResult == True, myMessage
 
 if __name__ == '__main__':
     unittest.main()
