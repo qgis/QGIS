@@ -1562,6 +1562,7 @@ QgsRectangle QgsVectorLayer::extent()
     return QgsMapLayer::extent();
 
   QgsRectangle rect;
+  rect.setMinimal();
 
   if ( !hasGeometryType() )
     return rect;
