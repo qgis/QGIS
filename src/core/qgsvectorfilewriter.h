@@ -98,7 +98,10 @@ class CORE_EXPORT QgsVectorFileWriter
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /**Returns driver list that can be used for dialogs*/
+    /**Returns driver list that can be used for dialogs. It contains all OGR drivers
+     * + some additional internal QGIS driver names to distinguish between more
+     * supported formats of the same OGR driver
+     */
     static QMap< QString, QString> ogrDriverList();
 
     /**Returns filter string that can be used for dialogs*/

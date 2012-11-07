@@ -71,10 +71,30 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QString vectorFileName = theVectorFileName;
   QString fileEncoding = theFileEncoding;
 
+  QStringList dsOptions = datasourceOptions;
+
+  QString ogrDriverName;
+  if ( driverName == "MapInfo MIF" )
+  {
+    ogrDriverName = "MapInfo File";
+  }
+  else if ( driverName == "SpatiaLite" )
+  {
+    ogrDriverName = "SQLite";
+    if ( !dsOptions.contains( "SPATIALITE=YES" ) )
+    {
+      dsOptions.append( "SPATIALITE=YES" );
+    }
+  }
+  else
+  {
+    ogrDriverName = driverName;
+  }
+
   // find driver in OGR
   OGRSFDriverH poDriver;
   QgsApplication::registerOgrDrivers();
-  poDriver = OGRGetDriverByName( driverName.toLocal8Bit().data() );
+  poDriver = OGRGetDriverByName( ogrDriverName.toLocal8Bit().data() );
 
   if ( poDriver == NULL )
   {
@@ -157,14 +177,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   char **options = NULL;
-  if ( !datasourceOptions.isEmpty() )
+  if ( !dsOptions.isEmpty() )
   {
-    options = new char *[ datasourceOptions.size()+1 ];
-    for ( int i = 0; i < datasourceOptions.size(); i++ )
+    options = new char *[ dsOptions.size()+1 ];
+    for ( int i = 0; i < dsOptions.size(); i++ )
     {
-      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().data() );
+      options[i] = CPLStrdup( dsOptions[i].toLocal8Bit().data() );
     }
-    options[ datasourceOptions.size()] = NULL;
+    options[ dsOptions.size()] = NULL;
   }
 
   // create the data source
@@ -172,7 +192,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( options )
   {
-    for ( int i = 0; i < datasourceOptions.size(); i++ )
+    for ( int i = 0; i < dsOptions.size(); i++ )
       CPLFree( options[i] );
     delete [] options;
     options = NULL;
@@ -603,6 +623,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     bool skipAttributeCreation,
     QString *newFilename )
 {
+  QgsDebugMsg( "fileName = " + fileName );
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
   int shallTransform = false;
@@ -625,6 +646,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
+
+  QgsDebugMsg( "newFilename = " + *newFilename );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
@@ -797,6 +820,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
 
+  QStringList writableDrivers;
   for ( int i = 0; i < drvCount; ++i )
   {
     OGRSFDriverH drv = OGRGetDriver( i );
@@ -805,15 +829,51 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
       QString drvName = OGR_Dr_GetName( drv );
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
-        QString longName;
-        QString trLongName;
-        QString glob;
-        QString exts;
-        if ( QgsVectorFileWriter::driverMetadata( drvName, longName, trLongName, glob, exts ) && !trLongName.isEmpty() )
+        // Add separate format for Mapinfo MIF (MITAB is OGR default)
+        if ( drvName == "MapInfo File" )
         {
-          resultMap.insert( trLongName, drvName );
+          writableDrivers << "MapInfo MIF";
         }
+        else if ( drvName == "SQLite" )
+        {
+          // Unfortunately it seems that there is no simple way to detect if
+          // OGR SQLite driver is compiled with SpatiaLite support.
+          // We have HAVE_SPATIALITE in QGIS, but that may differ from OGR
+          // http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034580.html
+          // -> test if creation failes
+          QString option = "SPATIALITE=YES";
+          char **options =  new char *[2];
+          options[0] = CPLStrdup( option.toLocal8Bit().data() );
+          options[1] = NULL;
+          OGRSFDriverH poDriver;
+          QgsApplication::registerOgrDrivers();
+          poDriver = OGRGetDriverByName( drvName.toLocal8Bit().data() );
+          if ( poDriver )
+          {
+            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
+            if ( ds )
+            {
+              writableDrivers << "SpatiaLite";
+              OGR_DS_Destroy( ds );
+            }
+          }
+          CPLFree( options[0] );
+          delete [] options;
+        }
+        writableDrivers << drvName;
       }
+    }
+  }
+
+  foreach ( QString drvName, writableDrivers )
+  {
+    QString longName;
+    QString trLongName;
+    QString glob;
+    QString exts;
+    if ( QgsVectorFileWriter::driverMetadata( drvName, longName, trLongName, glob, exts ) && !trLongName.isEmpty() )
+    {
+      resultMap.insert( trLongName, drvName );
     }
   }
 
@@ -942,10 +1002,18 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
   else if ( driverName.startsWith( "MapInfo File" ) )
   {
-    longName = "Mapinfo File";
-    trLongName = QObject::tr( "Mapinfo File" );
-    glob = "*.mif *.tab";
-    ext = "mif tab";
+    longName = "Mapinfo TAB";
+    trLongName = QObject::tr( "Mapinfo TAB" );
+    glob = "*.tab";
+    ext = "tab";
+  }
+  // 'MapInfo MIF' is internal QGIS addition to distinguish between MITAB and MIF
+  else if ( driverName.startsWith( "MapInfo MIF" ) )
+  {
+    longName = "Mapinfo MIF";
+    trLongName = QObject::tr( "Mapinfo MIF" );
+    glob = "*.mif";
+    ext = "mif";
   }
   else if ( driverName.startsWith( "DGN" ) )
   {
@@ -972,6 +1040,14 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   {
     longName = "SQLite";
     trLongName = QObject::tr( "SQLite" );
+    glob = "*.sqlite";
+    ext = "sqlite";
+  }
+  // QGIS internal addition for SpatialLite
+  else if ( driverName.startsWith( "SpatiaLite" ) )
+  {
+    longName = "SpatiaLite";
+    trLongName = QObject::tr( "SpatiaLite" );
     glob = "*.sqlite";
     ext = "sqlite";
   }

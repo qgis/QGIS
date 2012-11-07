@@ -4166,13 +4166,6 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
 
-    if ( format == "SpatiaLite" )
-    {
-      if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
-        datasourceOptions.append( "SPATIALITE=YES" );
-      format = "SQLite";
-    }
-
     switch ( dialog->crs() )
     {
       case -2: // Project CRS
