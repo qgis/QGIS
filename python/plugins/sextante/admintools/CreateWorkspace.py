@@ -23,9 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 from qgis.core import *
-from PyQt4 import QtGui
 from sextante.parameters.ParameterString import ParameterString
 from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 from sextante.outputs.OutputString import OutputString

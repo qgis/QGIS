@@ -33,7 +33,6 @@ from sextante.admintools.DeleteWorkspace import DeleteWorkspace
 from sextante.admintools.DeleteDatastore import DeleteDatastore
 from sextante.admintools.CreateStyleGeoServer import CreateStyleGeoServer
 from sextante.core.AlgorithmProvider import AlgorithmProvider
-from PyQt4 import QtGui
 
 class AdminToolsAlgorithmProvider(AlgorithmProvider):
 
