@@ -545,6 +545,84 @@ class TestQgsExpression: public QObject
       QCOMPARE( vPerimeter.toDouble(), 20. );
     }
 
+    void eval_geometry_constructor_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<bool>( "evalError" );
+
+      QgsPoint point( 123, 456 );
+      QgsPolyline line;
+      line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
+
+      QgsPolyline polyline, polygon_ring;
+      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
+      polygon_ring << QgsPoint( 1, 1 ) << QgsPoint( 6, 1 ) << QgsPoint( 6, 6 ) << QgsPoint( 1, 6 ) << QgsPoint( 1, 1 );
+      QgsPolygon polygon;
+      polygon << polygon_ring;
+
+      QTest::newRow( "geomFromWKT Point" ) << "geomFromWKT('"+QgsGeometry::fromPoint( point )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('"+QgsGeometry::fromPolyline( line )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
+      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('"+QgsGeometry::fromPolyline( polyline )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
+      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('"+QgsGeometry::fromPolygon( polygon )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+    }
+
+    void eval_geometry_constructor()
+    {
+      QFETCH( QString, string );
+      QFETCH( void*, geomptr );
+      QFETCH( bool, evalError );
+
+      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
+
+      QgsFeature f;
+      f.setGeometry( geom );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      QCOMPARE( exp.needsGeometry(), false );
+      QVariant out = exp.evaluate( &f );
+      QCOMPARE( exp.hasEvalError(), evalError );
+
+      QCOMPARE( out.canConvert<QgsGeometry*>(), true );
+      QgsGeometry* outGeom = out.value<QgsGeometry*>();
+      QCOMPARE( geom->equals( outGeom ), true );
+    }
+
+    void eval_spatial_operator_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QgsPoint point( 0, 0 );
+      QTest::newRow( "No Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
+      QTest::newRow( "Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
+      QTest::newRow( "No Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 0 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
+      QTest::newRow( "Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << ( void* ) QgsGeometry::fromPoint( point ) << false << QVariant( 1 );
+    }
+
+    void eval_spatial_operator()
+    {
+      QFETCH( QString, string );
+      QFETCH( void*, geomptr );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
+
+      QgsFeature f;
+      f.setGeometry( geom );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      QCOMPARE( exp.needsGeometry(), true );
+      QVariant out = exp.evaluate( &f );
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( out.toInt(), result.toInt() );
+    }
+
     void eval_special_columns()
     {
       QTest::addColumn<QString>( "string" );
