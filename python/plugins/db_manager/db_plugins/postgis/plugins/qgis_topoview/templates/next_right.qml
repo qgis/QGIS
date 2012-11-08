@@ -12,9 +12,9 @@
       <rotationclassificationfieldname></rotationclassificationfieldname>
       <scaleclassificationfieldname></scaleclassificationfieldname>
       <symbolfieldname></symbolfieldname>
-      <outlinecolor red="28" blue="179" green="160"/>
+      <outlinecolor red="170" blue="0" green="0"/>
       <outlinestyle>SolidLine</outlinestyle>
-      <outlinewidth>0.26</outlinewidth>
+      <outlinewidth>1</outlinewidth>
       <fillcolor red="0" blue="0" green="0"/>
       <fillpattern>NoBrush</fillpattern>
       <texturepath>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</texturepath>
@@ -58,7 +58,7 @@
     <property key="labeling/dist" value="3"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
-    <property key="labeling/fieldName" value="'&lt;-' || next_right_edge"/>
+    <property key="labeling/fieldName" value="next_right_edge"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="Sans"/>
     <property key="labeling/fontItalic" value="false"/>
@@ -70,7 +70,7 @@
     <property key="labeling/fontWeight" value="50"/>
     <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
-    <property key="labeling/isExpression" value="true"/>
+    <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
     <property key="labeling/mergeLines" value="false"/>
@@ -136,5 +136,7 @@
   <editform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</editform>
   <editforminit></editforminit>
   <annotationform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</annotationform>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>
