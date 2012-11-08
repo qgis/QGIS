@@ -206,8 +206,13 @@ class QgsLegend : public QTreeWidget
     /** return canvas */
     QgsMapCanvas *canvas() { return mMapCanvas; }
 
-  public slots:
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QString& layerKey );
 
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
+
+  public slots:
 
     /*!Adds a new layer group with the maplayers to the canvas*/
     void addLayers( QList<QgsMapLayer *> );
@@ -371,12 +376,6 @@ class QgsLegend : public QTreeWidget
      */
     void mouseReleaseEvent( QMouseEvent * e );
     void mouseDoubleClickEvent( QMouseEvent* e );
-
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QString& layerKey );
-
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
 
     /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
     void adjustIconSize();

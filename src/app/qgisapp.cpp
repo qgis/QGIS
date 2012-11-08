@@ -5372,7 +5372,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     return;
   }
 
-  QList<QgsMapLayer *> selectedLyrs = lyrList.empty() ? mMapLegend->selectedLayers() : lyrList;
+  const QList<QgsMapLayer *> selectedLyrs = lyrList.empty() ? mMapLegend->selectedLayers() : lyrList;
   if ( selectedLyrs.empty() )
   {
     return;
@@ -5389,16 +5389,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     unSppType = QString( "" );
     layerDupName = selectedLyr->name() + " " + tr( "copy" );
 
-    // setup for placing duplicated layer below source layer, regardless of group depth
-    mMapLegend->blockSignals( true );
-    if ( !mMapLegend->setCurrentLayer( selectedLyr ) )
-    {
-      mMapLegend->blockSignals( false );
-      continue; // legend item doesn't exist for map layer
-    }
-    mMapLegend->blockSignals( false );
-    QgsLegendLayer *sourcellayer = mMapLegend->currentLegendLayer();
-
     if ( selectedLyr->type() == QgsMapLayer::PluginLayer )
     {
       unSppType = tr( "Plugin layer" );
@@ -5409,7 +5399,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     if ( unSppType.isEmpty() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( selectedLyr );
-      // TODO: check for other layer types that won't duplicate correctly
+      // TODO: add other layer types that can be duplicated
       // currently memory and plugin layers are skipped
       if ( vlayer && vlayer->storageType() == "Memory storage" )
       {
@@ -5420,7 +5410,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
         dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
       }
     }
-
 
     if ( unSppType.isEmpty() && !dupLayer )
     {
@@ -5453,23 +5442,39 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       continue;
     }
 
-    // add layer to project and layer registry
+    // add layer to layer registry and legend
     QList<QgsMapLayer *> myList;
     myList << dupLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
-    // duplicate the layer style
-    copyStyle( selectedLyr );
-    pasteStyle( dupLayer );
+    // verify layer has been added to legend
+    QgsLegendLayer *duplLayer = 0;
+    duplLayer = mMapLegend->findLegendLayer( dupLayer );
+    if ( !duplLayer )
+    {
+      // some source layers, like items > 4th in a container, have their layer
+      // registered but do not show up in the legend, so manually add them
+      QgsLegendLayer* llayer = new QgsLegendLayer( dupLayer );
+      mMapLegend->insertTopLevelItem( 0, llayer );
+      // double-check, or move of non-existent legend layer will segfault
+      duplLayer = mMapLegend->findLegendLayer( dupLayer );
+    }
 
-    // move layer to just below source layer
-    QgsLegendLayer *dupllayer = mMapLegend->currentLegendLayer();
-    mMapLegend->moveItem( dupllayer, sourcellayer );
+    QgsLegendLayer *srclLayer = mMapLegend->findLegendLayer( selectedLyr );
+    if ( duplLayer && srclLayer )
+    {
+      // move layer to just below source layer
+      mMapLegend->moveItem( duplLayer, srclLayer );
 
-    // always set duplicated layers to not visible
-    // so layer can be configured before being turned on,
-    // and no map canvas refresh needed when doing multiple duplications
-    mMapLegend->setLayerVisible( dupLayer, false );
+      // duplicate the layer style
+      copyStyle( selectedLyr );
+      pasteStyle( dupLayer );
+
+      // always set duplicated layers to not visible
+      // so layer can be configured before being turned on,
+      // and no map canvas refresh needed when doing multiple duplications
+      mMapLegend->setLayerVisible( dupLayer, false );
+    }
   }
 
   dupLayer = 0;
