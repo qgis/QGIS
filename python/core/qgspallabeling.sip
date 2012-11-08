@@ -121,6 +121,9 @@ class QgsPalLayerSettings
     bool addDirectionSymbol;
     unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
+    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
+    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
