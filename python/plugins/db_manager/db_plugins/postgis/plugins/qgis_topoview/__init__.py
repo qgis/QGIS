@@ -124,8 +124,16 @@ def run(item, action, mainwindow):
 
 	  # edge
 		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-		layer = QgsVectorLayer(uri.uri(), u'%s.edges' % toponame, provider)
-		layer.loadNamedStyle(os.path.join(template_dir, 'edge_style.qml'))
+		layer = QgsVectorLayer(uri.uri(), u'%s.edge' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # edge labels
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.edge label' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
 		legend.moveLayer(layer, group)

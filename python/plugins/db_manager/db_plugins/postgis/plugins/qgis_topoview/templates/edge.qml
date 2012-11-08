@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
+<qgis version="1.9.0-Master" minimumScale="0" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
   <transparencyLevelInt>255</transparencyLevelInt>
   <renderer-v2 symbollevels="0" type="RuleRenderer">
     <rules>
@@ -214,7 +214,7 @@
     <property key="labeling/displayAll" value="false"/>
     <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
-    <property key="labeling/enabled" value="true"/>
+    <property key="labeling/enabled" value="false"/>
     <property key="labeling/fieldName" value="edge_id"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="AlArabiya"/>
@@ -233,6 +233,8 @@
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
+    <property key="labeling/multilineAlign" value="0"/>
+    <property key="labeling/multilineHeight" value="1"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
     <property key="labeling/placement" value="2"/>
@@ -247,12 +249,14 @@
     <property key="labeling/textColorG" value="0"/>
     <property key="labeling/textColorR" value="0"/>
     <property key="labeling/textTransp" value="0"/>
+    <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
     <property key="labeling/xOffset" value="0"/>
     <property key="labeling/xQuadOffset" value="0"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
+  <editorlayout>generatedlayout</editorlayout>
   <displayfield>edge_id</displayfield>
   <label>0</label>
   <labelattributes>
@@ -289,5 +293,7 @@
   <editform>.</editform>
   <editforminit></editforminit>
   <annotationform>.</annotationform>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>
