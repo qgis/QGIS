@@ -18,6 +18,7 @@
 #define QGSATTRIBUTEEDITOR_H
 
 #include <QVariant>
+#include <QMetaType>
 
 #include "qgsfeature.h"
 
@@ -79,5 +80,30 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     void selectDate();
 };
 
+class QgsStringRelay : public QObject
+{
+  Q_OBJECT
+
+public:
+  QgsStringRelay()
+    : QObject( NULL ) {}
+
+  QgsStringRelay( QObject* parent )
+    : QObject( parent ) {}
+
+  QgsStringRelay( const QgsStringRelay& sr )
+    : QObject( sr.parent() ) {}
+
+public slots:
+  void changeText( QString str )
+  {
+    emit textChanged( str );
+  }
+
+signals:
+  void textChanged( QString );
+};
+
+Q_DECLARE_METATYPE( QgsStringRelay )
 
 #endif

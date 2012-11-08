@@ -136,11 +136,12 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
   if ( !vl )
     return 0;
 
-  bool synchronized = false;
   QWidget *myWidget = 0;
   QgsVectorLayer::EditType editType = vl->editType( idx );
   const QgsField &field = vl->pendingFields()[idx];
   QVariant::Type myFieldType = field.type();
+
+  bool synchronized = false;
 
   switch ( editType )
   {
@@ -438,12 +439,14 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       QLineEdit *le = 0;
       QTextEdit *te = 0;
       QPlainTextEdit *pte = 0;
+      QComboBox * cb = 0;
 
       if ( editor )
       {
         le = qobject_cast<QLineEdit *>( editor );
         te = qobject_cast<QTextEdit *>( editor );
         pte = qobject_cast<QPlainTextEdit *>( editor );
+        cb = qobject_cast<QComboBox *>( editor );
       }
       else if ( editType == QgsVectorLayer::TextEdit )
       {
@@ -491,15 +494,42 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         myWidget = pte;
       }
 
+      if ( cb )
+      {
+        myWidget = cb;
+      }
+
       if ( myWidget )
       {
         myWidget->setDisabled( editType == QgsVectorLayer::Immutable );
 
+        QgsStringRelay* relay = NULL;
+
         QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
         if ( it != proxyWidgets.end() )
         {
-          synchronized =  connect( *it, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), *it, SLOT( setText( QString ) ) );
+          QObject* obj = qvariant_cast<QObject*>( (*it)->property( "QgisAttrEditProxy" ) );
+          relay = qobject_cast<QgsStringRelay*>( obj );
+        }
+        else
+        {
+          relay = new QgsStringRelay( myWidget );
+        }
+
+        if ( cb && cb->isEditable() )
+        {
+          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setEditText( QString ) ) );
+          synchronized &= connect( myWidget, SIGNAL( editTextChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+        }
+        else
+        {
+          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
+          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+        }
+
+        if ( !cb || cb->isEditable() )
+        {
+          myWidget->setProperty( "QgisAttrEditProxy", QVariant( QMetaType::QObjectStar, &relay ) );
         }
       }
     }
