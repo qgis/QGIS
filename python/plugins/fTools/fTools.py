@@ -43,7 +43,7 @@ import doGeometry, doGeoprocessing, doVisual
 import doIntersectLines, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints
 import doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doValidate, doSimplify, doDefineProj, doSpatialIndex
+import doValidate, doSimplify, doDefineProj, doSpatialIndex,  doEliminate
 
 class fToolsPlugin:
   def __init__(self,iface):
@@ -115,6 +115,7 @@ class fToolsPlugin:
     self.splitVect.setIcon(QIcon(self.getThemeIcon("split_layer.png")))
     self.mergeShapes.setIcon(QIcon(self.getThemeIcon("merge_shapes.png")))
     self.spatialIndex.setIcon(QIcon(self.getThemeIcon("spatial_index.png")))
+    self.eliminate.setIcon(QIcon(self.getThemeIcon("eliminate.png")))
 
   def initGui(self):
     if int(self.QgisVersion) < 1:
@@ -182,7 +183,8 @@ class fToolsPlugin:
     self.splitVect = QAction(QCoreApplication.translate("fTools", "Split vector layer"), self.iface.mainWindow())
     self.mergeShapes = QAction(QCoreApplication.translate("fTools", "Merge shapefiles to one"), self.iface.mainWindow())
     self.spatialIndex = QAction(QCoreApplication.translate("fTools", "Create spatial index"), self.iface.mainWindow())
-    self.dataManageMenu.addActions([self.define, self.spatJoin, self.splitVect, self.mergeShapes, self.spatialIndex])
+    self.eliminate = QAction( QCoreApplication.translate( "fTools", "Eliminate sliver polygons" ),self.iface.mainWindow() )
+    self.dataManageMenu.addActions([self.define, self.spatJoin, self.splitVect, self.mergeShapes, self.spatialIndex, self.eliminate])
     self.updateThemeIcons("theme")
 
     self.tmpAct = QAction( self.iface.mainWindow() )
@@ -239,6 +241,7 @@ class fToolsPlugin:
     QObject.connect(self.splitVect, SIGNAL("triggered()"), self.dosplitVect)
     QObject.connect(self.mergeShapes, SIGNAL("triggered()"), self.doMergeShapes)
     QObject.connect(self.spatialIndex, SIGNAL("triggered()"), self.doSpatIndex)
+    QObject.connect(self.eliminate, SIGNAL("triggered()"), self.doEliminate)
 
   def unload(self):
     self.iface.addPluginToVectorMenu( "tmp", self.tmpAct )
@@ -415,4 +418,8 @@ class fToolsPlugin:
   def doSpatIndex(self):
     d = doSpatialIndex.Dialog(self.iface)
     d.show()
+    d.exec_()
+
+  def doEliminate(self):
+    d = doEliminate.Dialog(self.iface)
     d.exec_()
