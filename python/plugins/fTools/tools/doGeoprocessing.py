@@ -195,7 +195,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.inShapeB.clear()
 
     if self.myFunction == 4:
-      myListA = ftools_utils.getLayerNames( [ QGis.Polygon ] )
+      myListA = ftools_utils.getLayerNames( [ QGis.Line, QGis.Polygon ] )
       myListB = []
     else:
       myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
