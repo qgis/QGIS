@@ -243,7 +243,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
-                    command+=(" -" + param.name + " " + value)
+                    command+=(" -" + param.name + " \"" + value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
