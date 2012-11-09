@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    merge.py
+    translate.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterString import ParameterString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,45 +26,34 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtGui
 from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
 import os
 from sextante.gdal.GdalUtils import GdalUtils
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 
-class merge(GeoAlgorithm):
+class gdaladdo(GeoAlgorithm):
 
     INPUT = "INPUT"
+    LEVELS = "LEVELS"
     OUTPUT = "OUTPUT"
-    PCT = "PCT"
-    SEPARATE = "SEPARATE"
+    
 
     def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/icons/merge.png"
+        filepath = os.path.dirname(__file__) + "/icons/raster-overview.png"
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "Merge"
+        self.name = "Build pyramids (overviews)"
         self.group = "[GDAL] Miscellaneous"
-        self.addParameter(ParameterMultipleInput(merge.INPUT, "Input layers", ParameterMultipleInput.TYPE_RASTER))
-        self.addParameter(ParameterBoolean(merge.PCT, "Grab pseudocolor table from first layer", False))
-        self.addParameter(ParameterBoolean(merge.SEPARATE, "Layer stack", False))
-        self.addOutput(OutputRaster(merge.OUTPUT, "Output layer"))
+        self.addParameter(ParameterRaster(gdaladdo.INPUT, "Input layer", False))
+        self.addParameter(ParameterString(gdaladdo.LEVELS, "Overview levels", "2 4 8 16"))
+        self.addOutput(OutputRaster(gdaladdo.OUTPUT, "Output layer", True))
 
     def processAlgorithm(self, progress):
-        if SextanteUtils.isWindows():
-            commands = ["cmd.exe", "/C ", "gdal_merge.bat"]
-        else:
-            commands = ["gdal_merge.py"]
-        if self.getParameterValue(merge.SEPARATE):
-            commands.append("-separate")
-        if self.getParameterValue(merge.PCT):
-            commands.append("-pct")
-        commands.append("-of")
-        out = self.getOutputValue(merge.OUTPUT)
-        commands.append(GdalUtils.getFormatShortNameFromFilename(out))
-        commands.append(self.getParameterValue(merge.INPUT).replace(";", " "))
-        commands.append(out)
+        commands = ["gdaladdo"]        
+        input = self.getParameterValue(gdaladdo.INPUT)
+        self.setOutputValue(gdaladdo.OUTPUT, input)                        
+        commands.append(input)
+        commands.append(self.getParameterValue(gdaladdo.LEVELS))                
 
         GdalUtils.runGdal(commands, progress)

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -158,7 +160,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith("output html"):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith("output file"):
-            out = OutputFile()
+            out = OutputFile()          
 
         if param != None:
             self.addParameter(param)

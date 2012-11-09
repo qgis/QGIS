@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gdal.gdaladdo import gdaladdo
+from sextante.gdal.ogr2ogr import Ogr2Ogr
+from sextante.gdal.ogrinfo import OgrInfo
+from sextante.gdal.ogrsql import OgrSql
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -40,7 +44,7 @@ from sextante.gdal.pct2rgb import pct2rgb
 from sextante.gdal.merge import merge
 from sextante.gdal.polygonize import polygonize
 
-class GdalAlgorithmProvider(AlgorithmProvider):
+class GdalOgrAlgorithmProvider(AlgorithmProvider):
 
     '''This provider incorporates GDAL-based algorithms into SEXTANTE.
     Algorithms have been implemented using two different mechanisms,
@@ -61,10 +65,10 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         return os.path.dirname(__file__) + "/scripts"
 
     def getDescription(self):
-        return "GDAL"
+        return "GDAL/OGR"
 
     def getName(self):
-        return "gdal"
+        return "gdalogr"
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/icons/gdalicon.png")
@@ -79,7 +83,9 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def createAlgsList(self):
         #First we populate the list of algorihtms with those created extending
         #GeoAlgorithm directly (those that execute GDAL using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), rgb2pct(), pct2rgb(), merge(), polygonize()]
+        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), 
+                              rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
+                              OgrInfo(), Ogr2Ogr(), OgrSql()]
         #And then we add those that are created as python scripts
         folder = self.scriptsFolder()
         for descriptionFile in os.listdir(folder):
@@ -93,3 +99,6 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
+    
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp", "sqlite"]

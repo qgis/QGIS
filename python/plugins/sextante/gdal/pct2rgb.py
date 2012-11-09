@@ -44,7 +44,7 @@ class pct2rgb(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "pct2rgb"
-        self.group = "Conversion"
+        self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(pct2rgb.INPUT, "Input layer", False))
         options = []
         for i in range(25):

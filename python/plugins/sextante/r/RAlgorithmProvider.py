@@ -75,6 +75,8 @@ class RAlgorithmProvider(AlgorithmProvider):
         
         
     def loadFromFolder(self, folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("rsx"):
                 try:

@@ -347,10 +347,11 @@ class ModelerDialog(QtGui.QDialog):
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(True)
+                providerItem.setExpanded(text!="")
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)
+            
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 

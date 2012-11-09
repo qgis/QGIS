@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from sextante.admintools.PostGISExecuteSQL import PostGISExecuteSQL
+from sextante.admintools.ImportIntoPostGIS import ImportIntoPostGIS
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -40,7 +41,7 @@ class AdminToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.alglist = [ImportVectorIntoGeoServer(), ImportRasterIntoGeoServer(), 
                         CreateWorkspace(), DeleteWorkspace(), DeleteDatastore(), 
-                        CreateStyleGeoServer(), PostGISExecuteSQL()]#, TruncateSeedGWC()]
+                        CreateStyleGeoServer(), PostGISExecuteSQL(), ImportIntoPostGIS()]#, TruncateSeedGWC()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

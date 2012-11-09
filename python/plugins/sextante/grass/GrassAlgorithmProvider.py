@@ -87,6 +87,12 @@ class GrassAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp"]
+    
+    def getSupportedOutputRasterLayerExtensions(self):        
+        return ["tif"]
+        
     def createDescriptionFiles(self):
         folder = "C:\\descs\\grass"
         i = 0

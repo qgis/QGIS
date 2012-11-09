@@ -92,6 +92,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def getName(self):
         return "saga"
 
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp"]
+    
+    def getSupportedOutputRasterLayerExtensions(self):        
+        return ["tif"]
+    
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 

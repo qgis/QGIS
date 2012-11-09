@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -63,6 +64,14 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algEx = None
         self.resize(800, 500)
         self.setWindowTitle("Batch Processing - " + self.alg.name)
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.advancedButton = QtGui.QPushButton()
+                self.advancedButton.setText("Show advanced parameters")
+                self.advancedButton.setMaximumWidth(150)
+                self.buttonBox.addButton(self.advancedButton, QtGui.QDialogButtonBox.ActionRole)
+                self.advancedButton.clicked.connect(self.showAdvancedParametersClicked)
+                break
         self.addRowButton = QtGui.QPushButton()
         self.addRowButton.setText("Add row")
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
@@ -84,6 +93,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         for param in self.alg.parameters:
             self.table.setColumnWidth(i,250)
             self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(param.description))
+            if param.isAdvanced:
+                self.table.setColumnHidden(i, not self.showAdvanced)
             i+=1
         for out in self.alg.outputs:
             self.table.setColumnWidth(i,250)
@@ -196,6 +207,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if alg != None:
                 widget.useNewAlg(alg)
             return param.setValue(widget.getValue())
+        elif isinstance(param, ParameterCrs):
+            return param.setValue(widget.getValue())        
         else:
             return param.setValue(widget.text())
 
@@ -217,6 +230,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self, self.alg, param.default)
+        elif isinstance(param, ParameterCrs):
+            item = CrsSelectionPanel(param.default)            
         else:
             item = QtGui.QLineEdit()
             try:
@@ -239,4 +254,16 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             i+=1
         for out in self.alg.outputs:
             self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(out, self.alg, self.table.rowCount()-1, i, self))
+            i+=1
+
+    def showAdvancedParametersClicked(self):
+        self.showAdvanced = not self.showAdvanced
+        if self.showAdvanced:
+            self.advancedButton.setText("Hide advanced parameters")
+        else:
+            self.advancedButton.setText("Show advanced parameters")
+        i = 0
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.table.setColumnHidden(i, not self.showAdvanced)
             i+=1

@@ -1,0 +1,8 @@
+SimpleConnectedComponentsSegmentation
+otbcli_Segmentation
+Simple Connected Components segmentation (labeled raster output)
+Segmentation
+ParameterRaster|-filter cc -in|Input Image|False
+ParameterString|-filter.cc.expr|Condition|
+OutputRaster|-mode raster -mode.raster.out|Output labeled image
+

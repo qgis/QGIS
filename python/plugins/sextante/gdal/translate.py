@@ -42,8 +42,8 @@ class translate(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "translate"
-        self.group = "Conversion"
+        self.name = "Translate (convert format)"
+        self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(translate.INPUT, "Input layer", False))
         self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters"))
         self.addOutput(OutputRaster(translate.OUTPUT, "Output layer"))

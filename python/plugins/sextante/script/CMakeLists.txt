@@ -1,3 +1,5 @@
 FILE(GLOB PY_FILES *.py)
 
-PLUGIN_INSTALL(sextante ./script ${PY_FILES})
+ADD_SUBDIRECTORY(scripts)
+
+PLUGIN_INSTALL(sextante script ${PY_FILES})

@@ -70,6 +70,8 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         self.loadFromFolder(folder)  
         
     def loadFromFolder(self,folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("model"):
                 try:

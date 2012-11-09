@@ -5,7 +5,7 @@
     PostGISExecuteSQL.py
     ---------------------
     Date                 : October 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Victor Olaya, Carterix Geomatics
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -16,13 +16,11 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.admintools import postgis_utils
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import PyQt4
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 
-__author__ = 'Victor Olaya'
+__author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -31,9 +29,11 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
-from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
+from sextante.admintools import postgis_utils
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+import PyQt4
 
-class PostGISExecuteSQL(GeoServerToolsAlgorithm):
+class PostGISExecuteSQL(GeoAlgorithm):
     
     DATABASE = "DATABASE"
     SQL = "SQL"
@@ -132,12 +132,11 @@ class PostGISExecuteSQL(GeoServerToolsAlgorithm):
         #=======================================================================
     
     def defineCharacteristics(self):
-        self.addBaseParameters()
         self.name = "PostGIS execute SQL"
         self.group = "PostGIS management tools"        
         self.addParameter(ParameterString(self.DATABASE, "Database"))
         self.addParameter(ParameterString(self.TABLENAME, "Name for new table"))        
-        self.addParameter(ParameterString(self.SQL, "SQL query"))
+        self.addParameter(ParameterString(self.SQL, "SQL query", True))
          
                   
 

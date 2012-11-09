@@ -505,6 +505,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                                       ParameterString,ParameterBoolean, ParameterExtent)):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterCrs):
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
                     widget.setText(unicode(value))
                 elif isinstance(param, ParameterFixedTable):
                     pass

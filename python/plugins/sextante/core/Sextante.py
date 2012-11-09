@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -43,9 +42,9 @@ from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmPr
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
-from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from sextante.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
 from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
@@ -120,7 +119,7 @@ class Sextante:
         Sextante.addProvider(MMQGISXAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
-        Sextante.addProvider(GdalAlgorithmProvider())
+        Sextante.addProvider(GdalOgrAlgorithmProvider())        
         Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())

@@ -64,13 +64,15 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def getDescription(self):
         return "Scripts"
 
-    def _loadAlgorithms(self):
+    def _loadAlgorithms(self):        
         folder = self.scriptsFolder()
         self.loadFromFolder(folder)
         folder = os.path.join(os.path.dirname(__file__), "scripts")
         self.loadFromFolder(folder)
         
     def loadFromFolder(self, folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("py"):
                 try:
