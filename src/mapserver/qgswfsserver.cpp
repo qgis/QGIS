@@ -431,6 +431,31 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               ++featureCounter;
             }
           }
+          else if ( filterElem.firstChildElement().tagName() == "BBOX" )
+          {
+            QDomElement bboxElem = filterElem.firstChildElement();
+            QDomElement childElem = bboxElem.firstChildElement();
+            while ( !childElem.isNull() ) 
+            {
+              if ( childElem.tagName() == "Box" ) 
+              {
+                QgsRectangle* rect = new QgsRectangle( childElem );
+                provider->select( attrIndexes, *rect, mWithGeom, true );
+              }
+              else if ( childElem.tagName() != "PropertyName" )
+              {
+                QgsGeometry* geom = QgsGeometry::fromGML2( childElem );
+                provider->select( attrIndexes, geom->boundingBox(), mWithGeom, true );
+              }
+              childElem = childElem.nextSiblingElement();
+            }
+            while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+            {
+              sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+              ++featCounter;
+              ++featureCounter;
+            }
+          }
           else
           {
             QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );

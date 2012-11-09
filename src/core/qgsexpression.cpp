@@ -795,25 +795,7 @@ static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExp
   QDomElement elem = doc.documentElement();
   if ( elem.tagName() == "Box" )
   {
-    QDomElement bElem = elem.firstChild().toElement();
-    QString coordSeparator = ",";
-    QString tupelSeparator = " ";
-    if ( bElem.hasAttribute( "cs" ) )
-    {
-      coordSeparator = bElem.attribute( "cs" );
-    }
-    if ( bElem.hasAttribute( "ts" ) )
-    {
-      tupelSeparator = bElem.attribute( "ts" );
-    }
-
-    QString bString = bElem.text();
-    bool conversionSuccess;
-    double minx = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
-    double miny = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
-    double maxx = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
-    double maxy = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
-    QgsRectangle* rect = new QgsRectangle( minx, miny, maxx, maxy );
+    QgsRectangle* rect = new QgsRectangle( elem );
     geom = QgsGeometry::fromRect( *rect );
   }
   else
