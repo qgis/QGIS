@@ -191,7 +191,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_clicked()
 {
   if ( mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->outlineColor() );
+    QColor newColor = QColorDialog::getColor( mLayer->outlineColor(), this, "", QColorDialog::ShowAlphaChannel );
     if ( newColor.isValid() )
     {
       mLayer->setOutlineColor( newColor );
@@ -205,7 +205,7 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_clicked()
 {
   if ( mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->fillColor() );
+    QColor newColor = QColorDialog::getColor( mLayer->fillColor(), this, "", QColorDialog::ShowAlphaChannel );
     if ( newColor.isValid() )
     {
       mLayer->setFillColor( newColor );

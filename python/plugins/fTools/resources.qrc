@@ -45,6 +45,7 @@
         <file>icons/default/neighbour.png</file>
         <file>icons/default/delaunay.png</file>
         <file>icons/default/layer_extent.png</file>
+        <file>icons/default/eliminate.png</file>
         <file>icons/gis/single_to_multi.png</file>
         <file>icons/gis/simplify.png</file>
         <file>icons/gis/difference.png</file>
@@ -91,6 +92,7 @@
         <file>icons/gis/layer_extent.png</file>
         <file>icons/gis/voronoi.png</file>
         <file>icons/gis/merge_shapes.png</file>
-        <file>icons/default/voronoi.png</file>
+        <file>icons/gis/voronoi.png</file>
+        <file>icons/gis/eliminate.png</file>
     </qresource>
 </RCC>

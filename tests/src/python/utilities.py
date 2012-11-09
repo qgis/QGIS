@@ -159,3 +159,4 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
     # Reproject all layers to WGS84 geographic CRS
     CANVAS.mapRenderer().setDestinationCrs(myCrs)
 
+

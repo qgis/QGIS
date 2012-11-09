@@ -239,6 +239,12 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkPlusSign->setChecked( plusSign );
   }
 
+  // set pixel size limiting checked state before unit choice so limiting can be
+  // turned on as a default for map units, if minimum trigger value of 0 is used
+  mFontLimitPixelGroupBox->setChecked( lyr.fontLimitPixelSize );
+  mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
+  mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
+  mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
   if ( lyr.fontSizeInMapUnits )
   {
     mFontSizeUnitComboBox->setCurrentIndex( 1 );
@@ -465,6 +471,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
+  lyr.fontLimitPixelSize = mFontLimitPixelGroupBox->isChecked();
+  lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
+  lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();
   lyr.wrapChar = wrapCharacterEdit->text();
   lyr.multilineHeight = mFontLineHeightSpinBox->value();
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineComboBox->currentIndex();
@@ -1004,8 +1013,37 @@ void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( index );
+  // disable pixel size limiting for labels defined in points
+  if ( index == 0 )
+  {
+    mFontLimitPixelGroupBox->setChecked( false );
+  }
+  else if ( index == 1 && mMinPixelLimit == 0 )
+  {
+    // initial minimum trigger value set, turn on pixel size limiting by default
+    // for labels defined in map units (ignored after first settings save)
+    mFontLimitPixelGroupBox->setChecked( true );
+  }
   updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontMinPixelSpinBox_valueChanged( int px )
+{
+  // ensure max font pixel size for map unit labels can't be lower than min
+  mFontMaxPixelSpinBox->setMinimum( px );
+  mFontMaxPixelSpinBox->update();
+}
+
+void QgsLabelingGui::on_mFontMaxPixelSpinBox_valueChanged( int px )
+{
+  // ensure max font pixel size for map unit labels can't be lower than min
+  if ( px < mFontMinPixelSpinBox->value() )
+  {
+    mFontMaxPixelSpinBox->blockSignals( true );
+    mFontMaxPixelSpinBox->setValue( mFontMinPixelSpinBox->value() );
+    mFontMaxPixelSpinBox->blockSignals( false );
+  }
+  mFontMaxPixelSpinBox->setMinimum( mFontMinPixelSpinBox->value() );
 }
 
 void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )

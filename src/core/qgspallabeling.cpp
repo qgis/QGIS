@@ -215,6 +215,9 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   addDirectionSymbol = false;
   upsidedownLabels = Upright;
   fontSizeInMapUnits = false;
+  fontLimitPixelSize = false;
+  fontMinPixelSize = 0; //trigger to turn it on by default for map unit labels
+  fontMaxPixelSize = 10000;
   bufferSizeInMapUnits = false;
   labelOffsetInMapUnits = true;
   distInMapUnits = false;
@@ -265,6 +268,9 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   addDirectionSymbol = s.addDirectionSymbol;
   upsidedownLabels = s.upsidedownLabels;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
+  fontLimitPixelSize = s.fontLimitPixelSize;
+  fontMinPixelSize = s.fontMinPixelSize;
+  fontMaxPixelSize = s.fontMaxPixelSize;
   bufferSizeInMapUnits = s.bufferSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
   labelOffsetInMapUnits = s.labelOffsetInMapUnits;
@@ -448,6 +454,9 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
+  fontLimitPixelSize = layer->customProperty( "labeling/fontLimitPixelSize", QVariant( false ) ).toBool();
+  fontMinPixelSize = layer->customProperty( "labeling/fontMinPixelSize", QVariant( 0 ) ).toInt();
+  fontMaxPixelSize = layer->customProperty( "labeling/fontMaxPixelSize", QVariant( 10000 ) ).toInt();
   bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   labelOffsetInMapUnits = layer->customProperty( "labeling/labelOffsetInMapUnits", QVariant( true ) ).toBool();
@@ -509,6 +518,9 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
+  layer->setCustomProperty( "labeling/fontLimitPixelSize", fontLimitPixelSize );
+  layer->setCustomProperty( "labeling/fontMinPixelSize", fontMinPixelSize );
+  layer->setCustomProperty( "labeling/fontMaxPixelSize", fontMaxPixelSize );
   layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/labelOffsetInMapUnits", labelOffsetInMapUnits );
@@ -658,6 +670,33 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
   }
 
+  QFont labelFont = textFont;
+
+  //data defined label size?
+  QMap< DataDefinedProperties, int >::const_iterator it = dataDefinedProperties.find( QgsPalLayerSettings::Size );
+  if ( it != dataDefinedProperties.constEnd() )
+  {
+    //find out size
+    QVariant size = f.attributeMap().value( *it );
+    if ( size.isValid() )
+    {
+      double sizeDouble = size.toDouble();
+      if ( sizeDouble <= 0.0 || sizeToPixel( sizeDouble, context ) < 1 )
+      {
+        return;
+      }
+      labelFont.setPixelSize( sizeToPixel( sizeDouble, context ) );
+    }
+  }
+
+  // defined 'minimum/maximum pixel font size' option
+  // TODO: add any data defined setting to override fontMinPixelSize/fontMaxPixelSize
+  if ( fontLimitPixelSize && fontSizeInMapUnits &&
+       ( fontMinPixelSize > labelFont.pixelSize()  || labelFont.pixelSize() > fontMaxPixelSize ) )
+  {
+    return;
+  }
+
   QString labelText;
 
   // Check to see if we are a expression string.
@@ -695,28 +734,9 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     labelText = f.attributeMap()[fieldIndex].toString();
   }
 
-  double labelX, labelY; // will receive label size
-  QFont labelFont = textFont;
-
-  //data defined label size?
-  QMap< DataDefinedProperties, int >::const_iterator it = dataDefinedProperties.find( QgsPalLayerSettings::Size );
-  if ( it != dataDefinedProperties.constEnd() )
-  {
-    //find out size
-    QVariant size = f.attributeMap().value( *it );
-    if ( size.isValid() )
-    {
-      double sizeDouble = size.toDouble();
-      if ( sizeDouble <= 0.0 || sizeToPixel( sizeDouble, context ) < 1 )
-      {
-        return;
-      }
-      labelFont.setPixelSize( sizeToPixel( sizeDouble, context ) );
-    }
-  }
-
-  // this should come after any data defined option that affects font metrics
+  // this should come AFTER any data defined option that affects font metrics
   QFontMetricsF* labelFontMetrics = new QFontMetricsF( labelFont );
+  double labelX, labelY; // will receive label size
   calculateLabelSize( labelFontMetrics, labelText, labelX, labelY );
 
   QgsGeometry* geom = f.geometry();
