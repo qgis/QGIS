@@ -38,20 +38,24 @@ class TestQgsVectorLayer(TestCase):
     mMemoryLayer = None
 
     def setUp(self):
-        self.mMemoryLayer = QgsVectorLayer("Point", "test", "memory")
-        myProvider = self.mMemoryLayer.dataProvider()
+        self.mMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+            'field=age:integer&field=size:double&index=yes'),
+            'test',
+            'memory')
 
-        myProvider.addAttributes([
-                 QgsField("name", QVariant.String),
-                 QgsField("age",  QVariant.Int),
-                 QgsField("size", QVariant.Double)])
+        assert self.mMemoryLayer is not None, 'Provider not initialised'
+        myProvider = self.mMemoryLayer.dataProvider()
+        assert myProvider is not None
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
-        ft.setAttributeMap({0 : QVariant("Johny"),
+        ft.setAttributeMap({0 : QVariant('Johny'),
                             1 : QVariant(20),
                             2 : QVariant(0.3)})
-        myProvider.addFeatures([ft])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        assert myResult == True
+        assert len(myFeatures) > 0
 
 
     def testWrite(self):
@@ -72,7 +76,7 @@ class TestQgsVectorLayer(TestCase):
             myFileName,
             'utf-8',
             myGeoCrs,
-            "ESRI Shapefile",
+            'ESRI Shapefile',
             mySelectedOnlyFlag,
             myErrorMessage,
             myOptions,

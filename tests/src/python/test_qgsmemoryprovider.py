@@ -98,5 +98,17 @@ class TestQgsMemoryProvider(TestCase):
 
           assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
 
+    def testFromUri(self):
+        """Test we can construct the mem provider from a uri"""
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double&index=yes'),
+            'test',
+            'memory')
+
+        assert myMemoryLayer is not None, 'Provider not initialised'
+        myProvider = myMemoryLayer.dataProvider()
+        assert myProvider is not None
+
 if __name__ == '__main__':
     unittest.main()
