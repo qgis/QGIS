@@ -246,6 +246,7 @@
 			</section>
 			<section label="Create random points">
 				<grass name="r.random"/>
+				<grass name="r.random.raster"/>
 				<grass name="r.random.cells"/>
 			</section>
 			<section label="Generate surface">

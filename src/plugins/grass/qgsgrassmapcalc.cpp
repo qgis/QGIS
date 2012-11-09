@@ -42,7 +42,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QWidget * parent, Qt::WFlags f )
     : QMainWindow( iface->mainWindow(), Qt::Dialog )
     , QgsGrassMapcalcBase( )
-    , QgsGrassModuleOptions( tools, module, iface )
+    , QgsGrassModuleOptions( tools, module, iface, false )
     , mTool( -1 )
     , mObject( 0 )
     , mConnector( 0 )
