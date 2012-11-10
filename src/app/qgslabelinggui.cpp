@@ -507,6 +507,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mMaxScaleAttributeComboBox, QgsPalLayerSettings::MaxScale, lyr );
   setDataDefinedProperty( mTranspAttributeComboBox, QgsPalLayerSettings::FontTransp, lyr );
   setDataDefinedProperty( mBufferTranspAttributeComboBox, QgsPalLayerSettings::BufferTransp, lyr );
+  setDataDefinedProperty( mAlwaysShowAttributeComboBox, QgsPalLayerSettings::AlwaysShow, lyr );
 
   return lyr;
 }
@@ -576,6 +577,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mMaxScaleAttributeComboBox;
   comboList << mTranspAttributeComboBox;
   comboList << mBufferTranspAttributeComboBox;
+  comboList << mAlwaysShowAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -615,6 +617,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mMaxScaleAttributeComboBox, s, QgsPalLayerSettings::MaxScale );
   setCurrentComboValue( mTranspAttributeComboBox, s, QgsPalLayerSettings::FontTransp );
   setCurrentComboValue( mBufferTranspAttributeComboBox, s, QgsPalLayerSettings::BufferTransp );
+  setCurrentComboValue( mAlwaysShowAttributeComboBox, s, QgsPalLayerSettings::AlwaysShow );
 }
 
 void QgsLabelingGui::changeTextColor()

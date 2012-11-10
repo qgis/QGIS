@@ -385,6 +385,7 @@ static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLaye
   _readDataDefinedProperty( layer, QgsPalLayerSettings::MaxScale, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::FontTransp, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferTransp, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::AlwaysShow, propertyMap );
 }
 
 void QgsPalLayerSettings::updateFontViaStyle( const QString & fontstyle )
@@ -933,6 +934,18 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
   }
 
+  // data defined always show?
+  bool alwaysShow = false;
+  QMap< DataDefinedProperties, int >::const_iterator dAlwShowIt = dataDefinedProperties.find( QgsPalLayerSettings::AlwaysShow );
+  if ( dAlwShowIt != dataDefinedProperties.constEnd() )
+  {
+    QVariant alwShow = f.attributeMap().value( *dAlwShowIt );
+    if ( alwShow.isValid() )
+    {
+      alwaysShow = alwShow.toBool();
+    }
+  }
+
   QgsPalGeometry* lbl = new QgsPalGeometry(
     f.id(),
     labelText,
@@ -949,7 +962,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
-                                     quadOffsetX, quadOffsetY, offsetX, offsetY ) )
+                                     quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow ) )
       return;
   }
   catch ( std::exception &e )

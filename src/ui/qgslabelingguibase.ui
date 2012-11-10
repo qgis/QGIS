@@ -449,7 +449,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-365</y>
+             <y>0</y>
              <width>686</width>
              <height>714</height>
             </rect>
@@ -2496,7 +2496,7 @@
               <item row="0" column="0">
                <widget class="QCheckBox" name="mPalShowAllLabelsForLayerChkBx">
                 <property name="text">
-                 <string>Show all labels for this layer (i.e. including colliding labels)</string>
+                 <string>Show all labels for this layer (including colliding labels)</string>
                 </property>
                </widget>
               </item>
@@ -2591,7 +2591,7 @@
             <x>0</x>
             <y>0</y>
             <width>686</width>
-            <height>951</height>
+            <height>981</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -2749,13 +2749,23 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
               <item row="1" column="1">
+               <widget class="QComboBox" name="mAlwaysShowAttributeComboBox"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="mAlwaysShowLabel">
+                <property name="text">
+                 <string>Always show</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
                <widget class="QComboBox" name="mMinScaleAttributeComboBox">
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="mMinScaleLabel">
                 <property name="text">
                  <string>Minimum scale</string>
@@ -2779,14 +2789,14 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="mMaxScaleLabel">
                 <property name="text">
                  <string>Maximum scale</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QComboBox" name="mMaxScaleAttributeComboBox">
                 <property name="enabled">
                  <bool>true</bool>

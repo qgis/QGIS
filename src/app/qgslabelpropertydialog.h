@@ -38,6 +38,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 
   private slots:
     void on_mShowLabelChkbx_toggled( bool chkd );
+    void on_mAlwaysShowChkbx_toggled( bool chkd );
     void on_mMinScaleSpinBox_valueChanged( int i );
     void on_mMaxScaleSpinBox_valueChanged( int i );
     void on_mLabelDistanceSpinBox_valueChanged( double d );

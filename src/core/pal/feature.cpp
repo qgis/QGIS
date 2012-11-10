@@ -63,7 +63,7 @@ namespace pal
 {
   Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
       : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
-      quadOffset( false ), offsetPos( false ), fixedRotation( false )
+      quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
   {
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );

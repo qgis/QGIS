@@ -64,6 +64,7 @@ class QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
+      AlwaysShow,
       PropertyCount, // keep last entry
     };
 

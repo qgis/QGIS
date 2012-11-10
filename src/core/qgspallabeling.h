@@ -118,6 +118,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
+      AlwaysShow,
       PropertyCount, // keep last entry
     };
 
