@@ -34,6 +34,13 @@ class QgsPalLayerSettings
       ShowAll // show upside down for all labels, including dynamic ones
     };
 
+    enum DirectionSymbols
+    {
+      SymbolLeftRight, // place direction symbols on left/right of label
+      SymbolAbove, // place direction symbols on above label
+      SymbolBelow // place direction symbols on below label
+    };
+
     enum MultiLineAlign
     {
       MultiLeft = 0,
@@ -117,9 +124,14 @@ class QgsPalLayerSettings
     bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
-    // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
+    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
+    // direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    QString leftDirectionSymbol;
+    QString rightDirectionSymbol;
+    bool reverseDirectionSymbol;
+    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
     unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize

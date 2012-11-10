@@ -24,6 +24,7 @@
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsCharacterSelectorDialog;
 
 #include "qgspallabeling.h"
 
@@ -70,6 +71,8 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
     void on_mPreviewBackgroundBtn_clicked();
+    void on_mDirectSymbLeftToolBtn_clicked();
+    void on_mDirectSymbRightToolBtn_clicked();
 
   protected:
     void blockFontChangeSignals( bool blk );
@@ -90,6 +93,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
     QFontDatabase mFontDB;
+    QgsCharacterSelectorDialog* mCharDlg;
 
     // background reference font
     QFont mRefFont;

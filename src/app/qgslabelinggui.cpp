@@ -26,6 +26,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
+#include "qgscharacterselectdialog.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -41,6 +42,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   if ( !layer ) return;
 
   setupUi( this );
+  mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
   mPreviewSize = 24;
@@ -77,7 +79,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   //mTabWidget->setEnabled( chkEnableLabeling->isChecked() );
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
-  chkAddDirectionSymbol->setEnabled( layer->geometryType() == QGis::Line );
+  mDirectSymbGroupBox->setEnabled( layer->geometryType() == QGis::Line );
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
@@ -172,7 +174,25 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
-  chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
+  mDirectSymbGroupBox->setChecked( lyr.addDirectionSymbol );
+  mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
+  mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
+  mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
+  switch ( lyr.placeDirectionSymbol )
+  {
+    case QgsPalLayerSettings::SymbolLeftRight:
+      mDirectSymbRadioBtnLR->setChecked( true );
+      break;
+    case QgsPalLayerSettings::SymbolAbove:
+      mDirectSymbRadioBtnAbove->setChecked( true );
+      break;
+    case QgsPalLayerSettings::SymbolBelow:
+      mDirectSymbRadioBtnBelow->setChecked( true );
+      break;
+    default:
+      mDirectSymbRadioBtnLR->setChecked( true );
+      break;
+  }
 
   // upside-down labels
   switch ( lyr.upsidedownLabels )
@@ -449,14 +469,24 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.decimals = spinDecimals->value();
     lyr.plusSign = true;
   }
-  if ( chkAddDirectionSymbol->isChecked() )
+
+  lyr.addDirectionSymbol = mDirectSymbGroupBox->isChecked();
+  lyr.leftDirectionSymbol = mDirectSymbLeftLineEdit->text();
+  lyr.rightDirectionSymbol = mDirectSymbRightLineEdit->text();
+  lyr.reverseDirectionSymbol = mDirectSymbRevChkBx->isChecked();
+  if ( mDirectSymbRadioBtnLR->isChecked() )
   {
-    lyr.addDirectionSymbol = true;
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolLeftRight;
   }
-  else
+  else if ( mDirectSymbRadioBtnAbove->isChecked() )
   {
-    lyr.addDirectionSymbol = false;
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolAbove;
   }
+  else if ( mDirectSymbRadioBtnBelow->isChecked() )
+  {
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolBelow;
+  }
+
   if ( mUpsidedownRadioOff->isChecked() )
   {
     lyr.upsidedownLabels = QgsPalLayerSettings::Upright;
@@ -736,6 +766,8 @@ void QgsLabelingGui::updateFont( QFont font )
   }
 
   lblFontName->setText( QString( "%1%2" ).arg( mRefFont.family() ).arg( missingtxt ) );
+  mDirectSymbLeftLineEdit->setFont( mRefFont );
+  mDirectSymbRightLineEdit->setFont( mRefFont );
 
   blockFontChangeSignals( true );
   populateFontStyleComboBox();
@@ -1099,6 +1131,34 @@ void QgsLabelingGui::on_mPreviewBackgroundBtn_clicked()
 
   mPreviewBackgroundBtn->setColor( color );
   setPreviewBackground( color );
+}
+
+void QgsLabelingGui::on_mDirectSymbLeftToolBtn_clicked()
+{
+  bool gotChar = false;
+  QChar dirSymb = QChar();
+
+  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  if ( !gotChar )
+    return;
+
+  if ( !dirSymb.isNull() )
+    mDirectSymbLeftLineEdit->setText( QString( dirSymb ) );
+}
+
+void QgsLabelingGui::on_mDirectSymbRightToolBtn_clicked()
+{
+  bool gotChar = false;
+  QChar dirSymb = QChar();
+
+  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  if ( !gotChar )
+    return;
+
+  if ( !dirSymb.isNull() )
+    mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
 }
 
 void QgsLabelingGui::disableDataDefinedAlignment()

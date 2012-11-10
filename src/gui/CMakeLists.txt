@@ -48,6 +48,7 @@ qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
 qgslegendinterface.cpp
+qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
 qgscomposerview.cpp
 qgscursors.cpp
@@ -151,6 +152,7 @@ attributetable/qgsattributetablememorymodel.h
 attributetable/qgsattributetabledelegate.h
 
 qgsattributeeditor.h
+qgscharacterselectdialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -198,6 +200,7 @@ QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgscharacterselectdialog.h
 qgscolorbutton.h
 qgscursors.h
 qgsencodingfiledialog.h

@@ -213,6 +213,10 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
+  leftDirectionSymbol = QString( "<" );
+  rightDirectionSymbol = QString( ">" );
+  reverseDirectionSymbol = false;
+  placeDirectionSymbol = SymbolLeftRight;
   upsidedownLabels = Upright;
   fontSizeInMapUnits = false;
   fontLimitPixelSize = false;
@@ -266,6 +270,10 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
+  leftDirectionSymbol = s.leftDirectionSymbol;
+  rightDirectionSymbol = s.rightDirectionSymbol;
+  reverseDirectionSymbol = s.reverseDirectionSymbol;
+  placeDirectionSymbol = s.placeDirectionSymbol;
   upsidedownLabels = s.upsidedownLabels;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   fontLimitPixelSize = s.fontLimitPixelSize;
@@ -433,7 +441,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
-  previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", "#ffffff" ).toString() );
+  previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", QVariant( "#ffffff" ) ).toString() );
   enabled = layer->customProperty( "labeling/enabled" ).toBool();
   priority = layer->customProperty( "labeling/priority" ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle" ).toBool();
@@ -452,6 +460,10 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   displayAll = layer->customProperty( "labeling/displayAll", QVariant( false ) ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
+  leftDirectionSymbol = layer->customProperty( "labeling/leftDirectionSymbol", QVariant( "<" ) ).toString();
+  rightDirectionSymbol = layer->customProperty( "labeling/rightDirectionSymbol", QVariant( ">" ) ).toString();
+  reverseDirectionSymbol = layer->customProperty( "labeling/reverseDirectionSymbol" ).toBool();
+  placeDirectionSymbol = ( DirectionSymbols ) layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt();
   upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
@@ -516,6 +528,10 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/displayAll", displayAll );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
+  layer->setCustomProperty( "labeling/leftDirectionSymbol", leftDirectionSymbol );
+  layer->setCustomProperty( "labeling/rightDirectionSymbol", rightDirectionSymbol );
+  layer->setCustomProperty( "labeling/reverseDirectionSymbol", reverseDirectionSymbol );
+  layer->setCustomProperty( "labeling/placeDirectionSymbol", ( unsigned int )placeDirectionSymbol );
   layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
@@ -587,18 +603,29 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     return;
   }
 
+  QString wrapchr = !wrapChar.isEmpty() ? wrapChar : QString( "\n" );
+
   //consider the space needed for the direction symbol
-  if ( addDirectionSymbol && placement == QgsPalLayerSettings::Line )
+  if ( addDirectionSymbol && placement == QgsPalLayerSettings::Line
+       && ( !leftDirectionSymbol.isEmpty() || !rightDirectionSymbol.isEmpty() ) )
   {
-    text.append( ">" );
+    QString dirSym = leftDirectionSymbol;
+
+    if ( fm->width( rightDirectionSymbol ) > fm->width( dirSym ) )
+      dirSym = rightDirectionSymbol;
+
+    if ( placeDirectionSymbol == QgsPalLayerSettings::SymbolLeftRight )
+    {
+      text.append( dirSym );
+    }
+    else
+    {
+      text.append( dirSym + wrapchr ); // SymbolAbove or SymbolBelow
+    }
   }
 
   double w = 0.0, h = 0.0;
-  QStringList multiLineSplit;
-  if ( !wrapChar.isEmpty() )
-    multiLineSplit = text.split( wrapChar );
-  else
-    multiLineSplit = text.split( "\n" );
+  QStringList multiLineSplit = text.split( wrapchr );
   int lines = multiLineSplit.size();
 
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
@@ -1722,28 +1749,59 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
   QFontMetricsF* labelfm = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->getLabelFontMetrics();
 
+  QString wrapchr = !lyr.wrapChar.isEmpty() ? lyr.wrapChar : QString( "\n" );
+
   //add the direction symbol if needed
   if ( !txt.isEmpty() && lyr.placement == QgsPalLayerSettings::Line &&
        lyr.addDirectionSymbol )
   {
+    bool prependSymb = false;
+    QString symb = lyr.rightDirectionSymbol;
+
     if ( label->getReversed() )
     {
-      txt.prepend( "<" );
+      prependSymb = true;
+      symb = lyr.leftDirectionSymbol;
+    }
+
+    if ( lyr.reverseDirectionSymbol )
+    {
+      if ( symb == lyr.rightDirectionSymbol )
+      {
+        prependSymb = true;
+        symb = lyr.leftDirectionSymbol;
+      }
+      else
+      {
+        prependSymb = false;
+        symb = lyr.rightDirectionSymbol;
+      }
+    }
+
+    if ( lyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+    {
+      prependSymb = true;
+      symb = symb + wrapchr;
+    }
+    else if ( lyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
+    {
+      prependSymb = false;
+      symb = wrapchr + symb;
+    }
+
+    if ( prependSymb )
+    {
+      txt.prepend( symb );
     }
     else
     {
-      txt.append( ">" );
+      txt.append( symb );
     }
   }
 
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
-  QStringList multiLineList;
-  if ( !lyr.wrapChar.isEmpty() )
-    multiLineList = txt.split( lyr.wrapChar );
-  else
-    multiLineList = txt.split( "\n" );
-
+  QStringList multiLineList = txt.split( wrapchr );
   int lines = multiLineList.size();
 
   double labelWidest = 0.0;
