@@ -158,6 +158,7 @@ class EditorOutput(QsciScintilla):
         #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
         self.insertInitText()
+        self.edit.setFocus()
         
     def contextMenuEvent(self, e):   
         menu = QMenu(self)
@@ -191,7 +192,7 @@ class EditorOutput(QsciScintilla):
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
             pastebinAction.setEnabled(True)
-        if not self.text() == '':
+        if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
