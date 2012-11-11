@@ -20,6 +20,9 @@
 #include "qgsversion.h"
 #endif
 #include <QCoreApplication>
+#include <QDate>
+#include <QTime>
+#include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
 
@@ -140,3 +143,36 @@ void QgsFree( void *ptr )
 {
   free( ptr );
 }
+
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
+{
+  switch ( lhs.type() )
+  {
+    case QVariant::Int:
+      return lhs.toInt() < rhs.toInt();
+    case QVariant::UInt:
+      return lhs.toUInt() < rhs.toUInt();
+    case QVariant::LongLong:
+      return lhs.toLongLong() < rhs.toLongLong();
+    case QVariant::ULongLong:
+      return lhs.toULongLong() < rhs.toULongLong();
+    case QVariant::Double:
+      return lhs.toDouble() < rhs.toDouble();
+    case QVariant::Char:
+      return lhs.toChar() < rhs.toChar();
+    case QVariant::Date:
+      return lhs.toDate() < rhs.toDate();
+    case QVariant::Time:
+      return lhs.toTime() < rhs.toTime();
+    case QVariant::DateTime:
+      return lhs.toDateTime() < rhs.toDateTime();
+    default:
+      return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
+  }
+}
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
+{
+  return ! qgsVariantLessThan( lhs, rhs );
+}
+

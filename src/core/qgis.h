@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QString>
 #include <QMetaType>
+#include <QVariant>
 #include <stdlib.h>
 #include <cfloat>
 #include <cmath>
@@ -193,6 +194,10 @@ inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
   return aexp == bexp &&
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
 }
+
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.

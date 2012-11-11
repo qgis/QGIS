@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <algorithm>
 
 #include "qgscategorizedsymbolrendererv2.h"
 
@@ -27,21 +28,40 @@
 #include <QDomElement>
 #include <QSettings> // for legend
 
+QgsRendererCategoryV2::QgsRendererCategoryV2()
+    : mValue(), mSymbol( 0 ), mLabel()
+{
+}
+
 QgsRendererCategoryV2::QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label )
     : mValue( value ), mSymbol( symbol ), mLabel( label )
 {
 }
 
 QgsRendererCategoryV2::QgsRendererCategoryV2( const QgsRendererCategoryV2& cat )
-    : mValue( cat.mValue ), mLabel( cat.mLabel )
+    : mValue( cat.mValue ), mSymbol( 0 ), mLabel( cat.mLabel )
 {
-  mSymbol = cat.mSymbol->clone();
+  if ( cat.mSymbol )
+  {
+    mSymbol = cat.mSymbol->clone();
+  }
 }
-
 
 QgsRendererCategoryV2::~QgsRendererCategoryV2()
 {
-  delete mSymbol;
+  if ( mSymbol ) delete mSymbol;
+}
+
+QgsRendererCategoryV2& QgsRendererCategoryV2::operator=( const QgsRendererCategoryV2 & cat )
+{
+  mValue = cat.mValue;
+  mLabel = cat.mLabel;
+  mSymbol = 0;
+  if ( cat.mSymbol )
+  {
+    mSymbol = cat.mSymbol->clone();
+  }
+  return *this;
 }
 
 QVariant QgsRendererCategoryV2::value() const
@@ -291,6 +311,55 @@ bool QgsCategorizedSymbolRendererV2::deleteCategory( int catIndex )
 void QgsCategorizedSymbolRendererV2::deleteAllCategories()
 {
   mCategories.clear();
+}
+
+void QgsCategorizedSymbolRendererV2::moveCategory( int from, int to )
+{
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() ) return;
+  mCategories.move( from, to );
+}
+
+bool valueLessThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return qgsVariantLessThan( c1.value(), c2.value() );
+}
+bool valueGreaterThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return qgsVariantGreaterThan( c1.value(), c2.value() );
+}
+
+void QgsCategorizedSymbolRendererV2::sortByValue( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mCategories.begin(), mCategories.end(), valueLessThan );
+  }
+  else
+  {
+    qSort( mCategories.begin(), mCategories.end(), valueGreaterThan );
+  }
+}
+
+bool labelLessThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return QString::localeAwareCompare( c1.label(), c2.label() ) < 0;
+}
+
+bool labelGreaterThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return !labelLessThan( c1, c2 );
+}
+
+void QgsCategorizedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mCategories.begin(), mCategories.end(), labelLessThan );
+  }
+  else
+  {
+    qSort( mCategories.begin(), mCategories.end(), labelGreaterThan );
+  }
 }
 
 void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )

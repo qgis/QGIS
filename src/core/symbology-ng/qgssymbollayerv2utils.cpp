@@ -2528,6 +2528,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   }
 }
 
+#if 0
 static bool _QVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {
   switch ( lhs.type() )
@@ -2559,16 +2560,19 @@ static bool _QVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
 {
   return ! _QVariantLessThan( lhs, rhs );
 }
+#endif
 
 void QgsSymbolLayerV2Utils::sortVariantList( QList<QVariant>& list, Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( list.begin(), list.end(), _QVariantLessThan );
+    //qSort( list.begin(), list.end(), _QVariantLessThan );
+    qSort( list.begin(), list.end(), qgsVariantLessThan );
   }
   else // Qt::DescendingOrder
   {
-    qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    //qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    qSort( list.begin(), list.end(), qgsVariantGreaterThan );
   }
 }
 
