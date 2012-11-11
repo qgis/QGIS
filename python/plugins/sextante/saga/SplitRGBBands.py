@@ -43,7 +43,7 @@ class SplitRGBBands(GeoAlgorithm):
         return  QtGui.QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 
     def defineCharacteristics(self):
-        self.name = "Split RGB band"
+        self.name = "Split RGB bands"
         self.group = "Grid - Tools"
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT, "Input layer", False))
         self.addOutput(OutputRaster(SplitRGBBands.R, "Output R band layer"))

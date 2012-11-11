@@ -88,7 +88,7 @@ class EditScriptDialog(QtGui.QDialog):
 
     def saveAlgorithm(self):
         if self.filename is None:
-            self.filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
+            self.filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)"))
 
         if self.filename:
             if not self.filename.endswith(".py"):

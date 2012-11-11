@@ -88,7 +88,7 @@ class EditRScriptDialog(QtGui.QDialog):
 
     def saveAlgorithm(self):
         if self.filename is None:
-            self.filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "SEXTANTE R script (*.rsx)")                        
+            self.filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "SEXTANTE R script (*.rsx)"))                        
 
         if self.filename:
             if not self.filename.endswith(".rsx"):
