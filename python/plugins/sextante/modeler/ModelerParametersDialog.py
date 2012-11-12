@@ -510,7 +510,19 @@ class ModelerParametersDialog(QtGui.QDialog):
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
-                    pass
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
+                    values = value.split(";")
+                    selectedoptions = []
+                    if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                        options = self.getVectorLayers()
+                    else:
+                        options = self.getRasterLayers()
+                    for i in range(len(options)):
+                        option = options[i] 
+                        for aap in (values):                                                                                
+                            if str(option) == aap:
+                                selectedoptions.append(i)        
+                    widget.setSelectedItems(selectedoptions)
                 else:
                     pass
 

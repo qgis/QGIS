@@ -87,7 +87,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.horizontalLayout3.setMargin(0)
 
         if isinstance(self.param, Parameter):
-            self.nameTextBox.setText(self.param.name)
+            self.nameTextBox.setText(self.param.description)
 
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
                     isinstance(self.param, ParameterBoolean):
