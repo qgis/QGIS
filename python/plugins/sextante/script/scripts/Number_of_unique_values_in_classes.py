@@ -1,5 +1,6 @@
 #Definition of inputs and outputs
 #==================================
+##[Example scripts]=group
 ##input=vector
 ##class_field=field input
 ##value_field=field input
@@ -44,12 +45,12 @@ while provider.nextFeature(inFeat):
   if clazz not in classes:
       classes[clazz] = []
   if value not in classes[clazz]:
-      classes[clazz].append(value)      
+      classes[clazz].append(value)
 
 # Create output vector layer with additional attribute
 while provider.nextFeature(inFeat):
   print int((500 * nElement)/nFeat)
-  nElement += 1  
+  nElement += 1
   inGeom = inFeat.geometry()
   outFeat.setGeometry( inGeom )
   atMap = inFeat.attributeMap()
@@ -57,5 +58,5 @@ while provider.nextFeature(inFeat):
   outFeat.setAttributeMap( atMap )
   outFeat.addAttribute( len(provider.fields()), QVariant(len(classes[clazz])))
   writer.addFeature( outFeat )
-  
+
 del writer

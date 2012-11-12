@@ -1,3 +1,4 @@
+##[Example scripts]=group
 ##input=vector
 ##cellsize=number 1000.0
 ##grid=output vector

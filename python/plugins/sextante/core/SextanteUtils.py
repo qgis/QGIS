@@ -27,16 +27,21 @@ import os
 import time
 import sys
 
+from PyQt4.QtCore import *
+
+from qgis.core import *
+
 class SextanteUtils:
 
     NUM_EXPORTED = 1
 
     @staticmethod
     def userFolder():
-        userfolder = os.path.expanduser("~") + os.sep + "sextante"
-        mkdir(userfolder)
+        userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/sextante"
+        if not QDir(userDir).exists():
+            QDir().mkpath(userDir)
 
-        return userfolder
+        return unicode(userDir)
 
     @staticmethod
     def isWindows():
@@ -48,10 +53,11 @@ class SextanteUtils:
 
     @staticmethod
     def tempFolder():
-        tempfolder = os.path.expanduser("~") + os.sep + "sextante" + os.sep + "tempdata"
-        mkdir(tempfolder)
+        tempDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/sextante/tempdata"
+        if not QDir(tempDir).exists():
+            QDir().mkpath(tempDir)
 
-        return tempfolder
+        return unicode(tempDir)
 
     @staticmethod
     def setTempOutput(out, alg):
@@ -85,5 +91,3 @@ def mkdir(newdir):
             mkdir(head)
         if tail:
             os.mkdir(newdir)
-
-
