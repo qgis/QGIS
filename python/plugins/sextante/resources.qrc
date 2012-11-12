@@ -15,7 +15,6 @@
         <file>images/script.png</file>
         <file>images/tool.png</file>
         <file>images/toolbox.png</file>
-        <file>images/clear.png</file>
         <file>images/sextante_logo.png</file>
     </qresource>
 </RCC>

@@ -30,7 +30,7 @@ additional algorithm providers</string>
      </widget>
     </item>
     <item>
-     <widget class="FilterLineEdit" name="searchBox"/>
+     <widget class="QgsFilterLineEdit" name="searchBox"/>
     </item>
     <item>
      <widget class="QTreeWidget" name="algorithmTree">
@@ -52,9 +52,9 @@ additional algorithm providers</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FilterLineEdit</class>
+   <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>sextante.gui.FilterLineEdit</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
