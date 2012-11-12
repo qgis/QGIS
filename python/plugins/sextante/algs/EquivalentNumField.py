@@ -33,7 +33,7 @@ import os
 from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 
-class AutoincrementalField(GeoAlgorithm):
+class EquivalentNumField(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -43,12 +43,13 @@ class AutoincrementalField(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
 
     def processAlgorithm(self, progress):
-        field_index = self.getParameterValue(self.FIELD)
+        fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
+        field_index = vprovider.fieldNameIndex(fieldname)
         allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
+        vprovider.select(allAttrs)
         fields = vprovider.fields()
         fields[len(fields)] = QgsField("NUM_FIELD", QVariant.Int)
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
@@ -62,8 +63,8 @@ class AutoincrementalField(GeoAlgorithm):
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
           atMap = inFeat.attributeMap()
-          clazz = atMap[field_index]
-          if not clazz in classes.keys:
+          clazz = atMap[field_index].toString()         
+          if clazz not in classes:
               classes[clazz] = len(classes.keys())
         while vprovider.nextFeature(inFeat):
           progress.setPercentage(int((100 * nElement)/nFeat))
@@ -71,15 +72,16 @@ class AutoincrementalField(GeoAlgorithm):
           inGeom = inFeat.geometry()
           outFeat.setGeometry( inGeom )
           atMap = inFeat.attributeMap()
+          clazz = atMap[field_index].toString()
           outFeat.setAttributeMap( atMap )
-          outFeat.addAttribute( len(vprovider.fields()), QVariant(nElement) )
+          outFeat.addAttribute( len(vprovider.fields()), QVariant(classes[clazz]) )
           writer.addFeature( outFeat )
         del writer
 
     def defineCharacteristics(self):
-        self.name = "Add autoincremental field"
+        self.name = "Create equivalent numerical field"
         self.group = "Algorithms for vector layers"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.FIELD, "Unique ID Field", self.INPUT))
+        self.addParameter(ParameterTableField(self.FIELD, "Class field", self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

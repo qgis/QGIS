@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.algs.EquivalentNumField import EquivalentNumField
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -38,7 +39,7 @@ class SextanteAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(),
-                        AutoincrementalField(), Explode(), FieldsPyculator()]
+                        AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

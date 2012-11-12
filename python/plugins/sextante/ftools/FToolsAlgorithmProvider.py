@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from sextante.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
+from sextante.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -77,8 +78,8 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), BasicStatisticsStrings(),
-                        BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
+        self.alglist = [SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
+                        BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
                         # data management
                         ReprojectLayer(),

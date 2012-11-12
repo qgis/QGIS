@@ -43,33 +43,33 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.ftools import FToolsUtils as utils
 
 
-class PointsInPolygonWeighted(GeoAlgorithm):
+class PointsInPolygonUnique(GeoAlgorithm):
 
     POLYGONS = "POLYGONS"
     POINTS = "POINTS"
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
-    WEIGHT = "WEIGHT"
+    CLASSFIELD = "CLASSFIELD"
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
 
     def defineCharacteristics(self):
-        self.name = "Count points in polygon(weighted)"
+        self.name = "Count unique points in polygon"
         self.group = "Analysis tools"
-
         self.addParameter(ParameterVector(self.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
         self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
-        self.addParameter(ParameterTableField(self.WEIGHT, "Weight field", self.POINTS))
+        self.addParameter(ParameterTableField(self.CLASSFIELD, "Class field", self.POINTS))
         self.addParameter(ParameterString(self.FIELD, "Count field name", "NUMPOINTS"))
-
         self.addOutput(OutputVector(self.OUTPUT, "Result"))
 
     def processAlgorithm(self, progress):
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        fieldidx = pointLayer.dataProvider().fieldNameIndex(self.getParameterValue(self.WEIGHT))
+        classFieldName = self.getParameterValue(self.CLASSFIELD)        
+
+        output = self.getOutputValue(self.OUTPUT)
 
         polyProvider = polyLayer.dataProvider()
         pointProvider = pointLayer.dataProvider()
@@ -77,6 +77,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_WARNING,
                                  "CRS warning: Input layers have non-matching CRS. This may cause unexpected results.")
 
+        classFieldIndex = pointProvider.fieldNameIndex(classFieldName)
         idxCount, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), fieldName)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
@@ -96,14 +97,14 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         geom = QgsGeometry()
 
         current = 0
-        total = 100.0 / float(polyProvider.featureCount())
+        total = float(polyProvider.featureCount())
         hasIntersections = False
 
         while polyLayer.nextFeature(ftPoly):
             geom = ftPoly.geometry()
             atMap = ftPoly.attributeMap()
 
-            count = 0
+            classes = []
             hasIntersections = False
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
@@ -114,18 +115,16 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                     pointLayer.featureAtId(int(i), ftPoint, True, True)
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        try:
-                            weight = float(ftPoint.attributeMap()[fieldidx])
-                        except:
-                            weight = 1
-                        count += weight
+                        clazz = ftPoint.attributeMap()[classFieldIndex].toString()
+                        if not clazz in classes:
+                            classes.append(clazz)
 
             outFeat.setGeometry(geom)
             outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(idxCount, QVariant(count))
+            outFeat.addAttribute(idxCount, QVariant(len(classes)))
             writer.addFeature(outFeat)
 
             current += 1
-            progress.setPercentage(int(current * total))
+            progress.setPercentage(current / total)
 
         del writer
