@@ -1,6 +1,13 @@
+#Here we define the input and outputs
+#====================================
+##[Example scripts]=group
 ##input=vector
 ##cellsize=number 1000.0
 ##grid=output vector
+
+#And here is the body of the algorithm
+#=======================================
+
 from sextante.core.QGisLayers import QGisLayers
 
 input = QGisLayers.getObjectFromUri(input)
