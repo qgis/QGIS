@@ -44,7 +44,7 @@ class SextanteVectorWriter:
         self.isMemory = False
         self.memLayer = None
         self.writer = None
-        
+
         if encoding is None:
             settings = QSettings()
             encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
@@ -68,7 +68,7 @@ class SextanteVectorWriter:
                 extension = extension[:extension.find(" ")]
                 OGRCodes[extension] = value
 
-            extension = self.fileName[self.fileName.find(".") + 1:]
+            extension = self.fileName[self.fileName.rfind(".") + 1:]
             self.writer = QgsVectorFileWriter(self.fileName, encoding, fields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):

@@ -55,28 +55,25 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
 
-    def scriptsFolder(self):
-        return ScriptUtils.scriptsFolder()
-
     def getName(self):
         return "script"
 
     def getDescription(self):
         return "Scripts"
 
-    def _loadAlgorithms(self):        
-        folder = self.scriptsFolder()
+    def _loadAlgorithms(self):
+        folder = ScriptUtils.scriptsFolder()
         self.loadFromFolder(folder)
         folder = os.path.join(os.path.dirname(__file__), "scripts")
         self.loadFromFolder(folder)
-        
+
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("py"):
                 try:
-                    fullpath = os.path.join(ScriptUtils.scriptsFolder(), descriptionFile)
+                    fullpath = os.path.join(folder, descriptionFile)
                     alg = ScriptAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)
