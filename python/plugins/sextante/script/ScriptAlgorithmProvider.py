@@ -76,7 +76,8 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("py"):
                 try:
-                    fullpath = os.path.join(ScriptUtils.scriptsFolder(), descriptionFile)
+                    #fullpath = os.path.join(ScriptUtils.scriptsFolder(), descriptionFile)
+                    fullpath = os.path.join(folder ,descriptionFile)
                     alg = ScriptAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)
