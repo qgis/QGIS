@@ -329,14 +329,13 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
 
   return QgsExpression::Interval::invalidInterVal();
 }
-
-static QgsGeometry* getGeometry( const QVariant& value, QgsExpression* parent)
+static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent)
 {
-  if ( value.canConvert<QgsGeometry*>() )
-    return value.value<QgsGeometry*>();
+  if ( value.canConvert<QgsGeometry>() )
+    return value.value<QgsGeometry>();
 
   parent->setEvalErrorString( "Cannot convert to QgsGeometry" );
-  return 0;
+  return QgsGeometry();
 }
 
 
@@ -770,7 +769,7 @@ static QVariant fcnGeometry( const QVariantList& , QgsFeature* f, QgsExpression*
 {
   QgsGeometry* geom = f->geometry();
   if ( geom )
-    return  QVariant::fromValue( geom );
+    return  QVariant::fromValue( *geom );
   else
     return QVariant();
 }
@@ -779,7 +778,7 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpr
   QString wkt = getStringValue( values.at( 0 ), parent );  
   QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
   if ( geom )
-    return QVariant::fromValue( geom );
+    return QVariant::fromValue( *geom );
   else
     return QVariant();
 }
@@ -802,7 +801,7 @@ static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExp
     geom = QgsGeometry::fromGML2( doc.documentElement() );
 
   if ( geom )
-    return QVariant::fromValue( geom );
+    return QVariant::fromValue( *geom );
   else
     return QVariant();
 }
@@ -828,67 +827,131 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
 
 static QVariant fcnBbox( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->intersects( sGeom->boundingBox() ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.intersects( sGeom.boundingBox() ) ? TVL_True : TVL_False;
 }
 static QVariant fcnDisjoint( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->disjoint( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.disjoint( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnIntersects( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->intersects( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.intersects( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnTouches( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->touches( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.touches( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnCrosses( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->crosses( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.crosses( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnContains( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->contains( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.contains( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnOverlaps( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->overlaps( sGeom ) ? TVL_True : TVL_False;
-  return QVariant();
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.overlaps( &sGeom ) ? TVL_True : TVL_False;
 }
 static QVariant fcnWithin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QgsGeometry* fGeom = getGeometry( values.at( 0 ), parent );
-  QgsGeometry* sGeom = getGeometry( values.at( 1 ), parent );
-  if ( fGeom && sGeom )
-    return fGeom->within( sGeom ) ? TVL_True : TVL_False;
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.within( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnBuffer( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  if ( values.length() < 2 || values.length() > 3 )
+    return QVariant();
+
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double dist = getDoubleValue( values.at( 1 ), parent );  
+  int seg = 8;
+  if ( values.length() == 3 )
+    seg = getIntValue( values.at( 2 ), parent );
+
+  QgsGeometry* geom = fGeom.buffer( dist, seg );
+  if ( geom )
+    return QVariant::fromValue( *geom );
   return QVariant();
+}
+static QVariant fcnCentroid( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geom = fGeom.centroid();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnConvexHull( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geom = fGeom.convexHull();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnDifference( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.difference( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnDistance( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return QVariant( fGeom.distance( sGeom ) );
+}
+static QVariant fcnIntersection( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.intersection( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnSymDifference( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.symDifference( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnCombine( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.combine( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnGeomToWKT( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QString wkt = fGeom.exportToWkt();
+  return QVariant( wkt );
 }
 
 static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
@@ -1057,6 +1120,16 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "contains", 2, fcnContains, QObject::tr( "Geometry" ) )
     << new StaticFunction( "overlaps", 2, fcnOverlaps, QObject::tr( "Geometry" ) )
     << new StaticFunction( "within", 2, fcnWithin, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "buffer", -1, fcnBuffer, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "centroid", 1, fcnCentroid, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "convexHull", 1, fcnConvexHull, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "difference", 2, fcnDifference, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "distance", 2, fcnDistance, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "intersection", 2, fcnIntersection, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "symDifference", 2, fcnSymDifference, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "combine", 2, fcnCombine, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "union", 2, fcnCombine, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, QObject::tr( "Geometry" ) )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << new StaticFunction( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
     << new StaticFunction( "$scale", 0, fcnScale, QObject::tr( "Record" ) )

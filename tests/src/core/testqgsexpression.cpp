@@ -584,9 +584,9 @@ class TestQgsExpression: public QObject
       QVariant out = exp.evaluate( &f );
       QCOMPARE( exp.hasEvalError(), evalError );
 
-      QCOMPARE( out.canConvert<QgsGeometry*>(), true );
-      QgsGeometry* outGeom = out.value<QgsGeometry*>();
-      QCOMPARE( geom->equals( outGeom ), true );
+      QCOMPARE( out.canConvert<QgsGeometry>(), true );
+      QgsGeometry outGeom = out.value<QgsGeometry>();
+      QCOMPARE( geom->equals( &outGeom ), true );
     }
 
     void eval_spatial_operator_data()
@@ -643,6 +643,75 @@ class TestQgsExpression: public QObject
       QVariant out = exp.evaluate( &f );
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.toInt(), result.toInt() );
+    }
+
+    void eval_geometry_method_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<void*>( "geomptr" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<bool>( "needGeom" );
+      QTest::addColumn<void*>( "resultptr" );
+
+      QgsPolyline polygon_ring;
+      polygon_ring << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 );
+      QgsPolygon polygon;
+      polygon << polygon_ring;
+
+      QgsGeometry* geom = QgsGeometry::fromPolygon( polygon );
+
+      QTest::newRow( "buffer" ) << "buffer( $geometry, 1.0, 3)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 1.0, 3 );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "buffer" ) << "buffer( $geometry, 2.0)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 2.0, 8 );
+
+      QgsPoint point1( 10, 20 );
+      QgsPoint point2( 30, 20 );
+      QgsGeometry* pnt1 = QgsGeometry::fromPoint( point1 );
+      QgsGeometry* pnt2 = QgsGeometry::fromPoint( point2 );
+      QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('"+pnt2->exportToWkt()+"') )" << ( void* ) pnt1 << false << true << ( void* ) pnt1->combine( pnt2 );
+
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "intersection" ) << "intersection( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,5 5,10 0,0 0))" );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "difference" ) << "difference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((5 5,10 10,10 0,5 5))" );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "symDifference" ) << "symDifference( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))" );
+
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "centroid polygon" ) << "centroid( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->centroid();
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "centroid self intersecting polygon" ) << "centroid( geomFromWKT('POLYGON((0 0, 0 2, 2 -0.1, 2 2.1, 0 0))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POINT (8.0 1.0)" );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "centroid multi polygon" ) << "centroid( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POINT (1.5 0.5)" );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "convexHull simple" ) << "convexHull( $geometry )" << ( void* ) geom << false << true << ( void* ) geom->convexHull();
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "convexHull multi" ) << "convexHull( geomFromWKT('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))') )" << ( void* ) geom << false << false << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,0 1,1 1,1 0,0 0))" );
+    }
+
+    void eval_geometry_method()
+    {
+      QFETCH( QString, string );
+      QFETCH( void*, geomptr );
+      QFETCH( bool, evalError );
+      QFETCH( bool, needGeom );
+      QFETCH( void*, resultptr );
+
+      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
+      QgsGeometry* result = ( QgsGeometry* ) resultptr;
+
+      QgsFeature f;
+      f.setGeometry( geom );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), false );
+      QCOMPARE( exp.needsGeometry(), needGeom );
+      QVariant out = exp.evaluate( &f );
+      QCOMPARE( exp.hasEvalError(), evalError );
+
+      QCOMPARE( out.canConvert<QgsGeometry>(), true );
+      QgsGeometry outGeom = out.value<QgsGeometry>();
+      QCOMPARE( outGeom.exportToWkt(), result->exportToWkt() );
     }
 
     void eval_special_columns()

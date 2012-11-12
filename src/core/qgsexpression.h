@@ -24,9 +24,11 @@
 
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
 class QgsDistanceArea;
 class QgsFeature;
+class QgsGeometry;
 class QDomElement;
 
 /**
@@ -606,6 +608,6 @@ class CORE_EXPORT QgsExpression
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
-Q_DECLARE_METATYPE( QgsGeometry * );
+Q_DECLARE_METATYPE( QgsGeometry );
 
 #endif // QGSEXPRESSION_H
