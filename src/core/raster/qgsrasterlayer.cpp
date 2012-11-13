@@ -193,6 +193,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
+  // TODO fix this - provider is not deleted!
   //delete mDataProvider; // deleted by pipe
 }
 

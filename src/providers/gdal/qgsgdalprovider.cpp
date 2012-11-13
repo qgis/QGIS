@@ -1942,10 +1942,10 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
     QStringList layers = QgsGdalProvider::subLayers( myDataset );
+    GDALClose( myDataset );
+    myDataset = NULL;
     if ( layers.size() == 0 )
     {
-      GDALClose( myDataset );
-      myDataset = NULL;
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
     }

@@ -3577,6 +3577,12 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   {
     ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
   }
+  // TODO - should we really call isValidRasterFileName() before addRasterLayer()
+  //        this results in 2 calls to GDALOpen()
+  // if ( addRasterLayer( fileName, fileInfo.completeBaseName() ) )
+  // {
+  //   ok  = true );
+  // }
   else // nope - try to load it as a shape/ogr
   {
     if ( allowInteractive )
@@ -7447,30 +7453,37 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
   // XXX why do we have to pass it in for it?
   QgsRasterLayer *layer =
     new QgsRasterLayer( rasterFile, baseName ); // fi.completeBaseName());
+  QgsError error;
+  QString title;
+  bool ok = false;
 
   if ( !layer->isValid() )
   {
-    //QMessageBox::critical( this, tr( "Invalid Layer" ), layer->error().message()  );
-    QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
-    delete layer;
-    return NULL;
-  }
+    error = layer->error();
+    title = tr( "Invalid Layer" );
 
-  bool ok = false;
+    if ( shouldAskUserForGDALSublayers( layer ) )
+    {
+      askUserForGDALSublayers( layer );
+      ok = true;
 
-  if ( shouldAskUserForGDALSublayers( layer ) )
-  {
-    askUserForGDALSublayers( layer );
-    ok = true;
-
-    // The first layer loaded is not useful in that case. The user can select it in
-    // the list if he wants to load it.
-    delete layer;
-    layer = 0;
+      // The first layer loaded is not useful in that case. The user can select it in
+      // the list if he wants to load it.
+      // TODO fix this - provider is not deleted in ~QgsRasterLayer()
+      delete layer->dataProvider();
+      delete layer;
+      layer = 0;
+    }
   }
   else
   {
     ok = addRasterLayer( layer );
+    if ( !ok )
+    {
+      error.append( QGS_ERROR_MESSAGE( tr( "Error adding valid layer to map canvas" ),
+                                       tr( "Raster layer" ) ) );
+      title = tr( "Error" );
+    }
   }
 
   if ( !ok )
@@ -7481,12 +7494,15 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
 // Let render() do its own cursor management
 //    QApplication::restoreOverrideCursor();
 
+    // don't show the gui warning if we are loading from command line
     if ( guiWarning )
     {
-      // don't show the gui warning (probably because we are loading from command line)
-      QString msg( tr( "%1 is not a valid or recognized raster data source" ).arg( rasterFile ) );
-      QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+      QgsErrorDialog::show( error, title );
     }
+
+    if ( layer )
+      delete layer;
+
     return NULL;
   }
   else
@@ -7591,6 +7607,9 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
         ++myIterator )
   {
     QString errMsg;
+    QgsError error;
+    QString title;
+    bool ok = false;
 
     // if needed prompt for zipitem layers
     QString vsiPrefix = QgsZipItem::vsiPrefix( *myIterator );
@@ -7617,54 +7636,65 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
       if ( !layer->isValid() )
       {
-        returnValue = false;
-        if ( guiWarning )
-        {
-          QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
-          delete layer;
-        }
-      }
-      else
-      {
+        error = layer->error();
+        title = tr( "Invalid Layer" );
+
         if ( shouldAskUserForGDALSublayers( layer ) )
         {
           askUserForGDALSublayers( layer );
+          ok = true;
 
           // The first layer loaded is not useful in that case. The user can select it in
           // the list if he wants to load it.
+          // TODO fix this - provider is not deleted in ~QgsRasterLayer()
+          delete layer->dataProvider();
           delete layer;
+          layer = 0;
         }
-        else
+      } // invalid layer
+      else
+      {
+        ok = addRasterLayer( layer );
+        if ( !ok )
         {
-          addRasterLayer( layer );
+          error.append( QGS_ERROR_MESSAGE( tr( "Error adding valid layer to map canvas" ),
+                                           tr( "Raster layer" ) ) );
+          title = tr( "Error" );
+        }
 
-          //only allow one copy of a ai grid file to be loaded at a
-          //time to prevent the user selecting all adfs in 1 dir which
-          //actually represent 1 coverate,
+        //only allow one copy of a ai grid file to be loaded at a
+        //time to prevent the user selecting all adfs in 1 dir which
+        //actually represent 1 coverate,
 
-          if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
-          {
-            break;
-          }
+        if ( myBaseNameQString.toLower().endsWith( ".adf" ) )
+        {
+          break;
         }
       }
     } // valid raster filename
     else
     {
+      QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
+      if ( errMsg.size() > 0 )
+        msg += "\n" + errMsg;
+
+      error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
+      title = tr( "Unsupported Data Source" );
+      ok = false;
+    }
+
+    if ( ! ok )
+    {
+      returnValue = false;
+
       // Issue message box warning unless we are loading from cmd line since
       // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
-
       if ( guiWarning )
       {
-        QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
-
-        if ( errMsg.size() > 0 )
-          msg += "\n" + errMsg;
-
-        QMessageBox::critical( this, tr( "Unsupported Data Source" ), msg );
+        QgsErrorDialog::show( error, title );
       }
-      returnValue = false;
+
     }
   }
 
