@@ -210,6 +210,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   displayAll = false;
   mergeLines = false;
   minFeatureSize = 0.0;
+  limitNumLabels = false;
+  maxNumLabels = 2000;
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
@@ -267,6 +269,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   displayAll = s.displayAll;
   mergeLines = s.mergeLines;
   minFeatureSize = s.minFeatureSize;
+  limitNumLabels = s.limitNumLabels;
+  maxNumLabels = s.maxNumLabels;
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
@@ -466,6 +470,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placeDirectionSymbol = ( DirectionSymbols ) layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt();
   upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
+  limitNumLabels = layer->customProperty( "labeling/limitNumLabels", QVariant( false ) ).toBool();
+  maxNumLabels = layer->customProperty( "labeling/maxNumLabels", QVariant( 2000 ) ).toInt();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   fontLimitPixelSize = layer->customProperty( "labeling/fontLimitPixelSize", QVariant( false ) ).toBool();
   fontMinPixelSize = layer->customProperty( "labeling/fontMinPixelSize", QVariant( 0 ) ).toInt();
@@ -534,6 +540,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placeDirectionSymbol", ( unsigned int )placeDirectionSymbol );
   layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
+  layer->setCustomProperty( "labeling/limitNumLabels", limitNumLabels );
+  layer->setCustomProperty( "labeling/maxNumLabels", maxNumLabels );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/fontLimitPixelSize", fontLimitPixelSize );
   layer->setCustomProperty( "labeling/fontMinPixelSize", fontMinPixelSize );
@@ -650,6 +658,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
+
+  // check if max number of labels to draw (already registered features) has been reached
+  if ( limitNumLabels && ( maxNumLabels == 0 || palLayer->getNbFeatures() >= maxNumLabels ) )
+  {
+    return;
+  }
+
   // data defined show label? defaults to show label if not 0
   QMap< DataDefinedProperties, int >::const_iterator showIt = dataDefinedProperties.find( QgsPalLayerSettings::Show );
   if ( showIt != dataDefinedProperties.constEnd() )

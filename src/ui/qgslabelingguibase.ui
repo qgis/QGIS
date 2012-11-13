@@ -1921,7 +1921,7 @@
             <x>0</x>
             <y>0</y>
             <width>686</width>
-            <height>532</height>
+            <height>574</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -2620,10 +2620,16 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="5" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLabel" name="label_19">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Suppress labeling of features smaller than</string>
                   </property>
@@ -2631,6 +2637,12 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="mMinSizeSpinBox">
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
@@ -2639,9 +2651,22 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                </layout>
               </item>
-              <item row="5" column="0">
+              <item row="6" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
                  <widget class="QCheckBox" name="chkNoObstacle">
@@ -2741,6 +2766,61 @@
                    <string>always</string>
                   </property>
                  </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="4" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_22">
+                <item>
+                 <widget class="QCheckBox" name="mLimitLabelChkBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Limit number of labels drawn to</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="mLimitLabelSpinBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum">
+                   <number>999999999</number>
+                  </property>
+                  <property name="value">
+                   <number>2000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
@@ -3301,12 +3381,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>120</y>
+     <x>319</x>
+     <y>408</y>
     </hint>
     <hint type="destinationlabel">
-     <x>410</x>
-     <y>122</y>
+     <x>393</x>
+     <y>410</y>
     </hint>
    </hints>
   </connection>
@@ -3318,11 +3398,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>319</x>
-     <y>259</y>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>391</x>
-     <y>261</y>
+     <y>549</y>
     </hint>
    </hints>
   </connection>
@@ -3334,11 +3414,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>391</x>
-     <y>261</y>
+     <y>549</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
-     <y>259</y>
+     <y>547</y>
     </hint>
    </hints>
   </connection>
@@ -3349,12 +3429,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>410</x>
-     <y>122</y>
+     <x>393</x>
+     <y>410</y>
     </hint>
     <hint type="destinationlabel">
-     <x>336</x>
-     <y>120</y>
+     <x>319</x>
+     <y>408</y>
     </hint>
    </hints>
   </connection>
@@ -3365,12 +3445,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>117</x>
-     <y>127</y>
+     <x>128</x>
+     <y>103</y>
     </hint>
     <hint type="destinationlabel">
-     <x>362</x>
-     <y>131</y>
+     <x>601</x>
+     <y>106</y>
     </hint>
    </hints>
   </connection>
@@ -3381,12 +3461,28 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>117</x>
-     <y>130</y>
+     <x>128</x>
+     <y>103</y>
     </hint>
     <hint type="destinationlabel">
-     <x>404</x>
-     <y>128</y>
+     <x>643</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mLimitLabelChkBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mLimitLabelSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>493</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>379</x>
+     <y>493</y>
     </hint>
    </hints>
   </connection>

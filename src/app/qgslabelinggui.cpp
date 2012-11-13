@@ -174,6 +174,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
+  mLimitLabelChkBox->setChecked( lyr.limitNumLabels );
+  mLimitLabelSpinBox->setValue( lyr.maxNumLabels );
   mDirectSymbGroupBox->setChecked( lyr.addDirectionSymbol );
   mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
   mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
@@ -500,6 +502,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.upsidedownLabels = QgsPalLayerSettings::ShowAll;
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
+  lyr.limitNumLabels = mLimitLabelChkBox->isChecked();
+  lyr.maxNumLabels = mLimitLabelSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
   lyr.fontLimitPixelSize = mFontLimitPixelGroupBox->isChecked();
   lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
