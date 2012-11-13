@@ -1110,8 +1110,8 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
     << new StaticFunction( "$geometry", 0, fcnGeometry, QObject::tr( "Geometry" ), "" , true )
-    << new StaticFunction( "GeomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
-    << new StaticFunction( "GeomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
     << new StaticFunction( "bbox", 2, fcnBbox, QObject::tr( "Geometry" ) )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, QObject::tr( "Geometry" ) )
     << new StaticFunction( "intersects", 2, fcnIntersects, QObject::tr( "Geometry" ) )
@@ -2081,7 +2081,8 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
 
   if ( !opLeft && !opRight )
   {
-    errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
+    if ( errorMessage.isEmpty() )
+      errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
     return NULL;
   }
 
@@ -2246,7 +2247,7 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( fd.mName == ogcOperatorName.toLower() )
+    if ( fd->name() == ogcOperatorName.toLower() )
     {
       isSpatial = true;
       QDomElement funcElem = doc.createElement( "ogc:"+ogcOperatorName );
@@ -2289,7 +2290,7 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
   if ( !isSpatial )
   {
     QDomElement funcElem = doc.createElement( "ogc:Function" );
-    funcElem.setAttribute( "name", fd.mName );
+    funcElem.setAttribute( "name", fd->name() );
     mArgs->toOgcFilter( doc, funcElem );
     element.appendChild( funcElem );
   }
@@ -2313,20 +2314,20 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
       int geomIdx = 0;
       int gml2Idx = 0;
       int opeIdx = 0;
-      for ( int j = 0; j < BuiltinFunctions().size(); j++ )
+      for ( int j = 0; j < Functions().size(); j++ )
       {
-        QgsExpression::FunctionDef funcDef = BuiltinFunctions()[j];
-        if ( funcDef.mName == "$geometry" )
+        QgsExpression::Function* funcDef = Functions()[j];
+        if ( funcDef->name() == "$geometry" )
           geomIdx = j;
-        else if ( funcDef.mName == "geomFromGML2" )
+        else if ( funcDef->name() == "geomFromGML2" )
           gml2Idx = j;
-        else if ( funcDef.mName == ogcOperatorName.toLower() )
+        else if ( funcDef->name() == ogcOperatorName.toLower() )
           opeIdx = j;
       }
 
       if (geomIdx == 0 || gml2Idx == 0 || opeIdx == 0 )
       {
-        errorMessage = QString( "spatial functions not find, got %1, %2, %3" ).arg( geomIdx ).arg( gml2Idx ).arg( opeIdx );
+        errorMessage = QString( "spatial functions not find %1, got %2, %3, %4" ).arg( ogcOperatorName ).arg( geomIdx ).arg( gml2Idx ).arg( opeIdx );
         return NULL;
       }
 

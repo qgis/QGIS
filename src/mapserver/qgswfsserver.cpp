@@ -585,14 +585,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
     }
 
-    //read cql_filter
-    bool cqlFilterOk = false;
-    QString cqlFilter;
-    QMap<QString, QString>::const_iterator cqlFilterIt = mParameterMap.find( "CQL_FILTER" );
-    if ( cqlFilterIt != mParameterMap.end() )
+    //read exp_filter
+    bool expFilterOk = false;
+    QString expFilter;
+    QMap<QString, QString>::const_iterator expFilterIt = mParameterMap.find( "EXP_FILTER" );
+    if ( expFilterIt != mParameterMap.end() )
     {
-      cqlFilterOk = true;
-      cqlFilter = cqlFilterIt.value();
+      expFilterOk = true;
+      expFilter = expFilterIt.value();
     }
 
     bool conversionSuccess;
@@ -676,10 +676,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
       sendGetFeature( request, format, &feature, 0, layerCrs, fields, layerExcludedAttributes );
     }
-    else if ( cqlFilterOk )
+    else if ( expFilterOk )
     {
       provider->select( attrIndexes, searchRect, mWithGeom, true );
-      QgsExpression *mFilter = new QgsExpression( cqlFilter );
+      QgsExpression *mFilter = new QgsExpression( expFilter );
       if (mFilter->hasParserError())
       {
         throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
