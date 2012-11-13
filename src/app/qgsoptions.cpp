@@ -216,7 +216,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // 0 = Always -> always ask (if there are existing sublayers)
   // 1 = If needed -> ask if layer has no bands, but has sublayers
   // 2 = Never -> never prompt, will not load anything
-  // 4 = Load all -> never prompt, but load all sublayers
+  // 3 = Load all -> never prompt, but load all sublayers
   cmbPromptRasterSublayers->clear();
   cmbPromptRasterSublayers->addItem( tr( "Always" ) );
   cmbPromptRasterSublayers->addItem( tr( "If needed" ) ); //this means, prompt if there are sublayers but no band in the main dataset
