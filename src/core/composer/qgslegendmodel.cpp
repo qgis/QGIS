@@ -131,6 +131,7 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
   {
     invisibleRootItem()->insertRow( position, groupItem );
   }
+  emit layersChanged();
   return groupItem;
 }
 

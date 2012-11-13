@@ -87,6 +87,7 @@ void QgsComposerLegendWidget::setGuiElements()
 
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
+  mColumnCountSpinBox->setValue( mLegend->columnCount() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
   mGroupSpaceSpinBox->setValue( mLegend->groupSpace() );
@@ -109,7 +110,6 @@ void QgsComposerLegendWidget::setGuiElements()
   {
     mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
   }
-
   blockAllSignals( false );
 }
 
@@ -131,6 +131,18 @@ void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text
   {
     mLegend->beginCommand( tr( "Legend title changed" ), QgsComposerMergeCommand::ComposerLegendText );
     mLegend->setTitle( text );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mColumnCountSpinBox_valueChanged( int c )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend column count" ), QgsComposerMergeCommand::LegendColumnCount );
+    mLegend->setColumnCount( c );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -718,6 +730,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
+  mColumnCountSpinBox->blockSignals( b );
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
   mGroupSpaceSpinBox->blockSignals( b );

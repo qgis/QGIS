@@ -80,6 +80,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ComposerMapAnnotationDistance,
       //composer legend
       ComposerLegendText,
+      LegendColumnCount,
       LegendSymbolWidth,
       LegendSymbolHeight,
       LegendGroupSpace,
