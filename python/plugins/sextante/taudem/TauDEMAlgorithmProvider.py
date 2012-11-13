@@ -50,6 +50,7 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.activate = False
         self.createAlgsList()
 
     def getDescription(self):
