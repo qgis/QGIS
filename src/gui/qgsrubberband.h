@@ -31,13 +31,15 @@ class QPaintEvent;
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
-    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon = false );
+    QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType = QGis::Line );
+    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
     void setColor( const QColor & color );
     void setWidth( int width );
 
-    void reset( bool isPolygon = false );
+    void reset( QGis::GeometryType geometryType = QGis::Line );
+    void reset( bool isPolygon );
 
     //! Add point to rubberband and update canvas
     //! If adding more points consider using update=false for better performance
@@ -101,9 +103,11 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
+    int mWidth;
+
     /**Nested lists used for multitypes*/
     QList< QList <QgsPoint> > mPoints;
-    bool mIsPolygon;
+    QGis::GeometryType mGeometryType;
     double mTranslationOffsetX;
     double mTranslationOffsetY;
 

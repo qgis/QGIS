@@ -43,7 +43,7 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QMouseEvent * e )
   }
   if ( mRubberBand == NULL )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, true );
+    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;
@@ -72,7 +72,7 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QMouseEvent * e )
     QgsMapToolSelectUtils::setSelectFeatures( mCanvas, shapeGeom, e );
     delete shapeGeom;
   }
-  mRubberBand->reset( true );
+  mRubberBand->reset( QGis::Polygon );
   delete mRubberBand;
   mRubberBand = 0;
   mDragging = false;

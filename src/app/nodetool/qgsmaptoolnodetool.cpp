@@ -78,7 +78,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
       }
       // we have first vertex of moving part
       // create rubberband and set default paramaters
-      QgsRubberBand* rb = new QgsRubberBand( mCanvas, false );
+      QgsRubberBand* rb = new QgsRubberBand( mCanvas, QGis::Line );
       rb->setWidth( 2 );
       rb->setColor( Qt::blue );
       int index = 0;
@@ -137,7 +137,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
           continue;
         }
       }
-      QgsRubberBand* trb = new QgsRubberBand( mCanvas, false );
+      QgsRubberBand* trb = new QgsRubberBand( mCanvas, QGis::Line );
       mTopologyRubberBand.append( trb );
       int rbId = mTopologyRubberBand.size() - 1;
       trb->setWidth( 1 );
@@ -701,7 +701,7 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
 QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer )
 {
   // create rubberband marker for moving points
-  QgsRubberBand* marker = new QgsRubberBand( mCanvas, true );
+  QgsRubberBand* marker = new QgsRubberBand( mCanvas, QGis::Polygon );
   marker->setColor( Qt::red );
   marker->setWidth( 2 );
   double movement = 4;
