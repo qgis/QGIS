@@ -365,7 +365,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QDomNodeList queryChildNodes = queryElem.childNodes();
         if ( queryChildNodes.size() )
         {
-          mWithGeom = false;
           QStringList::const_iterator alstIt;
           QList<int> idxList;
           QMap<QString, int> fieldMap = provider->fieldNameMap();
@@ -387,19 +386,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               {
                 idxList.append( fieldIt.value() );
               }
-              else if ( fieldName == "geometry" )
-              {
-                mWithGeom = true;
-              }
             }
           }
-          if ( idxList.size() > 0 || mWithGeom )
+          if ( idxList.size() > 0 )
           {
             attrIndexes = idxList;
-          }
-          else
-          {
-            mWithGeom = true;
           }
         }
 
@@ -597,12 +588,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     mWithGeom = true;
     QgsAttributeList attrIndexes = provider->attributeIndexes();
     QMap<QString, QString>::const_iterator pnIt = mParameterMap.find( "PROPERTYNAME" );
-    if ( pnIt != mParameterMap.end() )
+    if ( pnIt != mParameterMap.end() && pnIt.value() != "*" )
     {
       QStringList attrList = pnIt.value().split( "," );
       if ( attrList.size() > 0 )
       {
-        mWithGeom = false;
         QStringList::const_iterator alstIt;
         QList<int> idxList;
         QMap<QString, int> fieldMap = provider->fieldNameMap();
@@ -616,18 +606,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             idxList.append( fieldIt.value() );
           }
-          else if ( fieldName == "geometry" )
-          {
-            mWithGeom = true;
-          }
         }
-        if ( idxList.size() > 0 || mWithGeom )
+        if ( idxList.size() > 0 )
         {
           attrIndexes = idxList;
-        }
-        else
-        {
-          mWithGeom = true;
         }
       }
     }
