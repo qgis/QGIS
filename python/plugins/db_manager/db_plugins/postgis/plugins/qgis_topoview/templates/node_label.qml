@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
-  <transparencyLevelInt>255</transparencyLevelInt>
+  <transparencyLevelInt>0</transparencyLevelInt>
   <singlesymbol>
     <symbol>
       <lowervalue></lowervalue>
@@ -46,6 +46,7 @@
     <property key="labeling/dataDefinedProperty18" value=""/>
     <property key="labeling/dataDefinedProperty19" value=""/>
     <property key="labeling/dataDefinedProperty2" value=""/>
+    <property key="labeling/dataDefinedProperty20" value=""/>
     <property key="labeling/dataDefinedProperty3" value=""/>
     <property key="labeling/dataDefinedProperty4" value=""/>
     <property key="labeling/dataDefinedProperty5" value=""/>
@@ -63,6 +64,9 @@
     <property key="labeling/fontFamily" value="Sans"/>
     <property key="labeling/fontItalic" value="false"/>
     <property key="labeling/fontLetterSpacing" value="0"/>
+    <property key="labeling/fontLimitPixelSize" value="false"/>
+    <property key="labeling/fontMaxPixelSize" value="10000"/>
+    <property key="labeling/fontMinPixelSize" value="3"/>
     <property key="labeling/fontSize" value="8"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
@@ -73,6 +77,9 @@
     <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
+    <property key="labeling/leftDirectionSymbol" value="&lt;"/>
+    <property key="labeling/limitNumLabels" value="true"/>
+    <property key="labeling/maxNumLabels" value="100"/>
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
@@ -80,12 +87,15 @@
     <property key="labeling/multilineHeight" value="1"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
+    <property key="labeling/placeDirectionSymbol" value="0"/>
     <property key="labeling/placement" value="1"/>
     <property key="labeling/placementFlags" value="0"/>
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
     <property key="labeling/priority" value="5"/>
+    <property key="labeling/reverseDirectionSymbol" value="false"/>
+    <property key="labeling/rightDirectionSymbol" value=">"/>
     <property key="labeling/scaleMax" value="0"/>
     <property key="labeling/scaleMin" value="0"/>
     <property key="labeling/textColorB" value="217"/>
