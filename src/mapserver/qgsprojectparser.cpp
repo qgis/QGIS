@@ -2461,6 +2461,9 @@ QgsRectangle QgsProjectParser::projectExtent() const
 
 void QgsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
 {
+  Q_UNUSED( width );
+  Q_UNUSED( height );
+
   //consider DPI
   double scaleFactor = dpi / 88.0; //assume 88 as standard dpi
   QgsRectangle prjExtent = projectExtent();
@@ -2618,6 +2621,8 @@ void QgsProjectParser::cleanupTextAnnotationItems()
 bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor,
     double& xPos, double& yPos )
 {
+  Q_UNUSED( scaleFactor );
+
   xPos = elem.attribute( "canvasPosX" ).toDouble() / scaleFactor;
   yPos = elem.attribute( "canvasPosY" ).toDouble() / scaleFactor;
   return true;
