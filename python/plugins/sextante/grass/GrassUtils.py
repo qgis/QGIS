@@ -178,7 +178,7 @@ class GrassUtils:
 
     @staticmethod
     def grassMapsetFolder():
-        tempfolder = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata", "temp_location")
+        tempfolder = os.path.join(SextanteUtils.tempFolder(), "grassdata", "temp_location")
         mkdir(tempfolder)
         return tempfolder
 

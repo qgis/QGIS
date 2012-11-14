@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import uuid
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -254,13 +255,17 @@ class GrassAlgorithm(GeoAlgorithm):
             else:
                 command+=(" " + param.name + "=" + str(param.value));
 
+        uniqueSufix = str(uuid.uuid4()).replace("-","");
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command+=(" " + out.name + "=\"" + out.value + "\"");
             else:
-                command += (" " + out.name)
-                out.name += ("_"+str(len(self.exportedLayers))) # make sure output is unique within a session
-                command += ("=" + out.name)
+                #an output name to make sure it is unique if the session uses this algorithm several times
+                uniqueOutputName = out.name + uniqueSufix              
+                command += (" " + out.name + "=" + uniqueOutputName)    
+                 # add output file to exported layers, to indicate that they are present in GRASS                
+                self.exportedLayers[out.value]= uniqueOutputName            
+                
 
         command += " --overwrite"
         commands.append(command)
@@ -270,24 +275,21 @@ class GrassAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.value
                 #Raster layer output: adjust region to layer before exporting
-                commands.append("g.region rast=" + out.name)
+                commands.append("g.region rast=" + out.name + uniqueSufix)
                 command = "r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\""
                 command += " input="
-                command += out.name
+                command += out.name + uniqueSufix
                 command += " output=\"" + filename + "\""
                 commands.append(command)
-                # add output file to exported layers, to indicate that they are present in GRASS
-                self.exportedLayers[filename]= out.name
+               
             if isinstance(out, OutputVector):
                 filename = out.value
-                command = "v.out.ogr -ce input=" + out.name
+                command = "v.out.ogr -ce input=" + out.name + uniqueSufix
                 command += " dsn=\"" + os.path.dirname(out.value) + "\""
                 command += " format=ESRI_Shapefile"
                 command += " olayer=" + os.path.basename(out.value)[:-4]
                 command += " type=auto"
                 commands.append(command)
-                # add output file to exported layers
-                self.exportedLayers[filename]= out.name
                 
         #4 Run GRASS
         loglines = []

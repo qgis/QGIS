@@ -47,7 +47,7 @@ from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvid
 from sextante.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
 from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
+#from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
@@ -120,7 +120,7 @@ class Sextante:
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalOgrAlgorithmProvider())        
-        Sextante.addProvider(PymorphAlgorithmProvider())
+        #Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())

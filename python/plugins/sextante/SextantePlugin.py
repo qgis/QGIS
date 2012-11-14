@@ -94,11 +94,13 @@ class SextantePlugin:
         QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
         self.menu.addAction(self.resultsAction)
 
-        self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
-            self.iface.mainWindow())
-        QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
-        self.menu.addAction(self.helpAction)
+        #=======================================================================
+        # self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
+        #    QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
+        #    self.iface.mainWindow())
+        # QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
+        # self.menu.addAction(self.helpAction)
+        #=======================================================================
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
@@ -137,5 +139,7 @@ class SextantePlugin:
         dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
 
-    def openHelp(self):
-        QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
+    #===========================================================================
+    # def openHelp(self):
+    #    QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
+    #===========================================================================
