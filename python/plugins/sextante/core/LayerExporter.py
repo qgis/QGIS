@@ -60,7 +60,12 @@ class LayerExporter():
             del writer
             return output
         else:
-            if (not unicode(layer.source()).endswith("shp")):
+            isASCII=True
+            try:
+                unicode(layer.source()).decode("ascii")
+            except UnicodeEncodeError:
+                isASCII=False
+            if (not unicode(layer.source()).endswith("shp") or not isASCII):
                 writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
                 feat = QgsFeature()
                 while provider.nextFeature(feat):

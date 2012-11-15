@@ -76,12 +76,8 @@ class SagaUtils:
             fout.write("PATH=PATH;%SAGA%;%SAGA_MLB%\n");
         else:
             pass
-            #fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            #fout.write("PATH=$PATH:" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            #fout.write("export PATH\n");
-
         for command in commands:
-            fout.write("saga_cmd " + command + "\n")
+            fout.write("saga_cmd " + command.encode("utf8") + "\n")
 
         fout.write("exit")
         fout.close()
