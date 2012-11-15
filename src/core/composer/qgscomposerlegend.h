@@ -212,7 +212,6 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        @param p painter
        @param layerItem parent model item (layer)
        @param currentPosition in/out: current y position of legend item
-       @param maxXCoord in/out: maximum x-coordinate of the whole legend
        @param layerOpacity opacity of the corresponding map layer
     */
     QSizeF drawLayerChildItems( QPainter* p, QStandardItem* layerItem, Position& currentPosition, int layerOpacity = 255 );

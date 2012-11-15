@@ -2643,6 +2643,7 @@ bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scale
 
 void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight )
 {
+  Q_UNUSED( scaleFactor );
   if ( !p )
   {
     return;
