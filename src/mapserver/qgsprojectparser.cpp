@@ -253,7 +253,14 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   QStringList typeNameList;
   if ( aTypeName != "" )
   {
-    typeNameList = aTypeName.split( "," );
+    QStringList typeNameSplit = aTypeName.split( "," );
+    foreach (const QString &str, typeNameSplit)
+    {
+      if ( str.contains( ":" ) )
+        typeNameList << str.section(":", 1, 1 );
+      else
+        typeNameList << str;
+     }
   }
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
