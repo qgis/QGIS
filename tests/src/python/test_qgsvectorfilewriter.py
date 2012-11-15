@@ -28,7 +28,7 @@ from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest,
-                       #expectedFailure
+                       expectedFailure
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -37,7 +37,9 @@ class TestQgsVectorLayer(TestCase):
 
     mMemoryLayer = None
 
-    def setUp(self):
+    @expectedFailure
+    def testWrite(self):
+        """Check we can write a vector file."""
         self.mMemoryLayer = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=name:string(20)&'
             'field=age:integer&field=size:double&index=yes'),
@@ -56,10 +58,6 @@ class TestQgsVectorLayer(TestCase):
         myResult, myFeatures = myProvider.addFeatures([ft])
         assert myResult == True
         assert len(myFeatures) > 0
-
-
-    def testWrite(self):
-        """Check we can write a vector file."""
 
         myFileName = os.path.join(str(QDir.tempPath()), 'writetest.shp')
         print myFileName
