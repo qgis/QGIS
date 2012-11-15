@@ -179,8 +179,8 @@ class TestQgsRectangle(TestCase):
     def testAsWktCoordinates(self):
         """Test that we can get a proper wkt representation fo the rect"""
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = ('0.0000000000000000 0.0000000000000000, '
-                         '5.0000000000000000 5.0000000000000000')
+        myExpectedWkt = ('0.0 0.0, '
+                         '5.0 5.0')
         myWkt = rect1.asWktCoordinates()
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (myExpectedWkt, myWkt))
@@ -189,11 +189,11 @@ class TestQgsRectangle(TestCase):
     def testAsWktPolygon(self):
         """Test that we can get a proper rect wkt polygon representation for rect"""
         rect1 = QgsRectangle( 0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = ('POLYGON((0.0000000000000000 0.0000000000000000, '
-                         '5.0000000000000000 0.0000000000000000, '
-                         '5.0000000000000000 5.0000000000000000, '
-                         '0.0000000000000000 5.0000000000000000, '
-                         '0.0000000000000000 0.0000000000000000))')
+        myExpectedWkt = ('POLYGON((0.0 0.0, '
+                         '5.0 0.0, '
+                         '5.0 5.0, '
+                         '0.0 5.0, '
+                         '0.0 0.0))')
         myWkt = rect1.asWktPolygon()
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (myExpectedWkt, myWkt))
