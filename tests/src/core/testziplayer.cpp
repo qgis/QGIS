@@ -274,8 +274,8 @@ void TestZipLayer::initTestCase()
   // save current zipSetting value
   QSettings settings;
   mSettingsKey = "/qgis/scanZipInBrowser2";
-  mScanZipSetting = settings.value( mSettingsKey, "basic" ).toString();
-  mScanZipSettings << "basic" << "full";
+  mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
+  mScanZipSettings << "" << "basic" << "full";
 }
 
 void TestZipLayer::cleanupTestCase()
