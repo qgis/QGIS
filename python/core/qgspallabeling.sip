@@ -126,8 +126,6 @@ class QgsPalLayerSettings
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool limitNumLabels; // whether to limit the number of labels to be drawn
     int maxNumLabels; // maximum number of labels to be drawn
-    //bool rndMaxNumLabels; // whether to take a randomized maxNumLabels subset of features to be labeled
-
     // Adds '<' or '>', or user-defined symbol to the label string pointing to the
     // direction of the line / polygon ring
     // Works only if Placement == Line

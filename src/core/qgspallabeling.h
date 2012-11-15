@@ -180,8 +180,6 @@ class CORE_EXPORT QgsPalLayerSettings
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool limitNumLabels; // whether to limit the number of labels to be drawn
     int maxNumLabels; // maximum number of labels to be drawn
-    //bool rndMaxNumLabels; // whether to take a randomized maxNumLabels subset of features to be labeled
-
     // Adds '<' or '>', or user-defined symbol to the label string pointing to the
     // direction of the line / polygon ring
     // Works only if Placement == Line
@@ -228,7 +226,7 @@ class CORE_EXPORT QgsPalLayerSettings
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
 
-    // temporary stuff: set when layer gets prepared
+    // temporary stuff: set when layer gets prepared or labeled
     pal::Layer* palLayer;
     int fieldIndex;
     const QgsMapToPixel* xform;
@@ -236,6 +234,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPoint ptZero, ptOne;
     QList<QgsPalGeometry*> geometries;
     QgsGeometry* extentGeom;
+    int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)

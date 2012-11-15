@@ -40,6 +40,9 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s );
     //! called for every feature

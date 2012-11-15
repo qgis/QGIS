@@ -5699,6 +5699,21 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     labeling = true;
   }
 
+  if ( labeling )
+  {
+    // see if feature count limit is set for labeling
+    QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+    if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+    {
+      select( QgsAttributeList(), rendererContext.extent() );
+      // total number of features that may be labeled
+      QgsFeature ftr;
+      int nFeatsToLabel = 0;
+      while ( nextFeature( ftr ) ) { nFeatsToLabel += 1; }
+      palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+  }
+
   //register diagram layers
   if ( mDiagramRenderer && mDiagramLayerSettings )
   {

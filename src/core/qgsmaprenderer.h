@@ -39,6 +39,7 @@ class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
+class QgsPalLayerSettings;
 class QgsDiagramLayerSettings;
 
 class CORE_EXPORT QgsLabelPosition
@@ -75,6 +76,9 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }

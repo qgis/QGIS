@@ -177,7 +177,7 @@ class QgsPalGeometry : public PalGeometry
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL ), ct( NULL ), extentGeom( NULL ), expression( NULL )
+    : palLayer( NULL ), ct( NULL ), extentGeom( NULL ), mFeaturesToLabel( 0 ), mFeatsSendingToPal( 0 ), mFeatsRegPal( 0 ), expression( NULL )
 {
   placement = AroundPoint;
   placementFlags = 0;
@@ -658,13 +658,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
-
-  // check if max number of labels to draw (already registered features) has been reached
-  if ( limitNumLabels && ( maxNumLabels == 0 || palLayer->getNbFeatures() >= maxNumLabels ) )
-  {
-    return;
-  }
-
   // data defined show label? defaults to show label if not 0
   QMap< DataDefinedProperties, int >::const_iterator showIt = dataDefinedProperties.find( QgsPalLayerSettings::Show );
   if ( showIt != dataDefinedProperties.constEnd() )
@@ -821,6 +814,32 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   if ( geos_geom == NULL )
     return; // invalid geometry
+
+  // likelihood exists label will be registered with PAL and may be drawn
+  // check if max number of features to label (already registered with PAL) has been reached
+  // Debug output at end of QgsPalLabeling::drawLabeling(), when deleting temp geometries
+  if ( limitNumLabels )
+  {
+    if ( !maxNumLabels )
+    {
+      return;
+    }
+    mFeatsRegPal = palLayer->getNbFeatures();
+    if ( mFeatsRegPal >= maxNumLabels )
+    {
+      return;
+    }
+
+    int divNum = ( int )(( mFeaturesToLabel / maxNumLabels ) + 0.5 );
+    if ( divNum && ( mFeatsRegPal == ( int )( mFeatsSendingToPal / divNum ) ) )
+    {
+      mFeatsSendingToPal += 1;
+      if ( divNum &&  mFeatsSendingToPal % divNum )
+      {
+        return;
+      }
+    }
+  }
 
   GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
 
@@ -1259,6 +1278,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   // rect for clipping
   lyr.extentGeom = QgsGeometry::fromRect( mMapRenderer->extent() );
 
+  lyr.mFeatsSendingToPal = 0;
+
   return 1; // init successful
 }
 
@@ -1656,6 +1677,13 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QgsPalLayerSettings& lyr = lit.value();
     for ( QList<QgsPalGeometry*>::iterator git = lyr.geometries.begin(); git != lyr.geometries.end(); ++git )
       delete *git;
+    if ( lyr.limitNumLabels )
+    {
+      QgsDebugMsg( QString( "mFeaturesToLabel: %1" ).arg( lyr.mFeaturesToLabel ) );
+      QgsDebugMsg( QString( "maxNumLabels: %1" ).arg( lyr.maxNumLabels ) );
+      QgsDebugMsg( QString( "mFeatsSendingToPal: %1" ).arg( lyr.mFeatsSendingToPal ) );
+      QgsDebugMsg( QString( "mFeatsRegPal: %1" ).arg( lyr.geometries.count() ) );
+    }
     lyr.geometries.clear();
   }
 

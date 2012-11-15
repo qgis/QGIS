@@ -2780,7 +2780,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Limit number of labels drawn to</string>
+                   <string>Limit number of features to be labeled to</string>
                   </property>
                  </widget>
                 </item>
@@ -2794,6 +2794,9 @@
                     <width>200</width>
                     <height>0</height>
                    </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Number of features sent to labeling engine, though not all may be labeled</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2855,7 +2858,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
+            <width>488</width>
             <height>981</height>
            </rect>
           </property>
