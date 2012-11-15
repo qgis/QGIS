@@ -284,18 +284,42 @@ QDomDocument QgsWFSServer::describeFeatureType()
   importElement.setAttribute( "schemaLocation", "http://schemas.opengis.net/gml/2.1.2/feature.xsd" );
   schemaElement.appendChild( importElement );
 
-  //read TYPENAME
-  QString typeName;
-  QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
-  if ( type_name_it != mParameterMap.end() )
+  //defining typename
+  QString typeName = "";
+
+  QDomDocument queryDoc;
+  QString errorMsg;
+  if ( queryDoc.setContent( mParameterMap.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
-    typeName = type_name_it.value();
+    //read doc
+    QDomElement queryDocElem = queryDoc.documentElement();
+    QDomNodeList docChildNodes = queryDocElem.childNodes();
+    if ( docChildNodes.size() )
+    {
+      for ( int i = 0; i < docChildNodes.size(); i++ )
+      {
+        QDomElement docChildElem = docChildNodes.at( i ).toElement();
+        if ( docChildElem.tagName() == "TypeName" )
+        {
+          if ( typeName == "" )
+            typeName = docChildElem.text();
+          else
+            typeName += "," + docChildElem.text();
+        }
+      }
+    }
+    mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   }
   else
   {
-    typeName = "";
+    //read TYPENAME
+    QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
+    if ( type_name_it != mParameterMap.end() )
+    {
+      typeName = type_name_it.value();
+    }
+    mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   }
-  mConfigParser->describeFeatureType( typeName, schemaElement, doc );
   return doc;
 }
 
