@@ -250,6 +250,18 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   }
 
   QStringList wfsLayersId = wfsLayers();
+  QStringList typeNameList;
+  if ( aTypeName != "" )
+  {
+    QStringList typeNameSplit = aTypeName.split( "," );
+    foreach (const QString &str, typeNameSplit)
+    {
+      if ( str.contains( ":" ) )
+        typeNameList << str.section(":", 1, 1 );
+      else
+        typeNameList << str;
+     }
+  }
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
   {
@@ -258,7 +270,11 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
     {
       QgsMapLayer *mLayer = createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || layer->name() == aTypeName ) )
+
+      QString typeName = layer->name();
+      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+
+      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
       {
         //do a select with searchRect and go through all the features
         QgsVectorDataProvider* provider = layer->dataProvider();
@@ -269,9 +285,6 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
 
         //hidden attributes for this layer
         const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
-
-        QString typeName = layer->name();
-        typeName = typeName.replace( QString( " " ), QString( "_" ) );
 
         //xsd:element
         QDomElement elementElem = doc.createElement( "element"/*xsd:element*/ );
