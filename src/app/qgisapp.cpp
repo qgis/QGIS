@@ -8035,6 +8035,9 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
   foreach ( QSslError error, errors )
   {
+    if ( error.error() == QSslError::NoError )
+      continue;
+
     QgsDebugMsg( QString( "SSL error %1: %2" ).arg( error.error() ).arg( error.errorString() ) );
 
     otherError = otherError || !ignoreErrors.contains( error.error() );
