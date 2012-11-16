@@ -91,6 +91,7 @@ class PythonConsoleWidget(QWidget):
         #self.widgetEditors = QWidget()
         
         self.options = optionsDialog(self)
+        self.helpDlg = HelpDialog(self)
         
         self.splitter = QSplitter(self)
         self.splitter.setOrientation(Qt.Vertical)
@@ -355,9 +356,9 @@ class PythonConsoleWidget(QWidget):
             sF.close()
         
     def openHelp(self):
-        dlg = HelpDialog()
-        dlg.exec_()
-        
+        self.helpDlg.show()
+        self.helpDlg.activateWindow()
+                
     def openSettings(self):
         #options = optionsDialog()
         self.options.exec_()
