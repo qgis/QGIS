@@ -355,7 +355,7 @@ class PythonConsoleWidget(QWidget):
             sF.close()
         
     def openHelp(self):
-        dlg = HelpDialog(self)
+        dlg = HelpDialog()
         dlg.exec_()
         
     def openSettings(self):
