@@ -165,6 +165,11 @@ class EditorOutput(QsciScintilla):
         iconRun = QIcon(":/images/console/iconRunConsole.png")
         iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
         iconClear = QIcon(":/images/console/iconClearConsole.png")
+        iconHideTool = QIcon(":/images/console/iconHideToolConsole.png")
+        hideToolBar = menu.addAction(iconHideTool, 
+                                     "Hide/Show Toolbar", 
+                                     self.hideToolBar)
+        menu.addSeparator()
         runAction = menu.addAction(iconRun, 
                                    "Enter Selected", 
                                    self.enteredSelected, 
@@ -196,6 +201,11 @@ class EditorOutput(QsciScintilla):
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
+        
+    def hideToolBar(self):
+        tB = self.parent.toolBar
+        tB.hide() if tB.isVisible() else tB.show()
+        self.edit.setFocus()
             
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""

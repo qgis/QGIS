@@ -30,10 +30,11 @@ from qgis.core import QgsApplication
 import os
 
 class HelpDialog(QDialog, Ui_Help):
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-
+        
+        self.setWindowModality(Qt.WindowModal)
         self.setWindowTitle(QCoreApplication.translate("PythonConsole","Help Python Console"))
         self.setMaximumSize(530, 300)
         

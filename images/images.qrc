@@ -491,6 +491,7 @@
         <file>console/iconCodepadConsole.png</file>
         <file>console/imgHelpConsole.png</file>
         <file>console/imgHelpMenu.png</file>
+        <file>console/iconHideToolConsole.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
         <file>flags/sw.png</file>
