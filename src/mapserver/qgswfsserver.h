@@ -83,6 +83,7 @@ class QgsWFSServer
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;
     QString mTypeName;
+    QString mPropertyName;
     bool mWithGeom;
 
   protected:

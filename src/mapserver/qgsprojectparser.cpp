@@ -384,6 +384,37 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   return;
 }
 
+QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName, bool useCache ) const
+{
+  QList<QgsMapLayer*> layerList;
+
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return layerList;
+  }
+
+  QStringList wfsLayersId = wfsLayers();
+
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+
+      QString typeName = layer->name();
+      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+      if ( tName == typeName )
+      {
+        layerList.push_back( mLayer );
+        return layerList;
+      }
+    }
+  }
+  return layerList;
+}
+
 void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,

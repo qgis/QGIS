@@ -59,6 +59,8 @@ class QgsSLDParser: public QgsConfigParser
     void featureTypeList( QDomElement &, QDomDocument & ) const {}
 
     void describeFeatureType( const QString& , QDomElement& , QDomDocument& ) const {}
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    QList<QgsMapLayer*> mapLayerFromTypeName( const QString&, bool ) const { QList<QgsMapLayer*> layerList; return layerList; } 
 
     /**Returns number of layers in configuration*/
     int numberOfLayers() const;

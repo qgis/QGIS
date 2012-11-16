@@ -46,6 +46,8 @@ class QgsProjectParser: public QgsConfigParser
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const;
 
     int numberOfLayers() const;
 

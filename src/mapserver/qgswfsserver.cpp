@@ -340,7 +340,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     long maxFeat = 0;
     long featureCounter = 0;
-    long maxFeatures = 0;
+    long maxFeatures = -1;
     if ( docElem.hasAttribute( "maxFeatures" ) )
       maxFeatures = docElem.attribute( "maxFeatures" ).toLong();
 
@@ -354,7 +354,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         mTypeName = mTypeName.section( ":", 1, 1 );
       }
 
-      layerList = mConfigParser->mapLayerFromStyle( mTypeName, "" );
+      layerList = mConfigParser->mapLayerFromTypeName( mTypeName );
       currentLayer = layerList.at( 0 );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
@@ -429,12 +429,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                         , searchRect.yMaximum() + 0.000001 );
         QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
-        if ( maxFeatures == 0 )
+        if ( maxFeatures == -1 )
           maxFeat += layer->featureCount();
 
         provider->select( attrIndexes, searchRect, mWithGeom, true );
 
-        if ( i == 0 )
+        if ( featureCounter == 0 )
           startGetFeature( request, format, layerCrs, &searchRect );
 
         long featCounter = 0;
@@ -446,11 +446,21 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( fidNodes.size() > 0 )
           {
             QDomElement fidElem;
+            QString fid = "";
             for ( int f = 0; f < fidNodes.size(); f++ )
             {
               fidElem = fidNodes.at( f ).toElement();
-              provider->featureAtId( fidElem.attribute( "fid" ).toInt(), feature, mWithGeom, attrIndexes );
+              fid = fidElem.attribute( "fid" );
+              if ( fid.contains( "." ) ) {
+                if ( fid.section( ".", 0, 0 ) != mTypeName )
+                  continue;
+                fid = fid.section( ".", 1, 1 );
+              }
+
+              provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
               sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+
+              fid = "";
               ++featCounter;
               ++featureCounter;
             }
@@ -524,251 +534,350 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   }
 
-  //read TYPENAME
-  QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
-  if ( type_name_it != mParameterMap.end() )
-  {
-    mTypeName = type_name_it.value();
-  }
-  else
-  {
-    return 1;
-  }
+  // Information about parameters
+  // FILTER
+  bool filterOk = false;
+  QDomDocument filter;
+  // EXP_FILTER
+  bool expFilterOk = false;
+  QString expFilter;
+  // BBOX
+  bool bboxOk = false;
+  double minx, miny, maxx, maxy;
 
-  layerList = mConfigParser->mapLayerFromStyle( mTypeName, "" );
-  currentLayer = layerList.at( 0 );
-
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
-  if ( layer && wfsLayersId.contains( layer->id() ) )
+  //read FEATUREDID
+  bool featureIdOk = false;
+  QStringList featureIdList;
+  QMap<QString, QString>::const_iterator feature_id_it = mParameterMap.find( "FEATUREID" );
+  if ( feature_id_it != mParameterMap.end() )
   {
-    //is there alias info for this vector layer?
-    QMap< int, QString > layerAliasInfo;
-    const QMap< QString, QString >& aliasMap = layer->attributeAliases();
-    QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
-    for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
+    featureIdOk = true;
+    featureIdList = feature_id_it.value().split( ",");
+    QStringList typeNameList;
+    foreach (const QString &fidStr, featureIdList)
     {
-      int attrIndex = layer->fieldNameIndex( aliasIt.key() );
-      if ( attrIndex != -1 )
+      // testing typename in the WFS featureID
+      if ( !fidStr.contains( "." ) )
+        throw QgsMapServiceException( "RequestNotWellFormed", "FEATUREID has to have  TYPENAME in the values" );
+
+      QString typeName = fidStr.section( ".", 0, 0 );
+      if ( !typeNameList.contains( typeName ) )
+        typeNameList << typeName;
+    }
+
+    mTypeName = typeNameList.join( "," );
+  }
+
+  if ( !featureIdOk )
+  {
+    //read TYPENAME
+    QMap<QString, QString>::const_iterator type_name_it = mParameterMap.find( "TYPENAME" );
+    if ( type_name_it != mParameterMap.end() )
+    {
+      mTypeName = type_name_it.value();
+    }
+    else
+    {
+      throw QgsMapServiceException( "RequestNotWellFormed", "TYPENAME is MANDATORY" );
+    }
+
+    //read FILTER
+    QMap<QString, QString>::const_iterator filterIt = mParameterMap.find( "FILTER" );
+    if ( filterIt != mParameterMap.end() )
+    {
+      QString errorMsg;
+      if ( !filter.setContent( filterIt.value(), true, &errorMsg ) )
       {
-        layerAliasInfo.insert( attrIndex, aliasIt.value() );
+        throw QgsMapServiceException( "RequestNotWellFormed", QString("error message: %1. The XML string was: %2").arg( errorMsg ).arg( filterIt.value() ) );
+      }
+      else
+      {
+        filterOk = true;
       }
     }
 
-    //excluded attributes for this layer
-    const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+    //read EXP_FILTER
+    if ( !filterOk )
+    {
+      QMap<QString, QString>::const_iterator expFilterIt = mParameterMap.find( "EXP_FILTER" );
+      if ( expFilterIt != mParameterMap.end() )
+      {
+        expFilterOk = true;
+        expFilter = expFilterIt.value();
+      }
+    }
 
-    //do a select with searchRect and go through all the features
-    QgsVectorDataProvider* provider = layer->dataProvider();
-    if ( !provider )
+    //read BBOX
+    if ( !filterOk )
+    {
+      QMap<QString, QString>::const_iterator bbIt = mParameterMap.find( "BBOX" );
+      if ( bbIt == mParameterMap.end() )
+      {
+        minx = 0; miny = 0; maxx = 0; maxy = 0;
+      }
+      else
+      {
+        bool conversionSuccess;
+        bboxOk = true;
+        QString bbString = bbIt.value();
+        minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
+        if ( !conversionSuccess ) {bboxOk = false;}
+        miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
+        if ( !conversionSuccess ) {bboxOk = false;}
+        maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
+        if ( !conversionSuccess ) {bboxOk = false;}
+        maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
+        if ( !conversionSuccess ) {bboxOk = false;}
+      }
+    }
+  }
+
+  //read MAXFEATURES
+  long maxFeat = 0;
+  long maxFeatures = -1;
+  long featureCounter = 0;
+  QMap<QString, QString>::const_iterator mfIt = mParameterMap.find( "MAXFEATURES" );
+  if ( mfIt != mParameterMap.end() )
+  {
+    QString mfString = mfIt.value();
+    bool mfOk;
+    maxFeatures = mfString.toLong( &mfOk, 10 );
+    maxFeat = mfString.toLong( &mfOk, 10 );
+  }
+
+  //read PROPERTYNAME
+  mWithGeom = true;
+  mPropertyName = "*";
+  QMap<QString, QString>::const_iterator pnIt = mParameterMap.find( "PROPERTYNAME" );
+  if ( pnIt != mParameterMap.end() )
+  {
+    mPropertyName = pnIt.value();
+  }
+
+
+  QStringList tnList = mTypeName.split( "," );
+  foreach (const QString &tnStr, tnList)
+  {
+    mTypeName = tnStr;
+    layerList = mConfigParser->mapLayerFromTypeName( tnStr );
+    currentLayer = layerList.at( 0 );
+
+    QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    if ( layer && wfsLayersId.contains( layer->id() ) )
+    {
+      //is there alias info for this vector layer?
+      QMap< int, QString > layerAliasInfo;
+      const QMap< QString, QString >& aliasMap = layer->attributeAliases();
+      QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
+      for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
+      {
+        int attrIndex = layer->fieldNameIndex( aliasIt.key() );
+        if ( attrIndex != -1 )
+        {
+          layerAliasInfo.insert( attrIndex, aliasIt.value() );
+        }
+      }
+
+      //excluded attributes for this layer
+      const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+
+      //do a select with searchRect and go through all the features
+      QgsVectorDataProvider* provider = layer->dataProvider();
+      if ( !provider )
+      {
+        throw QgsMapServiceException( "RequestNotWellFormed", "Provider not found" );
+      }
+
+      QgsFeature feature;
+      QgsAttributeMap featureAttributes;
+      const QgsFieldMap& fields = provider->fields();
+
+      //map extent
+      QgsRectangle searchRect = layer->extent();
+
+      QgsAttributeList attrIndexes = provider->attributeIndexes();
+      if ( mPropertyName != "*" )
+      {
+        QStringList attrList = mPropertyName.split( "," );
+        if ( attrList.size() > 0 )
+        {
+          QStringList::const_iterator alstIt;
+          QList<int> idxList;
+          QMap<QString, int> fieldMap = provider->fieldNameMap();
+          QMap<QString, int>::const_iterator fieldIt;
+          QString fieldName;
+          for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
+          {
+            fieldName = *alstIt;
+            fieldIt = fieldMap.find( fieldName );
+            if ( fieldIt != fieldMap.end() )
+            {
+              idxList.append( fieldIt.value() );
+            }
+          }
+          if ( idxList.size() > 0 )
+          {
+            attrIndexes = idxList;
+          }
+        }
+      }
+
+      if ( maxFeatures == -1 )
+        maxFeat += layer->featureCount();
+
+      if ( bboxOk )
+        searchRect.set( minx, miny, maxx, maxy );
+      else
+        searchRect.set( searchRect.xMinimum() - 0.000001
+            , searchRect.yMinimum() - 0.000001
+            , searchRect.xMaximum() + 0.000001
+            , searchRect.yMaximum() + 0.000001 );
+      QgsCoordinateReferenceSystem layerCrs = layer->crs();
+
+      if ( featureCounter == 0 )
+        startGetFeature( request, format, layerCrs, &searchRect );
+
+      long featCounter = 0;
+      if ( featureIdOk )
+      {
+        foreach (const QString &fidStr, featureIdList)
+        {
+          if ( !fidStr.startsWith( tnStr ) )
+            continue;
+          provider->featureAtId( fidStr.section( ".", 1, 1 ).toInt(), feature, mWithGeom, attrIndexes );
+          sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+          ++featCounter;
+          ++featureCounter;
+        }
+      }
+      else if ( expFilterOk )
+      {
+        provider->select( attrIndexes, searchRect, mWithGeom, true );
+        QgsExpression *mFilter = new QgsExpression( expFilter );
+        if (mFilter->hasParserError())
+        {
+          throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+        }
+        if ( mFilter )
+        {
+          while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+          {
+            QVariant res = mFilter->evaluate( &feature, fields );
+            if (mFilter->hasEvalError())
+            {
+              throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+            }
+            if ( res.toInt() != 0 )
+            {
+              sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+              ++featCounter;
+              ++featureCounter;
+            }
+          }
+          delete mFilter;
+        }
+      }
+      else if ( filterOk )
+      {
+        provider->select( attrIndexes, searchRect, mWithGeom, true );
+        QDomElement filterElem = filter.firstChildElement();
+        QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
+        if ( fidNodes.size() > 0 )
+        {
+          QDomElement fidElem;
+          QString fid = "";
+          for ( int f = 0; f < fidNodes.size(); f++ )
+          {
+            fidElem = fidNodes.at( f ).toElement();
+            fid = fidElem.attribute( "fid" );
+            if ( fid.contains( "." ) ) {
+              if ( fid.section( ".", 0, 0 ) != mTypeName )
+                continue;
+              fid = fid.section( ".", 1, 1 );
+            }
+
+            provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
+            sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+
+            fid = "";
+            ++featCounter;
+            ++featureCounter;
+          }
+        }
+        else if ( filterElem.firstChildElement().tagName() == "BBOX" )
+        {
+          QDomElement bboxElem = filterElem.firstChildElement();
+          QDomElement childElem = bboxElem.firstChildElement();
+          while ( !childElem.isNull() ) 
+          {
+            if ( childElem.tagName() == "Box" ) 
+            {
+              QgsRectangle* rect = new QgsRectangle( childElem );
+              provider->select( attrIndexes, *rect, mWithGeom, true );
+            }
+            else if ( childElem.tagName() != "PropertyName" )
+            {
+              QgsGeometry* geom = QgsGeometry::fromGML2( childElem );
+              provider->select( attrIndexes, geom->boundingBox(), mWithGeom, true );
+            }
+            childElem = childElem.nextSiblingElement();
+          }
+          while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+          {
+            sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+            ++featCounter;
+            ++featureCounter;
+          }
+        }
+        else
+        {
+            QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+            if (mFilter->hasParserError())
+            {
+              throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+            }
+            if ( mFilter )
+            {
+              while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+              {
+                QVariant res = mFilter->evaluate( &feature, fields );
+                if (mFilter->hasEvalError())
+                {
+                  throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+                }
+                if ( res.toInt() != 0 )
+                {
+                  sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
+                  ++featureCounter;
+                  ++featCounter;
+                }
+              }
+            }
+            delete mFilter;
+          }
+      }
+      else
+      {
+        provider->select( attrIndexes, searchRect, mWithGeom, true );
+        while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+        {
+          sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
+          ++featCounter;
+          ++featureCounter;
+        }
+      }
+
+    }
+    else
     {
       return 2;
     }
 
-    QgsFeature feature;
-    QgsAttributeMap featureAttributes;
-    const QgsFieldMap& fields = provider->fields();
-
-    //map extent
-    QgsRectangle searchRect = layer->extent();
-
-    //read FEATUREDID
-    bool fidOk = false;
-    QString fid;
-    QMap<QString, QString>::const_iterator fidIt = mParameterMap.find( "FEATUREID" );
-    if ( fidIt != mParameterMap.end() )
-    {
-      fidOk = true;
-      fid = fidIt.value();
-    }
-
-    //read FILTER
-    bool filterOk = false;
-    QDomDocument filter;
-    QMap<QString, QString>::const_iterator filterIt = mParameterMap.find( "FILTER" );
-    if ( filterIt != mParameterMap.end() )
-    {
-      try
-      {
-        QString errorMsg;
-        if ( !filter.setContent( filterIt.value(), true, &errorMsg ) )
-        {
-          QgsDebugMsg( "soap request parse error" );
-          QgsDebugMsg( "error message: " + errorMsg );
-          QgsDebugMsg( "the xml string was:" );
-          QgsDebugMsg( filterIt.value() );
-        }
-        else
-        {
-          filterOk = true;
-        }
-      }
-      catch ( QgsMapServiceException& e )
-      {
-        Q_UNUSED( e );
-        filterOk = false;
-      }
-    }
-
-    //read exp_filter
-    bool expFilterOk = false;
-    QString expFilter;
-    QMap<QString, QString>::const_iterator expFilterIt = mParameterMap.find( "EXP_FILTER" );
-    if ( expFilterIt != mParameterMap.end() )
-    {
-      expFilterOk = true;
-      expFilter = expFilterIt.value();
-    }
-
-    bool conversionSuccess;
-    double minx, miny, maxx, maxy;
-    bool bboxOk = false;
-    //read BBOX
-    QMap<QString, QString>::const_iterator bbIt = mParameterMap.find( "BBOX" );
-    if ( bbIt == mParameterMap.end() )
-    {
-      minx = 0; miny = 0; maxx = 0; maxy = 0;
-    }
-    else
-    {
-      bboxOk = true;
-      QString bbString = bbIt.value();
-      minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
-      if ( !conversionSuccess ) {bboxOk = false;}
-      miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
-      if ( !conversionSuccess ) {bboxOk = false;}
-      maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
-      if ( !conversionSuccess ) {bboxOk = false;}
-      maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
-      if ( !conversionSuccess ) {bboxOk = false;}
-    }
-
-    //read MAXFEATURES
-    long maxFeat = layer->featureCount();
-    long featureCounter = 0;
-    QMap<QString, QString>::const_iterator mfIt = mParameterMap.find( "MAXFEATURES" );
-    if ( mfIt != mParameterMap.end() )
-    {
-      QString mfString = mfIt.value();
-      bool mfOk;
-      maxFeat = mfString.toLong( &mfOk, 10 );
-      if ( !mfOk ) { maxFeat = layer->featureCount(); }
-    }
-
-    //read PROPERTYNAME
-    mWithGeom = true;
-    QgsAttributeList attrIndexes = provider->attributeIndexes();
-    QMap<QString, QString>::const_iterator pnIt = mParameterMap.find( "PROPERTYNAME" );
-    if ( pnIt != mParameterMap.end() && pnIt.value() != "*" )
-    {
-      QStringList attrList = pnIt.value().split( "," );
-      if ( attrList.size() > 0 )
-      {
-        QStringList::const_iterator alstIt;
-        QList<int> idxList;
-        QMap<QString, int> fieldMap = provider->fieldNameMap();
-        QMap<QString, int>::const_iterator fieldIt;
-        QString fieldName;
-        for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
-        {
-          fieldName = *alstIt;
-          fieldIt = fieldMap.find( fieldName );
-          if ( fieldIt != fieldMap.end() )
-          {
-            idxList.append( fieldIt.value() );
-          }
-        }
-        if ( idxList.size() > 0 )
-        {
-          attrIndexes = idxList;
-        }
-      }
-    }
-
-    if ( bboxOk )
-      searchRect.set( minx, miny, maxx, maxy );
-    else
-      searchRect.set( searchRect.xMinimum() - 0.000001
-                      , searchRect.yMinimum() - 0.000001
-                      , searchRect.xMaximum() + 0.000001
-                      , searchRect.yMaximum() + 0.000001 );
-    QgsCoordinateReferenceSystem layerCrs = layer->crs();
-
-    startGetFeature( request, format, layerCrs, &searchRect );
-
-    if ( fidOk )
-    {
-      provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
-      sendGetFeature( request, format, &feature, 0, layerCrs, fields, layerExcludedAttributes );
-    }
-    else if ( expFilterOk )
-    {
-      provider->select( attrIndexes, searchRect, mWithGeom, true );
-      QgsExpression *mFilter = new QgsExpression( expFilter );
-      if (mFilter->hasParserError())
-      {
-        throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
-      }
-      if ( mFilter )
-      {
-        while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
-        {
-          QVariant res = mFilter->evaluate( &feature, fields );
-          if (mFilter->hasEvalError())
-          {
-            throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
-          }
-          if ( res.toInt() != 0 )
-          {
-            sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
-            ++featureCounter;
-          }
-        }
-        delete mFilter;
-      }
-    }
-    else if ( filterOk )
-    {
-      provider->select( attrIndexes, searchRect, mWithGeom, true );
-      QDomElement filterElem = filter.firstChildElement();
-      QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
-      if (mFilter->hasParserError())
-      {
-        throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
-      }
-      if ( mFilter )
-      {
-        while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
-        {
-          QVariant res = mFilter->evaluate( &feature, fields );
-          if (mFilter->hasEvalError())
-          {
-            throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
-          }
-          if ( res.toInt() != 0 )
-          {
-            sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
-            ++featureCounter;
-          }
-        }
-        delete mFilter;
-      }
-    }
-    else
-    {
-      provider->select( attrIndexes, searchRect, mWithGeom, true );
-      while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
-      {
-        sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
-        ++featureCounter;
-      }
-    }
-
-    endGetFeature( request, format );
   }
-  else
-  {
-    return 2;
-  }
+  endGetFeature( request, format );
+
+
+
   return 0;
 }
 
@@ -1017,8 +1126,8 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   respElem.setAttribute( "version", "1.0.0" );
   resp.appendChild( respElem );
 
-  // Store the created feature id
-  QgsFeatureIds insertResults;
+  // Store the created feature id for WFS
+  QStringList insertResults;
   // Get the WFS layers id
   QStringList wfsLayersId = mConfigParser->wfsLayers();
 
@@ -1031,9 +1140,9 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   {
     // Get the vector layer
     typeNameElem = docChildNodes.at( i ).toElement();
-    typeName = typeNameElem.tagName();
+    mTypeName = typeNameElem.tagName();
 
-    layerList = mConfigParser->mapLayerFromStyle( typeName, "" );
+    layerList = mConfigParser->mapLayerFromTypeName( mTypeName );
     currentLayer = layerList.at( 0 );
 
     QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
@@ -1277,7 +1386,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // Get the Feature Ids of the inserted feature
       for ( int j = 0; j < inFeatList.size(); j++ )
       {
-        insertResults.insert( inFeatList[j].id() );
+        insertResults << mTypeName +"."+ QString::number(inFeatList[j].id() );
       }
     }
   }
@@ -1286,12 +1395,11 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   if ( insertResults.size() > 0 )
   {
     QDomElement irsElem = doc.createElement( "InsertResults" );
-    QgsFeatureIds::const_iterator irIt = insertResults.constBegin();
-    for ( ; irIt != insertResults.constEnd(); ++irIt )
+    foreach (const QString &fidStr, insertResults)
     {
       QDomElement irElem = doc.createElement( "InsertResult" );
       QDomElement fiElem = doc.createElement( "ogc:FeatureId" );
-      fiElem.setAttribute( "fid", *irIt );
+      fiElem.setAttribute( "fid", fidStr );
       irElem.appendChild( fiElem );
       irsElem.appendChild( irElem );
     }
@@ -1319,11 +1427,15 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
   if ( fidNodes.size() != 0 )
   {
     QDomElement fidElem;
+    QString fid;
     bool conversionSuccess;
     for ( int i = 0; i < fidNodes.size(); ++i )
     {
       fidElem = fidNodes.at( i ).toElement();
-      fids.insert( fidElem.attribute( "fid" ).toInt( &conversionSuccess ) );
+      fid = fidElem.attribute( "fid" );
+      if ( fid.contains( "." ) )
+        fid = fid.section( ".", 1, 1 );
+      fids.insert( fid.toInt( &conversionSuccess ) );
     }
   }
   else
@@ -1360,7 +1472,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   QString fStr = "{\"type\": \"Feature\",\n";
 
   fStr += "   \"id\": ";
-  fStr +=  QString::number( feat->id() );
+  fStr += mTypeName +"."+ QString::number( feat->id() );
   fStr += ",\n";
 
   QgsGeometry* geom = feat->geometry();
@@ -1421,8 +1533,8 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
 
   //qgs:%TYPENAME%
-  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName.replace( QString( " " ), QString( "_" ) )/*qgs:%TYPENAME%*/ );
-  typeNameElement.setAttribute( "fid", QString::number( feat->id() ) );
+  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName /*qgs:%TYPENAME%*/ );
+  typeNameElement.setAttribute( "fid", mTypeName +"."+ QString::number( feat->id() ) );
   featureElement.appendChild( typeNameElement );
 
   if ( mWithGeom )
