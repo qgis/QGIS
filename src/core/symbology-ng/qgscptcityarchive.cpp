@@ -46,7 +46,8 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
     : mArchiveName( archiveName ), mBaseDir( baseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " baseDir = " + baseDir );
-  // make root items
+
+  // make Author items
   QgsCptCityDirectoryItem* dirItem = 0;
   foreach ( QString path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
   {
@@ -61,21 +62,29 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
   }
 
   // make selection items
-  QgsCptCitySelectionItem* item = 0;
+  QgsCptCitySelectionItem* selItem = 0;
   QDir seldir( mBaseDir + QDir::separator() + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
   foreach ( QString selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
   {
     QgsDebugMsg( "file= " + seldir.path() + "/" + selfile );
-    item = new QgsCptCitySelectionItem( NULL, QFileInfo( selfile ).baseName(),
-                                        seldir.dirName() +  QDir::separator() + selfile );
+    selItem = new QgsCptCitySelectionItem( NULL, QFileInfo( selfile ).baseName(),
+                                           seldir.dirName() +  QDir::separator() + selfile );
     //TODO remove item if there are no children (e.g. esri in qgis-sel)
-    if ( item->isValid() )
-      mSelectionItems << item;
+    if ( selItem->isValid() )
+      mSelectionItems << selItem;
     else
-      delete item;
+      delete selItem;
   }
 
+  // make "All Ramps items" (which will contain all ramps without hierarchy)
+  QgsCptCityAllRampsItem* allRampsItem;
+  allRampsItem = new QgsCptCityAllRampsItem( NULL, QObject::tr( "All Ramps" ),
+      mRootItems );
+  mRootItems.prepend( allRampsItem );
+  allRampsItem = new QgsCptCityAllRampsItem( NULL, QObject::tr( "All Ramps" ),
+      mSelectionItems );
+  mSelectionItems.prepend( allRampsItem );
 }
 
 QgsCptCityArchive::~QgsCptCityArchive( )
@@ -860,7 +869,7 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
     : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Directory;
-  mValid = QDir( QgsCptCityArchive::defaultBaseDir() ).exists();
+  mValid = QDir( QgsCptCityArchive::defaultBaseDir() + QDir::separator() + mPath ).exists();
   if ( ! mValid )
   {
     QgsDebugMsg( "created invalid dir item, path = " + QgsCptCityArchive::defaultBaseDir()
@@ -1140,7 +1149,9 @@ QgsCptCitySelectionItem::QgsCptCitySelectionItem( QgsCptCityDataItem* parent,
     : QgsCptCityCollectionItem( parent, name, path )
 {
   mType = Selection;
-  parseXML();
+  mValid = ! path.isNull();
+  if ( mValid )
+    parseXML();
 }
 
 QgsCptCitySelectionItem::~QgsCptCitySelectionItem()
@@ -1258,6 +1269,38 @@ bool QgsCptCitySelectionItem::equal( const QgsCptCityDataItem *other )
 }
 
 //-----------------------------------------------------------------------
+QgsCptCityAllRampsItem::QgsCptCityAllRampsItem( QgsCptCityDataItem* parent,
+    QString name,  QVector<QgsCptCityDataItem*> items )
+    : QgsCptCityCollectionItem( parent, name, QString() ), mItems( items )
+{
+  mType = AllRamps;
+  mValid = true;
+  // populate();
+}
+
+QgsCptCityAllRampsItem::~QgsCptCityAllRampsItem()
+{
+}
+
+QVector<QgsCptCityDataItem*> QgsCptCityAllRampsItem::createChildren()
+{
+  if ( ! mValid )
+    return QVector<QgsCptCityDataItem*>();
+
+  QVector<QgsCptCityDataItem*> children;
+
+  // add children ramps of each item
+  foreach ( QgsCptCityDataItem* item, mItems )
+  {
+    QgsCptCityCollectionItem* colItem = dynamic_cast< QgsCptCityCollectionItem* >( item );
+    if ( colItem )
+      children += colItem->childrenRamps( true );
+  }
+
+  return children;
+}
+
+//-----------------------------------------------------------------------
 
 QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
     QgsCptCityArchive* archive, ViewType viewType )
@@ -1343,12 +1386,11 @@ QVariant QgsCptCityBrowserModel::data( const QModelIndex &index, int role ) cons
     return item->icon( mIconSize );
   }
   else if ( role == Qt::FontRole &&
-            ( item->type() == QgsCptCityDataItem::Directory ||
-              item->type() == QgsCptCityDataItem::Selection ) )
+            ( dynamic_cast< QgsCptCityCollectionItem* >( item ) != 0 ) )
   {
     // collectionitems are larger and bold
     QFont font;
-    // font.setPointSize( font.pointSize() + 1 );
+    font.setPointSize( 11 ); //FIXME why is the font so small?
     font.setBold( true );
     return font;
   }
@@ -1418,7 +1460,11 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
   {
     foundChild = false; // assume that the next child item will not be found
 
-    for ( int i = 0; i < rowCount( theIndex ); i++ )
+    int i = 0;
+    // if root skip first item "All Ramps"
+    if ( itemPath.isEmpty() )
+      i = 1;
+    for ( ; i < rowCount( theIndex ); i++ )
     {
       QModelIndex idx = index( i, 0, theIndex );
       QgsCptCityDataItem *item = dataItem( idx );
@@ -1587,9 +1633,17 @@ bool QgsCptCityBrowserModel::canFetchMore( const QModelIndex & parent ) const
   QgsCptCityDataItem* item = dataItem( parent );
   // fetch all items initially so we know which items have children
   // (nicer looking and less confusing)
-  if ( item )
-    item->populate();
-  return ( item && ! item->isPopulated() );
+
+  if ( ! item )
+    return false;
+
+  // except for "All Ramps" - this is populated when clicked on
+  if ( item->type() == QgsCptCityDataItem::AllRamps )
+    return false;
+
+  item->populate();
+
+  return ( ! item->isPopulated() );
 }
 
 void QgsCptCityBrowserModel::fetchMore( const QModelIndex & parent )

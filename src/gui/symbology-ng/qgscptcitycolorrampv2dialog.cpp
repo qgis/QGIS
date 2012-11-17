@@ -161,7 +161,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
 
   tabBar->blockSignals( false );
 
-  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished( int ) ) );
+  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
   // TODO - remove this when basic archive is complete
   if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
@@ -264,6 +264,7 @@ void QgsCptCityColorRampV2Dialog::on_mTreeView_clicked( const QModelIndex &index
   QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
   if ( ! item )
     return;
+  QgsDebugMsg( QString( "item %1 clicked" ).arg( item->name() ) );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   updateTreeView( item );
 }
@@ -296,6 +297,14 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
     lblCollectionInfo->setText( item->info() );
     clearCopyingInfo( );
     updateListWidget( item );
+  }
+  else if ( item->type() == QgsCptCityDataItem::AllRamps )
+  {
+    lblSchemePath->setText( "" );
+    // lblCollectionName->setText( item->path() );
+    clearCopyingInfo( );
+    updateListWidget( item );
+    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->rowCount() ) );
   }
   else
   {
@@ -565,9 +574,11 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   mListWidget->clear();
   mListRamps.clear();
   cboVariantName->clear();
-  updatePreview( true );
   clearCopyingInfo( );
+  lblCollectionInfo->clear();
+
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  updatePreview( true );
 
   QgsDebugMsg( "schemeName= " + mRamp->schemeName() );
   if ( mRamp->schemeName() == "" )
