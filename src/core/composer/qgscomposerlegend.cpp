@@ -301,7 +301,9 @@ QgsComposerLegend::LegendSize QgsComposerLegend::paintAndDetermineSize( QPainter
   {
     double currentYCoord = mBoxSpace;
 
-    // center if we stay in totalWidth, otherwise allign to left and expand total width
+    // For multicolumn center if we stay in totalWidth, otherwise allign to left
+    // and expand total width. With single column keep alligned to left be cause
+    // it looks better alligned with items bellow instead of centered
     Qt::AlignmentFlag halignement;
     if ( mColumnCount > 1 && currentPosition.titleSize.width() + 2 * mBoxSpace < totalWidth )
     {
@@ -310,7 +312,7 @@ QgsComposerLegend::LegendSize QgsComposerLegend::paintAndDetermineSize( QPainter
     else
     {
       halignement = Qt::AlignLeft;
-      totalWidth = currentPosition.titleSize.width() + 2 * mBoxSpace;
+      totalWidth = qMax( currentPosition.titleSize.width() + 2 * mBoxSpace, totalWidth );
     }
 
     if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
