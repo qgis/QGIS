@@ -194,6 +194,9 @@ QDomDocument QgsWFSServer::getCapabilities()
   schemaDescriptionLanguageElement.appendChild( xmlSchemaElement );
   QDomElement describeFeatureTypeDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
   describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypeElement );
+  QDomElement describeFeatureTypeDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+  describeFeatureTypeDhcTypePostElement.firstChild().firstChild().toElement().setTagName( "Post" );
+  describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypePostElement );
 
   //wfs:GetFeature
   QDomElement getFeatureElement = doc.createElement( "GetFeature"/*wfs:GetFeature*/ );
