@@ -5415,6 +5415,7 @@ QDomElement QgsGeometry::exportToGML2( QDomDocument& doc )
             }
           }
           QDomText coordText = doc.createTextNode( coordString );
+          coordElem.appendChild( coordText );
           ringElem.appendChild( coordElem );
           boundaryElem.appendChild( ringElem );
           polygonElem.appendChild( boundaryElem );
