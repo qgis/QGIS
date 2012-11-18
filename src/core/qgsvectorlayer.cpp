@@ -1581,7 +1581,7 @@ QgsRectangle QgsVectorLayer::extent()
     if ( mDataProvider->featureCount() != 0 )
     {
       QgsRectangle r = mDataProvider->extent();
-      rect.combineExtentWith( &r );
+      rect.set ( r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() );
     }
 
     for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
