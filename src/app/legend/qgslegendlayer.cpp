@@ -114,8 +114,13 @@ void QgsLegendLayer::setCheckState( int column, Qt::CheckState state )
 
 void QgsLegendLayer::setupFont() //private method
 {
+  QSettings settings;	
+  bool bold = settings.value( "/qgis/boldFontLayerName", true ).toBool();	
   QFont myFont = font( 0 );
-  myFont.setBold( true ); //visually differentiate layer labels from the rest
+  if ( bold )
+  {
+    myFont.setBold( true ); //visually differentiate layer labels from the rest
+  }
   setFont( 0, myFont );
 }
 

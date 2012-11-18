@@ -478,6 +478,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   capitaliseCheckBox->setChecked( settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
+  boldFontCheckBox->setChecked( settings.value( "qgis/boldFontLayerName", QVariant( true ) ).toBool() );
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
@@ -899,6 +900,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+  settings.setValue( "/qgis/boldFontLayerName", boldFontCheckBox->isChecked() );
 
   // project
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
