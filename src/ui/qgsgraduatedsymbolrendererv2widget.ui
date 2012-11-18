@@ -156,6 +156,12 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
@@ -186,7 +192,14 @@
      <item>
       <widget class="QPushButton" name="btnGraduatedDelete">
        <property name="text">
-        <string>Delete class</string>
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnDeleteAllClasses">
+       <property name="text">
+        <string>Delete all</string>
        </property>
       </widget>
      </item>

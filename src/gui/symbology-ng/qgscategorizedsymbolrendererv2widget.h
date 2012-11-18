@@ -18,6 +18,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
 #include <QStandardItem>
+#include <QProxyStyle>
 
 class QgsCategorizedSymbolRendererV2;
 class QgsRendererCategoryV2;
@@ -55,6 +56,15 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
   private:
     QgsCategorizedSymbolRendererV2* mRenderer;
     QString mMimeFormat;
+};
+
+// View style which shows drop indicator line between items
+class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
+{
+  public:
+    QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const;
 };
 
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget

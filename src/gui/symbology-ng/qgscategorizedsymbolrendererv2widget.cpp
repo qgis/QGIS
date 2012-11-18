@@ -32,6 +32,8 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QPen>
+#include <QPainter>
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
@@ -236,6 +238,9 @@ bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Q
   }
 
   int to = parent.row();
+  // to is -1 if dragged outside items, i.e. below any item,
+  // then move to the last position
+  if ( to == -1 ) to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
     QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
@@ -292,6 +297,27 @@ void QgsCategorizedSymbolRendererV2Model::sort( int column, Qt::SortOrder order 
   QgsDebugMsg( "Done" );
 }
 
+// ------------------------------ View style --------------------------------
+QgsCategorizedSymbolRendererV2ViewStyle::QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style )
+    : QProxyStyle( style )
+{}
+
+void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+{
+  if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
+  {
+    QStyleOption opt( *option );
+    opt.rect.setLeft( 0 );
+    // draw always as line above, because we move item to that index
+    opt.rect.setHeight( 0 );
+    if ( widget ) opt.rect.setRight( widget->width() );
+    QProxyStyle::drawPrimitive( element, &opt, painter, widget );
+    return;
+  }
+  QProxyStyle::drawPrimitive( element, option, painter, widget );
+}
+
+// ------------------------------ Widget ------------------------------------
 QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsCategorizedSymbolRendererV2Widget( layer, style, renderer );
@@ -342,6 +368,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   viewCategories->resizeColumnToContents( 0 );
   viewCategories->resizeColumnToContents( 1 );
   viewCategories->resizeColumnToContents( 2 );
+
+  viewCategories->setStyle( new QgsCategorizedSymbolRendererV2ViewStyle( viewCategories->style() ) );
 
   mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
