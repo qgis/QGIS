@@ -274,7 +274,7 @@ QDomDocument QgsWFSServer::describeFeatureType()
   schemaElement.setAttribute( "xmlns:gml", GML_NAMESPACE );
   schemaElement.setAttribute( "xmlns:qgs", QGS_NAMESPACE );
   schemaElement.setAttribute( "targetNamespace", QGS_NAMESPACE );
-  schemaElement.setAttribute( "elementFromDefault", "qualified" );
+  schemaElement.setAttribute( "elementFormDefault", "qualified" );
   schemaElement.setAttribute( "version", "1.0" );
   doc.appendChild( schemaElement );
 
