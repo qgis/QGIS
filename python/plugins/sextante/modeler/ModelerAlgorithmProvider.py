@@ -69,7 +69,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         folder = os.path.join(os.path.dirname(__file__), "models")
         self.loadFromFolder(folder)  
         
-    def loadFromFolder(self,folder):
+    def loadFromFolder(self,folder):        
         if not os.path.exists(folder):
             return
         for descriptionFile in os.listdir(folder):
