@@ -49,14 +49,10 @@ class ModelerDialog(QtGui.QDialog):
             self.alg = alg
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
-            self.repaintModel()
-            last = self.scene.getLastAlgorithmItem()
-            if last is not None:
-                self.view.ensureVisible(last)
-            else:
-                self.view.ensureVisible(0,0,10,10)
+            self.repaintModel()                    
         else:
             self.alg = ModelerAlgorithm()
+        self.view.centerOn(0, 0)            
         self.alg.setModelerView(self)
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
@@ -267,6 +263,7 @@ class ModelerDialog(QtGui.QDialog):
                 self.textName.setText(alg.name)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                self.view.centerOn(0,0)
             except WrongModelException, e:
                 QMessageBox.critical(self, "Could not open model", "The selected model could not be loaded\nWrong line:" + e.msg)
 
