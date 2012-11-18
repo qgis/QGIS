@@ -179,11 +179,8 @@ QDomDocument QgsWFSServer::getCapabilities()
   //only Get supported for the moment
   QDomElement getElement = doc.createElement( "Get"/*wfs:Get*/ );
   httpElement.appendChild( getElement );
-  QDomElement olResourceElement = doc.createElement( "OnlineResource"/*wfs:OnlineResource*/ );
-  olResourceElement.setAttribute( "xlink:type", "simple" );
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
-  olResourceElement.setAttribute( "xlink:href", hrefString );
-  getElement.appendChild( olResourceElement );
+  getElement.setAttribute( "OnlineResource", hrefString );
 
   //wfs:DescribeFeatureType
   QDomElement describeFeatureTypeElement = doc.createElement( "DescribeFeatureType"/*wfs:DescribeFeatureType*/ );
