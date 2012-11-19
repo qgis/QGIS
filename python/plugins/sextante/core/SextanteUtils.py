@@ -26,9 +26,8 @@ __revision__ = '$Format:%H$'
 import os
 import time
 import sys
-
+import uuid
 from PyQt4.QtCore import *
-
 from qgis.core import *
 
 class SextanteUtils:
@@ -64,9 +63,9 @@ class SextanteUtils:
         ext = out.getDefaultFileExtension(alg)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
-        filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + str(SextanteUtils.NUM_EXPORTED) + "." + ext
-        out.value = filename
-        SextanteUtils.NUM_EXPORTED += 1
+        uniqueSufix = str(uuid.uuid4()).replace("-","");
+        filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + uniqueSufix + "." + ext
+        out.value = filename                
 
     @staticmethod
     def getTempFilename(ext):

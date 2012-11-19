@@ -325,7 +325,7 @@ class GrassUtils:
     # End session by removing the temporary GRASS mapset and all the layers.
     @staticmethod    
     def endGrassSession():
-        #shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
+        shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
         GrassUtils.sessionRunning = False
         GrassUtils.sessionLayers = {}
     

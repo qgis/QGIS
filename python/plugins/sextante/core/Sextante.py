@@ -258,7 +258,7 @@ class Sextante:
             return
         if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
             print ("Error: Wrong number of parameters")
-            Sextante.alghelp(algOrName)
+            alghelp(algOrName)
             return
 
         alg = alg.getCopy()#copy.deepcopy(alg)
@@ -294,7 +294,14 @@ class Sextante:
 
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        # don't set the wait cursor twice, because then when you restore it
+        # it will still be a wait cursor
+        cursor = QApplication.overrideCursor()
+        if cursor == None or cursor == 0:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor)) 
+        elif cursor.shape() != Qt.WaitCursor:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()

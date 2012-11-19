@@ -56,5 +56,5 @@ class FileSelectionPanel(QtGui.QWidget):
     def getValue(self):
         s = str(self.text.text())
         if SextanteUtils.isWindows():
-            s = s.replace("/", "\\")
+            s = s.replace("\\", "/")
         return s

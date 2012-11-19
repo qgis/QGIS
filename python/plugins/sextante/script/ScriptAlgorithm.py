@@ -45,6 +45,8 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+from sextante.parameters.ParameterFactory import ParameterFactory
+from sextante.outputs.OutputFactory import OutputFactory
 import sys
 from sextante.gui.Help2Html import Help2Html
 
@@ -87,7 +89,6 @@ class ScriptAlgorithm(GeoAlgorithm):
             line = lines.readline()
         lines.close()
 
-
     def defineCharacteristicsFromScript(self):
         lines = self.script.split("\n")
         self.silentOutputs = []
@@ -107,10 +108,18 @@ class ScriptAlgorithm(GeoAlgorithm):
         param = None
         out = None
         line = line.replace("#", "");
+        # If the line is in the format of the text description files for normal algorithms,
+        # then process it using parameter and output factories
+        if '|' in line:
+            self.processDescriptionParameterLine(line)
+            return
         tokens = line.split("=");
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == "group":
             self.group = tokens[0]
+            return
+        if tokens[1].lower().strip() == "name":
+            self.name = tokens[0]
             return
         if tokens[1].lower().strip() == "raster":
             param = ParameterRaster(tokens[0], desc, False)
@@ -174,13 +183,27 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addOutput(out)
         else:
             raise WrongScriptException("Could not load script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
+        
+    def processDescriptionParameterLine(self, line):
+        try:
+            if line.startswith("Parameter"):
+                self.addParameter(ParameterFactory.getFromString(line))
+            elif line.startswith("*Parameter"):
+                param = ParameterFactory.getFromString(line[1:])
+                param.isAdvanced = True
+                self.addParameter(param)
+            else:
+                self.addOutput(OutputFactory.getFromString(line))
+        except Exception:
+            raise WrongScriptException("Could not load script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
     def processAlgorithm(self, progress):
 
         script = "import sextante\n"
         
         ns = {}
-        
+        ns['progress'] = progress
+    
         for param in self.parameters:
             #script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
             ns[param.name] = param.value
@@ -189,11 +212,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
             #script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
 
-        script+=self.script
-        redirection = Redirection(progress)
-        sys.stdout = redirection
-        exec(script) in ns
-        sys.stdout = sys.__stdout__
+        script+=self.script        
+        exec(script) in ns        
         for out in self.outputs:
             out.setValue(ns[out.name])
 
@@ -205,14 +225,3 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             return None
 
-class Redirection():
-    def __init__(self, progress):
-        self.progress = progress
-
-    def write(self, string):
-        try:
-            n = int(string)
-            self.progress.setPercentage(n)
-        except:
-            self.progress.setText(string)
-            pass
