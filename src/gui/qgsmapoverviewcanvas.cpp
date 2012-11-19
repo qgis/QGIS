@@ -95,6 +95,7 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
   {
     mPixmap = QPixmap( mNewSize );
     mMapRenderer->setOutputSize( mNewSize, mPixmap.logicalDpiX() );
+    updateFullExtent();
     mNewSize = QSize();
     refresh();
   }
@@ -106,10 +107,12 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent* pe )
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
+  if ( !mMapCanvas || !mMapRenderer ) return;
+
   const QgsRectangle& extent = mMapCanvas->extent();
 
   // show only when valid extent is set
-  if ( extent.isEmpty() )
+  if ( extent.isEmpty() || mMapRenderer->extent().isEmpty() )
   {
     mPanningWidget->hide();
     return;
@@ -290,11 +293,23 @@ void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
 
 void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 {
+  QgsDebugMsg( "layerSet: " + layerSet.join( ", " ) );
+  if ( !mMapRenderer ) return;
   mMapRenderer->setLayerSet( layerSet );
+  mMapRenderer->updateFullExtent();
+  updateFullExtent();
 }
 
-void QgsMapOverviewCanvas::updateFullExtent( const QgsRectangle& rect )
+void QgsMapOverviewCanvas::updateFullExtent()
 {
+  if ( !mMapRenderer ) return;
+  QgsRectangle rect;
+  if ( !mMapRenderer->layerSet().isEmpty() )
+  {
+    rect = mMapRenderer->fullExtent();
+    // expand a bit to keep features on margin
+    rect.scale( 1.1 );
+  }
   mMapRenderer->setExtent( rect );
   drawExtentRect();
 }
