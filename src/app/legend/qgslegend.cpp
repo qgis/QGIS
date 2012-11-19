@@ -1225,14 +1225,59 @@ QList<QgsMapLayer *> QgsLegend::layers()
 
 QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
 {
-  QList<QgsMapCanvasLayer> ls;
+  QMap<int, QgsMapCanvasLayer> layers;
+  QSet<QgsLegendLayer*> embeddedGroupChildren;
+  int nEntries = 0;
 
-  foreach ( QgsLegendLayer *l, legendLayers() )
+  QTreeWidgetItemIterator it( this );
+  while ( *it )
   {
-    ls << l->canvasLayer();
+    QgsLegendLayer* llayer = dynamic_cast<QgsLegendLayer *>( *it );
+    QgsLegendGroup* lgroup = dynamic_cast<QgsLegendGroup *>( *it );
+    if ( llayer && !embeddedGroupChildren.contains( llayer ) )
+    {
+      QgsMapCanvasLayer canvasLayer = llayer->canvasLayer();
+      if ( mUpdateDrawingOrder )
+      {
+        layers.insertMulti( nEntries + embeddedGroupChildren.size(), canvasLayer );
+      }
+      else
+      {
+        layers.insertMulti( llayer->drawingOrder(), canvasLayer );
+      }
+      ++nEntries;
+    }
+    else if ( lgroup )
+    {
+      if ( lgroup->isEmbedded() )
+      {
+        int groupDrawingOrder = lgroup->drawingOrder() + embeddedGroupChildren.size();
+        QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
+        for ( int i = 0; i < groupLayers.size(); ++i )
+        {
+          QgsLegendLayer* ll = groupLayers.at( i );
+          if ( !ll )
+          {
+            continue;
+          }
+
+          if ( mUpdateDrawingOrder )
+          {
+            layers.insertMulti( nEntries + embeddedGroupChildren.size(), ll->canvasLayer() );
+          }
+          else
+          {
+            layers.insertMulti( groupDrawingOrder + i,  ll->canvasLayer() );
+          }
+          embeddedGroupChildren.insert( ll );
+          ++nEntries;
+        }
+      }
+    }
+    ++it;
   }
 
-  return ls;
+  return layers.values();
 }
 
 void QgsLegend::setDrawingOrder( QList<QgsMapLayer *> layers )
