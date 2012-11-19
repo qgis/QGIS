@@ -9,4 +9,4 @@ centerx = (input.extent().xMinimum() + input.extent().xMaximum()) / 2
 centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())
 height = (input.extent().yMaximum() - input.extent().yMinimum())
-Sextante.runalg("mmqgisx:creategrid", cellsize, cellsize, width, height, centerx, centery, 3, grid)
+sextante.runalg("mmqgisx:creategrid", cellsize, cellsize, width, height, centerx, centery, 3, grid)

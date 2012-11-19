@@ -95,7 +95,10 @@ class SagaUtils:
         for line in iter(proc.readline, ""):
             if "%" in line:
                 s = "".join([x for x in line if x.isdigit()])
-                progress.setPercentage(int(s))
+                try:
+                    progress.setPercentage(int(s))
+                except:
+                    pass
             else:
                 line = line.strip()
                 if line!="/" and line!="-" and line !="\\" and line!="|":

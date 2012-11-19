@@ -93,7 +93,6 @@ class AlgorithmExecutor(QThread):
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-            self.finished.emit()
         except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
         except BaseException, e:

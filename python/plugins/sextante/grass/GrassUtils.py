@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -129,7 +130,8 @@ class GrassUtils:
         output = open(gisrc, "w")
         location = "temp_location"
         mapset = "user"
-        gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
+        gisdbase = GrassUtils.grassDataFolder()
+        #gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
         output.write("GISDBASE: " + gisdbase + "\n");
         output.write("LOCATION_NAME: " + location + "\n");
         output.write("MAPSET: " + mapset + "\n");
@@ -178,7 +180,13 @@ class GrassUtils:
 
     @staticmethod
     def grassMapsetFolder():
-        tempfolder = os.path.join(SextanteUtils.tempFolder(), "grassdata", "temp_location")
+        folder = os.path.join(GrassUtils.grassDataFolder(), "temp_location")
+        mkdir(folder)
+        return folder
+    
+    @staticmethod
+    def grassDataFolder():    
+        tempfolder = os.path.join(SextanteUtils.tempFolder(), "grassdata")
         mkdir(tempfolder)
         return tempfolder
 
@@ -190,7 +198,7 @@ class GrassUtils:
         structure and content will vary slightly depending on whether the user wants to process lat/lon or x/y data.'''
 
         latlon = SextanteConfig.getSetting(GrassUtils.GRASS_LATLON)
-        folder = GrassUtils.grassMapsetFolder()
+        folder = GrassUtils.grassMapsetFolder()        
         mkdir(os.path.join(folder, "PERMANENT"))
         mkdir(os.path.join(folder, "user"))
         mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
@@ -309,7 +317,7 @@ class GrassUtils:
     # of the previous ones.
     # Starting a session just involves creating the temp mapset structure
     @staticmethod
-    def startGrassSession():
+    def startGrassSession():        
         if not GrassUtils.sessionRunning:
             GrassUtils.createTempMapset()
             GrassUtils.sessionRunning = True
@@ -317,7 +325,7 @@ class GrassUtils:
     # End session by removing the temporary GRASS mapset and all the layers.
     @staticmethod    
     def endGrassSession():
-        shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
+        #shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
         GrassUtils.sessionRunning = False
         GrassUtils.sessionLayers = {}
     

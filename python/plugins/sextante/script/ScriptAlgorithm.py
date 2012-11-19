@@ -161,6 +161,10 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith("output file"):
             out = OutputFile()          
+        elif tokens[1].lower().strip().startswith("output number"):
+            out = OutputNumber()
+        elif tokens[1].lower().strip().startswith("output string"):
+            out = OutputString()                        
 
         if param != None:
             self.addParameter(param)
@@ -173,18 +177,25 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
 
-        script = "from sextante.core.Sextante import Sextante\n"
+        script = "import sextante\n"
+        
+        ns = {}
+        
         for param in self.parameters:
-            script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
+            #script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
+            ns[param.name] = param.value
 
         for out in self.outputs:
-            script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
+            ns[out.name] = out.value
+            #script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
 
         script+=self.script
         redirection = Redirection(progress)
         sys.stdout = redirection
-        exec(script)
+        exec(script) in ns
         sys.stdout = sys.__stdout__
+        for out in self.outputs:
+            out.setValue(ns[out.name])
 
     def helpFile(self):
         helpfile = self.descriptionFile + ".help"

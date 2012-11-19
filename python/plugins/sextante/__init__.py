@@ -17,6 +17,8 @@
 ***************************************************************************
 """
 
+from sextante.core.Sextante import runalg, alghelp, alglist, algoptions, load, loadFromAlg, extent, getObjectFromName, getObjectFromUri
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
