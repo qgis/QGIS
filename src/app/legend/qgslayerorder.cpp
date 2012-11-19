@@ -85,13 +85,14 @@ void QgsLayerOrder::refreshLayerList()
 {
   clear();
 
-  foreach ( QgsLegendLayer *layer, mLegend->legendLayers() )
+  QList<DrawingOrderInfo> drawingOrderList = mLegend->drawingOrder();
+  QList<DrawingOrderInfo>::const_iterator it = drawingOrderList.constBegin();
+  for ( ; it != drawingOrderList.constEnd(); ++it )
   {
-    QListWidgetItem *item = new QListWidgetItem( layer->layer()->name() );
-    item->setData( 1, QString::number( layer->drawingOrder() ) );
-    item->setData( Qt::UserRole, qVariantFromValue( qobject_cast<QObject*>( layer->layer() ) ) );
-    item->setCheckState( layer->isVisible() ? Qt::Checked : Qt::Unchecked );
-    QgsDebugMsg( QString( "add item=%1 at %2" ).arg( item ? item->text() : "(null item)" ).arg( count() ) );
+    QListWidgetItem *item = new QListWidgetItem( it->name );
+    item->setCheckState( it->checked ? Qt::Checked : Qt::Unchecked );
+    item->setData( Qt::UserRole, it->id );
+    item->setData( Qt::UserRole + 1, it->embeddedGroup );
     addItem( item );
   }
 }
@@ -261,14 +262,24 @@ void QgsLayerOrder::updateLayerOrder()
   if ( !isEnabled() )
     return;
 
-  QList<QgsMapLayer *> layers;
+  QList<DrawingOrderInfo> drawingOrder;
 
   for ( int i = 0; i < count(); i++ )
   {
-    layers << qobject_cast<QgsMapLayer *>( item( i )->data( Qt::UserRole ).value<QObject*>() );
+    QListWidgetItem* listItem = item( i );
+    if ( !listItem )
+    {
+      continue;
+    }
+    DrawingOrderInfo info;
+    info.name = listItem->text();
+    info.id = listItem->data( Qt::UserRole ).toString();
+    info.checked = listItem->checkState() == Qt::Checked;
+    info.embeddedGroup = listItem->data( Qt::UserRole + 1 ).toBool();
+    drawingOrder.push_back( info );
   }
 
-  mLegend->setDrawingOrder( layers );
+  mLegend->setDrawingOrder( drawingOrder );
 }
 
 void QgsLayerOrder::hideLine()

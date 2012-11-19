@@ -42,6 +42,14 @@ class QgsMapCanvasLayer;
 //value: containter with layer ids contained in the group
 typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
+struct DrawingOrderInfo
+{
+  QString name;
+  QString id;
+  bool checked;
+  bool embeddedGroup;
+};
+
 /**
    \class QgsLegend
    \brief A Legend treeview for QGIS
@@ -120,7 +128,14 @@ class QgsLegend : public QTreeWidget
     //!Return all layers in drawing order
     QList<QgsLegendLayer *> legendLayers();
 
+    //!Return info about layers and embedded groups in drawing order
+    QList<DrawingOrderInfo> drawingOrder();
+
+    QStringList drawingOrderLayers();
+
     void setDrawingOrder( QList<QgsMapLayer *> );
+
+    void setDrawingOrder( const QList<DrawingOrderInfo>& order );
 
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
@@ -211,6 +226,9 @@ class QgsLegend : public QTreeWidget
 
     /**Returns the legend layer to which a map layer belongs to*/
     QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
+
+    /**Returns legend group by group name and project path (empty for not-embedded groups)*/
+    QgsLegendGroup* findLegendGroup( const QString& name, const QString& projectPath = QString() );
 
   public slots:
 
