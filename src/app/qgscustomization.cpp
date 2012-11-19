@@ -588,39 +588,39 @@ void QgsCustomization::createTreeItemDocks( )
         pluginItem->setCheckState( 0, Qt::Checked );
 
         QgsLegend* legend = QgisApp::instance()->legend() ;
-        for(QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer; type<QgsMapLayer::PluginLayer; type = static_cast<QgsMapLayer::LayerType>(type+1))
+        for ( QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer; type < QgsMapLayer::PluginLayer; type = static_cast<QgsMapLayer::LayerType>( type + 1 ) )
         {
-            QList< LegendLayerAction > actions = legend->legendLayerActions( type );
+          QList< LegendLayerAction > actions = legend->legendLayerActions( type );
 
-            if ( ! actions.isEmpty() )
+          if ( ! actions.isEmpty() )
+          {
+            QMap< QString, QString> mapMenus;
+            for ( QList< LegendLayerAction > ::iterator it = actions.begin();
+                  it != actions.end(); ++it )
             {
-                QMap< QString, QString> mapMenus;
-                for ( QList< LegendLayerAction > ::iterator it = actions.begin();
-                        it != actions.end(); ++it )
-                  {
-                    mapMenus.insert(( *it ).menu,( *it ).menu);
-                  }
-                QMap<QString,QString>::const_iterator j = mapMenus.constBegin();
-                while (j != mapMenus.constEnd())
-                {
-                    QString actionMenuName = j.key() ;
-                    QStringList strs;
-                    strs << actionMenuName;
-                    QTreeWidgetItem* item = new QTreeWidgetItem( pluginItem, strs );
-                    for ( int i = 0; i < actions.count(); i++ )
-                    {
-                      if ( actions[i].menu==actionMenuName )
-                      {
-                        QStringList dwstrs;
-                        dwstrs << actions[i].id;
-                        QTreeWidgetItem* dwItem = new QTreeWidgetItem( item, dwstrs );
-                        dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-                        dwItem->setCheckState( 0, Qt::Checked );
-                      }
-                    }
-                    ++j;
-                }
+              mapMenus.insert(( *it ).menu, ( *it ).menu );
             }
+            QMap<QString, QString>::const_iterator j = mapMenus.constBegin();
+            while ( j != mapMenus.constEnd() )
+            {
+              QString actionMenuName = j.key() ;
+              QStringList strs;
+              strs << actionMenuName;
+              QTreeWidgetItem* item = new QTreeWidgetItem( pluginItem, strs );
+              for ( int i = 0; i < actions.count(); i++ )
+              {
+                if ( actions[i].menu == actionMenuName )
+                {
+                  QStringList dwstrs;
+                  dwstrs << actions[i].id;
+                  QTreeWidgetItem* dwItem = new QTreeWidgetItem( item, dwstrs );
+                  dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+                  dwItem->setCheckState( 0, Qt::Checked );
+                }
+              }
+              ++j;
+            }
+          }
         }
 
         topItem->insertChild( 0, myItem );
@@ -716,7 +716,7 @@ void QgsCustomization::updateMainWindow()
     {
       QMenu* menu = qobject_cast<QMenu*>( obj );
       bool visible = mSettings->value( menu->objectName(), true ).toBool();
-      menu->menuAction()->setVisible(visible);
+      menu->menuAction()->setVisible( visible );
       if ( visible )
       {
         updateMenu( menu, mSettings );
@@ -735,7 +735,7 @@ void QgsCustomization::updateMainWindow()
     {
       QToolBar* tb = qobject_cast<QToolBar*>( obj );
       bool visible = mSettings->value( tb->objectName(), true ).toBool();
-      tb->setVisible(visible);
+      tb->setVisible( visible );
       if ( visible )
       {
         mSettings->beginGroup( tb->objectName() );
@@ -743,7 +743,7 @@ void QgsCustomization::updateMainWindow()
         foreach ( QAction* action, tb->actions() )
         {
           if ( !action->objectName().isEmpty() )
-            action->setVisible(mSettings->value( action->objectName(), true ).toBool());
+            action->setVisible( mSettings->value( action->objectName(), true ).toBool() );
         }
         mSettings->endGroup();
       }
@@ -758,7 +758,7 @@ void QgsCustomization::updateMainWindow()
   foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
-      qobject_cast<QDockWidget*>( obj )->setVisible(mSettings->value( obj->objectName(), true ).toBool());
+      qobject_cast<QDockWidget*>( obj )->setVisible( mSettings->value( obj->objectName(), true ).toBool() );
   }
 
   mSettings->endGroup();
@@ -776,7 +776,7 @@ void QgsCustomization::updateMainWindow()
       {
         QWidget* widget = qobject_cast<QWidget*>( obj );
         if ( !widget->objectName().isEmpty() )
-          widget->setVisible(mSettings->value( widget->objectName(), true ).toBool());
+          widget->setVisible( mSettings->value( widget->objectName(), true ).toBool() );
       }
     }
 
@@ -801,7 +801,7 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings* settings )
       continue;
     }
     bool visible = settings->value( objName, true ).toBool();
-    action->setVisible(visible) ;
+    action->setVisible( visible ) ;
     if ( visible && action->menu() )
     {
       // it is a submenu - let's look if there isn't something to remove
