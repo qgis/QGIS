@@ -61,7 +61,8 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
 
     void addLayer( QgsLayerItem *layerItem );
 
-    QgsDataItem* dataItem( const QModelIndex& index );
+    // removed dataItem(), call mModel->dataItem directly (to avoid passing index from the wrong model)
+
     QgsBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
     QgsBrowserTreeFilterProxyModel* mProxyModel;
