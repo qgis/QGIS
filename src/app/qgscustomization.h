@@ -91,8 +91,6 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
 
   private:
     void init();
-    QTreeWidgetItem * createTreeItemWidgets( );
-    QTreeWidgetItem * readWidgetsXmlNode( QDomNode theNode );
 
     QString mLastDirSettingsName;
     QSettings* mSettings;
@@ -118,7 +116,7 @@ class QgsCustomization : public QObject
     static void customizeWidget( QString path, QWidget * widget, QSettings* settings );
     static void removeFromLayout( QLayout *theLayout, QWidget * widget );
 
-    void updateMainWindow( QMenu * theToolBarMenu );
+    void updateMainWindow();
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }
@@ -147,13 +145,17 @@ class QgsCustomization : public QObject
     QString mStatusPath;
 
     void updateMenu( QMenu* menu, QSettings* settings );
+    QTreeWidgetItem * createItemFromXmlNode( QDomNode theNode );
+    void createTreeItemWidgets( );
     void createTreeItemMenus( );
     void createTreeItemToolbars( );
     void createTreeItemDocks( );
     void createTreeItemStatus( );
     void addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu );
     void addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions );
+
     QList<QTreeWidgetItem*> mMainWindowItems;
+
     friend class QgsCustomizationDialog; // in order to access mMainWindowItems
 
   private slots:
