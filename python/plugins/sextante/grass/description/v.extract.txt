@@ -4,5 +4,5 @@ Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
 ParameterBoolean|-d|Dissolve common boundaries|True
-OutputVector|Name for output vector map|output
+OutputVector|output|Name for output vector map
 
