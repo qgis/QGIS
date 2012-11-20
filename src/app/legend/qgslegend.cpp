@@ -1193,7 +1193,7 @@ QList<DrawingOrderInfo> QgsLegend::drawingOrder()
         DrawingOrderInfo dInfo;
         dInfo.name = lgroup->text( 0 );
         dInfo.id = lgroup->projectPath();
-        dInfo.checked = ( lgroup->checkState( 0 ) == Qt::Checked );
+        dInfo.checked = ( lgroup->checkState( 0 ) != Qt::Unchecked );
         dInfo.embeddedGroup = true;
         if ( mUpdateDrawingOrder )
         {
