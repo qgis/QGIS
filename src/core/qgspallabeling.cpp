@@ -49,6 +49,7 @@
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
+#include <qgsproject.h>
 #include <QMessageBox>
 
 using namespace pal;
@@ -1927,6 +1928,48 @@ void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& fo
   }
   p->setBrush( color );
   p->drawPath( path );
+}
+
+void QgsPalLabeling::loadEngineSettings()
+{
+  // start with engine defaults for new project, or project that has no saved settings
+  Pal p;
+  bool saved = false;
+  mSearch = ( QgsPalLabeling::Search )( QgsProject::instance()->readNumEntry(
+                                          "PAL", "/SearchMethod", ( int )p.getSearch(), &saved ) );
+  mCandPoint = QgsProject::instance()->readNumEntry(
+                 "PAL", "/CandidatesPoint", p.getPointP(), &saved );
+  mCandLine = QgsProject::instance()->readNumEntry(
+                "PAL", "/CandidatesLine", p.getLineP(), &saved );
+  mCandPolygon = QgsProject::instance()->readNumEntry(
+                   "PAL", "/CandidatesPolygon", p.getPolyP(), &saved );
+  mShowingCandidates = QgsProject::instance()->readBoolEntry(
+                         "PAL", "/ShowingCandidates", false, &saved );
+  mShowingAllLabels = QgsProject::instance()->readBoolEntry(
+                        "PAL", "/ShowingAllLabels", false, &saved );
+  mSavedWithProject = saved;
+}
+
+void QgsPalLabeling::saveEngineSettings()
+{
+  QgsProject::instance()->writeEntry( "PAL", "/SearchMethod", ( int )mSearch );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPoint", mCandPoint );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
+  QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mShowingCandidates );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
+  mSavedWithProject = true;
+}
+
+void QgsPalLabeling::clearEngineSettings()
+{
+  QgsProject::instance()->removeEntry( "PAL", "/SearchMethod" );
+  QgsProject::instance()->removeEntry( "PAL", "/CandidatesPoint" );
+  QgsProject::instance()->removeEntry( "PAL", "/CandidatesLine" );
+  QgsProject::instance()->removeEntry( "PAL", "/CandidatesPolygon" );
+  QgsProject::instance()->removeEntry( "PAL", "/ShowingCandidates" );
+  QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
+  mSavedWithProject = false;
 }
 
 QgsLabelingEngineInterface* QgsPalLabeling::clone()
