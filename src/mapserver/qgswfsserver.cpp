@@ -332,22 +332,37 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
 
+  mErrors = QStringList();
+  mTypeNames = QStringList();
+
+  long maxFeat = 0;
+  long maxFeatures = -1;
+  long featureCounter = 0;
+
   QDomDocument doc;
   QString errorMsg;
   if ( doc.setContent( mParameterMap.value( "REQUEST_BODY" ), true, &errorMsg ) )
   {
     QDomElement docElem = doc.documentElement();
 
-    long maxFeat = 0;
-    long featureCounter = 0;
-    long maxFeatures = -1;
     if ( docElem.hasAttribute( "maxFeatures" ) )
       maxFeatures = docElem.attribute( "maxFeatures" ).toLong();
 
     QDomNodeList queryNodes = docElem.elementsByTagName( "Query" );
+    QDomElement queryElem;
     for ( int i = 0; i < queryNodes.size(); i++ )
     {
-      QDomElement queryElem = queryNodes.at( 0 ).toElement();
+      queryElem = queryNodes.at( 0 ).toElement();
+      mTypeName = queryElem.attribute( "typeName", "" );
+      if ( mTypeName.contains( ":" ) )
+      {
+        mTypeName = mTypeName.section( ":", 1, 1 );
+      }
+      mTypeNames << mTypeName;
+    }
+    for ( int i = 0; i < queryNodes.size(); i++ )
+    {
+      queryElem = queryNodes.at( 0 ).toElement();
       mTypeName = queryElem.attribute( "typeName", "" );
       if ( mTypeName.contains( ":" ) )
       {
@@ -355,6 +370,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
       layerList = mConfigParser->mapLayerFromTypeName( mTypeName );
+      if ( layerList.size() < 1 )
+      {
+        mErrors << QString( "The layer for the TypeName '%1' is not found" ).arg( mTypeName );
+        continue;
+      }
+
       currentLayer = layerList.at( 0 );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
@@ -379,7 +400,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QgsVectorDataProvider* provider = layer->dataProvider();
         if ( !provider )
         {
-          return 2;
+          mErrors << QString( "The layer's provider for the TypeName '%1' is not found" ).arg( mTypeName );
+          continue;
         }
 
         QgsFeature feature;
@@ -434,9 +456,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         provider->select( attrIndexes, searchRect, mWithGeom, true );
 
-        if ( featureCounter == 0 )
-          startGetFeature( request, format, layerCrs, &searchRect );
-
         long featCounter = 0;
         QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
         if ( filterNodes.size() > 0 )
@@ -458,6 +477,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
 
               provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
+
+              if ( featureCounter == 0 )
+                startGetFeature( request, format, layerCrs, &searchRect );
+
               sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
 
               fid = "";
@@ -485,6 +508,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
             {
+              if ( featureCounter == 0 )
+                startGetFeature( request, format, layerCrs, &searchRect );
+
               sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
               ++featCounter;
               ++featureCounter;
@@ -508,6 +534,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 }
                 if ( res.toInt() != 0 )
                 {
+                  if ( featureCounter == 0 )
+                    startGetFeature( request, format, layerCrs, &searchRect );
+
                   sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
                   ++featureCounter;
                   ++featCounter;
@@ -520,18 +549,27 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         {
           while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
           {
+            if ( featureCounter == 0 )
+              startGetFeature( request, format, layerCrs, &searchRect );
+
             sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
             ++featCounter;
             ++featureCounter;
           }
         }
       }
+      else
+      {
+        mErrors << QString( "The layer for the TypeName '%1' is not a WFS layer" ).arg( mTypeName );
+      }
 
     }
 
-    endGetFeature( request, format );
+    if ( featureCounter == 0 )
+      throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
+    else
+      endGetFeature( request, format );
     return 0;
-
   }
 
   // Information about parameters
@@ -633,9 +671,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
 
   //read MAXFEATURES
-  long maxFeat = 0;
-  long maxFeatures = -1;
-  long featureCounter = 0;
   QMap<QString, QString>::const_iterator mfIt = mParameterMap.find( "MAXFEATURES" );
   if ( mfIt != mParameterMap.end() )
   {
@@ -654,12 +689,17 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     mPropertyName = pnIt.value();
   }
 
-
-  QStringList tnList = mTypeName.split( "," );
-  foreach (const QString &tnStr, tnList)
+  mTypeNames = mTypeName.split( "," );
+  foreach (const QString &tnStr, mTypeNames)
   {
     mTypeName = tnStr;
     layerList = mConfigParser->mapLayerFromTypeName( tnStr );
+    if ( layerList.size() < 1 )
+    {
+      mErrors << QString( "The layer for the TypeName '%1' is not found" ).arg( tnStr );
+      continue;
+    }
+
     currentLayer = layerList.at( 0 );
 
     QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
@@ -685,7 +725,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       QgsVectorDataProvider* provider = layer->dataProvider();
       if ( !provider )
       {
-        throw QgsMapServiceException( "RequestNotWellFormed", "Provider not found" );
+        mErrors << QString( "The layer's provider for the TypeName '%1' is not found" ).arg( tnStr );
+        continue;
       }
 
       QgsFeature feature;
@@ -734,9 +775,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             , searchRect.yMaximum() + 0.000001 );
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
-      if ( featureCounter == 0 )
-        startGetFeature( request, format, layerCrs, &searchRect );
-
       long featCounter = 0;
       if ( featureIdOk )
       {
@@ -745,6 +783,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( !fidStr.startsWith( tnStr ) )
             continue;
           provider->featureAtId( fidStr.section( ".", 1, 1 ).toInt(), feature, mWithGeom, attrIndexes );
+
+          if ( featureCounter == 0 )
+            startGetFeature( request, format, layerCrs, &searchRect );
+
           sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
           ++featCounter;
           ++featureCounter;
@@ -769,6 +811,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             if ( res.toInt() != 0 )
             {
+              if ( featureCounter == 0 )
+                startGetFeature( request, format, layerCrs, &searchRect );
+
               sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
               ++featCounter;
               ++featureCounter;
@@ -797,6 +842,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
 
             provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
+
+            if ( featureCounter == 0 )
+              startGetFeature( request, format, layerCrs, &searchRect );
+
             sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
 
             fid = "";
@@ -824,6 +873,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
           {
+            if ( featureCounter == 0 )
+              startGetFeature( request, format, layerCrs, &searchRect );
+
             sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
             ++featCounter;
             ++featureCounter;
@@ -847,6 +899,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                 }
                 if ( res.toInt() != 0 )
                 {
+                  if ( featureCounter == 0 )
+                    startGetFeature( request, format, layerCrs, &searchRect );
+
                   sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerExcludedAttributes );
                   ++featureCounter;
                   ++featCounter;
@@ -861,6 +916,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         provider->select( attrIndexes, searchRect, mWithGeom, true );
         while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
         {
+          if ( featureCounter == 0 )
+            startGetFeature( request, format, layerCrs, &searchRect );
+
           sendGetFeature( request, format, &feature, featCounter, layerCrs, fields, layerExcludedAttributes );
           ++featCounter;
           ++featureCounter;
@@ -870,13 +928,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
     else
     {
-      return 2;
+      mErrors << QString( "The layer for the TypeName '%1' is not a WFS layer" ).arg( tnStr );
     }
 
   }
-  endGetFeature( request, format );
-
-
+  if ( featureCounter == 0 )
+    throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
+  else
+    endGetFeature( request, format );
 
   return 0;
 }
@@ -951,6 +1010,10 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
       {
         mapUrl.removeQueryItem( queryIt->first );
       }
+      else if ( queryIt->first.compare( "TYPENAME", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
       else if ( queryIt->first.compare( "FILTER", Qt::CaseInsensitive ) == 0 )
       {
         mapUrl.removeQueryItem( queryIt->first );
@@ -968,6 +1031,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
         mapUrl.removeQueryItem( queryIt->first );
       }
     }
+    mapUrl.addQueryItem( "TYPENAME", mTypeNames.join( "," ) );
     mapUrl.addQueryItem( "OUTPUTFORMAT", "XMLSCHEMA" );
     hrefString = mapUrl.toString();
 
@@ -1005,6 +1069,9 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 
 void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> excludedAttributes ) /*const*/
 {
+  if ( !feat->isValid() )
+    return;
+
   QByteArray result;
   if ( format == "GeoJSON" )
   {
