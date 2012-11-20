@@ -261,7 +261,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)
                 f.close()
-                command+=( " -" + param.name + " " + tempTableFile)
+                command+=( " -" + param.name + " \"" + tempTableFile + "\"")
             elif isinstance(param, ParameterExtent):
                 #'we have to substract/add half cell size, since saga is center based, not corner based
                 halfcell = self.getOutputCellsize() / 2
