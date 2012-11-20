@@ -7968,7 +7968,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     else
     {
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
-      connect( rlp, SIGNAL( refreshLegend( QString, QgsLegendItem::Expansion ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, QgsLegendItem::Expansion ) ) );
+      connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
 
     rlp->exec();
