@@ -207,6 +207,9 @@ class QgsProjectParser: public QgsConfigParser
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+    /**Adds drawing order info from layer element or group element (recursive)*/
+    void addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList, int& nEmbeddedGroupLayers,
+                          bool embedded = false ) const;
     /**Returns project layers by id*/
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
