@@ -1182,7 +1182,7 @@ QList<DrawingOrderInfo> QgsLegend::drawingOrder()
     }
     else if ( lgroup )
     {
-      if ( lgroup->isEmbedded() )
+        if ( lgroup->isEmbedded() && !(lgroup->parent()) )
       {
         QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
         QList<QgsLegendLayer*>::const_iterator groupLayerIt = groupLayers.constBegin();

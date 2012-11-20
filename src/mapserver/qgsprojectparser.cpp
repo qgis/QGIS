@@ -2246,7 +2246,7 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
 }
 
 void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList, int& nEmbeddedGroupLayers,
-                                        bool embedded ) const
+                                        bool embedded, int embeddedOrder ) const
 {
   if ( elem.isNull() )
   {
@@ -2255,9 +2255,17 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
 
   if ( elem.tagName() == "legendlayer" )
   {
-    if ( useDrawingOrder )
+      if ( useDrawingOrder || embeddedOrder != -1 )
     {
-      int order = elem.attribute( "drawingOrder", "-1" ).toInt();
+      int order = -1;
+      if( embedded )
+      {
+          order = embeddedOrder;
+      }
+      else
+      {
+          order = drawingOrder( elem );
+      }
       orderedLayerList.insertMulti( order + nEmbeddedGroupLayers, elem.attribute( "name" ) );
     }
     else
@@ -2278,6 +2286,7 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
       //load layers / elements from project file
       QString project = convertToAbsolutePath( elem.attribute( "project" ) );
       QString embeddedGroupName = elem.attribute( "name" );
+      int embedDrawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
       QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
       if ( p )
       {
@@ -2286,7 +2295,7 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
         {
           if ( groupElem.attribute( "name" ) == embeddedGroupName )
           {
-            addDrawingOrder( groupElem, false, orderedLayerList, nEmbeddedGroupLayers, true );
+            addDrawingOrder( groupElem, false, orderedLayerList, nEmbeddedGroupLayers, true, embedDrawingOrder );
             break;
           }
         }
@@ -2298,7 +2307,8 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
       QDomElement childElem;
       for ( int i = 0; i < childList.size(); ++i )
       {
-        addDrawingOrder( childList.at( i ).toElement(), useDrawingOrder, orderedLayerList, nEmbeddedGroupLayers, false );
+        addDrawingOrder( childList.at( i ).toElement(), useDrawingOrder, orderedLayerList, nEmbeddedGroupLayers,
+                         embedded, embeddedOrder );
       }
     }
   }
@@ -2686,4 +2696,17 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
   p->setPen( framePen );
 
   p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
+}
+
+int QgsProjectParser::drawingOrder( const QDomElement& elem )
+{
+    QDomElement e = elem;
+    while( !e.isNull() )
+    {
+        if( e.hasAttribute( "drawingOrder" ) )
+        {
+            return e.attribute( "drawingOrder" ).toInt();
+        }
+        e = e.parentNode().toElement();
+    }
 }
