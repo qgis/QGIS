@@ -29,6 +29,8 @@ class QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDi
 
   public slots:
     void onOK();
+    /** @note Added in QGIS 1.9 */
+    void setDefaults();
 
   protected:
     QgsPalLabeling* mLBL;

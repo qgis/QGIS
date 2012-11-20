@@ -26,7 +26,7 @@ class QgsMapOverviewCanvas : QWidget
 
     void enableAntiAliasing( bool flag );
 
-    void updateFullExtent( const QgsRectangle& rect );
+    void updateFullExtent();
 
   public slots:
 

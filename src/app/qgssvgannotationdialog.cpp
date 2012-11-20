@@ -22,24 +22,25 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f):
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
 {
-    setupUi( this );
-    mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-    mEmbeddedWidget->show();
-    mStackedWidget->addWidget( mEmbeddedWidget );
-    mStackedWidget->setCurrentWidget( mEmbeddedWidget );
+  setupUi( this );
+  setWindowTitle( tr( "SVG annotation" ) );
+  mEmbeddedWidget = new QgsAnnotationWidget( mItem );
+  mEmbeddedWidget->show();
+  mStackedWidget->addWidget( mEmbeddedWidget );
+  mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-    if( mItem )
-    {
-        mFileLineEdit->setText( mItem->filePath() );
-    }
+  if ( mItem )
+  {
+    mFileLineEdit->setText( mItem->filePath() );
+  }
 
-    QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
-    QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-    QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
-    mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
+  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( 0 ), mEmbeddedWidget( 0 )
@@ -54,38 +55,38 @@ QgsSvgAnnotationDialog::~QgsSvgAnnotationDialog()
 
 void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
 {
-    QString directory;
-    QFileInfo fi( mFileLineEdit->text() );
-    if ( fi.exists() )
-    {
-      directory = fi.absolutePath();
-    }
-    QString filename = QFileDialog::getOpenFileName( 0, tr( "html" ), directory, "*.html" );
-    mFileLineEdit->setText( filename );
+  QString directory;
+  QFileInfo fi( mFileLineEdit->text() );
+  if ( fi.exists() )
+  {
+    directory = fi.absolutePath();
+  }
+  QString filename = QFileDialog::getOpenFileName( 0, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
+  mFileLineEdit->setText( filename );
 }
 
 void QgsSvgAnnotationDialog::applySettingsToItem()
 {
-    if ( mEmbeddedWidget )
-    {
-      mEmbeddedWidget->apply();
-    }
+  if ( mEmbeddedWidget )
+  {
+    mEmbeddedWidget->apply();
+  }
 
-    if( mItem )
-    {
-        mItem->setFilePath( mFileLineEdit->text() );
-        mItem->update();
-    }
+  if ( mItem )
+  {
+    mItem->setFilePath( mFileLineEdit->text() );
+    mItem->update();
+  }
 
 }
 
 void QgsSvgAnnotationDialog::deleteItem()
 {
-    QGraphicsScene* scene = mItem->scene();
-    if ( scene )
-    {
-      scene->removeItem( mItem );
-    }
-    delete mItem;
-    mItem = 0;
+  QGraphicsScene* scene = mItem->scene();
+  if ( scene )
+  {
+    scene->removeItem( mItem );
+  }
+  delete mItem;
+  mItem = 0;
 }

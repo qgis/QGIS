@@ -314,6 +314,14 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
                     const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
 
+    //! load/save engine settings to project file
+    //! @note added in QGIS 1.9
+    void loadEngineSettings();
+    void saveEngineSettings();
+    void clearEngineSettings();
+    bool isStoredWithProject() const { return mSavedWithProject; }
+    void setStoredWithProject( bool store ) { mSavedWithProject = store; }
+
   protected:
     // hashtable of layer settings, being filled during labeling
     QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
@@ -332,6 +340,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingCandidates;
 
     bool mShowingAllLabels; // whether to avoid collisions or not
+
+    bool mSavedWithProject; // whether engine settings have been read from project file
 
     QgsLabelSearchTree* mLabelSearchTree;
 };

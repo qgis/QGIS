@@ -3377,6 +3377,9 @@ bool QgisApp::addProject( QString projectFile )
     }
   }
 
+  // load PAL engine settings
+  mLBL->loadEngineSettings();
+
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
   // specific plug-in state
