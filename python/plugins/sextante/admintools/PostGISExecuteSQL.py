@@ -5,7 +5,7 @@
     PostGISExecuteSQL.py
     ---------------------
     Date                 : October 2012
-    Copyright            : (C) 2012 by Victor Olaya, Carterix Geomatics
+    Copyright            : (C) 2012 by Victor Olaya and Carterix Geomatics
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -31,7 +31,6 @@ from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.admintools import postgis_utils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import PyQt4
 
 class PostGISExecuteSQL(GeoAlgorithm):
     

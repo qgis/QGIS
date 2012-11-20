@@ -47,22 +47,19 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.gui.FixedTablePanel import FixedTablePanel
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
-import copy
 from sextante.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.core.SextanteResults import SextanteResults
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
-from sextante.gui.UnthreadedAlgorithmExecutor import SilentProgress,\
-    UnthreadedAlgorithmExecutor
+from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 
 class BatchProcessingDialog(AlgorithmExecutionDialog):
     def __init__(self, alg):
         self.algs = None
         self.table = QtGui.QTableWidget(None)
-        AlgorithmExecutionDialog.__init__(self, alg, self.table)
-        #self.setModal(True)
+        AlgorithmExecutionDialog.__init__(self, alg, self.table)        
         self.setWindowModality(1)
         self.algEx = None
         self.resize(800, 500)
@@ -87,9 +84,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
-        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        #self.progress = QtGui.QProgressBar()
-        #self.progress.setMaximum(100)
+        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)        
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
 
@@ -137,11 +132,9 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     return
             self.algs.append(alg)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        #self.progress.setMaximum(len(self.algs))
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))        
         self.table.setEnabled(False)
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
-            #self.progress.setValue(0)
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):            
             self.nextAlg(0)
         else:
             i=1
@@ -209,9 +202,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         outputFile = SextanteUtils.getTempFilename("html")
         f = open(outputFile, "w")                                
         for alg in self.algs:
+            f.write("<hr>\n")
             for out in alg.outputs:            
                 if isinstance(out, (OutputNumber,OutputString)):
                     f.write("<p>" + out.description + ": " + str(out.value) + "</p>\n")
+        f.write("<hr>\n")
         f.close()
         SextanteResults.addResult(self.algs[0].name + "[summary]", outputFile)                            
                          
