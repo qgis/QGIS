@@ -2289,8 +2289,81 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   return BBox;
 }
 
+void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList, int& nEmbeddedGroupLayers,
+                                        bool embedded, int embeddedOrder ) const
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  if ( elem.tagName() == "legendlayer" )
+  {
+    if ( useDrawingOrder || embeddedOrder != -1 )
+    {
+      int order = -1;
+      if ( embedded )
+      {
+        order = embeddedOrder;
+      }
+      else
+      {
+        order = drawingOrder( elem );
+      }
+      orderedLayerList.insertMulti( order + nEmbeddedGroupLayers, elem.attribute( "name" ) );
+    }
+    else
+    {
+      orderedLayerList.insertMulti( orderedLayerList.size(), elem.attribute( "name" ) );
+    }
+
+    if ( embedded )
+    {
+      ++nEmbeddedGroupLayers;
+    }
+  }
+  else if ( elem.tagName() == "legendgroup" )
+  {
+    //embedded vs. not embedded
+    if ( elem.attribute( "embedded" ) == "1" && !embedded )
+    {
+      //load layers / elements from project file
+      QString project = convertToAbsolutePath( elem.attribute( "project" ) );
+      QString embeddedGroupName = elem.attribute( "name" );
+      int embedDrawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+      if ( p )
+      {
+        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
+        foreach ( const QDomElement &groupElem, embeddedGroupElements )
+        {
+          if ( groupElem.attribute( "name" ) == embeddedGroupName )
+          {
+            addDrawingOrder( groupElem, false, orderedLayerList, nEmbeddedGroupLayers, true, embedDrawingOrder );
+            break;
+          }
+        }
+      }
+    }
+    else
+    {
+      QDomNodeList childList = elem.childNodes();
+      QDomElement childElem;
+      for ( int i = 0; i < childList.size(); ++i )
+      {
+        addDrawingOrder( childList.at( i ).toElement(), useDrawingOrder, orderedLayerList, nEmbeddedGroupLayers,
+                         embedded, embeddedOrder );
+      }
+    }
+  }
+}
+
 void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
 {
+
+  return; //soon...
+
+#if 0
   if ( !mXMLDoc )
   {
     return;
@@ -2303,44 +2376,29 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
     return;
   }
 
-  QStringList layerList;
-
   bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
-  QDomNodeList layerNodeList = legendElement.elementsByTagName( "legendlayer" );
-  if ( !useDrawingOrder ) //bottom to top
-  {
-    for ( int i = 0; i < layerNodeList.size(); ++i )
-    {
-      layerList.prepend( layerNodeList.at( i ).toElement().attribute( "name" ) );
-    }
-  }
-  else
-  {
-    QMap<int, QString> orderedLayerNames;
-    for ( int i = 0; i < layerNodeList.size(); ++i )
-    {
-      QString layerName = layerNodeList.at( i ).toElement().attribute( "name" );
-      int order = layerNodeList.at( i ).toElement().attribute( "drawingOrder" ).toInt();
-      if ( order == -1 )
-      {
-        layerList.prepend( layerName );
-      }
-      else
-      {
-        orderedLayerNames.insert( order, layerName );
-      }
-    }
+  int nEmbeddedGroupLayers = 0;
+  QMap<int, QString> orderedLayerNames;
 
-    QMap<int, QString>::const_iterator orderIt = orderedLayerNames.constBegin();
-    for ( ; orderIt != orderedLayerNames.constEnd(); ++orderIt )
-    {
-      layerList.prepend( *orderIt );
-    }
+  QDomNodeList legendChildren = legendElement.childNodes();
+  QDomElement childElem;
+  for ( int i = 0; i < legendChildren.size(); ++i )
+  {
+    addDrawingOrder( legendChildren.at( i ).toElement(), useDrawingOrder, orderedLayerNames, nEmbeddedGroupLayers, false );
   }
+
+  QStringList layerList;
+  QMap<int, QString>::const_iterator nameIt = orderedLayerNames.constBegin();
+  for ( ; nameIt != orderedLayerNames.constEnd(); ++nameIt )
+  {
+    layerList.prepend( nameIt.value() );
+  }
+
   QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );
   QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
   layerDrawingOrderElem.appendChild( drawingOrderText );
   parentElem.appendChild( layerDrawingOrderElem );
+#endif //0
 }
 
 void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
@@ -2688,4 +2746,17 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
   p->setPen( framePen );
 
   p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
+}
+
+int QgsProjectParser::drawingOrder( const QDomElement& elem )
+{
+  QDomElement e = elem;
+  while ( !e.isNull() )
+  {
+    if ( e.hasAttribute( "drawingOrder" ) )
+    {
+      return e.attribute( "drawingOrder" ).toInt();
+    }
+    e = e.parentNode().toElement();
+  }
 }
