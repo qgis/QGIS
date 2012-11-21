@@ -62,7 +62,6 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
-  connect( mItemTreeView, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
 
   connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
            this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
@@ -88,6 +87,8 @@ void QgsComposerLegendWidget::setGuiElements()
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
   mColumnCountSpinBox->setValue( mLegend->columnCount() );
+  mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
+  mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
   mGroupSpaceSpinBox->setValue( mLegend->groupSpace() );
@@ -143,6 +144,32 @@ void QgsComposerLegendWidget::on_mColumnCountSpinBox_valueChanged( int c )
   {
     mLegend->beginCommand( tr( "Legend column count" ), QgsComposerMergeCommand::LegendColumnCount );
     mLegend->setColumnCount( c );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+  mSplitLayerCheckBox->setEnabled( c > 1 );
+  mEqualColumnWidthCheckBox->setEnabled( c > 1 );
+}
+
+void QgsComposerLegendWidget::on_mSplitLayerCheckBox_toggled( bool checked )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend split layers" ), QgsComposerMergeCommand::LegendSplitLayer );
+    mLegend->setSplitLayer( checked );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mEqualColumnWidthCheckBox_toggled( bool checked )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend equal column width" ), QgsComposerMergeCommand::LegendEqualColumnWidth );
+    mLegend->setEqualColumnWidth( checked );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -731,6 +758,8 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
+  mSplitLayerCheckBox->blockSignals( b );
+  mEqualColumnWidthCheckBox->blockSignals( b );
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
   mGroupSpaceSpinBox->blockSignals( b );
