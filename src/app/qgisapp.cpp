@@ -6076,6 +6076,37 @@ void QgisApp::setExtent( QgsRectangle theRect )
  */
 bool QgisApp::saveDirty()
 {
+  QString whyDirty = "";
+  bool hasUnsavedEdits = false;
+  // extra check to see if there are any vector layers with unsaved provider edits
+  // to ensure user has opportunity to save any editing
+  if ( QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      if ( !vl )
+      {
+        continue;
+      }
+
+      hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
+      if ( hasUnsavedEdits )
+      {
+        break;
+      }
+    }
+
+    if ( hasUnsavedEdits )
+    {
+      markDirty();
+      whyDirty = "<p style='color:darkred;'>";
+      whyDirty += tr( "Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!" );
+      whyDirty += "</p>";
+    }
+  }
+
   QMessageBox::StandardButton answer( QMessageBox::Discard );
   mMapCanvas->freeze( true );
 
@@ -6096,8 +6127,10 @@ bool QgisApp::saveDirty()
 
     // prompt user to save
     answer = QMessageBox::information( this, tr( "Save?" ),
-                                       tr( "Do you want to save the current project?" ),
-                                       QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard );
+                                       tr( "Do you want to save the current project?%1" )
+                                       .arg( whyDirty ),
+                                       QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
+                                       hasUnsavedEdits ? QMessageBox::Cancel : QMessageBox::Save );
     if ( QMessageBox::Save == answer )
     {
       if ( !fileSave() )
