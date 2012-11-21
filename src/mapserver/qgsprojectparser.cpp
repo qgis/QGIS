@@ -2255,16 +2255,16 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
 
   if ( elem.tagName() == "legendlayer" )
   {
-      if ( useDrawingOrder || embeddedOrder != -1 )
+    if ( useDrawingOrder || embeddedOrder != -1 )
     {
       int order = -1;
-      if( embedded )
+      if ( embedded )
       {
-          order = embeddedOrder;
+        order = embeddedOrder;
       }
       else
       {
-          order = drawingOrder( elem );
+        order = drawingOrder( elem );
       }
       orderedLayerList.insertMulti( order + nEmbeddedGroupLayers, elem.attribute( "name" ) );
     }
@@ -2316,6 +2316,10 @@ void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, 
 
 void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
 {
+
+  return; //soon...
+
+#if 0
   if ( !mXMLDoc )
   {
     return;
@@ -2350,6 +2354,7 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
   QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
   layerDrawingOrderElem.appendChild( drawingOrderText );
   parentElem.appendChild( layerDrawingOrderElem );
+#endif //0
 }
 
 void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
@@ -2700,13 +2705,13 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
 
 int QgsProjectParser::drawingOrder( const QDomElement& elem )
 {
-    QDomElement e = elem;
-    while( !e.isNull() )
+  QDomElement e = elem;
+  while ( !e.isNull() )
+  {
+    if ( e.hasAttribute( "drawingOrder" ) )
     {
-        if( e.hasAttribute( "drawingOrder" ) )
-        {
-            return e.attribute( "drawingOrder" ).toInt();
-        }
-        e = e.parentNode().toElement();
+      return e.attribute( "drawingOrder" ).toInt();
     }
+    e = e.parentNode().toElement();
+  }
 }

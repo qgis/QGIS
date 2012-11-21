@@ -1182,7 +1182,7 @@ QList<DrawingOrderInfo> QgsLegend::drawingOrder()
     }
     else if ( lgroup )
     {
-        if ( lgroup->isEmbedded() && !(lgroup->parent()) )
+      if ( lgroup->isEmbedded() && !( lgroup->parent() ) )
       {
         QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
         QList<QgsLegendLayer*>::const_iterator groupLayerIt = groupLayers.constBegin();
@@ -1245,36 +1245,35 @@ QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
       {
         layers.insertMulti( llayer->drawingOrder(), canvasLayer );
       }
-      ++nEntries;
     }
     else if ( lgroup )
     {
       if ( lgroup->isEmbedded() )
       {
-        int groupDrawingOrder = lgroup->drawingOrder() + embeddedGroupChildren.size();
+        int groupDrawingOrder = lgroup->drawingOrder();
         QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
-        for ( int i = 0; i < groupLayers.size(); ++i )
+        for ( int i = groupLayers.size() - 1; i >= 0; --i )
         {
           QgsLegendLayer* ll = groupLayers.at( i );
-          if ( !ll )
+          if ( !ll || embeddedGroupChildren.contains( ll ) )
           {
             continue;
           }
 
           if ( mUpdateDrawingOrder )
           {
-            layers.insertMulti( nEntries + embeddedGroupChildren.size(), ll->canvasLayer() );
+            layers.insertMulti( nEntries, ll->canvasLayer() );
           }
           else
           {
-            layers.insertMulti( groupDrawingOrder + i,  ll->canvasLayer() );
+            layers.insertMulti( groupDrawingOrder,  ll->canvasLayer() );
           }
           embeddedGroupChildren.insert( ll );
-          ++nEntries;
         }
       }
     }
     ++it;
+    ++nEntries;
   }
 
   return layers.values();
@@ -1315,10 +1314,9 @@ void QgsLegend::setDrawingOrder( const QList<DrawingOrderInfo>& order )
         QList<QgsLegendLayer*>::iterator groupIt = groupLayers.begin();
         for ( ; groupIt != groupLayers.end(); ++groupIt )
         {
-          ( *groupIt )->setDrawingOrder( i );
           layers.push_back(( *groupIt )->canvasLayer() );
-          ++i;
         }
+        ++i;
       }
     }
     else
