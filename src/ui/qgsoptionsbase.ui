@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>770</width>
-            <height>1062</height>
+            <width>768</width>
+            <height>1041</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -81,6 +81,13 @@
                <widget class="QCheckBox" name="chbAskToSaveProjectChanges">
                 <property name="text">
                  <string>Prompt to save project changes when required</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="chbWarnWhenLayerHasEdits">
+                <property name="text">
+                 <string>Warn on project close when any layer is in edit mode with unsaved edits</string>
                 </property>
                </widget>
               </item>
