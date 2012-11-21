@@ -679,7 +679,17 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsLegend::mouseDoubleClickEvent( QMouseEvent *e )
 {
+#ifdef Q_WS_MAC
+  // fix for when quick left-then-right clicks (when legend is out of focus)
+  //  register as left double click: show contextual menu as user intended
+  if ( e->button() == Qt::RightButton )
+  {
+    mousePressEvent( e );
+    return;
+  }
+#else
   Q_UNUSED( e );
+#endif
 
   QSettings settings;
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
