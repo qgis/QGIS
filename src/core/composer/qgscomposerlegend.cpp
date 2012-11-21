@@ -34,6 +34,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mTitle( tr( "Legend" ) )
     , mBoxSpace( 2 )
+    , mColumnSpace( 2 )
     , mGroupSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
@@ -117,14 +118,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     if ( atom.column > column )
     {
       // Switch to next column
-      // Using mBoxSpace for inter column space
       if ( mEqualColumnWidth )
       {
-        point.rx() += mBoxSpace + maxColumnWidth;
+        point.rx() += mColumnSpace + maxColumnWidth;
       }
       else
       {
-        point.rx() += mBoxSpace + columnWidth;
+        point.rx() += mColumnSpace + columnWidth;
       }
       point.ry() = columnTop;
       columnWidth = 0;
@@ -290,7 +290,6 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  mColumns.clear();
   QSizeF size = paintAndDetermineSize( 0 );
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
@@ -642,7 +641,6 @@ QStringList QgsComposerLegend::layerIdList() const
 void QgsComposerLegend::synchronizeWithModel()
 {
   QgsDebugMsg( "Entered" );
-  mColumns.clear();
   adjustBoxSize();
   update();
 }
@@ -656,7 +654,6 @@ void QgsComposerLegend::setTitleFont( const QFont& f )
 
 void QgsComposerLegend::setGroupFont( const QFont& f )
 {
-  mColumns.clear();
   mGroupFont = f;
   adjustBoxSize();
   update();
@@ -664,7 +661,6 @@ void QgsComposerLegend::setGroupFont( const QFont& f )
 
 void QgsComposerLegend::setLayerFont( const QFont& f )
 {
-  mColumns.clear();
   mLayerFont = f;
   adjustBoxSize();
   update();
@@ -672,7 +668,6 @@ void QgsComposerLegend::setLayerFont( const QFont& f )
 
 void QgsComposerLegend::setItemFont( const QFont& f )
 {
-  mColumns.clear();
   mItemFont = f;
   adjustBoxSize();
   update();
@@ -724,6 +719,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "layerFont", mLayerFont.toString() );
   composerLegendElem.setAttribute( "itemFont", mItemFont.toString() );
   composerLegendElem.setAttribute( "boxSpace", QString::number( mBoxSpace ) );
+  composerLegendElem.setAttribute( "columnSpace", QString::number( mColumnSpace ) );
   composerLegendElem.setAttribute( "groupSpace", QString::number( mGroupSpace ) );
   composerLegendElem.setAttribute( "layerSpace", QString::number( mLayerSpace ) );
   composerLegendElem.setAttribute( "symbolSpace", QString::number( mSymbolSpace ) );
@@ -785,6 +781,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
+  mColumnSpace = itemElem.attribute( "columnSpace", "2.0" ).toDouble();
   mGroupSpace = itemElem.attribute( "groupSpace", "3.0" ).toDouble();
   mLayerSpace = itemElem.attribute( "layerSpace", "3.0" ).toDouble();
   mSymbolSpace = itemElem.attribute( "symbolSpace", "2.0" ).toDouble();
@@ -822,7 +819,6 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
 void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 {
-  mColumns.clear();
   mComposerMap = map;
   if ( map )
   {
@@ -832,7 +828,10 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 
 void QgsComposerLegend::invalidateCurrentMap()
 {
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
   mComposerMap = 0;
 }
 

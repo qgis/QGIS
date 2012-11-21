@@ -96,6 +96,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mSymbolSpaceSpinBox->setValue( mLegend->symbolSpace() );
   mIconLabelSpaceSpinBox->setValue( mLegend->iconLabelSpace() );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
+  mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
   if ( mLegend->model() )
   {
     mCheckBoxAutoUpdate->setChecked( mLegend->model()->autoUpdate() );
@@ -336,13 +337,24 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   }
 }
 
-
 void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend box space" ), QgsComposerMergeCommand::LegendBoxSpace );
     mLegend->setBoxSpace( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend box space" ), QgsComposerMergeCommand::LegendColumnSpace );
+    mLegend->setColumnSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -767,6 +779,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mSymbolSpaceSpinBox->blockSignals( b );
   mIconLabelSpaceSpinBox->blockSignals( b );
   mBoxSpaceSpinBox->blockSignals( b );
+  mColumnSpaceSpinBox->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()

@@ -73,31 +73,34 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setItemFont( const QFont& f );
 
     double boxSpace() const {return mBoxSpace;}
-    void setBoxSpace( double s ) {mBoxSpace = s; mColumns.clear();}
+    void setBoxSpace( double s ) {mBoxSpace = s;}
+
+    double columnSpace() const {return mColumnSpace;}
+    void setColumnSpace( double s ) { mColumnSpace = s;}
 
     double groupSpace() const {return mGroupSpace;}
-    void setGroupSpace( double s ) {mGroupSpace = s;mColumns.clear();}
+    void setGroupSpace( double s ) {mGroupSpace = s;}
 
     double layerSpace() const {return mLayerSpace;}
-    void setLayerSpace( double s ) {mLayerSpace = s;mColumns.clear();}
+    void setLayerSpace( double s ) {mLayerSpace = s;}
 
     double symbolSpace() const {return mSymbolSpace;}
-    void setSymbolSpace( double s ) {mSymbolSpace = s;mColumns.clear();}
+    void setSymbolSpace( double s ) {mSymbolSpace = s;}
 
     double iconLabelSpace() const {return mIconLabelSpace;}
-    void setIconLabelSpace( double s ) {mIconLabelSpace = s;mColumns.clear();}
+    void setIconLabelSpace( double s ) {mIconLabelSpace = s;}
 
     double symbolWidth() const {return mSymbolWidth;}
-    void setSymbolWidth( double w ) {mSymbolWidth = w;mColumns.clear();}
+    void setSymbolWidth( double w ) {mSymbolWidth = w;}
 
     double symbolHeight() const {return mSymbolHeight;}
-    void setSymbolHeight( double h ) {mSymbolHeight = h;mColumns.clear();}
+    void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;mColumns.clear();}
+    void setWrapChar( const QString& t ) {mWrapChar = t;}
     QString wrapChar() const {return mWrapChar;}
 
     int columnCount() const { return mColumnCount; }
-    void setColumnCount( int c ) { mColumnCount = c;mColumns.clear();}
+    void setColumnCount( int c ) { mColumnCount = c;}
 
     int splitLayer() const { return mSplitLayer; }
     void setSplitLayer( bool s ) { mSplitLayer = s;}
@@ -141,6 +144,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Space between item box and contents*/
     double mBoxSpace;
+    /**Space between columns*/
+    double mColumnSpace;
     /**Vertical space between group entries*/
     double mGroupSpace;
     /**Vertical space between layer entries*/
@@ -159,8 +164,6 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /** Number of legend columns */
     int mColumnCount;
-    /** Cached division of items to columns */
-    QMap<QStandardItem *, int> mColumns;
 
     QgsLegendModel mLegendModel;
 
