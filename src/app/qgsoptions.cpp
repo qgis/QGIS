@@ -480,6 +480,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   capitaliseCheckBox->setChecked( settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
+  chbWarnWhenLayerHasEdits->setChecked( settings.value( "qgis/warnWhenLayerHasEdits", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
   cmbEnableMacros->setCurrentIndex( settings.value( "/qgis/enableMacros", 1 ).toInt() );
 
@@ -902,6 +903,7 @@ void QgsOptions::saveOptions()
 
   // project
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
+  settings.setValue( "/qgis/warnWhenLayerHasEdits", chbWarnWhenLayerHasEdits->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   if (( settings.value( "/qgis/projectTemplateDir" ).toString() != leTemplateFolder->text() ) ||
       ( settings.value( "/qgis/newProjectDefault" ).toBool() != cbxProjectDefaultNew->isChecked() ) )

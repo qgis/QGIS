@@ -3034,6 +3034,38 @@ void QgisApp::fileExit()
     return;
   }
 
+  QSettings settings;
+  // whether to warn user when any vector layer is in editing mode with unsaved edits
+  bool warnThem = settings.value( "qgis/warnWhenLayerHasEdits", true ).toBool();
+
+  if ( warnThem && QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    bool hasUnsavedEdits = false;
+
+    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
+    {
+      if ( hasUnsavedEdits )
+        break;
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      if ( !vl )
+        continue;
+
+      if ( !hasUnsavedEdits )
+        hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
+    }
+
+    if ( hasUnsavedEdits )
+    {
+      QMessageBox::StandardButton answer( QMessageBox::Discard );
+      answer = QMessageBox::warning( this, tr( "Unsaved edits" ),
+                                     tr( "Project has layer(s) in edit mode with unsaved edits" ),
+                                     QMessageBox::Cancel | QMessageBox::Discard );
+      if ( QMessageBox::Cancel == answer )
+        return;
+    }
+  }
+
   if ( saveDirty() )
   {
     closeProject();
