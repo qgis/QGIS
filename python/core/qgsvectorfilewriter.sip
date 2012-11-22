@@ -57,7 +57,7 @@ class QgsVectorFileWriter
     /** create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
-                         const QgsFieldMap& fields,
+                         const QMap<int, QgsField>& fields,
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
