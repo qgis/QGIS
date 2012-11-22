@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>475</height>
+    <height>484</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -149,7 +149,7 @@
    <item row="8" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Output Point Shapefile</string>
+      <string>Output point shapefile</string>
      </property>
     </widget>
    </item>
