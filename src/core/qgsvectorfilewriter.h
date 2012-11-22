@@ -69,7 +69,10 @@ class CORE_EXPORT QgsVectorFileWriter
                                                          );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
-        @note: this method was added in version 1.5*/
+        @note: this method was added in version 1.5
+	@param newFileName QString pointer which will contain the new file name created
+	       (in case it is different to fileName).
+	*/
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
