@@ -647,7 +647,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
 
-  QgsDebugMsg( "newFilename = " + *newFilename );
+  if ( newFilename )
+  {
+    QgsDebugMsg( "newFilename = " + *newFilename );
+  }
 
   // check whether file creation was successful
   WriterError err = writer->hasError();

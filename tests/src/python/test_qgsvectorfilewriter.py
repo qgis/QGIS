@@ -67,7 +67,6 @@ class TestQgsVectorLayer(TestCase):
         myLayerOptions = QStringList()
         mySelectedOnlyFlag = False
         mySkipAttributesFlag = False
-        myNewFileName = QString()
         myGeoCrs = QgsCoordinateReferenceSystem()
         myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         myResult = QgsVectorFileWriter.writeAsVectorFormat(
@@ -80,8 +79,7 @@ class TestQgsVectorLayer(TestCase):
             myErrorMessage,
             myOptions,
             myLayerOptions,
-            mySkipAttributesFlag,
-            myNewFileName)
+            mySkipAttributesFlag)
         assert myResult==QgsVectorFileWriter.NoError
 
 if __name__ == '__main__':
