@@ -37,7 +37,6 @@ class TestQgsVectorLayer(TestCase):
 
     mMemoryLayer = None
 
-    @expectedFailure
     def testWrite(self):
         """Check we can write a vector file."""
         self.mMemoryLayer = QgsVectorLayer(
@@ -80,7 +79,7 @@ class TestQgsVectorLayer(TestCase):
             myOptions,
             myLayerOptions,
             mySkipAttributesFlag)
-        assert myResult==QgsVectorFileWriter.NoError
+        assert myResult == QgsVectorFileWriter.NoError
 
 if __name__ == '__main__':
     unittest.main()
