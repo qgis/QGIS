@@ -81,7 +81,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     , mMapCanvas( canvas )
     , mMinimumIconSize( 20, 20 )
     , mChanging( false )
-    , mUpdateDrawingOrder( false )
+    , mUpdateDrawingOrder( true )
 {
   setObjectName( name );
 
