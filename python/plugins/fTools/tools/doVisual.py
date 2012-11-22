@@ -41,6 +41,15 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.iface = iface
     self.setupUi( self )
     self.myFunction = function
+    
+    ## Set object visibility to False if tool is not Check geometry 
+    self.ckBoxShpError.setVisible( False )
+    self.browseShpError.setVisible( False )
+    self.lineEditShpError.setVisible( False )
+    self.label_6.setVisible( False )
+    self.line.setVisible(False)
+    self.buttonBox_2.setOrientation(Qt.Horizontal)
+    
     if self.myFunction == 2 or self.myFunction == 3:
       QObject.connect( self.inShape, SIGNAL( "currentIndexChanged(QString)" ), self.update )
     self.manageGui()
