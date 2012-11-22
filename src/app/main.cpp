@@ -662,8 +662,12 @@ int main( int argc, char *argv[] )
     QStringList myPathList;
     QCoreApplication::setLibraryPaths( myPathList );
     // Now set the paths inside the bundle
-    myPath += "/Contents/plugins";
+    myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+    }
     //next two lines should not be needed, testing only
     //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
