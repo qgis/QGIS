@@ -254,13 +254,13 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
   if ( aTypeName != "" )
   {
     QStringList typeNameSplit = aTypeName.split( "," );
-    foreach (const QString &str, typeNameSplit)
+    foreach ( const QString &str, typeNameSplit )
     {
       if ( str.contains( ":" ) )
-        typeNameList << str.section(":", 1, 1 );
+        typeNameList << str.section( ":", 1, 1 );
       else
         typeNameList << str;
-     }
+    }
   }
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
@@ -2289,81 +2289,45 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   return BBox;
 }
 
-void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList, int& nEmbeddedGroupLayers,
-                                        bool embedded, int embeddedOrder ) const
+void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
 {
   if ( elem.isNull() )
   {
     return;
   }
 
-  if ( elem.tagName() == "legendlayer" )
+  if ( elem.tagName() == "legendgroup" )
   {
-    if ( useDrawingOrder || embeddedOrder != -1 )
+    if ( elem.attribute( "embedded" ) == "1" )
     {
-      int order = -1;
-      if ( embedded )
-      {
-        order = embeddedOrder;
-      }
-      else
-      {
-        order = drawingOrder( elem );
-      }
-      orderedLayerList.insertMulti( order + nEmbeddedGroupLayers, elem.attribute( "name" ) );
+      addDrawingOrderEmbeddedGroup( elem, orderedLayerList, useDrawingOrder );
     }
     else
     {
-      orderedLayerList.insertMulti( orderedLayerList.size(), elem.attribute( "name" ) );
-    }
-
-    if ( embedded )
-    {
-      ++nEmbeddedGroupLayers;
+      QDomNodeList groupChildren = elem.childNodes();
+      for ( int i = 0; i < groupChildren.size(); ++i )
+      {
+        addDrawingOrder( groupChildren.at( i ).toElement(), useDrawingOrder, orderedLayerList );
+      }
     }
   }
-  else if ( elem.tagName() == "legendgroup" )
+  else if ( elem.tagName() == "legendlayer" )
   {
-    //embedded vs. not embedded
-    if ( elem.attribute( "embedded" ) == "1" && !embedded )
+    QString layerName = elem.attribute( "name" );
+    if ( useDrawingOrder )
     {
-      //load layers / elements from project file
-      QString project = convertToAbsolutePath( elem.attribute( "project" ) );
-      QString embeddedGroupName = elem.attribute( "name" );
-      int embedDrawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
-      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
-      if ( p )
-      {
-        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
-        foreach ( const QDomElement &groupElem, embeddedGroupElements )
-        {
-          if ( groupElem.attribute( "name" ) == embeddedGroupName )
-          {
-            addDrawingOrder( groupElem, false, orderedLayerList, nEmbeddedGroupLayers, true, embedDrawingOrder );
-            break;
-          }
-        }
-      }
+      int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+      orderedLayerList.insert( drawingOrder, layerName );
     }
     else
     {
-      QDomNodeList childList = elem.childNodes();
-      QDomElement childElem;
-      for ( int i = 0; i < childList.size(); ++i )
-      {
-        addDrawingOrder( childList.at( i ).toElement(), useDrawingOrder, orderedLayerList, nEmbeddedGroupLayers,
-                         embedded, embeddedOrder );
-      }
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
     }
   }
 }
 
 void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
 {
-
-  return; //soon...
-
-#if 0
   if ( !mXMLDoc )
   {
     return;
@@ -2377,14 +2341,13 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
   }
 
   bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
-  int nEmbeddedGroupLayers = 0;
   QMap<int, QString> orderedLayerNames;
 
   QDomNodeList legendChildren = legendElement.childNodes();
   QDomElement childElem;
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
-    addDrawingOrder( legendChildren.at( i ).toElement(), useDrawingOrder, orderedLayerNames, nEmbeddedGroupLayers, false );
+    addDrawingOrder( legendChildren.at( i ).toElement(), useDrawingOrder, orderedLayerNames );
   }
 
   QStringList layerList;
@@ -2398,7 +2361,6 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
   QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
   layerDrawingOrderElem.appendChild( drawingOrderText );
   parentElem.appendChild( layerDrawingOrderElem );
-#endif //0
 }
 
 void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
@@ -2748,15 +2710,58 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
   p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
 }
 
-int QgsProjectParser::drawingOrder( const QDomElement& elem )
+void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupElem, QMap<int, QString>& orderedLayerList, bool useDrawingOrder ) const
 {
-  QDomElement e = elem;
-  while ( !e.isNull() )
+  if ( groupElem.isNull() )
   {
-    if ( e.hasAttribute( "drawingOrder" ) )
+    return;
+  }
+
+  QString project = convertToAbsolutePath( groupElem.attribute( "project" ) );
+  if ( project.isEmpty() )
+  {
+    return;
+  }
+
+  int embedDrawingOrder = groupElem.attribute( "drawingOrder", "-1" ).toInt();
+  QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+  if ( !p )
+  {
+    return;
+  }
+
+  QDomDocument* doc = p->mXMLDoc;
+  if ( !doc )
+  {
+    return;
+  }
+
+  QDomNodeList layerNodeList = doc->elementsByTagName( "legendlayer" );
+  QDomElement layerElem;
+  QStringList layerNames;
+  QString layerName;
+  for ( int i = 0; i < layerNodeList.size(); ++i )
+  {
+    layerElem = layerNodeList.at( i ).toElement();
+    layerName = layerElem.attribute( "name" );
+    if ( useDrawingOrder )
     {
-      return e.attribute( "drawingOrder" ).toInt();
+      layerNames.push_back( layerName );
     }
-    e = e.parentNode().toElement();
+    else
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
+    }
+  }
+
+  if ( useDrawingOrder )
+  {
+    for ( int i = layerNames.size() - 1; i >= 0; --i )
+    {
+      if ( useDrawingOrder )
+      {
+        orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
+      }
+    }
   }
 }
