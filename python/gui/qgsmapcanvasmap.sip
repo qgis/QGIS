@@ -26,32 +26,32 @@ class QgsMapCanvasMap : QGraphicsRectItem
   public:
     
     //! constructor
-    QgsMapCanvasMap(QgsMapCanvas* canvas /TransferThis/);
-    
-    //! resize canvas item and pixmap
-    void resize(QSize size);
-    
-    void enableAntiAliasing(bool flag);
-    
-    void useImageToRender(bool flag);
+    QgsMapCanvasMap( QgsMapCanvas* canvas /TransferThis/ );
 
-    //! renders map using QgsMapRender to mPixmap
+    //! resize canvas item and pixmap
+    void resize( QSize size );
+
+    void enableAntiAliasing( bool flag );
+
+    void useImageToRender( bool flag );
+
+    //! renders map using QgsMapRenderer to mPixmap
     void render();
-    
-    void setBackgroundColor(const QColor& color);
-    
-    void setPanningOffset(const QPoint& point);
-    
+
+    void setBackgroundColor( const QColor& color );
+
+    void setPanningOffset( const QPoint& point );
+
     //! @deprecated Please use paintDevice() function which is also save in case QImage is used
     QPixmap& pixmap() /Deprecated/;
-    
-    void paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidget*);
+
+    QPaintDevice& paintDevice();
+
+    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
 
     QRectF boundingRect() const;
-  
+
     //! Update contents - can be called while drawing to show the status.
     //! Added in version 1.2
     void updateContents();
-
 };
-

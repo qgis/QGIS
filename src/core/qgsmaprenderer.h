@@ -39,29 +39,31 @@ class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
-struct QgsDiagramLayerSettings;
+class QgsPalLayerSettings;
+class QgsDiagramLayerSettings;
 
-struct CORE_EXPORT QgsLabelPosition
+class CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
-  int featureId;
-  double rotation;
-  QVector< QgsPoint > cornerPoints;
-  QgsRectangle labelRect;
-  double width;
-  double height;
-  QString layerID;
-  bool upsideDown;
-  bool isDiagram;
-  bool isPinned;
+  public:
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false ):
+        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    int featureId;
+    double rotation;
+    QVector< QgsPoint > cornerPoints;
+    QgsRectangle labelRect;
+    double width;
+    double height;
+    QString layerID;
+    bool upsideDown;
+    bool isDiagram;
+    bool isPinned;
 };
 
 /** Labeling engine interface.
  * \note Added in QGIS v1.4
  */
-class QgsLabelingEngineInterface
+class CORE_EXPORT QgsLabelingEngineInterface
 {
   public:
 
@@ -74,6 +76,9 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
@@ -135,6 +140,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
+    //! Scale denominator
     double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
@@ -287,7 +293,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! map units per pixel
     double mMapUnitsPerPixel;
 
-    //! Map scale at its current zool level
+    //! Map scale denominator at its current zoom level
     double mScale;
 
     //! scale calculator

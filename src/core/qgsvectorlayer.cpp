@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QString>
 #include <QDomNode>
@@ -106,6 +107,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mSymbolFeatureCounted( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -398,17 +400,17 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   QPainter *p = renderContext.painter();
   unsigned char *ptr = feature + 5;
   unsigned int wkbType = *(( int* )( feature + 1 ) );
-  unsigned int nPoints = *(( int* )ptr );
+  int nPoints = *(( int* )ptr );
   ptr = feature + 9;
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
 
-  std::vector<double> x( nPoints );
-  std::vector<double> y( nPoints );
-  std::vector<double> z( nPoints, 0.0 );
+  QVector<double> x( nPoints );
+  QVector<double> y( nPoints );
+  QVector<double> z( nPoints, 0.0 );
 
   // Extract the points from the WKB format into the x and y vectors.
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
     x[i] = *(( double * ) ptr );
     ptr += sizeof( double );
@@ -428,10 +430,10 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
   // the rest of them so end the loop at that point.
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    if ( qAbs( x[i] ) > QgsClipper::MAX_X ||
-         qAbs( y[i] ) > QgsClipper::MAX_Y )
+    if ( qAbs( x.at( i ) ) > QgsClipper::MAX_X ||
+         qAbs( y.at( i ) ) > QgsClipper::MAX_Y )
     {
       QgsClipper::trimFeature( x, y, true ); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -441,10 +443,10 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
 
   // set up QPolygonF class with transformed points
   QPolygonF pa( nPoints );
-  for ( register unsigned int i = 0; i < nPoints; ++i )
+  for ( int i = 0; i < nPoints; ++i )
   {
-    pa[i].setX( x[i] );
-    pa[i].setY( y[i] );
+    pa[i].setX( x.at( i ) );
+    pa[i].setY( y.at( i ) );
   }
 
   // The default pen gives bevelled joins between segements of the
@@ -472,8 +474,8 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   if ( mEditable && renderContext.drawEditingInformation() )
   {
 
-    std::vector<double>::const_iterator xIt;
-    std::vector<double>::const_iterator yIt;
+    QVector<double>::const_iterator xIt;
+    QVector<double>::const_iterator yIt;
     for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
     {
       drawVertexMarker( *xIt, *yIt, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
@@ -489,9 +491,9 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
 unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderContext &renderContext )
 {
   QPainter *p = renderContext.painter();
-  typedef std::pair<std::vector<double>, std::vector<double> > ringType;
+  typedef QPair<QVector<double>, QVector<double> > ringType;
   typedef ringType* ringTypePtr;
-  typedef std::vector<ringTypePtr> ringsType;
+  typedef QVector<ringTypePtr> ringsType;
 
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
@@ -515,16 +517,16 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
   for ( register unsigned int idx = 0; idx < numRings; idx++ )
   {
-    unsigned int nPoints = *(( int* )ptr );
+    int nPoints = *(( int* )ptr );
 
-    ringTypePtr ring = new ringType( std::vector<double>( nPoints ), std::vector<double>( nPoints ) );
+    ringTypePtr ring = new ringType( QVector<double>( nPoints ), QVector<double>( nPoints ) );
     ptr += 4;
 
     // create a dummy vector for the z coordinate
-    std::vector<double> zVector( nPoints, 0.0 );
+    QVector<double> zVector( nPoints, 0.0 );
     // Extract the points from the WKB and store in a pair of
     // vectors.
-    for ( register unsigned int jdx = 0; jdx < nPoints; jdx++ )
+    for ( int jdx = 0; jdx < nPoints; jdx++ )
     {
       ring->first[jdx] = *(( double * ) ptr );
       ptr += sizeof( double );
@@ -548,7 +550,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point.
-    for ( register unsigned int i = 0; i < nPoints; ++i )
+    for ( int i = 0; i < nPoints; ++i )
     {
       if ( qAbs( ring->first[i] ) > QgsClipper::MAX_X ||
            qAbs( ring->second[i] ) > QgsClipper::MAX_Y )
@@ -1451,8 +1453,6 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   return retval;
 }
 
-
-
 long QgsVectorLayer::featureCount() const
 {
   if ( !mDataProvider )
@@ -1462,6 +1462,82 @@ long QgsVectorLayer::featureCount() const
   }
 
   return mDataProvider->featureCount();
+}
+
+long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
+{
+  if ( !mSymbolFeatureCounted ) return -1;
+  return mSymbolFeatureCountMap.value( symbol );
+}
+
+bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+{
+  if ( mSymbolFeatureCounted ) return true;
+  mSymbolFeatureCountMap.clear();
+
+  if ( !mDataProvider )
+  {
+    QgsDebugMsg( "invoked with null mDataProvider" );
+    return false;
+  }
+  if ( !mRendererV2 )
+  {
+    QgsDebugMsg( "invoked with null mRendererV2" );
+    return false;
+  }
+
+  QgsLegendSymbolList symbolList = mRendererV2->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
+
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
+  }
+
+  long nFeatures = pendingFeatureCount();
+  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+  progressDialog.setWindowModality( Qt::WindowModal );
+  int featuresCounted = 0;
+
+  select( pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeature f;
+
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  mRendererV2->startRender( renderContext, this );
+
+  while ( nextFeature( f ) )
+  {
+    QgsSymbolV2List featureSymbolList = mRendererV2->symbolsForFeature( f );
+    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    {
+      mSymbolFeatureCountMap[*symbolIt] += 1;
+    }
+    ++featuresCounted;
+
+    if ( showProgress )
+    {
+      if ( featuresCounted % 50 == 0 )
+      {
+        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
+        {
+          progressDialog.setMaximum( 0 );
+        }
+        progressDialog.setValue( featuresCounted );
+        if ( progressDialog.wasCanceled() )
+        {
+          mSymbolFeatureCountMap.clear();
+          mRendererV2->stopRender( renderContext );
+          return false;
+        }
+      }
+    }
+  }
+  mRendererV2->stopRender( renderContext );
+  progressDialog.setValue( nFeatures );
+  mSymbolFeatureCounted = true;
+  return true;
 }
 
 long QgsVectorLayer::updateFeatureCount() const
@@ -1486,6 +1562,7 @@ QgsRectangle QgsVectorLayer::extent()
     return QgsMapLayer::extent();
 
   QgsRectangle rect;
+  rect.setMinimal();
 
   if ( !hasGeometryType() )
     return rect;
@@ -2489,7 +2566,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   return returnCode;
 }
 
-int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
+int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures )
 {
   if ( !hasGeometryType() )
     return 1;
@@ -2511,6 +2588,11 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
   QgsFeature f;
   while ( nextFeature( f ) )
   {
+    if ( ignoreFeatures.contains( f.id() ) )
+    {
+      continue;
+    }
+
     //call geometry->makeDifference for each feature
     QgsGeometry *currentGeom = f.geometry();
     if ( currentGeom )
@@ -3052,6 +3134,28 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
+    // tab display
+    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+    if ( editorLayoutNode.isNull() )
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+    else
+    {
+      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+      {
+        mEditorLayout = UiFileLayout;
+      }
+      else if ( editorLayoutNode.toElement().text() == "tablayout" )
+      {
+        mEditorLayout = TabLayout;
+      }
+      else
+      {
+        mEditorLayout = GeneratedLayout;
+      }
+    }
+
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -3160,7 +3264,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
           bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
-          QString filterAttributeColumn= editTypeElement.attribute( "filterAttributeColumn", QString::null );
+          QString filterAttributeColumn = editTypeElement.attribute( "filterAttributeColumn", QString::null );
           QString filterAttributeValue = editTypeElement.attribute( "filterAttributeValue", QString::null );
           mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterAttributeColumn, filterAttributeValue );
         }
@@ -3231,7 +3335,70 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+
+  //Attributes excluded from WMS and WFS
+  mExcludeAttributesWMS.clear();
+  QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
+  if ( !excludeWMSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  mExcludeAttributesWFS.clear();
+  QDomNode excludeWFSNode = node.namedItem( "excludeAttributesWFS" );
+  if ( !excludeWFSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  // tabs and groups display info
+  mAttributeEditorElements.clear();
+  QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
+  QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
+
+  for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
+  {
+    QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
+
+    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
+    mAttributeEditorElements.append( attributeEditorWidget );
+  }
   return true;
+}
+
+QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
+{
+  QgsAttributeEditorElement* newElement = NULL;
+
+  if ( elem.tagName() == "attributeEditorContainer" )
+  {
+    QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( "name" ), parent );
+
+    QDomNodeList childNodeList = elem.childNodes();
+
+    for ( int i = 0; i < childNodeList.size(); i++ )
+    {
+      QDomElement childElem = childNodeList.at( i ).toElement();
+      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
+      container->addChildElement( myElem );
+    }
+
+    newElement = container;
+  }
+  else if ( elem.tagName() == "attributeEditorField" )
+  {
+    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+  }
+
+  return newElement;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
@@ -3283,6 +3450,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
+
+    // tab display
+    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+    switch ( mEditorLayout )
+    {
+      case UiFileLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+        break;
+
+      case TabLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+        break;
+
+      case GeneratedLayout:
+      default:
+        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+        break;
+    }
+
+    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3446,6 +3633,44 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     node.appendChild( aliasElem );
   }
 
+  //exclude attributes WMS
+  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
+  QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
+  for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWMSIt );
+    attrElem.appendChild( attrText );
+    excludeWMSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWMSElem );
+
+  //exclude attributes WFS
+  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
+  QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
+  for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWFSIt );
+    attrElem.appendChild( attrText );
+    excludeWFSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWFSElem );
+
+  // tabs and groups of edit form
+  if ( mAttributeEditorElements.size() > 0 )
+  {
+    QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
+
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); it++ )
+    {
+      QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
+      tabsElem.appendChild( attributeEditorWidgetElem );
+    }
+
+    node.appendChild( tabsElem );
+  }
+
   // add attribute actions
   mActions->writeXML( node, doc );
 
@@ -3593,6 +3818,11 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified( false );
+}
+
+void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
+{
+  mAttributeEditorElements.append( data );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -4590,7 +4820,7 @@ inline void QgsVectorLayer::transformPoint(
 }
 
 inline void QgsVectorLayer::transformPoints(
-  std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
+  QVector<double>& x, QVector<double>& y, QVector<double>& z,
   QgsRenderContext &renderContext )
 {
   // transform the point
@@ -4653,6 +4883,16 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
   const QgsFieldMap &fields = pendingFields();
   if ( fields.contains( idx ) )
     mEditTypes[ fields[idx].name()] = type;
+}
+
+QgsVectorLayer::EditorLayout QgsVectorLayer::editorLayout()
+{
+  return mEditorLayout;
+}
+
+void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
+{
+  mEditorLayout = editorLayout;
 }
 
 QString QgsVectorLayer::editForm()
@@ -4763,6 +5003,8 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
       setUsingRendererV2( true );
     delete mRendererV2;
     mRendererV2 = r;
+    mSymbolFeatureCounted = false;
+    mSymbolFeatureCountMap.clear();
   }
 }
 bool QgsVectorLayer::isUsingRendererV2()
@@ -5457,6 +5699,21 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     labeling = true;
   }
 
+  if ( labeling )
+  {
+    // see if feature count limit is set for labeling
+    QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+    if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+    {
+      select( QgsAttributeList(), rendererContext.extent() );
+      // total number of features that may be labeled
+      QgsFeature ftr;
+      int nFeatsToLabel = 0;
+      while ( nextFeature( ftr ) ) { nFeatsToLabel += 1; }
+      palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+  }
+
   //register diagram layers
   if ( mDiagramRenderer && mDiagramLayerSettings )
   {
@@ -5746,4 +6003,39 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   }
 
   return mValueRelations[ fields[idx].name()];
+}
+
+QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorElements()
+{
+  return mAttributeEditorElements;
+}
+
+void QgsVectorLayer::clearAttributeEditorWidgets()
+{
+  mAttributeEditorElements.clear();
+}
+
+QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorContainer" );
+  elem.setAttribute( "name", mName );
+  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    elem.appendChild(( *it )->toDomElement( doc ) );
+  }
+  return elem;
+}
+
+
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
+{
+  mChildren.append( widget );
+}
+
+QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorField" );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "index", mIdx );
+  return elem;
 }

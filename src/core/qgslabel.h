@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLabel
                                         QgsCoordinateTransform* coordinateTransform,
                                         const QgsMapToPixel *transform,
                                         QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
-                                        double sizeScale = 1., double rasterScaleFactor = 1.0 )
+                                        double sizeScale = 1.0, double rasterScaleFactor = 1.0 )
     {
       QgsRenderContext r;
       r.setExtent( viewExtent );
@@ -142,18 +142,18 @@ class CORE_EXPORT QgsLabel
     void setFields( const QgsFieldMap & fields );
 
     //! Available vector fields
-    QgsFieldMap & fields( void );
+    QgsFieldMap & fields();
 
     /** Pointer to default attributes.
      * @deprecated in version 2 as it is badly named. Rather use attributes.
      * @see labelAttributes method rather */
-    Q_DECL_DEPRECATED QgsLabelAttributes *layerAttributes( void );
+    Q_DECL_DEPRECATED QgsLabelAttributes *layerAttributes();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.
      * @note introduced in QGIS 1.4
      */
-    QgsLabelAttributes *labelAttributes( void );
+    QgsLabelAttributes *labelAttributes();
 
     //! Set label field
     void setLabelField( int attr, int fieldIndex );

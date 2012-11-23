@@ -26,6 +26,7 @@
 #include <QDomNode>
 
 #include "qgis.h"
+#include "qgserror.h"
 #include "qgsrectangle.h"
 
 class QgsRenderContext;
@@ -69,12 +70,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @note added in 1.7
-     **/
+     */
     QString id() const;
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @deprecated use id()
-     **/
+     */
     Q_DECL_DEPRECATED QString getLayerID() const { return id(); }
 
     /** Set the display name of the layer
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    QString const & name() const;
+    const QString & name() const;
 
     void setTitle( const QString& title ) { mTitle = title; }
     const QString& title() const { return mTitle; }
@@ -126,7 +127,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    QString const &source() const;
+    const QString &source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -218,6 +219,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString lastError();
 
+    /** Get current status error. This error describes some principal problem
+     *  for which layer cannot work and thus is not valid. It is not last error
+     *  after accessing data by draw() etc.
+     */
+    virtual QgsError error() const { return mError; }
+
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
     */
@@ -240,7 +247,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @return a QString withe the style file name
+     * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */
@@ -325,7 +332,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
-    QImage * cacheImage() { return mpCacheImage; }
+    QImage *cacheImage() { return mpCacheImage; }
     /** Set the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage );
@@ -335,11 +342,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale member */
+    /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
     float minimumScale();
 
-    /** Accessor and mutator for the maximum scale member */
+    /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
     float maximumScale();
 
@@ -419,6 +426,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    /** Set error message */
+    void setError( const QgsError & theError ) { mError = theError;}
+
     /** Transparency level for this layer should be 0-255 (255 being opaque) */
     unsigned int mTransparencyLevel;
 
@@ -438,6 +450,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**Description of the layer*/
     QString mAbstract;
+
+    /** \brief Error */
+    QgsError mError;
 
   private:
     /** layer's spatial reference system.
@@ -459,9 +474,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Tag for embedding additional information */
     QString mTag;
 
-    /** Minimum scale at which this layer should be displayed */
+    /** Minimum scale denominator at which this layer should be displayed */
     float mMinScale;
-    /** Maximum scale at which this layer should be displayed */
+    /** Maximum scale denominator at which this layer should be displayed */
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;

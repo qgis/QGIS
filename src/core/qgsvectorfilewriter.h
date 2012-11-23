@@ -69,7 +69,10 @@ class CORE_EXPORT QgsVectorFileWriter
                                                          );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
-        @note: this method was added in version 1.5*/
+        @note: this method was added in version 1.5
+	@param newFileName QString pointer which will contain the new file name created
+	       (in case it is different to fileName).
+	*/
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,
                                             const QString& fileEncoding,
@@ -98,7 +101,10 @@ class CORE_EXPORT QgsVectorFileWriter
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /**Returns driver list that can be used for dialogs*/
+    /**Returns driver list that can be used for dialogs. It contains all OGR drivers
+     * + some additional internal QGIS driver names to distinguish between more
+     * supported formats of the same OGR driver
+     */
     static QMap< QString, QString> ogrDriverList();
 
     /**Returns filter string that can be used for dialogs*/
@@ -118,6 +124,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature );
 
+    //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
     /** close opened shapefile for writing */
@@ -130,7 +137,7 @@ class CORE_EXPORT QgsVectorFileWriter
     static bool deleteShapeFile( QString theFileName );
 
   protected:
-
+    //! @note not available in python bindings
     OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
 
     OGRDataSourceH mDS;

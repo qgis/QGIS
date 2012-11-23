@@ -1,0 +1,7 @@
+Profile from points
+ta_profiles
+ParameterRaster|GRID|Grid|False
+ParameterTable|TABLE|Input|False
+ParameterTableField|X|X|TABLE
+ParameterTableField|Y|Y|TABLE
+OutputTable|RESULT|Result

@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
@@ -61,7 +62,12 @@ void QgsWCSSourceSelect::populateLayerList( )
 
   mLayersTreeWidget->clear();
 
-  mCapabilities.setUri( mUri );
+
+  QgsDataSourceURI uri = mUri;
+  QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
+  uri.setParam( "cache", cache );
+
+  mCapabilities.setUri( uri );
 
   if ( !mCapabilities.lastError().isEmpty() )
   {
@@ -150,6 +156,11 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "time", selectedTime() );
   }
 
+  QString cache;
+  QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
+  cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
+  uri.setParam( "cache", cache );
+
   emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 
@@ -192,15 +203,15 @@ void QgsWCSSourceSelect::updateButtons()
   mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
 }
 
-QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
+QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QgsDebugMsg( "entered" );
-  QList<QgsOWSSupportedFormat> formats;
+  QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
   foreach ( QString mime, mimes.keys() )
   {
-    QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { mime, mimes.value( mime ) };
 
     // prefer tiff
     if ( mime == "image/tiff" )

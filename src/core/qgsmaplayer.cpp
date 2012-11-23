@@ -37,6 +37,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsprojectfiletransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 
@@ -102,7 +103,9 @@ QString QgsMapLayer::id() const
 void QgsMapLayer::setLayerName( const QString & name )
 {
   QgsDebugMsg( "new name is '" + name + "'" );
-  mLayerName = capitaliseLayerName( name );
+  QString newName = capitaliseLayerName( name );
+  if ( newName == mLayerName ) return;
+  mLayerName = newName;
   emit layerNameChanged();
 }
 
@@ -776,6 +779,26 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   if ( !theResultFlag )
   {
     return myErrorMessage;
+  }
+
+  // get style file version string, if any
+  QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
+  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+
+  if ( thisVersion > fileVersion )
+  {
+    QgsLogger::warning( "Loading a style file that was saved with an older "
+                        "version of qgis (saved in " + fileVersion.text() +
+                        ", loaded in " + QGis::QGIS_VERSION +
+                        "). Problems may occur." );
+
+    QgsProjectFileTransform styleFile( myDocument, fileVersion );
+
+    styleFile.dump();
+
+    styleFile.updateRevision( thisVersion );
+
+    styleFile.dump();
   }
 
   // now get the layer node out and pass it over to the layer

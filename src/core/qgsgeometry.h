@@ -18,6 +18,7 @@ email                : morb at ozemail dot com dot au
 
 #include <QString>
 #include <QVector>
+#include <QDomDocument>
 
 #include "qgis.h"
 
@@ -30,6 +31,11 @@ email                : morb at ozemail dot com dot au
 
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
+
+#include <QSet>
+
+class QgsVectorLayer;
 
 /** polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -70,9 +76,11 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry();
 
     /** copy constructor will prompt a deep copy of the object */
-    QgsGeometry( QgsGeometry const & );
+    QgsGeometry( const QgsGeometry & );
 
-    /** assignments will prompt a deep copy of the object */
+    /** assignments will prompt a deep copy of the object
+      @note not available in python bindings
+      */
     QgsGeometry & operator=( QgsGeometry const & rhs );
 
     //! Destructor
@@ -80,6 +88,11 @@ class CORE_EXPORT QgsGeometry
 
     /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt );
+
+    /** static method that creates geometry from GML2
+      @note added in 1.9
+      */
+    static QgsGeometry* fromGML2( const QDomNode& geometryNode );
 
     /** construct geometry from a point */
     static QgsGeometry* fromPoint( const QgsPoint& point );
@@ -98,6 +111,7 @@ class CORE_EXPORT QgsGeometry
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
     void fromGeos( GEOSGeometry* geos );
     /**
@@ -118,7 +132,9 @@ class CORE_EXPORT QgsGeometry
     size_t wkbSize();
 
     /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
-        @note this method was added in version 1.1*/
+        @note this method was added in version 1.1
+        @note not available in python bindings
+      */
     GEOSGeometry* asGeos();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
@@ -227,7 +243,7 @@ class CORE_EXPORT QgsGeometry
     double sqrDistToVertexAt( QgsPoint& point, int atVertex );
 
     /**
-     * Searches for the the closest vertex in this geometry to the given point.
+     * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
@@ -373,6 +389,12 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToGeoJSON();
 
+    /** Exports the geometry to mGML2
+        @return true in case of success and false else
+     *  @note added in 1.9
+     */
+    QDomElement exportToGML2( QDomDocument& doc );
+
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -424,9 +446,10 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections();
+    int avoidIntersections( QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     class Error
     {
@@ -476,6 +499,24 @@ class CORE_EXPORT QgsGeometry
 
 
     // Private functions
+
+    /** static method that creates geometry from GML2 Point */
+    bool setFromGML2Point( const QDomElement& geometryElement );
+    /** static method that creates geometry from GML2 LineString */
+    bool setFromGML2LineString( const QDomElement& geometryElement );
+    /** static method that creates geometry from GML2 Polygon */
+    bool setFromGML2Polygon( const QDomElement& geometryElement );
+    /** static method that creates geometry from GML2 MultiPoint */
+    bool setFromGML2MultiPoint( const QDomElement& geometryElement );
+    /** static method that creates geometry from GML2 MultiLineString */
+    bool setFromGML2MultiLineString( const QDomElement& geometryElement );
+    /** static method that creates geometry from GML2 MultiPolygon */
+    bool setFromGML2MultiPolygon( const QDomElement& geometryElement );
+    /**Reads the <gml:coordinates> element and extracts the coordinates as points
+       @param coords list where the found coordinates are appended
+       @param elem the <gml:coordinates> element
+       @return boolean for success*/
+    bool readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
 
     /** Converts from the WKB geometry to the GEOS geometry.
         @return   true in case of success and false else

@@ -24,10 +24,11 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QGridLayout>
+#include <QMenu>
 
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent ), mCurrentItem ( NULL )
+    : QFrame( parent ), mCurrentItem( NULL )
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -40,15 +41,33 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->setContentsMargins( 9, 1, 9, 1 );
   setLayout( mLayout );
 
-  mLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding ), 0, 1, 1, 1 );
+  mItemCount = new QLabel( this );
+  mItemCount->setObjectName( "mItemCount" );
+  mItemCount->setToolTip( tr( "Remaining messages" ) );
+  mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  mLayout->addWidget( mItemCount, 0, 1, 1, 1 );
+
+  mCloseMenu = new QMenu( this );
+  mCloseMenu->setObjectName( "mCloseMenu" );
+  mActionCloseAll = new QAction( tr( "Close all" ), this );
+  mCloseMenu->addAction( mActionCloseAll );
+  connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
 
   mCloseBtn = new QToolButton( this );
   mCloseBtn->setToolTip( tr( "Close" ) );
-  mCloseBtn->setStyleSheet( "background-color: rgba(255, 255, 255, 0);" );
+  mCloseBtn->setMinimumWidth( 36 );
+  mCloseBtn->setStyleSheet(
+    "QToolButton { background-color: rgba(255, 255, 255, 0); } "
+    "QToolButton::menu-indicator { subcontrol-position: right bottom; subcontrol-origin: padding; bottom: 6px; }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
+  mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  mCloseBtn->setMenu( mCloseMenu );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
   mLayout->addWidget( mCloseBtn, 0, 2, 1, 1 );
+
+  connect( this, SIGNAL( widgetAdded( QWidget* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, SIGNAL( widgetRemoved( QWidget* ) ), this, SLOT( updateItemCount() ) );
 
   // start hidden
   setVisible( false );
@@ -66,22 +85,22 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
     return;
 
   if ( item == mCurrentItem )
-   {
-     if ( mCurrentItem )
-     {
-       mLayout->removeWidget( mCurrentItem->widget() );
-       mCurrentItem->widget()->hide();
-       mCurrentItem = 0;
-     }
+  {
+    if ( mCurrentItem )
+    {
+      mLayout->removeWidget( mCurrentItem->widget() );
+      mCurrentItem->widget()->hide();
+      mCurrentItem = 0;
+    }
 
-     if ( !mList.isEmpty() )
-     {
-       pushItem( mList.first() );
-     }
-     else
-     {
-       hide();
-     }
+    if ( !mList.isEmpty() )
+    {
+      pushItem( mList.first() );
+    }
+    else
+    {
+      hide();
+    }
   }
   else
   {
@@ -102,7 +121,7 @@ bool QgsMessageBar::popWidget( QWidget *widget )
     return true;
   }
 
-  foreach( QgsMessageBarItem *item, mList )
+  foreach ( QgsMessageBarItem *item, mList )
   {
     if ( item->widget() == widget )
     {
@@ -125,6 +144,20 @@ bool QgsMessageBar::popWidget()
   delete item;
 
   return true;
+}
+
+bool QgsMessageBar::clearWidgets()
+{
+  if ( !mCurrentItem && mList.empty() )
+    return true;
+
+  while ( mList.count() > 0 )
+  {
+    popWidget();
+  }
+  popWidget();
+
+  return !mCurrentItem && mList.empty();
 }
 
 void QgsMessageBar::pushItem( QgsMessageBarItem *item )
@@ -150,6 +183,8 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
 
   setStyleSheet( item->styleSheet() );
   show();
+
+  emit widgetAdded( item->widget() );
 }
 
 void QgsMessageBar::pushWidget( QWidget *widget, int level )
@@ -157,16 +192,21 @@ void QgsMessageBar::pushWidget( QWidget *widget, int level )
   QString stylesheet;
   if ( level >= 2 )
   {
-    stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } QLabel { color: white; }";
+    stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                 "QLabel { color: white; } ";
   }
   else if ( level == 1 )
   {
-    stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } QLabel { color: black; }";
+    stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                 "QLabel { color: black; } ";
   }
   else if ( level <= 0 )
   {
-    stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } QLabel { color: #2554a1; }";
+    stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                 "QLabel { color: #2554a1; } ";
   }
+  stylesheet += "QLabel#mMsgTitle { font-weight: bold; } "
+                "QLabel#mItemCount { font-style: italic; }";
   pushWidget( widget, stylesheet );
 }
 
@@ -198,14 +238,20 @@ QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text
   if ( !title.isEmpty() )
   {
     QLabel *lblTitle = new QLabel( title, widget );
-    QFont font = lblTitle->font();
-    font.setBold( true );
-    lblTitle->setFont( font );
+    lblTitle->setObjectName( "mMsgTitle" );
     layout->addWidget( lblTitle );
   }
 
   QLabel *lblText = new QLabel( text, widget );
+  lblText->setObjectName( "mMsgText" );
+  lblText->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+  lblText->setWordWrap( true );
   layout->addWidget( lblText );
 
   return widget;
+}
+
+void QgsMessageBar::updateItemCount()
+{
+  mItemCount->setText( mList.count() > 0 ? QString::number( mList.count() ) + QString( " " ) + tr( "more" ) : QString( "" ) );
 }

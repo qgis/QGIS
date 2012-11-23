@@ -1,0 +1,7 @@
+r.reclass.area
+r.reclass.area - Reclasses a raster map greater or less than user specified area size (in hectares).
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|lesser|Lesser value option that sets the <= area size limit [hectares]|None|None|0.0
+ParameterNumber|greater|Greater value option that sets the >= area size limit [hectares]|None|None|0.0
+OutputRaster|output|Name for output raster map

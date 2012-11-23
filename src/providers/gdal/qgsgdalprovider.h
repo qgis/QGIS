@@ -121,31 +121,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     bool isValid();
 
-    /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    bool identify( const QgsPoint & point, QMap<int, QString>& results );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     */
-    QString identifyAsText( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     * \note  added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -175,10 +151,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
 
-    QgsRasterInterface::DataType dataTypeFormGdal( int theGdalDataType ) const;
+    QgsRasterBlock::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -196,8 +172,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
-    bool srcHasNoDataValue( int bandNo ) const;
-    double noDataValue() const;
+    //bool srcHasNoDataValue( int bandNo ) const;
+    //double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;
@@ -209,16 +185,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * into a subset of the GUI raster properties "Metadata" tab.
      */
     QString metadata();
-
-    // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
-    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
-    QStringList supportedImageEncodings() { return QStringList(); }
-    QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const &mimeType )
-    { Q_UNUSED( mimeType ); }
-    void setImageCrs( QString const &crs )
-    { Q_UNUSED( crs ); }
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
@@ -267,7 +233,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     bool create( const QString& format, int nBands,
-                 QgsRasterDataProvider::DataType type,
+                 QgsRasterBlock::DataType type,
                  int width, int height, double* geoTransform,
                  const QgsCoordinateReferenceSystem& crs,
                  QStringList createOptions = QStringList() );
@@ -282,6 +248,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /**Remove dataset*/
     bool remove();
+
+    QString validateCreationOptions( const QStringList& createOptions, QString format );
 
   signals:
     void statusChanged( QString );

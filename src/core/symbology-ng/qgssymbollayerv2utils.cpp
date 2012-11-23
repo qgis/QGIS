@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -448,6 +448,38 @@ QVector<qreal> QgsSymbolLayerV2Utils::decodeSldRealVector( const QString& s )
   return resultVector;
 }
 
+QString QgsSymbolLayerV2Utils::encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  QString encodedValue;
+
+  switch ( scaleMethod )
+  {
+    case QgsSymbolV2::ScaleDiameter:
+      encodedValue = "diameter";
+      break;
+    case QgsSymbolV2::ScaleArea:
+      encodedValue = "area";
+      break;
+  }
+  return encodedValue;
+}
+
+QgsSymbolV2::ScaleMethod QgsSymbolLayerV2Utils::decodeScaleMethod( QString str )
+{
+  QgsSymbolV2::ScaleMethod scaleMethod;
+
+  if ( str == "diameter" )
+  {
+    scaleMethod = QgsSymbolV2::ScaleDiameter;
+  }
+  else
+  {
+    scaleMethod = QgsSymbolV2::ScaleArea;
+  }
+
+  return scaleMethod;
+}
+
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );
@@ -494,6 +526,10 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   // pixmap.fill( Qt::white ); // this makes the background white instead of transparent
   QPainter painter;
   painter.begin( &pixmap );
+
+  //draw stippled background, for transparent images
+  drawStippledBackround( &painter, QRect( 0, 0, size.width(), size.height() ) );
+
   // antialising makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
@@ -506,6 +542,24 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   return pixmap;
 }
 
+void QgsSymbolLayerV2Utils::drawStippledBackround( QPainter* painter, QRect rect )
+{
+  // create a 2x2 checker-board image
+  uchar pixDataRGB[] = { 255, 255, 255, 255,
+                         127, 127, 127, 255,
+                         127, 127, 127, 255,
+                         255, 255, 255, 255
+                       };
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  // scale it to rect so at least 5 patterns are shown
+  int width = ( rect.width() < rect.height() ) ?
+              rect.width() / 2.5 : rect.height() / 2.5;
+  QPixmap pix = QPixmap::fromImage( img.scaled( width, width ) );
+  // fill rect with texture
+  QBrush brush;
+  brush.setTexture( pix );
+  painter->fillRect( rect, brush );
+}
 
 #include <QPolygonF>
 
@@ -648,7 +702,9 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
             QgsSymbolV2* subSymbol = loadSymbol( s );
             bool res = layer->setSubSymbol( subSymbol );
             if ( !res )
+            {
               QgsDebugMsg( "symbol layer refused subsymbol: " + s.attribute( "name" ) );
+            }
           }
           layers.append( layer );
         }
@@ -1097,7 +1153,8 @@ bool QgsSymbolLayerV2Utils::needMarkerLine( QDomElement &element )
   return hasWellKnownMark( graphicStrokeElem );
 }
 
-bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element ) {
+bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
+{
   QDomElement fillElem = element.firstChildElement( "Fill" );
   if ( fillElem.isNull() )
     return false;
@@ -2471,6 +2528,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   }
 }
 
+#if 0
 static bool _QVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {
   switch ( lhs.type() )
@@ -2502,16 +2560,19 @@ static bool _QVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
 {
   return ! _QVariantLessThan( lhs, rhs );
 }
+#endif
 
 void QgsSymbolLayerV2Utils::sortVariantList( QList<QVariant>& list, Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( list.begin(), list.end(), _QVariantLessThan );
+    //qSort( list.begin(), list.end(), _QVariantLessThan );
+    qSort( list.begin(), list.end(), qgsVariantLessThan );
   }
   else // Qt::DescendingOrder
   {
-    qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    //qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    qSort( list.begin(), list.end(), qgsVariantGreaterThan );
   }
 }
 

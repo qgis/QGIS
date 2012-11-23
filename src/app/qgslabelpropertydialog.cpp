@@ -114,6 +114,10 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
         mShowLabelChkbx->setEnabled( true );
         mShowLabelChkbx->setChecked( attributeValues[propIt.value()].toInt() != 0 );
         break;
+      case QgsPalLayerSettings::AlwaysShow:
+        mAlwaysShowChkbx->setEnabled( true );
+        mAlwaysShowChkbx->setChecked( attributeValues[propIt.value()].toBool() );
+        break;
       case QgsPalLayerSettings::MinScale:
         mMinScaleSpinBox->setEnabled( true );
         mMinScaleSpinBox->setValue( attributeValues[propIt.value()].toInt() );
@@ -191,6 +195,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 void QgsLabelPropertyDialog::disableGuiElements()
 {
   mShowLabelChkbx->setEnabled( false );
+  mAlwaysShowChkbx->setEnabled( false );
   mMinScaleSpinBox->setEnabled( false );
   mMaxScaleSpinBox->setEnabled( false );
   mFontSizeSpinBox->setEnabled( false );
@@ -209,6 +214,7 @@ void QgsLabelPropertyDialog::disableGuiElements()
 void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
   mShowLabelChkbx->blockSignals( block );
+  mAlwaysShowChkbx->blockSignals( block );
   mMinScaleSpinBox->blockSignals( block );
   mMaxScaleSpinBox->blockSignals( block );
   mFontSizeSpinBox->blockSignals( block );
@@ -241,6 +247,11 @@ void QgsLabelPropertyDialog::fillValiComboBox()
 void QgsLabelPropertyDialog::on_mShowLabelChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::Show, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::on_mAlwaysShowChkbx_toggled( bool chkd )
+{
+  insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
 }
 
 void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )

@@ -56,21 +56,28 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   // We know that the output data type of last pipe filter is QImage data
   //QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGrayBand );
 
-  void* rasterData;
+  //void* rasterData;
+  QgsRasterBlock *block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
-                                         &rasterData, topLeftCol, topLeftRow ) )
+                                         &block, topLeftCol, topLeftRow ) )
   {
+    if ( !block )
+    {
+      QgsDebugMsg( "Cannot get block" );
+      continue;
+    }
     //create image
     //QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
 
     // TODO: the exact format should be read from input
-    QImage img(( uchar * ) rasterData, nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    //QImage img(( uchar * ) rasterData, nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage img = block->image();
+
     drawImage( p, viewPort, img, topLeftCol, topLeftRow );
 
-    // QImage does not delete data block passed to constructor
-    free( rasterData );
+    delete block;
   }
 }
 
@@ -83,7 +90,9 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
 
   //top left position in device coords
   QPoint tlPoint = QPoint( viewPort->topLeftPoint.x() + topLeftCol, viewPort->topLeftPoint.y() + topLeftRow );
-
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing, false );
   p->drawImage( tlPoint, img );
+  p->restore();
 }
 

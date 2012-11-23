@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>799</width>
-    <height>382</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineFilter">
+          <widget class="QgsFilterLineEdit" name="lineFilter">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -203,6 +203,11 @@
          <property name="allColumnsShowFocus">
           <bool>true</bool>
          </property>
+         <column>
+          <property name="text">
+           <string>State</string>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Status</string>
@@ -636,6 +641,13 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>lineFilter</tabstop>

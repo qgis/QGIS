@@ -3,7 +3,7 @@
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,6 +25,15 @@ class QMenu;
 
 #include <QAbstractItemModel>
 
+/* Features count fro rule */
+struct QgsRuleBasedRendererV2Count
+{
+  int count; // number of features
+  int duplicateCount; // number of features present also in other rule(s)
+  // map of feature counts in other rules
+  QMap<QgsRuleBasedRendererV2::Rule*, int> duplicateCountMap;
+};
+
 /*
 Tree model for the rules:
 
@@ -32,7 +41,7 @@ Tree model for the rules:
  +--- top level rule
  +--- top level rule
 */
-class QgsRuleBasedRendererV2Model : public QAbstractItemModel
+class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
@@ -65,13 +74,19 @@ class QgsRuleBasedRendererV2Model : public QAbstractItemModel
 
     void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRendererV2::Rule* newrule );
     void updateRule( const QModelIndex& parent, int row );
+    // update rule and all its descendants
+    void updateRule( const QModelIndex& index );
     void removeRule( const QModelIndex& index );
 
     void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
+    void setFeatureCounts( QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> theCountMap );
+    void clearFeatureCounts();
+
   protected:
     QgsRuleBasedRendererV2* mR;
+    QMap<QgsRuleBasedRendererV2::Rule*, QgsRuleBasedRendererV2Count> mFeatureCountMap;
 };
 
 
@@ -98,6 +113,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void editRule();
     void editRule( const QModelIndex& index );
     void removeRule();
+    void countFeatures();
+    void clearFeatureCounts() { mModel->clearFeatureCounts(); }
 
     void refineRuleScales();
     void refineRuleCategories();

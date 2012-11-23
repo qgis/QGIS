@@ -1,0 +1,6 @@
+r.clump
+r.clump - Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|title|Title for output raster map|
+OutputRaster|output|Name for output raster map

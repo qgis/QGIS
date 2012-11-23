@@ -20,6 +20,7 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
@@ -31,7 +32,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   public:
 
     QgsComposerMapWidget( QgsComposerMap* composerMap );
-    ~QgsComposerMapWidget();
+    virtual ~QgsComposerMapWidget();
 
   public slots:
     void on_mWidthLineEdit_editingFinished();
@@ -86,6 +87,11 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   protected:
     void showEvent( QShowEvent * event );
 
+    void addPageToToolbox( QWidget * widget, const QString& name );
+
+    /**Sets the current composer map values to the GUI elements*/
+    virtual void updateGuiElements();
+
   private slots:
 
     /**Sets the GUI elements to the values of mPicture*/
@@ -93,9 +99,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
   private:
     QgsComposerMap* mComposerMap;
-
-    /**Sets the current composer map values to the GUI elements*/
-    void updateGuiElements();
 
     /**Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();

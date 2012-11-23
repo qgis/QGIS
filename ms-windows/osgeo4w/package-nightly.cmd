@@ -1,5 +1,19 @@
+REM ***************************************************************************
+REM    package-nightly.cmd
+REM    ---------------------
+REM    begin                : January 2011
+REM    copyright            : (C) 2011 by Juergen E. Fischer
+REM    email                : jef at norbit dot de
+REM ***************************************************************************
+REM *                                                                         *
+REM *   This program is free software; you can redistribute it and/or modify  *
+REM *   it under the terms of the GNU General Public License as published by  *
+REM *   the Free Software Foundation; either version 2 of the License, or     *
+REM *   (at your option) any later version.                                   *
+REM *                                                                         *
+REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.2
+set GRASS_VERSION=6.4.3RC1
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable

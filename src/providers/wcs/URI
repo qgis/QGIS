@@ -27,17 +27,54 @@ Parameters:
 
 * IgnoreAxisOrientation (optional,hack) : If specified (set to 1), do not invert axis orientation according to WCS standard for geographic CRS.
 
+* cache (optional) : cache load control, as described in QNetworkRequest::CacheLoadControl, but request is resend as PreferCache if faild with AlwaysCache. Allowed values: AlwaysCache, PreferCache, PreferNetwork, AlwaysNetwork. Default is AlwaysCache.
 
-Python console example:
 
-from PyQt4.QtCore import QString
+Python console example, adds new layer to map canvas:
 
-uri = QgsDataSourceURI()
-uri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
-uri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
+  from PyQt4.QtCore import QString
 
-layer = QgsRasterLayer( QString(uri.encodedUri()), "WCS test", "wcs" )
-layer.isValid()
+  uri = QgsDataSourceURI()
+  uri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
+  uri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
 
-QgsMapLayerRegistry.instance().addMapLayer(layer)
+  layer = QgsRasterLayer( QString(uri.encodedUri()), "WCS test", "wcs" )
+  layer.isValid()
+
+  QgsMapLayerRegistry.instance().addMapLayer(layer)
+
+
+another standalone script, downloads WCS layer to local file:
+
+  import sys
+
+  from qgis.core import *
+
+  from PyQt4.QtCore import QString
+
+  QgsApplication.setPrefixPath("/path/to/qgis/installation/", True)
+
+  QgsApplication.initQgis()
+
+  app = QgsApplication(sys.argv,False) # important for QgsNetworkAccessManager
+    
+  srcUri = QgsDataSourceURI()
+  srcUri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
+  srcUri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
+
+  srcProvider = QgsProviderRegistry.instance().provider( "wcs", QString( srcUri.encodedUri()) )
+
+  if not srcProvider or not srcProvider.isValid():
+    print "Cannot create provider"
+    sys.exit ( 1 )
+    
+  pipe = QgsRasterPipe()
+  if not pipe.set( srcProvider ):
+    print "Cannot set provider on pipe")
+
+  destUri = "/tmp/test.tif"
+      
+  fileWriter = QgsRasterFileWriter ( destUri )
+
+  fileWriter.writeRaster( pipe, srcProvider.xSize(), srcProvider.ySize(), srcProvider.extent(), srcProvider.crs() )
 

@@ -39,7 +39,7 @@ ENDIF (WIN32)
 # ensure the qgis libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
+#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our
@@ -96,6 +96,7 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
+    ${QT_QTSCRIPT_INCLUDE_DIR}
   )
 
   TARGET_LINK_LIBRARIES(qgis_wcstest
@@ -105,6 +106,7 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${QT_QTXML_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${QT_QTMAIN_LIBRARY}
+    ${QT_QTSCRIPT_LIBRARY}
     qgis_core
   )
 
@@ -112,5 +114,6 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     BUNDLE DESTINATION ${QGIS_BIN_DIR}
     RUNTIME DESTINATION ${QGIS_BIN_DIR}
   )
+  INSTALL(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)

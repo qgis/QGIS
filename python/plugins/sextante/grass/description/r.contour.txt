@@ -1,0 +1,11 @@
+r.contour
+r.contour - Produces a vector map of specified contours from a raster map.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|levels|List of contour levels|
+ParameterString|minlevel|Minimum contour level|
+ParameterString|maxlevel|Maximum contour level|
+ParameterString|step|Increment between contour levels|
+ParameterString|cut|Minimum number of points for a contour line (0 -> no limit)|0
+ParameterBoolean|-n|Suppress single crossing error messages|False
+OutputVector|output|Name of output vector map

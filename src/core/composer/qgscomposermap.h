@@ -30,6 +30,7 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
     /** Constructor. Settings are read from project. */
     QgsComposerMap( QgsComposition *composition );
-    ~QgsComposerMap();
+    virtual ~QgsComposerMap();
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const { return ComposerMap; }
@@ -102,7 +103,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     };
 
     /**This function is deprecated*/
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
+    Q_DECL_DEPRECATED void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
     /** \brief Draw to paint device
         @param painter painter
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
     /** \brief Create cache image */
-    void cache( void );
+    void cache();
 
     /** \brief Get identification number*/
     int id() const {return mId;}
@@ -143,7 +144,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setSceneRect( const QRectF& rectangle );
 
     /** \brief Scale */
-    double scale( void ) const;
+    double scale() const;
 
     /**Sets new scale and changes only mExtent*/
     void setNewScale( double scaleDenominator );
@@ -229,9 +230,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @note this function was added in version 1.4*/
     void setGridPen( const QPen& p ) { mGridPen = p; }
     QPen gridPen() const { return mGridPen; }
+
     /**Sets with of grid pen
     @note this function was added in version 1.4*/
     void setGridPenWidth( double w );
+
     /**Sets the color of the grid pen
     @note this function was added in version 1.4*/
     void setGridPenColor( const QColor& c );

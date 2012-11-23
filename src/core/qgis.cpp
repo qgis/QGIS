@@ -20,7 +20,11 @@
 #include "qgsversion.h"
 #endif
 #include <QCoreApplication>
+#include <QDate>
+#include <QTime>
+#include <QDateTime>
 #include "qgsconfig.h"
+#include "qgslogger.h"
 
 #include <ogr_api.h>
 
@@ -104,3 +108,71 @@ QString QGis::tr( QGis::UnitType unit )
 {
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
+
+void *QgsMalloc( size_t size )
+{
+  if ( size == 0 || long( size ) < 0 )
+  {
+    QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
+    return NULL;
+  }
+  void *p = malloc( size );
+  if ( p == NULL )
+  {
+    QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
+  }
+  return p;
+}
+
+void *QgsCalloc( size_t nmemb, size_t size )
+{
+  if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
+  {
+    QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
+    return NULL;
+  }
+  void *p = QgsMalloc( nmemb * size );
+  if ( p != NULL )
+  {
+    memset( p, 0, nmemb * size );
+  }
+  return p;
+}
+
+void QgsFree( void *ptr )
+{
+  free( ptr );
+}
+
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
+{
+  switch ( lhs.type() )
+  {
+    case QVariant::Int:
+      return lhs.toInt() < rhs.toInt();
+    case QVariant::UInt:
+      return lhs.toUInt() < rhs.toUInt();
+    case QVariant::LongLong:
+      return lhs.toLongLong() < rhs.toLongLong();
+    case QVariant::ULongLong:
+      return lhs.toULongLong() < rhs.toULongLong();
+    case QVariant::Double:
+      return lhs.toDouble() < rhs.toDouble();
+    case QVariant::Char:
+      return lhs.toChar() < rhs.toChar();
+    case QVariant::Date:
+      return lhs.toDate() < rhs.toDate();
+    case QVariant::Time:
+      return lhs.toTime() < rhs.toTime();
+    case QVariant::DateTime:
+      return lhs.toDateTime() < rhs.toDateTime();
+    default:
+      return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
+  }
+}
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
+{
+  return ! qgsVariantLessThan( lhs, rhs );
+}
+

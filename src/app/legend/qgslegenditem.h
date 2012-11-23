@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -57,6 +57,13 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       NO_ACTION //do nothing
     };
 
+    enum Expansion
+    {
+      Expand,
+      Collapse,
+      DontChange   // keep current state
+    };
+
     virtual LEGEND_ITEM_TYPE type() const { return mType; }
 
     /**Subclasses which allow insertion of other items may implement this method.
@@ -99,6 +106,10 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
     virtual void receive( QgsLegendItem *newChild ) { Q_UNUSED( newChild ); }
     /**Do cleanups after a child item leaves (default empty)*/
     virtual void release( QgsLegendItem *formerChild ) { Q_UNUSED( formerChild ); }
+    /**Called before edit*/
+    virtual void beforeEdit() {}
+    /**Called after edit*/
+    virtual void afterEdit() {}
 
   protected:
     LEGEND_ITEM_TYPE mType;

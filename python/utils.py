@@ -1,11 +1,36 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    utils.py
+    ---------------------
+    Date                 : November 2009
+    Copyright            : (C) 2009 by Martin Dobias
+    Email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Dobias'
+__date__ = 'November 2009'
+__copyright__ = '(C) 2009, Martin Dobias'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 """
 QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication,QLocale
-from qgis.core import QGis
+from PyQt4.QtCore import QCoreApplication,QLocale, QString
+from qgis.core import QGis, QgsExpression
+from string import Template
 import sys
 import traceback
 import glob
@@ -346,6 +371,59 @@ def closeProjectMacro():
   if hasattr(mod, 'closeProject'):
     mod.closeProject()
 
+
+def qgsfunction(args, group, **kwargs):
+  """
+  Decorator function used to define a user expression function.
+
+  Custom functions should take (values, feature, parent) as args, 
+  they can also shortcut naming feature and parent args by using *args 
+  if they are not needed in the function.
+
+  Functions should return a value compatible with QVariant
+
+  Eval errors can be raised using parent.setEvalErrorString()
+
+  Functions must be unregistered when no longer needed using 
+  QgsExpression.unregisterFunction
+
+  Example:
+    @qgsfunction(2, 'test'):
+    def add(values, feature, parent):
+      pass
+
+    Will create and register a function in QgsExpression called 'add' in the
+    'test' group that takes two arguments.
+
+    or not using feature and parent:
+
+    @qgsfunction(2, 'test'):
+    def add(values, *args):
+      pass
+  """
+  helptemplate = Template("""<h3>$name function</h3><br>$doc""")
+  class QgsExpressionFunction(QgsExpression.Function):
+    def __init__(self, name, args, group, helptext=''):
+      QgsExpression.Function.__init__(self, name, args, group, QString(helptext))
+
+    def func(self, values, feature, parent):
+      pass
+
+  def wrapper(func):
+    name = kwargs.get('name', func.__name__)
+    help = func.__doc__ or ''
+    help = help.strip()
+    if args == 0 and not name[0] == '$':
+      name = '${0}'.format(name)
+    func.__name__ = name
+    help = helptemplate.safe_substitute(name=name, doc=help)
+    f = QgsExpressionFunction(name, args, group, help)
+    f.func = func
+    register = kwargs.get('register', True)
+    if register:
+      QgsExpression.registerFunction(f)
+    return f
+  return wrapper
 
 #######################
 # IMPORT wrapper

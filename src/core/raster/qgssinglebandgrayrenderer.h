@@ -23,22 +23,34 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
+/** \ingroup core
+  * Raster renderer pipe for single band gray.
+  */
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {
   public:
+    enum Gradient
+    {
+      BlackToWhite,
+      WhiteToBlack
+    };
+
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
     QgsRasterInterface * clone() const;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
     const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
     /**Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce );
+
+    void setGradient( Gradient theGradient ) { mGradient = theGradient; }
+    Gradient gradient() const { return mGradient; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
@@ -48,6 +60,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
   private:
     int mGrayBand;
+    Gradient mGradient;
     QgsContrastEnhancement* mContrastEnhancement;
 };
 

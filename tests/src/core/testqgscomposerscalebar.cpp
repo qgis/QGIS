@@ -50,51 +50,51 @@ class TestQgsComposerScaleBar: public QObject
 
 void TestQgsComposerScaleBar::initTestCase()
 {
-    QgsApplication::init();
-    QgsApplication::initQgis();
+  QgsApplication::init();
+  QgsApplication::initQgis();
 
-    //create maplayers from testdata and add to layer registry
-    QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
-    mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                       rasterFileInfo.completeBaseName() );
-    QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
-    mRasterLayer->setRenderer( rasterRenderer );
+  //create maplayers from testdata and add to layer registry
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
+  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
+                                     rasterFileInfo.completeBaseName() );
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  mRasterLayer->setRenderer( rasterRenderer );
 
-    QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-    //create composition with composer map
-    mMapRenderer = new QgsMapRenderer();
-    mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
+  //create composition with composer map
+  mMapRenderer = new QgsMapRenderer();
+  mMapRenderer->setLayerSet( QStringList() << mRasterLayer->id() );
 
-    //reproject to WGS84
-    QgsCoordinateReferenceSystem destCRS;
-    destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-    mMapRenderer->setDestinationCrs( destCRS );
-    mMapRenderer->setProjectionsEnabled( true );
+  //reproject to WGS84
+  QgsCoordinateReferenceSystem destCRS;
+  destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  mMapRenderer->setDestinationCrs( destCRS );
+  mMapRenderer->setProjectionsEnabled( true );
 
-    mComposition = new QgsComposition( mMapRenderer );
-    mComposition->setPaperSize( 297, 210 ); //A4 landscape
-    mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
-    mComposerMap->setFrameEnabled( true );
-    mComposition->addComposerMap( mComposerMap );
-    mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+  mComposition = new QgsComposition( mMapRenderer );
+  mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addComposerMap( mComposerMap );
+  mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
 
-    mComposerScaleBar = new QgsComposerScaleBar( mComposition );
-    mComposerScaleBar->setSceneRect( QRectF( 20, 180, 20, 20 ) );
-    mComposition->addComposerScaleBar( mComposerScaleBar );
-    mComposerScaleBar->setComposerMap( mComposerMap );
-    mComposerScaleBar->setUnits( QgsComposerScaleBar::Meters );
-    mComposerScaleBar->setNumUnitsPerSegment( 2000 );
-    mComposerScaleBar->setNumSegmentsLeft( 0 );
-    mComposerScaleBar->setNumSegments( 2 );
-    mComposerScaleBar->setHeight( 5 );
+  mComposerScaleBar = new QgsComposerScaleBar( mComposition );
+  mComposerScaleBar->setSceneRect( QRectF( 20, 180, 20, 20 ) );
+  mComposition->addComposerScaleBar( mComposerScaleBar );
+  mComposerScaleBar->setComposerMap( mComposerMap );
+  mComposerScaleBar->setUnits( QgsComposerScaleBar::Meters );
+  mComposerScaleBar->setNumUnitsPerSegment( 2000 );
+  mComposerScaleBar->setNumSegmentsLeft( 0 );
+  mComposerScaleBar->setNumSegments( 2 );
+  mComposerScaleBar->setHeight( 5 );
 };
 
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
-    delete mComposition;
-    delete mMapRenderer;
-    delete mRasterLayer;
+  delete mComposition;
+  delete mMapRenderer;
+  delete mRasterLayer;
 };
 
 void TestQgsComposerScaleBar::init()
@@ -109,34 +109,34 @@ void TestQgsComposerScaleBar::cleanup()
 
 void TestQgsComposerScaleBar::singleBox()
 {
-    mComposerScaleBar->setStyle( "Single Box" );
-    QgsCompositionChecker checker( "Composer scalebar singleBox", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                   "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_singlebox.png" ) );
-    QVERIFY( checker.testComposition() );
+  mComposerScaleBar->setStyle( "Single Box" );
+  QgsCompositionChecker checker( "Composer scalebar singleBox", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_singlebox.png" ) );
+  QVERIFY( checker.testComposition() );
 };
 
 void TestQgsComposerScaleBar::doubleBox()
 {
-    mComposerScaleBar->setStyle( "Double Box" );
-    QgsCompositionChecker checker( "Composer scalebar doubleBox", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                   "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_doublebox.png" ) );
-    QVERIFY( checker.testComposition() );
+  mComposerScaleBar->setStyle( "Double Box" );
+  QgsCompositionChecker checker( "Composer scalebar doubleBox", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_doublebox.png" ) );
+  QVERIFY( checker.testComposition() );
 };
 
 void TestQgsComposerScaleBar::numeric()
 {
-    mComposerScaleBar->setStyle( "Numeric" );
-    QgsCompositionChecker checker( "Composer scalebar numeric", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                   "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_numeric.png" ) );
-    QVERIFY( checker.testComposition() );
+  mComposerScaleBar->setStyle( "Numeric" );
+  QgsCompositionChecker checker( "Composer scalebar numeric", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_numeric.png" ) );
+  QVERIFY( checker.testComposition() );
 };
 
 void TestQgsComposerScaleBar::tick()
 {
-    mComposerScaleBar->setStyle( "Line Ticks Up" );
-    QgsCompositionChecker checker( "Composer scalebar numeric", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                   "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_numeric.png" ) );
-    QVERIFY( checker.testComposition() );
+  mComposerScaleBar->setStyle( "Line Ticks Up" );
+  QgsCompositionChecker checker( "Composer scalebar tick", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composerscalebar" + QDir::separator() + "composerscalebar_tick.png" ) );
+  QVERIFY( checker.testComposition() );
 };
 
 QTEST_MAIN( TestQgsComposerScaleBar )

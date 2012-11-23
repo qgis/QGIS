@@ -127,7 +127,7 @@ int QgsWFSData::getWFSData()
   delete reply;
   delete progressDialog;
 
-  if ( mExtent )
+  if ( mExtent && *mWkbType != QGis::WKBNoGeometry )
   {
     if ( mExtent->isEmpty() )
     {
@@ -317,7 +317,10 @@ void QgsWFSData::endElement( const XML_Char* el )
     }
 
 
-    mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+    if ( mCurrentWKBSize > 0 )
+    {
+      mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+    }
     mFeatures.insert( mCurrentFeature->id(), mCurrentFeature );
     if ( !mCurrentFeatureId.isEmpty() )
     {

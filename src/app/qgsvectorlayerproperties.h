@@ -26,6 +26,7 @@
 #include "qgsdelattrdialog.h"
 #include "qgsattributetypedialog.h"
 #include "qgsfield.h"
+#include "qgslegenditem.h"
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -38,6 +39,8 @@ class QgsLabelDialog;
 class QgsVectorLayer;
 class QgsVectorOverlayPlugin;
 class QgsLabelingGui;
+class QgsDiagramProperties;
+class QgsFieldsProperties;
 
 class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -78,8 +81,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void insertExpression();
 
-    void attributeTypeDialog();
-
     void alterLayerDialog( const QString& string );
 
     /** Reset to original (vector layer) values */
@@ -97,12 +98,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /** Called when apply button is pressed or dialog is accepted */
     void apply();
 
-    /** toggle editing of layer */
-    void toggleEditing();
-
-    /** editing of layer was toggled */
-    void editingToggled();
-
     //
     //methods reimplemented from qt designer base class
     //
@@ -114,27 +109,11 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSaveDefaultStyle_clicked();
     void on_pbnLoadStyle_clicked();
     void on_pbnSaveStyleAs_clicked();
-    void on_tblAttributes_cellChanged( int row, int column );
-    void on_mCalculateFieldButton_clicked();
-    void on_pbnSelectEditForm_clicked();
     void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_mAddCategoryPushButton_clicked();
-    void on_mRemoveCategoryPushButton_clicked();
-    void on_mDiagramFontButton_clicked();
-    void on_mFixedSizeCheckBox_stateChanged( int state );
-    void on_mScaleDependentDiagramVisibilityCheckBox_stateChanged( int state );
-    void on_mFindMaximumValueButton_clicked();
-    void on_mBackgroundColorButton_clicked();
-    void on_mDiagramPenColorButton_clicked();
     void on_pbnUpdateExtents_clicked();
 
     void enableLabelOptions( bool theFlag );
-    void addAttribute();
-    void deleteAttribute();
-
-    void attributeAdded( int idx );
-    void attributeDeleted( int idx );
 
     void useNewSymbology();
     void setUsingNewSymbology( bool useNewSymbology );
@@ -142,17 +121,20 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
 
-    /**Set color for diagram category*/
-    void handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column );
+    void on_mMinimumScaleSetCurrentPushButton_clicked();
+    void on_mMaximumScaleSetCurrentPushButton_clicked();
 
   signals:
 
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
+    void refreshLegend( QString layerID, QgsLegendItem::Expansion expandItem );
 
     void toggleEditing( QgsMapLayer * );
 
   private slots:
+    /** toggle editing of layer */
+    void toggleEditing();
 
     /** save the style based on selected format from the menu */
     void saveStyleAsMenuTriggered( QAction * );
@@ -162,19 +144,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void saveStyleAs( StyleType styleType );
 
     void updateSymbologyPage();
-
-    enum attrColumns
-    {
-      attrIdCol = 0,
-      attrNameCol,
-      attrTypeCol,
-      attrLengthCol,
-      attrPrecCol,
-      attrCommentCol,
-      attrEditTypeCol,
-      attrAliasCol,
-      attrColCount,
-    };
 
     QgsVectorLayer *layer;
 
@@ -187,25 +156,18 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
     //QgsRenderer* bufferRenderer;
     /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelingGui *labelingDialog;
+    QgsLabelingGui* labelingDialog;
     /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelDialog* labelDialog;
     /**Actions dialog. If apply is pressed, the actions are stored for later use */
     QgsAttributeActionDialog* actionDialog;
+    /**Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/
+    QgsDiagramProperties* diagramPropertiesDialog;
+    /**Fields dialog. If apply is pressed, options are applied to vector's diagrams*/
+    QgsFieldsProperties* mFieldsPropertiesDialog;
+
 
     QList<QgsApplyDialog*> mOverlayDialogs;
-    QMap<int, QPushButton*> mButtonMap;
-    QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
-    QMap<int, QMap<QString, QVariant> > mValueMaps;
-    QMap<int, QgsVectorLayer::RangeData> mRanges;
-    QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
-    QMap<int, QPair<QString, QString> > mCheckedStates;
-
-    QFont mDiagramFont;
-
-    void updateButtons();
-    void loadRows();
-    void setRow( int row, int idx, const QgsField &field );
 
     void initDiagramTab();
 
@@ -217,11 +179,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /**Adds a new join to mJoinTreeWidget*/
     void addJoinToTreeWidget( const QgsVectorJoinInfo& join );
-
-    static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
-    static void setupEditTypes();
-    static QString editTypeButtonText( QgsVectorLayer::EditType type );
-    static QgsVectorLayer::EditType editTypeFromButtonText( QString text );
 };
 
 inline QString QgsVectorLayerProperties::displayName()

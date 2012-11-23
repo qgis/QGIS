@@ -1,0 +1,14 @@
+r.flow
+r.flow - Construction of slope curves (flowlines), flowpath lengths, and flowline densities (upslope areas) from a raster digital elevation model (DEM).
+Raster (r.*)
+ParameterRaster|elevin|Input elevation raster map|False
+ParameterRaster|aspin|Input aspect raster map|False
+ParameterRaster|barin|Input barrier raster map|False
+ParameterNumber|skip|Number of cells between flowlines|None|None|1.0
+ParameterNumber|bound|Maximum number of segments per flowline|None|None|5.0
+ParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
+ParameterBoolean|-3|3-D lengths instead of 2-D|False
+ParameterBoolean|-m|Use less memory, at a performance penalty|False
+OutputRaster|flout|Output flowline vector map
+OutputRaster|lgout|Output flowpath length raster map
+OutputRaster|dsout|Output flowline density raster map

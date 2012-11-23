@@ -1,0 +1,10 @@
+v.rast.stats
+v.rast.stats - Calculates univariate statistics from a raster map based on vector polygons and uploads statistics to new attribute columns.
+Vector (v.*)
+ParameterVector|vector|Name of vector polygon map|-1|False
+ParameterRaster|raster|Name of raster map to calculate statistics from|False
+ParameterString|colprefix|Column prefix for new attribute columns|
+ParameterNumber|percentile|Percentile to calculate|0.0|100.0|90
+ParameterBoolean|-c|Continue if upload column(s) already exist|False
+ParameterBoolean|-e|Calculate extended statistics|False
+

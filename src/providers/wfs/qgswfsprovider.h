@@ -138,7 +138,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
-    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData();
 
@@ -217,7 +217,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
     int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
-    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const;
+    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
 
     /**Copies feature attributes / geometry from f to feature*/
     void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes );
@@ -226,20 +226,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const;
 
     int getFeaturesFromGML2( const QDomElement& wfsCollectionElement, const QString& geometryAttribute );
-
-    int getWkbFromGML2( const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <Point> element*/
-    int getWkbFromGML2Point( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <Polygon> element*/
-    int getWkbFromGML2Polygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <LineString> element*/
-    int getWkbFromGML2LineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <MultiPoint> element*/
-    int getWkbFromGML2MultiPoint( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <MultiLineString> element*/
-    int getWkbFromGML2MultiLineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
-    /**Creates WKB from a <MultiPolygon> element*/
-    int getWkbFromGML2MultiPolygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const;
     /**Reads the <gml:coordinates> element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the <gml:coordinates> element
@@ -247,23 +233,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
     /**Tries to create a QgsCoordinateReferenceSystem object and assign it to mSourceCRS. Returns 0 in case of success*/
     int setCRSFromGML2( const QDomElement& wfsCollectionElement );
-
-
-    //methods to write GML2
-
-    QDomElement createGeometryElem( QgsGeometry* g, QDomDocument& doc ) /*const*/;
-    QDomElement createLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiLineStringElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiPointElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
-    QDomElement createMultiPolygonElem( QgsGeometry* geom, QDomDocument& doc ) const;
-
-    /**Create a GML coordinate string from a point list.
-      @param points list of data points
-      @param coordString out: GML coord string
-      @return 0 in case of success*/
-    QDomElement createCoordinateElem( const QVector<QgsPoint> points, QDomDocument& doc ) const;
 
     //helper methods for WFS-T
 

@@ -25,6 +25,7 @@
 
 #include <qgscoordinatereferencesystem.h>
 
+#include <QList>
 
 /**
  * \class QgsOptions
@@ -64,13 +65,21 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void on_pbnEditPyramidsOptions_pressed();
     void editGdalDriver( const QString& driverName );
     void saveOptions();
+    /*!
+    * Slot to reset any temporarily applied options on dialog close/cancel
+    * @note added in QGIS 2.0
+    */
+    void rejectOptions();
     //! Slot to change the theme this is handled when the user
     // activates or highlights a theme name in the drop-down list
     void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
-
-    void fontSizeChanged( const QString &fontSize );
+    /*!
+    * Slot to temporarily apply settings to app stylesheet
+    * @note added in QGIS 2.0
+    */
+    void updateAppStyleSheet();
 
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox
@@ -180,12 +189,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void saveGdalDriverList();
 
-  protected:
-    //! Populates combo box with ellipsoids
-    void getEllipsoidList();
-
-    QString getEllipsoidAcronym( QString theEllipsoidName );
-    QString getEllipsoidName( QString theEllipsoidAcronym );
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
 
   private:
     QStringList i18nList();
@@ -194,6 +202,20 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
 
     static const char * GEO_NONE_DESC;
 };

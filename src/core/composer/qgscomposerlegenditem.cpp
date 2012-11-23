@@ -288,10 +288,12 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xSe
 ////////////////////QgsComposerLayerItem
 
 QgsComposerLayerItem::QgsComposerLayerItem(): QgsComposerLegendItem()
+    , mShowFeatureCount( false )
 {
 }
 
 QgsComposerLayerItem::QgsComposerLayerItem( const QString& text ): QgsComposerLegendItem( text )
+    , mShowFeatureCount( false )
 {
 }
 
@@ -312,6 +314,7 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   QDomElement layerItemElem = doc.createElement( "LayerItem" );
   layerItemElem.setAttribute( "layerId", mLayerID );
   layerItemElem.setAttribute( "text", text() );
+  layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
   writeXMLChildren( layerItemElem, doc );
   elem.appendChild( layerItemElem );
 }
@@ -324,6 +327,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
   setText( itemElem.attribute( "text", "" ) );
   setLayerID( itemElem.attribute( "layerId", "" ) );
+  setShowFeatureCount( itemElem.attribute( "showFeatureCount", "" ) == "1" ? true : false );
 
   //now call readXML for all the child items
   QDomNodeList childList = itemElem.childNodes();

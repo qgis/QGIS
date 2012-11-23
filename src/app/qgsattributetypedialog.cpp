@@ -37,7 +37,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
 {
   setupUi( this );
   tableWidget->insertRow( 0 );
-  connect( selectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setStackPage( int ) ) );
+  connect( selectionListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setStackPage( int ) ) );
   connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
@@ -454,7 +454,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
-  selectionComboBox->setCurrentIndex( index );
+  selectionListWidget->setCurrentRow( index );
   setStackPage( index );
 }
 
@@ -509,7 +509,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
 void QgsAttributeTypeDialog::accept()
 {
   //store data to output variables
-  switch ( selectionComboBox->currentIndex() )
+  switch ( selectionListWidget->currentRow() )
   {
     default:
     case 0:
@@ -607,7 +607,7 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
       mValueRelationData.mAllowMulti = valueRelationAllowMulti->isChecked();
-      if( valueRelationFilterColumn->currentIndex() == 0 )
+      if ( valueRelationFilterColumn->currentIndex() == 0 )
       {
         mValueRelationData.mFilterAttributeColumn = QString::null;
         mValueRelationData.mFilterAttributeValue = QString::null;
@@ -655,7 +655,7 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
   valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
 
-  if( mValueRelationData.mFilterAttributeColumn.isNull() )
+  if ( mValueRelationData.mFilterAttributeColumn.isNull() )
   {
     valueRelationFilterColumn->setCurrentIndex( 0 );
   }
@@ -683,7 +683,7 @@ void QgsAttributeTypeDialog::updateFilterColumn( int idx )
   QList<QVariant> uniqueValues;
   vl->uniqueValues( fidx, uniqueValues );
 
-  foreach( const QVariant &v, uniqueValues )
+  foreach ( const QVariant &v, uniqueValues )
   {
     valueRelationFilterValue->addItem( v.toString(), v );
   }

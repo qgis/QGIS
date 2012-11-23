@@ -175,7 +175,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
-    void setFontSize( int size );
+    void setFontSize( int fontSize );
+    //! Set app font family
+    //! @note added in 2.0
+    void setFontFamily( const QString& fontFamily );
+    //! Set app stylesheet from settings
+    //! @note added in 2.0
+    void setAppStyleSheet();
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -284,6 +290,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    /** @note added in 2.0 */
+    QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -537,6 +545,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+    /** Duplicate map layer(s) in legend
+     * @note added in 2.0 */
+    void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set CRS of a layer
     void setLayerCRS();
     //! Assign layer CRS to project
@@ -819,6 +830,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addFormAnnotation();
     void addTextAnnotation();
     void addHtmlAnnotation();
+    void addSvgAnnotation();
     void modifyAnnotation();
 
     //! shows label settings dialog (for labeling-ng)
@@ -1088,6 +1100,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mHtmlAnnotation;
+        QgsMapTool* mSvgAnnotation;
         QgsMapTool* mTextAnnotation;
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;
@@ -1235,8 +1248,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void projectChanged( const QDomDocument & );
 
     bool cmpByText( QAction* a, QAction* b );
-
-    QString mOldScale;
 
     //! the user has trusted the project macros
     bool mTrustedMacros;

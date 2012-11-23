@@ -1,3 +1,15 @@
+/***************************************************************************
+    getInsertions.cpp
+    ---------------------
+    copyright            : (C) by Christopher Michaelis
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 // LICENSE:
 //
 // This code is released under the GPL (GNU Public License) version 2.0.
@@ -22,7 +34,7 @@
 //    http://www.happysquirrel.com/index.php?feature=hs_questions
 //
 // Thank you!
-// Christopher Michaelis
+//
 
 // getInsertions.cpp: The class which retrieves the block insertions from the DXF file
 

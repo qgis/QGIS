@@ -542,7 +542,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \note an empty crs value will result in the previous CRS being retained.
      */
-    void setImageCrs( QString const & crs );
+    bool setImageCrs( QString const & crs );
 
     /**
      * Set the name of the connection for use in authentication where required
@@ -642,8 +642,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
 
 
@@ -653,36 +653,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-
-    /**
-     * \brief Identify details from a WMS from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A html document containing the return from the WMS server
-     *
-     * \note WMS prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     */
-    QString identifyAsHtml( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a WMS from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
-     */
-    QString identifyAsText( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -739,7 +710,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     */
     QString description() const;
 
-    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData();
 
@@ -875,7 +846,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \note added in 1.1
      */
 
-    void parseUri( QString uri );
+    bool parseUri( QString uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -884,7 +855,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString prepareUri( QString uri ) const;
 
-    QStringList identifyAs( const QgsPoint &point, QString format );
+    //QStringList identifyAs( const QgsPoint &point, QString format );
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 

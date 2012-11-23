@@ -26,7 +26,7 @@ def description():
 def category():
   return "Web"
 def version():
-  return "Version 0.4.3"
+  return "Version 0.4.4"
 def qgisMinimumVersion():
   return "1.0"
 def icon():

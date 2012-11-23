@@ -41,8 +41,6 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     /**Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF& rectangle );
-    /** resizes an item in x- and y direction (scene coordinates)*/
-    void resize( double dx, double dy );
 
     /** stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag

@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -74,7 +74,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
       mSchemaMap[ layerProperty.schemaName ] = schemaItem;
     }
 
-    if ( layerProperty.type == "GEOMETRY" )
+    if ( QgsPostgresConn::wkbTypeFromPostgis( layerProperty.type ) == QGis::WKBUnknown )
     {
       if ( !columnTypeThread )
       {

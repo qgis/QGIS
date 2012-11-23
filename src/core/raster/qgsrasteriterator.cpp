@@ -44,16 +44,19 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
   pInfo.nRows = nRows;
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
-  pInfo.data = 0;
+  pInfo.block = 0;
   pInfo.prj = 0;
   mRasterPartInfos.insert( bandNumber, pInfo );
 }
 
 bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     int& nCols, int& nRows,
-    void** rasterData,
+    //void** rasterData,
+    QgsRasterBlock **block,
     int& topLeftCol, int& topLeftRow )
 {
+  QgsDebugMsg( "Entered" );
+  *block = 0;
   //get partinfo
   QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
   if ( partIt == mRasterPartInfos.end() )
@@ -63,10 +66,16 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
 
   RasterPartInfo& pInfo = partIt.value();
 
+  // If we started with zero cols or zero rows, just return (avoids divide by zero below)
+  if ( 0 ==  pInfo.nCols || 0 == pInfo.nRows )
+  {
+    return false;
+  }
+
   //remove last data block
-  // TODO: data are released somewhere else (check)
-  //free( pInfo.data );
-  pInfo.data = 0;
+  // TODO: block is released somewhere else (check)
+  //delete pInfo.block;
+  pInfo.block = 0;
   delete pInfo.prj;
   pInfo.prj = 0;
 
@@ -79,6 +88,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   //read data block
   nCols = qMin( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
   nRows = qMin( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
+  QgsDebugMsg( QString( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ) );
 
   //get subrectangle
   QgsRectangle viewPortExtent = mExtent;
@@ -88,9 +98,9 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  pInfo.data = mInput->block( bandNumber, blockRect, nCols, nRows );
+  pInfo.block = mInput->block( bandNumber, blockRect, nCols, nRows );
 
-  *rasterData = pInfo.data;
+  *block = pInfo.block;
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
 
@@ -119,8 +129,7 @@ void QgsRasterIterator::removePartInfo( int bandNumber )
   if ( partIt != mRasterPartInfos.end() )
   {
     RasterPartInfo& pInfo = partIt.value();
-    //CPLFree( pInfo.data );
-    free( pInfo.data );
+    delete pInfo.block;
     delete pInfo.prj;
     mRasterPartInfos.remove( bandNumber );
   }

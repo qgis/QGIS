@@ -43,6 +43,7 @@
 
 QgsMapRenderer::QgsMapRenderer()
 {
+  mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
   mCachedTrForLayer = 0;
@@ -163,7 +164,7 @@ void QgsMapRenderer::adjustExtentToSize()
 
   if ( !myWidth || !myHeight )
   {
-    mScale = 1;
+    mScale = 1.0;
     newCoordXForm.setParameters( 0, 0, 0, 0 );
     return;
   }
@@ -204,6 +205,10 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setXMaximum( dxmax );
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
+
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( mExtent.width() / myWidth, 0, 'f', 8 ).arg( mExtent.height() / myHeight, 0, 'f', 8 ) );
+
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( mExtent.width() / mMapUnitsPerPixel, 0, 'f', 8 ).arg( mExtent.height() / mMapUnitsPerPixel, 0, 'f', 8 ) );
 
   // update the scale
   updateScale();
@@ -382,7 +387,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->extent().toString() )
                );
 
-    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) || mOverview )
+    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 

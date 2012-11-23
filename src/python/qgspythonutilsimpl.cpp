@@ -445,10 +445,7 @@ QString QgsPythonUtilsImpl::pythonPath()
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-  if ( QgsApplication::isRunningFromBuildDir() )
-    return QString(); // plugins not used
-  else
-    return pythonPath() + "/plugins";
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()

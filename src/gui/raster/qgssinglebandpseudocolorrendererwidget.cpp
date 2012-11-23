@@ -34,6 +34,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 {
   setupUi( this );
 
+  mColormapTreeWidget->setColumnWidth( 1, 50 );
+
   mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
 
   if ( !mRasterLayer )
@@ -47,6 +49,20 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
     return;
   }
 
+  // Must be before adding items to mBandComboBox (signal)
+  mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
+  mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
+
+  mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
+  mMinMaxWidget->setExtent( extent );
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  mMinMaxContainerWidget->setLayout( layout );
+  layout->addWidget( mMinMaxWidget );
+  connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
+           this, SLOT( loadMinMax( int, double, double, int ) ) );
+
+
   //fill available bands into combo box
   int nBands = provider->bandCount();
   for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
@@ -57,11 +73,15 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), 0 );
   mColorInterpolationComboBox->addItem( tr( "Linear" ), 1 );
   mColorInterpolationComboBox->addItem( tr( "Exact" ), 2 );
-
+  mColorInterpolationComboBox->setCurrentIndex( 1 );
   mClassificationModeComboBox->addItem( tr( "Equal interval" ) );
   //quantile would be nice as well
 
+  mNumberOfEntriesSpinBox->setValue( 5 ); // some default
+
   setFromRenderer( layer->renderer() );
+
+  resetClassifyButton();
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
@@ -109,7 +129,12 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
   rasterShader->setRasterShaderFunction( colorRampShader );
 
   int bandNumber = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
-  return new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
+  QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
+
+  renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
+  renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
+  renderer->setClassificationMinMaxOrigin( mMinMaxOrigin );
+  return renderer;
 }
 
 void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
@@ -190,27 +215,32 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     return;
   }
 
-  int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
-  QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
+  //int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
+  //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
   int numberOfEntries = mNumberOfEntriesSpinBox->value();
 
   QList<double> entryValues;
   QList<QColor> entryColors;
 
+  double min = lineEditValue( mMinLineEdit );
+  double max = lineEditValue( mMaxLineEdit );
+
   if ( mClassificationModeComboBox->currentText() == tr( "Equal interval" ) )
   {
-    double currentValue = myRasterBandStats.minimumValue;
+    //double currentValue = myRasterBandStats.minimumValue;
+    double currentValue = min;
     double intervalDiff;
     if ( numberOfEntries > 1 )
     {
       //because the highest value is also an entry, there are (numberOfEntries - 1)
       //intervals
-      intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
-                     ( numberOfEntries - 1 );
+      //intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
+      intervalDiff = ( max - min ) / ( numberOfEntries - 1 );
     }
     else
     {
-      intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
+      //intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
+      intervalDiff = max - min;
     }
 
     for ( int i = 0; i < numberOfEntries; ++i )
@@ -248,7 +278,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       QColor currentColor;
-      currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
+      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+      currentColor.setRgb( colorDiff*idx, 0, 255 - colorDiff * idx );
       entryColors.push_back( currentColor );
     }
   }
@@ -256,7 +287,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   {
     for ( int i = 0; i < numberOfEntries; ++i )
     {
-      entryColors.push_back( colorRamp->color((( double ) i ) / numberOfEntries ) );
+      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+      entryColors.push_back( colorRamp->color((( double ) idx ) / numberOfEntries ) );
     }
   }
 
@@ -515,5 +547,79 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         }
       }
     }
+    setLineEditValue( mMinLineEdit, pr->classificationMin() );
+    setLineEditValue( mMaxLineEdit, pr->classificationMax() );
+    mMinMaxOrigin = pr->classificationMinMaxOrigin();
+    showMinMaxOrigin();
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChanged( int index )
+{
+  QList<int> myBands;
+  myBands.append( mBandComboBox->itemData( index ).toInt() );
+  mMinMaxWidget->setBands( myBands );
+}
+
+void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
+{
+  Q_UNUSED( theBandNo );
+  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
+
+  if ( qIsNaN( theMin ) )
+  {
+    mMinLineEdit->clear();
+  }
+  else
+  {
+    mMinLineEdit->setText( QString::number( theMin ) );
+  }
+
+  if ( qIsNaN( theMax ) )
+  {
+    mMaxLineEdit->clear();
+  }
+  else
+  {
+    mMaxLineEdit->setText( QString::number( theMax ) );
+  }
+
+  mMinMaxOrigin = theOrigin;
+  showMinMaxOrigin();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::showMinMaxOrigin()
+{
+  mMinMaxOriginLabel->setText( QgsRasterRenderer::minMaxOriginLabel( mMinMaxOrigin ) );
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit * theLineEdit, double theValue )
+{
+  QString s;
+  if ( !qIsNaN( theValue ) )
+  {
+    s = QString::number( theValue );
+  }
+  theLineEdit->setText( s );
+}
+
+double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit * theLineEdit ) const
+{
+  if ( theLineEdit->text().isEmpty() )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  return theLineEdit->text().toDouble();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::resetClassifyButton()
+{
+  mClassifyButton->setEnabled( true );
+  double min = lineEditValue( mMinLineEdit );
+  double max = lineEditValue( mMaxLineEdit );
+  if ( qIsNaN( min ) || qIsNaN( max ) || min >= max )
+  {
+    mClassifyButton->setEnabled( false );
   }
 }

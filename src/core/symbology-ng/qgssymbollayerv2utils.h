@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -90,9 +90,14 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( QString str, double *scaleFactor );
 
+    static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
+
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
+
+    static void drawStippledBackround( QPainter* painter, QRect rect );
 
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
@@ -124,6 +129,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
+    //! @note not available in python bindings
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, QColor color, double width = -1,
                            const Qt::PenJoinStyle *penJoinStyle = 0, const Qt::PenCapStyle *penCapStyle = 0,

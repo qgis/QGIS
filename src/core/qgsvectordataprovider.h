@@ -118,13 +118,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * This function does nothing useful, it's kept only for compatibility.
      * @todo to be removed
      */
-    virtual long updateFeatureCount();
+    Q_DECL_DEPRECATED virtual long updateFeatureCount();
 
     /**
      * Gets the feature at the given feature ID.
-     * @param featureId of the feature to be returned
-     * @param feature which will receive the data
-     * @param fetchGeometry flag which if true, will cause the geometry to be fetched from the provider
+     * @param featureId id of the feature
+     * @param feature feature which will receive the data
+     * @param fetchGeometry if true, geometry will be fetched from the provider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      *
@@ -149,13 +149,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QGis::WkbType geometryType() const = 0;
 
-
     /**
      * Number of features in the layer
      * @return long containing number of features
      */
     virtual long featureCount() const = 0;
-
 
     /**
      * Number of attribute fields for a feature in the layer
@@ -246,7 +244,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Deletes existing attributes
-     * @param attributes a set containing names of attributes
+     * @param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
      */
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
@@ -340,13 +338,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       int mMinPrec, mMaxPrec;
     };
 
-
     /**
      * Returns the names of the supported types
      * @note added in 1.2
      */
     const QList< NativeType > &nativeTypes() const;
-
 
     /**
      * Returns the names of the supported types
@@ -359,7 +355,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
           @note: added in version 1.4*/
     virtual bool doesStrictFeatureTypeCheck() const { return true;}
 
-
+    /** Returns a list of available encodings */
     static const QStringList &availableEncodings();
 
     /* provider has errors to report

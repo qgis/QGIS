@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS qgsrenderchecker.cpp qgscompositionchecker.cpp)
+SET (util_SRCS qgscompositionchecker.cpp)
 
 
 #####################################################
@@ -41,7 +41,7 @@ ENDIF (WIN32)
 # ensure the qgis libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
+#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our
@@ -78,13 +78,16 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
 ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
+ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
 ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
 ADD_QGIS_TEST(regression1141 regression1141.cpp)
 ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
+ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
 ADD_QGIS_TEST(contrastenhancementtest  testcontrastenhancements.cpp)
 ADD_QGIS_TEST(maplayertest testqgsmaplayer.cpp)
 ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
@@ -98,6 +101,8 @@ ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
 ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
 ADD_QGIS_TEST(composermaptest testqgscomposermap.cpp)
+ADD_QGIS_TEST(atlascompositiontest testqgsatlascomposition.cpp)
+ADD_QGIS_TEST(composerlabeltest testqgscomposerlabel.cpp)
 ADD_QGIS_TEST(stylev2test testqgsstylev2.cpp)
 ADD_QGIS_TEST(composerhtmltest testqgscomposerhtml.cpp )
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)

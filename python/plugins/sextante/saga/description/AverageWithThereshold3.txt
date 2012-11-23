@@ -1,0 +1,7 @@
+Average With Thereshold 3
+contrib_a_perego
+ParameterRaster|INPUT|Input|False
+ParameterNumber|RX|Radius X|0.0|None|3.0
+ParameterNumber|RY|Radius Y|0.0|None|3.0
+ParameterNumber|THRESH|Threshold|None|None|0.0
+OutputRaster|RESULT|AWT Grid

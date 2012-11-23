@@ -51,7 +51,6 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrConnectionFailed
     };
 
-
     /** Write contents of vector layer to a different datasource */
     static ImportError importLayer( QgsVectorLayer* layer,
                                     const QString& uri,

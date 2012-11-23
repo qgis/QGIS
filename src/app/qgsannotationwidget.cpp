@@ -42,6 +42,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     }
     mFrameWidthSpinBox->setValue( mItem->frameBorderWidth() );
     mFrameColorButton->setColor( mItem->frameColor() );
+    mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
 
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
@@ -66,6 +67,7 @@ void QgsAnnotationWidget::apply()
     mItem->setMapPositionFixed( mMapPositionFixedCheckBox->checkState() == Qt::Checked );
     mItem->setFrameBorderWidth( mFrameWidthSpinBox->value() );
     mItem->setFrameColor( mFrameColorButton->color() );
+    mItem->setFrameBackgroundColor( mBackgroundColorButton->color() );
     mItem->setMarkerSymbol( mMarkerSymbol );
     mMarkerSymbol = 0; //item takes ownership
     mItem->update();
@@ -127,5 +129,26 @@ void QgsAnnotationWidget::updateCenterIcon()
   }
   QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMapMarkerButton->iconSize() );
   mMapMarkerButton->setIcon( icon );
+}
+
+void QgsAnnotationWidget::on_mBackgroundColorButton_clicked()
+{
+  if ( !mItem )
+  {
+    return;
+  }
+
+  QColor bgColor;
+#if QT_VERSION >= 0x040500
+  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor(), 0, tr( "Select background color" ), QColorDialog::ShowAlphaChannel );
+#else
+  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor() );
+#endif
+
+  if ( bgColor.isValid() )
+  {
+    mItem->setFrameBackgroundColor( bgColor );
+    mBackgroundColorButton->setColor( bgColor );
+  }
 }
 

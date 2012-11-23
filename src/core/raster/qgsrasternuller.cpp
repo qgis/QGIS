@@ -41,46 +41,49 @@ int QgsRasterNuller::bandCount() const
   return 0;
 }
 
-QgsRasterInterface::DataType QgsRasterNuller::dataType( int bandNo ) const
+QgsRasterBlock::DataType QgsRasterNuller::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
-  return QgsRasterInterface::UnknownDataType;
+  return QgsRasterBlock::UnknownDataType;
 }
 
-void * QgsRasterNuller::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsDebugMsg( "Entered" );
-  if ( !mInput ) return 0;
-
-  //QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
-
-  void * rasterData = mInput->block( bandNo, extent, width, height );
-
-  QgsRasterInterface::DataType dataType =  mInput->dataType( bandNo ); 
-  int pixelSize = mInput->typeSize( dataType ) / 8; 
-
-  double noDataValue = mInput->noDataValue ( bandNo );
-
-  for ( int i = 0; i < height; ++i )
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  if ( !mInput )
   {
-    for ( int j = 0; j < width; ++j )
-    {
-      int index = pixelSize * ( i * width + j );
+    return outputBlock;
+  }
 
-      double value = readValue( rasterData, dataType, index );
-  
+  //void * rasterData = mInput->block( bandNo, extent, width, height );
+  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
+
+  // Input may be without no data value
+  //double noDataValue = mInput->noDataValue( bandNo );
+  double noDataValue = mOutputNoData;
+
+  for ( int i = 0; i < height; i++ )
+  {
+    for ( int j = 0; j < width; j++ )
+    {
+      //int index = i * width + j;
+
+      //double value = readValue( rasterData, dataType, index );
+      double value = inputBlock->value( i, j );
+
       foreach ( NoData noData, mNoData )
       {
-        if ( ( value >= noData.min && value <= noData.max ) ||
-             doubleNear( value, noData.min ) ||
-             doubleNear( value, noData.max ) )
+        if (( value >= noData.min && value <= noData.max ) ||
+            doubleNear( value, noData.min ) ||
+            doubleNear( value, noData.max ) )
         {
-          writeValue( rasterData, dataType, index, noDataValue );
+          inputBlock->setValue( i, j, noDataValue );
         }
       }
     }
   }
 
-  return rasterData;
+  return inputBlock;
 }
 

@@ -206,7 +206,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsApplication::registerOgrDrivers();
 
   QSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() ? "" : 0 );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
 
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
@@ -1790,7 +1790,7 @@ QString createFilters( QString type )
     // This does not work for some file types, see VSIFileHandler doc.
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
-    if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
+    if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
     {
       myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
       myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
@@ -1932,7 +1932,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
                                        QGis::WkbType vectortype,
-                                       const std::list<std::pair<QString, QString> > &attributes,
+                                       const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem *srs = NULL )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
@@ -1957,7 +1957,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     // check for duplicate fieldnames
     QSet<QString> fieldNames;
-    std::list<std::pair<QString, QString> >::const_iterator fldIt;
+    QList<QPair<QString, QString> >::const_iterator fldIt;
     for ( fldIt = attributes.begin(); fldIt != attributes.end(); ++fldIt )
     {
       QString name = fldIt->first.left( 10 );
@@ -2052,7 +2052,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     Q_ASSERT( codec );
   }
 
-  for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QStringList fields = it->second.split( ";" );
 

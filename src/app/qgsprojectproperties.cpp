@@ -19,6 +19,8 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
+#include "qgisapp.h"
+#include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
@@ -27,9 +29,12 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
+#include "qgsprojectlayergroupdialog.h"
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsstylev2.h"
@@ -66,11 +71,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QGis::UnitType myUnit = myRenderer->mapUnits();
   setMapUnits( myUnit );
 
+  // we need to initialize it, since the on_cbxProjectionEnabled_stateChanged()
+  // callback triggered by setChecked() might use it.
+  mProjectSrsId = myRenderer->destinationCrs().srsid();
+
   //see if the user wants on the fly projection enabled
   bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
-  mProjectSrsId = myRenderer->destinationCrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
   projectionSelector->setEnabled( myProjectionEnabled );
@@ -215,6 +223,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSAbstract->setPlainText( QgsProject::instance()->readEntry( "WMSServiceAbstract", "/", "" ) );
   mWMSOnlineResourceLineEdit->setText( QgsProject::instance()->readEntry( "WMSOnlineResource", "/", "" ) );
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
+  mWMSFees->setText( QgsProject::instance()->readEntry( "WMSFees", "/", "" ) );
+  mWMSAccessConstraints->setText( QgsProject::instance()->readEntry( "WMSAccessConstraints", "/", "" ) );
+  mWMSKeywordList->setText( QgsProject::instance()->readListEntry( "WMSKeywordList", "/" ).join( "," ) );
 
   bool ok;
   QStringList values;
@@ -258,6 +269,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   grpWMSList->setChecked( mWMSList->count() > 0 );
 
+  //composer restriction for WMS
+  values = QgsProject::instance()->readListEntry( "WMSComposerList", "/", &ok );
+  mWMSComposerGroupBox->setChecked( ok );
+  if ( ok )
+  {
+    mComposerListWidget->addItems( values );
+  }
+
+  //layer restriction for WMS
+  values = QgsProject::instance()->readListEntry( "WMSRestrictedLayers", "/", &ok );
+  mLayerRestrictionsGroupBox->setChecked( ok );
+  if ( ok )
+  {
+    mLayerRestrictionsListWidget->addItems( values );
+  }
+
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
@@ -276,8 +303,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
+  QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Update" );
+  QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Insert" );
+  QStringList wfstDeleteLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Delete" );
 
-  twWFSLayers->setColumnCount( 2 );
+  QSignalMapper *smPublied = new QSignalMapper( this );
+  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSPublied_stateChanged( int ) ) );
+  QSignalMapper *smUpdate = new QSignalMapper( this );
+  connect( smUpdate, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSUpdate_stateChanged( int ) ) );
+  QSignalMapper *smInsert = new QSignalMapper( this );
+  connect( smInsert, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSInsert_stateChanged( int ) ) );
+  QSignalMapper *smDelete = new QSignalMapper( this );
+  connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSDelete_stateChanged( int ) ) );
+
+  twWFSLayers->setColumnCount( 5 );
   twWFSLayers->horizontalHeader()->setVisible( true );
   twWFSLayers->setRowCount( mapLayers.size() );
 
@@ -297,11 +336,44 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
       twWFSLayers->setItem( j, 0, twi );
 
-      QCheckBox *cb = new QCheckBox();
-      cb->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
-      twWFSLayers->setCellWidget( j, 1, cb );
-      j++;
+      QCheckBox* cbp = new QCheckBox();
+      cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
+      twWFSLayers->setCellWidget( j, 1, cbp );
 
+      smPublied->setMapping( cbp, j );
+      connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
+
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorDataProvider* provider = vlayer->dataProvider();
+      if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+      {
+        QCheckBox* cbu = new QCheckBox();
+        cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
+        twWFSLayers->setCellWidget( j, 2, cbu );
+
+        smUpdate->setMapping( cbu, j );
+        connect( cbu, SIGNAL( stateChanged( int ) ), smUpdate, SLOT( map() ) );
+      }
+      if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+      {
+        QCheckBox* cbi = new QCheckBox();
+        cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
+        twWFSLayers->setCellWidget( j, 3, cbi );
+
+        smInsert->setMapping( cbi, j );
+        connect( cbi, SIGNAL( stateChanged( int ) ), smInsert, SLOT( map() ) );
+      }
+      if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+      {
+        QCheckBox* cbd = new QCheckBox();
+        cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
+        twWFSLayers->setCellWidget( j, 4, cbd );
+
+        smDelete->setMapping( cbd, j );
+        connect( cbd, SIGNAL( stateChanged( int ) ), smDelete, SLOT( map() ) );
+      }
+
+      j++;
     }
   }
   twWFSLayers->setRowCount( j );
@@ -498,6 +570,18 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSServiceAbstract", "/", mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( "WMSOnlineResource", "/", mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( "WMSUrl", "/", mWMSUrlLineEdit->text() );
+  QgsProject::instance()->writeEntry( "WMSFees", "/", mWMSFees->text() );
+  QgsProject::instance()->writeEntry( "WMSAccessConstraints", "/", mWMSAccessConstraints->text() );
+  //WMS keyword list
+  QStringList keywordStringList = mWMSKeywordList->text().split( "," );
+  if ( keywordStringList.size() > 0 )
+  {
+    QgsProject::instance()->writeEntry( "WMSKeywordList", "/", mWMSKeywordList->text().split( "," ) );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSKeywordList", "/" );
+  }
 
   if ( grpWMSExt->isChecked() )
   {
@@ -536,6 +620,36 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->removeEntry( "WMSCrsList", "/" );
   }
 
+  //WMS composer restrictions
+  if ( mWMSComposerGroupBox->isChecked() )
+  {
+    QStringList composerTitles;
+    for ( int i = 0; i < mComposerListWidget->count(); ++i )
+    {
+      composerTitles << mComposerListWidget->item( i )->text();
+    }
+    QgsProject::instance()->writeEntry( "WMSComposerList", "/", composerTitles );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSComposerList", "/" );
+  }
+
+  //WMS layer restrictions
+  if ( mLayerRestrictionsGroupBox->isChecked() )
+  {
+    QStringList layerNames;
+    for ( int i = 0; i < mLayerRestrictionsListWidget->count(); ++i )
+    {
+      layerNames << mLayerRestrictionsListWidget->item( i )->text();
+    }
+    QgsProject::instance()->writeEntry( "WMSRestrictedLayers", "/", layerNames );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "WMSRestrictedLayers", "/" );
+  }
+
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
@@ -558,16 +672,38 @@ void QgsProjectProperties::apply()
   }
 
   QStringList wfsLayerList;
+  QStringList wfstUpdateLayerList;
+  QStringList wfstInsertLayerList;
+  QStringList wfstDeleteLayerList;
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
-    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
+    QCheckBox* cb;
+    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
     if ( cb && cb->isChecked() )
     {
-      QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
       wfsLayerList << id;
+    }
+    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 2 ) );
+    if ( cb && cb->isChecked() )
+    {
+      wfstUpdateLayerList << id;
+    }
+    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 3 ) );
+    if ( cb && cb->isChecked() )
+    {
+      wfstInsertLayerList << id;
+    }
+    cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 4 ) );
+    if ( cb && cb->isChecked() )
+    {
+      wfstDeleteLayerList << id;
     }
   }
   QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );
+  QgsProject::instance()->writeEntry( "WFSTLayers", "Update", wfstUpdateLayerList );
+  QgsProject::instance()->writeEntry( "WFSTLayers", "Insert", wfstInsertLayerList );
+  QgsProject::instance()->writeEntry( "WFSTLayers", "Delete", wfstDeleteLayerList );
 
   // Default Styles
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Marker", cboStyleMarker->currentText() );
@@ -636,6 +772,62 @@ void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
   {
     mLayerSrsId = projectionSelector->selectedCrsId();
     projectionSelector->setSelectedCrsId( mProjectSrsId );
+  }
+}
+
+void QgsProjectProperties::on_cbxWFSPublied_stateChanged( int aIdx )
+{
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
+  if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
+}
+
+void QgsProjectProperties::on_cbxWFSUpdate_stateChanged( int aIdx )
+{
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
+    if ( cbn )
+      cbn->setChecked( true );
+  }
+  else if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
+}
+
+void QgsProjectProperties::on_cbxWFSInsert_stateChanged( int aIdx )
+{
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
+    if ( cbn )
+      cbn->setChecked( true );
+  }
+  else if ( cb && !cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+    if ( cbn )
+      cbn->setChecked( false );
+  }
+}
+
+void QgsProjectProperties::on_cbxWFSDelete_stateChanged( int aIdx )
+{
+  QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
+  if ( cb && cb->isChecked() )
+  {
+    QCheckBox* cbn = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
+    if ( cbn )
+      cbn->setChecked( true );
   }
 }
 
@@ -742,6 +934,91 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
+}
+
+void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
+{
+  QSet<QgsComposer*> projectComposers = QgisApp::instance()->printComposers();
+  QStringList composerTitles;
+  QSet<QgsComposer*>::const_iterator cIt = projectComposers.constBegin();
+  for ( ; cIt != projectComposers.constEnd(); ++cIt )
+  {
+    composerTitles << ( *cIt )->title();
+  }
+
+  bool ok;
+  QString name = QInputDialog::getItem( this, tr( "Select print composer" ), tr( "Composer Title" ), composerTitles, 0, false, &ok );
+  if ( ok )
+  {
+    if ( mComposerListWidget->findItems( name, Qt::MatchExactly ).size() < 1 )
+    {
+      mComposerListWidget->addItem( name );
+    }
+  }
+}
+
+void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
+{
+  QListWidgetItem* currentItem = mComposerListWidget->currentItem();
+  if ( currentItem )
+  {
+    delete mComposerListWidget->takeItem( mComposerListWidget->row( currentItem ) );
+  }
+}
+
+void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
+{
+  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
+  d.setWindowTitle( tr( "Select restricted layers and groups" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QStringList layerNames = d.selectedLayerNames();
+    QStringList::const_iterator layerIt = layerNames.constBegin();
+    for ( ; layerIt != layerNames.constEnd(); ++layerIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *layerIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *layerIt );
+      }
+    }
+
+    QStringList groups = d.selectedGroups();
+    QStringList::const_iterator groupIt = groups.constBegin();
+    for ( ; groupIt != groups.constEnd(); ++groupIt )
+    {
+      if ( mLayerRestrictionsListWidget->findItems( *groupIt, Qt::MatchExactly ).size() < 1 )
+      {
+        mLayerRestrictionsListWidget->addItem( *groupIt );
+      }
+    }
+  }
+}
+
+void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
+{
+  QListWidgetItem* currentItem = mLayerRestrictionsListWidget->currentItem();
+  if ( currentItem )
+  {
+    delete mLayerRestrictionsListWidget->takeItem( mLayerRestrictionsListWidget->row( currentItem ) );
+  }
+}
+
+void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( true );
+  }
+}
+
+void QgsProjectProperties::on_pbnWFSLayersUnselectAll_clicked()
+{
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    cb->setChecked( false );
+  }
 }
 
 void QgsProjectProperties::on_pbnAddScale_clicked()

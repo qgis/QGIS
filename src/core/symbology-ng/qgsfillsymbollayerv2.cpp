@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -69,8 +69,9 @@ QString QgsSimpleFillSymbolLayerV2::layerType() const
 
 void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mColor.setAlphaF( context.alpha() );
-  mBrush = QBrush( mColor, mBrushStyle );
+  QColor fillColor = mColor;
+  fillColor.setAlphaF( context.alpha() * mColor.alphaF() );
+  mBrush = QBrush( fillColor, mBrushStyle );
 
   // scale brush content for printout
   double rasterScaleFactor = context.renderContext().rasterScaleFactor();
@@ -83,12 +84,14 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
-  // N.B. unless a "selection line colour" is implemented in addition to the "selection colour" option
+  // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
   // this would mean symbols with "no fill" look the same whether or not they are selected
   if ( selectFillStyle )
     mSelBrush.setStyle( mBrushStyle );
-  mBorderColor.setAlphaF( context.alpha() );
-  mPen = QPen( mBorderColor );
+
+  QColor borderColor = mBorderColor;
+  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF() );
+  mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );

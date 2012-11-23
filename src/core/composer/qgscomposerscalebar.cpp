@@ -242,15 +242,15 @@ void QgsComposerScaleBar::applyDefaultSize()
     int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( nUnitsPerSegment );
 
-    if( nUnitsPerSegment > 1000 )
+    if ( nUnitsPerSegment > 1000 )
     {
-        setNumUnitsPerSegment( (int)( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
-        setUnitLabeling( tr("km") );
-        setNumMapUnitsPerScaleBarUnit( 1000 );
+      setNumUnitsPerSegment(( int )( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
+      setUnitLabeling( tr( "km" ) );
+      setNumMapUnitsPerScaleBarUnit( 1000 );
     }
     else
     {
-        setUnitLabeling( tr("m") );
+      setUnitLabeling( tr( "m" ) );
     }
 
     setNumSegments( 4 );
@@ -465,6 +465,9 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   QString styleString = itemElem.attribute( "style", "" );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 
+  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
+  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+
   //map
   int mapId = itemElem.attribute( "mapId", "-1" ).toInt();
   if ( mapId >= 0 )
@@ -478,12 +481,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     }
   }
 
-  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
-
-  refreshSegmentMillimeters();
-
-  //alignment
-  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+  updateSegmentSize();
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );

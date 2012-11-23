@@ -1,5 +1,19 @@
+REM ***************************************************************************
+REM    package.cmd
+REM    ---------------------
+REM    begin                : July 2009
+REM    copyright            : (C) 2009 by Juergen E. Fischer
+REM    email                : jef at norbit dot de
+REM ***************************************************************************
+REM *                                                                         *
+REM *   This program is free software; you can redistribute it and/or modify  *
+REM *   it under the terms of the GNU General Public License as published by  *
+REM *   the Free Software Foundation; either version 2 of the License, or     *
+REM *   (at your option) any later version.                                   *
+REM *                                                                         *
+REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.2
+set GRASS_VERSION=6.4.3RC1
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -190,6 +204,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
 	"apps/%PACKAGENAME%/resources/symbology-ng-style.xml" ^
 	"apps/%PACKAGENAME%/svg/" ^
+	"apps/%PACKAGENAME%/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
 	"etc/postinstall/%PACKAGENAME%-common.bat" ^
 	>>%LOG% 2>&1

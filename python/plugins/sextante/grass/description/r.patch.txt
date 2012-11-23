@@ -1,0 +1,6 @@
+r.patch
+r.patch - Creates a composite raster map layer by using one (or more) map layer(s) to fill in areas of "no data" in another map layer.
+Raster (r.*)
+ParameterMultipleInput|input|Name of raster maps to be patched together|3|False
+ParameterBoolean|-z|Use zero (0) for transparency instead of NULL|False
+OutputRaster|output|Name for resultant raster map

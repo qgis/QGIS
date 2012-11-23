@@ -270,6 +270,12 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       for ( int i = 0; i < mline.size(); ++i, ++idx )
       {
         QgsPolyline line = mline[i];
+
+        if ( line.size() == 0 )
+        {
+          --idx;
+        }
+
         for ( int j = 0; j < line.size(); ++j )
         {
           if ( layer )

@@ -3,7 +3,7 @@
     ------------------
     begin                : June 2008
     copyright            : (C) 2008 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

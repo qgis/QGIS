@@ -283,10 +283,10 @@ class Qgis2Map:
     self.outFile.write("\n")
     # extents
     self.outFile.write(self.getExtentString())
-
-    self.outFile.write("  FONTSET '" + self.fontsPath + "'\n")
+    # put FONTSET and SYMBOLSET in comments to make it work out of the box for beginners
+    self.outFile.write("  #FONTSET '" + self.fontsPath + "'\n")
     # use of external symbol set
-    self.outFile.write("  SYMBOLSET '" + self.symbolsPath + "'\n")
+    self.outFile.write("  #SYMBOLSET '" + self.symbolsPath + "'\n")
 
   def getExtentString(self):
     stringToAddTo = ""
@@ -404,6 +404,9 @@ class Qgis2Map:
             "'?\n  Be sure there is a valid mapserverurl in the 'ows_onlineresource'.\n"
     self.outFile.write("      'ows_onlineresource'  '" + self.mapServerUrl + "?" + "map" + "=" + self.mapFile + "'\n")
     self.outFile.write("      'ows_srs'             'EPSG:" + epsg + "'\n")
+    # enable all layers for ows requests to work for mapserver 6.x
+    self.outFile.write("      'ows_enable_request'  '*'\n")
+
     self.outFile.write("    END\n\n")
 
     self.outFile.write("    #Scale range at which web interface will operate\n")

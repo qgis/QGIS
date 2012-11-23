@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -144,7 +144,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // zip settings + info
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
   QString vsiPrefix = QgsZipItem::vsiPrefix( thePath );
   bool is_vsizip = ( vsiPrefix == "/vsizip/" );
   bool is_vsigzip = ( vsiPrefix == "/vsigzip/" );
@@ -217,7 +217,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // not zipfile and scan items == "Check extension"
   if ((( is_vsizip || is_vsitar ) && scanZipSetting == "basic" ) ||
       ( !is_vsizip && !is_vsitar &&
-        ( settings.value( "/qgis/scanItemsInBrowser",
+        ( settings.value( "/qgis/scanItemsInBrowser2",
                           "extension" ).toString() == "extension" ) ) )
   {
     // if this is a VRT file make sure it is raster VRT to avoid duplicates

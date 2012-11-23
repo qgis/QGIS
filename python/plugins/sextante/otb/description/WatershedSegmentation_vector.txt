@@ -1,0 +1,19 @@
+WatershedSegmentationVector
+otbcli_Segmentation
+Watershed segmentation (large-scale, vector output)
+Segmentation
+ParameterRaster|-filter watershed -in|Input Image|False
+ParameterNumber|-filter.watershed.threshold|Depth Threshold|0|None|0.01
+ParameterNumber|-filter.watershed.level|Flood level|0|None|0.1
+OutputVector|-mode vector -mode.vector.out|Output vector file
+ParameterVector|-mode.vector.inmask|Mask Image|-1|True
+ParameterBoolean|-mode.vector.neighbor|8-neighbor connectivity|False
+ParameterBoolean|-mode.vector.stitch|Stitch polygons|True
+ParameterNumber|-mode.vector.minsize|Minimum object size|1|None|1
+ParameterNumber|-mode.vector.simplify|Simplify polygons|None|None|0.0
+ParameterString|-mode.vector.layername|Layer name |layer
+ParemeterString|-mode.vector.fieldname|Geometry index field name|DN
+ParameterNumber|-mode.vector.tilesize|Tile size|0|None|1024
+ParameterNumber|-mode.vector.startlabel|Starting geometry index|1|None|1
+ParameterSelection|-mode.vector.outmode|Writing mode (update file/overwrite file/overwrite layer/update layer)|ulco;ovw;ulovw;ulu|0
+ParameterString|-mode.vector.ogroptions|OGR options for layer creation|

@@ -1,0 +1,7 @@
+r.quantile
+r.quantile - Compute quantiles using two passes.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|quantiles|Number of quantiles|2.0|None|4
+ParameterString|percentiles|List of percentiles|
+ParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False

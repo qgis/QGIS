@@ -1,6 +1,6 @@
 /**
  * \ingroup networkanalysis
- * \class QgsGraphEdge
+ * \class QgsGraphArc
  * \brief This class implement a graph edge
  */
 class QgsGraphArc
@@ -8,6 +8,7 @@ class QgsGraphArc
 %TypeHeaderCode
 #include <qgsgraph.h>
 %End
+
   public:
     QgsGraphArc();
 
@@ -15,8 +16,8 @@ class QgsGraphArc
      * return property value
      * @param propertyIndex property index
      */
-    QVariant property(int propertyIndex ) const;
-    
+    QVariant property( int propertyIndex ) const;
+
     /**
      * get array of proertyes
      */
@@ -46,6 +47,7 @@ class QgsGraphVertex
 %TypeHeaderCode
 #include <qgsgraph.h>
 %End
+
   public:
     /**
      * default constructor. It need for QT's container, e.g. QVector
@@ -57,21 +59,21 @@ class QgsGraphVertex
      */
 
     QgsGraphVertex( const QgsPoint& point );
-    
+
     /**
      * return outgoing edges
      */
     QgsGraphArcIdList outArc() const;
-    
+
     /**
      * return incoming edges
      */
     QgsGraphArcIdList inArc() const;
-    
+
     /**
      * return vertex point
      */
-    QgsPoint point() const; 
+    QgsPoint point() const;
 };
 
 /**
@@ -85,6 +87,7 @@ class QgsGraph
 %TypeHeaderCode
 #include <qgsgraph.h>
 %End
+
   public:
     QgsGraph();
 
@@ -95,29 +98,29 @@ class QgsGraph
      * add vertex to a grap
      */
     int addVertex( const QgsPoint& pt );
-    
+
     /**
      * add edge to a graph
      */
     int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
-    
+
     /**
-     * retrun vertex count
+     * return vertex count
      */
     int vertexCount() const;
-   
+
     /**
      * return vertex at index
      */
     const QgsGraphVertex& vertex( int idx ) const;
 
-   /**
-     * retrun edge count
-     */
+    /**
+      * return edge count
+      */
     int arcCount() const;
-   
-    /** 
-     * retrun edge at index
+
+    /**
+     * return edge at index
      */
     const QgsGraphArc& arc( int idx ) const;
 

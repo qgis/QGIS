@@ -23,9 +23,10 @@
 #include <QPair>
 #include <set>
 
+#include "qgslegenditem.h"
+
 class QgsLegendGroup;
 class QgsLegendLayer;
-class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QDomDocument;
@@ -40,6 +41,14 @@ class QgsMapCanvasLayer;
 //key: group name (or null strings for single layers without groups)
 //value: containter with layer ids contained in the group
 typedef QPair< QString, QList<QString> > GroupLayerInfo;
+
+struct DrawingOrderInfo
+{
+  QString name;
+  QString id;
+  bool checked;
+  bool embeddedGroup;
+};
 
 /**
    \class QgsLegend
@@ -119,7 +128,14 @@ class QgsLegend : public QTreeWidget
     //!Return all layers in drawing order
     QList<QgsLegendLayer *> legendLayers();
 
+    //!Return info about layers and embedded groups in drawing order
+    QList<DrawingOrderInfo> drawingOrder();
+
+    QStringList drawingOrderLayers();
+
     void setDrawingOrder( QList<QgsMapLayer *> );
+
+    void setDrawingOrder( const QList<DrawingOrderInfo>& order );
 
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
@@ -205,8 +221,16 @@ class QgsLegend : public QTreeWidget
     /** return canvas */
     QgsMapCanvas *canvas() { return mMapCanvas; }
 
-  public slots:
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QString& layerKey );
 
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
+
+    /**Returns legend group by group name and project path (empty for not-embedded groups)*/
+    QgsLegendGroup* findLegendGroup( const QString& name, const QString& projectPath = QString() );
+
+  public slots:
 
     /*!Adds a new layer group with the maplayers to the canvas*/
     void addLayers( QList<QgsMapLayer *> );
@@ -220,6 +244,7 @@ class QgsLegend : public QTreeWidget
 
     /**Updates symbology items for a layer*/
     void refreshLayerSymbology( QString key, bool expandItem = true );
+    void refreshLayerSymbology( QString key, QgsLegendItem::Expansion expandItem );
 
     /*!
       * Slot called to clear the tree of all items
@@ -370,12 +395,6 @@ class QgsLegend : public QTreeWidget
     void mouseReleaseEvent( QMouseEvent * e );
     void mouseDoubleClickEvent( QMouseEvent* e );
 
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QString& layerKey );
-
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
-
     /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
     void adjustIconSize();
 
@@ -441,6 +460,7 @@ class QgsLegend : public QTreeWidget
     /** toogle update drawing order */
     void toggleDrawingOrderUpdate();
     void handleItemChange( QTreeWidgetItem* item, int row );
+    void handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
     /**Calls openPersistentEditor for the current item*/

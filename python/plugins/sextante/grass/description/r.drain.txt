@@ -1,0 +1,10 @@
+r.drain
+r.drain - Traces a flow through an elevation model on a raster map.
+Raster (r.*)
+ParameterRaster|input|Name of elevation raster map|False
+ParameterString|coordinate|Map coordinates of starting point(s) (E,N)|
+ParameterMultipleInput|vector_points|Name of vector map(s) containing starting point(s)|0.0|False
+ParameterBoolean|-c|Copy input cell values on output|False
+ParameterBoolean|-a|Accumulate input values along the path|False
+ParameterBoolean|-n|Count cell numbers along the path|False
+OutputRaster|output|Name for output raster map

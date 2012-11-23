@@ -5,9 +5,6 @@
 
 SET(QGIS_CORE_SRCS
 
-  gps/qextserialport/qextserialport.cpp
-  gps/qextserialport/qextserialenumerator.cpp
-
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -42,7 +39,13 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsellipsesymbollayerv2.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
-
+  symbology-ng/qgscolorbrewerpalette.cpp
+  
+  diagram/qgsdiagram.cpp
+  diagram/qgspiediagram.cpp
+  diagram/qgstextdiagram.cpp
+  diagram/qgshistogramdiagram.cpp
+  
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -55,9 +58,9 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgserror.cpp
   qgsexpression.cpp
   qgsfeature.cpp
   qgsfield.cpp
@@ -93,9 +96,8 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
-  qgsrasterprojector.cpp
-  qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
+  qgsrenderchecker.cpp
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
@@ -129,6 +131,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
   composer/qgspaperitem.cpp
@@ -157,13 +160,17 @@ SET(QGIS_CORE_SRCS
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
+  raster/qgsrasterblock.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
+  raster/qgsrasterdataprovider.cpp
   raster/qgsfreakoutshader.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
+  raster/qgsrasterprojector.cpp
+  raster/qgsrasterchecker.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
@@ -202,23 +209,29 @@ SET(QGIS_CORE_SRCS
   qgsscaleutils.cpp
 )
 
-IF(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/win_qextserialport.cpp
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qextserialport/qextserialport.cpp
+    gps/qextserialport/qextserialenumerator.cpp
   )
-  ADD_DEFINITIONS(-D_TTY_WIN_)
-ELSE(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/posix_qextserialport.cpp
-  )
-  ADD_DEFINITIONS(-D_TTY_POSIX_)
-ENDIF(WIN32)
+
+  IF(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/win_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_WIN_)
+  ELSE(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/posix_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_POSIX_)
+  ENDIF(WIN32)
+ELSE (WITH_INTERNAL_QEXTSERIALPORT)
+  INCLUDE_DIRECTORIES(${QEXTSERIALPORT_INCLUDE_DIR})
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -240,8 +253,7 @@ IF (WITH_INTERNAL_SPATIALITE)
   ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
   ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
 
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     spatialite/sqlite3.c
     spatialite/spatialite.c
     )
@@ -278,7 +290,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsproject.h
   qgsrunprocess.h
   qgsvectorlayer.h
-  qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
   qgsgeometryvalidator.h
@@ -295,26 +306,31 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerattributetable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
+  composer/qgsatlascomposition.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
   symbology/qgsmarkercatalogue.h
   raster/qgsrasterlayer.h
+  raster/qgsrasterdataprovider.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
-  gps/qextserialport/qextserialport.h
-  gps/qextserialport/qextserialenumerator.h
 
   symbology-ng/qgscptcityarchive.h
 )
 
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    gps/qextserialport/qextserialport.h
+    gps/qextserialport/qextserialenumerator.h
+  )
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_MOC_HDRS
-    ${QGIS_CORE_MOC_HDRS}
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -340,6 +356,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitem.h
   qgsdistancearea.h
   qgscsexception.h
+  qgserror.h
   qgsexception.h
   qgsexpression.h
   qgsfeature.h
@@ -372,10 +389,9 @@ SET(QGIS_CORE_HDRS
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
-  qgsrasterprojector.h
-  qgsrasterdataprovider.h
   qgsrectangle.h
   qgsrendercontext.h
+  qgsrenderchecker.h
   qgsrunprocess.h
   qgsscalecalculator.h
   qgssnapper.h
@@ -387,9 +403,18 @@ SET(QGIS_CORE_HDRS
   qgsvectoroverlay.h
   qgstolerance.h
 
+  diagram/qgsdiagram.h
+  diagram/qgspiediagram.h
+  diagram/qgstextdiagram.h
+  diagram/qgshistogramdiagram.h
+
+  
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
+  raster/qgsrasterblock.h
+  raster/qgsrasterdataprovider.h
+  raster/qgsrasterresamplefilter.h
   raster/qgscliptominmaxenhancement.h
   raster/qgscolorrampshader.h
   raster/qgscolorrampshader.h
@@ -399,6 +424,7 @@ SET(QGIS_CORE_HDRS
   raster/qgslinearminmaxenhancement.h
   raster/qgslinearminmaxenhancementwithclip.h
   raster/qgspseudocolorshader.h
+  raster/qgsrasterchecker.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
   raster/qgsrasterhistogram.h
@@ -406,6 +432,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
   raster/qgsrasterpipe.h
+  raster/qgsrasterprojector.h
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
@@ -452,8 +479,7 @@ SET(QGIS_CORE_HDRS
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_HDRS
-    ${QGIS_CORE_HDRS}
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -491,6 +517,9 @@ IF (WIN32)
 ELSE (WIN32)
     ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
 ENDIF (WIN32)
+
+# Test data dir for QgsRenderChecker
+ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 #############################################################
 # qgis_core library
@@ -532,6 +561,10 @@ ENDIF (WIN32)
 IF(APPLE)
   TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
 ENDIF(APPLE)
+
+IF (NOT WITH_INTERNAL_QEXTSERIALPORT)
+  TARGET_LINK_LIBRARIES(qgis_core ${QEXTSERIALPORT_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
     TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
@@ -581,3 +614,4 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+

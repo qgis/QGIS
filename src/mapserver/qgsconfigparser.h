@@ -39,10 +39,15 @@ class QgsConfigParser
 
     virtual ~QgsConfigParser();
 
-    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+    /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
+        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
+    virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned
@@ -57,6 +62,9 @@ class QgsConfigParser
 
     /**Returns the xml fragment of a style*/
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
+
+    /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
+    virtual QStringList wfsLayerNames() const { return QStringList(); }
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
@@ -82,6 +90,7 @@ class QgsConfigParser
 
     double legendBoxSpace() const { return mLegendBoxSpace; }
     double legendLayerSpace() const { return mLegendLayerSpace; }
+    double legendLayerTitleSpace() const { return mLegendLayerTitleSpace; }
     double legendSymbolSpace() const { return mLegendSymbolSpace; }
     double legendIconLabelSpace() const { return mLegendIconLabelSpace; }
     double legendSymbolWidth() const { return mLegendSymbolWidth; }
@@ -91,6 +100,9 @@ class QgsConfigParser
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
     /**Returns an ID-list of layers which queryable in WFS service*/
     virtual QStringList wfsLayers() const { return QStringList(); }
+    virtual QStringList wfstUpdateLayers() const { return QStringList(); }
+    virtual QStringList wfstInsertLayers() const { return QStringList(); }
+    virtual QStringList wfstDeleteLayers() const { return QStringList(); }
 
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
@@ -98,13 +110,6 @@ class QgsConfigParser
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const { return false; }
-
-    /**Returns information about vector layer aliases. First key is the layer id, (second) key is the field id, value the alias.
-       Default implementation returns an empty map*/
-    virtual QMap< QString, QMap< int, QString > > layerAliasInfo() const { return QMap< QString, QMap<int, QString> > (); }
-
-    /**Returns information about vector attributes with hidden edit type. Key is layer id, value is a set containing the names of the hidden attributes*/
-    virtual QMap< QString, QSet<QString> > hiddenAttributes() const { return QMap< QString, QSet<QString> >(); }
 
     /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
@@ -126,6 +131,25 @@ class QgsConfigParser
 
     int maxWidth() const { return mMaxWidth; }
     int maxHeight() const { return mMaxHeight; }
+
+    /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
+    virtual QHash<QString, QString> featureInfoLayerAliasMap() const { return QHash<QString, QString>(); }
+
+    /**Returns name of document element in GetFeatureInfo response*/
+    virtual QString featureInfoDocumentElement( const QString& defaultValue ) const { return defaultValue; }
+    /**Returns document element namespace in GetFeatureInfo response or empty string*/
+    virtual QString featureInfoDocumentElementNS() const { return ""; }
+    /**Returns schema url for feature info xsd (or an empty string if there is no schema)*/
+    virtual QString featureInfoSchema() const { return ""; }
+
+    /**Return feature info in format SIA2045?*/
+    virtual bool featureInfoFormatSIA2045() const { return false; }
+
+    /**Possibility to draw specific items on a WMS image (e.g. annotation items from the QGIS project file)
+        @param dpi resolution of the output image
+        @param width width of output image
+        @param height height of output image*/
+    virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const { Q_UNUSED( p ); Q_UNUSED( dpi ); Q_UNUSED( width ); Q_UNUSED( height ); }
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
@@ -159,6 +183,7 @@ class QgsConfigParser
     //various parameters used for GetLegendGraphics
     double mLegendBoxSpace;
     double mLegendLayerSpace;
+    double mLegendLayerTitleSpace;
     double mLegendSymbolSpace;
     double mLegendIconLabelSpace;
     double mLegendSymbolWidth;

@@ -62,11 +62,15 @@ class CharacterWidget : public QWidget
     CharacterWidget( QWidget *parent = 0 );
     QSize sizeHint() const;
 
+    int getColumns() const { return columns; }
+    int getSquareSize() const { return squareSize; }
+
   public slots:
     void updateFont( const QFont &font );
     void updateSize( double fontSize );
     void updateStyle( const QString &fontStyle );
     void updateFontMerging( bool enable );
+    void updateColumns( int cols );
 
   signals:
     void characterSelected( const QChar &character );

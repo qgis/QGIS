@@ -1,7 +1,7 @@
-/** 
-\struct QgsDataSourceURI 
+/**
+\struct QgsDataSourceURI
 \brief Structure for storing the component parts of a PostgreSQL/RDBMS datasource URI.
-           
+
  This structure stores the database connection information, including host, database,
   user name, password, schema, password, and sql where clause
  */
@@ -46,6 +46,11 @@ class QgsDataSourceURI
 %MethodCode
 	sipCpp->setParam( *a0, *a1 );
 %End
+
+    //! Remove generic param (generic mode)
+    // \note remove all occurrences of key, returns number of params removed
+    // \note added in 1.9
+    int removeParam( const QString &key );
 
     //! Get generic param (generic mode)
     // \note added in 1.9

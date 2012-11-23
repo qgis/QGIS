@@ -200,7 +200,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
             if ( pointLengthMap[ i ].mLength > info.mLength )
             {
-              info.mTiedPoint = info.mTiedPoint ;
+              Q_UNUSED( info.mTiedPoint );
               info.mFirstPoint = pt1;
               info.mLastPoint = pt2;
 

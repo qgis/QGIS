@@ -1,0 +1,9 @@
+
+# kill boolean warnings
+CMAKE_POLICY(SET CMP0012 NEW)
+
+IF(@WITH_PY_COMPILE@)
+  MESSAGE(STATUS "Byte-compiling core Python utilities and plugins...")
+  # exclude Python 3 modules in PyQt4.uic package
+  EXECUTE_PROCESS(COMMAND @PYTHON_EXECUTABLE@ -m compileall -q -x ".*uic.port_v3.*" "@CMAKE_INSTALL_PREFIX@/@QGIS_DATA_DIR@/python")
+ENDIF(@WITH_PY_COMPILE@)

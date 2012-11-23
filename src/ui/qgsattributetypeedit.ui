@@ -6,89 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>428</height>
+    <width>615</width>
+    <height>398</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Edit Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QComboBox" name="selectionComboBox">
-     <item>
-      <property name="text">
-       <string>Line edit</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Classification</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Range</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Unique values</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>File name</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Value map</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Enumeration</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Immutable</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Hidden</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Checkbox</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Text edit</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Calendar</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Value relation</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>UUID generator</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="1" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -746,7 +672,7 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="2" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -754,6 +680,80 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QListWidget" name="selectionListWidget">
+     <item>
+      <property name="text">
+       <string>Line edit</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Classification</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Range</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Unique values</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>File name</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Value map</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enumeration</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Immutable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hidden</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Checkbox</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Text edit</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Calendar</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Value relation</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>UUID generator</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>
@@ -767,8 +767,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>418</y>
+     <x>403</x>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -783,8 +783,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>418</y>
+     <x>471</x>
+     <y>388</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

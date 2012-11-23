@@ -54,6 +54,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
     void finished();
+
+    //! @note not available in python bindings
     void progress( int i, bool &cancel );
 
   private:

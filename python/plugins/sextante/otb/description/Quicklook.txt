@@ -1,0 +1,13 @@
+Quicklook
+otbcli_Quicklook
+Quick Look
+Image Manipulation
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-rox|ROI Origin X|None|None|0
+ParameterNumber|-roy|ROI Origin Y|None|None|0
+ParameterNumber|-rsx|ROI Size X|None|None|0
+ParameterNumber|-rsy|ROI Size Y|None|None|0
+ParameterNumber|-sr|Sampling ratio|None|None|2
+ParameterNumber|-sx|Size X|None|None|0
+ParameterNumber|-sy|Size Y|None|None|0

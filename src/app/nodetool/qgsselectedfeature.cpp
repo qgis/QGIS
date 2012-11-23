@@ -253,6 +253,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       {
         // to avoid try to delete some vertex twice
         mVertexMap[ mVertexMap[i]->equals()]->setSelected( false );
+        nSelected--;
       }
 
       if ( topologicalEditing )

@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -63,20 +63,19 @@ enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
-//! Enum for Entities involved in a style
-/*!
-    The enumarator is used for identifying the entity being operated on when generic
-    database functions are being run.
-    \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
- */
-enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
-
 class CORE_EXPORT QgsStyleV2
 {
   public:
-
     QgsStyleV2();
     ~QgsStyleV2();
+
+    //! Enum for Entities involved in a style
+    /*!
+        The enumerator is used for identifying the entity being operated on when generic
+        database functions are being run.
+        \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
+     */
+    enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
     //! add color ramp to style. takes ramp's ownership
     /*!
@@ -214,7 +213,7 @@ class CORE_EXPORT QgsStyleV2
      */
     QStringList symbolsWithTag( StyleEntity type, int tagid );
 
-    //! applies the specifed group to the symbol or colorramp specified by StyleEntity
+    //! applies the specified group to the symbol or colorramp specified by StyleEntity
     /*!
      *  \param type is either SymbolEntity of ColorrampEntity
      *  \param name is the name of the symbol or coloramp whose group is to be set
@@ -340,7 +339,7 @@ class CORE_EXPORT QgsStyleV2
 
     //! updates the properties of an existing symbol/colorramp
     /*!
-     *  \note This should not be called seperately, only called through addSymbol or addColorRamp
+     *  \note This should not be called separately, only called through addSymbol or addColorRamp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param name is the name of an existing symbol or a color ramp
      *  \return Success state of the update operation

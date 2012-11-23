@@ -10,7 +10,7 @@ class QgsProjectVersion
 #include "qgsprojectversion.h"
 %End
 
-public:
+  public:
 
     QgsProjectVersion();
     ~QgsProjectVersion();

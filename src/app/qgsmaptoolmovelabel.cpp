@@ -50,7 +50,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QMouseEvent * e )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
     QgsPoint referencePoint;
-    if ( !rotationPoint( referencePoint, true ) )
+    if ( !rotationPoint( referencePoint, !preserveRotation(), false ) )
     {
       referencePoint.setX( mCurrentLabelPos.labelRect.xMinimum() );
       referencePoint.setY( mCurrentLabelPos.labelRect.yMinimum() );

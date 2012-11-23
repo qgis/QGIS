@@ -67,6 +67,16 @@ QgsLegendInterface* QgisAppInterface::legendInterface()
   return &legendIface;
 }
 
+void QgisAppInterface::setFontSize( int fontSize )
+{
+  qgis->setFontSize( fontSize );
+}
+
+void QgisAppInterface::setFontFamily( QString fontFamily )
+{
+  qgis->setFontFamily( fontFamily );
+}
+
 void QgisAppInterface::zoomFull()
 {
   qgis->zoomFull();
@@ -455,6 +465,7 @@ QAction *QgisAppInterface::actionToggleEditing() { return qgis->actionToggleEdit
 QAction *QgisAppInterface::actionLayerSaveAs() { return qgis->actionLayerSaveAs(); }
 QAction *QgisAppInterface::actionLayerSelectionSaveAs() { return qgis->actionLayerSelectionSaveAs(); }
 QAction *QgisAppInterface::actionRemoveLayer() { return qgis->actionRemoveLayer(); }
+QAction *QgisAppInterface::actionDuplicateLayer() { return qgis->actionDuplicateLayer(); }
 QAction *QgisAppInterface::actionLayerProperties() { return qgis->actionLayerProperties(); }
 QAction *QgisAppInterface::actionLayerSeparator2() { return 0; }
 QAction *QgisAppInterface::actionAddToOverview() { return qgis->actionAddToOverview(); }

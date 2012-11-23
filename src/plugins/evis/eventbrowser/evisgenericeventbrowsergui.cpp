@@ -15,7 +15,7 @@
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** Library General Public License for more details.
 **
-** This work was made possible through a grant by the the John D. and
+** This work was made possible through a grant by the John D. and
 ** Catherine T. MacArthur Foundation. Additionally, this program was prepared by
 ** the American Museum of Natural History under award No. NA05SEC46391002
 ** from the National Oceanic and Atmospheric Administration, U.S. Department
@@ -47,7 +47,7 @@
 /**
 * Constructor called when browser is launched from the application plugin tool bar
 * @param parent - Pointer the to parent QWidget for modality
-* @param interface - Pointer the the application interface
+* @param interface - Pointer to the application interface
 * @param fl - Window flags
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WFlags fl )

@@ -3674,15 +3674,22 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( !mGeometryColumn.isNull() )
     {
       // binding GEOMETRY to Prepared Statement
-      unsigned char *wkb = NULL;
-      size_t wkb_size;
-      convertFromGeosWKB( features->geometry()->asWkb(),
-                          features->geometry()->wkbSize(),
-                          &wkb, &wkb_size, nDims );
-      if ( !wkb )
+      if ( !features->geometry() )
+      {
         sqlite3_bind_null( stmt, ++ia );
+      }
       else
-        sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
+      {
+        unsigned char *wkb = NULL;
+        size_t wkb_size;
+        convertFromGeosWKB( features->geometry()->asWkb(),
+                            features->geometry()->wkbSize(),
+                            &wkb, &wkb_size, nDims );
+        if ( !wkb )
+          sqlite3_bind_null( stmt, ++ia );
+        else
+          sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
+      }
     }
 
     for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
@@ -3731,6 +3738,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
     if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
     {
+      // update feature id
+      features->setFeatureId( sqlite3_last_insert_rowid( sqliteHandle ) );
       numberFeatures++;
     }
     else

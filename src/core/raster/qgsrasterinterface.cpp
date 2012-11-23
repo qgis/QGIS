@@ -24,10 +24,12 @@
 #include "qgslogger.h"
 #include "qgsrasterinterface.h"
 
+#include "cpl_conv.h"
+
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
     , mOn( true )
-    , mStatsOn( false )
+    //, mStatsOn( false )
 {
 }
 
@@ -35,117 +37,13 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
-bool QgsRasterInterface::typeIsNumeric( DataType dataType ) const
+bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
 {
-  switch ( dataType )
-  {
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
-      return true;
-
-    case UnknownDataType:
-    case ARGB32:
-    case ARGB32_Premultiplied:
-    case TypeCount:
-      return false;
-  }
-  return false;
+  return QgsRasterBlock::isNoDataValue( value, noDataValue( bandNo ) );
 }
 
-bool QgsRasterInterface::typeIsColor( DataType dataType ) const
-{
-  switch ( dataType )
-  {
-    case ARGB32:
-    case ARGB32_Premultiplied:
-      return true;
-
-    case UnknownDataType:
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
-    case TypeCount:
-      return false;
-  }
-  return false;
-}
-
-QgsRasterInterface::DataType QgsRasterInterface::typeWithNoDataValue( DataType dataType, double *noDataValue )
-{
-  DataType newDataType;
-
-  switch ( dataType )
-  {
-    case QgsRasterInterface::Byte:
-      *noDataValue = -32768.0;
-      newDataType = QgsRasterInterface::Int16;
-      break;
-    case QgsRasterInterface::Int16:
-      *noDataValue = -2147483648.0;
-      newDataType = QgsRasterInterface::Int32;
-      break;
-    case QgsRasterInterface::UInt16:
-      *noDataValue = -2147483648.0;
-      newDataType = QgsRasterInterface::Int32;
-      break;
-    case QgsRasterInterface::UInt32:
-    case QgsRasterInterface::Int32:
-    case QgsRasterInterface::Float32:
-    case QgsRasterInterface::Float64:
-      *noDataValue = std::numeric_limits<double>::max() * -1.0;
-      newDataType = QgsRasterInterface::Float64;
-    default:
-      QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
-      return UnknownDataType;
-      break;
-  }
-  QgsDebugMsg( QString( "newDataType = %1 noDataValue = %2" ).arg( newDataType ).arg( *noDataValue ) );
-  return newDataType;
-}
-
-inline bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
-{
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
-  // not important and slower
-  if ( qIsNaN( value ) ||
-       doubleNear( value, noDataValue( bandNo ) ) )
-  {
-    return true;
-  }
-  return false;
-}
-
-// To give to an image preallocated memory is the only way to avoid memcpy
-// when we want to keep data but delete QImage
-QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format format )
-{
-  // Qt has its own internal function depthForFormat(), unfortunately it is not public
-
-  QImage img( 1, 1, format );
-
-  // We ignore QImage::Format_Mono and QImage::Format_MonoLSB ( depth 1)
-  int size = width * height * img.bytesPerLine();
-  uchar * data = ( uchar * ) malloc( size );
-  return new QImage( data, width, height, format );
-}
-
+#if 0
+// version with time counting
 void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QTime time;
@@ -180,7 +78,9 @@ void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int 
   }
   return b;
 }
+#endif
 
+#if 0
 void QgsRasterInterface::setStatsOn( bool on )
 {
   if ( on )
@@ -209,4 +109,5 @@ double QgsRasterInterface::time( bool cumulative )
   }
   return t;
 }
+#endif
 

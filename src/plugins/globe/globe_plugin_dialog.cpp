@@ -38,9 +38,9 @@
 #include <osg/DisplaySettings>
 
 //constructor
-QgsGlobePluginDialog::QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget* parent, Qt::WFlags fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
-    , mViewer( viewer )
+    , mViewer( 0 )
 {
   setupUi( this );
   loadStereoConfig();  //values from settings, default values from OSG
@@ -155,7 +155,7 @@ void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged( QString type )
   else if ( "TMS" == type )
   {
     elevationActions->setCurrentIndex( 1 );
-    elevationPath->setText( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
+    elevationPath->setText( "http://readymap.org/readymap/tiles/1.0.0/9/" );
   }
 }
 
@@ -186,7 +186,7 @@ void QgsGlobePluginDialog::on_elevationAdd_clicked()
     QTableWidgetItem *type = new QTableWidgetItem( elevationCombo->currentText() );
     QTableWidgetItem *uri = new QTableWidgetItem( elevationPath->text() );
     QTableWidgetItem* cache = new QTableWidgetItem();
-    cache->setCheckState(( elevationCombo->currentText() == "Worldwind" ) ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
+    //cache->setCheckState(( elevationCombo->currentText() == "Worldwind" ) ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
     elevationDatasourcesWidget->setRowCount( 1 + i );
     elevationDatasourcesWidget->setItem( i, 0, type );
     elevationDatasourcesWidget->setItem( i, 1, cache );
@@ -251,11 +251,21 @@ void QgsGlobePluginDialog::setRow( QTableWidget* widget, int row, const QList<QT
   }
 }
 
+void QgsGlobePluginDialog::resetElevationDatasources()
+{
+  elevationDatasourcesWidget->clearContents();
+  elevationDatasourcesWidget->setRowCount( 1 );
+  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem( "TMS" ) );
+  elevationDatasourcesWidget->setItem( 0, 1, new QTableWidgetItem() );
+  //elevationDatasourcesWidget->item( 0, 1 )->setCheckState( Qt::Unchecked );
+  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem( "http://readymap.org/readymap/tiles/1.0.0/9/" ) );
+}
+
 void QgsGlobePluginDialog::readElevationDatasources()
 {
-  //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
+  elevationDatasourcesWidget->setRowCount( 0 );
   int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
   for ( int i = 0; i < keysCount; ++i )
   {
@@ -265,12 +275,12 @@ void QgsGlobePluginDialog::readElevationDatasources()
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type" ) );
     QTableWidgetItem *uri = new QTableWidgetItem(
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri" ) );
-    bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
+    //bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
 
     elevationDatasourcesWidget->setRowCount( 1 + i );
     elevationDatasourcesWidget->setItem( i, 0, type );
     QTableWidgetItem* chkBoxItem = new QTableWidgetItem();
-    chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
+    //chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
     elevationDatasourcesWidget->setItem( i, 1, chkBoxItem );
     elevationDatasourcesWidget->setItem( i, 2, uri );
   }
@@ -514,20 +524,22 @@ void QgsGlobePluginDialog::setStereoMode()
 
 void QgsGlobePluginDialog::setStereoConfig()
 {
-  mViewer->getDatabasePager()->clear();
-  //SETTING THE VALUES IN THE OEGearth instance
-  setStereoMode();
-  osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
-  osg::DisplaySettings::instance()->setScreenWidth( screenWidth->value() );
-  osg::DisplaySettings::instance()->setScreenHeight( screenHeight->value() );
-  osg::DisplaySettings::instance()->setEyeSeparation( eyeSeparation->value() );
-  osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
-  osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
-  osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
-    ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) splitStereoHorizontalEyeMapping->currentIndex() );
-  osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
-    ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) splitStereoVerticalEyeMapping->currentIndex() );
-
+  if ( mViewer )
+  {
+    mViewer->getDatabasePager()->clear();
+    //SETTING THE VALUES IN THE OEGearth instance
+    setStereoMode();
+    osg::DisplaySettings::instance()->setScreenDistance( screenDistance->value() );
+    osg::DisplaySettings::instance()->setScreenWidth( screenWidth->value() );
+    osg::DisplaySettings::instance()->setScreenHeight( screenHeight->value() );
+    osg::DisplaySettings::instance()->setEyeSeparation( eyeSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
+    osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
+      ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) splitStereoHorizontalEyeMapping->currentIndex() );
+    osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
+      ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) splitStereoVerticalEyeMapping->currentIndex() );
+  }
 }
 
 void QgsGlobePluginDialog::saveStereoConfig()

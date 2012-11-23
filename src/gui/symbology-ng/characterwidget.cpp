@@ -95,6 +95,15 @@ void CharacterWidget::updateFontMerging( bool enable )
   update();
 }
 
+void CharacterWidget::updateColumns( int cols )
+{
+  if ( columns == cols || cols < 1 )
+    return;
+  columns = cols;
+  adjustSize();
+  update();
+}
+
 //! [3]
 QSize CharacterWidget::sizeHint() const
 {
@@ -108,7 +117,7 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   uint key = ( widgetPosition.y() / squareSize ) * columns + widgetPosition.x() / squareSize;
 
-  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1%2</span><p>Value: 0x%3\">" )
+  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Value: 0x%3" )
                  .arg( displayFont.family() )
                  .arg( QChar( key ) )
                  .arg( key, 16 );

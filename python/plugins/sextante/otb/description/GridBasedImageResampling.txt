@@ -1,0 +1,18 @@
+GridBasedImageResampling
+otbcli_GridBasedImageResampling
+Grid Based Image Resampling
+Geometry
+ParameterRaster|-io.in|Input image|False
+OutputRaster|-io.out|Output Image
+ParameterRaster|-grid.in|Input resampling grid|False
+ParameterSelection|-grid.type|Grid Type|def;loc|0
+ParameterNumber|-out.ulx|Upper Left X|None|None|0.0
+ParameterNumber|-out.uly|Upper Left Y|None|None|0.0
+ParameterNumber|-out.sizex|Size X|None|None|0
+ParameterNumber|-out.sizey|Size Y|None|None|0
+ParameterNumber|-out.spacingx|Pixel Size X|None|None|1.0
+ParameterNumber|-out.spacingy|Pixel Size Y|None|None|1.0
+ParameterNumber|-out.default|Default value|None|None|0.0
+ParameterSelection|-interpolator|Interpolation|nn;linear;bco|2
+ParameterNumber|-interpolator.bco.radius|Radius for bicubic interpolation|None|None|2
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

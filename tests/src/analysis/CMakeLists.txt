@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS ../core/qgsrenderchecker.cpp)
+SET (util_SRCS)
 
 
 #####################################################
@@ -42,7 +42,7 @@ ENDIF (WIN32)
 # ensure the qgis libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
+#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our

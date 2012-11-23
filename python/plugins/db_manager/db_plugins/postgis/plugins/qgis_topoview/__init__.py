@@ -23,6 +23,7 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
 
 import os
 current_path = os.path.dirname(__file__)
@@ -58,11 +59,20 @@ def run(item, action, mainwindow):
 	db = item.database()
 	uri = db.uri()
 	conninfo = uri.connectionInfo()
+	iface = mainwindow.iface
+
+	quoteId = db.connector.quoteId
+	quoteStr = db.connector.quoteString
 
 	# check if the selected item is a topology schema
 	isTopoSchema = False
-	if hasattr(item, 'schema') and item.schema() != None:
-		sql = u"SELECT count(*) FROM topology.topology WHERE name = '%s'" % item.schema().name
+
+	if not hasattr(item, 'schema'):
+		QMessageBox.critical(mainwindow, "Invalid topology", u'Select a topology schema to continue.')
+		return False
+
+	if item.schema() != None:
+		sql = u"SELECT count(*) FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
 		c = db.connector._get_cursor()	
 		db.connector._execute( c, sql )
 		res = db.connector._fetchone( c )
@@ -72,40 +82,108 @@ def run(item, action, mainwindow):
 		QMessageBox.critical(mainwindow, "Invalid topology", u'Schema "%s" is not registered in topology.topology.' % item.schema().name)
 		return False
 
-	# create the new project from the template one
-	tpl_name = u'topoview_template.qgs'
+	# load layers into the current project 
 	toponame = item.schema().name
-	project_name = u'topoview_%s_%s.qgs' % (uri.database(), toponame)
+	template_dir = os.path.join(current_path, 'templates')
+	registry = QgsMapLayerRegistry.instance()
+	legend = iface.legendInterface()
 
-	template_file = os.path.join(current_path, tpl_name)
-	inf = QFile( template_file )
-	if not inf.exists():
-		QMessageBox.critical(mainwindow, "Error", u'Template "%s" not found!' % template_file)
-		return False
+	# do not refresh the canvas until all the layers are added
+	prevRenderFlagState = iface.mapCanvas().renderFlag()
+	iface.mapCanvas().setRenderFlag( False )
+	try:
+		group = legend.addGroup(u'%s topology' % toponame)
 
-	project_file = os.path.join(current_path, project_name)
-	outf = QFile( project_file )
-	if not outf.open( QIODevice.WriteOnly ):
-		QMessageBox.critical(mainwindow, "Error", u'Unable to open "%s"' % project_file)
-		return False
+		provider = db.dbplugin().providerName()
+		uri = db.uri();
 
-	if not inf.open( QIODevice.ReadOnly ):
-		QMessageBox.critical(mainwindow, "Error", u'Unable to open "%s"' % template_file)
-		return False
+	  # face
+		layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
+								'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)), 
+								'geom', 'face_id', u'%s.face' % toponame)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-	while not inf.atEnd():
-		l = inf.readLine()
-		l = l.replace( u"dbname='@@DBNAME@@'", conninfo.toUtf8() )
-		l = l.replace( u'@@TOPONAME@@', toponame )
-		outf.write( l )
+	  # node
+		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.nodes' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-	inf.close()
-	outf.close()
+	  # node labels
+		uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.node label' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
 
-	# load the project on QGis canvas
-	iface = mainwindow.iface
-	iface.newProject( True )
-	if iface.mapCanvas().layerCount() == 0:
-		iface.addProject( project_file )
+	  # edge
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.edge' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # edge labels
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.edge label' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # face_left
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.face_left' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # face_right
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.face_right' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # next_left
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.next_left' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # next_right
+		uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+		layer = QgsVectorLayer(uri.uri(), u'%s.next_right' % toponame, provider)
+		layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # face_seed
+		layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
+								'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)), 
+								'geom', 'face_id', u'%s.face_seed' % toponame)
+		layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
+		registry.addMapLayer(layer)
+		legend.setLayerVisible(layer, False)
+		legend.moveLayer(layer, group)
+
+	  # TODO: add polygon0, polygon1 and polygon2 ?
+
+	finally:
+		# restore canvas render flag
+		iface.mapCanvas().setRenderFlag( prevRenderFlagState )
+
 	return True
 

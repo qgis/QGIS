@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,6 +30,11 @@
 #include <cmath> // for pretty classification
 #include <ctime>
 
+QgsRendererRangeV2::QgsRendererRangeV2()
+    : mLowerValue( 0 ), mUpperValue( 0 ), mSymbol( 0 ), mLabel()
+{
+}
+
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
     : mLowerValue( lowerValue )
     , mUpperValue( upperValue )
@@ -49,6 +54,19 @@ QgsRendererRangeV2::QgsRendererRangeV2( const QgsRendererRangeV2& range )
 QgsRendererRangeV2::~QgsRendererRangeV2()
 {
   delete mSymbol;
+}
+
+QgsRendererRangeV2& QgsRendererRangeV2::operator=( const QgsRendererRangeV2 & range )
+{
+  mLowerValue = range.mLowerValue;
+  mUpperValue = range.mUpperValue;
+  mLabel = range.mLabel;
+  mSymbol = 0;
+  if ( range.mSymbol )
+  {
+    mSymbol = range.mSymbol->clone();
+  }
+  return *this;
 }
 
 double QgsRendererRangeV2::lowerValue() const
@@ -140,6 +158,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mScaleMethod( QgsSymbolV2::ScaleArea ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -201,6 +220,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
       markerSymbol->setAngle( rotation );
     if ( mSizeScaleFieldIdx != -1 )
       markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -332,6 +352,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
+  r->setScaleMethod( scaleMethod() );
   return r;
 }
 
@@ -550,8 +571,8 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     divisions = k;
   }
   double minimumBreak = start * unit;
-  double maximumBreak = end * unit;
-  int count = ceil( maximumBreak - minimumBreak ) / unit;
+  //double maximumBreak = end * unit;
+  int count = end - start;
 
   for ( int i = 1; i < count + 1; i++ )
   {
@@ -926,7 +947,10 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
+  {
     r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  }
 
   // TODO: symbol levels
   return r;
@@ -1006,6 +1030,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   sizeScaleElem.setAttribute( "field", mSizeScaleField );
+  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;
@@ -1110,3 +1135,60 @@ void QgsGraduatedSymbolRendererV2::deleteClass( int idx )
 {
   mRanges.removeAt( idx );
 }
+
+void QgsGraduatedSymbolRendererV2::deleteAllClasses()
+{
+  mRanges.clear();
+}
+
+void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )
+{
+  if ( from < 0 || from >= mRanges.size() || to < 0 || to >= mRanges.size() ) return;
+  mRanges.move( from, to );
+}
+
+bool valueLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return r1.lowerValue() < r2.lowerValue();
+}
+
+bool valueGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return !valueLessThan( r1, r2 );
+}
+
+void QgsGraduatedSymbolRendererV2::sortByValue( Qt::SortOrder order )
+{
+  QgsDebugMsg( "Entered" );
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mRanges.begin(), mRanges.end(), valueLessThan );
+  }
+  else
+  {
+    qSort( mRanges.begin(), mRanges.end(), valueGreaterThan );
+  }
+}
+
+bool labelLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return QString::localeAwareCompare( r1.label(), r2.label() ) < 0;
+}
+
+bool labelGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return !labelLessThan( r1, r2 );
+}
+
+void QgsGraduatedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mRanges.begin(), mRanges.end(), labelLessThan );
+  }
+  else
+  {
+    qSort( mRanges.begin(), mRanges.end(), labelGreaterThan );
+  }
+}
+

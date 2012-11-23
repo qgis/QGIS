@@ -149,7 +149,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
         {
           mWkbType = QGis::WKBMultiPoint;
         }
-        else if ( geomTypeUpper == "MULTLINESTRING" )
+        else if ( geomTypeUpper == "MULTILINESTRING" )
         {
           mWkbType = QGis::WKBMultiLineString;
         }

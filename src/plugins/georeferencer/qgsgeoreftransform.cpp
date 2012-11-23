@@ -177,6 +177,11 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformParametrisatio
   }
 }
 
+void QgsGeorefTransform::setRasterChangeCoords( const QString &fileRaster )
+{
+  mRasterChangeCoords.setRaster( fileRaster );
+}
+
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
 {
   return ( mTransformParametrisation == Linear
@@ -203,7 +208,17 @@ bool QgsGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &
   {
     return false;
   }
-  return mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoords );
+  if ( mRasterChangeCoords.hasCrs() )
+  {
+    std::vector<QgsPoint> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( pixelCoords );
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoordsCorrect );
+    pixelCoordsCorrect.clear();
+  }
+  else
+  {
+    mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGCPs( mapCoords, pixelCoords );
+  }
+  return mParametersInitialized;
 }
 
 uint QgsGeorefTransform::getMinimumGCPCount() const
@@ -248,14 +263,14 @@ QgsGeorefTransformInterface *QgsGeorefTransform::createImplementation( Transform
   }
 }
 
-bool QgsGeorefTransform::transformRasterToWorld( const QgsPoint &raster, QgsPoint &world ) const
+bool QgsGeorefTransform::transformRasterToWorld( const QgsPoint &raster, QgsPoint &world )
 {
   // flip y coordinate due to different CS orientation
   QgsPoint raster_flipped( raster.x(), -raster.y() );
   return gdal_transform( raster_flipped, world, 0 );
 }
 
-bool QgsGeorefTransform::transformWorldToRaster( const QgsPoint &world, QgsPoint &raster ) const
+bool QgsGeorefTransform::transformWorldToRaster( const QgsPoint &world, QgsPoint &raster )
 {
   bool success = gdal_transform( world, raster, 1 );
   // flip y coordinate due to different CS orientation
@@ -263,7 +278,7 @@ bool QgsGeorefTransform::transformWorldToRaster( const QgsPoint &world, QgsPoint
   return success;
 }
 
-bool QgsGeorefTransform::transform( const QgsPoint &src, QgsPoint &dst, bool rasterToWorld ) const
+bool QgsGeorefTransform::transform( const QgsPoint &src, QgsPoint &dst, bool rasterToWorld )
 {
   return rasterToWorld ? transformRasterToWorld( src, dst ) : transformWorldToRaster( src, dst );
 }

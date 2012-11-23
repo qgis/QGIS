@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -34,7 +34,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = NULL );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style );
+    static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style,
+                                       QString RampType = QString() );
 
   public slots:
     void addItem();
@@ -43,6 +44,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void exportItems();
     void importItems();
 
+    void on_tabItemType_currentChanged( int );
     //! adds symbols of some type to list
     void populateList();
 
@@ -82,6 +84,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! Context menu for the listItems ( symbols list )
     void listitemsContextMenu( const QPoint& );
 
+  protected slots:
+    bool addColorRamp( QAction* action );
 
   protected:
 

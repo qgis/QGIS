@@ -1,0 +1,6 @@
+D-Infinity Flow Directions
+dinfflowdir
+Basic Grid Analysis tools
+ParameterRaster|-fel|Pit Filled Elevation Grid|False
+OutputRaster|-ang|D-Infinity Flow Directions Grid
+OutputRaster|-slp|D-Infinity Slope Grid

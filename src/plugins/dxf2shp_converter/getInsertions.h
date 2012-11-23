@@ -1,12 +1,18 @@
+/***************************************************************************
+    getInsertions.h
+    ---------------------
+    copyright            : (C) by Christopher Michaelis
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; version 2 of the License                *
+ *                                                                         *
+ ***************************************************************************/
 /* This source has been formatted by an unregistered SourceFormatX */
 /* If you want to remove this info, please register this shareware */
 /* Please visit http://www.textrush.com to get more information    */
 
-// LICENSE:
-//
-// This code is released under the GPL (GNU Public License) version 2.0.
-// For full details, see the file GPL.txt included with this source code.
-//
 // What this means:
 //
 // This means, in simple terms, that you are free to use this code for any open-source or

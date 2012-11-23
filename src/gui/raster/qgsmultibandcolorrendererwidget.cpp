@@ -35,8 +35,8 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
     layout()->addWidget( mMinMaxWidget );
-    connect( mMinMaxWidget, SIGNAL( load( int, double, double ) ),
-             this, SLOT( loadMinMax( int, double, double ) ) );
+    connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
+             this, SLOT( loadMinMax( int, double, double, int ) ) );
 
     connect( mRedBandComboBox, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( onBandChanged( int ) ) );
@@ -191,8 +191,9 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
   mMinMaxWidget->setBands( myBands );
 }
 
-void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
+void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
+  Q_UNUSED( theOrigin );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;

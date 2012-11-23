@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -65,6 +65,13 @@ void QgsBrowserModel::addRootItems()
     connectItem( item );
     mRootItems << item;
   }
+
+#ifdef Q_WS_MAC
+  QString path = QString( "/Volumes" );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( NULL, path, path );
+  connectItem( vols );
+  mRootItems << vols;
+#endif
 
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
@@ -391,4 +398,20 @@ QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
   QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
   Q_ASSERT( !v || d );
   return d;
+}
+
+bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+{
+  QgsDataItem* item = dataItem( parent );
+  // if ( item )
+  //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
+  return ( item && ! item->isPopulated() );
+}
+
+void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+{
+  QgsDataItem* item = dataItem( parent );
+  if ( item )
+    item->populate();
+  QgsDebugMsg( "path = " + item->path() );
 }

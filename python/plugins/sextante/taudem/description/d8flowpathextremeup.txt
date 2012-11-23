@@ -1,0 +1,9 @@
+D8 Extreme Upslope Value
+d8flowpathextremeup
+Stream Network Analysis tools
+ParameterRaster|-p|D8 Flow Directions Grid|False
+ParameterRaster|-sa|Upslope Values Grid|False
+ParameterVector|-o|Outlets Shapefile|0|True
+ParameterBoolean|-nc|Check for edge contamination|True
+ParameterBoolean|-min|Use max upslope value|True
+OutputRaster|-ssa|Extereme Upslope Values Grid

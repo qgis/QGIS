@@ -1,0 +1,8 @@
+Cross Profiles
+ta_profiles
+ParameterRaster|DEM|DEM|False
+ParameterVector|LINES|Lines|1|False
+ParameterNumber|DIST_LINE|Profile Distance|0.0|None|10.0
+ParameterNumber|DIST_PROFILE|Profile Length|0.0|None|10.0
+ParameterNumber|NUM_PROFILE|Profile Samples|1.0|None|10.0
+OutputVector|PROFILES|Cross Profiles

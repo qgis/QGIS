@@ -141,7 +141,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel( mFilterModel, this );
-  updateSelectionFromLayer();
+  // update list of selected features
+  mSelectedFeatures = mLayer->selectedFeaturesIds();
 
   //make sure to show all recs on first load
   on_cbxShowSelectedOnly_toggled( false );
@@ -153,13 +154,14 @@ QgsAttributeTableDialog::~QgsAttributeTableDialog()
 
 void QgsAttributeTableDialog::updateTitle()
 {
-  setWindowTitle( tr( "Attribute table - %1 :: %n / %2 feature(s) selected",
-                      "feature count",
-                      mView->selectionModel()->selectedRows().size()
-                    )
-                  .arg( mLayer->name() )
-                  .arg( mModel->rowCount() )
-                );
+  QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
+  w->setWindowTitle( tr( "Attribute table - %1 :: %n / %2 feature(s) selected",
+                         "feature count",
+                         mView->selectionModel()->selection().count()
+                       )
+                     .arg( mLayer->name() )
+                     .arg( mModel->rowCount() )
+                   );
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -287,7 +289,6 @@ int QgsAttributeTableDialog::columnBoxColumnId()
 
 void QgsAttributeTableDialog::updateSelection()
 {
-  QModelIndex index;
   QItemSelection selection;
 
   QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
@@ -296,7 +297,6 @@ void QgsAttributeTableDialog::updateSelection()
     QModelIndex leftUpIndex = mFilterModel->mapFromSource( mModel->index( mModel->idToRow( *it ), 0 ) );
     QModelIndex rightBottomIndex = mFilterModel->mapFromSource( mModel->index( mModel->idToRow( *it ), mModel->columnCount() - 1 ) );
     selection.append( QItemSelectionRange( leftUpIndex, rightBottomIndex ) );
-    //selection.append(QItemSelectionRange(leftUpIndex, leftUpIndex));
   }
 
   mSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );// | QItemSelectionModel::Columns);

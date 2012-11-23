@@ -75,7 +75,7 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLineEdit" name="txtSearchEdit">
+         <widget class="QgsFilterLineEdit" name="txtSearchEdit">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -502,6 +502,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

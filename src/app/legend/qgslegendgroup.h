@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,6 +37,22 @@ class QgsLegendGroup : public QgsLegendItem
     QList<QgsLegendLayer*> legendLayers( bool recurse = true );
 
     Qt::CheckState pendingCheckState();
+
+    bool isEmbedded() const { return mEmbedded; }
+    void setEmbedded( bool b ) { mEmbedded = b; }
+
+    QString projectPath() const { return mProjectPath; }
+    void setProjectPath( const QString& path ) { mProjectPath = path; }
+
+    int drawingOrder() const { return mDrawingOrder; }
+    void setDrawingOrder( int i ) { mDrawingOrder = i; }
+
+  private:
+    bool mEmbedded;
+    /**Path to project from which the group is embedded. Empty for not-embedded groups*/
+    QString mProjectPath;
+    int mDrawingOrder;
+
 };
 
 #endif

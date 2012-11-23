@@ -398,7 +398,7 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
 //     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
 
     QgsPoint referencePoint;
-    if ( !rotationPoint( referencePoint, true ) )
+    if ( !rotationPoint( referencePoint, !preserveRot, false ) )
     {
       referencePoint.setX( mCurrentLabelPos.labelRect.xMinimum() );
       referencePoint.setY( mCurrentLabelPos.labelRect.yMinimum() );

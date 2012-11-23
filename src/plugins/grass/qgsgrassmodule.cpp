@@ -353,10 +353,61 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     return;
   }
 
+  QByteArray baDesc = process.readAllStandardOutput();
+
+  // GRASS commands usually output text in system default encoding.
+  // Let's use the System codec whether Qt doesn't recognize the encoding
+  // of the interface description (see http://hub.qgis.org/issues/4547)
+  QTextCodec *codec = 0;
+
+  QgsDebugMsg( "trying to get encoding name from XML interface description..." );
+
+  // XXX: getting the encoding using a regular expression works
+  // until GRASS will use UTF-16 or UTF-32.
+  // TODO: We should check the correct encoding by using the BOM (Byte
+  // Order Mark) from the beginning of the data.
+  QString xmlDeclaration = QString::fromUtf8( baDesc ).section( '>', 0, 0, QString::SectionIncludeTrailingSep );
+  QRegExp reg( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" );
+  if ( reg.indexIn( xmlDeclaration ) != -1 )
+  {
+    QByteArray enc = reg.cap( 2 ).toLocal8Bit();
+    QgsDebugMsg( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ) );
+
+    codec = QTextCodec::codecForName( enc );
+    if ( !codec )
+    {
+      QgsDebugMsg( "unrecognized encoding name. Let's use 'System' codec" );
+      codec = QTextCodec::codecForName( "System" );
+      Q_ASSERT( codec );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "unable to get encoding name from XML content. Will let Qt detects encoding!" );
+  }
+
+  bool ok = false;
   QDomDocument gDoc( "task" );
   QString err;
   int line, column;
-  if ( !gDoc.setContent( &process, false, &err, &line, &column ) )
+
+  if ( codec )
+  {
+    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec..." ).arg( QString::fromUtf8( codec->name() ) ) );
+    ok = gDoc.setContent( codec->toUnicode( baDesc ), false, &err, &line, &column );
+    if ( !ok )
+    {
+      QgsDebugMsg( "parse FAILED. Will let Qt detects encoding" );
+      codec = 0;
+    }
+  }
+
+  if ( !codec )
+  {
+    ok = gDoc.setContent( baDesc, false, &err, &line, &column );
+  }
+
+  if ( !ok )
   {
     QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
@@ -401,7 +452,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypInnerFrameLayout->addWidget( &mAdvancedFrame );
   mypInnerFrameLayout->addStretch( 1 );
 
-  // Hide advanced and set butto next
+  // Hide advanced and set button next
   switchAdvanced();
 
   QVBoxLayout *mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
@@ -1555,9 +1606,9 @@ void QgsGrassModule::readStdout()
   mProcess.setReadChannel( QProcess::StandardOutput );
   while ( mProcess.canReadLine() )
   {
-    //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace( '\n', "" );
+    //line = QString::fromUtf8( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
@@ -1578,8 +1629,6 @@ void QgsGrassModule::readStderr()
 {
   QgsDebugMsg( "called." );
 
-  mProcess.setReadChannel( QProcess::StandardError );
-
   QString line;
   QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
   QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
@@ -1587,12 +1636,12 @@ void QgsGrassModule::readStderr()
   QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
 
-
+  mProcess.setReadChannel( QProcess::StandardError );
   while ( mProcess.canReadLine() )
   {
-    //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace( '\n', "" );
+    //line = QString::fromUtf8( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     if ( rxpercent.indexIn( line ) != -1 )

@@ -449,6 +449,7 @@ void * QgsProviderRegistry::function( QString const & providerKey,
     delete myLib;
     return ptr;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
 }
@@ -467,6 +468,7 @@ QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) co
   {
     return myLib;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
 }

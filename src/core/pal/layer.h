@@ -75,6 +75,14 @@ namespace pal
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
+      enum UpsideDownLabels
+      {
+        Upright, // upside-down labels (90 <= angle < 270) are shown upright
+        ShowDefined, // show upside down when rotation is layer- or data-defined
+        ShowAll // show upside down for all labels, including dynamic ones
+      };
+
+      bool getDisplayAll() const { return displayAll; }
 
     protected:
       char *name; /* unique */
@@ -92,6 +100,7 @@ namespace pal
       bool obstacle;
       bool active;
       bool toLabel;
+      bool displayAll;
 
       Units label_unit;
 
@@ -103,6 +112,8 @@ namespace pal
       unsigned long arrangementFlags;
       LabelMode mode;
       bool mergeLines;
+
+      UpsideDownLabels upsidedownLabels;
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
@@ -126,9 +137,10 @@ namespace pal
        * @param active is the layer is active (currently displayed)
        * @param toLabel the layer will be labeled whether toLablel is true
        * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal );
+      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /**
        * \brief Delete the layer
@@ -276,6 +288,9 @@ namespace pal
       void setMergeConnectedLines( bool m ) { mergeLines = m; }
       bool getMergeConnectedLines() const { return mergeLines; }
 
+      void setUpsidedownLabels( UpsideDownLabels ud ) { upsidedownLabels = ud; }
+      UpsideDownLabels getUpsidedownLabels() const { return upsidedownLabels; }
+
       /**
        * \brief register a feature in the layer
        *
@@ -286,13 +301,23 @@ namespace pal
        * @param labelPosX x position of the label (in case of fixed label position)
        * @param labelPosY y position of the label (in case of fixed label position)
        * @param fixedPos true if a single fixed position for this label is needed
+       * @param angle fixed angle (in radians) to rotate the label
+       * @param fixedAngle whether to use provided fixed angle
+       * @param xQuadOffset move label to quadrant: left, don't move, right (-1, 0, 1)
+       * @param yQuadOffset move label to quadrant: down, don't move, up (-1, 0, 1)
+       * @param xOffset map unit (+/-) to x-offset the label
+       * @param yOffset map unit (+/-) to y-offset the label
+       * @param alwaysShow whether to skip priority and always show the label (causes overlapping)
        *
        * @throws PalException::FeatureExists
        *
        * @return true on success (i.e. valid geometry)
        */
       bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0, bool fixedPos = false, double angle = 0.0, bool fixedAngle = false );
+                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
+                            bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
+                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
+                            bool alwaysShow = false );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );
