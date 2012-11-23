@@ -63,12 +63,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordenadas no CRS seleccionado (Lat, Long ou Este, Norte)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordendas no sistema de coordenadas do mapa (Lat,Long ou Este, Norte)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -1564,12 +1564,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/about/aboutdialogbase.ui" line="14"/>
         <source>About SEXTANTE</source>
-        <translation type="unfinished"></translation>
+        <translation>Sobre o SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/about/aboutdialogbase.ui" line="27"/>
         <source>about:blank</source>
-        <translation type="unfinished">sobre:branco</translation>
+        <translation>sobre:em branco</translation>
     </message>
 </context>
 <context>
@@ -2011,7 +2011,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="302"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite seleccionar elementos pelo id. Por vezes e especialmente durante a execução de questionários a conjuntos de dados extensos será mais rápida a busca por dados sequenciais em vez da selecção de elementos pelo id.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="305"/>
@@ -3766,7 +3766,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="68"/>
         <source>cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>Cúbico</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="73"/>
@@ -4953,17 +4953,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulário</translation>
+        <translation>Formulário</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished">Tipo da camada do símbolo</translation>
+        <translation>Tipo da camada do símbolo</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
         <source>This layer doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta camanda não possui propriedades editáveis</translation>
     </message>
 </context>
 <context>
@@ -5261,7 +5261,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/ui/qgisapp.ui" line="1497"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodar legenda Ctl (Cmd) em incrementos de 15 graus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1575"/>
@@ -5312,7 +5312,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1734"/>
         <source>Pin/Unpin Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixar / Não fixar um rótulo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1737"/>
@@ -5320,13 +5320,13 @@ Ctl (Cmd) increments by 15 deg.</source>
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
 Acts on all editable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixar / Não Fixar um rótulo. Seleccione a label para fixar. Shift para não fixar, Ctl (Cmd) muda o estado. Funciona em todas as camadas editáveis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1752"/>
         <location filename="../src/ui/qgisapp.ui" line="1755"/>
         <source>Highlight Pinned Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Realçar as legendas fixadas </translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1764"/>
@@ -5337,22 +5337,22 @@ Acts on all editable layers</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1776"/>
         <source>Local Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansão Cumulativa Local do Corte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1779"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansão Cumulativa Local do Corte usando a extensão actual, limites padrão e valores estimados.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1788"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansão Cumulativa do Corte para a totalidade dos dados</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1791"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Expansão Cumulativa do Corte usando a totalidade da extensão de dados, limites padrão e valores estimados.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1803"/>
@@ -5365,13 +5365,13 @@ Acts on all editable layers</source>
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
 Acts on currently active editable layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar / Esconder legendas. Seleccionar o elementos para ver legenda. Shift+selecção da camada activa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1818"/>
         <location filename="../src/ui/qgisapp.ui" line="1821"/>
         <source>Html Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Anotação Html</translation>
     </message>
     <message>
         <source>Composer manager...</source>
@@ -7234,39 +7234,39 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>PythonConsole</name>
     <message>
         <source>Clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar consola</translation>
     </message>
     <message>
         <source>Import Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar classe</translation>
     </message>
     <message>
         <source>Manage Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerir Script</translation>
     </message>
     <message>
         <source>Import sextante class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar classe sextante</translation>
     </message>
     <message>
         <source>Import iface class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar classe iface</translation>
     </message>
     <message>
         <source>Open script file</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir ficheiro script</translation>
     </message>
     <message>
         <source>Save to script file</source>
-        <translation type="unfinished"></translation>
+        <translation>Gravar para ficheiro script</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Executar comando</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Ajuda</translation>
+        <translation>Ajuda</translation>
     </message>
     <message>
         <source>Python Console</source>
@@ -7307,7 +7307,7 @@ use o objeto qgis.utils.iface (instância da classe QgisInterface).
     <message>
         <location filename="../src/core/qgis.cpp" line="78"/>
         <source>feet</source>
-        <translation type="unfinished">pés</translation>
+        <translation>pés</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="79"/>
@@ -7320,7 +7320,7 @@ use o objeto qgis.utils.iface (instância da classe QgisInterface).
     <message>
         <location filename="../src/core/qgis.cpp" line="80"/>
         <source>&lt;unknown&gt;</source>
-        <translation type="unfinished">desconhecido</translation>
+        <translation>&lt;desconhecido&gt;</translation>
     </message>
 </context>
 <context>
@@ -8869,7 +8869,7 @@ Apenas %1 de %2 elementos escritos.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4029"/>
         <source>Reading raster</source>
-        <translation type="unfinished"></translation>
+        <translation>A ler raster</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -9416,22 +9416,22 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="274"/>
         <source>Cannot convert &apos;%1&apos; to DateTime</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível converter &apos;%1&apos; para formato Data Hora</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="288"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível converter &apos;%1&apos; para formato Data</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="302"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível converter &apos;%1&apos; para formato Hora</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="319"/>
         <source>Cannot convert &apos;%1&apos; to Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível converter &apos;%1&apos; para formato Intervalo</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="339"/>
@@ -9479,7 +9479,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="832"/>
         <source>Conditionals</source>
-        <translation type="unfinished"></translation>
+        <translation>Condicionais</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="834"/>
@@ -9544,12 +9544,12 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1265"/>
         <source>Unary minus only for numeric values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinal negativo apenas para valores numéricos</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1367"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível incluir /, *, ou % no formato Data e Hora e Intervalo</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1949"/>
@@ -9783,7 +9783,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsgeometry.cpp" line="6431"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation type="unfinished"></translation>
+        <translation>versão GEOS anterior a 3.2 não suporta interpolação</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmessageoutput.cpp" line="72"/>
@@ -9796,17 +9796,17 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="466"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="480"/>
         <source>Reading raster part %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>A ler raster parte %1 de %2</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="697"/>
         <source>Building pyramids failed - write access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Construção de pirâmides falhou - registo de dados negado</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="698"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
-        <translation type="unfinished">Acesso de escrita negado. Ajuste as permissões do arquivo e tente novamente.</translation>
+        <translation>Registo de dados negado. Ajuste as permissões do arquivo e tente novamente.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="702"/>
@@ -9814,23 +9814,23 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="713"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="718"/>
         <source>Building pyramids failed.</source>
-        <translation type="unfinished">Falha ao construir pirâmides.</translation>
+        <translation>Falha ao construir pirâmides.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="703"/>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished">O arquivo não pode ser escrito. Alguns formatos não suportam visões em pirâmide. consulte a documentação GDAL em caso de dúvida.</translation>
+        <translation>O arquivo não pode ser escrito. Alguns formatos não suportam pre-visualização de pirâmides. consulte a documentação GDAL em caso de dúvida.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="709"/>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="719"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="unfinished">Construir &apos;overviews&apos; em pirâmide não é suportado neste tipo de raster.</translation>
+        <translation>Pré-visualização de pirâmides não suportado neste tipo de raster.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="714"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation type="unfinished">A construção de  súmulas de pirâmides interna não é suportada em camadas raster com compressão JPEG e sua biblioteca libtiff atual.</translation>
+        <translation>A construção de  pré-visualizações de pirâmides não é suportada em camadas raster com compressão JPEG e biblioteca libtiff atual.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="52"/>
@@ -9840,7 +9840,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="54"/>
         <source>Paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Paletizada</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="55"/>
@@ -9850,12 +9850,12 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="57"/>
         <source>Singleband pseudocolor</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda de cor falsa simples</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="59"/>
         <source>Singleband color data</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda cor simples</translation>
     </message>
 </context>
 <context>
@@ -12069,17 +12069,17 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="514"/>
         <source>Security warning:</source>
-        <translation type="unfinished">Aviso de segurança:</translation>
+        <translation>Aviso de segurança:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="515"/>
         <source>macros have been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>macros desativadas</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="520"/>
         <source>Enable</source>
-        <translation type="unfinished">Permitir</translation>
+        <translation>Permitir</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="575"/>
@@ -12104,12 +12104,12 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1479"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra as coordenadas do mapa na posição actual do cursor. A tela é continuamente actualizada durante o movimento do rato. Permite ainda ser a editado para definir o centro da tela numa determinada posição.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1483"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordenadas do mapa atual (lat, lon ou lest, norte)</translation>
+        <translation>Coordenadas do mapa atual (lat, lon ou este, norte)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1995"/>
@@ -12135,13 +12135,13 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2114"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na actualização da visualização em qgis.db (modo privado)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2255"/>
         <location filename="../src/app/qgisapp.cpp" line="3176"/>
         <source>&lt; Blank &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; Blank &gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2319"/>
@@ -12192,7 +12192,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2357"/>
         <source>PROJ.4 Version</source>
-        <translation type="unfinished">Versão PROJ.4</translation>
+        <translation>Versão PROJ.4</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2360"/>
@@ -12621,7 +12621,16 @@ Default Theme Path:	%7
 SVG Search Paths:	%8
 User DB Path:	%9
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Estado da aplicação:
+QGIS_PREFIX_PATH env var:		%1
+Prefixo:		%2
+Caminho da Extensão:		%3
+Caminho de dados do complemento:	%4
+Nome do tema activo:	%5
+Caminho do tema activo:	%6
+Caminho padrão do tema:	%7
+Procura de Caminho SVG:	%8
+Caminho do utilizador DB:	%9</translation>
     </message>
     <message>
         <source>Application state:
@@ -13550,7 +13559,7 @@ Caminho DB de utilizador:	%8
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="645"/>
         <source>No filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Sem filtro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
@@ -13626,7 +13635,7 @@ Caminho DB de utilizador:	%8
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="160"/>
         <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished">Permite agrupar valores numéricos a partir de um intervalo específico. The edit widget can be either a slider or a spin box.</translation>
+        <translation>Permite agrupar valores numéricos a partir de um intervalo específico. A ferramenta de edição pode de barra deslizante ou caixa de rotação.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="175"/>
@@ -13686,12 +13695,12 @@ Caminho DB de utilizador:	%8
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="701"/>
         <source>Filter column</source>
-        <translation type="unfinished"></translation>
+        <translation>Coluna de Filtro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="711"/>
         <source>Filter value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de Filtro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="728"/>
@@ -13845,7 +13854,10 @@ Erro:%2</translation>
 Database: %1
 Driver: %2
 Database: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossível abrir base de dados do marcador:
+Base de dados: %1
+Drive: %2
+Base de dados:%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="79"/>
@@ -13860,22 +13872,22 @@ Database: %3</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="81"/>
         <source>xMin</source>
-        <translation type="unfinished"></translation>
+        <translation>xMin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="82"/>
         <source>yMin</source>
-        <translation type="unfinished"></translation>
+        <translation>yMin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="83"/>
         <source>xMax</source>
-        <translation type="unfinished"></translation>
+        <translation>xMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="84"/>
         <source>yMax</source>
-        <translation type="unfinished"></translation>
+        <translation>yMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="85"/>
@@ -13892,7 +13904,9 @@ Database: %3</source>
         <source>Unable to create the bookmark.
 Driver:%1
 Database:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possivel criar o marcador.
+Driver:%1
+Base de dados:%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="182"/>
@@ -13903,8 +13917,9 @@ Database:%2</source>
         <location filename="../src/app/qgsbookmarks.cpp" line="183"/>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Tem a certeza que deseja excluir %n marcador(es)?</numerusform>
+            <numerusform>número de colunas</numerusform>
         </translation>
     </message>
     <message>
@@ -13998,7 +14013,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="79"/>
         <source>Param</source>
-        <translation type="unfinished"></translation>
+        <translation>Param</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="92"/>
@@ -14023,7 +14038,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="165"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>toolBar</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="193"/>
@@ -14119,12 +14134,12 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="203"/>
         <source>Add a directory</source>
-        <translation type="unfinished">Adicionar um directório</translation>
+        <translation>Adicionar um directório</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="239"/>
         <source>Add directory to favourites</source>
-        <translation type="unfinished">Adicionar directório aos favoritos</translation>
+        <translation>Adicionar directório aos favoritos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="390"/>
@@ -14170,7 +14185,7 @@ Database:%2</source>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="44"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Início</translation>
     </message>
     <message>
         <location filename="../src/core/qgsbrowsermodel.cpp" line="52"/>
@@ -14183,77 +14198,77 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="29"/>
         <source>Solid</source>
-        <translation type="unfinished">Sólido</translation>
+        <translation>Sólido</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="31"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="32"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertical</translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="33"/>
         <source>Cross</source>
-        <translation type="unfinished">Cruz</translation>
+        <translation>Cruz</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="34"/>
         <source>BDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>BDiagonal</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="35"/>
         <source>FDiagonal</source>
-        <translation type="unfinished"></translation>
+        <translation>FDiagonal</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="36"/>
         <source>Diagonal X</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonal X</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="37"/>
         <source>Dense 1</source>
-        <translation type="unfinished">Denso 1</translation>
+        <translation>Densidade 1</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="38"/>
         <source>Dense 2</source>
-        <translation type="unfinished">Denso 2</translation>
+        <translation>Densidade 2</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="39"/>
         <source>Dense 3</source>
-        <translation type="unfinished">Denso 3</translation>
+        <translation>Densidade 3</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="40"/>
         <source>Dense 4</source>
-        <translation type="unfinished">Denso 4</translation>
+        <translation>Densidade 4</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="41"/>
         <source>Dense 5</source>
-        <translation type="unfinished">Denso 5</translation>
+        <translation>Densidade 5</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="42"/>
         <source>Dense 6</source>
-        <translation type="unfinished">Denso 6</translation>
+        <translation>Densidade 6</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="43"/>
         <source>Dense 7</source>
-        <translation type="unfinished">Denso 7</translation>
+        <translation>Densidade 7</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsbrushstylecombobox.cpp" line="30"/>
         <source>No Brush</source>
-        <translation type="unfinished">Sem pincel</translation>
+        <translation>Sem pincel</translation>
     </message>
 </context>
 <context>
@@ -14273,7 +14288,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="104"/>
         <source>Symbol levels...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nível dos símbolos...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="302"/>
@@ -14284,29 +14299,29 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="302"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished">Não existem cor de rampas disponíveis. Você pode adicioná-las no Gerenciador de Estilos.</translation>
+        <translation>Não existem gradações de cores disponíveis. Pode adicioná-las no Gerenciador de Estilos.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="304"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished">A cor de rampa selecionada não está disponível.</translation>
+        <translation>A cor de rampa selecionada não está disponível.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="318"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Confirma exclusão</translation>
+        <translation>Confirme a exclusão</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="319"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished">O campo de classificação foi mudado de &apos;%1&apos; para &apos;%2&apos;. 
-Existem classes que podem ser excluídas antes da classificação?</translation>
+        <translation>O campo de classificação foi mudado de &apos;%1&apos; para &apos;%2&apos;. 
+Podem as classes ser excluídas antes da classificação?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
-        <translation type="unfinished">mudar</translation>
+        <translation>alteração</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
@@ -14323,17 +14338,17 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation type="unfinished">Cor da inclinação</translation>
+        <translation>Gradação de cor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="122"/>
         <source>Classify</source>
-        <translation type="unfinished">Classifica</translation>
+        <translation>Classifica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="129"/>
         <source>Add</source>
-        <translation type="unfinished">Adiciona</translation>
+        <translation>Adiciona</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="136"/>
@@ -14343,17 +14358,17 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="143"/>
         <source>Delete all</source>
-        <translation type="unfinished">Exclui tudo</translation>
+        <translation>Exclui tudo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="166"/>
         <source>Join</source>
-        <translation type="unfinished">Unir</translation>
+        <translation>Unir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="173"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avançado</translation>
+        <translation>Avançado</translation>
     </message>
 </context>
 <context>
@@ -14361,7 +14376,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="54"/>
         <source>New color ramp...</source>
-        <translation type="unfinished">Nova cor da rampa...</translation>
+        <translation>Nova gradação de cor...</translation>
     </message>
 </context>
 <context>
@@ -14369,12 +14384,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/plugins/compass/qgscompassplugin.cpp" line="102"/>
         <source>Show compass</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Bússula</translation>
     </message>
     <message>
         <location filename="../src/plugins/compass/qgscompassplugin.cpp" line="105"/>
         <source>&amp;About</source>
-        <translation type="unfinished">&amp;Sobre</translation>
+        <translation>&amp;Sobre</translation>
     </message>
 </context>
 <context>
@@ -14382,7 +14397,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/plugins/compass/qgscompassplugingui.cpp" line="133"/>
         <source>Pixmap not found</source>
-        <translation type="unfinished">Pixmap não encontrado</translation>
+        <translation>Pixmap não encontrado</translation>
     </message>
 </context>
 <context>
@@ -14390,12 +14405,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/plugins/compass/qgscompasspluginguibase.ui" line="14"/>
         <source>Internal Compass</source>
-        <translation type="unfinished">Bússola interna</translation>
+        <translation>Bússola interna</translation>
     </message>
     <message>
         <location filename="../src/plugins/compass/qgscompasspluginguibase.ui" line="22"/>
         <source>Azimut</source>
-        <translation type="unfinished"></translation>
+        <translation>Azimute</translation>
     </message>
 </context>
 <context>
@@ -14451,12 +14466,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="181"/>
         <source>Panels</source>
-        <translation type="unfinished">Painéis</translation>
+        <translation>Painéis</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="183"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Barras de Ferramentas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="191"/>
@@ -14510,7 +14525,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
         <source>&lt;p&gt;The SVG export function in QGIS has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished">&lt;p&gt;A função de exportação SVG no QGIS tem vários problemas devido a bugs e deficiências no</translation>
+        <translation>&lt;p&gt;A função de exportação SVG no QGIS tem vários problemas devido a bugs e deficiências no</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="872"/>
@@ -14543,7 +14558,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="705"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished">código Qt4 svg. Em particular, existem problemas com camadas que não são aparadas da caixa limite do mapa.&lt;/p&gt;</translation>
+        <translation>código Qt4 svg. Em particular, existem problemas com camadas que não são aparadas da caixa limite do mapa.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
@@ -14552,7 +14567,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="708"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished">Se você necessita de um arquivo de saída do tipo vetorial é sugerido que você tente imprimir para PostScript se o SVG criado não foi satisfatório.&lt;/p&gt;</translation>
+        <translation>Se necessita de um arquivo de saída do tipo vetorial é sugerido que tente imprimir para PostScript se o SVG criado não foi satisfatório.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>save template</source>
@@ -15095,12 +15110,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="16"/>
         <source>Repeat on every page</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetir em cada página</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="17"/>
         <source>Repeat until finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetir até terminar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerhtmlwidget.cpp" line="31"/>
@@ -15413,7 +15428,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="113"/>
         <source>Item wrapping changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Alteração da modificação do item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="125"/>
@@ -15423,78 +15438,78 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="137"/>
         <source>Legend symbol width</source>
-        <translation type="unfinished">Espessura do símbolo da legenda</translation>
+        <translation>Espessura do símbolo da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="149"/>
         <source>Legend symbol height</source>
-        <translation type="unfinished">Altura do símbolo da legenda</translation>
+        <translation>Altura do símbolo da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="161"/>
         <source>Legend group space</source>
-        <translation type="unfinished">Espaço do grupo da legenda</translation>
+        <translation>Espaço do grupo da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="173"/>
         <source>Legend layer space</source>
-        <translation type="unfinished">Espaço da camada da legenda</translation>
+        <translation>Espaço da camada da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="185"/>
         <source>Legend symbol space</source>
-        <translation type="unfinished">Espaço do símbolo da legenda</translation>
+        <translation>Espaço do símbolo da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="197"/>
         <source>Legend icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espaço da legenda do símbolo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="218"/>
         <source>Title font changed</source>
-        <translation type="unfinished">Fonte do título alterada</translation>
+        <translation>Tipo de letra do título alterado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="240"/>
         <source>Legend group font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra da legenda do grupo alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="262"/>
         <source>Legend layer font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra da camada da legenda alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="284"/>
         <source>Legend item font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra do item da legenda alterado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="298"/>
         <source>Legend box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espaço da caixa da legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="461"/>
         <source>Legend map changed</source>
-        <translation type="unfinished">Mapa da legenda alterado</translation>
+        <translation>Mapa da legenda alterado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="572"/>
         <source>Legend item edited</source>
-        <translation type="unfinished">Item da legenda editado</translation>
+        <translation>Item da legenda editado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="605"/>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="635"/>
         <source>Legend updated</source>
-        <translation type="unfinished">Legenda actualizada</translation>
+        <translation>Legenda actualizada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="624"/>
         <source>Legend group added</source>
-        <translation type="unfinished">Grupo de legenda adicionado</translation>
+        <translation>Grupo de legenda adicionado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="698"/>
@@ -15725,7 +15740,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="147"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="294"/>
         <source>Render</source>
-        <translation type="unfinished">Desenhar</translation>
+        <translation>Desenhar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="35"/>
@@ -15753,12 +15768,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
         <source>DegreeMinute</source>
-        <translation type="unfinished">Grau e Minuto</translation>
+        <translation>Grau e Minuto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <source>DegreeMinuteSecond</source>
-        <translation type="unfinished">Grau, Minuto e Segundo</translation>
+        <translation>Grau, Minuto e Segundo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="68"/>
@@ -15771,7 +15786,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="372"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="875"/>
         <source>Zebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Zebra</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="908"/>
@@ -15810,12 +15825,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="101"/>
         <source>Change item width</source>
-        <translation type="unfinished">Alterar largura do item</translation>
+        <translation>Alterar largura do item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="121"/>
         <source>Change item height</source>
-        <translation type="unfinished">Alterar altura do item</translation>
+        <translation>Alterar altura do item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="177"/>
@@ -15836,7 +15851,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="534"/>
         <source>Canvas items toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterados items do mapa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="551"/>
@@ -15848,7 +15863,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="613"/>
         <source>Grid checkbox toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterada a caixa de verificação da grelha</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="634"/>
@@ -15860,23 +15875,23 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="660"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="673"/>
         <source>Grid offset changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterado offset da grelha</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="686"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="701"/>
         <source>Grid pen changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterada caneta da grelha</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="724"/>
         <source>Grid type changed</source>
-        <translation type="unfinished">Tipo de grelha alterado</translation>
+        <translation>Tipo de grelha alterado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="736"/>
         <source>Grid cross width changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Espessura da cruz da grelha alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="758"/>
@@ -15896,19 +15911,19 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="874"/>
         <source>Changed grid frame style</source>
-        <translation type="unfinished">Estilo da moldura da grelha alterado</translation>
+        <translation>Estilo da moldura da grelha alterado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="892"/>
         <source>Changed grid frame width</source>
-        <translation type="unfinished">Largura da moldura da grelha alterada</translation>
+        <translation>Largura da moldura da grelha alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="910"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="931"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="983"/>
         <source>Disabled</source>
-        <translation type="unfinished">Desativado</translation>
+        <translation>Desativado</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="926"/>
@@ -15923,7 +15938,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="820"/>
         <source>Annotation toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterada a anotação</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="952"/>
@@ -16112,12 +16127,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="631"/>
         <source>Annotation position top side</source>
-        <translation type="unfinished">Posição da anotação na parte superior</translation>
+        <translation>Posição da anotação na parte superior</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="647"/>
         <source>Annotation position bottom side</source>
-        <translation type="unfinished">Posição da anotação na parte inferior</translation>
+        <translation>Posição da anotação na parte inferior</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="666"/>
@@ -16132,12 +16147,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="698"/>
         <source>Annotation direction top side</source>
-        <translation type="unfinished">Direcção da anotação na parte superior</translation>
+        <translation>Direcção da anotação na parte superior</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="711"/>
         <source>Annotation direction bottom side</source>
-        <translation type="unfinished">Direcção da anotação na parte inferior</translation>
+        <translation>Direcção da anotação na parte inferior</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="724"/>
@@ -16172,7 +16187,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="498"/>
         <source>Cross width</source>
-        <translation type="unfinished">Espessura do cruzamento</translation>
+        <translation>Espessura do cruzamento</translation>
     </message>
 </context>
 <context>
@@ -16192,17 +16207,17 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="128"/>
         <source>Picture width changed</source>
-        <translation type="unfinished">Largura da imagem alterada</translation>
+        <translation>Largura da imagem alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="146"/>
         <source>Picture height changed</source>
-        <translation type="unfinished">Altura da imagem alterada</translation>
+        <translation>Altura da imagem alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="158"/>
         <source>Picture rotation changed</source>
-        <translation type="unfinished">Rotação da imagem alterada</translation>
+        <translation>Rotação da imagem alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="184"/>
@@ -16212,12 +16227,12 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="239"/>
         <source>Rotation synchronisation toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterada a sincronização da rotação</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="298"/>
         <source>Rotation map changed</source>
-        <translation type="unfinished">Rotação do mapa alterada</translation>
+        <translation>Rotação do mapa alterada</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="412"/>
