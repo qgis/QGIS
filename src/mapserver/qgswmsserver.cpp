@@ -2072,6 +2072,11 @@ void QgsWMSServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRe
                                      QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
                                      QList < QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers )
 {
+  if ( vectorRenderers.isEmpty() && vectorOld.isEmpty() && rasterRenderers.isEmpty() )
+  {
+    return;
+  }
+
   QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >::iterator vIt = vectorRenderers.begin();
   for ( ; vIt != vectorRenderers.end(); ++vIt )
   {
