@@ -19,8 +19,8 @@
 #define QGSWMSSERVER_H
 
 #include <QDomDocument>
-#include <QHash>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <map>
 
@@ -167,11 +167,14 @@ class QgsWMSServer
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
-    void applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
-                         QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
+    /**Applies opacity on layer/group level*/
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                         QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
 
-    void restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
-                           QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
+    /**Restore original opacities*/
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers, QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
