@@ -19,6 +19,7 @@
 #define QGSWMSSERVER_H
 
 #include <QDomDocument>
+#include <QHash>
 #include <QMap>
 #include <QString>
 #include <map>
@@ -28,10 +29,12 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
+class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -163,6 +166,12 @@ class QgsWMSServer
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
+
+    void applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+                         QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
+
+    void restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+                           QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 

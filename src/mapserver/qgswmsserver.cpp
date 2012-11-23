@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgswmsserver.h"
 #include "qgsconfigparser.h"
 #include "qgscrscache.h"
@@ -613,6 +614,10 @@ QImage* QgsWMSServer::getMap()
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
   QStringList selectedLayerIdList = applyFeatureSelections( layersList );
 
+  QHash<QgsVectorLayer*, QgsFeatureRendererV2*> bkVectorRenderers;
+  QHash< QgsRasterLayer*, QgsRasterRenderer* > bkRasterRenderers;
+  applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers );
+
   mMapRenderer->render( &thePainter );
   if ( mConfigParser )
   {
@@ -620,6 +625,7 @@ QImage* QgsWMSServer::getMap()
     mConfigParser->drawOverlays( &thePainter, theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
   }
 
+  restoreOpacities( bkVectorRenderers, bkRasterRenderers );
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
@@ -1976,6 +1982,101 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
   }
 
   return;
+}
+
+void QgsWMSServer::applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+                                   QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers )
+{
+  //get opacity list
+  QMap<QString, QString>::const_iterator opIt = mParameterMap.find( "OPACITIES" );
+  if ( opIt == mParameterMap.constEnd() )
+  {
+    return;
+  }
+  QStringList opacityList = opIt.value().split( "," );
+
+  //collect leaf layers and their opacity
+  QList< QPair< QgsMapLayer*, int > > layerOpacityList;
+  QStringList::const_iterator oIt = opacityList.constBegin();
+  QStringList::const_iterator lIt = layerList.constBegin();
+  for ( ; oIt != opacityList.constEnd(); ++oIt, ++lIt )
+  {
+    //get layer list for
+    int opacity = oIt->toInt();
+    if ( opacity < 0 || opacity > 255 )
+    {
+      continue;
+    }
+    QList<QgsMapLayer*> llist = mConfigParser->mapLayerFromStyle( *lIt, "" );
+    QList<QgsMapLayer*>::const_iterator lListIt = llist.constBegin();
+    for ( ; lListIt != llist.constEnd(); ++lListIt )
+    {
+      layerOpacityList.push_back( qMakePair( *lListIt, opacity ) );
+    }
+  }
+
+  QList< QPair< QgsMapLayer*, int > >::const_iterator lOpIt = layerOpacityList.constBegin();
+  for ( ; lOpIt != layerOpacityList.constEnd(); ++lOpIt )
+  {
+    //vector or raster?
+    QgsMapLayer* ml = lOpIt->first;
+    int opacity = lOpIt->second;
+    if ( !ml || opacity == 255 )
+    {
+      continue;
+    }
+
+    if ( ml->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
+      if ( vl && vl->isUsingRendererV2() )
+      {
+        QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
+        //backup old renderer
+        vectorRenderers.insert( vl, rendererV2->clone() );
+        //modify symbols of current renderer
+        QgsSymbolV2List symbolList = rendererV2->symbols();
+        QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+        for ( ; symbolIt != symbolList.end(); ++symbolIt )
+        {
+          ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * lOpIt->second / 255.0 );
+        }
+      }
+    }
+    else if ( ml->type() == QgsMapLayer::RasterLayer )
+    {
+      QgsRasterLayer* rl = qobject_cast<QgsRasterLayer*>( ml );
+      if ( rl )
+      {
+        QgsRasterRenderer* rasterRenderer = rl->renderer();
+        if ( rasterRenderer )
+        {
+          rasterRenderers.insert( rl, dynamic_cast<QgsRasterRenderer*>( rasterRenderer->clone() ) );
+          rasterRenderer->setOpacity( opacity / 255.0 );
+        }
+      }
+    }
+    //todo: rasters
+  }
+}
+
+void QgsWMSServer::restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash < QgsRasterLayer*,
+                                     QgsRasterRenderer* > & rasterRenderers )
+{
+  QHash<QgsVectorLayer*, QgsFeatureRendererV2*>::iterator vIt = vectorRenderers.begin();
+  for ( ; vIt != vectorRenderers.end(); ++vIt )
+  {
+    vIt.key()->setRendererV2( vIt.value() );
+  }
+
+  QHash< QgsRasterLayer*, QgsRasterRenderer* >::iterator rIt = rasterRenderers.begin();
+  for ( ; rIt != rasterRenderers.end(); ++rIt )
+  {
+    if ( rIt.key() )
+    {
+      rIt.key()->setRenderer( rIt.value() );
+    }
+  }
 }
 
 bool QgsWMSServer::checkMaximumWidthHeight() const
