@@ -167,10 +167,10 @@ class QgsWMSServer
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
-    void applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+    void applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
                          QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
 
-    void restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+    void restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
                            QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );

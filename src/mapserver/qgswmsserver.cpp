@@ -616,7 +616,9 @@ QImage* QgsWMSServer::getMap()
 
   QHash<QgsVectorLayer*, QgsFeatureRendererV2*> bkVectorRenderers;
   QHash< QgsRasterLayer*, QgsRasterRenderer* > bkRasterRenderers;
-  applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers );
+  QHash<QgsVectorLayer*, int> bkVectorOld;
+
+  applyOpacities( layersList, bkVectorRenderers, bkVectorOld, bkRasterRenderers );
 
   mMapRenderer->render( &thePainter );
   if ( mConfigParser )
@@ -625,7 +627,7 @@ QImage* QgsWMSServer::getMap()
     mConfigParser->drawOverlays( &thePainter, theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
   }
 
-  restoreOpacities( bkVectorRenderers, bkRasterRenderers );
+  restoreOpacities( bkVectorRenderers, bkVectorOld, bkRasterRenderers );
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
@@ -1984,7 +1986,7 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
   return;
 }
 
-void QgsWMSServer::applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers,
+void QgsWMSServer::applyOpacities( const QStringList& layerList, QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
                                    QHash< QgsRasterLayer*, QgsRasterRenderer* >& rasterRenderers )
 {
   //get opacity list
@@ -2039,9 +2041,15 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QHash<QgsVector
         QgsSymbolV2List::iterator symbolIt = symbolList.begin();
         for ( ; symbolIt != symbolList.end(); ++symbolIt )
         {
-          ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * lOpIt->second / 255.0 );
+          ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacity / 255.0 );
         }
       }
+      else //old symbology
+      {
+        vectorOld.insert( vl, vl->getTransparency() );
+        vl->setTransparency( opacity );
+      }
+
     }
     else if ( ml->type() == QgsMapLayer::RasterLayer )
     {
@@ -2056,12 +2064,11 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QHash<QgsVector
         }
       }
     }
-    //todo: rasters
   }
 }
 
-void QgsWMSServer::restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash < QgsRasterLayer*,
-                                     QgsRasterRenderer* > & rasterRenderers )
+void QgsWMSServer::restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2*>& vectorRenderers, QHash<QgsVectorLayer*, int> vectorOld,
+                                     QHash < QgsRasterLayer*, QgsRasterRenderer* > & rasterRenderers )
 {
   QHash<QgsVectorLayer*, QgsFeatureRendererV2*>::iterator vIt = vectorRenderers.begin();
   for ( ; vIt != vectorRenderers.end(); ++vIt )
@@ -2075,6 +2082,15 @@ void QgsWMSServer::restoreOpacities( QHash<QgsVectorLayer*, QgsFeatureRendererV2
     if ( rIt.key() )
     {
       rIt.key()->setRenderer( rIt.value() );
+    }
+  }
+
+  QHash<QgsVectorLayer*, int>::iterator oIt = vectorOld.begin();
+  for ( ; oIt != vectorOld.end(); ++oIt )
+  {
+    if ( oIt.key() )
+    {
+      oIt.key()->setTransparency( oIt.value() );
     }
   }
 }
