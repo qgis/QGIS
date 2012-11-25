@@ -596,6 +596,19 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   QList<QVariant> unique_vals;
   mLayer->uniqueValues( idx, unique_vals );
 
+  // ask to abort if too many classes
+  if ( unique_vals.size() >= 1000 )
+  {
+    int res = QMessageBox::warning( 0, tr( "High number of classes!" ),
+        tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
+        QMessageBox::Ok | QMessageBox::Cancel,
+        QMessageBox::Cancel );
+    if ( res == QMessageBox::Cancel )
+    {
+      return;
+    }
+  }
+
   //DlgAddCategories dlg(mStyle, createDefaultSymbol(), unique_vals, this);
   //if (!dlg.exec())
   //  return;
