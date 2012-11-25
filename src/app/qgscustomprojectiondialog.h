@@ -36,7 +36,7 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
     ~QgsCustomProjectionDialog();
 
-public slots:
+  public slots:
     void on_pbnCalculate_clicked();
     void on_pbnAdd_clicked();
     void on_pbnRemove_clicked();

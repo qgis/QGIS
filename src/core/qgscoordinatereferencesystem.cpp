@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QFile>
+#include <QSettings>
 
 #include "qgsapplication.h"
 #include "qgscrscache.h"
@@ -494,7 +495,7 @@ bool QgsCoordinateReferenceSystem::isValid() const
   return mIsValidFlag;
 }
 
-bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String, bool save )
+bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String )
 {
   //
   // Examples:
@@ -1472,8 +1473,28 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 
   QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
-  // XXX Need to free memory from the error msg if one is set
-  return myResult == SQLITE_OK;
+  int return_id;
+  if(myResult == SQLITE_OK)
+  {
+    return_id = sqlite3_last_insert_rowid( myDatabase );
+    setInternalId(return_id);
+    
+    //We add the just created user CRS to the list of recently used CRS
+    QSettings settings;
+    //QStringList recentProjections = settings.value( "/UI/recentProjections" ).toStringList();
+    QStringList projectionsProj4 = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
+    QStringList projectionsAuthId = settings.value( "/UI/recentProjectionsAuthId" ).toStringList();
+    //recentProjections.append();
+    //settings.setValue( "/UI/recentProjections", recentProjections );
+    projectionsProj4.append(toProj4());
+    projectionsAuthId.append(authid());
+    settings.setValue( "/UI/recentProjectionsProj4", projectionsProj4 );
+    settings.setValue( "/UI/recentProjectionsAuthId", projectionsAuthId );
+
+  }
+  else
+    return_id = -1;
+  return return_id;
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()
