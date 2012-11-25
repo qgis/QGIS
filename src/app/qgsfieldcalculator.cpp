@@ -18,6 +18,7 @@
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -85,11 +86,10 @@ void QgsFieldCalculator::accept()
 
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
-  QSettings settings;
 
   myDa.setSourceCrs( mVectorLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
-  myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
 
   QString calcString = builder->expressionText();

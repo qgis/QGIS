@@ -25,7 +25,8 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
-#include "qgsmapcanvas.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
 #include "qgscharacterselectdialog.h"
 
 #include <QColorDialog>
@@ -894,6 +895,13 @@ void QgsLabelingGui::showExpressionDialog()
 {
   QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
   dlg.setWindowTitle( tr( "Expression based label" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
   if ( dlg.exec() == QDialog::Accepted )
   {
     QString expression =  dlg.expressionText();

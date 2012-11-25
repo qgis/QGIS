@@ -242,8 +242,7 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
 
 void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 {
-  Q_UNUSED( da );
-   // TODO! FIXME!!!
+  mDa = da;
 }
 
 QString QgsExpressionBuilderWidget::expressionText()
@@ -278,16 +277,8 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
   if ( mLayer )
   {
-    // Only set ellipsoid if we have layer...
-    QgsDistanceArea myDa;
-    QSettings settings;
-
-    myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
-    myDa.setSourceCrs( mLayer->crs().srsid() );
-    // myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
-    myDa.setEllipsoidalMode( false );
-
-    exp.setGeomCalculator( myDa );
+    // Only set calculator if we have layer, else use default.
+    exp.setGeomCalculator( mDa );
 
     if ( !mFeature.isValid() )
     {
@@ -425,12 +416,12 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
     return "";
 
   QString helpContents;
-  // Return the function help that is set for the function if there is one. 
+  // Return the function help that is set for the function if there is one.
   if ( !expressionItem->getHelpText().isEmpty() )
   {
-      QString myStyle = QgsApplication::reportStyleSheet();
-      helpContents = "<head><style>" + myStyle + "</style></head><body>" + expressionItem->getHelpText() + "</body>";
-      return helpContents;
+    QString myStyle = QgsApplication::reportStyleSheet();
+    helpContents = "<head><style>" + myStyle + "</style></head><body>" + expressionItem->getHelpText() + "</body>";
+    return helpContents;
   }
   // set up the path to the help file
   QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";

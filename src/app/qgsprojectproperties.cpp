@@ -59,6 +59,9 @@ const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOption
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
     , mMapCanvas( mapCanvas )
+    , mEllipsoidList()
+    , mEllipsoidIndex( 0 )
+
 {
   setupUi( this );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
@@ -114,7 +117,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   QgsDebugMsg( "Setting upp ellipsoid" );
 
-  mEllipsoidIndex = 0;
   populateEllipsoidList();
 
   // Reading ellipsoid from setttings
@@ -137,6 +139,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   updateEllipsoidUI( myIndex );
+
 
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
@@ -553,12 +556,12 @@ void QgsProjectProperties::apply()
       minor = QLocale::system().toDouble( leSemiMinor->text() );
     }
     QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "PARAMETER:%1:%2" )
-					.arg( major, 0, 'g', 17 )
-					.arg( minor, 0, 'g', 17 ) );
+                                        .arg( major, 0, 'g', 17 )
+                                        .arg( minor, 0, 'g', 17 ) );
   }
   else
   {
-        QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
+    QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
   }
 
   //set the color for selections
@@ -1395,6 +1398,11 @@ void QgsProjectProperties::populateEllipsoidList()
 
 void QgsProjectProperties::updateEllipsoidUI( int newIndex )
 {
+  // Just return if the list isn't populated yet
+  if ( mEllipsoidList.isEmpty() )
+  {
+    return;
+  }
   // Called whenever settings change, adjusts the UI accordingly
   // Pre-select current ellipsoid
 

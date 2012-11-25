@@ -123,7 +123,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadFieldNames( QgsFieldMap fields );
 
-    /** Sets geometry calculator in order to get the measurements correct.
+    /** Sets geometry calculator used in distance/area calculations.
+      * @note added in version 2.0
       */
     void setGeomCalculator( const QgsDistanceArea & da );
 
@@ -181,6 +182,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
+    QgsDistanceArea mDa;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
