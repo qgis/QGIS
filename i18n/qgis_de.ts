@@ -1007,7 +1007,7 @@ Folgende Feldnamen sind länger als 10 Zeichen:
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation>Rastergrenze</translation>
+        <translation>Gittergrenze von Layer</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
@@ -1017,12 +1017,12 @@ Folgende Feldnamen sind länger als 10 Zeichen:
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation>Layergrenzen aus aktueller Ansicht aktualisieren</translation>
+        <translation>Layergrenzen aus aktueller Ansicht</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation>Ausmaße und Auflösung am gewählten Rasterlayer ausrichten</translation>
+        <translation>Ausmaße und Auflösung am gewählten Layer ausrichten</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -1047,12 +1047,12 @@ Folgende Feldnamen sind länger als 10 Zeichen:
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="286"/>
         <source>Output grid as polygons</source>
-        <translation>Raster als Polygone ausgeben</translation>
+        <translation>Gitter als Polygone ausgeben</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="296"/>
         <source>Output grid as lines</source>
-        <translation>Raster als Linien ausgeben</translation>
+        <translation>Gitter als Linien ausgeben</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -44820,7 +44820,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Vektorraster</translation>
+        <translation>Vektorgitter</translation>
     </message>
     <message>
         <source>Select by location</source>

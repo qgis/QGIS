@@ -16111,22 +16111,22 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="74"/>
         <source>Title Font...</source>
-        <translation>Police du tite...</translation>
+        <translation>Police du titre...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Group Font...</source>
-        <translation>Groupe de police...</translation>
+        <translation>Police des groupes...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation>Police de la couche...</translation>
+        <translation>Police des couches...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation>Police de l&apos;objet...</translation>
+        <translation>Police des objets...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
@@ -16182,7 +16182,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="205"/>
         <source>Wrap text on</source>
-        <translation>Retour à la ligne activé</translation>
+        <translation>Activer le retour à la ligne après</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="240"/>

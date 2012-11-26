@@ -41,6 +41,15 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.iface = iface
     self.setupUi( self )
     self.myFunction = function
+
+    ## Set object visibility to False if tool is not Check geometry
+    self.ckBoxShpError.hide()
+    self.browseShpError.hide()
+    self.lineEditShpError.hide()
+    self.label_6.hide()
+    self.line.hide()
+    self.buttonBox_2.setOrientation(Qt.Horizontal)
+
     if self.myFunction == 2 or self.myFunction == 3:
       QObject.connect( self.inShape, SIGNAL( "currentIndexChanged(QString)" ), self.update )
     self.manageGui()
@@ -289,7 +298,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
-	if nFeat > 0:
+        if nFeat > 0:
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         vprovider.select( allAttrs )
@@ -355,7 +364,7 @@ class visualThread( QThread ):
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
         uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
-	if nFeat > 0:
+        if nFeat > 0:
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         vprovider.select( allAttrs )
