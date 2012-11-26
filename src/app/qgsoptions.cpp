@@ -58,7 +58,6 @@
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
-const char * QgsOptions::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -81,8 +80,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( mFontFamilyRadioQt, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
   connect( mFontFamilyRadioCustom, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
   connect( mFontFamilyComboBox, SIGNAL( currentFontChanged( const QFont& ) ), this, SLOT( updateAppStyleSheet() ) );
-
-  connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
 
 #ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
@@ -286,34 +283,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //display the crs as friendly text rather than in wkt
   leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
-  // populate combo box with ellipsoids
-
-  QgsDebugMsg( "Setting upp ellipsoid" );
-
-  mEllipsoidIndex = 0;
-  populateEllipsoidList();
-
-  // Reading ellipsoid from setttings
-  QStringList mySplitEllipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString().split( ':' );
-
-  int myIndex = 0;
-  int i;
-  for ( i = 0; i < mEllipsoidList.length(); i++ )
-  {
-    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
-    {
-      myIndex = i;
-      break;
-    }
-  }
-  // Update paramaters if present.
-  if ( mySplitEllipsoid.length() >= 3 )
-  {
-    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
-  }
-
-  updateEllipsoidUI( myIndex );
 
   // Set the units for measuring
   QGis::UnitType myDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
@@ -1000,26 +969,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
-  if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER" ) )
-  {
-    double major = mEllipsoidList[ mEllipsoidIndex ].semiMajor;
-    double minor = mEllipsoidList[ mEllipsoidIndex ].semiMinor;
-    // If the user fields have changed, use them instead.
-    if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
-    {
-      QgsDebugMsg( "Using paramteric major/minor" );
-      major = QLocale::system().toDouble( leSemiMajor->text() );
-      minor = QLocale::system().toDouble( leSemiMinor->text() );
-    }
-    settings.setValue( "/qgis/measure/ellipsoid", QString( "PARAMETER:%1:%2" )
-                       .arg( major, 0, 'g', 17 )
-                       .arg( minor, 0, 'g', 17 ) );
-  }
-  else
-  {
-    settings.setValue( "/qgis/measure/ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
-  }
-
   if ( radFeet->isChecked() )
   {
     settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
@@ -1244,88 +1193,6 @@ void QgsOptions::editGdalDriver( const QString& driverName )
 bool QgsOptions::newVisible()
 {
   return chkAddedVisibility->isChecked();
-}
-void QgsOptions::populateEllipsoidList()
-{
-  //
-  // Populate the ellipsoid list
-  //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  EllipsoidDefs myItem, i;
-
-  myItem.acronym = GEO_NONE;
-  myItem.description =  tr( GEO_NONE_DESC );
-  myItem.semiMajor = 0.0;
-  myItem.semiMinor = 0.0;
-  mEllipsoidList.append( myItem );
-
-  myItem.acronym = QString( "PARAMETER:6370997:6370997" );
-  myItem.description = tr( "Parameters :" );
-  myItem.semiMajor = 6370997.0;
-  myItem.semiMinor = 6370997.0;
-  mEllipsoidList.append( myItem );
-
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select acronym, name, radius, parameter2 from tbl_ellipsoid order by name";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      QString para1, para2;
-      myItem.acronym = ( const char * )sqlite3_column_text( myPreparedStatement, 0 );
-      myItem.description = ( const char * )sqlite3_column_text( myPreparedStatement, 1 );
-
-      // Copied from QgsDistanecArea. Should perhaps be moved there somehow?
-      // No error checking, this values are for show only, never used in calculations.
-
-      // Fall-back values
-      myItem.semiMajor = 0.0;
-      myItem.semiMinor = 0.0;
-      // Crash if no column?
-      para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
-      para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
-      myItem.semiMajor = para1.mid( 2 ).toDouble();
-      if ( para2.left( 2 ) == "b=" )
-      {
-        myItem.semiMinor = para2.mid( 2 ).toDouble();
-      }
-      else if ( para2.left( 3 ) == "rf=" )
-      {
-        double invFlattening = para2.mid( 3 ).toDouble();
-        if ( invFlattening != 0.0 )
-        {
-          myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
-        }
-      }
-      mEllipsoidList.append( myItem );
-    }
-  }
-
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
-  // Add all items to selector
-
-  foreach ( i, mEllipsoidList )
-  {
-    cmbEllipsoid->addItem( i.description );
-  }
 }
 
 QStringList QgsOptions::i18nList()
@@ -1736,53 +1603,3 @@ void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
   settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }
 
-void QgsOptions::updateEllipsoidUI( int newIndex )
-{
-  // Called whenever settings change, adjusts the UI accordingly
-  // Pre-select current ellipsoid
-
-  // Check if CRS transformation is on, or else turn everything off
-  double myMajor =  mEllipsoidList[ newIndex ].semiMajor;
-  double myMinor =  mEllipsoidList[ newIndex ].semiMinor;
-
-  // If user has modified the radii (only possible if parametric!), before
-  // changing ellipsoid, save the modified coordinates
-  if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
-  {
-    QgsDebugMsg( "Saving major/minor" );
-    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale::system().toDouble( leSemiMajor->text() );
-    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale::system().toDouble( leSemiMinor->text() );
-  }
-
-  mEllipsoidIndex = newIndex;
-  leSemiMajor->setEnabled( false );
-  leSemiMinor->setEnabled( false );
-  leSemiMajor->setText( "" );
-  leSemiMinor->setText( "" );
-  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
-  {
-    cmbEllipsoid->setEnabled( true );
-    cmbEllipsoid->setToolTip( "" );
-    if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER:" ) )
-    {
-      leSemiMajor->setEnabled( true );
-      leSemiMinor->setEnabled( true );
-    }
-    else
-    {
-      leSemiMajor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-      leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
-    }
-    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
-    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
-    {
-      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
-    }
-  }
-  else
-  {
-    cmbEllipsoid->setEnabled( false );
-    cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
-  }
-}
