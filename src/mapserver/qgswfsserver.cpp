@@ -180,7 +180,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement getElement = doc.createElement( "Get"/*wfs:Get*/ );
   httpElement.appendChild( getElement );
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
-  getElement.setAttribute( "OnlineResource", hrefString );
+  getElement.setAttribute( "onlineResource", hrefString );
 
   //wfs:DescribeFeatureType
   QDomElement describeFeatureTypeElement = doc.createElement( "DescribeFeatureType"/*wfs:DescribeFeatureType*/ );
