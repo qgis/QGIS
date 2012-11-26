@@ -831,6 +831,11 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
         <translation>Premi Ctrl+C per copiare i risultati negli appunti</translation>
     </message>
     <message>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="120"/>
+        <source>Save errors location</source>
+        <translation>Salva posizione errori</translation>
+    </message>
+    <message>
         <source>Sum line lengths</source>
         <translation>Somma lunghezza linee</translation>
     </message>
