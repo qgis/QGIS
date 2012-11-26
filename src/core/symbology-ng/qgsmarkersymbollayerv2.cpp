@@ -674,7 +674,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   }
   else
   {
-    p->setOpacity( context.alpha( ) );
+    p->setOpacity( context.alpha() );
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     p->drawPicture( 0, 0, pct );
@@ -841,6 +841,26 @@ QString QgsSvgMarkerSymbolLayerV2::symbolNameToPath( QString name )
   // we might have a full path...
   if ( QFile( name ).exists() )
     return QFileInfo( name ).canonicalFilePath();
+
+  // or it might be an url...
+  QUrl url( name );
+  if ( url.isValid() )
+  {
+    if ( url.isLocalFile() )
+    {
+      // it's a url to a local file
+      name = url.toLocalFile();
+      if ( QFile( name ).exists() )
+      {
+        return QFileInfo( name ).canonicalFilePath();
+      }
+    }
+    else
+    {
+      // it's a url pointing to a online resource
+      return name;
+    }
+  }
 
   // SVG symbol not found - probably a relative path was used
 

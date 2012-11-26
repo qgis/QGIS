@@ -17,6 +17,11 @@
 
 #include "qgssvgcache.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+#include <QApplication>
+#include <QCoreApplication>
+#include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
@@ -24,6 +29,9 @@
 #include <QPainter>
 #include <QPicture>
 #include <QSvgRenderer>
+#include <QFileInfo>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
     outline( Qt::black ), image( 0 ), picture( 0 )
@@ -81,7 +89,11 @@ QgsSvgCache* QgsSvgCache::instance()
   return mInstance;
 }
 
-QgsSvgCache::QgsSvgCache(): mTotalSize( 0 ), mLeastRecentEntry( 0 ), mMostRecentEntry( 0 )
+QgsSvgCache::QgsSvgCache( QObject *parent )
+    : QObject( parent )
+    , mTotalSize( 0 )
+    , mLeastRecentEntry( 0 )
+    , mMostRecentEntry( 0 )
 {
 }
 
@@ -163,14 +175,8 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
   defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 1.0;
 
-  QFile svgFile( path );
-  if ( !svgFile.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( &svgFile ) )
+  if ( !svgDoc.setContent( getImageData( path ) ) )
   {
     return;
   }
@@ -186,14 +192,8 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
     return;
   }
 
-  QFile svgFile( entry->file );
-  if ( !svgFile.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( &svgFile ) )
+  if ( !svgDoc.setContent( getImageData( entry->file ) ) )
   {
     return;
   }
@@ -204,6 +204,118 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 
   entry->svgContent = svgDoc.toByteArray();
   mTotalSize += entry->svgContent.size();
+}
+
+QByteArray QgsSvgCache::getImageData( const QString &path ) const
+{
+  // is it a path to local file?
+  QFile svgFile( path );
+  if ( svgFile.exists() )
+  {
+    if ( svgFile.open( QIODevice::ReadOnly ) )
+    {
+      return svgFile.readAll();
+    }
+    else
+    {
+      return QByteArray();
+    }
+  }
+
+  // maybe it's a url...
+  QUrl svgUrl( path );
+  if ( !svgUrl.isValid() )
+  {
+    return QByteArray();
+  }
+
+  // check whether it's a url pointing to a local file
+  if ( svgUrl.isLocalFile() )
+  {
+    svgFile.setFileName( svgUrl.toLocalFile() );
+    if ( svgFile.exists() )
+    {
+      if ( svgFile.open( QIODevice::ReadOnly ) )
+      {
+        return svgFile.readAll();
+      }
+    }
+
+    // not found...
+    return QByteArray();
+  }
+
+  // the url points to a remote resource, download it!
+  QNetworkReply *reply = 0;
+
+  // The following code blocks until the file is downloaded...
+  // TODO: use signals to get reply finished notification, in this moment
+  // it's executed while rendering.
+  while ( 1 )
+  {
+    QgsDebugMsg( QString( "get svg: %1" ).arg( svgUrl.toString() ) );
+    QNetworkRequest request( svgUrl );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    reply = QgsNetworkAccessManager::instance()->get( request );
+    connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( downloadProgress( qint64, qint64 ) ) );
+
+    //emit statusChanged( tr( "Downloading svg." ) );
+
+    // wait until the image download finished
+    // TODO: connect to the reply->finished() signal
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    while ( !reply->isFinished() )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+    }
+    QApplication::restoreOverrideCursor();
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString() ).arg( reply->url().toString() ), tr( "SVG" ) );
+
+      reply->deleteLater();
+      return QByteArray();
+    }
+
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( redirect.isNull() )
+    {
+      // neither network error nor redirection
+      // TODO: cache the image
+      break;
+    }
+
+    // do a new request to the redirect url
+    svgUrl = redirect.toUrl();
+    reply->deleteLater();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2]" ).arg( status.toInt() ).arg( phrase.toString() ), tr( "SVG" ) );
+
+    reply->deleteLater();
+    return QByteArray();
+  }
+
+  QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+  QgsDebugMsg( "contentType: " + contentType );
+  if ( !contentType.startsWith( "image/svg+xml", Qt::CaseInsensitive ) )
+  {
+    reply->deleteLater();
+    return QByteArray();
+  }
+
+  // read the image data
+  QByteArray ba = reply->readAll();
+  reply->deleteLater();
+
+  return ba;
 }
 
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
@@ -553,3 +665,9 @@ void QgsSvgCache::takeEntryFromList( QgsSvgCacheEntry* entry )
   }
 }
 
+void QgsSvgCache::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
+}
