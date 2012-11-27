@@ -33,6 +33,7 @@
 
 #include <QAbstractButton>
 #include <QColorDialog>
+#include <QCursor>
 #include <QDir>
 #include <QFileDialog>
 #include <QPainter>
@@ -801,7 +802,11 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_editingFinished()
         return;
     }
   }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   mLayer->setPath( mFileLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
   setGuiForSvg( mLayer );
   emit changed();
 }
@@ -994,7 +999,11 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_editingFinished()
         return;
     }
   }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   mLayer->setSvgFilePath( mSVGLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
   updateParamGui();
   emit changed();
 }

@@ -265,12 +265,10 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
 
     // wait until the image download finished
     // TODO: connect to the reply->finished() signal
-    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
     while ( !reply->isFinished() )
     {
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
     }
-    QApplication::restoreOverrideCursor();
 
     if ( reply->error() != QNetworkReply::NoError )
     {
