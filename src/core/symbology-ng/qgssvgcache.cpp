@@ -230,7 +230,7 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // check whether it's a url pointing to a local file
-  if ( svgUrl.isLocalFile() )
+  if ( svgUrl.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
   {
     svgFile.setFileName( svgUrl.toLocalFile() );
     if ( svgFile.exists() )
