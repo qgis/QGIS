@@ -232,13 +232,6 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**Draws a layer item and all subitems*/
     QSizeF drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter = 0, QPointF point = QPointF() );
 
-    /**Draws child items of a layer item
-       @param p painter
-       @param layerItem parent model item (layer)
-       @param currentPosition in/out: current y position of legend item
-       @param layerOpacity opacity of the corresponding map layer
-    */
-
     Nucleon drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter = 0, QPointF point = QPointF(), double labelXOffset = 0. );
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
