@@ -204,12 +204,40 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+  QGis::WkbType wkbType = layer->wkbType();
+
+  // Special handling for Shapefiles
   if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
   {
     // convert field names to lowercase
     for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
       fldIt.value().setName( fldIt.value().name().toLower() );
+    }
+
+    // convert wkbtype to multipart (see #5547)
+    switch ( wkbType )
+    {
+      case QGis::WKBPoint:
+        wkbType = QGis::WKBMultiPoint;
+        break;
+      case QGis::WKBLineString:
+        wkbType = QGis::WKBMultiLineString;
+        break;
+      case QGis::WKBPolygon:
+        wkbType = QGis::WKBMultiPolygon;
+        break;
+      case QGis::WKBPoint25D:
+        wkbType = QGis::WKBMultiPoint25D;
+        break;
+      case QGis::WKBLineString25D:
+        wkbType = QGis::WKBMultiLineString25D;
+        break;
+      case QGis::WKBPolygon25D:
+        wkbType = QGis::WKBMultiPolygon25D;
+        break;
+      default:
+        break;
     }
   }
 
@@ -220,7 +248,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, overwrite, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -240,7 +268,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
+  layer->select( allAttr, QgsRectangle(), wkbType != QGis::WKBNoGeometry );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
