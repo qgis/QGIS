@@ -96,12 +96,22 @@ class QgsPalGeometry : public PalGeometry
     const char* strId() { return mStrId.data(); }
     QString text() { return mText; }
 
-    pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale )
+    pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
     {
       if ( mInfo )
         return mInfo;
 
       mFontMetrics = new QFontMetricsF( *fm ); // duplicate metrics for when drawing label
+
+      // max angle between curved label characters (20.0/-20.0 was default in QGIS <= 1.8)
+      if ( maxinangle < 20.0 )
+        maxinangle = 20.0;
+      if ( 60.0 < maxinangle )
+        maxinangle = 60.0;
+      if ( maxoutangle > -20.0 )
+        maxoutangle = -20.0;
+      if ( -95.0 > maxoutangle )
+        maxoutangle = -95.0;
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
@@ -111,7 +121,7 @@ class QgsPalGeometry : public PalGeometry
       // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
       qreal charWidth;
       qreal wordSpaceFix;
-      mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y() );
+      mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y(), maxinangle, maxoutangle );
       for ( int i = 0; i < mText.count(); i++ )
       {
         mInfo->char_info[i].chr = mText[i].unicode();
@@ -221,6 +231,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   reverseDirectionSymbol = false;
   placeDirectionSymbol = SymbolLeftRight;
   upsidedownLabels = Upright;
+  maxCurvedCharAngleIn = 20.0;
+  maxCurvedCharAngleOut = -20.0;
   fontSizeInMapUnits = false;
   fontLimitPixelSize = false;
   fontMinPixelSize = 0; //trigger to turn it on by default for map unit labels
@@ -280,6 +292,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   reverseDirectionSymbol = s.reverseDirectionSymbol;
   placeDirectionSymbol = s.placeDirectionSymbol;
   upsidedownLabels = s.upsidedownLabels;
+  maxCurvedCharAngleIn = s.maxCurvedCharAngleIn;
+  maxCurvedCharAngleOut = s.maxCurvedCharAngleOut;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   fontLimitPixelSize = s.fontLimitPixelSize;
   fontMinPixelSize = s.fontMinPixelSize;
@@ -470,6 +484,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   reverseDirectionSymbol = layer->customProperty( "labeling/reverseDirectionSymbol" ).toBool();
   placeDirectionSymbol = ( DirectionSymbols ) layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt();
   upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
+  maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 20.0 ) ).toDouble();
+  maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -20.0 ) ).toDouble();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   limitNumLabels = layer->customProperty( "labeling/limitNumLabels", QVariant( false ) ).toBool();
   maxNumLabels = layer->customProperty( "labeling/maxNumLabels", QVariant( 2000 ) ).toInt();
@@ -540,6 +556,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/reverseDirectionSymbol", reverseDirectionSymbol );
   layer->setCustomProperty( "labeling/placeDirectionSymbol", ( unsigned int )placeDirectionSymbol );
   layer->setCustomProperty( "labeling/upsidedownLabels", ( unsigned int )upsidedownLabels );
+  layer->setCustomProperty( "labeling/maxCurvedCharAngleIn", maxCurvedCharAngleIn );
+  layer->setCustomProperty( "labeling/maxCurvedCharAngleOut", maxCurvedCharAngleOut );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/limitNumLabels", limitNumLabels );
   layer->setCustomProperty( "labeling/maxNumLabels", maxNumLabels );
@@ -775,6 +793,16 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   QFontMetricsF* labelFontMetrics = new QFontMetricsF( labelFont );
   double labelX, labelY; // will receive label size
   calculateLabelSize( labelFontMetrics, labelText, labelX, labelY );
+
+  // maximum angle between curved label characters
+  double maxcharanglein = 20.0;
+  double maxcharangleout = -20.0;
+  if ( placement == QgsPalLayerSettings::Curved )
+  {
+    maxcharanglein = maxCurvedCharAngleIn;
+    maxcharangleout = maxCurvedCharAngleOut > 0 ? -maxCurvedCharAngleOut : maxCurvedCharAngleOut;
+  }
+  // TODO: add data defined override for maximum angle between curved label characters
 
   QgsGeometry* geom = f.geometry();
   if ( !geom )
@@ -1037,7 +1065,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   // TODO: only for placement which needs character info
   pal::Feature* feat = palLayer->getFeature( lbl->strId() );
   // account for any data defined font metrics adjustments
-  feat->setLabelInfo( lbl->info( labelFontMetrics, xform, rasterCompressFactor ) );
+  feat->setLabelInfo( lbl->info( labelFontMetrics, xform, rasterCompressFactor, maxcharanglein, maxcharangleout ) );
   delete labelFontMetrics;
 
   // TODO: allow layer-wide feature dist in PAL...?

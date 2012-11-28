@@ -2703,7 +2703,9 @@ void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& 
   QColor backgroundColor( elem.attribute( "frameBackgroundColor", "#000000" ) );
   backgroundColor.setAlpha( elem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
   p->setBrush( QBrush( backgroundColor ) );
-  QPen framePen( QColor( elem.attribute( "frameColor", "#000000" ) ) );
+  QColor frameColor( elem.attribute( "frameColor", "#000000" ) );
+  frameColor.setAlpha( elem.attribute( "frameColorAlpha", "255" ).toInt() );
+  QPen framePen( frameColor );
   framePen.setWidth( elem.attribute( "frameBorderWidth", "1" ).toInt() );
   p->setPen( framePen );
 

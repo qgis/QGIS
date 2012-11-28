@@ -461,12 +461,16 @@ class GUI_EXPORT QgisInterface : public QObject
     Q_DECL_DEPRECATED
 #endif
     virtual QAction *actionLayerSeparator1() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCopyLayerStyle() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
-    /** @note added in 2.0 */
+    /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
 #ifndef Q_MOC_RUN

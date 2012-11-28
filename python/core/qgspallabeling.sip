@@ -135,6 +135,8 @@ class QgsPalLayerSettings
     bool reverseDirectionSymbol;
     DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
     unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
+    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
     int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)

@@ -121,7 +121,7 @@ class SpatiaLiteDBConnector(DBConnector):
 		return [
 			"integer", "bigint", "smallint", # integers
 			"real", "double", "float", "numeric", # floats
-			"varchar(n)", "character(n)", "text", # strings
+			"varchar", "varchar(n)", "character(n)", "text", # strings
 			"date", "datetime" # date/time
 		]
 

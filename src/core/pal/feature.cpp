@@ -837,7 +837,10 @@ namespace pal
       // normalise between -180 and 180
       while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
       while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
-      if ( f->labelInfo->max_char_angle_delta > 0 && fabs( angle_delta ) > f->labelInfo->max_char_angle_delta*( M_PI / 180 ) )
+      if (( f->labelInfo->max_char_angle_inside > 0 && angle_delta > 0
+            && angle_delta > f->labelInfo->max_char_angle_inside*( M_PI / 180 ) )
+          || ( f->labelInfo->max_char_angle_outside < 0 && angle_delta < 0
+               && angle_delta < f->labelInfo->max_char_angle_outside*( M_PI / 180 ) ) )
       {
         delete slp;
         return NULL;

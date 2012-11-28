@@ -72,8 +72,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setCaretWidth(2)
     
         # Set Python lexer
-        # Set style for Python comments (style number 1) to a fixed-width
-        # courier.
         self.setLexers()
                
         # Indentation
@@ -130,19 +128,16 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
         if command == "iface":
-            """Import QgisInterface class"""
+            # import QgisInterface class
             self.append('from qgis.utils import iface')
         elif command == "sextante":
-            """Import Sextante class"""
-            self.append('from sextante.core.Sextante import Sextante')
-        elif command == "cLayer":
-            """Retrieve current Layer from map camvas"""
-            self.append('cLayer = iface.mapCanvas().currentLayer()')
+            # import Sextante class
+            self.append('import sextante')
         elif command == "qtCore":
-            """Import QtCore class"""
+            # import QtCore class
             self.append('from PyQt4.QtCore import *')
         elif command == "qtGui":
-            """Import QtGui class"""
+            # import QtGui class
             self.append('from PyQt4.QtGui import *')
         self.entered()
         self.move_cursor_to_end()
