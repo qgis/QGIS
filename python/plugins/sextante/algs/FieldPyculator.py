@@ -67,8 +67,6 @@ class FieldsPyculator(GeoAlgorithm):
         code = self.getParameterValue(self.FORMULA)
         globalExpression = self.getParameterValue(self.GLOBAL)
         useSelected = self.getParameterValue(self.USE_SELECTED)
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = layer.dataProvider()
@@ -77,9 +75,7 @@ class FieldsPyculator(GeoAlgorithm):
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        outFeat = QgsFeature()
-        nFeatures = vprovider.featureCount()
-        nElement = 0
+        outFeat = QgsFeature()        
         new_ns = {}
 
         #run global code
@@ -115,13 +111,12 @@ class FieldsPyculator(GeoAlgorithm):
                                  "Field code block can't be executed! %s \n %s"
                                  (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
-
-        QtGui.QMessageBox.critical(None, "", str(vprovider))
         #run
-        
+        nElement = 1
         features = layer.selectedFeatures()
         nFeatures = len(features)
         if not useSelected or nFeatures == 0:
+            nFeatures = vprovider.featureCount()
             feat = QgsFeature()
             if need_attrs:
                 attr_ind = vprovider.attributeIndexes()

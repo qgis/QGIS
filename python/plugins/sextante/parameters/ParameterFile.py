@@ -39,6 +39,12 @@ class ParameterFile(Parameter):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
                         "|" + str(self.isFolder)
 
+    def setValue(self, obj):
+        self.value = str(obj)
+        if self.value.strip() == "":
+            return False
+        return True
+    
     def deserialize(self, s):
         tokens = s.split("|")
         return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True))

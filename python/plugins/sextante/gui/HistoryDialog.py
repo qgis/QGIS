@@ -98,7 +98,7 @@ class HistoryDialog(QtGui.QDialog):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
-                script = "from sextante.core.Sextante import Sextante\n"
+                script = "import sextante\n"
                 script+=item.entry.text.replace("runalg(","runandload(")
                 exec(script)
 

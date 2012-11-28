@@ -16,11 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
-from sextante.outputs.OutputNumber import OutputNumber
-from sextante.outputs.OutputString import OutputString
-from sextante.core.SextanteUtils import SextanteUtils
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -35,6 +30,10 @@ from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from sextante.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
+from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
+from sextante.core.SextanteUtils import SextanteUtils
 
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterNumber import ParameterNumber
@@ -58,6 +57,7 @@ from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 class BatchProcessingDialog(AlgorithmExecutionDialog):
     def __init__(self, alg):
         self.algs = None
+        self.showAdvanced = False
         self.table = QtGui.QTableWidget(None)
         AlgorithmExecutionDialog.__init__(self, alg, self.table)        
         self.setWindowModality(1)

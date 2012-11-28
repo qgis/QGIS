@@ -376,6 +376,10 @@ def alghelp(name):
 def runalg(algOrName, *args):
     alg = Sextante.runAlgorithm(algOrName, None, *args)
     return alg.getOutputValuesAsDictionary()
+    
+def runandload(name, *args):
+    Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
+
 
 def extent(layers):    
     first = True

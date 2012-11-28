@@ -54,7 +54,7 @@ class SextanteVectorWriter:
 
             uri = self.TYPE_MAP[geometryType]
             if crs.isValid():
-              uri += "?crs=" + crs.authid()
+                uri += "?crs=" + crs.authid()
             self.memLayer = QgsVectorLayer(uri, self.fileName, "memory")
             self.writer = self.memLayer.dataProvider()
             self.writer.addAttributes(fields.values())
@@ -69,6 +69,9 @@ class SextanteVectorWriter:
                 OGRCodes[extension] = value
 
             extension = self.fileName[self.fileName.rfind(".") + 1:]
+            if extension not in OGRCodes:
+                extension = "shp"
+                self.filename = self.filename + "shp"
             self.writer = QgsVectorFileWriter(self.fileName, encoding, fields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):

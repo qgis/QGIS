@@ -1598,7 +1598,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 	if (hspacing <= 0) or (vspacing <= 0):
 		return "Invalid grid spacing: " + unicode(hspacing) + " / " + unicode(vspacing)
 	
-	if (width <= hspacing) or (width < vspacing):
+	if (width < hspacing) or (height < vspacing):
 		return "Invalid width / height: " + unicode(width) + " / " + unicode(height)
 		
 	fields = {
@@ -1681,9 +1681,9 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				feature.addAttribute(1, QVariant(y + (vspacing / 2.0)))
 				outfile.addFeature(feature)
 				linecount = linecount + 1
-				y = y + hspacing;
+				y = y + vspacing;
 
-			x = x + vspacing
+			x = x + hspacing
 
 	elif gridtype == "Diamond (polygon)":
 		x = originx
