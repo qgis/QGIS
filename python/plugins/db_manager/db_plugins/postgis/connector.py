@@ -115,18 +115,17 @@ class PostGisDBConnector(DBConnector):
 	def getSpatialInfo(self):
 		""" returns tuple about postgis support:
 			- lib version
-			- installed scripts version
-			- released scripts version
 			- geos version
 			- proj version
-			- whether uses stats
+			- installed scripts version
+			- released scripts version
 		"""
 		if not self.has_spatial:
 			return
 
 		c = self._get_cursor()
 		try:
-			self._execute(c, u"SELECT postgis_lib_version(), postgis_scripts_installed(), postgis_scripts_released(), postgis_geos_version(), postgis_proj_version(), postgis_uses_stats()")
+			self._execute(c, u"SELECT postgis_lib_version(), postgis_geos_version(), postgis_proj_version(), postgis_scripts_installed(), postgis_scripts_released()")
 		except DbError:
 			return
 
