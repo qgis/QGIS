@@ -844,7 +844,7 @@ QString QgsSvgMarkerSymbolLayerV2::symbolNameToPath( QString name )
 
   // or it might be an url...
   QUrl url( name );
-  if ( url.isValid() )
+  if ( url.isValid() && !url.scheme().isEmpty() )
   {
     if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
     {
