@@ -151,7 +151,7 @@ class PostGisDBConnector(DBConnector):
 			"integer", "bigint", "smallint", # integers
 			"serial", "bigserial", # auto-incrementing ints
 			"real", "double precision", "numeric", # floats
-			"varchar", "varchar(n)", "char(n)", "text", # strings
+			"varchar", "varchar(255)", "char(20)", "text", # strings
 			"date", "time", "timestamp" # date/time
 		]
 
