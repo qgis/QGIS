@@ -1093,15 +1093,26 @@ QgsMapLayer* QgsLegend::currentLayer()
   }
 }
 
-QList<QgsMapLayer *> QgsLegend::selectedLayers()
+QList<QgsMapLayer *> QgsLegend::selectedLayers( bool inDrawOrder )
 {
   QList<QgsMapLayer *> layers;
 
-  foreach ( QTreeWidgetItem * item, selectedItems() )
+  if ( inDrawOrder )
   {
-    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
-    if ( ll )
-      layers << ll->layer();
+    foreach ( QgsLegendLayer *ll, legendLayers() )
+    {
+      if ( ll->isSelected() )
+        layers << ll->layer();
+    }
+  }
+  else
+  {
+    foreach ( QTreeWidgetItem * item, selectedItems() )
+    {
+      QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+      if ( ll )
+        layers << ll->layer();
+    }
   }
 
   return layers;

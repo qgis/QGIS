@@ -117,9 +117,10 @@ class QgsLegend : public QTreeWidget
     Else, 0 is returned.*/
     QgsMapLayer* currentLayer();
 
-    /*!Returns the currently selected layer QgsLegendLayers.
-    Else, an empty list is returned.*/
-    QList<QgsMapLayer *> selectedLayers();
+    /** Returns the currently selected layers of QgsLegendLayers.
+      * @param inDrawOrder return layers in drawing order (added in 1.9)
+      * @returns list of layers, else an empty list */
+    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false );
 
     /*!Returns all layers loaded in QgsMapCanvas in drawing order
     Else, an empty list is returned.*/
