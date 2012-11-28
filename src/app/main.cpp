@@ -507,11 +507,6 @@ int main( int argc, char *argv[] )
 
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
-#ifdef Q_WS_WIN
-    //replace backslashes with forward slashes
-    configpath.replace( "\\", "/" );
-    optionpath.replace( "\\", "/" );
-#endif
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
@@ -537,11 +532,6 @@ int main( int argc, char *argv[] )
   QSettings* customizationsettings;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
-#ifdef Q_WS_WIN
-    //replace backslashes with forward slashes
-    configpath.replace( "\\", "/" );
-    optionpath.replace( "\\", "/" );
-#endif
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
