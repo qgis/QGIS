@@ -18,17 +18,17 @@ from PyQt4.QtCore import QVariant, QDir, QString, QStringList
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
-                       QgsField,
                        QgsGeometry,
                        QgsPoint,
                        QgsVectorFileWriter,
                        QgsCoordinateReferenceSystem)
 
-from utilities import (unitTestDataPath,
+from utilities import (#unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest,
-                       expectedFailure
+                       #expectedFailure,
+                       writeShape
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -58,28 +58,7 @@ class TestQgsVectorLayer(TestCase):
         assert myResult == True
         assert len(myFeatures) > 0
 
-        myFileName = os.path.join(str(QDir.tempPath()), 'writetest.shp')
-        print myFileName
-        # Explicitly giving all options, not really needed but nice for clarity
-        myErrorMessage = QString()
-        myOptions = QStringList()
-        myLayerOptions = QStringList()
-        mySelectedOnlyFlag = False
-        mySkipAttributesFlag = False
-        myGeoCrs = QgsCoordinateReferenceSystem()
-        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myResult = QgsVectorFileWriter.writeAsVectorFormat(
-            self.mMemoryLayer,
-            myFileName,
-            'utf-8',
-            myGeoCrs,
-            'ESRI Shapefile',
-            mySelectedOnlyFlag,
-            myErrorMessage,
-            myOptions,
-            myLayerOptions,
-            mySkipAttributesFlag)
-        assert myResult == QgsVectorFileWriter.NoError
+        writeShape(self.mMemoryLayer, 'writetest.shp')
 
 if __name__ == '__main__':
     unittest.main()
