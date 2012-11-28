@@ -88,7 +88,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement wfsCapabilitiesElement = doc.createElement( "WFS_Capabilities"/*wms:WFS_Capabilities*/ );
   wfsCapabilitiesElement.setAttribute( "xmlns", WFS_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
+  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" );
   wfsCapabilitiesElement.setAttribute( "xmlns:ogc", OGC_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:gml", GML_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
@@ -180,7 +180,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement getElement = doc.createElement( "Get"/*wfs:Get*/ );
   httpElement.appendChild( getElement );
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
-  getElement.setAttribute( "OnlineResource", hrefString );
+  getElement.setAttribute( "onlineResource", hrefString );
 
   //wfs:DescribeFeatureType
   QDomElement describeFeatureTypeElement = doc.createElement( "DescribeFeatureType"/*wfs:DescribeFeatureType*/ );

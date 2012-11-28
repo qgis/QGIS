@@ -460,6 +460,8 @@ QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRaster
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
 QAction *QgisAppInterface::actionLayerSeparator1() { return 0; }
+QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }
+QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }
 QAction *QgisAppInterface::actionToggleEditing() { return qgis->actionToggleEditing(); }
 QAction *QgisAppInterface::actionLayerSaveAs() { return qgis->actionLayerSaveAs(); }

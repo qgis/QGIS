@@ -1921,7 +1921,7 @@
             <x>0</x>
             <y>0</y>
             <width>686</width>
-            <height>574</height>
+            <height>618</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -2360,6 +2360,142 @@
                         <widget class="QCheckBox" name="chkLineOrientationDependent">
                          <property name="text">
                           <string>Line orientation dependent position</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="mMaxCharAngleFrame">
+                      <layout class="QGridLayout" name="gridLayout_22">
+                       <property name="verticalSpacing">
+                        <number>6</number>
+                       </property>
+                       <property name="margin">
+                        <number>0</number>
+                       </property>
+                       <item row="1" column="4">
+                        <widget class="QDoubleSpinBox" name="mMaxCharAngleOutDSpinBox">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>90</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                         <property name="decimals">
+                          <number>1</number>
+                         </property>
+                         <property name="minimum">
+                          <double>20.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>95.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <spacer name="horizontalSpacer_13">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeType">
+                          <enum>QSizePolicy::Fixed</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>8</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLabel" name="mMaxCharAngleOutLabel">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>outside</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLabel" name="mMaxCharAngleInLabel">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>inside</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QDoubleSpinBox" name="mMaxCharAngleInDSpinBox">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>90</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                         <property name="decimals">
+                          <number>1</number>
+                         </property>
+                         <property name="minimum">
+                          <double>20.000000000000000</double>
+                         </property>
+                         <property name="maximum">
+                          <double>60.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <spacer name="horizontalSpacer_12">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item row="0" column="0" colspan="6">
+                        <widget class="QLabel" name="mMaxCharAngleLabel">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>Maximum angle between curved characters</string>
                          </property>
                         </widget>
                        </item>
@@ -2858,7 +2994,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
+            <width>686</width>
             <height>981</height>
            </rect>
           </property>

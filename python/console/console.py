@@ -360,7 +360,6 @@ class PythonConsoleWidget(QWidget):
         self.helpDlg.activateWindow()
                 
     def openSettings(self):
-        #options = optionsDialog()
         self.options.exec_()
         
     def prefChanged(self):

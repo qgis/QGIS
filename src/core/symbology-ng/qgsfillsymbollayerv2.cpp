@@ -309,13 +309,9 @@ QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
 {
-  QFile svgFile( svgPath );
-  if ( svgFile.open( QFile::ReadOnly ) )
-  {
-    mSvgData = svgFile.readAll();
+  mSvgData = QgsSvgCache::instance()->getImageData( svgPath );
+  storeViewBox();
 
-    storeViewBox();
-  }
   mSvgFilePath = svgPath;
   setDefaultSvgParams();
 }
