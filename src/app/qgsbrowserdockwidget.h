@@ -51,6 +51,7 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
     void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
+    void toggleFastScan();
 
   protected:
     void addFavouriteDirectory( QString favDir );

@@ -316,6 +316,10 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
     menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
+    QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan( ) ) );
+    action->setCheckable( true );
+    action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
+                                        QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
@@ -603,6 +607,33 @@ void QgsBrowserDockWidget::showProperties( )
     dialog->show();
   }
 }
+
+void QgsBrowserDockWidget::toggleFastScan( )
+{
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
+  if ( ! item )
+    return;
+
+  if ( item->type() == QgsDataItem::Directory )
+  {
+    QSettings settings;
+    QStringList fastScanDirs = settings.value( "/qgis/scanItemsFastScanUris",
+                               QStringList() ).toStringList();
+    int idx = fastScanDirs.indexOf( item->path() );
+    if ( idx != -1 )
+    {
+      fastScanDirs.removeAt( idx );
+    }
+    else
+    {
+      fastScanDirs << item->path();
+    }
+    settings.setValue( "/qgis/scanItemsFastScanUris", fastScanDirs );
+  }
+}
+
+
 
 void QgsBrowserDockWidget::showFilterWidget( bool visible )
 {
