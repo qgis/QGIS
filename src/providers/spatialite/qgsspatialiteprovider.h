@@ -286,6 +286,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
+    QString geomParam() const;
+
     QgsFieldMap attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer

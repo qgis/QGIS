@@ -3720,6 +3720,49 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   return;
 }
 
+QString QgsSpatiaLiteProvider::geomParam() const
+{
+  QString geometry;
+
+  bool forceMulti = false;
+
+  switch ( geometryType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBLineString:
+    case QGis::WKBPolygon:
+    case QGis::WKBPoint25D:
+    case QGis::WKBLineString25D:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
+      forceMulti = false;
+      break;
+
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiPolygon25D:
+      forceMulti = true;
+      break;
+  }
+
+  if ( forceMulti )
+  {
+    geometry += "ST_Multi(";
+  }
+
+  geometry += QString( "GeomFromWKB(?, %2)" ).arg( mSrid );
+
+  if ( forceMulti )
+  {
+    geometry += ")";
+  }
+
+  return geometry;
+}
 
 bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 {
@@ -3750,7 +3793,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   if ( !mGeometryColumn.isNull() )
   {
     sql += separator + quotedIdentifier( mGeometryColumn );
-    values += separator + QString( "GeomFromWKB(?, %2)" ).arg( mSrid );
+    values += separator + geomParam();
     separator = ",";
   }
 
