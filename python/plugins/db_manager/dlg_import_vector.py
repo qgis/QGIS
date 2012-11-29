@@ -43,7 +43,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 
 		self.default_pk = "id"
 		self.default_geom = "geom"
-		
+
 		# updates of UI
 		for widget in [self.radCreate, self.chkDropTable, self.radAppend, 
 						self.chkPrimaryKey, self.chkGeomColumn, self.chkSpatialIndex, 
@@ -58,11 +58,14 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		self.populateEncodings()
 		self.updateUi()
 
+		# set default values
 		self.cboTable.setEditText(self.outUri.table())
+
 		pk = self.outUri.keyColumn()
 		self.editPrimaryKey.setText(pk if pk != "" else self.default_pk)
 		geom = self.outUri.geometryColumn()
 		self.editGeomColumn.setText(geom if geom != "" else self.default_geom)
+
 		inCrs = self.inLayer.crs()
 		srid = inCrs.postgisSrid() if inCrs.isValid() else 4236
 		self.editSourceSrid.setText( "%s" % srid )
@@ -73,7 +76,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 
 	def checkSupports(self):
 		allowSpatial = self.db.connector.hasSpatialSupport()
-		self.chkGeomColumn.setEnabled(allowSpatial)
+		self.chkGeomColumn.setEnabled(allowSpatial and self.inLayer.hasGeometryType())
 		self.chkSourceSrid.setEnabled(allowSpatial)
 		self.chkTargetSrid.setEnabled(allowSpatial)
 		self.chkSpatialIndex.setEnabled(allowSpatial)
@@ -168,12 +171,11 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		schema = self.outUri.schema() if not self.cboSchema.isEnabled() else self.cboSchema.currentText()
 		table = self.cboTable.currentText()
 
+		# get pk and geom field names from the source layer or use the 
+		# ones defined by the user
 		pk = self.outUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
-		pk = pk if pk != "" else self.default_pk
-
 		geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
-		if self.inLayer.hasGeometryType():
-			geom = geom if geom != "" else self.default_geom
+		geom = geom if geom != "" else self.default_geom
 		
 		self.outUri.setDataSource( schema, table, geom, QString(), pk )
 		uri = self.outUri.uri()
