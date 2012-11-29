@@ -245,7 +245,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   spatialCapabilitiesElement.appendChild( spatialOperatorsElement );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:BBOX"/*ogc:BBOX*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Disjoint"/*ogc:Disjoint*/ ) );
-  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Intersects"/*ogc:Intersects*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Intersect"/*ogc:Intersects*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Touches"/*ogc:Touches*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Crosses"/*ogc:Crosses*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Contains"/*ogc:Contains*/ ) );
