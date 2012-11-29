@@ -196,14 +196,6 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         srsElem.appendChild( srsText );
         layerElem.appendChild( srsElem );
 
-        QgsRectangle layerExtent = layer->extent();
-        QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
-        bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
-        bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
-        bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
-        bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
-        layerElem.appendChild( bBoxElement );
-
         //wfs:Operations element
         QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
         //wfs:Query element
@@ -234,6 +226,14 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         }
 
         layerElem.appendChild( operationsElement );
+
+        QgsRectangle layerExtent = layer->extent();
+        QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
+        bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
+        bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
+        bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
+        bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+        layerElem.appendChild( bBoxElement );
 
         parentElement.appendChild( layerElem );
       }
@@ -1746,6 +1746,12 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  if (doc.documentElement().tagName() == "WFS_Capabilities")
+  {
+    serviceWFSCapabilities( parentElement, doc );
+    return;
+  }
+
   QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
@@ -1920,6 +1926,110 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     }
   }
 
+  parentElement.appendChild( serviceElem );
+}
+
+void QgsProjectParser::serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QDomElement serviceElem = doc.createElement( "Service" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  QDomElement serviceCapabilityElem = propertiesElem.firstChildElement( "WMSServiceCapabilities" );
+  if ( serviceCapabilityElem.isNull() || serviceCapabilityElem.text().compare( "true", Qt::CaseInsensitive ) != 0 )
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  //Service name is always WMS
+  QDomElement wmsNameElem = doc.createElement( "Name" );
+  QDomText wmsNameText = doc.createTextNode( "WFS" );
+  wmsNameElem.appendChild( wmsNameText );
+  serviceElem.appendChild( wmsNameElem );
+
+  //WMS title
+  QDomElement titleElem = propertiesElem.firstChildElement( "WMSServiceTitle" );
+  if ( !titleElem.isNull() )
+  {
+    QDomElement wmsTitleElem = doc.createElement( "Title" );
+    QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
+    wmsTitleElem.appendChild( wmsTitleText );
+    serviceElem.appendChild( wmsTitleElem );
+  }
+
+  //WMS abstract
+  QDomElement abstractElem = propertiesElem.firstChildElement( "WMSServiceAbstract" );
+  if ( !abstractElem.isNull() )
+  {
+    QDomElement wmsAbstractElem = doc.createElement( "Abstract" );
+    QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
+    wmsAbstractElem.appendChild( wmsAbstractText );
+    serviceElem.appendChild( wmsAbstractElem );
+  }
+
+  //keyword list
+  QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    bool siaFormat = featureInfoFormatSIA2045();
+
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    QStringList keywords;
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      keywords << keywordList.at( i ).toElement().text();
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      QDomElement wfsKeywordElem = doc.createElement( "Keywords" );
+      QDomText keywordText = doc.createTextNode( keywords.join( ", " ) );
+      wfsKeywordElem.appendChild( keywordText );
+      if ( siaFormat )
+      {
+        wfsKeywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
+      serviceElem.appendChild( wfsKeywordElem );
+    }
+  }
+
+  //OnlineResource element is mandatory according to the WMS specification
+  QDomElement wmsOnlineResourceElem = propertiesElem.firstChildElement( "WMSOnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  onlineResourceElem.setAttribute( "xlink:type", "simple" );
+  if ( !wmsOnlineResourceElem.isNull() )
+  {
+    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+  }
+
+  serviceElem.appendChild( onlineResourceElem );
+  
+  //Fees
+  QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
+  if ( !feesElem.isNull() )
+  {
+    QDomElement wmsFeesElem = doc.createElement( "Fees" );
+    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
+    wmsFeesElem.appendChild( wmsFeesText );
+    serviceElem.appendChild( wmsFeesElem );
+  }
+
+  //AccessConstraints
+  QDomElement accessConstraintsElem = propertiesElem.firstChildElement( "WMSAccessConstraints" );
+  if ( !accessConstraintsElem.isNull() )
+  {
+    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
+    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+    serviceElem.appendChild( wmsAccessConstraintsElem );
+  }
   parentElement.appendChild( serviceElem );
 }
 

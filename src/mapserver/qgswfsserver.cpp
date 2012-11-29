@@ -112,10 +112,6 @@ QDomDocument QgsWFSServer::getCapabilities()
   //wfs:GetCapabilities
   QDomElement getCapabilitiesElement = doc.createElement( "GetCapabilities"/*wfs:GetCapabilities*/ );
   requestElement.appendChild( getCapabilitiesElement );
-  QDomElement capabilitiesFormatElement = doc.createElement( "Format" );/*wfs:Format*/
-  getCapabilitiesElement.appendChild( capabilitiesFormatElement );
-  QDomText capabilitiesFormatText = doc.createTextNode( "text/xml" );
-  capabilitiesFormatElement.appendChild( capabilitiesFormatText );
 
   QDomElement dcpTypeElement = doc.createElement( "DCPType"/*wfs:DCPType*/ );
   getCapabilitiesElement.appendChild( dcpTypeElement );
@@ -181,6 +177,9 @@ QDomDocument QgsWFSServer::getCapabilities()
   httpElement.appendChild( getElement );
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
   getElement.setAttribute( "onlineResource", hrefString );
+  QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+  getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( "Post" );
+  getCapabilitiesElement.appendChild( getCapabilitiesDhcTypePostElement );
 
   //wfs:DescribeFeatureType
   QDomElement describeFeatureTypeElement = doc.createElement( "DescribeFeatureType"/*wfs:DescribeFeatureType*/ );

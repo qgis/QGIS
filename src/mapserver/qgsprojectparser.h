@@ -248,6 +248,11 @@ class QgsProjectParser: public QgsConfigParser
     static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
 
     void addDrawingOrderEmbeddedGroup( const QDomElement& groupElem, QMap<int, QString>& orderedLayerList, bool useDrawingOrder ) const;
+
+    /**Reads service metadata from projectfile or falls back to parent class method if not there
+     * This is for WFS Services
+     **/
+    void serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H
