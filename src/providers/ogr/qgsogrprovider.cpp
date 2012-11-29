@@ -1023,7 +1023,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     int targetAttributeId = it.key();
 
     // don't try to set field from attribute map if it's not present in layer
-    if ( targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
+    if ( targetAttributeId < 0 || targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
       continue;
 
     //if(!s.isEmpty())
