@@ -288,6 +288,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QString geomParam() const;
 
+    //! get SpatiaLite version string
+    QString spatialiteVersion();
+
     QgsFieldMap attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
@@ -397,6 +400,18 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /** geometry column index used when fetching geometry */
     int mGeomColIdx;
+
+    //! SpatiaLite version string
+    QString mSpatialiteVersionInfo;
+
+    //! Are mSpatialiteVersionMajor, mSpatialiteVersionMinor valid?
+    bool mGotSpatialiteVersion;
+
+    //! SpatiaLite major version
+    int mSpatialiteVersionMajor;
+
+    //! SpatiaLite minor version
+    int mSpatialiteVersionMinor;
 
     /**
     * internal utility functions used to handle common SQLite tasks

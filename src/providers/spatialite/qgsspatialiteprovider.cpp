@@ -406,6 +406,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
     , geomType( QGis::WKBUnknown )
+    , mGotSpatialiteVersion( false )
     , sqliteHandle( NULL )
     , sqliteStatement( NULL )
     , mSrid( -1 )
@@ -557,6 +558,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     QgsDebugMsg( "Invalid SpatiaLite layer" );
     return;
   }
+
+  // retrieve version information
+  spatialiteVersion();
+
   //fill type names into sets
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), "BLOB", QVariant::ByteArray )
@@ -617,6 +622,48 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   }
 }
 #endif
+
+QString QgsSpatiaLiteProvider::spatialiteVersion()
+{
+  if ( mGotSpatialiteVersion )
+    return mSpatialiteVersionInfo;
+
+  int ret;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  sql = "SELECT spatialite_version()";
+  ret = sqlite3_get_table( sqliteHandle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+  if ( ret != SQLITE_OK || rows != 1 )
+  {
+    QgsMessageLog::logMessage( tr( "Retrieval of spatialite version failed" ), tr( "SpatiaLite" ) );
+    return QString::null;
+  }
+
+  mSpatialiteVersionInfo = QString::fromUtf8( results[( 1 * columns ) + 0] );
+  sqlite3_free_table( results );
+
+  QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
+
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( " ", QString::SkipEmptyParts );
+
+  // Get major and minor version
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( ".", QString::SkipEmptyParts );
+  if ( spatialiteVersionParts.size() < 2 )
+  {
+    QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
+    return QString::null;
+  }
+
+  mSpatialiteVersionMajor = spatialiteVersionParts[0].toInt();
+  mSpatialiteVersionMinor = spatialiteVersionParts[1].toInt();
+
+  mGotSpatialiteVersion = true;
+  return mSpatialiteVersionInfo;
+}
 
 void QgsSpatiaLiteProvider::loadFields()
 {
@@ -3749,14 +3796,18 @@ QString QgsSpatiaLiteProvider::geomParam() const
       break;
   }
 
-  if ( forceMulti )
+  // ST_Multi function is available from QGIS >= 2.4
+  bool hasMultiFunction = mSpatialiteVersionMajor > 2 ||
+      ( mSpatialiteVersionMajor == 2 && mSpatialiteVersionMinor >= 4 );
+
+  if ( forceMulti && hasMultiFunction )
   {
     geometry += "ST_Multi(";
   }
 
   geometry += QString( "GeomFromWKB(?, %2)" ).arg( mSrid );
 
-  if ( forceMulti )
+  if ( forceMulti && hasMultiFunction )
   {
     geometry += ")";
   }
