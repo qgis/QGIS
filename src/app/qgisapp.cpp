@@ -1076,8 +1076,8 @@ void QgisApp::showPythonDialog()
     return;
 
   bool res = mPythonUtils->runStringUnsafe(
-               "import qgis.console\n"
-               "qgis.console.show_console()\n", false );
+               "import console\n"
+               "console.show_console()\n", false );
 
   if ( !res )
   {
