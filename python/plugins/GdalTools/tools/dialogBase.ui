@@ -28,6 +28,9 @@
      <property name="text">
       <string>&amp;Load into canvas when finished</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
