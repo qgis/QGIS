@@ -20,7 +20,12 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
 
+
+#include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 
@@ -2584,3 +2589,153 @@ QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( const QPointF& startPoin
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
+
+
+QStringList QgsSymbolLayerV2Utils::listSvgFiles()
+{
+  // copied from QgsMarkerCatalogue - TODO: unify
+  QStringList list;
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      // TODO test if it is correct SVG
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+}
+
+// Stripped down version of listSvgFiles() for specified directory
+QStringList QgsSymbolLayerV2Utils::listSvgFilesAt( QString directory )
+{
+  // TODO anything that applies for the listSvgFiles() applies this also
+
+  QStringList list;
+  QStringList svgPaths;
+  svgPaths.append( directory );
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+
+}
+
+QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
+{
+  // copied from QgsSymbol::setNamedPointSymbol - TODO: unify
+
+  // we might have a full path...
+  if ( QFile( name ).exists() )
+    return QFileInfo( name ).canonicalFilePath();
+
+  // or it might be an url...
+  QUrl url( name );
+  if ( url.isValid() && !url.scheme().isEmpty() )
+  {
+    if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+    {
+      // it's a url to a local file
+      name = url.toLocalFile();
+      if ( QFile( name ).exists() )
+      {
+        return QFileInfo( name ).canonicalFilePath();
+      }
+    }
+    else
+    {
+      // it's a url pointing to a online resource
+      return name;
+    }
+  }
+
+  // SVG symbol not found - probably a relative path was used
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+    QFileInfo myInfo( name );
+    QString myFileName = myInfo.fileName(); // foo.svg
+    QString myLowestDir = myInfo.dir().dirName();
+    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+
+    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+    if ( QFile( myLocalPath ).exists() )
+    {
+      QgsDebugMsg( "Svg found in alternative path" );
+      return QFileInfo( myLocalPath ).canonicalFilePath();
+    }
+    else if ( myInfo.isRelative() )
+    {
+      QFileInfo pfi( QgsProject::instance()->fileName() );
+      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
+      if ( pfi.exists() && QFile( alternatePath ).exists() )
+      {
+        QgsDebugMsg( "Svg found in alternative path" );
+        return QFileInfo( alternatePath ).canonicalFilePath();
+      }
+      else
+      {
+        QgsDebugMsg( "Svg not found in project path" );
+      }
+    }
+    else
+    {
+      //couldnt find the file, no happy ending :-(
+      QgsDebugMsg( "Computed alternate path but no svg there either" );
+    }
+  }
+  return QString();
+}
+
+QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
+{
+  // copied from QgsSymbol::writeXML
+
+  QFileInfo fi( path );
+  if ( !fi.exists() )
+    return path;
+
+  path = fi.canonicalFilePath();
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  bool isInSvgPathes = false;
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
+
+    if ( !dir.isEmpty() && path.startsWith( dir ) )
+    {
+      path = path.mid( dir.size() );
+      isInSvgPathes = true;
+      break;
+    }
+  }
+
+  if ( isInSvgPathes )
+    return path;
+
+  return QgsProject::instance()->writePath( path );
+}
+

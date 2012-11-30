@@ -108,18 +108,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
-    //! Return a list of all available svg files
-    static QStringList listSvgFiles();
-
-    //! Return a list of svg files at the specified directory
-    static QStringList listSvgFilesAt( QString directory );
-
-    //! Get symbol's path from its name
-    static QString symbolNameToPath( QString name );
-
-    //! Get symbols's name from its path
-    static QString symbolPathToName( QString path );
-
     // implemented from base classes
 
     QString layerType() const;

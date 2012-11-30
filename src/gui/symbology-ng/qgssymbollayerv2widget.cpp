@@ -24,6 +24,7 @@
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
+#include "qgssymbollayerv2utils.h"
 
 #include "qgsstylev2.h" //for symbol selector dialog
 
@@ -527,13 +528,13 @@ class QgsSvgListModel : public QAbstractListModel
   public:
     QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
     }
 
     // Constructor to create model for icons in a specific path
     QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( path );
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
     }
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const
