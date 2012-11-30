@@ -1469,16 +1469,14 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   // Put the Feature Ids of the inserted feature
   if ( insertResults.size() > 0 )
   {
-    QDomElement irsElem = doc.createElement( "InsertResults" );
     foreach (const QString &fidStr, insertResults)
     {
       QDomElement irElem = doc.createElement( "InsertResult" );
       QDomElement fiElem = doc.createElement( "ogc:FeatureId" );
       fiElem.setAttribute( "fid", fidStr );
       irElem.appendChild( fiElem );
-      irsElem.appendChild( irElem );
+      respElem.appendChild( irElem );
     }
-    respElem.appendChild( irsElem );
   }
 
   // Set the transaction reposne for success
