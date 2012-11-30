@@ -36,6 +36,8 @@ class InfoViewer(QTextBrowser):
 		self.dirty = False
 
 		self._clear()
+		self._showPluginInfo()
+
 		self.connect(self, SIGNAL("anchorClicked(const QUrl&)"), self._linkClicked)
 
 	def _linkClicked(self, url):
@@ -89,6 +91,15 @@ class InfoViewer(QTextBrowser):
 		self.item = None
 		self.setHtml("")
 
+
+	def _showPluginInfo(self):
+		from .db_plugins import getDbPluginErrors
+		html  = u'<div style="background-color:#ffffcc;"><h1>&nbsp;DB Manager</h1></div>'
+		html += '<div style="margin-left:8px;">'
+		for msg in getDbPluginErrors():
+			html += u"<p>%s" % msg
+		self.setHtml(html)
+
 	def _showDatabaseInfo(self, connection):
 		html  = u'<div style="background-color:#ccffcc;"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
 		html += '<div style="margin-left:8px;">'
@@ -124,7 +135,6 @@ class InfoViewer(QTextBrowser):
 		html += '</div>'
 		self.setHtml(html)
 		return True
-
 
 
 	def setHtml(self, html):

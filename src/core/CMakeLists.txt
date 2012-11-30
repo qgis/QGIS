@@ -320,6 +320,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   symbology-ng/qgscptcityarchive.h
+  symbology-ng/qgssvgcache.h
 )
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)

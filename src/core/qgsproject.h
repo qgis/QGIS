@@ -332,6 +332,9 @@ class CORE_EXPORT QgsProject : public QObject
     //! emitted when project is being written
     void writeProject( QDomDocument & );
 
+    //! emitted when the project file has been written and closed
+    void projectSaved();
+
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );
 

@@ -269,18 +269,9 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   {
     mModel = new QgsBrowserModel( mBrowserView );
 
-    bool useFilter = true;
-    if ( useFilter ) // enable proxy model
-    {
-      // mBrowserView->setModel( mModel );
-      mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
-      mProxyModel->setBrowserModel( mModel );
-      mBrowserView->setModel( mProxyModel );
-    }
-    else
-    {
-      mBrowserView->setModel( mModel );
-    }
+    mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
+    mProxyModel->setBrowserModel( mModel );
+    mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
@@ -301,8 +292,8 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
 {
-  QModelIndex idx = mBrowserView->indexAt( pt );
-  QgsDataItem* item = dataItem( idx );
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( !item )
     return;
 
@@ -325,6 +316,10 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
     menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
+    QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan( ) ) );
+    action->setCheckable( true );
+    action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
+                                        QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
@@ -358,7 +353,8 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
 
 void QgsBrowserDockWidget::addFavourite()
 {
-  QgsDataItem* item = dataItem( mBrowserView->currentIndex() );
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( !item )
     return;
 
@@ -390,7 +386,8 @@ void QgsBrowserDockWidget::addFavouriteDirectory( QString favDir )
 
 void QgsBrowserDockWidget::removeFavourite()
 {
-  QgsDataItem* item = dataItem( mBrowserView->currentIndex() );
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
 
   if ( !item )
     return;
@@ -420,7 +417,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   QgsDebugMsg( "Entered" );
   if ( index.isValid() )
   {
-    QgsDataItem *item = dataItem( index );
+    QgsDataItem *item = mModel->dataItem( index );
     if ( item )
     {
       QgsDebugMsg( "path = " + item->path() );
@@ -436,7 +433,8 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
-    if ( mBrowserView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
+    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+    if ( mBrowserView->isExpanded( proxyIdx ) || !mModel->hasChildren( proxyIdx ) )
     {
       refreshModel( idx );
     }
@@ -468,7 +466,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
 {
-  QgsDataItem *item = dataItem( index );
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
   if ( item != NULL && item->type() == QgsDataItem::Layer )
   {
@@ -498,8 +496,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
   // add items in reverse order so they are in correct order in the layers dock
   for ( int i = list.size() - 1; i >= 0; i-- )
   {
-    QModelIndex index = list[i];
-    QgsDataItem *item = dataItem( index );
+    QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
     if ( item && item->type() == QgsDataItem::Layer )
     {
       QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
@@ -513,9 +510,8 @@ void QgsBrowserDockWidget::addSelectedLayers()
 
 void QgsBrowserDockWidget::showProperties( )
 {
-  QgsDebugMsg( "Entered" );
-  QModelIndex index = mBrowserView->currentIndex();
-  QgsDataItem* item = dataItem( index );
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
   if ( ! item )
     return;
 
@@ -612,6 +608,33 @@ void QgsBrowserDockWidget::showProperties( )
   }
 }
 
+void QgsBrowserDockWidget::toggleFastScan( )
+{
+  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
+  QgsDataItem* item = mModel->dataItem( index );
+  if ( ! item )
+    return;
+
+  if ( item->type() == QgsDataItem::Directory )
+  {
+    QSettings settings;
+    QStringList fastScanDirs = settings.value( "/qgis/scanItemsFastScanUris",
+                               QStringList() ).toStringList();
+    int idx = fastScanDirs.indexOf( item->path() );
+    if ( idx != -1 )
+    {
+      fastScanDirs.removeAt( idx );
+    }
+    else
+    {
+      fastScanDirs << item->path();
+    }
+    settings.setValue( "/qgis/scanItemsFastScanUris", fastScanDirs );
+  }
+}
+
+
+
 void QgsBrowserDockWidget::showFilterWidget( bool visible )
 {
   mWidgetFilter->setVisible( visible );
@@ -635,12 +658,3 @@ void QgsBrowserDockWidget::setFilterSyntax( QAction * action )
     return;
   mProxyModel->setFilterSyntax(( QRegExp::PatternSyntax ) action->data().toInt() );
 }
-
-QgsDataItem* QgsBrowserDockWidget::dataItem( const QModelIndex& index )
-{
-  if ( ! mProxyModel )
-    return mModel->dataItem( index );
-  else
-    return mModel->dataItem( mProxyModel->mapToSource( index ) );
-}
-

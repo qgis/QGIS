@@ -105,6 +105,7 @@ void usage( std::string const & appName )
             << "\t[--nologo]\thide splash screen\n"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
+            << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
             << "\t[--code path]\tRun the given python file on load. \n"
@@ -270,6 +271,8 @@ int main( int argc, char *argv[] )
 
   QString pythonfile;
 
+  QString customizationfile;
+
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
@@ -333,6 +336,10 @@ int main( int argc, char *argv[] )
     {
       pythonfile = argv[++i];
     }
+    else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
+    {
+      customizationfile = argv[++i];
+    }
     else
     {
       myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
@@ -366,6 +373,7 @@ int main( int argc, char *argv[] )
         {"extent",   required_argument, 0, 'e'},
         {"optionspath", required_argument, 0, 'o'},
         {"configpath", required_argument, 0, 'c'},
+        {"customizationfile", required_argument, 0, 'z'},
         {"code", required_argument, 0, 'f'},
         {"android", required_argument, 0, 'a'},
         {0, 0, 0, 0}
@@ -439,6 +447,10 @@ int main( int argc, char *argv[] )
 
         case 'f':
           pythonfile = optarg;
+          break;
+
+        case 'z':
+          customizationfile = optarg;
           break;
 
         case '?':
@@ -529,6 +541,12 @@ int main( int argc, char *argv[] )
   else
   {
     customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  }
+
+  // Using the customizationfile option always overrides the option and config path options.
+  if ( !customizationfile.isEmpty() )
+  {
+    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat);
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
@@ -662,8 +680,12 @@ int main( int argc, char *argv[] )
     QStringList myPathList;
     QCoreApplication::setLibraryPaths( myPathList );
     // Now set the paths inside the bundle
-    myPath += "/Contents/plugins";
+    myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+    }
     //next two lines should not be needed, testing only
     //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );

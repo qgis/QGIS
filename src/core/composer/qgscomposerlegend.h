@@ -73,31 +73,40 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setItemFont( const QFont& f );
 
     double boxSpace() const {return mBoxSpace;}
-    void setBoxSpace( double s ) {mBoxSpace = s; mColumns.clear();}
+    void setBoxSpace( double s ) {mBoxSpace = s;}
+
+    double columnSpace() const {return mColumnSpace;}
+    void setColumnSpace( double s ) { mColumnSpace = s;}
 
     double groupSpace() const {return mGroupSpace;}
-    void setGroupSpace( double s ) {mGroupSpace = s;mColumns.clear();}
+    void setGroupSpace( double s ) {mGroupSpace = s;}
 
     double layerSpace() const {return mLayerSpace;}
-    void setLayerSpace( double s ) {mLayerSpace = s;mColumns.clear();}
+    void setLayerSpace( double s ) {mLayerSpace = s;}
 
     double symbolSpace() const {return mSymbolSpace;}
-    void setSymbolSpace( double s ) {mSymbolSpace = s;mColumns.clear();}
+    void setSymbolSpace( double s ) {mSymbolSpace = s;}
 
     double iconLabelSpace() const {return mIconLabelSpace;}
-    void setIconLabelSpace( double s ) {mIconLabelSpace = s;mColumns.clear();}
+    void setIconLabelSpace( double s ) {mIconLabelSpace = s;}
 
     double symbolWidth() const {return mSymbolWidth;}
-    void setSymbolWidth( double w ) {mSymbolWidth = w;mColumns.clear();}
+    void setSymbolWidth( double w ) {mSymbolWidth = w;}
 
     double symbolHeight() const {return mSymbolHeight;}
-    void setSymbolHeight( double h ) {mSymbolHeight = h;mColumns.clear();}
+    void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;mColumns.clear();}
+    void setWrapChar( const QString& t ) {mWrapChar = t;}
     QString wrapChar() const {return mWrapChar;}
 
     int columnCount() const { return mColumnCount; }
-    void setColumnCount( int c ) { mColumnCount = c;mColumns.clear();}
+    void setColumnCount( int c ) { mColumnCount = c;}
+
+    int splitLayer() const { return mSplitLayer; }
+    void setSplitLayer( bool s ) { mSplitLayer = s;}
+
+    int equalColumnWidth() const { return mEqualColumnWidth; }
+    void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap;}
@@ -135,6 +144,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Space between item box and contents*/
     double mBoxSpace;
+    /**Space between columns*/
+    double mColumnSpace;
     /**Vertical space between group entries*/
     double mGroupSpace;
     /**Vertical space between layer entries*/
@@ -153,68 +164,75 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /** Number of legend columns */
     int mColumnCount;
-    /** Cached division of items to columns */
-    QMap<QStandardItem *, int> mColumns;
 
     QgsLegendModel mLegendModel;
 
     /**Reference to map (because symbols are sometimes in map units)*/
     const QgsComposerMap* mComposerMap;
 
+    /** Allow splitting layers into multiple columns */
+    bool mSplitLayer;
+
+    /** Use the same width (maximum) for all columns */
+    bool mEqualColumnWidth;
 
   private:
-    // Group or layer size
-    struct Size
-    {
-      QSizeF size;
-      //bool isLayer; // layer or group
-      QgsComposerLegendItem::ItemType type;
-      QStandardItem * item;
-      Size() {}
-      Size( QSizeF s, QgsComposerLegendItem::ItemType t, QStandardItem * i ): size( s ), type( t ), item( i ) {}
-    } ;
-    struct LegendSize
-    {
-      QSizeF size; // legend size
-      QList<Size> sizes; // layer / group sizes
-      LegendSize() {}
-      LegendSize( QSizeF s, QList<Size>ls ): size( s ), sizes( ls ) {}
-    };
-    class Position
+    /** Nucleon is either group title, layer title or layer child item.
+     *  Nucleon is similar to QgsComposerLegendItem but it does not have
+     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
+     *  include all layer subitems, the same with groups.
+     */
+    class Nucleon
     {
       public:
-        QSizeF titleSize;  // without spaces around
-        QPointF point; // current position
-        double columnTop; // y coord where columns start (mBoxSpace + title height)
-        int column;
-        QMap<QStandardItem *, int> columns;
-        // widths of columns, does not include spaces before/between/after columns
-        QVector<double> widths;
-        double maxColumnHeight;
-        // set max width for current column
-        void expandWidth( double w );
-        // set column and x position
-        void setColumn( QStandardItem *item );
-        double boxSpace;
-        double columnSpace; // space between columns
+        QgsComposerLegendItem* item;
+        // Symbol size size without any space around for symbol item
+        QSizeF symbolSize;
+        // Label size without any space around for symbol item
+        QSizeF labelSize;
+        QSizeF size;
+        // Offset of symbol label, this offset is the same for all symbol labels
+        // of the same layer in the same column
+        double labelXOffset;
     };
 
+    /** Atom is indivisible set (indivisible into more columns). It may consists
+     *  of one or more Nucleon, depending on layer splitting mode:
+     *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
+     *  2) layer split:    [group_title ...] layer_title layer_item
+     *              or:    layer_item
+     *  It means that group titles must not be split from layer title and layer title
+     *  must not be split from first item, because it would look bad and it would not
+     *  be readable to leave group or layer title at the bottom of column.
+     */
+    class Atom
+    {
+      public:
+        Atom(): size( QSizeF( 0, 0 ) ), column( 0 ) {}
+        QList<Nucleon> nucleons;
+        // Atom size including nucleons interspaces but without any space around atom.
+        QSizeF size;
+        int column;
+    };
+
+    /** Create list of atoms according to current layer splitting mode */
+    QList<Atom> createAtomList( QStandardItem* rootItem, bool splitLayer );
+
+    /** Divide atoms to columns and set columns on atoms */
+    void setColumns( QList<Atom>& atomList );
+
     QgsComposerLegend(); //forbidden
+
+    QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignement = Qt::AlignLeft );
 
     /**Draws a group item and all subitems
      * Returns list of sizes of layers and groups including this group.
      */
-    QList<Size> drawGroupItem( QPainter* p, QgsComposerGroupItem* groupItem, Position& currentPosition );
+    QSizeF drawGroupItemTitle( QgsComposerGroupItem* groupItem, QPainter* painter = 0, QPointF point = QPointF() );
     /**Draws a layer item and all subitems*/
-    Size drawLayerItem( QPainter* p, QgsComposerLayerItem* layerItem, Position& currentPosition );
+    QSizeF drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter = 0, QPointF point = QPointF() );
 
-    /**Draws child items of a layer item
-       @param p painter
-       @param layerItem parent model item (layer)
-       @param currentPosition in/out: current y position of legend item
-       @param layerOpacity opacity of the corresponding map layer
-    */
-    QSizeF drawLayerChildItems( QPainter* p, QStandardItem* layerItem, Position& currentPosition, int layerOpacity = 255 );
+    Nucleon drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter = 0, QPointF point = QPointF(), double labelXOffset = 0. );
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
@@ -224,12 +242,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
     void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
 
-    LegendSize paintAndDetermineSize( QPainter* painter, QMap<QStandardItem *, int> columns );
+    void drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
+
+    double spaceAboveAtom( Atom atom );
 
     /**Helper function that lists ids of layers contained in map canvas*/
     QStringList layerIdList() const;
 
-  private:
     /** Splits a string using the wrap char taking into account handling empty
       wrap char which means no wrapping */
     QStringList splitStringForWrapping( QString stringToSplt );

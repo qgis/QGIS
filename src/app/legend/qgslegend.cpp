@@ -81,7 +81,7 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     , mMapCanvas( canvas )
     , mMinimumIconSize( 20, 20 )
     , mChanging( false )
-    , mUpdateDrawingOrder( false )
+    , mUpdateDrawingOrder( true )
 {
   setObjectName( name );
 
@@ -679,7 +679,17 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsLegend::mouseDoubleClickEvent( QMouseEvent *e )
 {
+#ifdef Q_WS_MAC
+  // fix for when quick left-then-right clicks (when legend is out of focus)
+  //  register as left double click: show contextual menu as user intended
+  if ( e->button() == Qt::RightButton )
+  {
+    mousePressEvent( e );
+    return;
+  }
+#else
   Q_UNUSED( e );
+#endif
 
   QSettings settings;
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
@@ -840,6 +850,9 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
       {
         group = new QgsLegendGroup( this, groupName );
       }
+
+      group->setEmbedded( true );
+      group->setProjectPath( projectFilePath );
 
       QFont groupFont;
       groupFont.setItalic( true );
@@ -1080,15 +1093,26 @@ QgsMapLayer* QgsLegend::currentLayer()
   }
 }
 
-QList<QgsMapLayer *> QgsLegend::selectedLayers()
+QList<QgsMapLayer *> QgsLegend::selectedLayers( bool inDrawOrder )
 {
   QList<QgsMapLayer *> layers;
 
-  foreach ( QTreeWidgetItem * item, selectedItems() )
+  if ( inDrawOrder )
   {
-    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
-    if ( ll )
-      layers << ll->layer();
+    foreach ( QgsLegendLayer *ll, legendLayers() )
+    {
+      if ( ll->isSelected() )
+        layers << ll->layer();
+    }
+  }
+  else
+  {
+    foreach ( QTreeWidgetItem * item, selectedItems() )
+    {
+      QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
+      if ( ll )
+        layers << ll->layer();
+    }
   }
 
   return layers;
@@ -1146,6 +1170,68 @@ QList<QgsLegendLayer *> QgsLegend::legendLayers()
   }
 }
 
+QList<DrawingOrderInfo> QgsLegend::drawingOrder()
+{
+  QMap<int, DrawingOrderInfo> drawingOrder;
+  QSet<QgsLegendLayer*> embeddedGroupChildren;
+  int nEntries = 0;
+
+  QTreeWidgetItemIterator it( this );
+  while ( *it )
+  {
+    QgsLegendLayer* llayer = dynamic_cast<QgsLegendLayer *>( *it );
+    QgsLegendGroup* lgroup = dynamic_cast<QgsLegendGroup *>( *it );
+    if ( llayer )
+    {
+      if ( !embeddedGroupChildren.contains( llayer ) )
+      {
+        DrawingOrderInfo dInfo;
+        dInfo.name = llayer->layerName();
+        dInfo.id = llayer->layer()->id();
+        dInfo.checked = ( llayer->checkState( 0 ) == Qt::Checked );
+        dInfo.embeddedGroup = false;
+        if ( mUpdateDrawingOrder )
+        {
+          drawingOrder.insertMulti( nEntries, dInfo );
+        }
+        else
+        {
+          drawingOrder.insertMulti( llayer->drawingOrder(), dInfo );
+        }
+        ++nEntries;
+      }
+    }
+    else if ( lgroup )
+    {
+      if ( lgroup->isEmbedded() && !( lgroup->parent() ) )
+      {
+        QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
+        QList<QgsLegendLayer*>::const_iterator groupLayerIt = groupLayers.constBegin();
+        for ( ; groupLayerIt != groupLayers.constEnd(); ++groupLayerIt )
+        {
+          embeddedGroupChildren.insert( *groupLayerIt );
+        }
+        DrawingOrderInfo dInfo;
+        dInfo.name = lgroup->text( 0 );
+        dInfo.id = lgroup->projectPath();
+        dInfo.checked = ( lgroup->checkState( 0 ) != Qt::Unchecked );
+        dInfo.embeddedGroup = true;
+        if ( mUpdateDrawingOrder )
+        {
+          drawingOrder.insertMulti( nEntries, dInfo );
+        }
+        else
+        {
+          drawingOrder.insertMulti( lgroup->drawingOrder(), dInfo );
+        }
+        ++nEntries;
+      }
+    }
+    ++it;
+  }
+  return drawingOrder.values();
+}
+
 QList<QgsMapLayer *> QgsLegend::layers()
 {
   QList<QgsMapLayer *> ls;
@@ -1160,14 +1246,58 @@ QList<QgsMapLayer *> QgsLegend::layers()
 
 QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
 {
-  QList<QgsMapCanvasLayer> ls;
+  QMap<int, QgsMapCanvasLayer> layers;
+  QSet<QgsLegendLayer*> embeddedGroupChildren;
+  int nEntries = 0;
 
-  foreach ( QgsLegendLayer *l, legendLayers() )
+  QTreeWidgetItemIterator it( this );
+  while ( *it )
   {
-    ls << l->canvasLayer();
+    QgsLegendLayer* llayer = dynamic_cast<QgsLegendLayer *>( *it );
+    QgsLegendGroup* lgroup = dynamic_cast<QgsLegendGroup *>( *it );
+    if ( llayer && !embeddedGroupChildren.contains( llayer ) )
+    {
+      QgsMapCanvasLayer canvasLayer = llayer->canvasLayer();
+      if ( mUpdateDrawingOrder )
+      {
+        layers.insertMulti( nEntries + embeddedGroupChildren.size(), canvasLayer );
+      }
+      else
+      {
+        layers.insertMulti( llayer->drawingOrder(), canvasLayer );
+      }
+    }
+    else if ( lgroup )
+    {
+      if ( lgroup->isEmbedded() )
+      {
+        int groupDrawingOrder = lgroup->drawingOrder();
+        QList<QgsLegendLayer*> groupLayers = lgroup->legendLayers();
+        for ( int i = groupLayers.size() - 1; i >= 0; --i )
+        {
+          QgsLegendLayer* ll = groupLayers.at( i );
+          if ( !ll || embeddedGroupChildren.contains( ll ) )
+          {
+            continue;
+          }
+
+          if ( mUpdateDrawingOrder )
+          {
+            layers.insertMulti( nEntries, ll->canvasLayer() );
+          }
+          else
+          {
+            layers.insertMulti( groupDrawingOrder,  ll->canvasLayer() );
+          }
+          embeddedGroupChildren.insert( ll );
+        }
+      }
+    }
+    ++it;
+    ++nEntries;
   }
 
-  return ls;
+  return layers.values();
 }
 
 void QgsLegend::setDrawingOrder( QList<QgsMapLayer *> layers )
@@ -1184,6 +1314,44 @@ void QgsLegend::setDrawingOrder( QList<QgsMapLayer *> layers )
   }
 
   updateMapCanvasLayerSet();
+}
+
+void QgsLegend::setDrawingOrder( const QList<DrawingOrderInfo>& order )
+{
+  QList<QgsMapCanvasLayer> layers;
+
+  QList<DrawingOrderInfo>::const_iterator orderIt = order.constBegin();
+  int i = 0;
+  for ( ; orderIt != order.constEnd(); ++orderIt )
+  {
+    if ( orderIt->embeddedGroup )
+    {
+      //find group
+      QgsLegendGroup* group = findLegendGroup( orderIt->name, orderIt->id );
+      if ( group )
+      {
+        group->setDrawingOrder( i );
+        QList<QgsLegendLayer*> groupLayers = group->legendLayers();
+        QList<QgsLegendLayer*>::iterator groupIt = groupLayers.begin();
+        for ( ; groupIt != groupLayers.end(); ++groupIt )
+        {
+          layers.push_back(( *groupIt )->canvasLayer() );
+        }
+        ++i;
+      }
+    }
+    else
+    {
+      QgsLegendLayer *ll = findLegendLayer( orderIt->id );
+      if ( ll )
+      {
+        ll->setDrawingOrder( i );
+        layers.push_back( ll->canvasLayer() );
+        ++i;
+      }
+    }
+  }
+  mMapCanvas->setLayerSet( layers );
 }
 
 bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
@@ -1405,6 +1573,11 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
       {
         legendgroupnode.setAttribute( "embedded", 1 );
         legendgroupnode.setAttribute( "project", QgsProject::instance()->writePath( embedIt.value() ) );
+        QgsLegendGroup* group = dynamic_cast<QgsLegendGroup*>( item );
+        if ( group )
+        {
+          legendgroupnode.setAttribute( "drawingOrder", group->drawingOrder() );
+        }
       }
       else
       {
@@ -1531,6 +1704,10 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( childelem.attribute( "embedded" ) == "1" )
       {
         theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
+        if ( childelem.hasAttribute( "drawingOrder" ) )
+        {
+          theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+        }
         updateGroupCheckStates( theGroup );
       }
       else
@@ -1739,6 +1916,23 @@ QgsLegendLayer* QgsLegend::findLegendLayer( const QgsMapLayer *layer )
     }
   }
 
+  return 0;
+}
+
+QgsLegendGroup* QgsLegend::findLegendGroup( const QString& name, const QString& projectPath )
+{
+  QgsLegendGroup* group = 0;
+  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
+  {
+    group = dynamic_cast<QgsLegendGroup*>( theItem );
+    if ( group )
+    {
+      if ( group->text( 0 ) == name && group->projectPath() == projectPath )
+      {
+        return group;
+      }
+    }
+  }
   return 0;
 }
 

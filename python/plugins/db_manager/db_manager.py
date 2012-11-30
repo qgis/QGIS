@@ -31,7 +31,6 @@ from .layer_preview import LayerPreview
 
 from .db_tree import DBTree
 
-from .db_plugins import getDbPluginErrors
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
 
@@ -52,21 +51,6 @@ class DBManager(QMainWindow):
 		self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
 		self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
 		self.itemChanged(None)
-
-		self.displayDbPluginErrors()
-
-	def displayDbPluginErrors(self):
-		if len(getDbPluginErrors()) <= 0:
-			return
-
-		if not hasattr(self, '_dbPluginErrorIndex') or self._dbPluginErrorIndex >= len(getDbPluginErrors()):
-			self._dbPluginErrorIndex = 0
-
-		msg = getDbPluginErrors()[self._dbPluginErrorIndex]
-		self._dbPluginErrorIndex += 1
-
-		self.statusBar.showMessage( msg, 5000 )
-		QTimer.singleShot( 6000, self.displayDbPluginErrors)
 
 
 	def closeEvent(self, e):

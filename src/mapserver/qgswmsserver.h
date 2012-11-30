@@ -20,6 +20,7 @@
 
 #include <QDomDocument>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <map>
 
@@ -28,10 +29,12 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
+class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -163,6 +166,15 @@ class QgsWMSServer
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
+
+    /**Applies opacity on layer/group level*/
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                         QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
+
+    /**Restore original opacities*/
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers, QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 

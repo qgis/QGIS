@@ -97,6 +97,34 @@ class PGTableInfo(TableInfo):
 
 		return ret
 
+	def getSpatialInfo(self):
+		ret = []
+
+		info = self.db.connector.getSpatialInfo()
+		if info == None:
+			return
+
+		tbl = [
+			("Library:", info[0]), 
+			("Scripts:", info[3]),
+			("GEOS:", info[1]), 
+			("Proj:", info[2])
+		]
+		ret.append( HtmlTable( tbl ) )
+
+		if info[1] != None and info[1] != info[2]:
+			ret.append( HtmlParagraph( u"<warning> Version of installed scripts doesn't match version of released scripts!\n" \
+				"This is probably a result of incorrect PostGIS upgrade." ) )
+
+		if not self.db.connector.has_geometry_columns:
+			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
+				"This table is essential for many GIS applications for enumeration of tables." ) )
+		elif not self.db.connector.has_geometry_columns_access:
+			ret.append( HtmlParagraph( u"<warning> This user doesn't have privileges to read contents of geometry_columns table!\n" \
+				"This table is essential for many GIS applications for enumeration of tables." ) )
+
+		return ret
+
 
 	def fieldsDetails(self):
 		tbl = []

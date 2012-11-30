@@ -209,6 +209,8 @@ class QgsProjectParser: public QgsConfigParser
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+    /**Adds drawing order info from layer element or group element (recursive)*/
+    void addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
     /**Returns project layers by id*/
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
@@ -244,6 +246,13 @@ class QgsProjectParser: public QgsConfigParser
     @param itemWidth item width in pixels in the QGIS project (screen pixels)
     @param itemHeight item height in pixels in the QGIS project (screen pixels)*/
     static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
+
+    void addDrawingOrderEmbeddedGroup( const QDomElement& groupElem, QMap<int, QString>& orderedLayerList, bool useDrawingOrder ) const;
+
+    /**Reads service metadata from projectfile or falls back to parent class method if not there
+     * This is for WFS Services
+     **/
+    void serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

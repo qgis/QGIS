@@ -42,6 +42,8 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mWrapCharLineEdit_textChanged( const QString& text );
     void on_mTitleLineEdit_textChanged( const QString& text );
     void on_mColumnCountSpinBox_valueChanged( int c );
+    void on_mSplitLayerCheckBox_toggled( bool checked );
+    void on_mEqualColumnWidthCheckBox_toggled( bool checked );
     void on_mSymbolWidthSpinBox_valueChanged( double d );
     void on_mSymbolHeightSpinBox_valueChanged( double d );
     void on_mGroupSpaceSpinBox_valueChanged( double d );
@@ -53,6 +55,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
     void on_mBoxSpaceSpinBox_valueChanged( double d );
+    void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void on_mMapComboBox_currentIndexChanged( int index );
 

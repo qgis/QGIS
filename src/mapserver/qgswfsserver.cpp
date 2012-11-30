@@ -88,7 +88,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement wfsCapabilitiesElement = doc.createElement( "WFS_Capabilities"/*wms:WFS_Capabilities*/ );
   wfsCapabilitiesElement.setAttribute( "xmlns", WFS_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
+  wfsCapabilitiesElement.setAttribute( "xsi:schemaLocation", WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" );
   wfsCapabilitiesElement.setAttribute( "xmlns:ogc", OGC_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:gml", GML_NAMESPACE );
   wfsCapabilitiesElement.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
@@ -112,10 +112,6 @@ QDomDocument QgsWFSServer::getCapabilities()
   //wfs:GetCapabilities
   QDomElement getCapabilitiesElement = doc.createElement( "GetCapabilities"/*wfs:GetCapabilities*/ );
   requestElement.appendChild( getCapabilitiesElement );
-  QDomElement capabilitiesFormatElement = doc.createElement( "Format" );/*wfs:Format*/
-  getCapabilitiesElement.appendChild( capabilitiesFormatElement );
-  QDomText capabilitiesFormatText = doc.createTextNode( "text/xml" );
-  capabilitiesFormatElement.appendChild( capabilitiesFormatText );
 
   QDomElement dcpTypeElement = doc.createElement( "DCPType"/*wfs:DCPType*/ );
   getCapabilitiesElement.appendChild( dcpTypeElement );
@@ -180,7 +176,10 @@ QDomDocument QgsWFSServer::getCapabilities()
   QDomElement getElement = doc.createElement( "Get"/*wfs:Get*/ );
   httpElement.appendChild( getElement );
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
-  getElement.setAttribute( "OnlineResource", hrefString );
+  getElement.setAttribute( "onlineResource", hrefString );
+  QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+  getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( "Post" );
+  getCapabilitiesElement.appendChild( getCapabilitiesDhcTypePostElement );
 
   //wfs:DescribeFeatureType
   QDomElement describeFeatureTypeElement = doc.createElement( "DescribeFeatureType"/*wfs:DescribeFeatureType*/ );
@@ -246,7 +245,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   spatialCapabilitiesElement.appendChild( spatialOperatorsElement );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:BBOX"/*ogc:BBOX*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Disjoint"/*ogc:Disjoint*/ ) );
-  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Intersects"/*ogc:Intersects*/ ) );
+  spatialOperatorsElement.appendChild( doc.createElement( "ogc:Intersect"/*ogc:Intersects*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Touches"/*ogc:Touches*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Crosses"/*ogc:Crosses*/ ) );
   spatialOperatorsElement.appendChild( doc.createElement( "ogc:Contains"/*ogc:Contains*/ ) );

@@ -58,16 +58,19 @@ namespace pal
         double width;
       } CharacterInfo;
 
-      LabelInfo( int num, double height )
+      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
       {
-        max_char_angle_delta = 20;
+        max_char_angle_inside = maxinangle;
+        // outside angle should be negative
+        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
         label_height = height;
         char_num = num;
         char_info = new CharacterInfo[num];
       }
       ~LabelInfo() { delete [] char_info; }
 
-      double max_char_angle_delta;
+      double max_char_angle_inside;
+      double max_char_angle_outside;
       double label_height;
       int char_num;
       CharacterInfo* char_info;

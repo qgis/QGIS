@@ -30,44 +30,19 @@
 #include <QDomElement>
 #include <QPainter>
 
-void QgsComposerLegend::Position::expandWidth( double w )
-{
-  if ( widths.size() <= column )
-  {
-    widths.resize( column + 1 );
-  }
-  if ( w > widths[column] )
-  {
-    widths[column] = w;
-  }
-}
-
-void QgsComposerLegend::Position::setColumn( QStandardItem *item )
-{
-  int c = columns.value( item ); // 0 if columns are not given
-  if ( c > column )
-  {
-    double w = boxSpace;
-    for ( int i = 0; i < c; i++ )
-    {
-      w += widths.value( i ) + columnSpace;
-    }
-    point.rx() = w;
-    point.ry() = columnTop;
-    column = c;
-  }
-}
-
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mTitle( tr( "Legend" ) )
     , mBoxSpace( 2 )
+    , mColumnSpace( 2 )
     , mGroupSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
     , mIconLabelSpace( 2 )
     , mColumnCount( 1 )
     , mComposerMap( 0 )
+    , mSplitLayer( false )
+    , mEqualColumnWidth( false )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -105,133 +80,9 @@ void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem
 
 QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 {
-  if ( mColumnCount > 1 && mColumns.size() == 0 )
-  {
-    LegendSize legendSize = paintAndDetermineSize( 0, mColumns );
-    QList<Size> sizes = legendSize.sizes;
-
-    // We know height of each layer and we have to split them into columns
-    // minimizing total height. It is sort of bin packing problem, NP-hard.
-    // We use brute force because we hope that the number of layers should
-    // not be too big.
-
-    QgsDebugMsg( QString( "sizes %1 columns %2" ).arg( sizes.size() ).arg( mColumnCount ) );
-    if ( sizes.size() > 0 )
-    {
-      // Breaks between columns, index 0 means break after layer 0.
-      // Breaks must not be after groups to avoid group leaving group title
-      // at the bootom of column.
-      QVector<bool> breaks( sizes.size() - 1 );
-
-      // init breaks
-      int idx = 0;
-      for ( int i = 0; i < mColumnCount - 1; i++ )
-      {
-        // break must not be after group, if there is a group at the end however
-        // (nonsense), it is left at bottom (obviously)
-        while ( idx < sizes.size() - 1 && sizes.value( idx ).type == QgsComposerLegendItem::GroupItem ) idx++;
-        breaks[idx] = true;
-        idx++;
-        if ( idx >= breaks.size() ) break;
-      }
-
-      // optimize by height
-      double bestHeight = std::numeric_limits<double>::max();
-      QVector<bool> bestBreaks;
-      while ( true )
-      {
-
-        // Calculate max column height
-        double maxHeight = 0;
-        double height = 0;
-        for ( int i = 0; i <  sizes.size(); i++ )
-        {
-          height += sizes[i].size.height();
-          maxHeight = qMax( height, maxHeight );
-          if ( i < breaks.size() && breaks.value( i ) ) // next col
-          {
-            height = 0;
-          }
-        }
-        if ( maxHeight < bestHeight )
-        {
-          bestBreaks = breaks;
-          bestHeight = maxHeight;
-        }
-        QString msg;
-        foreach ( bool b, breaks )
-        {
-          msg += QString( "%1" ).arg( b );
-        }
-        QgsDebugMsgLevel( QString( "Breaks: %1 height %2" ).arg( msg ).arg( maxHeight ), 2 );
-
-        // move first break from right side which has space on its right side to the right
-        bool next = false;
-        for ( int i = breaks.size() - 1; i > 0; i-- )
-        {
-          if ( !breaks[i] ) // we have space
-          {
-            // find first layer on the left from free space
-            for ( int j = i - 1; j >= 0; j-- )
-            {
-              if ( breaks[j] && sizes[j].type == QgsComposerLegendItem::LayerItem )
-              {
-                breaks[j] = false;
-                breaks[i] = true;
-                // shift all not the right side down
-                int count = breaks.mid( j + 1 ).count( true ); // breaks to end
-                for ( int k = j + 1; k < breaks.size(); k++ )
-                {
-                  if ( count > 0 && sizes[k].type == QgsComposerLegendItem::LayerItem )
-                  {
-                    breaks[k] = true; // set shifted break
-                    count--;
-                  }
-                  else
-                  {
-                    breaks[k] = false; // clear shifted
-                  }
-                }
-                next = true;
-                break;
-              }
-            }
-            if ( next ) break;
-          }
-        }
-        if ( !next ) break; // no more combinations
-      }
-
-      // set columns using breaks
-      int column = 0;
-      for ( int i = 0; i < sizes.count(); i++ )
-      {
-        QgsDebugMsgLevel( QString( "layer %1 column %2" ).arg( i ).arg( column ), 2 );
-        mColumns.insert( sizes.at( i ).item, column );
-        // if there is break after this layer (the same index), increase column
-        if ( i < bestBreaks.size() && bestBreaks.value( i ) )
-        {
-          column++;
-        }
-      }
-    }
-  }
-
-  LegendSize legendSize = paintAndDetermineSize( painter, mColumns );
-  return legendSize.size;
-}
-
-QgsComposerLegend::LegendSize QgsComposerLegend::paintAndDetermineSize( QPainter* painter, QMap<QStandardItem *, int> columns )
-{
-  QSizeF size;
-  QList<Size> layerSizes;
-
-  //go through model...
+  QSizeF size( 0, 0 );
   QStandardItem* rootItem = mLegendModel.invisibleRootItem();
-  if ( !rootItem )
-  {
-    return LegendSize();
-  }
+  if ( !rootItem ) return size;
 
   if ( painter )
   {
@@ -240,106 +91,95 @@ QgsComposerLegend::LegendSize QgsComposerLegend::paintAndDetermineSize( QPainter
     painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
   }
 
-  int numLayerItems = rootItem->rowCount();
-  QStandardItem* currentLayerItem = 0;
+  QList<Atom> atomList = createAtomList( rootItem, mSplitLayer );
 
-  //draw title
-  Position currentPosition;
-  currentPosition.column = 0;
-  currentPosition.columns = columns;
-  currentPosition.maxColumnHeight = 0;
-  currentPosition.boxSpace = mBoxSpace;
-  currentPosition.columnSpace = mBoxSpace;
-  currentPosition.columnTop = mBoxSpace;
+  setColumns( atomList );
 
-  // Calculate title size (all columns start under the title)
-  if ( !mTitle.isEmpty() )
+  double maxColumnWidth = 0;
+  if ( mEqualColumnWidth )
   {
-    QStringList lines = splitStringForWrapping( mTitle );
-    for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
+    foreach ( Atom atom, atomList )
     {
-      currentPosition.titleSize.rheight() += fontAscentMillimeters( mTitleFont );
-      double currentItemMaxX = textWidthMillimeters( mTitleFont, *titlePart );
-      currentPosition.titleSize.rwidth() = qMax( currentPosition.titleSize.width(), currentItemMaxX );
-      if ( titlePart != lines.end() )
-      {
-        currentPosition.titleSize.rheight() += mlineSpacing;
-      }
-    }
-    currentPosition.columnTop += currentPosition.titleSize.height();
-  }
-
-  // set top left point where columns start
-  currentPosition.point = QPointF( mBoxSpace, currentPosition.columnTop );
-
-  for ( int i = 0; i < numLayerItems; ++i )
-  {
-    currentLayerItem = rootItem->child( i );
-    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentLayerItem );
-    if ( currentLegendItem )
-    {
-      QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
-      if ( type == QgsComposerLegendItem::GroupItem )
-      {
-        QList<Size> groupSizes = drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentPosition );
-        layerSizes.append( groupSizes );
-      }
-      else if ( type == QgsComposerLegendItem::LayerItem )
-      {
-        Size layerSize = drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentPosition );
-        layerSizes.append( layerSize );
-      }
+      maxColumnWidth = qMax( atom.size.width(), maxColumnWidth );
     }
   }
 
-  double totalWidth = 0;
-  foreach ( double w, currentPosition.widths ) totalWidth += mBoxSpace + w ;
-  totalWidth += mBoxSpace; // after the last column
+  QSizeF titleSize = drawTitle();
+  // Using mGroupSpace as space between legend title and first atom in column
+  double columnTop = mBoxSpace + titleSize.height() + mGroupSpace;
+
+  QPointF point( mBoxSpace, columnTop );
+  bool firstInColumn = true;
+  double columnMaxHeight = 0;
+  double columnWidth = 0;
+  int column = 0;
+  foreach ( Atom atom, atomList )
+  {
+    if ( atom.column > column )
+    {
+      // Switch to next column
+      if ( mEqualColumnWidth )
+      {
+        point.rx() += mColumnSpace + maxColumnWidth;
+      }
+      else
+      {
+        point.rx() += mColumnSpace + columnWidth;
+      }
+      point.ry() = columnTop;
+      columnWidth = 0;
+      column++;
+      firstInColumn = true;
+    }
+    // Add space if necessary, unfortunately it depends on first nucleon
+    if ( !firstInColumn )
+    {
+      point.ry() += spaceAboveAtom( atom );
+    }
+
+    drawAtom( atom, painter, point );
+    columnWidth = qMax( atom.size.width(), columnWidth );
+
+    point.ry() += atom.size.height();
+    columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
+
+    firstInColumn = false;
+  }
+  point.rx() += columnWidth + mBoxSpace;
+
+  size.rheight() = columnTop + columnMaxHeight + mBoxSpace;
+  size.rwidth() = point.x();
 
   // Now we know total width and can draw the title centered
   if ( !mTitle.isEmpty() )
   {
-    double currentYCoord = mBoxSpace;
-
     // For multicolumn center if we stay in totalWidth, otherwise allign to left
     // and expand total width. With single column keep alligned to left be cause
     // it looks better alligned with items bellow instead of centered
     Qt::AlignmentFlag halignement;
-    if ( mColumnCount > 1 && currentPosition.titleSize.width() + 2 * mBoxSpace < totalWidth )
+    if ( mColumnCount > 1 && titleSize.width() + 2 * mBoxSpace < size.width() )
     {
       halignement = Qt::AlignHCenter;
+      point.rx() = mBoxSpace + size.rwidth() / 2;
     }
     else
     {
       halignement = Qt::AlignLeft;
-      totalWidth = qMax( currentPosition.titleSize.width() + 2 * mBoxSpace, totalWidth );
+      point.rx() = mBoxSpace;
+      size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
     }
-
-    if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
-
-    QStringList lines = splitStringForWrapping( mTitle );
-    for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
-    {
-      QRectF rect( mBoxSpace, currentYCoord, totalWidth - mBoxSpace, fontAscentMillimeters( mTitleFont ) );
-      if ( painter ) drawText( painter, rect, *titlePart, mTitleFont, halignement, Qt::AlignVCenter );
-      currentYCoord += fontAscentMillimeters( mTitleFont );
-      if ( titlePart != lines.end() )
-        currentYCoord += mlineSpacing;
-    }
+    point.ry() = mBoxSpace;
+    drawTitle( painter, point, halignement );
   }
-
-  double totalHeight = 2 * mBoxSpace + currentPosition.titleSize.height() + currentPosition.maxColumnHeight;
-  size.setHeight( totalHeight );
-  size.setWidth( totalWidth );
 
   //adjust box if width or height is to small
-  if ( painter && totalHeight > rect().height() )
+  if ( painter && size.height() > rect().height() )
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), totalHeight ) );
+    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), size.height() ) );
   }
-  if ( painter && totalWidth > rect().width() )
+  if ( painter && size.width() > rect().width() )
   {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), totalWidth, rect().height() ) );
+    setSceneRect( QRectF( transform().dx(), transform().dy(), size.width(), rect().height() ) );
   }
 
   if ( painter )
@@ -354,231 +194,228 @@ QgsComposerLegend::LegendSize QgsComposerLegend::paintAndDetermineSize( QPainter
     }
   }
 
-
-  return LegendSize( size, layerSizes );
+  return size;
 }
 
-QList<QgsComposerLegend::Size> QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupItem, Position& currentPosition )
+QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignement )
 {
-  QList<Size> sizes;
-  double startYCoord = currentPosition.point.y();
-  if ( !groupItem )
+  QSizeF size( 0, 0 );
+  if ( mTitle.isEmpty() ) return size;
+
+  QStringList lines = splitStringForWrapping( mTitle );
+
+  double y = point.y();
+
+  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+
+  for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
   {
-    return sizes;
+    // it does not draw the last world if rectangle width is exactly text width
+    double width = textWidthMillimeters( mTitleFont, *titlePart ) + 1;
+    double height = fontAscentMillimeters( mTitleFont );
+
+    double left = halignement == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
+
+    QRectF rect( left, y, width, height );
+
+    if ( painter ) drawText( painter, rect, *titlePart, mTitleFont, halignement, Qt::AlignVCenter );
+
+    size.rwidth() = qMax( width, size.width() );
+
+    y += height;
+    if ( titlePart != lines.end() )
+    {
+      y += mlineSpacing;
+    }
   }
-  currentPosition.setColumn( groupItem );
+  size.rheight() = y - point.y();
 
-  currentPosition.point.ry() += mGroupSpace;
+  return size;
+}
 
-  if ( p ) p->setPen( QColor( 0, 0, 0 ) );
+
+QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, QPainter* painter, QPointF point )
+{
+  QSizeF size( 0, 0 );
+  if ( !groupItem ) return size;
+
+  double y = point.y();
+
+  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
 
   QStringList lines = splitStringForWrapping( groupItem->text() );
   for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
   {
-    currentPosition.point.ry() += fontAscentMillimeters( mGroupFont );
-    if ( p ) drawText( p, currentPosition.point.x(), currentPosition.point.y(), *groupPart, mGroupFont );
-    double currentMaxXCoord = textWidthMillimeters( mGroupFont, *groupPart );
-    currentPosition.expandWidth( currentMaxXCoord );
+    y += fontAscentMillimeters( mGroupFont );
+    if ( painter ) drawText( painter, point.x(), y, *groupPart, mGroupFont );
+    double width = textWidthMillimeters( mGroupFont, *groupPart );
+    size.rwidth() = qMax( width, size.width() );
     if ( groupPart != lines.end() )
-      currentPosition.point.ry() += mlineSpacing;
-  }
-  // append this group size
-  sizes.append( Size( QSizeF( 0, currentPosition.point.y() - startYCoord ), QgsComposerLegendItem::GroupItem, groupItem ) );
-
-  //children can be other group items or layer items
-  int numChildItems = groupItem->rowCount();
-  QStandardItem* currentChildItem = 0;
-
-  for ( int i = 0; i < numChildItems; ++i )
-  {
-    currentChildItem = groupItem->child( i );
-    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentChildItem );
-    QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
-    if ( type == QgsComposerLegendItem::GroupItem )
     {
-      QList<Size> subSizes = drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentPosition );
-      sizes.append( subSizes );
-    }
-    else if ( type == QgsComposerLegendItem::LayerItem )
-    {
-      Size subSize = drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentPosition );
-      sizes.append( subSize );
+      y += mlineSpacing;
     }
   }
-  currentPosition.maxColumnHeight = qMax( currentPosition.maxColumnHeight,  currentPosition.point.y() - currentPosition.columnTop );
-  return sizes;
+  size.rheight() = y - point.y();
+  return size;
 }
 
-QgsComposerLegend::Size QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerItem, Position& currentPosition )
+QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter, QPointF point )
 {
-  double startYCoord = currentPosition.point.y();
-  if ( !layerItem )
-  {
-    return Size();
-  }
-  currentPosition.setColumn( layerItem );
-
-  int opacity = 255;
-  QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
-  if ( currentLayer )
-  {
-    opacity = currentLayer->getTransparency();
-  }
+  QSizeF size( 0, 0 );
+  if ( !layerItem ) return size;
 
   //Let the user omit the layer title item by having an empty layer title string
-  if ( !layerItem->text().isEmpty() )
+  if ( layerItem->text().isEmpty() ) return size;
+
+  double y = point.y();
+
+  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+
+  QStringList lines = splitStringForWrapping( layerItem->text() );
+  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
-    currentPosition.point.ry() += mLayerSpace;
-
-    //draw layer Item
-    if ( p ) p->setPen( QColor( 0, 0, 0 ) );
-
-    QStringList lines = splitStringForWrapping( layerItem->text() );
-    for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
+    y += fontAscentMillimeters( mLayerFont );
+    if ( painter ) drawText( painter, point.x(), y, *layerItemPart , mLayerFont );
+    double width = textWidthMillimeters( mLayerFont, *layerItemPart );
+    size.rwidth() = qMax( width, size.width() );
+    if ( layerItemPart != lines.end() )
     {
-      currentPosition.point.ry() += fontAscentMillimeters( mLayerFont );
-      if ( p ) drawText( p, currentPosition.point.x(), currentPosition.point.y(), *layerItemPart , mLayerFont );
-      double maxXCoord = textWidthMillimeters( mLayerFont, *layerItemPart );
-      currentPosition.expandWidth( maxXCoord );
-      if ( layerItemPart != lines.end() )
-        currentPosition.point.ry() += mlineSpacing ;
+      y += mlineSpacing;
     }
   }
-  else //layer title omited
-  {
-    //symbol space will be added before the item later
-    currentPosition.point.ry() += ( mLayerSpace - mSymbolSpace );
-  }
+  size.rheight() = y - point.y();
 
-  //and child items
-  drawLayerChildItems( p, layerItem, currentPosition, opacity );
-
-  currentPosition.maxColumnHeight = qMax( currentPosition.maxColumnHeight,  currentPosition.point.y() - currentPosition.columnTop );
-  return Size( QSizeF( 0, currentPosition.point.y() - startYCoord ),  QgsComposerLegendItem::LayerItem, layerItem );
+  return size;
 }
 
 void QgsComposerLegend::adjustBoxSize()
 {
-  mColumns.clear();
   QSizeF size = paintAndDetermineSize( 0 );
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
     setSceneRect( QRectF( transform().dx(), transform().dy(), size.width(), size.height() ) );
   }
 }
 
-QSizeF QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerItem, Position& currentPosition, int layerOpacity )
+QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter, QPointF point, double labelXOffset )
 {
-  double startYCoord = currentPosition.point.y();
-  if ( !layerItem )
-  {
-    return QSizeF();
-  }
-
-  //Draw all symbols first and the texts after (to find out the x coordinate to have the text aligned)
-  QList<double> childYCoords;
-  QList<double> realItemHeights;
+  QSizeF symbolSize( 0, 0 );
+  QSizeF labelSize( 0, 0 );
+  if ( !symbolItem ) return Nucleon();
 
   double textHeight = fontHeightCharacterMM( mItemFont, QChar( '0' ) );
+  // itemHeight here is not realy item height, it is only for symbol
+  // vertical alignment purpose, i.e. ok take single line height
+  // if there are more lines, thos run under the symbol
   double itemHeight = qMax( mSymbolHeight, textHeight );
 
-  double textAlignCoord = 0; //alignment for legend text
+  //real symbol height. Can be different from standard height in case of point symbols
+  double realSymbolHeight;
 
-  QStandardItem* currentItem;
-
-  int numChildren = layerItem->rowCount();
-
-  for ( int i = 0; i < numChildren; ++i )
+  int opacity = 255;
+  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
+  if ( layerItem )
   {
-    //real symbol height. Can be different from standard height in case of point symbols
-    double realSymbolHeight;
-    double realItemHeight = itemHeight; //will be adjusted if realSymbolHeight turns out to be larger
-
-    currentPosition.point.ry() += mSymbolSpace;
-    double currentXCoord = currentPosition.point.x();
-
-    currentItem = layerItem->child( i, 0 );
-
-    if ( !currentItem )
+    QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
+    if ( currentLayer )
     {
-      continue;
+      opacity = currentLayer->getTransparency();
     }
-
-    int lineCount = splitStringForWrapping( currentItem->text() ).count();
-
-    QgsSymbol* symbol = 0;
-    QgsComposerSymbolItem* symbolItem = dynamic_cast<QgsComposerSymbolItem*>( currentItem );
-    if ( symbolItem )
-    {
-      symbol = symbolItem->symbol();
-    }
-
-    QgsSymbolV2* symbolNg = 0;
-    QgsComposerSymbolV2Item* symbolV2Item = dynamic_cast<QgsComposerSymbolV2Item*>( currentItem );
-    if ( symbolV2Item )
-    {
-      symbolNg = symbolV2Item->symbolV2();
-    }
-    QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( currentItem );
-
-    if ( symbol )  //item with symbol?
-    {
-      //draw symbol
-      if ( p ) drawSymbol( p, symbol, currentPosition.point.y() + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
-      realItemHeight = qMax( realSymbolHeight, itemHeight );
-      currentXCoord += mIconLabelSpace;
-    }
-    else if ( symbolNg ) //item with symbol NG?
-    {
-      if ( p ) drawSymbolV2( p, symbolNg, currentPosition.point.y() + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
-      realItemHeight = qMax( realSymbolHeight, itemHeight );
-      currentXCoord += mIconLabelSpace;
-    }
-    else if ( rasterItem )
-    {
-      if ( p )
-      {
-        p->setBrush( rasterItem->color() );
-        p->drawRect( QRectF( currentXCoord, currentPosition.point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
-      }
-      currentXCoord += mSymbolWidth;
-      currentXCoord += mIconLabelSpace;
-    }
-    else //item with icon?
-    {
-      QIcon symbolIcon = currentItem->icon();
-      if ( !symbolIcon.isNull() )
-      {
-        if ( p ) symbolIcon.paint( p, currentXCoord, currentPosition.point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight );
-        currentXCoord += mSymbolWidth;
-        currentXCoord += mIconLabelSpace;
-      }
-    }
-
-    childYCoords.push_back( currentPosition.point.y() );
-    realItemHeights.push_back( realItemHeight );
-    currentPosition.point.ry() += lineCount > 0 ? ( realItemHeight + mlineSpacing ) * lineCount : realItemHeight;
-    textAlignCoord = qMax( currentXCoord, textAlignCoord );
   }
 
-  currentPosition.expandWidth( textAlignCoord - currentPosition.point.x() );
+  QStringList lines = splitStringForWrapping( symbolItem->text() );
 
-  for ( int i = 0; i < numChildren; ++i )
+  QgsSymbol* symbol = 0;
+  QgsComposerSymbolItem* symItem = dynamic_cast<QgsComposerSymbolItem*>( symbolItem );
+  if ( symItem )
   {
-    if ( p ) p->setPen( QColor( 0, 0, 0 ) );
+    symbol = symItem->symbol();
+  }
 
-    QStringList lines = splitStringForWrapping( layerItem->child( i, 0 )->text() );
-    double textY = childYCoords.at( i ) + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2;
-    for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
+  QgsSymbolV2* symbolNg = 0;
+  QgsComposerSymbolV2Item* symbolV2Item = dynamic_cast<QgsComposerSymbolV2Item*>( symbolItem );
+  if ( symbolV2Item )
+  {
+    symbolNg = symbolV2Item->symbolV2();
+  }
+  QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( symbolItem );
+
+  double x = point.x();
+  if ( symbol )  //item with symbol?
+  {
+    //draw symbol
+    drawSymbol( painter, symbol, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
+    symbolSize.rwidth() =  qMax( x - point.x(), mSymbolWidth );
+    symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
+  }
+  else if ( symbolNg ) //item with symbol NG?
+  {
+    // must be called also with painter=0 to get real size
+    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
+    symbolSize.rwidth() = qMax( x - point.x(), mSymbolWidth );
+    symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
+  }
+  else if ( rasterItem )
+  {
+    if ( painter )
     {
-      if ( p ) drawText( p, textAlignCoord, textY , *itemPart , mItemFont );
-      double maxXCoord = textAlignCoord + mBoxSpace + textWidthMillimeters( mItemFont,  *itemPart );
-      currentPosition.expandWidth( maxXCoord - currentPosition.point.x() );
-      if ( itemPart != lines.end() )
-        textY += mlineSpacing + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2;
+      painter->setBrush( rasterItem->color() );
+      painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+    }
+    symbolSize.rwidth() = mSymbolWidth;
+    symbolSize.rheight() = mSymbolHeight;
+  }
+  else //item with icon?
+  {
+    QIcon symbolIcon = symbolItem->icon();
+    if ( !symbolIcon.isNull() )
+    {
+      if ( painter ) symbolIcon.paint( painter, point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight );
+      symbolSize.rwidth() = mSymbolWidth;
+      symbolSize.rheight() = mSymbolHeight;
     }
   }
-  return QSizeF( 0, currentPosition.point.y() - startYCoord );
+
+  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+
+  double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
+
+  // Vertical alignment of label with symbol:
+  // a) label height < symbol heigh: label centerd with symbol
+  // b) label height > symbol height: label starts at top and runs under symbol
+
+  labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * mlineSpacing;
+
+  double labelY;
+  if ( labelSize.height() < symbolSize.height() )
+  {
+    labelY = point.y() +  symbolSize.height() / 2 + textHeight / 2;
+  }
+  else
+  {
+    labelY = point.y() + textHeight;
+  }
+
+  for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
+  {
+    if ( painter ) drawText( painter, labelX, labelY, *itemPart , mItemFont );
+    labelSize.rwidth() = qMax( textWidthMillimeters( mItemFont,  *itemPart ), labelSize.width() );
+    if ( itemPart != lines.end() )
+    {
+      labelY += mlineSpacing + textHeight;
+    }
+  }
+
+  Nucleon nucleon;
+  nucleon.item = symbolItem;
+  nucleon.symbolSize = symbolSize;
+  nucleon.labelSize = labelSize;
+  //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
+  double width = symbolSize.width() + labelXOffset + labelSize.width();
+  double height = qMax( symbolSize.height(), labelSize.height() );
+  nucleon.size = QSizeF( width, height );
+  return nucleon;
 }
 
 void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
@@ -612,7 +449,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
 void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
 {
   Q_UNUSED( layerOpacity );
-  if ( !p || !s )
+  if ( !s )
   {
     return;
   }
@@ -666,23 +503,26 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
     }
   }
 
-  p->save();
-  p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
-  p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-
-  if ( markerSymbol && sizeInMapUnits )
+  if ( p )
   {
-    s->setOutputUnit( QgsSymbolV2::MM );
-  }
-  s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
+    p->save();
+    p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
+    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
 
-  if ( markerSymbol && sizeInMapUnits )
-  {
-    s->setOutputUnit( QgsSymbolV2::MapUnit );
-    markerSymbol->setSize( size );
-  }
+    if ( markerSymbol && sizeInMapUnits )
+    {
+      s->setOutputUnit( QgsSymbolV2::MM );
+    }
 
-  p->restore();
+    s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
+
+    if ( markerSymbol && sizeInMapUnits )
+    {
+      s->setOutputUnit( QgsSymbolV2::MapUnit );
+      markerSymbol->setSize( size );
+    }
+    p->restore();
+  }
   currentXPosition += width;
   currentXPosition += 2 * widthOffset;
   symbolHeight = height + 2 * heightOffset;
@@ -800,7 +640,7 @@ QStringList QgsComposerLegend::layerIdList() const
 
 void QgsComposerLegend::synchronizeWithModel()
 {
-  mColumns.clear();
+  QgsDebugMsg( "Entered" );
   adjustBoxSize();
   update();
 }
@@ -814,7 +654,6 @@ void QgsComposerLegend::setTitleFont( const QFont& f )
 
 void QgsComposerLegend::setGroupFont( const QFont& f )
 {
-  mColumns.clear();
   mGroupFont = f;
   adjustBoxSize();
   update();
@@ -822,7 +661,6 @@ void QgsComposerLegend::setGroupFont( const QFont& f )
 
 void QgsComposerLegend::setLayerFont( const QFont& f )
 {
-  mColumns.clear();
   mLayerFont = f;
   adjustBoxSize();
   update();
@@ -830,7 +668,6 @@ void QgsComposerLegend::setLayerFont( const QFont& f )
 
 void QgsComposerLegend::setItemFont( const QFont& f )
 {
-  mColumns.clear();
   mItemFont = f;
   adjustBoxSize();
   update();
@@ -875,11 +712,14 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   //write general properties
   composerLegendElem.setAttribute( "title", mTitle );
   composerLegendElem.setAttribute( "columnCount", QString::number( mColumnCount ) );
+  composerLegendElem.setAttribute( "splitLayer", QString::number( mSplitLayer ) );
+  composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mEqualColumnWidth ) );
   composerLegendElem.setAttribute( "titleFont", mTitleFont.toString() );
   composerLegendElem.setAttribute( "groupFont", mGroupFont.toString() );
   composerLegendElem.setAttribute( "layerFont", mLayerFont.toString() );
   composerLegendElem.setAttribute( "itemFont", mItemFont.toString() );
   composerLegendElem.setAttribute( "boxSpace", QString::number( mBoxSpace ) );
+  composerLegendElem.setAttribute( "columnSpace", QString::number( mColumnSpace ) );
   composerLegendElem.setAttribute( "groupSpace", QString::number( mGroupSpace ) );
   composerLegendElem.setAttribute( "layerSpace", QString::number( mLayerSpace ) );
   composerLegendElem.setAttribute( "symbolSpace", QString::number( mSymbolSpace ) );
@@ -911,6 +751,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mTitle = itemElem.attribute( "title" );
   mColumnCount = itemElem.attribute( "columnCount", "1" ).toInt();
   if ( mColumnCount < 1 ) mColumnCount = 1;
+  mSplitLayer = itemElem.attribute( "splitLayer", "0" ).toInt() == 1;
+  mEqualColumnWidth = itemElem.attribute( "equalColumnWidth", "0" ).toInt() == 1;
   //title font
   QString titleFontString = itemElem.attribute( "titleFont" );
   if ( !titleFontString.isEmpty() )
@@ -939,6 +781,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
+  mColumnSpace = itemElem.attribute( "columnSpace", "2.0" ).toDouble();
   mGroupSpace = itemElem.attribute( "groupSpace", "3.0" ).toDouble();
   mLayerSpace = itemElem.attribute( "layerSpace", "3.0" ).toDouble();
   mSymbolSpace = itemElem.attribute( "symbolSpace", "2.0" ).toDouble();
@@ -976,14 +819,19 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
 void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
 {
-  mColumns.clear();
   mComposerMap = map;
-  QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( map )
+  {
+    QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
 }
 
 void QgsComposerLegend::invalidateCurrentMap()
 {
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  }
   mComposerMap = 0;
 }
 
@@ -996,4 +844,262 @@ QStringList QgsComposerLegend::splitStringForWrapping( QString stringToSplt )
   else
     list = stringToSplt.split( mWrapChar );
   return list;
+}
+
+QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem* rootItem, bool splitLayer )
+{
+  QList<Atom> atoms;
+
+  if ( !rootItem ) return atoms;
+
+  Atom atom;
+
+  for ( int i = 0; i < rootItem->rowCount(); i++ )
+  {
+    QStandardItem* currentLayerItem = rootItem->child( i );
+    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentLayerItem );
+    if ( !currentLegendItem ) continue;
+
+    QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
+    if ( type == QgsComposerLegendItem::GroupItem )
+    {
+      // Group subitems
+      QList<Atom> groupAtoms = createAtomList( currentLayerItem, splitLayer );
+
+      Nucleon nucleon;
+      nucleon.item = currentLegendItem;
+      nucleon.size = drawGroupItemTitle( dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ) );
+
+      if ( groupAtoms.size() > 0 )
+      {
+        // Add internal space between this group title and the next nucleon
+        groupAtoms[0].size.rheight() += spaceAboveAtom( groupAtoms[0] );
+        // Prepend this group title to the first atom
+        groupAtoms[0].nucleons.prepend( nucleon );
+        groupAtoms[0].size.rheight() += nucleon.size.height();
+        groupAtoms[0].size.rwidth() = qMax( nucleon.size.width(), groupAtoms[0].size.width() );
+      }
+      else
+      {
+        // no subitems, append new atom
+        Atom atom;
+        atom.nucleons.append( nucleon );
+        atom.size.rwidth() += nucleon.size.width();
+        atom.size.rheight() += nucleon.size.height();
+        atom.size.rwidth() = qMax( nucleon.size.width(), atom.size.width() );
+        groupAtoms.append( atom );
+      }
+      atoms.append( groupAtoms );
+    }
+    else if ( type == QgsComposerLegendItem::LayerItem )
+    {
+      Nucleon nucleon;
+      nucleon.item = currentLegendItem;
+      nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
+
+      QList<Atom> layerAtoms;
+      Atom atom;
+      atom.nucleons.append( nucleon );
+      atom.size.rwidth() = nucleon.size.width();
+      atom.size.rheight() = nucleon.size.height();
+
+      for ( int j = 0; j < currentLegendItem->rowCount(); j++ )
+      {
+        QgsComposerLegendItem * symbolItem = dynamic_cast<QgsComposerLegendItem*>( currentLegendItem->child( j, 0 ) );
+        if ( !symbolItem ) continue;
+
+        Nucleon symbolNucleon = drawSymbolItem( symbolItem );
+
+        if ( !mSplitLayer || j == 0 )
+        {
+          // append to layer atom
+          // the width is not correct at this moment, we must align all symbol labels
+          atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
+          atom.size.rheight() += mSymbolSpace;
+          atom.size.rheight() += symbolNucleon.size.height();
+          atom.nucleons.append( symbolNucleon );
+        }
+        else
+        {
+          Atom symbolAtom;
+          symbolAtom.nucleons.append( symbolNucleon );
+          symbolAtom.size.rwidth() = symbolNucleon.size.width();
+          symbolAtom.size.rheight() = symbolNucleon.size.height();
+          layerAtoms.append( symbolAtom );
+        }
+      }
+      layerAtoms.prepend( atom );
+      atoms.append( layerAtoms );
+    }
+  }
+
+  return atoms;
+}
+
+void QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
+{
+  bool first = true;
+  foreach ( Nucleon nucleon, atom.nucleons )
+  {
+    QgsComposerLegendItem* item = nucleon.item;
+    //QgsDebugMsg( "text: " + item->text() );
+    if ( !item ) continue;
+    QgsComposerLegendItem::ItemType type = item->itemType();
+    if ( type == QgsComposerLegendItem::GroupItem )
+    {
+      QgsComposerGroupItem* groupItem = dynamic_cast<QgsComposerGroupItem*>( item );
+      if ( !groupItem ) continue;
+      if ( !first ) point.ry() += mGroupSpace;
+      drawGroupItemTitle( groupItem, painter, point );
+    }
+    else if ( type == QgsComposerLegendItem::LayerItem )
+    {
+      QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( item );
+      if ( !layerItem ) continue;
+      if ( !first ) point.ry() += mLayerSpace;
+      drawLayerItemTitle( layerItem, painter, point );
+    }
+    else if ( type == QgsComposerLegendItem::SymbologyItem ||
+              type == QgsComposerLegendItem::SymbologyV2Item ||
+              type == QgsComposerLegendItem::RasterSymbolItem )
+    {
+      if ( !first ) point.ry() += mSymbolSpace;
+      double labelXOffset = nucleon.labelXOffset;
+      drawSymbolItem( item, painter, point, labelXOffset );
+    }
+    point.ry() += nucleon.size.height();
+    first = false;
+  }
+}
+
+double QgsComposerLegend::spaceAboveAtom( Atom atom )
+{
+  if ( atom.nucleons.size() == 0 ) return 0;
+
+  Nucleon nucleon = atom.nucleons.first();
+
+  QgsComposerLegendItem* item = nucleon.item;
+  if ( !item ) return 0;
+
+  QgsComposerLegendItem::ItemType type = item->itemType();
+  switch ( type )
+  {
+    case QgsComposerLegendItem::GroupItem:
+      return mGroupSpace;
+      break;
+    case QgsComposerLegendItem::LayerItem:
+      return mLayerSpace;
+      break;
+    case QgsComposerLegendItem::SymbologyV2Item:
+    case QgsComposerLegendItem::RasterSymbolItem:
+      return mSymbolSpace;
+      break;
+    default:
+      break;
+  }
+  return 0;
+}
+
+void QgsComposerLegend::setColumns( QList<Atom>& atomList )
+{
+  if ( mColumnCount == 0 ) return;
+
+  // Divide atoms to columns
+  double totalHeight = 0;
+  bool first = true;
+  double maxAtomHeight = 0;
+  foreach ( Atom atom, atomList )
+  {
+    if ( !first )
+    {
+      totalHeight += spaceAboveAtom( atom );
+    }
+    totalHeight += atom.size.height();
+    maxAtomHeight = qMax( atom.size.height(), maxAtomHeight );
+    first  = false;
+  }
+
+  // We know height of each atom and we have to split them into columns
+  // minimizing max column height. It is sort of bin packing problem, NP-hard.
+  // We are using simple heuristic, brute fore appeared to be to slow,
+  // the number of combinations is N = n!/(k!*(n-k)!) where n = atomsCount-1
+  // and k = columnsCount-1
+
+  double avgColumnHeight = totalHeight / mColumnCount;
+  int currentColumn = 0;
+  int currentColumnAtomCount = 0; // number of atoms in current column
+  double currentColumnHeight = 0;
+  double maxColumnHeight = 0;
+  double closedColumnsHeight = 0;
+  first = true; // first in column
+  for ( int i = 0; i < atomList.size(); i++ )
+  {
+    Atom atom = atomList[i];
+    double currentHeight = currentColumnHeight;
+    if ( !first )
+    {
+      currentHeight += spaceAboveAtom( atom );
+    }
+    currentHeight += atom.size.height();
+
+    // Recalc average height for remaining columns including current
+    avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( mColumnCount - currentColumn );
+    if (( currentHeight - avgColumnHeight ) > atom.size.height() / 2 // center of current atom is over average height
+        && currentColumnAtomCount > 0 // do not leave empty column
+        && currentHeight > maxAtomHeight  // no sense to make smaller columns than max atom height
+        && currentHeight > maxColumnHeight  // no sense to make smaller columns than max column already created
+        && currentColumn < mColumnCount - 1 ) // must not exceed max number of columns
+    {
+      // New column
+      currentColumn++;
+      currentColumnAtomCount = 0;
+      closedColumnsHeight += currentColumnHeight;
+      currentColumnHeight = atom.size.height();
+    }
+    else
+    {
+      currentColumnHeight = currentHeight;
+    }
+    atomList[i].column = currentColumn;
+    currentColumnAtomCount++;
+    maxColumnHeight = qMax( currentColumnHeight, maxColumnHeight );
+
+    first  = false;
+  }
+
+  // Alling labels of symbols for each layr/column to the same labelXOffset
+  QMap<QString, double> maxSymbolWidth;
+  for ( int i = 0; i < atomList.size(); i++ )
+  {
+    for ( int j = 0; j < atomList[i].nucleons.size(); j++ )
+    {
+      QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
+      if ( !item ) continue;
+      QgsComposerLegendItem::ItemType type = item->itemType();
+      if ( type == QgsComposerLegendItem::SymbologyItem ||
+           type == QgsComposerLegendItem::SymbologyV2Item ||
+           type == QgsComposerLegendItem::RasterSymbolItem )
+      {
+        QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
+        maxSymbolWidth[key] = qMax( atomList[i].nucleons[j].symbolSize.width(), maxSymbolWidth[key] );
+      }
+    }
+  }
+  for ( int i = 0; i < atomList.size(); i++ )
+  {
+    for ( int j = 0; j < atomList[i].nucleons.size(); j++ )
+    {
+      QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
+      if ( !item ) continue;
+      QgsComposerLegendItem::ItemType type = item->itemType();
+      if ( type == QgsComposerLegendItem::SymbologyItem ||
+           type == QgsComposerLegendItem::SymbologyV2Item ||
+           type == QgsComposerLegendItem::RasterSymbolItem )
+      {
+        QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
+        atomList[i].nucleons[j].labelXOffset =  maxSymbolWidth[key] + mIconLabelSpace;
+        atomList[i].nucleons[j].size.rwidth() =  maxSymbolWidth[key] + mIconLabelSpace + atomList[i].nucleons[j].labelSize.width();
+      }
+    }
+  }
 }

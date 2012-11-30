@@ -36,26 +36,6 @@ class SLDatabaseInfo(DatabaseInfo):
 		]
 		return HtmlTable( tbl )
 
-	def spatialInfo(self):
-		ret = []
-
-		info = self.db.connector.getSpatialInfo()
-		if info == None:
-			return
-
-		tbl = [
-			("Library:", info[0]), 
-			("GEOS:", info[1]), 
-			("Proj:", info[2]) 
-		]
-		ret.append( HtmlTable( tbl ) )
-
-		if not self.db.connector.has_geometry_columns:
-			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
-				"This table is essential for many GIS applications for enumeration of tables." ) )
-
-		return ret
-
 	def generalInfo(self):
 		info = self.db.connector.getInfo()
 		tbl = [

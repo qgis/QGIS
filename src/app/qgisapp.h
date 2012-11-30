@@ -280,17 +280,21 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
-    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
+    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
+    /** @note added in 1.9 */
+    QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
+    /** @note added in 1.9 */
+    QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
-    /** @note added in 2.0 */
+    /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
@@ -437,13 +441,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
-
+    //! copies style of the active layer to the clipboard
     /**
        \param sourceLayer  The layer where the style will be taken from
                                         (defaults to the active layer on the legend)
      */
     void copyStyle( QgsMapLayer * sourceLayer = 0 );
-    //! copies style on the clipboard to the active layer
+    //! pastes style on the clipboard to the active layer
     /**
        \param destinatioLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)

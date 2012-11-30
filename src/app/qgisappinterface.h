@@ -308,12 +308,16 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionAddPgLayer();
     virtual QAction *actionAddWmsLayer();
     virtual QAction *actionLayerSeparator1();
+    /** @note added in 1.9 */
+    virtual QAction *actionCopyLayerStyle();
+    /** @note added in 1.9 */
+    virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
     virtual QAction *actionToggleEditing();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
-    /** @note added in 2.0 */
+    /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer();
     virtual QAction *actionLayerProperties();
     virtual QAction *actionLayerSeparator2();

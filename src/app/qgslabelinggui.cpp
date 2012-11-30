@@ -212,6 +212,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       mUpsidedownRadioOff->setChecked( true );
       break;
   }
+  mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
+  // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
+  mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
 
   wrapCharacterEdit->setText( lyr.wrapChar );
   mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
@@ -501,6 +504,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.upsidedownLabels = QgsPalLayerSettings::ShowAll;
   }
+  lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
+  // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
+  lyr.maxCurvedCharAngleOut = -mMaxCharAngleOutDSpinBox->value();
+
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.limitNumLabels = mLimitLabelChkBox->isChecked();
   lyr.maxNumLabels = mLimitLabelSpinBox->value();
@@ -958,6 +965,8 @@ void QgsLabelingGui::updateOptions()
            || ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsLine );
+    mMaxCharAngleFrame->setVisible(( stackedPlacement->currentWidget() == pageLine
+                                     && radLineCurved->isChecked() ) );
   }
   else
   {
