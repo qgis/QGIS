@@ -5566,14 +5566,14 @@ QVariant QgsVectorLayer::minimumValue( int index )
   }
   else // a joined field?
   {
-    int indexOffset; //offset between layer index and joined provider index
+    int indexOffset = 0; //offset between layer index and joined provider index
     const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, maxProviderIndex, indexOffset );
     if ( join )
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
       if ( vl )
       {
-        return vl->minimumValue( index );
+        return vl->minimumValue( index - indexOffset );
       }
     }
   }
@@ -5620,14 +5620,14 @@ QVariant QgsVectorLayer::maximumValue( int index )
   }
   else // a joined field?
   {
-    int indexOffset; //offset between layer index and joined provider index
+    int indexOffset = 0; //offset between layer index and joined provider index
     const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, maxProviderIndex, indexOffset );
     if ( join )
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
       if ( vl )
       {
-        return vl->maximumValue( index );
+        return vl->maximumValue( index - indexOffset );
       }
     }
   }
