@@ -121,11 +121,12 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   const QgsAttributeMap &attrs = feat.attributeMap();
 
   QgsFeature newFeat;
-  newFeat.setGeometry( *feat.geometry() );
+  if ( feat.geometry() )
+    newFeat.setGeometry( *feat.geometry() );
 
   for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
   {
-    // add only mapped attributes (un-mapped ones are not present in the
+    // add only mapped attributes (un-mapped ones will not be present in the
     // destination layer)
     if ( mOldToNewAttrIdx.contains( it.key() ) )
     {

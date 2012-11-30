@@ -1168,6 +1168,9 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       typeName = actionElem.attribute( "typeName" );
     }
 
+    if ( typeName.contains( ":" ) )
+      typeName = typeName.section( ":", 1, 1 );
+
     QDomNodeList typeNameList = mDocElem.elementsByTagName( typeName );
     if ( typeNameList.count() == 0 )
     {
@@ -1424,13 +1427,12 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
             }
             // Add the feature to th layer
             // and store it to put it's Feature Id in the response
-            layer->addFeature( *f, true );
-            inFeatList << *f;
+            inFeatList.append( *f );
           }
         }
       }
       // Commit the changes of the insert elements
-      if ( !layer->commitChanges() )
+      if ( !provider->addFeatures( inFeatList ) )
       {
         QDomElement trElem = doc.createElement( "TransactionResult" );
         QDomElement stElem = doc.createElement( "Status" );
@@ -1444,6 +1446,13 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
         trElem.appendChild( locElem );
 
         QDomElement mesElem = doc.createElement( "Message" );
+        QStringList mesErrors;
+        mesErrors << QString( "ERROR: %n feature(s) not added.").arg(inFeatList.size());
+        if ( provider->hasErrors() )
+        {
+          mesErrors << "\n  Provider errors:" << provider->errors();
+          provider->clearErrors();
+        }
         mesElem.appendChild( doc.createTextNode( layer->commitErrors().join( "\n  " ) ) );
         trElem.appendChild( mesElem );
 
@@ -1460,16 +1469,14 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   // Put the Feature Ids of the inserted feature
   if ( insertResults.size() > 0 )
   {
-    QDomElement irsElem = doc.createElement( "InsertResults" );
     foreach (const QString &fidStr, insertResults)
     {
       QDomElement irElem = doc.createElement( "InsertResult" );
       QDomElement fiElem = doc.createElement( "ogc:FeatureId" );
       fiElem.setAttribute( "fid", fidStr );
       irElem.appendChild( fiElem );
-      irsElem.appendChild( irElem );
+      respElem.appendChild( irElem );
     }
-    respElem.appendChild( irsElem );
   }
 
   // Set the transaction reposne for success

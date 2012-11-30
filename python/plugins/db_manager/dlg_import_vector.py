@@ -63,8 +63,9 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 
 		pk = self.outUri.keyColumn()
 		self.editPrimaryKey.setText(pk if pk != "" else self.default_pk)
-		geom = self.outUri.geometryColumn()
-		self.editGeomColumn.setText(geom if geom != "" else self.default_geom)
+		if self.inLayer.hasGeometryType():
+			geom = self.outUri.geometryColumn()
+			self.editGeomColumn.setText(geom if geom != "" else self.default_geom)
 
 		inCrs = self.inLayer.crs()
 		srid = inCrs.postgisSrid() if inCrs.isValid() else 4236
@@ -76,10 +77,11 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 
 	def checkSupports(self):
 		allowSpatial = self.db.connector.hasSpatialSupport()
-		self.chkGeomColumn.setEnabled(allowSpatial and self.inLayer.hasGeometryType())
-		self.chkSourceSrid.setEnabled(allowSpatial)
-		self.chkTargetSrid.setEnabled(allowSpatial)
-		self.chkSpatialIndex.setEnabled(allowSpatial)
+		hasGeomType = self.inLayer.hasGeometryType()
+		self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
+		self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
+		self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
+		self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 	
 		
 	def populateSchemas(self):
@@ -174,8 +176,11 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		# get pk and geom field names from the source layer or use the 
 		# ones defined by the user
 		pk = self.outUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
-		geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
-		geom = geom if geom != "" else self.default_geom
+		if self.inLayer.hasGeometryType():
+			geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
+			geom = geom if geom != "" else self.default_geom
+		else:
+			geom = QString()
 		
 		self.outUri.setDataSource( schema, table, geom, QString(), pk )
 		uri = self.outUri.uri()
