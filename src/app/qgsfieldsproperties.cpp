@@ -807,6 +807,8 @@ void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged( int inde
 
 void QgsFieldsProperties::apply()
 {
+  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
+
   for ( int i = 0; i < mAttributesList->rowCount(); i++ )
   {
     int idx = mAttributesList->item( i, attrIdCol )->text().toInt();
@@ -865,6 +867,15 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::UuidGenerator:
         break;
     }
+
+    if ( mAttributesList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWMS.insert( mAttributesList->item( i, attrNameCol )->text() );
+    }
+    if ( mAttributesList->item( i, attrWFSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWFS.insert( mAttributesList->item( i, attrNameCol )->text() );
+    }
   }
 
   //tabs and groups
@@ -879,4 +890,7 @@ void QgsFieldsProperties::apply()
   mLayer->setEditorLayout(( QgsVectorLayer::EditorLayout )mEditorLayoutComboBox->currentIndex() );
   mLayer->setEditForm( leEditForm->text() );
   mLayer->setEditFormInit( leEditFormInit->text() );
+
+  mLayer->setExcludeAttributesWMS( excludeAttributesWMS );
+  mLayer->setExcludeAttributesWFS( excludeAttributesWFS );
 }
