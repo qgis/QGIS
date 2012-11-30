@@ -90,9 +90,10 @@ class OutputSelectionPanel(QWidget):
         fileDialog.setConfirmOverwrite(True)
         if fileDialog.exec_() == QDialog.Accepted:
             filename = fileDialog.selectedFiles().first()
-            encoding = fileDialog.encoding()
+            encoding = fileDialog.encoding()            
             self.output.encoding = encoding
-            self.text.setText(str(filename))
+            filename= unicode(filename);            
+            self.text.setText(filename)
             settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(str(filename)))
             settings.setValue("/SextanteQGIS/encoding", encoding)
 

@@ -1,7 +1,7 @@
-import sextante.admintools.geoserver.workspace as ws
 from sextante.admintools.geoserver.resource import featuretype_from_index, coverage_from_index
 from sextante.admintools.geoserver.support import ResourceInfo, xml_property, key_value_pairs, \
         write_bool, write_dict, write_string, url
+from sextante.admintools.geoserver.workspace import Workspace
 
 def datastore_from_index(catalog, workspace, node):
     name = node.find("name")
@@ -18,7 +18,7 @@ class DataStore(ResourceInfo):
     def __init__(self, catalog, workspace, name):
         super(DataStore, self).__init__()
 
-        assert isinstance(workspace, ws.Workspace)
+        assert isinstance(workspace, Workspace)
         assert isinstance(name, basestring)
         self.catalog = catalog
         self.workspace = workspace
@@ -69,7 +69,7 @@ class CoverageStore(ResourceInfo):
     def __init__(self, catalog, workspace, name):
         super(CoverageStore, self).__init__()
 
-        assert isinstance(workspace, ws.Workspace)
+        assert isinstance(workspace, Workspace)
         assert isinstance(name, basestring)
 
         self.catalog = catalog
