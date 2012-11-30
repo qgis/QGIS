@@ -2176,9 +2176,18 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
+  QString relpath = symbolPathToName( path );
+
+  // convert image path to url
+  QUrl url( relpath );
+  if ( !url.isValid() || url.scheme().isEmpty() )
+  {
+    url.setUrl( QUrl::fromLocalFile( relpath ).toString() );
+  }
+
   QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
-  onlineResourceElem.setAttribute( "xlink:href", path );
+  onlineResourceElem.setAttribute( "xlink:href", url.toString() );
   element.appendChild( onlineResourceElem );
 
   QDomElement formatElem = doc.createElement( "se:Format" );
