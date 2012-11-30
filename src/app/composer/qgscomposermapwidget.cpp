@@ -81,6 +81,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   }
 
   updateOverviewSymbolMarker();
+  updateLineSymbolMarker();
 
   updateGuiElements();
   blockAllSignals( false );
@@ -412,10 +413,6 @@ void QgsComposerMapWidget::updateGuiElements()
 
     mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
 
-    QPen gridPen = mComposerMap->gridPen();
-    mLineWidthSpinBox->setValue( gridPen.widthF() );
-    mLineColorButton->setColor( gridPen.color() );
-
     blockAllSignals( false );
   }
 }
@@ -468,8 +465,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mKeepLayerListCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
-  mLineWidthSpinBox->blockSignals( b );
-  mLineColorButton->blockSignals( b );
+  mGridLineStyleButton->blockSignals( b );
   mDrawAnnotationCheckBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
   mAnnotationFormatComboBox->blockSignals( b );
@@ -696,20 +692,19 @@ void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mLineColorButton_clicked()
+void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
-  if ( newColor.isValid() )
+
+  QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  if ( d.exec() == QDialog::Accepted )
   {
-    mComposerMap->beginCommand( tr( "Grid pen changed" ) );
-    mLineColorButton->setColor( newColor );
-    mComposerMap->setGridPenColor( newColor );
-    mComposerMap->endCommand();
+    updateLineSymbolMarker();
   }
+
   mComposerMap->update();
 }
 
@@ -1019,6 +1014,15 @@ void QgsComposerMapWidget::updateOverviewSymbolMarker()
   {
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::updateLineSymbolMarker()
+{
+  if ( mComposerMap )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->gridLineSymbol(), mGridLineStyleButton->iconSize() );
+    mGridLineStyleButton->setIcon( icon );
   }
 }
 

@@ -36,8 +36,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>450</width>
-        <height>408</height>
+        <width>440</width>
+        <height>413</height>
        </rect>
       </property>
       <attribute name="label">
@@ -254,8 +254,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>199</width>
-        <height>177</height>
+        <width>440</width>
+        <height>413</height>
        </rect>
       </property>
       <attribute name="label">
@@ -362,8 +362,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>277</width>
-        <height>921</height>
+        <width>423</width>
+        <height>702</height>
        </rect>
       </property>
       <attribute name="label">
@@ -403,6 +403,16 @@
           </item>
           <item row="1" column="0" colspan="4">
            <layout class="QGridLayout" name="gridLayout_3">
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="mIntervalXLabel">
               <property name="text">
@@ -462,16 +472,6 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <double>9999999.000000000000000</double>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLabel" name="mOffsetYLabel">
               <property name="text">
@@ -516,43 +516,23 @@
              </widget>
             </item>
             <item row="5" column="0">
-             <widget class="QLabel" name="mLineWidthLabel">
-              <property name="text">
-               <string>Line width</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mLineWidthSpinBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
              <widget class="QLabel" name="mFrameStyleLabel">
               <property name="text">
                <string>Frame style</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="5" column="1">
              <widget class="QComboBox" name="mFrameStyleComboBox"/>
             </item>
-            <item row="7" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="mFrameWidthLabel">
               <property name="text">
                <string>Frame width</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="6" column="1">
              <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
             </item>
            </layout>
@@ -560,28 +540,19 @@
           <item row="2" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLabel" name="mLineColorLabel">
+             <widget class="QLabel" name="mLineStyleLabel">
               <property name="text">
-               <string>Line color</string>
+               <string>Line style</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
               </property>
-              <property name="buddy">
-               <cstring>mLineColorButton</cstring>
-              </property>
              </widget>
             </item>
             <item>
-             <widget class="QgsColorButton" name="mLineColorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+             <widget class="QPushButton" name="mGridLineStyleButton">
               <property name="text">
-               <string/>
+               <string>change...</string>
               </property>
              </widget>
             </item>
@@ -795,13 +766,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mDrawAnnotationCheckBox</tabstop>
   <tabstop>mAnnotationFontButton</tabstop>
