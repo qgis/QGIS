@@ -601,6 +601,9 @@ void QgsLegendLayer::updateAfterLayerModification()
 }
 void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 {
+  QgisApp::instance()->actionSaveAllEdits()->setEnabled(
+    QgisApp::instance()->unsavedEditableLayers().count() > 0 );
+
   if ( onlyGeomChanged )
   {
     return;

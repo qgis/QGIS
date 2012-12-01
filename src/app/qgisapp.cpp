@@ -949,6 +949,7 @@ void QgisApp::createActions()
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
+  connect( mActionSaveAllEdits, SIGNAL( triggered() ), this, SLOT( saveAllEdits() ) );
   connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
@@ -1650,6 +1651,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
   mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
   mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.png" ) );
+  mActionSaveAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.png" ) );
   mActionCutFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditCut.png" ) );
   mActionCopyFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.png" ) );
@@ -5099,6 +5101,38 @@ void QgisApp::saveEdits( QgsMapLayer *layer )
 
   vlayer->startEditing();
   vlayer->triggerRepaint();
+
+  actionSaveAllEdits()->setEnabled( unsavedEditableLayers().count() > 0 );
+}
+
+void QgisApp::saveAllEdits()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  foreach ( QgsMapLayer * layer, unsavedEditableLayers() )
+  {
+    saveEdits( layer );
+  }
+}
+
+QList<QgsMapLayer *> QgisApp::unsavedEditableLayers() const
+{
+  QList<QgsMapLayer*> unsavedLayers;
+  // use legend layers (instead of registry) so message listing mirrors its order
+  QList<QgsMapLayer*> layers = mMapLegend->layers();
+  if ( layers.count() > 0 )
+  {
+    foreach ( QgsMapLayer* layer, layers )
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vl && vl->isEditable() && vl->isModified() )
+      {
+        unsavedLayers.append( vl );
+      }
+    }
+  }
+  return unsavedLayers;
 }
 
 void QgisApp::layerSubsetString()
@@ -5133,7 +5167,6 @@ void QgisApp::layerSubsetString()
   // delete the query builder object
   delete qb;
 }
-
 
 bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 {
@@ -7090,6 +7123,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionSaveEdits->setEnabled( false );
+    mActionSaveAllEdits->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );

@@ -143,6 +143,7 @@
         <file>themes/default/mActionSaveAsPDF.png</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
         <file>themes/default/mActionSaveEdits.png</file>
+        <file>themes/default/mActionSaveAllEdits.png</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
         <file>themes/default/mActionSelectedToTop.png</file>
@@ -350,6 +351,7 @@
         <file>themes/gis/mActionSaveAsPDF.png</file>
         <file>themes/gis/mActionSaveAsSVG.png</file>
         <file>themes/gis/mActionSaveEdits.png</file>
+        <file>themes/gis/mActionSaveAllEdits.png</file>
         <file>themes/gis/mActionSaveMapAsImage.png</file>
         <file>themes/gis/mActionScaleBar.png</file>
         <file>themes/gis/mActionSelectedToTop.png</file>

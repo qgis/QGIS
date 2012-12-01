@@ -291,6 +291,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
+    QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
@@ -376,6 +377,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to map legend
     QgsLegend *legend();
+
+    /** Return vector layers with unsaved provider edits
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    QList<QgsMapLayer *> unsavedEditableLayers() const;
 
 #ifdef Q_OS_WIN
     //! ugly hack
@@ -550,7 +556,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Remove a layer from the map and legend
     void removeLayer();
     /** Duplicate map layer(s) in legend
-     * @note added in 2.0 */
+     * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set CRS of a layer
     void setLayerCRS();
@@ -773,6 +779,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save current edits and start new transaction
     void saveEdits();
+
+    /** Save all edits and start new transactions
+     * @note added in 1.9 */
+    void saveAllEdits();
 
     //! change layer subset of current vector layer
     void layerSubsetString();

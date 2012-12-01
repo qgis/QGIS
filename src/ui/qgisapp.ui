@@ -164,6 +164,7 @@
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionSaveEdits"/>
+    <addaction name="mActionSaveAllEdits"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionLayerSaveAs"/>
     <addaction name="mActionLayerSelectionSaveAs"/>
@@ -279,6 +280,7 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionSaveAllEdits"/>
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveEdits"/>
    <addaction name="mActionAddFeature"/>
@@ -1847,6 +1849,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>SVG annotation</string>
+   </property>
+  </action>
+  <action name="mActionSaveAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.png</normaloff>:/images/themes/default/mActionSaveAllEdits.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save All Edits</string>
+   </property>
+   <property name="toolTip">
+    <string>Save All Edits</string>
+   </property>
+   <property name="statusTip">
+    <string>Save edits to editing layers, but continue editing</string>
    </property>
   </action>
  </widget>
