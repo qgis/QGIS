@@ -43,6 +43,9 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         self.groupIcon.addPixmap(self.style().standardPixmap(QStyle.SP_DirOpenIcon),
                                  QIcon.Normal, QIcon.On)
 
+        if hasattr(self.searchBox, 'setPlaceholderText'):
+            self.searchBox.setPlaceholderText(self.tr("Search..."))
+
         self.fillTree()
 
     def fillTree(self):

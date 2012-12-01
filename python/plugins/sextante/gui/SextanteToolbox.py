@@ -60,6 +60,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
 
+        if hasattr(self.searchBox, 'setPlaceholderText'):
+            self.searchBox.setPlaceholderText(self.tr("Search..."))
+
         self.fillTree()
 
     def algsListHasChanged(self):
