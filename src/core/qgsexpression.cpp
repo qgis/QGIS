@@ -1213,8 +1213,10 @@ QgsExpression::QgsExpression( const QString& expr )
     : mExpression( expr )
     , mRowNumber( 0 )
     , mScale( 0 )
-    , mCalc( NULL )
+
 {
+  initGeomCalculator();
+
   mRootNode = ::parseExpression( mExpression, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
@@ -1226,7 +1228,6 @@ QgsExpression::QgsExpression( const QString& expr )
 QgsExpression::~QgsExpression()
 {
   delete mRootNode;
-  delete mCalc;
 }
 
 QStringList QgsExpression::referencedColumns()
@@ -1261,11 +1262,16 @@ bool QgsExpression::needsGeometry()
 
 void QgsExpression::initGeomCalculator()
 {
-  mCalc = new QgsDistanceArea;
-  QSettings settings;
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
-  mCalc->setEllipsoid( ellipsoid );
-  mCalc->setEllipsoidalMode( false );
+  // Use planimetric as default
+  mCalc.setEllipsoidalMode( false );
+}
+
+void QgsExpression::setGeomCalculator( QgsDistanceArea& calc )
+{
+  // Copy from supplied calculator
+  mCalc.setEllipsoid( calc.ellipsoid() );
+  mCalc.setEllipsoidalMode( calc.ellipsoidalEnabled() );
+  mCalc.setSourceCrs( calc.sourceCrs() );
 }
 
 bool QgsExpression::prepare( const QgsFieldMap& fields )
@@ -1310,7 +1316,6 @@ QString QgsExpression::dump() const
 
   return mRootNode->dump();
 }
-
 
 void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
@@ -1393,7 +1398,6 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
 
     int start = index;
     index = pos + rx.matchedLength();
-
     QString to_replace = rx.cap( 1 ).trimmed();
     QgsDebugMsg( "Found expression: " + to_replace );
 

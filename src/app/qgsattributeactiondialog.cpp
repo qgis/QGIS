@@ -23,6 +23,9 @@ back to QgsVectorLayer.
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
@@ -173,6 +176,13 @@ void QgsAttributeActionDialog::insertExpression()
   // display the expression builder
   QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
   dlg.setWindowTitle( tr( "Insert expression" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mActions->layer()->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
   if ( dlg.exec() == QDialog::Accepted )
   {
     QString expression =  dlg.expressionBuilder()->expressionText();
