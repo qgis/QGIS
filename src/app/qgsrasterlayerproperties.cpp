@@ -72,6 +72,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mRGBMinimumMaximumEstimated = true;
 
   setupUi( this );
+
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );

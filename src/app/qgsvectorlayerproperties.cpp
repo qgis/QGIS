@@ -80,6 +80,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 {
   setupUi( this );
 
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
