@@ -25,7 +25,15 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui
+
+import codecs
+import pickle
+
+from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.gui.HelpEditionDialog import HelpEditionDialog
+from sextante.gui.ParametersDialog import ParametersDialog
+
 from sextante.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
 from sextante.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -33,18 +41,60 @@ from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
 from sextante.modeler.Providers import Providers
-from sextante.gui.HelpEditionDialog import HelpEditionDialog
-import pickle
-from sextante.gui.ParametersDialog import ParametersDialog
-from sextante.core.SextanteUtils import SextanteUtils
-import codecs
 
-class ModelerDialog(QtGui.QDialog):
+from sextante.ui.ui_DlgModeler import Ui_DlgModeler
+
+class ModelerDialog(QDialog, Ui_DlgModeler):
     def __init__(self, alg=None):
-        QtGui.QDialog.__init__(self)
-        self.setupUi()
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
-                            QtCore.Qt.WindowMinMaxButtonsHint)
+        QDialog.__init__(self)
+
+        self.setupUi(self)
+
+        self.setWindowFlags(self.windowFlags() | Qt.WindowSystemMenuHint |
+                            Qt.WindowMinMaxButtonsHint)
+
+        self.tabWidget.setCurrentIndex(0)
+
+        self.scene = ModelerScene(self)
+        self.scene.setSceneRect(QRectF(0, 0, 4000, 4000))
+        self.view.setScene(self.scene)
+        self.view.ensureVisible(0, 0, 10, 10)
+
+        # additional buttons
+        self.editHelpButton = QPushButton(self.tr("Edit model help"))
+        self.buttonBox.addButton(self.editHelpButton, QDialogButtonBox.ActionRole)
+        self.runButton = QPushButton(self.tr("Run"))
+        self.runButton.setToolTip(self.tr("Execute current model"))
+        self.buttonBox.addButton(self.runButton, QDialogButtonBox.ActionRole)
+        self.openButton = QPushButton(self.tr("Open"))
+        self.openButton.setToolTip(self.tr("Open existing model"))
+        self.buttonBox.addButton(self.openButton, QDialogButtonBox.ActionRole)
+        self.saveButton = QPushButton(self.tr("Save"))
+        self.saveButton.setToolTip(self.tr("Save current model"))
+        self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
+
+        # fill trees with inputs and algorithms
+        self.fillInputsTree()
+        self.fillAlgorithmTree()
+
+        if hasattr(self.searchBox, 'setPlaceholderText'):
+            self.searchBox.setPlaceholderText(self.tr("Search..."))
+        if hasattr(self.textName, 'setPlaceholderText'):
+            self.textName.setPlaceholderText("[Enter model name here]")
+        if hasattr(self.textGroup, 'setPlaceholderText'):
+            self.textGroup.setPlaceholderText("[Enter group name here]")
+
+        # connect signals and slots
+        self.inputsTree.doubleClicked.connect(self.addInput)
+
+        self.searchBox.textChanged.connect(self.fillAlgorithmTree)
+        self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
+
+        self.openButton.clicked.connect(self.openModel)
+        self.saveButton.clicked.connect(self.saveModel)
+        self.runButton.clicked.connect(self.runModel)
+        self.editHelpButton.clicked.connect(self.editHelp)
+
         if alg is not None:
             self.alg = alg
             self.textGroup.setText(alg.group)
@@ -52,131 +102,129 @@ class ModelerDialog(QtGui.QDialog):
             self.repaintModel()
         else:
             self.alg = ModelerAlgorithm()
+
         self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
-    def setupUi(self):
-        self.resize(1000, 600)
-        self.setWindowTitle("SEXTANTE Modeler")
-        self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMaximumSize(QtCore.QSize(350, 10000))
-        self.tabWidget.setMinimumWidth(300)
-
-        #left hand side part
-        #==================================
-        self.inputsTree = QtGui.QTreeWidget()
-        self.inputsTree.setHeaderHidden(True)
-        self.fillInputsTree()
-        self.inputsTree.doubleClicked.connect(self.addInput)
-        self.tabWidget.addTab(self.inputsTree, "Inputs")
-
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.searchBox = QtGui.QLineEdit()
-        self.searchBox.textChanged.connect(self.fillAlgorithmTree)
-        self.verticalLayout.addWidget(self.searchBox)
-        self.algorithmTree = QtGui.QTreeWidget()
-        self.algorithmTree.setHeaderHidden(True)
-        self.fillAlgorithmTree()
-        self.verticalLayout.addWidget(self.algorithmTree)
-        self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
-
-        self.algorithmsTab = QtGui.QWidget()
-        self.algorithmsTab.setLayout(self.verticalLayout)
-        self.tabWidget.addTab(self.algorithmsTab, "Algorithms")
-
-        #right hand side part
-        #==================================
-        self.textName = QtGui.QLineEdit()
-        if hasattr(self.textName, 'setPlaceholderText'):
-            self.textName.setPlaceholderText("[Enter model name here]")
-        self.textGroup = QtGui.QLineEdit()
-        if hasattr(self.textGroup, 'setPlaceholderText'):
-            self.textGroup.setPlaceholderText("[Enter group name here]")
-        self.horizontalLayoutNames = QtGui.QHBoxLayout()
-        self.horizontalLayoutNames.setSpacing(2)
-        self.horizontalLayoutNames.setMargin(0)
-        self.horizontalLayoutNames.addWidget(self.textName)
-        self.horizontalLayoutNames.addWidget(self.textGroup)
-
-        self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 4000, 4000))
-
-        self.canvasTabWidget = QtGui.QTabWidget()
-        self.canvasTabWidget.setMinimumWidth(300)
-        self.view = QtGui.QGraphicsView(self.scene)
-
-        #=======================================================================
-        # self.canvasTabWidget.addTab(self.view, "Design")
-        # self.pythonText = QtGui.QTextEdit()
-        # self.createScriptButton = QtGui.QPushButton()
-        # self.createScriptButton.setText("Create script from model code")
-        # self.createScriptButton.clicked.connect(self.createScript)
-        # self.verticalLayoutPython = QtGui.QVBoxLayout()
-        # self.verticalLayoutPython.setSpacing(2)
-        # self.verticalLayoutPython.setMargin(0)
-        # self.verticalLayoutPython.addWidget(self.pythonText)
-        # self.verticalLayoutPython.addWidget(self.createScriptButton)
-        # self.pythonWidget = QtGui.QWidget()
-        # self.pythonWidget.setLayout(self.verticalLayoutPython)
-        # self.canvasTabWidget.addTab(self.pythonWidget, "Python code")
-        #=======================================================================
-
-        self.canvasLayout = QtGui.QVBoxLayout()
-        self.canvasLayout.setSpacing(2)
-        self.canvasLayout.setMargin(0)
-        self.canvasLayout.addLayout(self.horizontalLayoutNames)
-        self.canvasLayout.addWidget(self.view)#canvasTabWidget)
-
-        #upper part, putting the two previous parts together
-        #===================================================
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.addWidget(self.tabWidget)
-        self.horizontalLayout.addLayout(self.canvasLayout)
-
-        #And the whole layout
-        #==========================
-
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.editHelpButton = QtGui.QPushButton()
-        self.editHelpButton.setText("Edit model help")
-        self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
-        self.runButton = QtGui.QPushButton()
-        self.runButton.setText("Run")
-        self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
-        self.openButton = QtGui.QPushButton()
-        self.openButton.setText("Open")
-        self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
-        self.saveButton = QtGui.QPushButton()
-        self.saveButton.setText("Save")
-        self.buttonBox.addButton(self.saveButton, QtGui.QDialogButtonBox.ActionRole)
-        self.closeButton = QtGui.QPushButton()
-        self.closeButton.setText("Close")
-        self.buttonBox.addButton(self.closeButton, QtGui.QDialogButtonBox.ActionRole)
-        QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
-        QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveModel)
-        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
-        QObject.connect(self.runButton, QtCore.SIGNAL("clicked()"), self.runModel)
-        QObject.connect(self.editHelpButton, QtCore.SIGNAL("clicked()"), self.editHelp)
-
-        self.globalLayout = QtGui.QVBoxLayout()
-        self.globalLayout.setSpacing(2)
-        self.globalLayout.setMargin(0)
-        self.globalLayout.addLayout(self.horizontalLayout)
-        self.globalLayout.addWidget(self.buttonBox)
-        self.setLayout(self.globalLayout)
-        QtCore.QMetaObject.connectSlotsByName(self)
-
-        self.view.ensureVisible(0, 0, 10, 10)
-
-    def closeWindow(self):
-        self.close()
+    #~ def setupUi(self):
+        #~ self.resize(1000, 600)
+        #~ self.setWindowTitle("SEXTANTE Modeler")
+        #~ self.tabWidget = QtGui.QTabWidget()
+        #~ self.tabWidget.setMaximumSize(QtCore.QSize(350, 10000))
+        #~ self.tabWidget.setMinimumWidth(300)
+#~
+        #~ #left hand side part
+        #~ #==================================
+        #~ self.inputsTree = QtGui.QTreeWidget()
+        #~ self.inputsTree.setHeaderHidden(True)
+        #~ self.fillInputsTree()
+        #~ self.inputsTree.doubleClicked.connect(self.addInput)
+        #~ self.tabWidget.addTab(self.inputsTree, "Inputs")
+#~
+        #~ self.verticalLayout = QtGui.QVBoxLayout()
+        #~ self.verticalLayout.setSpacing(2)
+        #~ self.verticalLayout.setMargin(0)
+        #~ self.searchBox = QtGui.QLineEdit()
+        #~ self.searchBox.textChanged.connect(self.fillAlgorithmTree)
+        #~ self.verticalLayout.addWidget(self.searchBox)
+        #~ self.algorithmTree = QtGui.QTreeWidget()
+        #~ self.algorithmTree.setHeaderHidden(True)
+        #~ self.fillAlgorithmTree()
+        #~ self.verticalLayout.addWidget(self.algorithmTree)
+        #~ self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
+#~
+        #~ self.algorithmsTab = QtGui.QWidget()
+        #~ self.algorithmsTab.setLayout(self.verticalLayout)
+        #~ self.tabWidget.addTab(self.algorithmsTab, "Algorithms")
+#~
+        #~ #right hand side part
+        #~ #==================================
+        #~ self.textName = QtGui.QLineEdit()
+        #~ if hasattr(self.textName, 'setPlaceholderText'):
+            #~ self.textName.setPlaceholderText("[Enter model name here]")
+        #~ self.textGroup = QtGui.QLineEdit()
+        #~ if hasattr(self.textGroup, 'setPlaceholderText'):
+            #~ self.textGroup.setPlaceholderText("[Enter group name here]")
+        #~ self.horizontalLayoutNames = QtGui.QHBoxLayout()
+        #~ self.horizontalLayoutNames.setSpacing(2)
+        #~ self.horizontalLayoutNames.setMargin(0)
+        #~ self.horizontalLayoutNames.addWidget(self.textName)
+        #~ self.horizontalLayoutNames.addWidget(self.textGroup)
+#~
+        #~ self.scene = ModelerScene(self)
+        #~ self.scene.setSceneRect(QtCore.QRectF(0, 0, 4000, 4000))
+#~
+        #~ self.canvasTabWidget = QtGui.QTabWidget()
+        #~ self.canvasTabWidget.setMinimumWidth(300)
+        #~ self.view = QtGui.QGraphicsView(self.scene)
+#~
+        #~ #=======================================================================
+        #~ # self.canvasTabWidget.addTab(self.view, "Design")
+        #~ # self.pythonText = QtGui.QTextEdit()
+        #~ # self.createScriptButton = QtGui.QPushButton()
+        #~ # self.createScriptButton.setText("Create script from model code")
+        #~ # self.createScriptButton.clicked.connect(self.createScript)
+        #~ # self.verticalLayoutPython = QtGui.QVBoxLayout()
+        #~ # self.verticalLayoutPython.setSpacing(2)
+        #~ # self.verticalLayoutPython.setMargin(0)
+        #~ # self.verticalLayoutPython.addWidget(self.pythonText)
+        #~ # self.verticalLayoutPython.addWidget(self.createScriptButton)
+        #~ # self.pythonWidget = QtGui.QWidget()
+        #~ # self.pythonWidget.setLayout(self.verticalLayoutPython)
+        #~ # self.canvasTabWidget.addTab(self.pythonWidget, "Python code")
+        #~ #=======================================================================
+#~
+        #~ self.canvasLayout = QtGui.QVBoxLayout()
+        #~ self.canvasLayout.setSpacing(2)
+        #~ self.canvasLayout.setMargin(0)
+        #~ self.canvasLayout.addLayout(self.horizontalLayoutNames)
+        #~ self.canvasLayout.addWidget(self.view)#canvasTabWidget)
+#~
+        #~ #upper part, putting the two previous parts together
+        #~ #===================================================
+        #~ self.horizontalLayout = QtGui.QHBoxLayout()
+        #~ self.horizontalLayout.setSpacing(2)
+        #~ self.horizontalLayout.setMargin(0)
+        #~ self.horizontalLayout.addWidget(self.tabWidget)
+        #~ self.horizontalLayout.addLayout(self.canvasLayout)
+#~
+        #~ #And the whole layout
+        #~ #==========================
+#~
+        #~ self.buttonBox = QtGui.QDialogButtonBox()
+        #~ self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        #~ self.editHelpButton = QtGui.QPushButton()
+        #~ self.editHelpButton.setText("Edit model help")
+        #~ self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
+        #~ self.runButton = QtGui.QPushButton()
+        #~ self.runButton.setText("Run")
+        #~ self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
+        #~ self.openButton = QtGui.QPushButton()
+        #~ self.openButton.setText("Open")
+        #~ self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
+        #~ self.saveButton = QtGui.QPushButton()
+        #~ self.saveButton.setText("Save")
+        #~ self.buttonBox.addButton(self.saveButton, QtGui.QDialogButtonBox.ActionRole)
+        #~ self.closeButton = QtGui.QPushButton()
+        #~ self.closeButton.setText("Close")
+        #~ self.buttonBox.addButton(self.closeButton, QtGui.QDialogButtonBox.ActionRole)
+        #~ QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
+        #~ QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveModel)
+        #~ QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        #~ QObject.connect(self.runButton, QtCore.SIGNAL("clicked()"), self.runModel)
+        #~ QObject.connect(self.editHelpButton, QtCore.SIGNAL("clicked()"), self.editHelp)
+#~
+        #~ self.globalLayout = QtGui.QVBoxLayout()
+        #~ self.globalLayout.setSpacing(2)
+        #~ self.globalLayout.setMargin(0)
+        #~ self.globalLayout.addLayout(self.horizontalLayout)
+        #~ self.globalLayout.addWidget(self.buttonBox)
+        #~ self.setLayout(self.globalLayout)
+        #~ QtCore.QMetaObject.connectSlotsByName(self)
+#~
+        #~ self.view.ensureVisible(0, 0, 10, 10)
 
     def editHelp(self):
         dlg = HelpEditionDialog(self.alg)
@@ -223,7 +271,10 @@ class ModelerDialog(QtGui.QDialog):
 
     def saveModel(self):
         if unicode(self.textGroup.text()).strip() == "" or unicode(self.textName.text()).strip() == "":
-            QMessageBox.warning(self, "Warning", "Please enter group and model names before saving")
+            QMessageBox.warning(self,
+                                self.tr("Warning"),
+                                self.tr("Please enter group and model names before saving")
+                               )
             return
         self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
         self.alg.name = unicode(self.textName.text())
@@ -231,7 +282,7 @@ class ModelerDialog(QtGui.QDialog):
         if self.alg.descriptionFile != None:
             filename = self.alg.descriptionFile
         else:
-            filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)"))
+            filename = unicode(QFileDialog.getSaveFileName(self, self.tr("Save Model"), ModelerUtils.modelsFolder(), self.tr("SEXTANTE models (*.model)")))
             if filename:
                 if not filename.endswith(".model"):
                     filename += ".model"
@@ -249,10 +300,13 @@ class ModelerDialog(QtGui.QDialog):
                 pickle.dump(self.help, f)
                 f.close()
                 self.help = None
-            QtGui.QMessageBox.information(self, "Model saving", "Model was correctly saved.")
+            QMessageBox.information(self,
+                                    self.tr("Model saving"),
+                                    self.tr("Model was correctly saved.")
+                                   )
 
     def openModel(self):
-        filename = unicode(QtGui.QFileDialog.getOpenFileName(self, "Open Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)"))
+        filename = unicode(QFileDialog.getOpenFileName(self, self.tr("Open Model"), ModelerUtils.modelsFolder(), self.tr("SEXTANTE models (*.model)")))
         if filename:
             try:
                 alg = ModelerAlgorithm()
@@ -265,16 +319,17 @@ class ModelerDialog(QtGui.QDialog):
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.view.centerOn(0,0)
             except WrongModelException, e:
-                QMessageBox.critical(self, "Could not open model", "The selected model could not be loaded\nWrong line:" + e.msg)
-
+                QMessageBox.critical(self,
+                                     self.tr("Could not open model"),
+                                     self.tr("The selected model could not be loaded.\nWrong line: %1").arg(e.msg)
+                                    )
 
     def repaintModel(self):
         self.scene = ModelerScene()
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE, ModelerAlgorithm.CANVAS_SIZE))
+        self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE, ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
         #self.pythonText.setText(self.alg.getAsPythonCode())
-
 
     def addInput(self):
         item = self.inputsTree.currentItem()
@@ -288,17 +343,15 @@ class ModelerDialog(QtGui.QDialog):
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastParameterItem())
 
-
     def fillInputsTree(self):
-        parametersItem = QtGui.QTreeWidgetItem()
-        parametersItem.setText(0, "Parameters")
+        parametersItem = QTreeWidgetItem()
+        parametersItem.setText(0, self.tr("Parameters"))
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
-            paramItem = QtGui.QTreeWidgetItem()
+            paramItem = QTreeWidgetItem()
             paramItem.setText(0, paramType)
             parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
-
 
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -331,7 +384,7 @@ class ModelerDialog(QtGui.QDialog):
                     if alg.group in groups:
                         groupItem = groups[alg.group]
                     else:
-                        groupItem = QtGui.QTreeWidgetItem()
+                        groupItem = QTreeWidgetItem()
                         groupItem.setText(0, alg.group)
                         groupItem.setToolTip(0, alg.group)
                         groups[alg.group] = groupItem
@@ -339,7 +392,7 @@ class ModelerDialog(QtGui.QDialog):
                     groupItem.addChild(algItem)
 
             if len(groups) > 0:
-                providerItem = QtGui.QTreeWidgetItem()
+                providerItem = QTreeWidgetItem()
                 providerItem.setText(0, Providers.providers[providerName].getDescription())
                 providerItem.setToolTip(0, Providers.providers[providerName].getDescription())
                 providerItem.setIcon(0, Providers.providers[providerName].getIcon())
@@ -353,7 +406,7 @@ class ModelerDialog(QtGui.QDialog):
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
-class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
+class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
