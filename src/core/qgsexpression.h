@@ -227,47 +227,47 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-      Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false )
-          : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
-      /** The name of the function. */
-      QString name() { return mName; }
-      /** The number of parameters this function takes. */
-      int params() { return mParams; }
-      /** Does this function use a geometry object. */
-      bool usesgeometry() { return mUsesGeometry; }
-      /** The group the function belongs to. */
-      QString group() { return mGroup; }
-      /** The help text for the function. */
-      QString helptext() { return mHelpText; }
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false )
+            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
+        /** The name of the function. */
+        QString name() { return mName; }
+        /** The number of parameters this function takes. */
+        int params() { return mParams; }
+        /** Does this function use a geometry object. */
+        bool usesgeometry() { return mUsesGeometry; }
+        /** The group the function belongs to. */
+        QString group() { return mGroup; }
+        /** The help text for the function. */
+        QString helptext() { return mHelpText; }
 
-      virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent) = 0;
+        virtual QVariant func( const QVariantList& values, QgsFeature* f, QgsExpression* parent ) = 0;
 
-      bool operator==(const Function& other) const
-      {
-        if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
-          return true;
+        bool operator==( const Function& other ) const
+        {
+          if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
+            return true;
 
-        return false;
-      }
+          return false;
+        }
 
-    private:
-      QString mName;
-      int mParams;
-      bool mUsesGeometry;
-      QString mGroup;
-      QString mHelpText;
+      private:
+        QString mName;
+        int mParams;
+        bool mUsesGeometry;
+        QString mGroup;
+        QString mHelpText;
     };
 
     class StaticFunction : public Function
     {
       public:
         StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
-          : Function( fnname, params, group, helpText, usesGeometry), mFnc( fcn ) {}
+            : Function( fnname, params, group, helpText, usesGeometry ), mFnc( fcn ) {}
 
-      virtual QVariant func(const QVariantList& values, QgsFeature* f, QgsExpression* parent)
-      {
-        return mFnc(values,f, parent);
-      } 
+        virtual QVariant func( const QVariantList& values, QgsFeature* f, QgsExpression* parent )
+        {
+          return mFnc( values, f, parent );
+        }
 
       private:
         FcnEval mFnc;
@@ -275,13 +275,13 @@ class CORE_EXPORT QgsExpression
 
     const static QList<Function*> &Functions();
     static QList<Function*> gmFunctions;
-    
+
     static QStringList gmBuiltinFunctions;
     const static QStringList &BuiltinFunctions();
 
-    static bool registerFunction(Function* function);
-    static bool unregisterFunction(QString name);
-    
+    static bool registerFunction( Function* function );
+    static bool unregisterFunction( QString name );
+
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 

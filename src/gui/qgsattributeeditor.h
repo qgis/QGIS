@@ -82,21 +82,21 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
 
 class QgsStringRelay : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
+  public:
 
-  QgsStringRelay( QObject* parent = NULL )
-    : QObject( parent ) {}
+    QgsStringRelay( QObject* parent = NULL )
+        : QObject( parent ) {}
 
-public slots:
-  void changeText( QString str )
-  {
-    emit textChanged( str );
-  }
+  public slots:
+    void changeText( QString str )
+    {
+      emit textChanged( str );
+    }
 
-signals:
-  void textChanged( QString );
+  signals:
+    void textChanged( QString );
 };
 
 #endif

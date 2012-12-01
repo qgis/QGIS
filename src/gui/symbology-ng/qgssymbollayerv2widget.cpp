@@ -799,7 +799,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_editingFinished()
     QUrl url( mFileLineEdit->text() );
     if ( !url.isValid() )
     {
-        return;
+      return;
     }
   }
 
@@ -996,7 +996,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_editingFinished()
     QUrl url( mSVGLineEdit->text() );
     if ( !url.isValid() )
     {
-        return;
+      return;
     }
   }
 

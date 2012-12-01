@@ -600,9 +600,9 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   if ( unique_vals.size() >= 1000 )
   {
     int res = QMessageBox::warning( 0, tr( "High number of classes!" ),
-        tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
-        QMessageBox::Ok | QMessageBox::Cancel,
-        QMessageBox::Cancel );
+                                    tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
+                                    QMessageBox::Ok | QMessageBox::Cancel,
+                                    QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {
       return;

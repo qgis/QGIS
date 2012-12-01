@@ -1746,7 +1746,7 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  if (doc.documentElement().tagName() == "WFS_Capabilities")
+  if ( doc.documentElement().tagName() == "WFS_Capabilities" )
   {
     serviceWFSCapabilities( parentElement, doc );
     return;
@@ -2010,7 +2010,7 @@ void QgsProjectParser::serviceWFSCapabilities( QDomElement& parentElement, QDomD
   }
 
   serviceElem.appendChild( onlineResourceElem );
-  
+
   //Fees
   QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
   if ( !feesElem.isNull() )

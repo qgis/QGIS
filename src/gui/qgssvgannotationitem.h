@@ -23,22 +23,22 @@
 
 class GUI_EXPORT QgsSvgAnnotationItem: public QgsAnnotationItem
 {
-    public:
+  public:
 
     QgsSvgAnnotationItem( QgsMapCanvas* canvas );
     ~QgsSvgAnnotationItem();
 
-        void writeXML( QDomDocument& doc ) const;
-        void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXML( QDomDocument& doc ) const;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
 
-        void paint( QPainter* painter );
+    void paint( QPainter* painter );
 
-        void setFilePath( const QString& file );
-        QString filePath() const { return mFilePath; }
+    void setFilePath( const QString& file );
+    QString filePath() const { return mFilePath; }
 
-    private:
-        QSvgRenderer mSvgRenderer;
-        QString mFilePath;
+  private:
+    QSvgRenderer mSvgRenderer;
+    QString mFilePath;
 };
 
 #endif // QGSSVGANNOTATIONITEM_H

@@ -26,20 +26,20 @@ class QgsAnnotationWidget;
 class QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
-    public:
-        QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0);
-        ~QgsSvgAnnotationDialog();
+  public:
+    QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsSvgAnnotationDialog();
 
-    private slots:
-        void on_mBrowseToolButton_clicked();
-        void applySettingsToItem();
-        void deleteItem();
+  private slots:
+    void on_mBrowseToolButton_clicked();
+    void applySettingsToItem();
+    void deleteItem();
 
-    private:
-        QgsSvgAnnotationDialog(); //forbidden
+  private:
+    QgsSvgAnnotationDialog(); //forbidden
 
-        QgsSvgAnnotationItem* mItem;
-        QgsAnnotationWidget* mEmbeddedWidget;
+    QgsSvgAnnotationItem* mItem;
+    QgsAnnotationWidget* mEmbeddedWidget;
 };
 
 #endif // QGSSVGANNOTATIONDIALOG_H

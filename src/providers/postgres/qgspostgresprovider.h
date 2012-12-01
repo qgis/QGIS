@@ -339,7 +339,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param offset specifies offset to use for the pk value parameter
      * @param alias specifies an optional alias given to the subject table
      */
-    QString pkParamWhereClause( int offset, const char* alias=0 ) const;
+    QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
     QString whereClause( QgsFeatureId featureId ) const;
 
     bool hasSufficientPermsAndCapabilities();

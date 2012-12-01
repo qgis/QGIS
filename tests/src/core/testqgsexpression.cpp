@@ -561,10 +561,10 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QTest::newRow( "geomFromWKT Point" ) << "geomFromWKT('"+QgsGeometry::fromPoint( point )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
-      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('"+QgsGeometry::fromPolyline( line )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
-      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('"+QgsGeometry::fromPolyline( polyline )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
-      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('"+QgsGeometry::fromPolygon( polygon )->exportToWkt()+"')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
+      QTest::newRow( "geomFromWKT Point" ) << "geomFromWKT('" + QgsGeometry::fromPoint( point )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "geomFromWKT Line" ) << "geomFromWKT('" + QgsGeometry::fromPolyline( line )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
+      QTest::newRow( "geomFromWKT Polyline" ) << "geomFromWKT('" + QgsGeometry::fromPolyline( polyline )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
+      QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
     }
 
     void eval_geometry_constructor()
@@ -668,7 +668,7 @@ class TestQgsExpression: public QObject
       QgsPoint point2( 30, 20 );
       QgsGeometry* pnt1 = QgsGeometry::fromPoint( point1 );
       QgsGeometry* pnt2 = QgsGeometry::fromPoint( point2 );
-      QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('"+pnt2->exportToWkt()+"') )" << ( void* ) pnt1 << false << true << ( void* ) pnt1->combine( pnt2 );
+      QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('" + pnt2->exportToWkt() + "') )" << ( void* ) pnt1 << false << true << ( void* ) pnt1->combine( pnt2 );
 
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "intersection" ) << "intersection( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,5 5,10 0,0 0))" );

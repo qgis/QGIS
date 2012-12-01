@@ -19,7 +19,7 @@
 
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WFlags fl )
-  : QDialog( parent, fl ), mChar( QChar::Null )
+    : QDialog( parent, fl ), mChar( QChar::Null )
 {
   setupUi( this );
   mCharWidget = new CharacterWidget( this );

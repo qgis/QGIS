@@ -329,7 +329,7 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
 
   return QgsExpression::Interval::invalidInterVal();
 }
-static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent)
+static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
 {
   if ( value.canConvert<QgsGeometry>() )
     return value.value<QgsGeometry>();
@@ -775,7 +775,7 @@ static QVariant fcnGeometry( const QVariantList& , QgsFeature* f, QgsExpression*
 }
 static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
-  QString wkt = getStringValue( values.at( 0 ), parent );  
+  QString wkt = getStringValue( values.at( 0 ), parent );
   QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
   if ( geom )
     return QVariant::fromValue( *geom );
@@ -786,7 +786,7 @@ static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExp
 {
   QDomDocument doc;
   QString errorMsg;
-  QString gml = getStringValue( values.at( 0 ), parent );  
+  QString gml = getStringValue( values.at( 0 ), parent );
   if ( !doc.setContent( gml, true, &errorMsg ) )
     return QVariant();
 
@@ -879,7 +879,7 @@ static QVariant fcnBuffer( const QVariantList& values, QgsFeature*, QgsExpressio
     return QVariant();
 
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  double dist = getDoubleValue( values.at( 1 ), parent );  
+  double dist = getDoubleValue( values.at( 1 ), parent );
   int seg = 8;
   if ( values.length() == 3 )
     seg = getIntValue( values.at( 2 ), parent );
@@ -1033,7 +1033,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
   {
     gmBuiltinFunctions << "sqrt"
     << "sqrt" << "cos" << "sin" << "tan"
-    << "asin" << "acos" << "atan" << "atan2" 
+    << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
     << "round" << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
@@ -2254,7 +2254,7 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
     if ( fd->name() == ogcOperatorName.toLower() )
     {
       isSpatial = true;
-      QDomElement funcElem = doc.createElement( "ogc:"+ogcOperatorName );
+      QDomElement funcElem = doc.createElement( "ogc:" + ogcOperatorName );
       QDomElement geomProperty = doc.createElement( "ogc:PropertyName" );
       geomProperty.appendChild( doc.createTextNode( "geometry" ) );
       funcElem.appendChild( geomProperty );
@@ -2279,14 +2279,14 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
           {
             QDomDocument geomDoc;
             QString errorMsg;
-            QString gml = childElem.firstChildElement().text();  
+            QString gml = childElem.firstChildElement().text();
             if ( geomDoc.setContent( gml, true, &errorMsg ) )
               funcElem.appendChild( doc.documentElement() );
           }
         }
         childElem = childElem.nextSiblingElement();
       }
-      
+
       element.appendChild( funcElem );
     }
   }
@@ -2329,7 +2329,7 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
           opeIdx = j;
       }
 
-      if (geomIdx == 0 || gml2Idx == 0 || opeIdx == 0 )
+      if ( geomIdx == 0 || gml2Idx == 0 || opeIdx == 0 )
       {
         errorMessage = QString( "spatial functions not find %1, got %2, %3, %4" ).arg( ogcOperatorName ).arg( geomIdx ).arg( gml2Idx ).arg( opeIdx );
         return NULL;
@@ -2338,7 +2338,8 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
       QgsExpression::NodeList *gml2Args = new QgsExpression::NodeList();
       QDomElement childElem = element.firstChildElement();
       QString gml2Str = "";
-      while ( !childElem.isNull() && gml2Str == "" ) {
+      while ( !childElem.isNull() && gml2Str == "" )
+      {
         if ( childElem.tagName() != "PropertyName" )
         {
           QTextStream gml2Stream( &gml2Str );

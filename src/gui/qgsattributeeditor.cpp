@@ -508,7 +508,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         QMap<int, QWidget*>::const_iterator it = proxyWidgets.find( idx );
         if ( it != proxyWidgets.end() )
         {
-          QObject* obj = qvariant_cast<QObject*>( (*it)->property( "QgisAttrEditProxy" ) );
+          QObject* obj = qvariant_cast<QObject*>(( *it )->property( "QgisAttrEditProxy" ) );
           relay = qobject_cast<QgsStringRelay*>( obj );
         }
         else

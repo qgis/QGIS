@@ -2985,7 +2985,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
 
     if ( !mGeos )
     {
-        return -1;
+      return -1;
     }
 
     const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
@@ -3290,7 +3290,7 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 
   if ( !mGeos )
   {
-      return 6;
+    return 6;
   }
 
   int type = GEOSGeomTypeId( mGeos );

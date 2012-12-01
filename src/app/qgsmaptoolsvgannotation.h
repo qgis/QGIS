@@ -22,11 +22,11 @@
 
 class QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
 {
-    public:
-        QgsMapToolSvgAnnotation( QgsMapCanvas* canvas );
-        ~QgsMapToolSvgAnnotation();
-    protected:
-        QgsAnnotationItem* createItem( QMouseEvent* e );
+  public:
+    QgsMapToolSvgAnnotation( QgsMapCanvas* canvas );
+    ~QgsMapToolSvgAnnotation();
+  protected:
+    QgsAnnotationItem* createItem( QMouseEvent* e );
 };
 
 #endif // QGSMAPTOOLSVGANNOTATION_H
