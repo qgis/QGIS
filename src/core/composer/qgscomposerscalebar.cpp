@@ -24,6 +24,7 @@
 #include "qgssingleboxscalebarstyle.h"
 #include "qgsticksscalebarstyle.h"
 #include "qgsrectangle.h"
+#include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -189,8 +190,8 @@ double QgsComposerScaleBar::mapWidth() const
     QgsDistanceArea da;
     da.setEllipsoidalMode( mComposerMap->mapRenderer()->hasCrsTransformEnabled() );
     da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
-    QSettings s;
-    da.setEllipsoid( s.value( "/qgis/measure/ellipsoid", "WGS84" ).toString() );
+    da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
+
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     if ( mUnits == Feet )
     {

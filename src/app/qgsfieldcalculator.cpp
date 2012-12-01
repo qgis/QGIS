@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsfieldcalculator.h"
+#include "qgsdistancearea.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QSettings>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     : QDialog()
@@ -78,6 +83,15 @@ QgsFieldCalculator::~QgsFieldCalculator()
 
 void QgsFieldCalculator::accept()
 {
+
+  // Set up QgsDistanceArea each time we (re-)calculate
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mVectorLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
 
@@ -163,6 +177,7 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
+    exp.setGeomCalculator( myDa );
 
     QVariant value = exp.evaluate( &feature );
     if ( exp.hasEvalError() )

@@ -240,6 +240,11 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
+void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
+{
+  mDa = da;
+}
+
 QString QgsExpressionBuilderWidget::expressionText()
 {
   return txtExpressionString->toPlainText();
@@ -266,10 +271,15 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     return;
   }
 
+
+
   QgsExpression exp( text );
 
   if ( mLayer )
   {
+    // Only set calculator if we have layer, else use default.
+    exp.setGeomCalculator( mDa );
+
     if ( !mFeature.isValid() )
     {
       mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() );
@@ -406,12 +416,12 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
     return "";
 
   QString helpContents;
-  // Return the function help that is set for the function if there is one. 
+  // Return the function help that is set for the function if there is one.
   if ( !expressionItem->getHelpText().isEmpty() )
   {
-      QString myStyle = QgsApplication::reportStyleSheet();
-      helpContents = "<head><style>" + myStyle + "</style></head><body>" + expressionItem->getHelpText() + "</body>";
-      return helpContents;
+    QString myStyle = QgsApplication::reportStyleSheet();
+    helpContents = "<head><style>" + myStyle + "</style></head><body>" + expressionItem->getHelpText() + "</body>";
+    return helpContents;
   }
   // set up the path to the help file
   QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";

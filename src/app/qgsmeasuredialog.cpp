@@ -22,6 +22,7 @@
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include <QCloseEvent>
@@ -60,7 +61,7 @@ void QgsMeasureDialog::updateSettings()
   mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
   // Configure QgsDistanceArea
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
-  mDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+  mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
   if ( mTool->canvas()->mapRenderer()->hasCrsTransformEnabled() )
   {
