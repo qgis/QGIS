@@ -1,0 +1,9 @@
+r.stream.pos
+r.stream.pos - Route azimuth, direction and relation to streams of higher order
+Raster (r.*)
+ParameterRaster|stream|Input map: stream mask|False
+ParameterRaster|dir|Input map: flow direction|False
+ParameterNumber|multiplier|Multipier to store stream index value|1|None|1000
+ParameterBoolean|-s|Create new stream category sequence|False
+OutputFile|cells|File to store pixel's position
+OutputFile|lengths|File to store current stream length
