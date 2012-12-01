@@ -335,7 +335,16 @@ void QgsLegendLayer::updateIcon()
   //editable
   if ( theLayer->isEditable() )
   {
-    QPixmap myPixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
+    QPixmap myPixmap;
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( theLayer );
+    if ( vlayer->isModified() )
+    {
+      myPixmap = QgsApplication::getThemePixmap( "/mIconEditableEdits.png" );
+    }
+    else
+    {
+      myPixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
+    }
     // use editable icon instead of the layer's type icon
     newIcon = myPixmap;
 
@@ -606,6 +615,7 @@ void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 
   if ( onlyGeomChanged )
   {
+    updateIcon();
     return;
   }
 

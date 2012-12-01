@@ -185,6 +185,7 @@
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconEditable.png</file>
+        <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
         <file>themes/default/mIconFavourites.png</file>
         <file>themes/default/mIconFirst.png</file>
@@ -384,6 +385,7 @@
         <file>themes/gis/mActionZoomToSelected.png</file>
         <file>themes/gis/mIconClose.png</file>
         <file>themes/gis/mIconEditable.png</file>
+        <file>themes/gis/mIconEditableEdits.png</file>
         <file>themes/gis/mIconLineLayer.png</file>
         <file>themes/gis/mIconPointLayer.png</file>
         <file>themes/gis/mIconPolygonLayer.png</file>
