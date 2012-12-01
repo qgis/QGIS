@@ -512,8 +512,12 @@ int main( int argc, char *argv[] )
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
   }
 
-  // GUI customization is enabled by default unless --nocustomization argument is used
-  QgsCustomization::instance()->setEnabled( myCustomization );
+  // GUI customization is enabled according to settings (loaded when instance is created)
+  // we force disabled here if --nocustomization argument is used
+  if ( !myCustomization )
+  {
+    QgsCustomization::instance()->setEnabled( false );
+  }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
@@ -546,7 +550,7 @@ int main( int argc, char *argv[] )
   // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat);
+    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
@@ -810,7 +814,7 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( "\\", "/" );
 #endif
-    QgsPythonRunner::run(QString("execfile('%1')").arg(pythonfile));    
+    QgsPythonRunner::run( QString( "execfile('%1')" ).arg( pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////
