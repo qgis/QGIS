@@ -184,7 +184,7 @@ void QgsCustomizationDialog::reset()
   settingsToTree( mSettings );
 
   QSettings settings;
-  bool enabled = settings.value( "/UI/Customization/enabled", "0" ).toInt() == 1;
+  bool enabled = settings.value( "/UI/Customization/enabled", "false" ).toString() == "true";
   mCustomizationEnabledCheckBox->setChecked( enabled );
   treeWidget->setEnabled( enabled );
   toolBar->setEnabled( enabled );
