@@ -30,7 +30,11 @@ additional algorithm providers</string>
      </widget>
     </item>
     <item>
-     <widget class="QgsFilterLineEdit" name="searchBox"/>
+     <widget class="QgsFilterLineEdit" name="searchBox">
+      <property name="toolTip">
+       <string>Enter algorithm name to filter list</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QTreeWidget" name="algorithmTree">
