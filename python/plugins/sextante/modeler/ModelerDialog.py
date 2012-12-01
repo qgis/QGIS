@@ -49,10 +49,10 @@ class ModelerDialog(QtGui.QDialog):
             self.alg = alg
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
-            self.repaintModel()                    
+            self.repaintModel()
         else:
             self.alg = ModelerAlgorithm()
-        self.view.centerOn(0, 0)            
+        self.view.centerOn(0, 0)
         self.alg.setModelerView(self)
         self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
@@ -333,6 +333,7 @@ class ModelerDialog(QtGui.QDialog):
                     else:
                         groupItem = QtGui.QTreeWidgetItem()
                         groupItem.setText(0, alg.group)
+                        groupItem.setToolTip(0, alg.group)
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
@@ -340,6 +341,7 @@ class ModelerDialog(QtGui.QDialog):
             if len(groups) > 0:
                 providerItem = QtGui.QTreeWidgetItem()
                 providerItem.setText(0, Providers.providers[providerName].getDescription())
+                providerItem.setToolTip(0, Providers.providers[providerName].getDescription())
                 providerItem.setIcon(0, Providers.providers[providerName].getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
@@ -348,10 +350,8 @@ class ModelerDialog(QtGui.QDialog):
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)
-            
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
 
@@ -359,6 +359,5 @@ class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         self.setText(0, alg.name)
+        self.setToolTip(0, alg.name)
         self.setIcon(0, alg.getIcon())
-
-

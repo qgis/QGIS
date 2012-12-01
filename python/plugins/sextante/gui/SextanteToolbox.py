@@ -187,7 +187,8 @@ class SextanteToolbox(QDockWidget):
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        groupItem.setText(0,alg.group)
+                        groupItem.setText(0, alg.group)
+                        groupItem.setToolTip(0, alg.group)
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
@@ -204,12 +205,12 @@ class SextanteToolbox(QDockWidget):
                     algItem = TreeActionItem(action)
                     groupItem.addChild(algItem)
 
-
             if len(groups) > 0:
                 providerItem = QTreeWidgetItem()
                 providerItem.setText(0, Sextante.getProviderFromName(providerName).getDescription()
                                      + " [" + str(len(provider)) + " geoalgorithms]")
                 providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
+                providerItem.setToolTip(0, providerItem.text(0))
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
