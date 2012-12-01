@@ -193,7 +193,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
   mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
 
-  connect( mToggleEditingButton, SIGNAL( clicked() ), this, SLOT( toggleEditing() ) );
+  connect( mToggleEditingButton, SIGNAL( clicked() ), this, SIGNAL( toggleEditing() ) );
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
@@ -240,11 +240,6 @@ void QgsFieldsProperties::onAttributeSelectionChanged()
     if ( mAttributesTree->selectedItems()[0]->data( 0, Qt::UserRole ) != "field" )
       isAddPossible = true;
   mAddItemButton->setEnabled( isAddPossible );
-}
-
-void QgsFieldsProperties::toggleEditing()
-{
-  emit toggleEditing( mLayer );
 }
 
 QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
@@ -303,7 +298,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
 
 void QgsFieldsProperties::loadRows()
 {
-  disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
+  disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
   const QgsFieldMap &fields = mLayer->pendingFields();
 
   mAttributesList->clear();
@@ -334,7 +329,7 @@ void QgsFieldsProperties::loadRows()
     setRow( row, it.key(), it.value() );
 
   mAttributesList->resizeColumnsToContents();
-  connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_mAttributesList_cellChanged( int, int ) ) );
+  connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
 }
 
 void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
@@ -474,7 +469,7 @@ void QgsFieldsProperties::on_mMoveUpItem_clicked()
   }
 }
 
-void QgsFieldsProperties::attributeTypeDialog( )
+void QgsFieldsProperties::attributeTypeDialog()
 {
   QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
@@ -657,9 +652,12 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
 
 void QgsFieldsProperties::updateButtons()
 {
+  int cap = mLayer->dataProvider()->capabilities();
+
+  mToggleEditingButton->setEnabled(( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->isReadOnly() );
+
   if ( mLayer->isEditable() )
   {
-    int cap = mLayer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
     mCalculateFieldButton->setEnabled( cap & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::AddAttributes ) );
@@ -670,13 +668,12 @@ void QgsFieldsProperties::updateButtons()
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
-    mToggleEditingButton->setEnabled( false );
     mCalculateFieldButton->setEnabled( false );
   }
 }
 
 
-void QgsFieldsProperties::on_mAttributesList_cellChanged( int row, int column )
+void QgsFieldsProperties::attributesListCellChanged( int row, int column )
 {
   if ( column == attrAliasCol && mLayer ) //only consider attribute aliases in this function
   {

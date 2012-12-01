@@ -137,12 +137,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
   mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
 
+  connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
+  connect( this, SIGNAL( toggleEditing( QgsMapLayer* ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer* ) ) );
+
   reset();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
   {
     int capabilities = layer->dataProvider()->capabilities();
-    if ( !( capabilities&QgsVectorDataProvider::CreateSpatialIndex ) )
+    if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
     }

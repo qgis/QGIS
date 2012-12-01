@@ -90,14 +90,13 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
 
   signals:
-    void toggleEditing( QgsMapLayer * );
+    void toggleEditing();
 
   public slots:
     void on_mAddAttributeButton_clicked();
     void on_mDeleteAttributeButton_clicked();
     void on_mCalculateFieldButton_clicked();
     void onAttributeSelectionChanged();
-    void on_mAttributesList_cellChanged( int row, int column );
     void on_pbnSelectEditForm_clicked();
     void on_mEditorLayoutComboBox_currentIndexChanged( int index );
 
@@ -113,10 +112,9 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void on_mMoveDownItem_clicked();
     void on_mMoveUpItem_clicked();
 
-  protected slots:
-    /** toggle editing of layer */
-    void toggleEditing();
+    void attributesListCellChanged( int row, int column );
 
+  protected slots:
     /** editing of layer was toggled */
     void editingToggled();
 
