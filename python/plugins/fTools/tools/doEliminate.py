@@ -221,7 +221,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                     # replace geometry in outLayer
                     if not outLayer.changeGeometry(aFid, newGeom):
                         QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
-                            self.tr("Could not replace geometry of feature with id %1").arg( aFid )
+                            self.tr("Could not replace geometry of feature with id %1").arg( aFid ))
                         doCommit = False
                         break
 
@@ -229,7 +229,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             for aFid in fidsToDelete:
                 if not outLayer.deleteFeature(aFid):
                     QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
-                        self.tr("Could not delete feature with id %1").arg( aFid )
+                        self.tr("Could not delete feature with id %1").arg( aFid ))
                     doCommit = False
                     break
             # prepare array for the next loop
