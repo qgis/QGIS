@@ -467,6 +467,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;

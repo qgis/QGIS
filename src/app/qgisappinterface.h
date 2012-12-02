@@ -314,6 +314,10 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
     virtual QAction *actionToggleEditing();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveAllEdits();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();

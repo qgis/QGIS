@@ -291,6 +291,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
+    /** @note added in 1.9 */
     QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
