@@ -53,6 +53,8 @@ from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterNumber import ParameterNumber
 
 class GrassAlgorithm(GeoAlgorithm):
+    
+    
 
     GRASS_REGION_EXTENT_PARAMETER = "GRASS_REGION_PARAMETER"
     GRASS_REGION_CELLSIZE_PARAMETER = "GRASS_REGION_CELLSIZE_PARAMETER"
@@ -62,6 +64,8 @@ class GrassAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        #GRASS console output, needed to do postprocessing in case GRASS dumps results to the console
+        self.consoleOutput = []
 
     def getCopy(self):
         newone = GrassAlgorithm(self.descriptionFile)
@@ -153,8 +157,9 @@ class GrassAlgorithm(GeoAlgorithm):
 
         if cellsize == 0:
             cellsize = 1
-        return cellsize
-
+        return cellsize   
+        
+    
     def processAlgorithm(self, progress):
         if SextanteUtils.isWindows():
             path = GrassUtils.grassPath()
@@ -163,6 +168,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
         commands = []
         self.exportedLayers = {}
+        outputCommands = []
 
         # if GRASS session has been created outside of this algorithm then get the list of layers loaded in GRASS
         # otherwise start a new session
@@ -171,21 +177,7 @@ class GrassAlgorithm(GeoAlgorithm):
             self.exportedLayers = GrassUtils.getSessionLayers()
         else:
             GrassUtils.startGrassSession()
-            
-
-        #self.calculateRegion()
-        region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
-        regionCoords = region.split(",")
-        command = "g.region"
-        command += " n=" + str(regionCoords[3])
-        command +=" s=" + str(regionCoords[2])
-        command +=" e=" + str(regionCoords[1])
-        command +=" w=" + str(regionCoords[0])
-        if self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER) == 0:
-            command +=" res=" + str(self.getDefaultCellsize())
-        else:
-            command +=" res=" + str(self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER));
-        commands.append(command)
+                   
         
         #1: Export layer to grass mapset
         for param in self.parameters:
@@ -197,6 +189,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
+                    self.setSessionProjection(value, commands)
                     commands.append(self.exportRasterLayer(value))
             if isinstance(param, ParameterVector):
                 if param.value == None:
@@ -205,6 +198,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
+                    self.setSessionProjection(value, commands)
                     commands.append(self.exportVectorLayer(value))
             if isinstance(param, ParameterTable):
                 pass
@@ -219,14 +213,29 @@ class GrassAlgorithm(GeoAlgorithm):
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
+                            self.setSessionProjection(value, commands)
                             commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
+                            self.setSessionProjection(value, commands)
                             commands.append(self.exportVectorLayer(layer))
 
+        region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        regionCoords = region.split(",")
+        command = "g.region"        
+        command += " n=" + str(regionCoords[3])
+        command +=" s=" + str(regionCoords[2])
+        command +=" e=" + str(regionCoords[1])
+        command +=" w=" + str(regionCoords[0])
+        if self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER) == 0:
+            command +=" res=" + str(self.getDefaultCellsize())
+        else:
+            command +=" res=" + str(self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER));
+        commands.append(command)
+        
         #2: set parameters and outputs
         command = self.grassName
         for param in self.parameters:
@@ -276,11 +285,13 @@ class GrassAlgorithm(GeoAlgorithm):
                 filename = out.value
                 #Raster layer output: adjust region to layer before exporting
                 commands.append("g.region rast=" + out.name + uniqueSufix)
+                outputCommands.append("g.region rast=" + out.name)
                 command = "r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\""
                 command += " input="
                 command += out.name + uniqueSufix
                 command += " output=\"" + filename + "\""
-                commands.append(command)
+                commands.append(command)                
+                outputCommands.append(command)
                
             if isinstance(out, OutputVector):
                 filename = out.value
@@ -290,6 +301,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command += " olayer=" + os.path.basename(out.value)[:-4]
                 command += " type=auto"
                 commands.append(command)
+                outputCommands.append("g.region rast=" + out.name)
                 
         #4 Run GRASS
         loglines = []
@@ -299,13 +311,24 @@ class GrassAlgorithm(GeoAlgorithm):
             loglines.append(line)
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_COMMANDS):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        GrassUtils.executeGrass(commands, progress);
+        self.consoleOutput = GrassUtils.executeGrass(commands, progress, outputCommands);
+        self.postProcessResults();
         # if the session has been created outside of this algorithm, add the new GRASS layers to it
         # otherwise finish the session
         if existingSession:
             GrassUtils.addSessionLayers(self.exportedLayers)
-        else:
+        else:                
             GrassUtils.endGrassSession()
+
+    def postProcessResults(self):
+        name = self.commandLineName().replace('.','_')
+        try:
+            module = __import__ ('sextante.grass.postproc.' + name)
+        except ImportError:
+            return
+        if hasattr(module, 'postProcessResults'): 
+            func = getattr(module,'postProcessResults')
+            func(self)                
 
     def exportVectorLayer(self, orgFilename):
         #only export to an intermediate shp if the layer is not file-based.
@@ -336,13 +359,25 @@ class GrassAlgorithm(GeoAlgorithm):
         return command
 
 
+    def setSessionProjection(self, layer, commands):
+        if not GrassUtils.projectionSet:
+            qGisLayer = QGisLayers.getObjectFromUri(layer)
+            if qGisLayer:
+                proj4 = str(qGisLayer.crs().toProj4())
+                command = "g.proj"
+                command +=" -c"
+                command +=" proj4=\""+proj4+"\""
+                commands.append(command)
+                GrassUtils.projectionSet = True
+
+
     def exportRasterLayer(self, layer):
         destFilename = self.getTempFilename()
         self.exportedLayers[layer]= destFilename
-        command = "r.in.gdal"
+        command = "r.external"
         command +=" input=\"" + layer + "\""
         command +=" band=1"
-        command +=" out=" + destFilename;
+        command +=" output=" + destFilename;
         command +=" --overwrite -o"
         return command
 

@@ -60,10 +60,12 @@ class merge(GeoAlgorithm):
             commands.append("-separate")
         if self.getParameterValue(merge.PCT):
             commands.append("-pct")
-        commands.append("-of")
+        commands.append("-o")
         out = self.getOutputValue(merge.OUTPUT)
+        commands.append(out)        
+        commands.append("-of")        
         commands.append(GdalUtils.getFormatShortNameFromFilename(out))
         commands.append(self.getParameterValue(merge.INPUT).replace(";", " "))
-        commands.append(out)
+
 
         GdalUtils.runGdal(commands, progress)
