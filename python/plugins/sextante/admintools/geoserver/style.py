@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    layergroup.py
+    style.py
     ---------------------
     Date                 : November 2012
     Copyright            : (C) 2012 by David Winslow

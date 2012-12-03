@@ -1233,7 +1233,8 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
                        "has_table_privilege(%1,'DELETE'),"
                        "has_any_column_privilege(%1,'UPDATE'),"
                        "%2"
-                       "has_table_privilege(%1,'INSERT')" )
+                       "has_table_privilege(%1,'INSERT'),"
+                       "current_schema()" )
               .arg( quotedValue( mQuery ) )
               .arg( mGeometryColumn.isNull()
                     ? QString( "'f'," )
@@ -1248,7 +1249,8 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
                        "has_table_privilege(%1,'DELETE'),"
                        "has_table_privilege(%1,'UPDATE'),"
                        "has_table_privilege(%1,'UPDATE'),"
-                       "has_table_privilege(%1,'INSERT')" )
+                       "has_table_privilege(%1,'INSERT'),"
+                       "current_schema()" )
               .arg( quotedValue( mQuery ) );
       }
 
@@ -1287,6 +1289,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
         // INSERT
         mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
       }
+
+      if ( mSchemaName.isEmpty() )
+        mSchemaName = testAccess.PQgetvalue( 0, 4 );
 
       sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
                      "pg_class.relnamespace=pg_namespace.oid AND "
@@ -1814,18 +1819,18 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
 
 QString QgsPostgresProvider::geomParam( int offset ) const
 {
-  // TODO: retrive these at construction time
+  // TODO: retrieve these at construction time
   QString toponame;
   long layer_id;
 
   if ( mSpatialColType == sctTopoGeometry )
   {
     QString sql = QString( "SELECT t.name, l.layer_id FROM topology.layer l, topology.topology t "
-                     "WHERE l.topology_id = t.id AND l.schema_name=%1 "
-                     "AND l.table_name=%2 AND l.feature_column=%3" )
-            .arg( quotedValue( mSchemaName ) )
-            .arg( quotedValue( mTableName ) )
-            .arg( quotedValue( mGeometryColumn ) );
+                           "WHERE l.topology_id = t.id AND l.schema_name=%1 "
+                           "AND l.table_name=%2 AND l.feature_column=%3" )
+                  .arg( quotedValue( mSchemaName ) )
+                  .arg( quotedValue( mTableName ) )
+                  .arg( quotedValue( mGeometryColumn ) );
     QgsPostgresResult result = mConnectionRO->PQexec( sql );
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
@@ -1833,14 +1838,14 @@ QString QgsPostgresProvider::geomParam( int offset ) const
     }
     if ( result.PQntuples() < 1 )
     {
-        QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" )
-                                     .arg( quotedValue( mSchemaName ) )
-                                     .arg( quotedValue( mTableName ) )
-                                     .arg( quotedValue( mGeometryColumn ) ),
-                                   tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" )
+                                 .arg( quotedValue( mSchemaName ) )
+                                 .arg( quotedValue( mTableName ) )
+                                 .arg( quotedValue( mGeometryColumn ) ),
+                                 tr( "PostGIS" ) );
     }
-    toponame = result.PQgetvalue( 0, 0 ); 
-    layer_id = result.PQgetvalue( 0, 1 ).toLong(); 
+    toponame = result.PQgetvalue( 0, 0 );
+    layer_id = result.PQgetvalue( 0, 1 ).toLong();
 
   }
 
@@ -1898,7 +1903,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   if ( mSpatialColType == sctTopoGeometry )
   {
     geometry += QString( ",%1,%2)" )
-                .arg( quotedValue(toponame) )
+                .arg( quotedValue( toponame ) )
                 .arg( layer_id );
   }
 
