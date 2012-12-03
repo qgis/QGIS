@@ -163,9 +163,10 @@
     <addaction name="mActionPasteStyle"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
+    <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveEdits"/>
     <addaction name="mActionSaveAllEdits"/>
-    <addaction name="mActionToggleEditing"/>
+    <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
     <addaction name="mActionLayerSelectionSaveAs"/>
     <addaction name="mActionRemoveLayer"/>
@@ -1857,13 +1858,13 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionSaveAllEdits.png</normaloff>:/images/themes/default/mActionSaveAllEdits.png</iconset>
    </property>
    <property name="text">
-    <string>Save All Edits</string>
+    <string>Save Edits for All Layers</string>
    </property>
    <property name="toolTip">
-    <string>Save All Edits</string>
+    <string>Save Edits for All Layers</string>
    </property>
    <property name="statusTip">
-    <string>Save edits to editing layers, but continue editing</string>
+    <string>Save edits for all layers, but continue editing</string>
    </property>
   </action>
  </widget>
