@@ -77,7 +77,7 @@
     <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
-    <property key="labeling/leftDirectionSymbol" value="< "/>
+    <property key="labeling/leftDirectionSymbol" value="&lt; "/>
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
@@ -93,7 +93,7 @@
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
     <property key="labeling/priority" value="3"/>
     <property key="labeling/reverseDirectionSymbol" value="true"/>
-    <property key="labeling/rightDirectionSymbol" value=" >"/>
+    <property key="labeling/rightDirectionSymbol" value=" &gt;"/>
     <property key="labeling/scaleMax" value="0"/>
     <property key="labeling/scaleMin" value="0"/>
     <property key="labeling/textColorB" value="0"/>
