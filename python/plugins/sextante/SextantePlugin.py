@@ -65,41 +65,40 @@ class SextantePlugin:
         self.menu = QMenu(self.iface.mainWindow())
         self.menu.setTitle(QCoreApplication.translate("SEXTANTE", "Analysis"))
 
-        self.toolboxAction = QAction(QIcon(":/sextante/images/toolbox.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE toolbox"),
-            self.iface.mainWindow())
-        QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
+        self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction.setIcon(QIcon(":/sextante/images/toolbox.png"))
+        self.toolboxAction.setText(QCoreApplication.translate("SEXTANTE", "&SEXTANTE toolbox"))
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(QIcon(":/sextante/images/model.png"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE modeler"),
             self.iface.mainWindow())
-        QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
+        self.modelerAction.triggered.connect(self.openModeler)
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(QIcon(":/sextante/images/history.gif"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE history and log"),
             self.iface.mainWindow())
-        QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
+        self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)
 
         self.configAction = QAction(QIcon(":/sextante/images/config.png"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE options and configuration"),
             self.iface.mainWindow())
-        QObject.connect(self.configAction, SIGNAL("triggered()"), self.openConfig)
+        self.configAction.triggered.connect(self.openConfig)
         self.menu.addAction(self.configAction)
 
         self.resultsAction = QAction(QIcon(":/sextante/images/results.png"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE results viewer"),
             self.iface.mainWindow())
-        QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
+        self.resultsAction.triggered.connect(self.openResults)
         self.menu.addAction(self.resultsAction)
 
         #=======================================================================
         # self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
         #    QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
         #    self.iface.mainWindow())
-        # QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
+        # self.helpAction.triggered.connect(self.openHelp)
         # self.menu.addAction(self.helpAction)
         #=======================================================================
 
