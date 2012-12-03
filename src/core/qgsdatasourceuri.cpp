@@ -480,6 +480,10 @@ QString QgsDataSourceURI::connectionInfo() const
   else if ( mHost != "" )
   {
     connectionItems << "host=" + mHost;
+  }
+
+  if ( mService.isEmpty() )
+  {
     if ( mPort != "" )
       connectionItems << "port=" + mPort;
   }
