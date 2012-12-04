@@ -144,9 +144,9 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
   if ( idx > 0 )
     subKey.truncate( idx );
 
-  QString msg = tr( "Do you confirm updating the Internal Statistics for DB: %1 ?\n\n"
+  QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
                     "This could take a long time (depending on the DB size),\n"
-                    "but implies better performances in the afterwhile" ).arg( subKey );
+                    "but implies better performance thereafter." ).arg( subKey );
   QMessageBox::StandardButton result =
     QMessageBox::information( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result != QMessageBox::Ok )
@@ -157,12 +157,12 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
   if ( conn.updateStatistics() == true )
   {
     QMessageBox::information( this, tr( "Update Statistics" ),
-                                     tr( "Internal Statistics succesfully updated for: %1" ).arg( subKey ) );
+                              tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );
   }
   else
   {
     QMessageBox::critical( this, tr( "Update Statistics" ),
-                                 tr( "Error while updating Internal Statistics for: %1" ).arg( subKey ) );
+                           tr( "Error while updating internal statistics for: %1" ).arg( subKey ) );
   }
 }
 

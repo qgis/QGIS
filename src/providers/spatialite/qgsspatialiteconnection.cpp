@@ -87,19 +87,19 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   if ( ret == LayoutCurrent && recentVersion == false )
   {
     // obsolete library version
-      mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );
-      return FailedToCheckMetadata;
+    mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );
+    return FailedToCheckMetadata;
   }
 
 #ifdef SPATIALITE_RECENT_VERSION
   // only if libspatialite version is >= 4.0.0
-    // using v.4.0 Abstract Interface
-    if (!getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
-    {
-      return FailedToGetTables;
-    }
-    closeSpatiaLiteDb( handle );
-    return NoError;
+  // using v.4.0 Abstract Interface
+  if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
+  {
+    return FailedToGetTables;
+  }
+  closeSpatiaLiteDb( handle );
+  return NoError;
 #endif
 
 // obsolete library: still using the traditional approach
@@ -129,10 +129,10 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 //  checking the library version
   bool recentVersion = false;
   const char *version = spatialite_version();
-  if ( isdigit(*version) && *version >= '4' )
-      recentVersion = true;
+  if ( isdigit( *version ) && *version >= '4' )
+    recentVersion = true;
 
-  bool ret = update_layer_statistics ( handle, NULL, NULL );
+  bool ret = update_layer_statistics( handle, NULL, NULL );
 
   closeSpatiaLiteDb( handle );
 
@@ -144,7 +144,7 @@ sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
   sqlite3 *handle = NULL;
   int ret;
   // activating the SpatiaLite library
-  spatialite_init(0);
+  spatialite_init( 0 );
 
   // trying to open the SQLite DB
   ret = sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
@@ -275,7 +275,7 @@ error:
 }
 
 #ifdef SPATIALITE_RECENT_VERSION
-  // only if libspatialite version is >= 4.0.0
+// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables )
 {
   int ret;
@@ -289,7 +289,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
   gaiaVectorLayersListPtr list;
 
   const char *version = spatialite_version();
-  if ( isdigit(*version) && *version >= '4' )
+  if ( isdigit( *version ) && *version >= '4' )
     ; // OK, linked against libspatialite v.4.0 (or any subsequent)
   else
   {
@@ -298,14 +298,14 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
   }
 
 // attempting to load the VectorLayersList
-  list = gaiaGetVectorLayersList (handle, NULL, NULL, GAIA_VECTORS_LIST_FAST);
-  if (list != NULL)
+  list = gaiaGetVectorLayersList( handle, NULL, NULL, GAIA_VECTORS_LIST_FAST );
+  if ( list != NULL )
   {
     gaiaVectorLayerPtr lyr = list->First;
     while ( lyr != NULL )
     {
       // populating the QGIS own Layers List
-      if (lyr->AuthInfos)
+      if ( lyr->AuthInfos )
       {
         if ( lyr->AuthInfos->IsHidden )
         {
@@ -318,39 +318,39 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
       QString tableName = QString::fromUtf8( lyr->TableName );
       QString column = QString::fromUtf8( lyr->GeometryName );
       QString type = tr( "UNKNOWN" );
-      switch (lyr->GeometryType)
+      switch ( lyr->GeometryType )
       {
         case GAIA_VECTOR_GEOMETRY:
-             type = tr( "GEOMETRY" );
-             break;
+          type = tr( "GEOMETRY" );
+          break;
         case GAIA_VECTOR_POINT:
-             type = tr( "POINT" );
-             break;
+          type = tr( "POINT" );
+          break;
         case GAIA_VECTOR_LINESTRING:
-             type = tr( "LINESTRING" );
-             break;
+          type = tr( "LINESTRING" );
+          break;
         case GAIA_VECTOR_POLYGON:
-             type = tr( "POLYGON" );
-             break;
+          type = tr( "POLYGON" );
+          break;
         case GAIA_VECTOR_MULTIPOINT:
-             type = tr( "MULTIPOINT" );
-             break;
+          type = tr( "MULTIPOINT" );
+          break;
         case GAIA_VECTOR_MULTILINESTRING:
-             type = tr( "MULTILINESTRING" );
-             break;
+          type = tr( "MULTILINESTRING" );
+          break;
         case GAIA_VECTOR_MULTIPOLYGON:
-             type = tr( "MULTIPOLYGON" );
-             break;
+          type = tr( "MULTIPOLYGON" );
+          break;
         case GAIA_VECTOR_GEOMETRYCOLLECTION:
-             type = tr( "GEOMETRYCOLLECTION" );
-             break;
+          type = tr( "GEOMETRYCOLLECTION" );
+          break;
       };
       mTables.append( TableEntry( tableName, column, type ) );
       ok = true;
 
       lyr = lyr->Next;
     }
-    gaiaFreeVectorLayersList (list);
+    gaiaFreeVectorLayersList( list );
   }
 
   if ( loadGeometrylessTables )

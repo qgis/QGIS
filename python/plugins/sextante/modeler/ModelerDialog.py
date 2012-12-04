@@ -301,7 +301,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 f.close()
                 self.help = None
             QMessageBox.information(self,
-                                    self.tr("Model saving"),
+                                    self.tr("Model saved"),
                                     self.tr("Model was correctly saved.")
                                    )
 

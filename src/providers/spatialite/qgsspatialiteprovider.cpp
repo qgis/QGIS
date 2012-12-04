@@ -443,22 +443,22 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   gaiaVectorLayerPtr lyr = NULL;
   bool specialCase = false;
   if ( mGeometryColumn.isNull() )
-       specialCase = true;	// non-spatial table
+    specialCase = true; // non-spatial table
   if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
-       specialCase = true;
+    specialCase = true;
 
   if ( specialCase == false )
   {
     // using v.4.0 Abstract Interface
     ret = true;
-    list = gaiaGetVectorLayersList ( handle->handle(),
-                                     mTableName.toUtf8().constData(),
-                                     mGeometryColumn.toUtf8().constData(),
-                                     GAIA_VECTORS_LIST_OPTIMISTIC);
+    list = gaiaGetVectorLayersList( handle->handle(),
+                                    mTableName.toUtf8().constData(),
+                                    mGeometryColumn.toUtf8().constData(),
+                                    GAIA_VECTORS_LIST_OPTIMISTIC );
     if ( list != NULL )
-        lyr = list->First;
+      lyr = list->First;
     if ( lyr == NULL )
-        ret = false;
+      ret = false;
     else
     {
       ret = checkLayerTypeAbstractInterface( lyr );
@@ -501,53 +501,54 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if ( lyr != NULL )
   {
     // using the v.4.0 AbstractInterface
-      if ( !getGeometryDetailsAbstractInterface( lyr ) )  // gets srid and geometry type
-      {
-        // the table is not a geometry table
-        numberFeatures = 0;
-        valid = false;
-        QgsDebugMsg( "Invalid SpatiaLite layer" );
-        closeDb();
-        gaiaFreeVectorLayersList ( list );
-        return;
-      }
-      if ( !getTableSummaryAbstractInterface( lyr ) )     // gets the extent and feature count
-      {
-        numberFeatures = 0;
-        valid = false;
-        QgsDebugMsg( "Invalid SpatiaLite layer" );
-        closeDb();
-        gaiaFreeVectorLayersList ( list );
-        return;
-      }
-      // load the columns list
-      loadFieldsAbstractInterface( lyr );
-      gaiaFreeVectorLayersList ( list );
-      alreadyDone = true;
+    if ( !getGeometryDetailsAbstractInterface( lyr ) )  // gets srid and geometry type
+    {
+      // the table is not a geometry table
+      numberFeatures = 0;
+      valid = false;
+      QgsDebugMsg( "Invalid SpatiaLite layer" );
+      closeDb();
+      gaiaFreeVectorLayersList( list );
+      return;
+    }
+    if ( !getTableSummaryAbstractInterface( lyr ) )     // gets the extent and feature count
+    {
+      numberFeatures = 0;
+      valid = false;
+      QgsDebugMsg( "Invalid SpatiaLite layer" );
+      closeDb();
+      gaiaFreeVectorLayersList( list );
+      return;
+    }
+    // load the columns list
+    loadFieldsAbstractInterface( lyr );
+    gaiaFreeVectorLayersList( list );
+    alreadyDone = true;
   }
 #endif
 
-  if ( alreadyDone == false )  {
+  if ( alreadyDone == false )
+  {
     // using the traditional methods
-      if ( !getGeometryDetails() )  // gets srid and geometry type
-      {
-        // the table is not a geometry table
-        numberFeatures = 0;
-        valid = false;
-        QgsDebugMsg( "Invalid SpatiaLite layer" );
-        closeDb();
-        return;
-      }
-      if ( !getTableSummary() )     // gets the extent and feature count
-      {
-        numberFeatures = 0;
-        valid = false;
-        QgsDebugMsg( "Invalid SpatiaLite layer" );
-        closeDb();
-        return;
-      }
-      // load the columns list
-      loadFields();
+    if ( !getGeometryDetails() )  // gets srid and geometry type
+    {
+      // the table is not a geometry table
+      numberFeatures = 0;
+      valid = false;
+      QgsDebugMsg( "Invalid SpatiaLite layer" );
+      closeDb();
+      return;
+    }
+    if ( !getTableSummary() )     // gets the extent and feature count
+    {
+      numberFeatures = 0;
+      valid = false;
+      QgsDebugMsg( "Invalid SpatiaLite layer" );
+      closeDb();
+      return;
+    }
+    // load the columns list
+    loadFields();
   }
   if ( sqliteHandle == NULL )
   {
@@ -580,7 +581,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   }
 
   attributeFields.clear();
-  mPrimaryKey.clear();	// cazzo cazzo cazzo
+  mPrimaryKey.clear(); // cazzo cazzo cazzo
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
   if ( fld == NULL )
@@ -597,7 +598,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     if ( name != mGeometryColumn )
     {
       const char *type = "TEXT";
-      QVariant::Type fieldType = QVariant::String;	// default: SQLITE_TEXT
+      QVariant::Type fieldType = QVariant::String; // default: SQLITE_TEXT
       if ( fld->IntegerValuesCount != 0 && fld->DoubleValuesCount == 0 &&
            fld->TextValuesCount == 0 && fld->BlobValuesCount == 0 )
       {
@@ -4362,7 +4363,7 @@ QString QgsSpatiaLiteProvider::quotedValue( QString value )
 }
 
 #ifdef SPATIALITE_RECENT_VERSION
-  // only if libspatialite version is >= 4.0.0
+// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( lyr == NULL )
@@ -4379,24 +4380,24 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
   switch ( lyr->LayerType )
   {
     case GAIA_VECTOR_TABLE:
-         mTableBased = true;
-         break;
+      mTableBased = true;
+      break;
     case GAIA_VECTOR_VIEW:
-         mViewBased = true;
-         break;
+      mViewBased = true;
+      break;
     case GAIA_VECTOR_VIRTUAL:
-         mVShapeBased = true;
-         break;
+      mVShapeBased = true;
+      break;
   };
 
   if ( lyr->AuthInfos )
   {
     if ( lyr->AuthInfos->IsReadOnly )
-         mReadOnly = true;
+      mReadOnly = true;
   }
-  else if ( mViewBased == true)
+  else if ( mViewBased == true )
   {
-      mReadOnly = !hasTriggers();
+    mReadOnly = !hasTriggers();
   }
 
   if ( !isQuery )
@@ -4589,7 +4590,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 }
 
 #ifdef SPATIALITE_RECENT_VERSION
-  // only if libspatialite version is >= 4.0.0
+// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( lyr == NULL )
@@ -4600,29 +4601,29 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
   mIndexTable = mTableName;
   mIndexGeometry = mGeometryColumn;
 
-  switch (lyr->GeometryType)
+  switch ( lyr->GeometryType )
   {
     case GAIA_VECTOR_POINT:
-         geomType = QGis::WKBPoint;
-         break;
+      geomType = QGis::WKBPoint;
+      break;
     case GAIA_VECTOR_LINESTRING:
-         geomType = QGis::WKBLineString;
-         break;
+      geomType = QGis::WKBLineString;
+      break;
     case GAIA_VECTOR_POLYGON:
-         geomType = QGis::WKBPolygon;
-         break;
+      geomType = QGis::WKBPolygon;
+      break;
     case GAIA_VECTOR_MULTIPOINT:
-         geomType = QGis::WKBMultiPoint;
-         break;
+      geomType = QGis::WKBMultiPoint;
+      break;
     case GAIA_VECTOR_MULTILINESTRING:
-         geomType = QGis::WKBMultiLineString;
-         break;
+      geomType = QGis::WKBMultiLineString;
+      break;
     case GAIA_VECTOR_MULTIPOLYGON:
-         geomType = QGis::WKBMultiPolygon;
-         break;
+      geomType = QGis::WKBMultiPolygon;
+      break;
     default:
-         geomType = QGis::WKBUnknown;
-         break;
+      geomType = QGis::WKBUnknown;
+      break;
   };
   mSrid = lyr->Srid;
   if ( lyr->SpatialIndex == GAIA_SPATIAL_INDEX_RTREE )
@@ -4636,17 +4637,17 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
   switch ( lyr->Dimensions )
   {
     case GAIA_XY:
-         nDims = GAIA_XY;
-         break;
+      nDims = GAIA_XY;
+      break;
     case GAIA_XY_Z:
-         nDims = GAIA_XY_Z;
-         break;
+      nDims = GAIA_XY_Z;
+      break;
     case GAIA_XY_M:
-         nDims = GAIA_XY_M;
-         break;
+      nDims = GAIA_XY_M;
+      break;
     case GAIA_XY_Z_M:
-         nDims = GAIA_XY_Z_M;
-         break;
+      nDims = GAIA_XY_Z_M;
+      break;
   };
 
   if ( mViewBased && spatialIndexRTree )
@@ -5125,7 +5126,7 @@ error:
 }
 
 #ifdef SPATIALITE_RECENT_VERSION
-  // only if libspatialite version is >= 4.0.0
+// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( lyr == NULL )
@@ -5367,21 +5368,21 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   {
     // if libspatialite is v.4.0 (or higher) using the internal library
     // method is highly recommended
-      if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
-      {
-        // unexpected error
-          errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
-          QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
-          return false;
-      }
-    // run VACUUM to free unused space and compact the database
-      int ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, NULL );
-      if ( ret != SQLITE_OK )
-      {
-        QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
-      }
+    if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
+    {
+      // unexpected error
+      errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
       QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
-      return true;
+      return false;
+    }
+    // run VACUUM to free unused space and compact the database
+    int ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, NULL );
+    if ( ret != SQLITE_OK )
+    {
+      QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
+    }
+    QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+    return true;
   }
 #endif
 

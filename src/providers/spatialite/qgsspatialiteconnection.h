@@ -86,7 +86,7 @@ class QgsSpatiaLiteConnection : public QObject
     bool getTableInfo( sqlite3 * handle, bool loadGeometrylessTables );
 
 #ifdef SPATIALITE_RECENT_VERSION
-  // only if libspatialite version is >= 4.0.0
+    // only if libspatialite version is >= 4.0.0
     /**
        Inserts information about the spatial tables into mTables
        please note: this method is fully based on the Abstract Interface
