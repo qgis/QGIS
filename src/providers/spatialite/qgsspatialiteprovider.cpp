@@ -406,12 +406,12 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
     , geomType( QGis::WKBUnknown )
-    , mGotSpatialiteVersion( false )
     , sqliteHandle( NULL )
     , sqliteStatement( NULL )
     , mSrid( -1 )
     , spatialIndexRTree( false )
     , spatialIndexMbrCache( false )
+    , mGotSpatialiteVersion( false )
 {
   nDims = GAIA_XY;
   QgsDataSourceURI anUri = QgsDataSourceURI( uri );
@@ -3798,7 +3798,7 @@ QString QgsSpatiaLiteProvider::geomParam() const
 
   // ST_Multi function is available from QGIS >= 2.4
   bool hasMultiFunction = mSpatialiteVersionMajor > 2 ||
-      ( mSpatialiteVersionMajor == 2 && mSpatialiteVersionMinor >= 4 );
+                          ( mSpatialiteVersionMajor == 2 && mSpatialiteVersionMinor >= 4 );
 
   if ( forceMulti && hasMultiFunction )
   {
