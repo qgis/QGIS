@@ -5,27 +5,27 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
-# Once run this will define: 
-# 
+# Once run this will define:
+#
 # QEXTSERIALPORT_FOUND       = system has Qextserialport lib
 # QEXTSERIALPORT_LIBRARY     = full path to the Qextserialport library
-# QEXTSERIALPORT_INCLUDE_DIR = where to find headers 
+# QEXTSERIALPORT_INCLUDE_DIR = where to find headers
 #
 
 
 FIND_PATH(QEXTSERIALPORT_INCLUDE_DIR NAMES qextserialport.h PATHS
   /usr/include
   /usr/local/include
-  "$ENV{LIB_DIR}/include" 
-  "$ENV{INCLUDE}" 
+  "$ENV{LIB_DIR}/include"
+  "$ENV{INCLUDE}"
   PATH_SUFFIXES QtExtSerialPort
   )
 
-FIND_LIBRARY(QEXTSERIALPORT_LIBRARY NAMES qextserialport-1.2 PATHS 
+FIND_LIBRARY(QEXTSERIALPORT_LIBRARY NAMES qextserialport-1.2 PATHS
   /usr/lib
   /usr/local/lib
-  "$ENV{LIB_DIR}/lib" 
-  "$ENV{LIB}/lib" 
+  "$ENV{LIB_DIR}/lib"
+  "$ENV{LIB}/lib"
   )
 
 IF (QEXTSERIALPORT_INCLUDE_DIR AND QEXTSERIALPORT_LIBRARY)

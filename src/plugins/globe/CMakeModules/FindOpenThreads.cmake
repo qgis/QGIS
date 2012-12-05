@@ -1,10 +1,10 @@
-# OpenThreads is a C++ based threading library. Its largest userbase 
+# OpenThreads is a C++ based threading library. Its largest userbase
 # seems to OpenSceneGraph so you might notice I accept OSGDIR as an
 # environment path.
-# I consider this part of the Findosg* suite used to find OpenSceneGraph 
+# I consider this part of the Findosg* suite used to find OpenSceneGraph
 # components.
 # Each component is separate and you must opt in to each module.
-# 
+#
 # Locate OpenThreads
 # This module defines
 # OPENTHREADS_LIBRARY
@@ -21,8 +21,8 @@
 # #include <OpenThreads/Thread>
 
 # To make it easier for one-step automated configuration/builds,
-# we leverage environmental paths. This is preferable 
-# to the -DVAR=value switches because it insulates the 
+# we leverage environmental paths. This is preferable
+# to the -DVAR=value switches because it insulates the
 # users from changes we may make in this script.
 # It also offers a little more flexibility than setting
 # the CMAKE_*_PATH since we can target specific components.
@@ -75,7 +75,7 @@ IF(NOT OPENTHREADS_INCLUDE_DIR)
 ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
 
 
-FIND_LIBRARY(OPENTHREADS_LIBRARY 
+FIND_LIBRARY(OPENTHREADS_LIBRARY
     NAMES OpenThreads OpenThreadsWin32
     PATHS
     $ENV{OPENTHREADS_LIBRARY_DIR}
@@ -90,15 +90,15 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY
 )
 
 IF(NOT OPENTHREADS_LIBRARY)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY 
-        NAMES OpenThreads OpenThreadsWin32 
+    FIND_LIBRARY(OPENTHREADS_LIBRARY
+        NAMES OpenThreads OpenThreadsWin32
         PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
         PATH_SUFFIXES lib64 lib
     )
 ENDIF(NOT OPENTHREADS_LIBRARY)
 
 IF(NOT OPENTHREADS_LIBRARY)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY 
+    FIND_LIBRARY(OPENTHREADS_LIBRARY
         NAMES OpenThreads OpenThreadsWin32
         PATHS
         ~/Library/Frameworks
@@ -121,7 +121,7 @@ IF(NOT OPENTHREADS_LIBRARY)
 ENDIF(NOT OPENTHREADS_LIBRARY)
 
 
-FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
     NAMES OpenThreadsd OpenThreadsWin32d
     PATHS
     $ENV{OPENTHREADS_DEBUG_LIBRARY_DIR}
@@ -140,7 +140,7 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
 )
 
 IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
         NAMES OpenThreadsd OpenThreadsWin32d
         PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
         PATH_SUFFIXES lib64 lib
@@ -148,7 +148,7 @@ IF(NOT OPENTHREADS_LIBRARY_DEBUG)
 ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 
 IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
         NAMES OpenThreadsd OpenThreadsWin32d
         PATHS
         /usr/local/lib64
@@ -176,7 +176,7 @@ IF(OPENTHREADS_LIBRARY)
       SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}" CACHE FILEPATH "Debug version of OpenThreads Library (use regular version if not available)" FORCE)
   ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 ENDIF(OPENTHREADS_LIBRARY)
-    
+
 SET(OPENTHREADS_FOUND "NO")
 IF(OPENTHREADS_INCLUDE_DIR AND OPENTHREADS_LIBRARY)
   SET(OPENTHREADS_FOUND "YES")

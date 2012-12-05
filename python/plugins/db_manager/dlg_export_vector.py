@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -37,7 +37,7 @@ class DlgExportVector(QDialog, Ui_DlgExportVector):
 		self.inLayer = inLayer
 		self.db = inDb
 		self.setupUi(self)
-		
+
 		# update UI
 		self.setupWorkingMode()
 		self.populateEncodings()
@@ -75,7 +75,7 @@ class DlgExportVector(QDialog, Ui_DlgExportVector):
 		settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
 
 		self.editOutputFile.setText( filename )
-	
+
 	def populateEncodings(self):
 		# populate the combo with supported encodings
 		self.cboEncoding.addItems(qgis.core.QgsVectorDataProvider.availableEncodings())
@@ -88,7 +88,7 @@ class DlgExportVector(QDialog, Ui_DlgExportVector):
 			self.cboEncoding.insertItem( 0, enc )
 			idx = 0
 		self.cboEncoding.setCurrentIndex( idx )
-		
+
 	def accept(self):
 		# sanity checks
 		if self.editOutputFile.text() == "":
