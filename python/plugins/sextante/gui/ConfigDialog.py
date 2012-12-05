@@ -46,6 +46,8 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr("Search..."))
 
+        self.searchBox.textChanged.connect(self.fillTree)
+
         self.fillTree()
 
     def fillTree(self):
