@@ -44,26 +44,27 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		self.default_pk = "id"
 		self.default_geom = "geom"
 
-		# updates of UI
-		self.setupWorkingMode()
+		self.mode = self.ASK_FOR_INPUT_MODE if self.inLayer is None else self.HAS_INPUT_MODE
 
-		self.cboTable.setEditText(self.outUri.table())
-		
-		self.populateLayers()
+		# updates of UI
+		self.setupWorkingMode( self.mode )
 
 		self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
 		self.populateSchemas()
 		self.populateTables()
-
+		self.populateLayers()
 		self.populateEncodings()
 
 
-	def setupWorkingMode(self):
-		""" display the widget to select a layer/file if there's no input layer """
-		self.mode = self.ASK_FOR_INPUT_MODE if self.inLayer is None else self.HAS_INPUT_MODE
-		self.wdgInput.setVisible( self.mode == self.ASK_FOR_INPUT_MODE )
+	def setupWorkingMode(self, mode):
+		""" hide the widget to select a layer/file if the input layer
+			is already set """
+		self.wdgInput.setVisible( mode == self.ASK_FOR_INPUT_MODE )
+		self.resize( 200, 200 )
 
-		if not self.inLayer:
+		self.cboTable.setEditText(self.outUri.table())
+
+		if mode == self.ASK_FOR_INPUT_MODE:
 			QObject.connect( self.btnChooseInputFile, SIGNAL("clicked()"), self.chooseInputFile )
 			#QObject.connect( self.cboInputLayer.lineEdit(), SIGNAL("editingFinished()"), self.updateInputLayer )
 			QObject.connect( self.cboInputLayer, SIGNAL("editTextChanged(const QString &)"), self.inputPathChanged )
@@ -114,7 +115,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		return False
 
 	def chooseInputFile(self):
-		vectorFormats = qgis.core.QgsVectorFileWriter.fileFilterString()
+		vectorFormats = qgis.core.QgsProviderRegistry.instance().fileVectorFilters()
 		# get last used dir and format
 		settings = QSettings()
                 lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
@@ -216,12 +217,19 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		self.cboEncoding.setCurrentIndex(2)
 		
 	def accept(self):
+		if self.mode == self.ASK_FOR_INPUT_MODE:
+			# create the input layer (if not already done) and 
+			# update available options w/o changing the tablename!
+			self.cboTable.blockSignals(True)
+			table = self.cboTable.currentText()
+			self.updateInputLayer()
+			self.cboTable.setEditText(table)
+			self.cboTable.blockSignals(False)
+
 		# sanity checks
 		if self.inLayer is None:
-			# create the input layer and update available options
-			if not self.updateInputLayer():
-				QMessageBox.information(self, "Import to database", "Input layer missing or not valid")
-				return
+			QMessageBox.information(self, "Import to database", "Input layer missing or not valid")
+			return
 
 		if self.cboTable.currentText() == "":
 			QMessageBox.information(self, "Import to database", "Output table name is required")

@@ -150,8 +150,13 @@ class DBManager(QMainWindow):
 			QMessageBox.information(self, "Sorry", "No database selected or you are not connected to it.")
 			return
 
+		outUri = db.uri()
+		schema = self.tree.currentSchema()
+		if schema:
+			outUri.setDataSource( schema.name, "", "", "" )
+
 		from .dlg_import_vector import DlgImportVector
-		dlg = DlgImportVector(None, db, db.uri(), self)
+		dlg = DlgImportVector(None, db, outUri, self)
 		dlg.exec_()
 
 	def exportActionSlot(self):
