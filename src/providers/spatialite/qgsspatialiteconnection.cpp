@@ -79,7 +79,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   }
 
   bool recentVersion = false;
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
   recentVersion = true;
 #endif
@@ -91,7 +91,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
     return FailedToCheckMetadata;
   }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
   // using v.4.0 Abstract Interface
   if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
@@ -114,6 +114,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 
 bool QgsSpatiaLiteConnection::updateStatistics()
 {
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   QFileInfo fi( mPath );
   if ( !fi.exists() )
   {
@@ -126,17 +127,14 @@ bool QgsSpatiaLiteConnection::updateStatistics()
     return false;
   }
 
-//  checking the library version
-  bool recentVersion = false;
-  const char *version = spatialite_version();
-  if ( isdigit( *version ) && *version >= '4' )
-    recentVersion = true;
-
   bool ret = update_layer_statistics( handle, NULL, NULL );
 
   closeSpatiaLiteDb( handle );
 
   return ret;
+#else
+  return false;
+#endif
 }
 
 sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
@@ -251,7 +249,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   sqlite3_free_table( results );
   if ( srsSrid && authName && authSrid && refSysName && proj4text )
     rsSpatiaLite = true;
-  if ( srsSrid && authName && authSrid && refSysName && proj4text )
+  if ( srsSrid && authName && authSrid && refSysName && proj4text && srtext )
     rsSpatiaLite4 = true;
 
   // OK, this one seems to be a valid SpatiaLite DB
@@ -274,7 +272,7 @@ error:
   return false;
 }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables )
 {

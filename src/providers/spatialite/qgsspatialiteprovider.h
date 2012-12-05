@@ -409,7 +409,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
     // only if libspatialite version is >= 4.0.0
     bool checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr );
     bool getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr );

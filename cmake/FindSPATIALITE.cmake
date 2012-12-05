@@ -64,7 +64,7 @@ IF (SPATIALITE_FOUND)
    ENDIF (NOT SPATIALITE_FIND_QUIETLY)
 
    # Check for symbol gaiaDropTable
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_RECENT_VERSION)
+   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
 
 ELSE (SPATIALITE_FOUND)
 

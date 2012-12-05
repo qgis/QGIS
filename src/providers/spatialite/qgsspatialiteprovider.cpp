@@ -437,7 +437,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   bool alreadyDone = false;
   bool ret;
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
   gaiaVectorLayersListPtr list = NULL;
   gaiaVectorLayerPtr lyr = NULL;
@@ -497,7 +497,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   alreadyDone = false;
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   if ( lyr != NULL )
   {
     // using the v.4.0 AbstractInterface
@@ -571,7 +571,7 @@ QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
   closeDb();
 }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
@@ -4362,7 +4362,7 @@ QString QgsSpatiaLiteProvider::quotedValue( QString value )
   return value.prepend( "'" ).append( "'" );
 }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr )
 {
@@ -4589,7 +4589,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   return count == 1;
 }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
@@ -5125,7 +5125,7 @@ error:
   return false;
 }
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr )
 {
@@ -5363,7 +5363,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   }
   sqlite3* sqlite_handle = hndl->handle();
 
-#ifdef SPATIALITE_RECENT_VERSION
+#ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
   {
     // if libspatialite is v.4.0 (or higher) using the internal library
