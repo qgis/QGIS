@@ -88,10 +88,11 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 		""" update options available for the current input layer """
 		allowSpatial = self.db.connector.hasSpatialSupport()
 		hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
+		isShapefile = self.inLayer and self.inLayer.providerType() == "ogr" and self.inLayer.storageType() == "ESRI Shapefile"
 		self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
 		self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
 		self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
-		#self.chkSinglePart.setEnabled(allowSpatial and hasGeomType)
+		self.chkSinglePart.setEnabled(allowSpatial and hasGeomType and isShapefile)
 		self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 
 
@@ -269,6 +270,8 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 				options['overwrite'] = True
 			elif self.radAppend.isChecked():
 				options['append'] = True
+			if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
+				options['forceSinglePartGeometryType'] = True
 
 			outCrs = None
 			if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():

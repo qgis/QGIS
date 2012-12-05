@@ -204,6 +204,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
 
+
+  bool overwrite = false;
+  bool forceSinglePartGeom = false;
+  if ( options )
+  {
+    overwrite = options->take( "overwrite" ).toBool();
+    forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
+  }
+
   QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
   QGis::WkbType wkbType = layer->wkbType();
 
@@ -216,36 +225,33 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       fldIt.value().setName( fldIt.value().name().toLower() );
     }
 
-    // convert wkbtype to multipart (see #5547)
-    switch ( wkbType )
+    if ( !forceSinglePartGeom )
     {
-      case QGis::WKBPoint:
-        wkbType = QGis::WKBMultiPoint;
-        break;
-      case QGis::WKBLineString:
-        wkbType = QGis::WKBMultiLineString;
-        break;
-      case QGis::WKBPolygon:
-        wkbType = QGis::WKBMultiPolygon;
-        break;
-      case QGis::WKBPoint25D:
-        wkbType = QGis::WKBMultiPoint25D;
-        break;
-      case QGis::WKBLineString25D:
-        wkbType = QGis::WKBMultiLineString25D;
-        break;
-      case QGis::WKBPolygon25D:
-        wkbType = QGis::WKBMultiPolygon25D;
-        break;
-      default:
-        break;
+      // convert wkbtype to multipart (see #5547)
+      switch ( wkbType )
+      {
+        case QGis::WKBPoint:
+          wkbType = QGis::WKBMultiPoint;
+          break;
+        case QGis::WKBLineString:
+          wkbType = QGis::WKBMultiLineString;
+          break;
+        case QGis::WKBPolygon:
+          wkbType = QGis::WKBMultiPolygon;
+          break;
+        case QGis::WKBPoint25D:
+          wkbType = QGis::WKBMultiPoint25D;
+          break;
+        case QGis::WKBLineString25D:
+          wkbType = QGis::WKBMultiLineString25D;
+          break;
+        case QGis::WKBPolygon25D:
+          wkbType = QGis::WKBMultiPolygon25D;
+          break;
+        default:
+          break;
+      }
     }
-  }
-
-  bool overwrite = false;
-  if ( options )
-  {
-    overwrite = options->take( "overwrite" ).toBool();
   }
 
   QgsVectorLayerImport * writer =

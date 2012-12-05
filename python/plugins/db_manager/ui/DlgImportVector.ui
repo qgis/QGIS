@@ -138,11 +138,6 @@
      <zorder>label_2</zorder>
      <zorder>cboSchema</zorder>
      <zorder>label_3</zorder>
-     <zorder>widget_3</zorder>
-     <zorder>cboTable</zorder>
-     <zorder>label_2</zorder>
-     <zorder>cboSchema</zorder>
-     <zorder>label_3</zorder>
     </widget>
    </item>
    <item>
@@ -302,9 +297,6 @@
       </item>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSinglePart">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="text">
          <string>Create single-part geometries instead of multi-part</string>
         </property>
@@ -334,7 +326,6 @@
   <zorder>groupBox</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>buttonBox</zorder>
-  <zorder>widget</zorder>
   <zorder>groupBox_3</zorder>
   <zorder>wdgInput</zorder>
  </widget>
