@@ -28,20 +28,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="tree">
+    <widget class="QTreeView" name="tree">
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <column>
-      <property name="text">
-       <string>Setting</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Value</string>
-      </property>
-     </column>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
+     </property>
     </widget>
    </item>
    <item>

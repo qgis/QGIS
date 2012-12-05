@@ -24,11 +24,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
+
 from processing.ui.ui_DlgConfig import Ui_DlgConfig
+
+import processing.resources_rc
 
 class ConfigDialog(QDialog, Ui_DlgConfig):
     def __init__(self, toolbox):
@@ -44,68 +48,86 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr("Search..."))
 
-        self.searchBox.textChanged.connect(self.fillTree)
-        self.fillTree()
-        self.tree.itemClicked.connect(self.edit)
-        self.tree.itemDoubleClicked.connect(self.edit)
+        self.model = QStandardItemModel()
+        self.tree.setModel(self.model)
 
-    def edit(self, item, column):
-        if column > 0:
-            self.tree.editItem(item, column)
+        self.delegate = SettingDelegate()
+        self.tree.setItemDelegateForColumn(1, self.delegate)
+
+        self.searchBox.textChanged.connect(self.fillTree)
+
+        self.fillTree()
+
+        self.tree.expanded.connect(self.adjustColumns)
 
     def fillTree(self):
         self.items = {}
-        self.tree.clear()
+        self.model.clear()
+        self.model.setHorizontalHeaderLabels([self.tr("Setting"),
+                                              self.tr("Value")
+                                             ])
+
         text = unicode(self.searchBox.text())
         settings = ProcessingConfig.getSettings()
+
+        rootItem = self.model.invisibleRootItem()
         priorityKeys = ['General', "Models", "Scripts"]
         for group in priorityKeys:
-            groupItem = QTreeWidgetItem()
-            groupItem.setText(0,group)
+            groupItem = QStandardItem(group)
             icon = ProcessingConfig.getGroupIcon(group)
-            groupItem.setIcon(0, icon)
+            groupItem.setIcon(icon)
+            groupItem.setEditable(False)
+            emptyItem = QStandardItem()
+            emptyItem.setEditable(False)
+            rootItem.insertRow(0, [groupItem, emptyItem])
             for setting in settings[group]:
                 if setting.hidden:
                     continue
-                if text =="" or text.lower() in setting.description.lower():
-                    settingItem = TreeSettingItem(setting, icon)
-                    self.items[setting]=settingItem
-                    groupItem.addChild(settingItem)
-            self.tree.addTopLevelItem(groupItem)
-            if text != "":
-                groupItem.setExpanded(True)
 
-        providersItem = QTreeWidgetItem()
-        providersItem.setText(0, "Providers")
-        icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
-        providersItem.setIcon(0, icon)
+                if text == "" or text.lower() in setting.description.lower():
+                    labelItem = QStandardItem(setting.description)
+                    labelItem.setIcon(icon)
+                    labelItem.setEditable(False)
+                    groupItem.insertRow(0, [labelItem, SettingItem(setting)])
+
+            if text != "":
+                self.tree.expand(groupItem.index())
+
+        providersItem = QStandardItem(self.tr("Providers"))
+        icon = QIcon(":/processing/images/alg.png")
+        providersItem.setIcon(icon)
+        providersItem.setEditable(False)
+        emptyItem = QStandardItem()
+        emptyItem.setEditable(False)
+        rootItem.insertRow(0, [providersItem, emptyItem])
         for group in settings.keys():
             if group in priorityKeys:
                 continue
-            groupItem = QTreeWidgetItem()
-            groupItem.setText(0,group)
+
+            groupItem = QStandardItem(group)
             icon = ProcessingConfig.getGroupIcon(group)
-            groupItem.setIcon(0, icon)
+            groupItem.setIcon(icon)
+            groupItem.setEditable(False)
             for setting in settings[group]:
                 if setting.hidden:
                     continue
-                if text =="" or text.lower() in setting.description.lower():
-                    settingItem = TreeSettingItem(setting, icon)
-                    self.items[setting]=settingItem
-                    groupItem.addChild(settingItem)
-            if text != "":
-                groupItem.setExpanded(True)
-            providersItem.addChild(groupItem)
-        self.tree.addTopLevelItem(providersItem)
 
-        self.tree.sortItems(0, Qt.AscendingOrder)
-        self.tree.setColumnWidth(0, 400)
+                if text == "" or text.lower() in setting.description.lower():
+                    labelItem = QStandardItem(setting.description)
+                    labelItem.setIcon(icon)
+                    labelItem.setEditable(False)
+                    groupItem.insertRow(0, [labelItem, SettingItem(setting)])
+
+            providersItem.appendRow([groupItem, emptyItem])
+
+        self.tree.sortByColumn(0, Qt.AscendingOrder)
+        self.adjustColumns()
 
     def accept(self):
         for setting in self.items.keys():
-            if isinstance(setting.value,bool):
+            if isinstance(setting.value, bool):
                 setting.value = (self.items[setting].checkState(1) == Qt.Checked)
-            elif isinstance(setting.value, (float,int, long)):
+            elif isinstance(setting.value, (float, int, long)):
                 value = str(self.items[setting].text(1))
                 try:
                     value = float(value)
@@ -124,18 +146,129 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
 
         QDialog.accept(self)
 
-class TreeSettingItem(QTreeWidgetItem):
+    def adjustColumns(self):
+        self.tree.resizeColumnToContents(0)
+        self.tree.resizeColumnToContents(1)
 
-    def __init__(self, setting, icon):
-        QTreeWidgetItem.__init__(self)
+class SettingItem(QStandardItem):
+    def __init__(self, setting):
+        QStandardItem.__init__(self)
         self.setting = setting
-        self.setText(0, setting.description)
-        if isinstance(setting.value,bool):
+
+        if isinstance(setting.value, bool):
+            self.setCheckable(True)
+            self.setEditable(False)
             if setting.value:
-                self.setCheckState(1, Qt.Checked)
+                self.setCheckState(Qt.Checked)
             else:
-                self.setCheckState(1, Qt.Unchecked)
+                self.setCheckState(Qt.Unchecked)
         else:
-            self.setFlags(self.flags() | Qt.ItemIsEditable)
-            self.setText(1, unicode(setting.value))
-        self.setIcon(0, icon)
+            self.setData(setting.value, Qt.EditRole)
+
+class SettingDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None):
+        QStyledItemDelegate.__init__(self, parent)
+
+    def createEditor(self, parent, options, index):
+        value = self.convertValue(index.model().data(index, Qt.EditRole))
+        if isinstance(value, (int, long)):
+            spnBox = QSpinBox(parent)
+            spnBox.setRange(-999999999, 999999999)
+            return spnBox
+        elif isinstance(value, float):
+            spnBox = QDoubleSpinBox(parent)
+            spnBox.setRange(-999999999,999999, 999999999,999999)
+            spnBox.setDecimals(6)
+            return spnBox
+        elif isinstance(value, (str, unicode)):
+            if os.path.isdir(value):
+                return FileDirectorySelector(parent)
+            elif os.path.isfile(value):
+                return FileDirectorySelector(parent, True)
+            else:
+                return FileDirectorySelector(parent, True)
+
+    def setEditorData(self, editor, index):
+        value = self.convertValue(index.model().data(index, Qt.EditRole))
+        if isinstance(value, (int, long)):
+            editor.setValue(value)
+        elif isinstance(value, float):
+            editor.setValue(value)
+        elif isinstance(value, (str, unicode)):
+            editor.setText(value)
+
+    def setModelData(self, editor, model, index):
+        value = self.convertValue(index.model().data(index, Qt.EditRole))
+        if isinstance(value, (int, long)):
+            model.setData(index, editor.value(), Qt.EditRole)
+        elif isinstance(value, float):
+            model.setData(index, editor.value(), Qt.EditRole)
+        elif isinstance(value, (str, unicode)):
+            model.setData(index, editor.text(), Qt.EditRole)
+
+    def sizeHint(self, option, index):
+        return QSpinBox().sizeHint()
+
+    def eventFilter(self, editor, event):
+        if event.type() == QEvent.FocusOut and hasattr(editor, 'canFocusOut'):
+            if not editor.canFocusOut:
+                return False
+        return QStyledItemDelegate.eventFilter(self, editor, event)
+
+    def convertValue(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            try:
+                return float(value)
+            except ValueError:
+                return unicode(value)
+
+
+class FileDirectorySelector(QWidget):
+    def __init__(self, parent=None, selectFile=False):
+        QWidget.__init__(self, parent)
+
+        # create gui
+        self.btnSelect = QToolButton()
+        self.btnSelect.setText(self.tr("..."))
+        self.lineEdit = QLineEdit()
+        self.hbl = QHBoxLayout()
+        self.hbl.setMargin(0)
+        self.hbl.setSpacing(0)
+        self.hbl.addWidget(self.lineEdit)
+        self.hbl.addWidget(self.btnSelect)
+
+        self.setLayout(self.hbl)
+
+        self.canFocusOut = False
+        self.selectFile = selectFile
+
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.btnSelect.clicked.connect(self.select)
+
+    def select(self):
+        lastDir = ""
+        if not self.selectFile:
+            selectedPath = QFileDialog.getExistingDirectory(None,
+                                                            self.tr("Select directory"),
+                                                            lastDir,
+                                                            QFileDialog.ShowDirsOnly
+                                                            )
+        else:
+            selectedPath = QFileDialog.getOpenFileName(None,
+                                                       self.tr("Select file"),
+                                                       lastDir,
+                                                       self.tr("All files (*.*)")
+                                                      )
+
+        if not selectedPath:
+            return
+
+        self.lineEdit.setText(selectedPath)
+
+    def text(self):
+        return self.lineEdit.text()
+
+    def setText(self, value):
+        self.lineEdit.setText(value)

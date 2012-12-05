@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'DlgConfig.ui'
 #
-# Created: Tue Aug 20 11:01:25 2013
+# Created: Fri Sep 13 14:13:04 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,8 +25,9 @@ class Ui_DlgConfig(object):
         self.searchBox = QgsFilterLineEdit(DlgConfig)
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.verticalLayout.addWidget(self.searchBox)
-        self.tree = QtGui.QTreeWidget(DlgConfig)
+        self.tree = QtGui.QTreeView(DlgConfig)
         self.tree.setAlternatingRowColors(True)
+        self.tree.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
         self.tree.setObjectName(_fromUtf8("tree"))
         self.verticalLayout.addWidget(self.tree)
         self.buttonBox = QtGui.QDialogButtonBox(DlgConfig)
@@ -43,7 +44,5 @@ class Ui_DlgConfig(object):
     def retranslateUi(self, DlgConfig):
         DlgConfig.setWindowTitle(QtGui.QApplication.translate("DlgConfig", "Processing options", None, QtGui.QApplication.UnicodeUTF8))
         self.searchBox.setToolTip(QtGui.QApplication.translate("DlgConfig", "Enter setting name to filter list", None, QtGui.QApplication.UnicodeUTF8))
-        self.tree.headerItem().setText(0, QtGui.QApplication.translate("DlgConfig", "Setting", None, QtGui.QApplication.UnicodeUTF8))
-        self.tree.headerItem().setText(1, QtGui.QApplication.translate("DlgConfig", "Value", None, QtGui.QApplication.UnicodeUTF8))
 
 from qgis.gui import QgsFilterLineEdit
