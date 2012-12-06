@@ -53,7 +53,7 @@ class QgsMapToolEdit: public QgsMapTool
     /**Creates a rubber band with the color/line width from
      the QGIS settings. The caller takes ownership of the
     returned object*/
-    QgsRubberBand* createRubberBand( bool isPolygon = false );
+    QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line );
 
     /**Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();
