@@ -125,6 +125,16 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
+  if ( mSpatialColType == sctTopoGeometry )
+  {
+    if ( !getTopoLayerInfo() ) // gets topology name and layer id
+    {
+      QgsMessageLog::logMessage( tr( "invalid PostgreSQL topology layer" ), tr( "PostGIS" ) );
+      disconnectDb();
+      return;
+    }
+  }
+
   mLayerExtent.setMinimal();
   mFeaturesCounted = -1;
 
@@ -1817,38 +1827,38 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
   return fieldValue;
 }
 
+
+/* private */
+bool QgsPostgresProvider::getTopoLayerInfo( )
+{
+  QString sql = QString( "SELECT t.name, l.layer_id "
+                         "FROM topology.layer l, topology.topology t "
+                         "WHERE l.topology_id = t.id AND l.schema_name=%1 "
+                         "AND l.table_name=%2 AND l.feature_column=%3" )
+                .arg( quotedValue( mSchemaName ) )
+                .arg( quotedValue( mTableName ) )
+                .arg( quotedValue( mGeometryColumn ) );
+  QgsPostgresResult result = mConnectionRO->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    throw PGException( result ); // we should probably not do this
+  }
+  if ( result.PQntuples() < 1 )
+  {
+    QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" )
+                               .arg( quotedValue( mSchemaName ) )
+                               .arg( quotedValue( mTableName ) )
+                               .arg( quotedValue( mGeometryColumn ) ),
+                               tr( "PostGIS" ) );
+    return false;
+  }
+  mTopoLayerInfo.topologyName = result.PQgetvalue( 0, 0 );
+  mTopoLayerInfo.layerId = result.PQgetvalue( 0, 1 ).toLong();
+  return true;
+}
+
 QString QgsPostgresProvider::geomParam( int offset ) const
 {
-  // TODO: retrieve these at construction time
-  QString toponame;
-  long layer_id;
-
-  if ( mSpatialColType == sctTopoGeometry )
-  {
-    QString sql = QString( "SELECT t.name, l.layer_id FROM topology.layer l, topology.topology t "
-                           "WHERE l.topology_id = t.id AND l.schema_name=%1 "
-                           "AND l.table_name=%2 AND l.feature_column=%3" )
-                  .arg( quotedValue( mSchemaName ) )
-                  .arg( quotedValue( mTableName ) )
-                  .arg( quotedValue( mGeometryColumn ) );
-    QgsPostgresResult result = mConnectionRO->PQexec( sql );
-    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-    {
-      throw PGException( result ); // we should probably not do this
-    }
-    if ( result.PQntuples() < 1 )
-    {
-      QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" )
-                                 .arg( quotedValue( mSchemaName ) )
-                                 .arg( quotedValue( mTableName ) )
-                                 .arg( quotedValue( mGeometryColumn ) ),
-                                 tr( "PostGIS" ) );
-    }
-    toponame = result.PQgetvalue( 0, 0 );
-    layer_id = result.PQgetvalue( 0, 1 ).toLong();
-
-  }
-
   QString geometry;
 
   bool forceMulti = false;
@@ -1903,8 +1913,8 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   if ( mSpatialColType == sctTopoGeometry )
   {
     geometry += QString( ",%1,%2)" )
-                .arg( quotedValue( toponame ) )
-                .arg( layer_id );
+                .arg( quotedValue( mTopoLayerInfo.topologyName ) )
+                .arg( mTopoLayerInfo.layerId );
   }
 
   return geometry;
@@ -2457,14 +2467,10 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       // Later, we'll replace the old TopoGeometry with the new one,
       // to avoid orphans and retain higher level in an eventual
       // hierarchical definition
-      update = QString( "WITH tg AS ( SELECT t.name, "
-                        " toTopoGeom(%3, t.name, layer_id(o.%2)) as tg"
-                        " FROM %1 o, topology.topology t WHERE t.id = topology_id(o.%2)"
-                        " AND %4 ) SELECT layer_id(tg.tg), id(tg.tg), tg.name FROM tg" )
-               .arg( mQuery )
-               .arg( quotedIdentifier( mGeometryColumn ) )
+      update = QString( "SELECT id(%1) FROM %2 o WHERE %3" )
                .arg( geomParam( 1 ) )
-               .arg( pkParamWhereClause( 2, "o" ) );
+               .arg( mQuery )
+               .arg( pkParamWhereClause( 2 ) );
 
       QString getid = QString( "SELECT id(%1) FROM %2 WHERE %3" )
                       .arg( quotedIdentifier( mGeometryColumn ) )
@@ -2563,17 +2569,17 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
       if ( mSpatialColType == sctTopoGeometry )
       {
-        long layer_id = result.PQgetvalue( 0, 0 ).toLong(); // new layer_id == old layer_id
-        long new_tg_id = result.PQgetvalue( 0, 1 ).toLong(); // new topogeo_id
-        QString toponame = result.PQgetvalue( 0, 2 ); // new topology name == old topology name
+        long new_tg_id = result.PQgetvalue( 0, 0 ).toLong(); // new topogeo_id
 
         // Replace old TopoGeom with new TopoGeom, so that
         // any hierarchically defined TopoGeom will still have its
         // definition and we'll leave no orphans
+        // TODO: move this logic into a method using mTopoLayerInfo and
+        //       taking a topogeo_id (to be reused for deleteFeatures)
         QString replace = QString( "DELETE FROM %1.relation WHERE "
                                    "layer_id = %2 AND topogeo_id = %3" )
-                          .arg( quotedIdentifier( toponame ) )
-                          .arg( layer_id )
+                          .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
+                          .arg( mTopoLayerInfo.layerId )
                           .arg( old_tg_id );
         result = mConnectionRW->PQexec( replace );
         if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -2585,9 +2591,9 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         // TODO: use prepared query here
         replace = QString( "UPDATE %1.relation SET topogeo_id = %2 "
                            "WHERE layer_id = %3 AND topogeo_id = %4" )
-                  .arg( quotedIdentifier( toponame ) )
+                  .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
                   .arg( old_tg_id )
-                  .arg( layer_id )
+                  .arg( mTopoLayerInfo.layerId )
                   .arg( new_tg_id );
         QgsDebugMsg( "relation swap: " + replace );
         result = mConnectionRW->PQexec( replace );

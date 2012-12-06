@@ -437,6 +437,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     bool getGeometryDetails();
 
+    struct TopoLayerInfo
+    {
+      QString topologyName;
+      long    layerId;
+    };
+
+    TopoLayerInfo mTopoLayerInfo; //! only used with TopoGeometry layers
+
+    bool getTopoLayerInfo();
+
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata;
 
