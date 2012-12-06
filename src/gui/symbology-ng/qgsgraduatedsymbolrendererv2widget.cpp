@@ -703,22 +703,18 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
-      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>( m->model() )->itemFromIndex( *indexIt );
-      if ( currentItem )
+      QStringList list = m->model()->data( *indexIt ).toString().split( " " );
+      if ( list.size() < 3 )
       {
-        QStringList list = currentItem->data( 0 ).toString().split( " " );
-        if ( list.size() < 3 )
-        {
-          continue;
-        }
+        continue;
+      }
 
-        double lowerBound = list.at( 0 ).toDouble();
-        double upperBound = list.at( 2 ).toDouble();
-        QgsSymbolV2* s = findSymbolForRange( lowerBound, upperBound, ranges );
-        if ( s )
-        {
-          selectedSymbols.append( s );
-        }
+      double lowerBound = list.at( 0 ).toDouble();
+      double upperBound = list.at( 2 ).toDouble();
+      QgsSymbolV2* s = findSymbolForRange( lowerBound, upperBound, ranges );
+      if ( s )
+      {
+        selectedSymbols.append( s );
       }
     }
   }
