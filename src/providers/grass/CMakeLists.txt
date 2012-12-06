@@ -80,6 +80,7 @@ SET ( FUNCTIONS
   "G_init_range"
   "G_is_c_null_value"
   "G_is_d_null_value"
+  "G_is_f_null_value"
   "G__malloc"
   "G_percent"
   "G_program_name"

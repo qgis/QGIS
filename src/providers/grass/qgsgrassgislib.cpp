@@ -294,6 +294,7 @@ int G_done_msg( const char *msg, ... )
 
 char * QgsGrassGisLib::G_find_cell2( const char * name, const char * mapset )
 {
+  Q_UNUSED( name );
   Q_UNUSED( mapset );
   QgsDebugMsg( "name = " + QString( name ) );
   QString ms = "qgis";
