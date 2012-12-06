@@ -85,11 +85,10 @@ QgsGrassGisLib::QgsGrassGisLib()
 
 int GRASS_LIB_EXPORT QgsGrassGisLib::errorRoutine( const char *msg, int fatal )
 {
+  Q_UNUSED( fatal );
   QgsDebugMsg( QString( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ) );
-  // Crash to get backtrace
-  //int *x = 0; *x = 1;
   // qFatal does core dump, useful for backtrace
-  qFatal( QString( "Fatal error: %1" ).arg( msg ).toAscii().data() );
+  qFatal( "Fatal error: %s", msg );
   return 1;
 }
 
@@ -116,6 +115,7 @@ void * QgsGrassGisLib::resolve( const char * symbol )
 
 int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char * version, const char * programName )
 {
+  Q_UNUSED( version );
   // We use this function also to init our fake lib
   QgsDebugMsg( QString( "version = %1 programName = %2" ).arg( version ).arg( programName ) );
 
@@ -281,7 +281,7 @@ int G_fatal_error( const char * msg, ... )
   va_end( ap );
 
   // qFatal does core dump, useful for backtrace
-  qFatal( QString( "Fatal error: %1" ).arg( buffer ).toAscii().data() );
+  qFatal( "Fatal error: %s", buffer );
   exit( 1 ); // must exit to avoid compilation warning
 }
 
@@ -456,7 +456,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
     fatal( "Cannot create output data source: " + dataSource );
   }
   raster.band = 1;
-  double noDataValue;
+  double noDataValue = std::numeric_limits<double>::quiet_NaN();
   switch ( wr_type )
   {
     case CELL_TYPE:

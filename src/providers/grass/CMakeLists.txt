@@ -93,6 +93,7 @@ SET ( FUNCTIONS
   "G_row_to_northing"
   "G_set_c_null_value"
   "G_set_d_null_value"
+  "G_set_f_null_value"
   "G_set_d_raster_cat"
   "G_set_gisrc_mode"
   "G_set_null_value"

@@ -141,7 +141,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     void readStderr();
 
     //! Call on mapset change, i.e. also possible direct/indirect mode change
-    void mapsetChanged();
+    //void mapsetChanged();
 
   private:
     //! Pointer to the QGIS interface object
