@@ -44,6 +44,7 @@ my $translators= {
 	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
 	el_GR => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et_EE => 'Veiko Viil',
+	eu_ES => 'Irantzu Alvarez',
 	fa => 'Mola Pahnadayan',
 	fi => 'Marko Jarvenpaa',
 	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
