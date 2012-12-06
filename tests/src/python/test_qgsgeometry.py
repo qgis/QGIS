@@ -247,7 +247,6 @@ class TestQgsGeometry(TestCase):
 
     def testClipping(self):
         """Test that we can clip geometries using other geometries."""
-        """Check we can write a vector file."""
         myMemoryLayer = QgsVectorLayer(
             ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
             'clip-in',
@@ -316,8 +315,8 @@ class TestQgsGeometry(TestCase):
                 mySymmetricalGeometry = myGeometry.symDifference(
                     myCombinedGeometry)
                 # Gives you areas outside the clip area
-                myDifferenceGeometry = myCombinedGeometry.difference(
-                    myClipPolygon)
+                # myDifferenceGeometry = myCombinedGeometry.difference(
+                #    myClipPolygon)
                 #print 'Original: %s' % myGeometry.exportToWkt()
                 #print 'Combined: %s' % myCombinedGeometry.exportToWkt()
                 #print 'Difference: %s' % myDifferenceGeometry.exportToWkt()
