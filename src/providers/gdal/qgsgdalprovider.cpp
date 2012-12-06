@@ -126,6 +126,19 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       setDataSourceUri( vsiPrefix + uri );
     QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
+  else
+  {
+    // TODO: this constructor is also called for new rasters, in that case GDAL prints error:
+    // "ERROR 4: `pok.tif' does not exist in the file system, and is not recognised as a supported dataset name."
+    // To avoid this message, we test first if the file exists at all.
+    // This should be done better adding static create() method or something like that
+    if ( !QFile::exists( uri ) )
+    {
+      QString msg = QString( "File does not exist: %1" ).arg( dataSourceUri() );
+      appendError( ERR( msg ) );
+      return;
+    }
+  }
 
   QString gdalUri = dataSourceUri();
 
