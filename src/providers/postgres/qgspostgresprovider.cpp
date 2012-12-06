@@ -3145,7 +3145,6 @@ bool QgsPostgresProvider::convertField( QgsField &field )
   {
     case QVariant::LongLong:
       fieldType = "int8";
-      fieldSize = -1;
       fieldPrec = 0;
       break;
 
@@ -3155,22 +3154,28 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::Int:
-      fieldType = "int";
-      fieldSize = -1;
+      if ( fieldPrec < 10 )
+      {
+        fieldType = "int4";
+      }
+      else
+      {
+        fieldType = "numeric";
+      }
       fieldPrec = 0;
       break;
 
     case QVariant::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0 )
+      if ( fieldSize > 18 )
       {
-        fieldType = "float";
+        fieldType = "numeric";
         fieldSize = -1;
-        fieldPrec = -1;
       }
       else
       {
-        fieldType = "decimal";
+        fieldType = "float8";
       }
+      fieldPrec = -1;
       break;
 
     default:
