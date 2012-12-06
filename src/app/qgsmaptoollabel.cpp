@@ -59,7 +59,7 @@ void QgsMapToolLabel::createRubberBands( )
 
   //label rubber band
   QgsRectangle rect = mCurrentLabelPos.labelRect;
-  mLabelRubberBand = new QgsRubberBand( mCanvas, false );
+  mLabelRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
@@ -79,7 +79,7 @@ void QgsMapToolLabel::createRubberBands( )
       QgsGeometry* geom = f.geometry();
       if ( geom )
       {
-        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() == QGis::Polygon );
+        mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );
         mFeatureRubberBand->setColor( Qt::red );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
         mFeatureRubberBand->show();
@@ -100,7 +100,7 @@ void QgsMapToolLabel::createRubberBands( )
       }
 
       QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
-      mFixPointRubberBand = new QgsRubberBand( mCanvas, false );
+      mFixPointRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
       mFixPointRubberBand->setColor( Qt::blue );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();

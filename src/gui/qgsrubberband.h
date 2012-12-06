@@ -31,13 +31,39 @@ class QPaintEvent;
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
-    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon = false );
+    /**
+     * Creates a new RubberBand.
+     * @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
+     * @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     * Added in 1.9.
+     */
+    QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType = QGis::Line );
+    /**
+     * Creates a new RubberBand.
+     * @deprecated
+     * @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
+     * @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
+     */
+    QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
     void setColor( const QColor & color );
     void setWidth( int width );
 
-    void reset( bool isPolygon = false );
+    /**
+     * Clears all the geometries in this rubberband.
+     * Sets the representation type according to geometryType.
+     * @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
+     * Added in 1.9.
+     */
+    void reset( QGis::GeometryType geometryType = QGis::Line );
+    /**
+     * @deprecated
+     * Clears all the geometries in this rubberband.
+     * Sets the representation type according to isPolygon.
+     * @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
+     */
+    void reset( bool isPolygon );
 
     //! Add point to rubberband and update canvas
     //! If adding more points consider using update=false for better performance
@@ -101,9 +127,11 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
+    int mWidth;
+
     /**Nested lists used for multitypes*/
     QList< QList <QgsPoint> > mPoints;
-    bool mIsPolygon;
+    QGis::GeometryType mGeometryType;
     double mTranslationOffsetX;
     double mTranslationOffsetY;
 
