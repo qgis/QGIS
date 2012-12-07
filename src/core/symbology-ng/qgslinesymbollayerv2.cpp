@@ -195,6 +195,22 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
   }
 }
 
+QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle() const
+{
+  QString symbolStyle;
+
+  //pen
+  symbolStyle.append( "PEN(" );
+  symbolStyle.append( "c:" );
+  symbolStyle.append( mPen.color().name() );
+  symbolStyle.append( ",w:" );
+  symbolStyle.append( QString::number( mPen.width() ) );
+  symbolStyle.append( "mm" );
+  symbolStyle.append( ")" );
+
+  return symbolStyle;
+}
+
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );

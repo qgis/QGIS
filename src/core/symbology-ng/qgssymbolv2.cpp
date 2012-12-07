@@ -332,6 +332,7 @@ QString QgsSymbolV2::ogrFeatureStyle() const
     }
     styleString.append( currentStyleString );
   }
+  return styleString;
 }
 
 QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const

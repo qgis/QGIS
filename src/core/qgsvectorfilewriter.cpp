@@ -69,6 +69,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mLayer( NULL )
     , mGeom( NULL )
     , mError( NoError )
+    , mExportFeatureStyle( true )
 {
   QString vectorFileName = theVectorFileName;
   QString fileEncoding = theFileEncoding;
@@ -588,6 +589,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
       }
       styleString.append( currentStyle );
     }
+
+    OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().data() );
   }
 
   // put the created feature to layer
@@ -747,7 +750,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     {
       fet.clearAttributeMap();
     }
-    if ( !writer->addFeature( fet ) )
+    if ( !writer->addFeature( fet, layer->rendererV2() ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
