@@ -255,7 +255,7 @@ class GrassUtils:
         return command
     
     @staticmethod
-    def executeGrass(commands, progress, outputCommands ):
+    def executeGrass(commands, progress, outputCommands = None):
         loglines = []
         loglines.append("GRASS execution console output")
         grassOutDone = False       

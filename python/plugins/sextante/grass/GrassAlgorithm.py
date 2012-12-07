@@ -213,14 +213,14 @@ class GrassAlgorithm(GeoAlgorithm):
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(value, commands)
+                            self.setSessionProjection(layer, commands)
                             commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(value, commands)
+                            self.setSessionProjection(layer, commands)
                             commands.append(self.exportVectorLayer(layer))
 
         region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
@@ -272,7 +272,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 #an output name to make sure it is unique if the session uses this algorithm several times
                 uniqueOutputName = out.name + uniqueSufix              
                 command += (" " + out.name + "=" + uniqueOutputName)    
-                 # add output file to exported layers, to indicate that they are present in GRASS                
+                # add output file to exported layers, to indicate that they are present in GRASS                
                 self.exportedLayers[out.value]= uniqueOutputName            
                 
 
@@ -285,7 +285,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 filename = out.value
                 #Raster layer output: adjust region to layer before exporting
                 commands.append("g.region rast=" + out.name + uniqueSufix)
-                outputCommands.append("g.region rast=" + out.name)
+                outputCommands.append("g.region rast=" + out.name + uniqueSufix)
                 command = "r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\""
                 command += " input="
                 command += out.name + uniqueSufix
@@ -301,7 +301,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command += " olayer=" + os.path.basename(out.value)[:-4]
                 command += " type=auto"
                 commands.append(command)
-                outputCommands.append("g.region rast=" + out.name)
+                outputCommands.append(command)
                 
         #4 Run GRASS
         loglines = []

@@ -10,6 +10,7 @@ Contact : ole.moller.nielsen@gmail.com
      (at your option) any later version.
 
 """
+import sextante
 
 __author__ = 'tim@linfiniti.com'
 __version__ = '0.3.0'
@@ -137,7 +138,7 @@ class SextanteProviderTestCase(unittest.TestCase):
         print ' => ', self.args, bcolors.WARNING,
     
     def runalg_none(self):
-        result = Sextante.runalg(self.alg, *self.args)
+        result = sextante.runalg(self.alg, *self.args)
         print bcolors.ENDC
         self.assertIsNotNone(result, self.msg)
         if not result:

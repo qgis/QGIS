@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,7 +30,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteLog import SextanteLog
-
+from sextante.core.AlgorithmClassification import AlgorithmDecorator
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
@@ -132,9 +133,10 @@ class Sextante:
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
-        SextanteConfig.initialize()
+        SextanteConfig.initialize()        
         SextanteConfig.loadSettings()
         RenderingStyles.loadStyles()
+        AlgorithmDecorator.loadClassification()
         Sextante.loadFromProviders()
 
     @staticmethod
