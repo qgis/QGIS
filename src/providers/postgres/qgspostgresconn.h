@@ -110,8 +110,11 @@ class QgsPostgresConn : public QObject
     //! encode wkb in hex
     bool useWkbHex() { return mUseWkbHex; }
 
-    //! major PostgreSQL version
+    //! major PostGIS version
     int majorVersion() { return mPostgisVersionMajor; }
+
+    //! minor PostGIS version
+    int minorVersion() { return mPostgisVersionMinor; }
 
     //! PostgreSQL version
     int pgVersion() { return mPostgresqlVersion; }
