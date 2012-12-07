@@ -1857,6 +1857,23 @@ bool QgsPostgresProvider::getTopoLayerInfo( )
   return true;
 }
 
+/* private */
+void QgsPostgresProvider::dropOrphanedTopoGeoms( )
+{
+  QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
+                         "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )"  )
+                .arg( quotedIdentifier(mTopoLayerInfo.topologyName) )
+                .arg( mTopoLayerInfo.layerId )
+                .arg( quotedIdentifier(mGeometryColumn) )
+                .arg( quotedIdentifier(mSchemaName) )
+                .arg( quotedIdentifier(mTableName) )
+                ;
+
+  QgsDebugMsg( "TopoGeom orphans cleanup query: " + sql );
+
+  mConnectionRW->PQexecNR( sql );
+}
+
 QString QgsPostgresProvider::geomParam( int offset ) const
 {
   QString geometry;
@@ -2191,6 +2208,18 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
     }
 
     mConnectionRW->PQexecNR( "COMMIT" );
+
+    if ( mSpatialColType == sctTopoGeometry )
+    {
+      // NOTE: in presence of multiple TopoGeometry objects
+      //       for the same table or when deleting a Geometry
+      //       layer _also_ having a TopoGeometry component,
+      //       orphans would still be left.
+      // TODO: decouple layer from table and signal table when
+      //       records are added or removed
+      dropOrphanedTopoGeoms();
+    }
+
 
     mFeaturesCounted -= id.size();
   }
@@ -2574,8 +2603,6 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         // Replace old TopoGeom with new TopoGeom, so that
         // any hierarchically defined TopoGeom will still have its
         // definition and we'll leave no orphans
-        // TODO: move this logic into a method using mTopoLayerInfo and
-        //       taking a topogeo_id (to be reused for deleteFeatures)
         QString replace = QString( "DELETE FROM %1.relation WHERE "
                                    "layer_id = %2 AND topogeo_id = %3" )
                           .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
