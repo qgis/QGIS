@@ -146,6 +146,8 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     return outputBlock;
   }
 
+  unsigned int* outputData = ( unsigned int* )( outputBlock->data() );
+
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
     int val = ( int ) inputBlock->value( i );
@@ -156,14 +158,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     }
     if ( !hasTransparency )
     {
-      if ( val < 0 || val > mNColors )
-      {
-        outputBlock->setColor( i, myDefaultColor );
-      }
-      else
-      {
-        outputBlock->setColor( i, mColors[ val ].rgba() );
-      }
+      outputData[i] = mColors[ val ].rgba();
     }
     else
     {
@@ -177,8 +172,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
         currentOpacity *=  alphaBlock->value( i ) / 255.0;
       }
       QColor& currentColor = mColors[val];
-
-      outputBlock->setColor( i, qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 ) );
+      outputData[i] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
     }
   }
 
