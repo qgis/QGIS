@@ -24,6 +24,8 @@
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 
 #include <QFile>
 #include <QSettings>
@@ -430,7 +432,7 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
+bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer )
 {
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
@@ -561,6 +563,30 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 
       // set geometry (ownership is not passed to OGR)
       OGR_F_SetGeometry( poFeature, mGeom );
+    }
+  }
+
+  //add OGR feature style type
+  if ( mExportFeatureStyle && renderer )
+  {
+    //concatenate ogr styles of all symbols
+    QgsSymbolV2List symbols = renderer->symbolsForFeature( feature );
+    QString styleString;
+    QString currentStyle;
+
+    QgsSymbolV2List::const_iterator symbolIt = symbols.constBegin();
+    for ( ; symbolIt != symbols.constEnd(); ++symbolIt )
+    {
+      currentStyle = ( *symbolIt )->ogrFeatureStyle();
+      if ( currentStyle.isEmpty() )
+      {
+        continue;
+      }
+      if ( symbolIt != symbols.constBegin() )
+      {
+        styleString.append( ";" );
+      }
+      styleString.append( currentStyle );
     }
   }
 

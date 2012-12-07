@@ -132,7 +132,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** add feature to the currently opened shapefile */
-    bool addFeature( QgsFeature& feature );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0 );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -167,6 +167,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
+
+    /** flag if OGR feature type style should be exported*/
+    bool mExportFeatureStyle;
 
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );

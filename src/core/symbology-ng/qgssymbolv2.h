@@ -113,6 +113,9 @@ class CORE_EXPORT QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    /**Returns the OGR feature style string for the symbol*/
+    QString ogrFeatureStyle() const;
+
     OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
 
