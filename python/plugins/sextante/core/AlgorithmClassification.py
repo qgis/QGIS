@@ -37,8 +37,8 @@ class AlgorithmDecorator():
         lines = open(AlgorithmDecorator.classificationFile())
         line = lines.readline().strip("\n")
         while line != "":
-            tokens = line.split("\t")
-            AlgorithmDecorator.classification[tokens[0]] = (tokens[1], tokens[2]);
+            tokens = line.split("\t")            
+            AlgorithmDecorator.classification[tokens[0]] = (tokens[1], tokens[2], tokens[3]);
             line = lines.readline().strip("\n")            
         lines.close()         
 
@@ -47,11 +47,14 @@ class AlgorithmDecorator():
         return os.path.join(SextanteUtils.userFolder(), "sextante_qgis_algclass.txt")
     
     @staticmethod
-    def getGroupAndName(alg):
+    def getGroupsAndName(alg):
         if alg.commandLineName() in AlgorithmDecorator.classification:
-           return AlgorithmDecorator.classification[alg.commandLineName]
+            group, subgroup, name = AlgorithmDecorator.classification[alg.commandLineName]
+            if name == "USE_ORIGINAL_NAME":
+                name = alg.name
+            return (group, subgroup, name)
         else:
-            return (alg.group, alg.name)
+            return ("Uncategorized", alg.group, alg.name)
     
     
     

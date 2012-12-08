@@ -201,33 +201,41 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                altgroup, altname = AlgorithmDecorator.getGroupAndName(alg)
-                if text =="" or text.lower() in altname.lower():                     
-                    if altgroup in groups:
-                        groupItem = groups[altgroup]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        groupItem.setText(0, altgroup)
-                        groupItem.setToolTip(0, altgroup)
-                        groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-                        groups[altgroup] = groupItem
-                    algItem = TreeAlgorithmItem(alg)
-                    groupItem.addChild(algItem)
-
+                altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
+                if text =="" or text.lower() in altname.lower(): 
+                    if altgroup not in groups:
+                        groups[altgroup] = {}
+                    group = groups[altgroup]
+                    if altsubgroup not in group:
+                        groups[altgroup][altsubgroup] = []
+                    subgroup = groups[altgroup][altsubgroup]
+                    subgroup.append(alg) 
+  
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
             mainItem.setText(0, "Geoalgorithms")
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))
-            for groupItem in groups.values():
+            mainItem.setToolTip(0, mainItem.text(0))            
+            for groupname, group in groups.items():
+                groupItem = QTreeWidgetItem()
+                groupItem.setText(0, groupname)
+                groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
+                groupItem.setToolTip(0, groupItem.text(0))
                 mainItem.addChild(groupItem)
+                for subgroupname, subgroup in group.items():
+                    subgroupItem = QTreeWidgetItem()
+                    subgroupItem.setText(0, subgroupname)
+                    subgroupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
+                    subgroupItem.setToolTip(0, subgroupItem.text(0))
+                    groupItem.addChild(subgroupItem)
+                    for alg in subgroup:
+                        algItem = TreeAlgorithmItem(alg)
+                        subgroupItem.addChild(algItem)
+                    subgroupItem.setExpanded(text!="")
+                groupItem.setExpanded(text!="")                        
             self.algorithmTree.addTopLevelItem(mainItem)
             mainItem.setExpanded(text!="")
-            for groupItem in groups.values():
-                if text != "":
-                    groupItem.setExpanded(True)
-
-
+                        
         for providerName in Sextante.algs.keys():
             groups = {}
             provider = Sextante.algs[providerName]
@@ -341,7 +349,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         name = alg.name
         if useCategories:
             icon = GeoAlgorithm.getDefaultIcon()            
-            group, name = AlgorithmDecorator.getGroupAndName(alg)           
+            group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)           
         self.setIcon(0, icon)
         self.setToolTip(0, name)
 
