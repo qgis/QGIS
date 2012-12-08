@@ -191,7 +191,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 value.append(options[index])
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
-            return param.setValue(widget.getValue())
+            return param.setValue(widget.getValue())                    
         elif isinstance(param, ParameterString):
             if param.multiline:
                 return param.setValue(unicode(widget.toPlainText()))
