@@ -19,5 +19,7 @@
         <file>images/taudem.png</file>
         <file>images/tool.png</file>
         <file>images/commander.png</file>
+        <file>images/edithelp.png</file>
+        <file>images/runalgorithm.png</file>
     </qresource>
 </RCC>

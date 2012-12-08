@@ -23,28 +23,38 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os.path
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import os.path
-from processing.script.WrongScriptException import WrongScriptException
-from processing.r.DeleteRScriptAction import DeleteRScriptAction
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from PyQt4 import QtGui
+from processing.core.ProcessingUtils import ProcessingUtils
+
+from processing.core.SextanteUtils import SextanteUtils
+
+from processing.gui.EditScriptAction import EditScriptAction
+from processing.gui.DeleteScriptAction import DeleteScriptAction
+from processing.gui.CreateNewScriptAction import CreateNewScriptAction
+p
 from processing.r.RUtils import RUtils
 from processing.r.RAlgorithm import RAlgorithm
-from processing.r.CreateNewRScriptAction import CreateNewRScriptAction
-from processing.r.EditRScriptAction import EditRScriptAction
+
+from processing.script.WrongScriptException import WrongScriptException
 from processing.tools.system import *
+import processing.resources_rc
 
 class RAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.actions.append(CreateNewRScriptAction())
-        self.contextMenuActions = [EditRScriptAction(), DeleteRScriptAction()]
+        #self.actions.append(CreateNewScriptAction("Create new R script", CreateNewScriptAction.SCRIPT_R))
+        self.contextMenuActions = [EditScriptAction(EditScriptAction.SCRIPT_R),
+                                   DeleteScriptAction(DeleteScriptAction.SCRIPT_R)
+                                  ]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -61,8 +71,7 @@ class RAlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
-
+        return QIcon(":/sextante/images/r.png")
 
     def getDescription(self):
         return "R scripts"
@@ -87,10 +96,10 @@ class RAlgorithmProvider(AlgorithmProvider):
                     alg = RAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)
-                except WrongScriptException,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,e.msg)
+                except WrongScriptException, e:
+                    ProcessingLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
                 except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,"Could not load R script:" + descriptionFile + "\n" + str(e))
+                    ProcessingLog.addToLog(SextanteLog.LOG_ERROR, "Could not load R script:" + descriptionFile + "\n" + unicode(e))
 
 
 

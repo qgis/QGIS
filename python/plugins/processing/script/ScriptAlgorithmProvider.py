@@ -23,26 +23,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from processing.script.CreateNewScriptAction import CreateNewScriptAction
-from processing.script.EditScriptAction import EditScriptAction
+import os.path
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import os.path
-from processing.script.DeleteScriptAction import DeleteScriptAction
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script.ScriptUtils import ScriptUtils
-from processing.script.WrongScriptException import WrongScriptException
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from PyQt4 import QtGui
+
+from processing.gui.EditScriptAction import EditScriptAction
+from processing.gui.DeleteScriptAction import DeleteScriptAction
+from processing.gui.CreateNewScriptAction import CreateNewScriptAction
+
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script.ScriptUtils import ScriptUtils
+from processing.script.WrongScriptException import WrongScriptException
+
+import processing.resources_rc
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions.append(CreateNewScriptAction())
-        self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
+        #self.actions.append(CreateNewScriptAction("Create new script", CreateNewScriptAction.SCRIPT_PYTHON))
+        self.contextMenuActions = [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
+                                   DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)
+                                  ]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -53,7 +60,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
+        return QIcon(":/sextante/images/script.png")
 
     def getName(self):
         return "script"
@@ -77,8 +84,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
                     alg = ScriptAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)
-                except WrongScriptException,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,e.msg)
-
-
-
+                except WrongScriptException, e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
+                except Exception, e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not load script:" + descriptionFile + "\n" + unicode(e))

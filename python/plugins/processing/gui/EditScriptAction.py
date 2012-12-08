@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EditRScriptAction.py
+    EditScriptAction.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -24,19 +24,28 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
+from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+
 from processing.r.RAlgorithm import RAlgorithm
-from processing.r.EditRScriptDialog import EditRScriptDialog
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
-class EditRScriptAction(ContextAction):
+class EditScriptAction(ContextAction):
 
-    def __init__(self):
-        self.name="Edit R script"
+    SCRIPT_PYTHON = 0
+    SCRIPT_R = 1
+
+    def __init__(self, scriptType):
+        self.name = "Edit script"
+        self.scriptType = scriptType
 
     def isEnabled(self):
-        return isinstance(self.alg, RAlgorithm)
+        if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
+            return isinstance(self.alg, ScriptAlgorithm)
+        elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
+            return isinstance(self.alg, RAlgorithm)
 
     def execute(self):
-        dlg = EditRScriptDialog(self.alg)
+        dlg = ScriptEditorDialog(self.scriptType, self.alg)
         dlg.show()
         dlg.exec_()
         if dlg.update:

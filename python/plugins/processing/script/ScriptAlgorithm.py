@@ -215,7 +215,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             out.setValue(ns[out.name])
 
     def helpFile(self):
-        helpfile = self.descriptionFile + ".help"
+        helpfile = unicode(self.descriptionFile) + ".help"
         if os.path.exists(helpfile):
             h2h = Help2Html()
             return h2h.getHtmlFile(self, helpfile)
