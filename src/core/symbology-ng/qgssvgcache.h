@@ -36,7 +36,7 @@ class CORE_EXPORT QgsSvgCacheEntry
     ~QgsSvgCacheEntry();
 
     QString file;
-    int size; //size in pixel
+    double size; //size in pixels (cast to int for QImage)
     double outlineWidth;
     double widthScaleFactor;
     double rasterScaleFactor;
@@ -69,9 +69,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     static QgsSvgCache* instance();
     ~QgsSvgCache();
 
-    const QImage& svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor );
-    const QPicture& svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
     /**Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
@@ -84,21 +84,21 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
-    void statusChanged( QString const &  theStatusQString );
+    void statusChanged( const QString&  theStatusQString );
 
   protected:
     //! protected constructor
     QgsSvgCache( QObject * parent = 0 );
 
     /**Creates new cache entry and returns pointer to it*/
-    QgsSvgCacheEntry* insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                  double widthScaleFactor, double rasterScaleFactor );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry );
     /**Returns entry from cache or creates a new entry if it does not exist already*/
-    QgsSvgCacheEntry* cacheEntry( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
     /**Removes the least used items until the maximum size is under the limit*/
