@@ -58,7 +58,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
 		hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
 		self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
 		self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
-		self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
+		#self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 
 
 	def chooseOutputFile(self):
@@ -158,8 +158,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
 			return
 
 		# create spatial index
-		if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
-			self.db.connector.createSpatialIndex( (schema, table), geom )
+		#if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
+		#	self.db.connector.createSpatialIndex( (schema, table), geom )
 
 		QMessageBox.information(self, "Export to file", "Export finished.")
 		return QDialog.accept(self)
