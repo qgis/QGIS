@@ -29,11 +29,9 @@ from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableIndex
 
-from .ui.ui_DlgCreateIndex import Ui_DlgCreateIndex
+from .ui.ui_DlgCreateIndex import Ui_DbManagerDlgCreateIndex as Ui_Dialog
 
-
-class DlgCreateIndex(QDialog, Ui_DlgCreateIndex):
-
+class DlgCreateIndex(QDialog, Ui_Dialog):
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.table = table

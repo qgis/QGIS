@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgExportVector</class>
- <widget class="QDialog" name="DlgExportVector">
+ <class>DbManagerDlgExportVector</class>
+ <widget class="QDialog" name="DbManagerDlgExportVector">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -28,7 +28,11 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="editOutputFile"/>
+    <widget class="QLineEdit" name="editOutputFile">
+     <property name="text">
+      <string notr="true"/>
+     </property>
+    </widget>
    </item>
    <item row="0" column="2">
     <widget class="QToolButton" name="btnChooseOutputFile">
@@ -113,6 +117,9 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="text">
+           <string notr="true"/>
+          </property>
          </widget>
         </item>
         <item>
@@ -142,6 +149,9 @@
          <widget class="QLineEdit" name="editTargetSrid">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="text">
+           <string notr="true"/>
           </property>
          </widget>
         </item>
@@ -203,7 +213,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgExportVector</receiver>
+   <receiver>DbManagerDlgExportVector</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -283,7 +293,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>DlgExportVector</receiver>
+   <receiver>DbManagerDlgExportVector</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

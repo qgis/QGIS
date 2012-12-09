@@ -34,10 +34,9 @@ from .dlg_add_geometry_column import DlgAddGeometryColumn
 from .dlg_create_constraint import DlgCreateConstraint
 from .dlg_create_index import DlgCreateIndex
 
-from .ui.ui_DlgTableProperties import Ui_DlgTableProperties
+from .ui.ui_DlgTableProperties import Ui_DbManagerDlgTableProperties as Ui_Dialog
 
-class DlgTableProperties(QDialog, Ui_DlgTableProperties):
-
+class DlgTableProperties(QDialog, Ui_Dialog):
 	def __init__(self, table, parent=None):
 		QDialog.__init__(self, parent)
 		self.table = table

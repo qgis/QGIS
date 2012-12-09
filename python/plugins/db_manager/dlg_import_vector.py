@@ -28,9 +28,9 @@ from PyQt4.QtGui import *
 import qgis.core
 from qgis.utils import iface
 
-from .ui.ui_DlgImportVector import Ui_DlgImportVector
+from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
-class DlgImportVector(QDialog, Ui_DlgImportVector):
+class DlgImportVector(QDialog, ):
 
 	HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = range(2)
 

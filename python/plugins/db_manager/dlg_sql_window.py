@@ -28,12 +28,12 @@ from PyQt4.QtGui import *
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
 
-from .ui.ui_DlgSqlWindow import Ui_DlgSqlWindow
+from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 
 from .highlighter import SqlHighlighter
 from .completer import SqlCompleter
 
-class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
+class DlgSqlWindow(QDialog, Ui_Dialog):
 
 	def __init__(self, iface, db, parent=None):
 		QDialog.__init__(self, parent)

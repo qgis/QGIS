@@ -29,10 +29,9 @@ from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableConstraint
 
-from .ui.ui_DlgCreateConstraint import Ui_DlgCreateConstraint
+from .ui.ui_DlgCreateConstraint import Ui_DbManagerDlgCreateConstraint as Ui_Dialog
 
-class DlgCreateConstraint(QDialog, Ui_DlgCreateConstraint):
-
+class DlgCreateConstraint(QDialog, Ui_Dialog):
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.table = table

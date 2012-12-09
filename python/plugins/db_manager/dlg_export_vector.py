@@ -28,9 +28,9 @@ from PyQt4.QtGui import *
 import qgis.core
 from qgis.utils import iface
 
-from .ui.ui_DlgExportVector import Ui_DlgExportVector
+from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
-class DlgExportVector(QDialog, Ui_DlgExportVector):
+class DlgExportVector(QDialog, Ui_Dialog):
 
 	def __init__(self, inLayer, inDb, parent=None):
 		QDialog.__init__(self, parent)

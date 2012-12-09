@@ -29,10 +29,9 @@ from PyQt4.QtGui import *
 
 from .db_plugins.plugin import TableField
 
-from .ui.ui_DlgFieldProperties import Ui_DlgFieldProperties
+from .ui.ui_DlgFieldProperties import Ui_DbManagerDlgFieldProperties as Ui_Dialog
 
-class DlgFieldProperties(QDialog, Ui_DlgFieldProperties):
-
+class DlgFieldProperties(QDialog, Ui_Dialog):
 	def __init__(self, parent=None, fld=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.fld = fld

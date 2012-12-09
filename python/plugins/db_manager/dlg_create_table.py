@@ -29,7 +29,7 @@ from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
 from .dlg_db_error import DlgDbError
 
-from .ui.ui_DlgCreateTable import Ui_DlgCreateTable
+from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 
 
 class TableFieldsDelegate(QItemDelegate):
@@ -79,8 +79,7 @@ class TableFieldsDelegate(QItemDelegate):
 				self.emit(SIGNAL("columnNameChanged()"))
 
 
-class DlgCreateTable(QDialog, Ui_DlgCreateTable):
-
+class DlgCreateTable(QDialog, Ui_Dialog):
 	GEOM_TYPES = ["POINT", "LINESTRING", "POLYGON", "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", "GEOMETRYCOLLECTION"]
 
 	def __init__(self, item, parent=None):

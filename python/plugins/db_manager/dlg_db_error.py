@@ -25,10 +25,10 @@ The content of this file is based on
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from .ui.ui_DlgDbError import Ui_DlgDbError
+from .ui.ui_DlgDbError import Ui_DbManagerDlgDbError as Ui_Dialog
 from .db_plugins.plugin import DbError
 
-class DlgDbError(QDialog, Ui_DlgDbError):
+class DlgDbError(QDialog, Ui_Dialog):
 	def __init__(self, e, parent=None):
 		QDialog.__init__(self, parent)
 		self.setupUi(self)
