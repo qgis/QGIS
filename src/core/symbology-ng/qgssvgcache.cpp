@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssvgcache.h"
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
@@ -33,7 +34,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
+QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0.0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
     outline( Qt::black ), image( 0 ), picture( 0 )
 {
 }
@@ -107,7 +108,7 @@ QgsSvgCache::~QgsSvgCache()
 }
 
 
-const QImage& QgsSvgCache::svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                        double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
@@ -123,7 +124,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, int size, const QCol
   return *( currentEntry->image );
 }
 
-const QPicture& QgsSvgCache::svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
@@ -139,7 +140,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, int size, const 
   return *( currentEntry->picture );
 }
 
-QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
@@ -326,21 +327,22 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   delete entry->image;
   entry->image = 0;
 
-  int imageSize = entry->size;
-  QImage* image = new QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
+  double imageSize = entry->size;
+  // cast imageSize double to int for QImage
+  QImage* image = new QImage( ( int )imageSize, ( int )imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
   QPainter p( image );
   QSvgRenderer r( entry->svgContent );
-  if ( r.viewBox().width() == r.viewBox().height() )
+  if ( r.viewBoxF().width() == r.viewBoxF().height() )
   {
     r.render( &p );
   }
   else
   {
-    QSize s( r.viewBox().size() );
+    QSizeF s( r.viewBoxF().size() );
     s.scale( imageSize, imageSize, Qt::KeepAspectRatio );
-    QRect rect(( imageSize - s.width() ) / 2, ( imageSize - s.height() ) / 2, s.width(), s.height() );
+    QRectF rect(( imageSize - s.width() ) / 2, ( imageSize - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
 
@@ -360,18 +362,34 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 
   //correct QPictures dpi correction
   QPicture* picture = new QPicture();
-  double pictureSize = entry->size  /  25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor )  * picture->logicalDpiX();
-  QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
+  QRectF rect;
+  QSvgRenderer r( entry->svgContent );
+  bool drawOnScreen = doubleNear( entry->rasterScaleFactor, 1.0, 0.1 );
+  if ( drawOnScreen )
+  {
+    // fix to ensure rotated symbols scale with composer page (i.e. not map item) zoom
+    double wSize = entry->size;
+    double hSize = wSize * r.viewBoxF().height() / r.viewBoxF().width();
+    QSizeF s( r.viewBoxF().size() );
+    s.scale( wSize, hSize, Qt::KeepAspectRatio );
+    rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
+  }
+  else
+  {
+    // output for print or image saving @ specific dpi
+    double scaledSize = entry->size / 25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor );
+    double wSize = scaledSize * picture->logicalDpiX();
+    double hSize = scaledSize * picture->logicalDpiY() * r.viewBoxF().height() / r.viewBoxF().width();
+    rect = QRectF( QPointF( -wSize / 2.0, -hSize / 2.0 ), QSizeF( wSize, hSize ) );
+  }
 
-
-  QSvgRenderer renderer( entry->svgContent );
-  QPainter painter( picture );
-  renderer.render( &painter, rect );
+  QPainter p( picture );
+  r.render( &p, rect );
   entry->picture = picture;
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   //search entries in mEntryLookup
