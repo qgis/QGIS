@@ -960,11 +960,9 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QgsRasterBlock::DataType qgisTy
     case QgsRasterBlock::CFloat64:
     case QgsRasterBlock::ARGB32:
     case QgsRasterBlock::ARGB32_Premultiplied:
-      return -1;
     default:
       return -1;
   }
-  return -1; // not reached
 }
 
 char GRASS_LIB_EXPORT *G_tempfile( void )
