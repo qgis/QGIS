@@ -191,18 +191,20 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 		connector = self.db.connector
 		sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % ( unicode(query), connector.quoteId(alias) )
 
+		c = None
 		try:
 			c = connector._execute(None, sql)
 			cols = connector._get_cursor_columns(c)
 
-		except BaseError, e:
+		except (BaseError, Warning) as e:
 			QApplication.restoreOverrideCursor()
 			DlgDbError.showError(e, self)
 			return
 
 		finally:
-			c.close()
-			del c
+			if c:
+				c.close()
+				del c
 
 		cols.sort()
 		self.uniqueCombo.addItems( cols )
