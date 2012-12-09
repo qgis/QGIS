@@ -185,7 +185,7 @@ class DBManager(QMainWindow):
 		#self.connect( dlg, SIGNAL( "queryExecuted(const QString &)" ), refreshDb )
 		dlg.show()
 		dlg.exec_()
-		
+
 
 	def showSystemTables(self):
 		self.tree.showSystemTables( self.actionShowSystemTables.isChecked() )
@@ -357,7 +357,7 @@ class DBManager(QMainWindow):
 
 		# create status bar
 		self.statusBar = QStatusBar(self)
-		self.setStatusBar(self.statusBar)		
+		self.setStatusBar(self.statusBar)
 
 		# create menus
 		self.menuBar = QMenuBar(self)

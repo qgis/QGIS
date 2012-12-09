@@ -25,11 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-    
+
 class AlgorithmDecorator():
 
     classification = {};
-        
+
     @staticmethod
     def loadClassification():
         if not os.path.isfile(AlgorithmDecorator.classificationFile()):
@@ -37,15 +37,15 @@ class AlgorithmDecorator():
         lines = open(AlgorithmDecorator.classificationFile())
         line = lines.readline().strip("\n")
         while line != "":
-            tokens = line.split("\t")            
+            tokens = line.split("\t")
             AlgorithmDecorator.classification[tokens[0]] = (tokens[1], tokens[2], tokens[3]);
-            line = lines.readline().strip("\n")            
-        lines.close()         
+            line = lines.readline().strip("\n")
+        lines.close()
 
     @staticmethod
     def classificationFile():
         return os.path.join(SextanteUtils.userFolder(), "sextante_qgis_algclass.txt")
-    
+
     @staticmethod
     def getGroupsAndName(alg):
         if alg.commandLineName() in AlgorithmDecorator.classification:
@@ -55,8 +55,7 @@ class AlgorithmDecorator():
             return (group, subgroup, name)
         else:
             return ("Uncategorized", alg.group, alg.name)
-    
-    
-    
 
-        
+
+
+

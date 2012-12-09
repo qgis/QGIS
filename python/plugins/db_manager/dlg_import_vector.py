@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -32,7 +32,7 @@ from .ui.ui_DlgImportVector import Ui_DlgImportVector
 
 class DlgImportVector(QDialog, Ui_DlgImportVector):
 
-	HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = range(2) 
+	HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = range(2)
 
 	def __init__(self, inLayer, outDb, outUri, parent=None):
 		QDialog.__init__(self, parent)
@@ -106,7 +106,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 				self.cboInputLayer.addItem( layer.name(), index )
 
 	def deleteInputLayer(self):
-		""" destroy the input layer instance, but only if it was 
+		""" destroy the input layer instance, but only if it was
 			created from this dialog """
 		if self.mode == self.ASK_FOR_INPUT_MODE and self.inLayer:
 			self.inLayer.deleteLater()
@@ -173,7 +173,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 	def populateSchemas(self):
 		if not self.db:
 			return
-		
+
 		self.cboSchema.clear()
 		schemas = self.db.schemas()
 		if schemas == None:
@@ -193,7 +193,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 	def populateTables(self):
 		if not self.db:
 			return
-		
+
 		currentText = self.cboTable.currentText()
 
 		schemas = self.db.schemas()
@@ -209,16 +209,16 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 			self.cboTable.addItem(table.name)
 
 		self.cboTable.setEditText(currentText)
-	
+
 	def populateEncodings(self):
 		encodings = ['ISO-8859-1', 'ISO-8859-2', 'UTF-8', 'CP1250']
 		for enc in encodings:
 			self.cboEncoding.addItem(enc)
 		self.cboEncoding.setCurrentIndex(2)
-		
+
 	def accept(self):
 		if self.mode == self.ASK_FOR_INPUT_MODE:
-			# create the input layer (if not already done) and 
+			# create the input layer (if not already done) and
 			# update available options w/o changing the tablename!
 			self.cboTable.blockSignals(True)
 			table = self.cboTable.currentText()
@@ -257,7 +257,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 			schema = self.outUri.schema() if not self.cboSchema.isEnabled() else self.cboSchema.currentText()
 			table = self.cboTable.currentText()
 
-			# get pk and geom field names from the source layer or use the 
+			# get pk and geom field names from the source layer or use the
 			# ones defined by the user
 			pk = self.outUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
 
@@ -322,7 +322,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 
 
 	def closeEvent(self, event):
-		# destroy the input layer instance but only if it was created 
+		# destroy the input layer instance but only if it was created
 		# from this dialog!
 		self.deleteInputLayer()
 		QDialog.closeEvent(self, event)

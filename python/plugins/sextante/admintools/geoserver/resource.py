@@ -72,10 +72,10 @@ class FeatureType(ResourceInfo):
 
     def __init__(self, catalog, workspace, store, name):
         super(FeatureType, self).__init__()
-  
+
         assert isinstance(store, ResourceInfo)
         assert isinstance(name, basestring)
-        
+
         self.catalog = catalog
         self.workspace = workspace
         self.store = store

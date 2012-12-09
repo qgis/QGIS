@@ -36,21 +36,21 @@ class PGTableInfo(TableInfo):
 
 		# if the estimation is less than 100 rows, try to count them - it shouldn't take long time
 		if self.table.rowCount == None and self.table.estimatedRowCount < 100:
-			# row count information is not displayed yet, so just block 
+			# row count information is not displayed yet, so just block
 			# table signals to avoid double refreshing (infoViewer->refreshRowCount->tableChanged->infoViewer)
 			self.table.blockSignals(True)
 			self.table.refreshRowCount()
 			self.table.blockSignals(False)
 
 		tbl = [
-			("Relation type:", "View" if self.table.isView else "Table"), 
+			("Relation type:", "View" if self.table.isView else "Table"),
 			("Owner:", self.table.owner)
 		]
 		if self.table.comment:
 			tbl.append( ("Comment:", self.table.comment) )
 
 		tbl.extend([
-			("Pages:", self.table.pages), 
+			("Pages:", self.table.pages),
 			("Rows (estimation):", self.table.estimatedRowCount )
 		])
 
@@ -105,9 +105,9 @@ class PGTableInfo(TableInfo):
 			return
 
 		tbl = [
-			("Library:", info[0]), 
+			("Library:", info[0]),
 			("Scripts:", info[3]),
-			("GEOS:", info[1]), 
+			("GEOS:", info[1]),
 			("Proj:", info[2])
 		]
 		ret.append( HtmlTable( tbl ) )

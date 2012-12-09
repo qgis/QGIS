@@ -161,7 +161,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             self.fillTreeUsingCategories()
         else:
             self.fillTreeUsingProviders()
-            
+
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
@@ -182,14 +182,14 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     recentItem.setExpanded(True)
 
             self.algorithmTree.setWordWrap(True)
-        
-        
-    def fillTreeUsingCategories(self):        
+
+
+    def fillTreeUsingCategories(self):
         providersToExclude = ["model", "script"]
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         groups = {}
-        for providerName in Sextante.algs.keys():            
+        for providerName in Sextante.algs.keys():
             provider = Sextante.algs[providerName]
             name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
             if not SextanteConfig.getSetting(name):
@@ -202,20 +202,20 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 if not alg.showInToolbox:
                     continue
                 altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
-                if text =="" or text.lower() in altname.lower(): 
+                if text =="" or text.lower() in altname.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
                     group = groups[altgroup]
                     if altsubgroup not in group:
                         groups[altgroup][altsubgroup] = []
                     subgroup = groups[altgroup][altsubgroup]
-                    subgroup.append(alg) 
-  
+                    subgroup.append(alg)
+
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
             mainItem.setText(0, "Geoalgorithms")
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))            
+            mainItem.setToolTip(0, mainItem.text(0))
             for groupname, group in groups.items():
                 groupItem = QTreeWidgetItem()
                 groupItem.setText(0, groupname)
@@ -232,10 +232,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                         algItem = TreeAlgorithmItem(alg)
                         subgroupItem.addChild(algItem)
                     subgroupItem.setExpanded(text!="")
-                groupItem.setExpanded(text!="")                        
+                groupItem.setExpanded(text!="")
             self.algorithmTree.addTopLevelItem(mainItem)
             mainItem.setExpanded(text!="")
-                        
+
         for providerName in Sextante.algs.keys():
             groups = {}
             provider = Sextante.algs[providerName]
@@ -284,7 +284,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)
-    
+
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
@@ -345,11 +345,11 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         self.setText(0, alg.name)
-        icon = alg.getIcon() 
+        icon = alg.getIcon()
         name = alg.name
         if useCategories:
-            icon = GeoAlgorithm.getDefaultIcon()            
-            group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)           
+            icon = GeoAlgorithm.getDefaultIcon()
+            group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
 

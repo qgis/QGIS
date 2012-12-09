@@ -82,7 +82,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
         self.preloadedAlgs.append(SplitRGBBands())
-        
+
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
@@ -94,10 +94,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ["shp"]
-    
-    def getSupportedOutputRasterLayerExtensions(self):        
+
+    def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]
-    
+
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 

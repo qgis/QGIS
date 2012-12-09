@@ -115,7 +115,7 @@ class Ogr2Ogr(OgrAlgorithm):
         ds = ogr.Open(vrt)
         return ds
 
-    def ogrtransform(self, 
+    def ogrtransform(self,
                      poSrcDS,
                     poDstDS,
                     papszLayers = [],

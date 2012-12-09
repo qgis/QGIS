@@ -31,7 +31,7 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 
 class CreateStyleGeoServer(GeoServerToolsAlgorithm):
-    
+
     STYLE = "STYLE"
     OVERWRITE = "OVERWRITE"
     NAME = "NAME"
@@ -40,17 +40,17 @@ class CreateStyleGeoServer(GeoServerToolsAlgorithm):
         self.createCatalog()
         stylefile = self.getParameterValue(self.STYLE)
         overwrite = self.getParameterValue(self.OVERWRITE)
-        name = self.getParameterValue(self.NAME)                                            
+        name = self.getParameterValue(self.NAME)
         self.catalog.create_style(name, stylefile, overwrite)
 
-        
+
     def defineCharacteristics(self):
         self.addBaseParameters()
         self.name = "Add style"
-        self.group = "GeoServer management tools"        
+        self.group = "GeoServer management tools"
         self.addParameter(ParameterString(self.NAME, "Style name"))
         self.addParameter(ParameterFile(self.STYLE, "Style SLD file"))
         self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite"))
 
-                  
+
 

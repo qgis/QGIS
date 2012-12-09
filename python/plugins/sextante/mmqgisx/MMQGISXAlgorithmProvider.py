@@ -37,9 +37,9 @@ class MMQGISXAlgorithmProvider(AlgorithmProvider):
 
 	def __init__(self):
 		AlgorithmProvider.__init__(self)
-		self.alglist = [ mmqgisx_attribute_export_dialog(), 
-			mmqgisx_attribute_join_dialog(), 
-			mmqgisx_delete_columns_dialog(), 
+		self.alglist = [ mmqgisx_attribute_export_dialog(),
+			mmqgisx_attribute_join_dialog(),
+			mmqgisx_delete_columns_dialog(),
 			mmqgisx_delete_duplicate_geometries_dialog(),
 			mmqgisx_geocode_google_dialog(),
 			mmqgisx_geometry_convert_dialog(),
@@ -117,7 +117,7 @@ class mmqgisx_attribute_export_dialog(GeoAlgorithm):
 		else:
 			line_terminator = "\r\n"
 
-		message = mmqgisx_attribute_export(qgis, outfilename, layer, None, 
+		message = mmqgisx_attribute_export(qgis, outfilename, layer, None,
 			field_delimiter, line_terminator)
 
 		if message:
@@ -138,7 +138,7 @@ class mmqgisx_attribute_join_dialog(GeoAlgorithm):
 
 		self.addParameter(ParameterTable(self.INFILENAME, "Input CSV File", False))
 		self.addParameter(ParameterTableField(self.JOINFIELD, "CSV File Field", self.INFILENAME))
-		
+
 		self.addParameter(ParameterVector(self.LAYERNAME, "Join Layer", ParameterVector.VECTOR_TYPE_ANY))
 		self.addParameter(ParameterTableField(self.JOINATTRIBUTE,
 			"Join Layer Attribute", mmqgisx_attribute_join_dialog.LAYERNAME))
@@ -166,7 +166,7 @@ class mmqgisx_attribute_join_dialog(GeoAlgorithm):
 		outfilename = self.getOutputValue(self.OUTFILENAME)
 		notfoundname = self.getOutputValue(self.NOTFOUNDNAME)
 
-		message = mmqgisx_attribute_join(qgis, layername, infilename, joinfield, 
+		message = mmqgisx_attribute_join(qgis, layername, infilename, joinfield,
 			joinattribute, outfilename, notfoundname, False)
 
 		if message:
@@ -392,7 +392,7 @@ class mmqgisx_geometry_export_dialog(GeoAlgorithm):
 		else:
 			line_terminator = "\r\n"
 
-		message = mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_filename, 
+		message = mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_filename,
 			field_delimiter, line_terminator)
 
 		if message:
@@ -436,7 +436,7 @@ class mmqgisx_geometry_import_dialog(GeoAlgorithm):
 		geometrytype = self.geotypes[self.getParameterValue(self.GEOMETRYTYPE)]
 		shapefilename = self.getOutputValue(self.SHAPEFILENAME)
 
-		message = mmqgisx_geometry_import_from_csv(qgis, node_filename, longitude, latitude, 
+		message = mmqgisx_geometry_import_from_csv(qgis, node_filename, longitude, latitude,
 			shapeid, geometrytype, shapefilename, False)
 
 		if message:
@@ -489,7 +489,7 @@ class mmqgisx_grid_dialog(GeoAlgorithm):
 		originy = centery - (height / 2.0)
 		gridtype = self.gridtype_options[self.getParameterValue(self.GRIDTYPE)]
 
-		message = mmqgisx_grid(qgis, savename, hspacing, vspacing, width, 
+		message = mmqgisx_grid(qgis, savename, hspacing, vspacing, width,
 			height, originx, originy, gridtype, 0)
 
 		if message:
@@ -562,8 +562,8 @@ class mmqgisx_hub_distance_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layersource = QGisLayers.getObjectFromUri(self.getParameterValue(self.SOURCENAME))	
-		layerdest = QGisLayers.getObjectFromUri(self.getParameterValue(self.DESTNAME))		
+		layersource = QGisLayers.getObjectFromUri(self.getParameterValue(self.SOURCENAME))
+		layerdest = QGisLayers.getObjectFromUri(self.getParameterValue(self.DESTNAME))
 
 		nameattribute = self.getParameterValue(self.NAMEATTRIBUTE)
 		units = self.unitlist[self.getParameterValue(self.UNITS)]
@@ -601,9 +601,9 @@ class mmqgisx_hub_lines_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		hublayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))		
+		hublayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))
 		spokelayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
-		
+
 		hubattribute = self.getParameterValue(self.HUBATTRIBUTE)
 		spokeattribute = self.getParameterValue(self.SPOKEATTRIBUTE)
 
@@ -670,8 +670,8 @@ class mmqgisx_merge_dialog(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layer1 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER1))		
-		layer2 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER2))		
+		layer1 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER1))
+		layer2 = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYER2))
 
 		savename = self.getOutputValue(self.SAVENAME)
 

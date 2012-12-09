@@ -83,7 +83,7 @@ class InstallerPlugin():
         # uninstall the installer itself
         QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Plugin Installer update"), QCoreApplication.translate("QgsPluginInstaller","The Plugin Installer has been updated. Please restart QGIS prior to using it"))
         removeDir( QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugins.localCache[i]["localdir"] )
-        return  
+        return
       else:
         QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Plugin Conflict:")+" "+plugins.localCache[i]["name"], "<b>"+ plugins.localCache[i]["name"] + "</b><br/><br/>" + QCoreApplication.translate("QgsPluginInstaller","The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS."))
 
@@ -141,7 +141,7 @@ class InstallerPlugin():
 
     if not parent:
       parent = self.mainWindow()
-  
+
     for key in repositories.all():
       if repositories.all()[key]["state"] == 3: # if state = 3 (error), try to fetch once again
         repositories.requestFetching(key)

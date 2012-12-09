@@ -49,8 +49,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.setParamsStatus(
         [
-          (self.inSelector, SIGNAL("filenameChanged()")), 
-          (self.outSelector, SIGNAL("filenameChanged()")), 
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
           (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),

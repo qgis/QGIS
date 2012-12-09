@@ -52,11 +52,11 @@ class BaseTableModel(QAbstractTableModel):
 
 	def columnCount(self, parent=None):
 		return len(self._header)
-	
+
 	def data(self, index, role):
 		if role != Qt.DisplayRole and role != Qt.FontRole:
 			return QVariant()
-		
+
 		val = self.getData(index.row(), index.column())
 
 		if role == Qt.FontRole:	# draw NULL in italic
@@ -75,11 +75,11 @@ class BaseTableModel(QAbstractTableModel):
 			# too much data to display, elide the string
 			return QVariant( u"%s..." % val[:300] )
 		return QVariant( unicode(val) )	# convert to string
-	
+
 	def headerData(self, section, orientation, role):
 		if role != Qt.DisplayRole:
 			return QVariant()
-		
+
 		if orientation == Qt.Vertical:
 			# header for a row
 			return QVariant(section+1)
@@ -250,7 +250,7 @@ class TableConstraintsModel(SimpleTableModel):
 		data = [constr.name, constr.type2String(), u", ".join(field_names)]
 		self.appendRow( self.rowFromData(data) )
 		row = self.rowCount()-1
-		self.setData(self.index(row, 0), QVariant(constr), Qt.UserRole)		
+		self.setData(self.index(row, 0), QVariant(constr), Qt.UserRole)
 		self.setData(self.index(row, 1), QVariant(constr.type), Qt.UserRole)
 		self.setData(self.index(row, 2), QVariant(constr.columns), Qt.UserRole)
 
@@ -282,7 +282,7 @@ class TableIndexesModel(SimpleTableModel):
 		data = [idx.name, u", ".join(field_names)]
 		self.appendRow( self.rowFromData(data) )
 		row = self.rowCount()-1
-		self.setData(self.index(row, 0), QVariant(idx), Qt.UserRole)		
+		self.setData(self.index(row, 0), QVariant(idx), Qt.UserRole)
 		self.setData(self.index(row, 1), QVariant(idx.columns), Qt.UserRole)
 
 	def _getNewObject(self):

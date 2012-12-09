@@ -127,4 +127,4 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
 
         painter.drawLine(line)
         painter.drawPolygon(self.arrowHead)
-        
+

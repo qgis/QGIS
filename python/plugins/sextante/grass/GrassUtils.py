@@ -34,7 +34,7 @@ import shutil
 import plugin_installer
 
 class GrassUtils:
-    
+
     GRASS_REGION_XMIN = "GRASS_REGION_XMIN"
     GRASS_REGION_YMIN = "GRASS_REGION_YMIN"
     GRASS_REGION_XMAX = "GRASS_REGION_XMAX"
@@ -45,11 +45,11 @@ class GrassUtils:
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
     GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
     GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
-    
+
     sessionRunning = False
     sessionLayers = {}
     projectionSet = False
-    
+
 
     @staticmethod
     def grassBatchJobFilename():
@@ -182,9 +182,9 @@ class GrassUtils:
         folder = os.path.join(GrassUtils.grassDataFolder(), "temp_location")
         mkdir(folder)
         return folder
-    
+
     @staticmethod
-    def grassDataFolder():    
+    def grassDataFolder():
         tempfolder = os.path.join(SextanteUtils.tempFolder(), "grassdata")
         mkdir(tempfolder)
         return tempfolder
@@ -196,7 +196,7 @@ class GrassUtils:
          system's default temporary directory. The settings files are written with sane defaults, so GRASS can do its work. The mapset
          projection will be set later, based on the projection of the first input image or vector'''
 
-        folder = GrassUtils.grassMapsetFolder()        
+        folder = GrassUtils.grassMapsetFolder()
         mkdir(os.path.join(folder, "PERMANENT"))
         mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"));
@@ -231,12 +231,12 @@ class GrassUtils:
         out.write("e-w resol3: 1\n")
         out.write("n-s resol3: 1\n")
         out.write("t-b resol:  1\n")
-       
+
         out.close()
 
 
     @staticmethod
-    def prepareGrassExecution(commands):    
+    def prepareGrassExecution(commands):
         if SextanteUtils.isWindows():
             GrassUtils.createGrassScript(commands)
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
@@ -251,14 +251,14 @@ class GrassUtils:
                 command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/user"
             else:
                 command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
-                
+
         return command
-    
+
     @staticmethod
     def executeGrass(commands, progress, outputCommands = None):
         loglines = []
         loglines.append("GRASS execution console output")
-        grassOutDone = False       
+        grassOutDone = False
         command = GrassUtils.prepareGrassExecution(commands)
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
@@ -286,7 +286,7 @@ class GrassUtils:
                 else:
                     loglines.append(line)
                     progress.setConsoleInfo(line)
-                       
+
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         return loglines;
@@ -303,29 +303,29 @@ class GrassUtils:
     # of the previous ones.
     # Starting a session just involves creating the temp mapset structure
     @staticmethod
-    def startGrassSession():        
+    def startGrassSession():
         if not GrassUtils.sessionRunning:
             GrassUtils.createTempMapset()
             GrassUtils.sessionRunning = True
 
     # End session by removing the temporary GRASS mapset and all the layers.
-    @staticmethod    
+    @staticmethod
     def endGrassSession():
         shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
         GrassUtils.sessionRunning = False
         GrassUtils.sessionLayers = {}
         GrassUtils.projectionSet = False
-    
+
     @staticmethod
     def getSessionLayers():
         return GrassUtils.sessionLayers
-    
+
     @staticmethod
     def addSessionLayers(exportedLayers):
-        GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items() + exportedLayers.items())   
-    
+        GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items() + exportedLayers.items())
 
-        
+
+
 
 
 

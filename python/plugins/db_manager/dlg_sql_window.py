@@ -8,7 +8,7 @@ Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -56,7 +56,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		self.viewResult.addAction( copyAction )
 		copyAction.setShortcuts(QKeySequence.Copy)
 		QObject.connect(copyAction, SIGNAL("triggered()"), self.copySelectedResults)
-		
+
 		self.connect(self.btnExecute, SIGNAL("clicked()"), self.executeSql)
 		self.connect(self.btnClear, SIGNAL("clicked()"), self.clearSql)
 		self.connect(self.buttonBox.button(QDialogButtonBox.Close), SIGNAL("clicked()"), self.close)
@@ -76,7 +76,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		""" save window state """
 		settings = QSettings()
 		settings.setValue("/DB_Manager/sqlWindow/geometry", QVariant(self.saveGeometry()))
-		
+
 		QDialog.closeEvent(self, e)
 
 	def loadAsLayerToggled(self, checked):
@@ -84,9 +84,9 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		self.loadAsLayerWidget.setVisible( checked )
 
 	def getSql(self):
-		# If the selection obtained from an editor spans a line break, 
-		# the text will contain a Unicode U+2029 paragraph separator 
-		# character instead of a newline \n character 
+		# If the selection obtained from an editor spans a line break,
+		# the text will contain a Unicode U+2029 paragraph separator
+		# character instead of a newline \n character
 		# (see https://qt-project.org/doc/qt-4.8/qtextcursor.html#selectedText)
 		sql = self.editSql.textCursor().selectedText().replace(unichr(0x2029), "\n")
 		if sql.isEmpty():
@@ -104,7 +104,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 
 		QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-		# delete the old model 
+		# delete the old model
 		old_model = self.viewResult.model()
 		self.viewResult.setModel(None)
 		if old_model: old_model.deleteLater()
@@ -113,7 +113,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		self.geomCombo.clear()
 
 		try:
-			# set the new model 
+			# set the new model
 			model = self.db.sqlResultModel( sql, self )
 			self.viewResult.setModel( model )
 			self.lblResult.setText("%d rows, %.1f seconds" % (model.affectedRows(), model.secs()))
@@ -181,7 +181,7 @@ class DlgSqlWindow(QDialog, Ui_DlgSqlWindow):
 		aliasIndex = 0
 		while True:
 			alias = "_%s__%d" % ("subQuery", aliasIndex)
-			escaped = '\\b("?)' + QRegExp.escape(alias) + '\\1\\b' 
+			escaped = '\\b("?)' + QRegExp.escape(alias) + '\\1\\b'
 			if not query.contains( QRegExp(escaped, Qt.CaseInsensitive) ):
 				break
 			aliasIndex += 1

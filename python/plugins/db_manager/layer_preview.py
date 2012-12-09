@@ -49,10 +49,10 @@ class LayerPreview(QgsMapCanvas):
 
 	def refresh(self):
 		self.setDirty(True)
-		self.loadPreview( self.item )		
+		self.loadPreview( self.item )
 
 	def loadPreview(self, item, force=False):
-		if item == self.item and not self.dirty: 
+		if item == self.item and not self.dirty:
 			return
 		self._clear()
 		if item is None:

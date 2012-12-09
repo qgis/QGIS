@@ -59,7 +59,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algs = None
         self.showAdvanced = False
         self.table = QtGui.QTableWidget(None)
-        AlgorithmExecutionDialog.__init__(self, alg, self.table)        
+        AlgorithmExecutionDialog.__init__(self, alg, self.table)
         self.setWindowModality(1)
         self.algEx = None
         self.resize(800, 500)
@@ -79,12 +79,12 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.deleteRowButton.setText("Delete row")
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.deleteRowButton, QtGui.QDialogButtonBox.ActionRole)
-        
+
         self.table.setColumnCount(self.alg.getVisibleParametersCount() + self.alg.getVisibleOutputsCount())
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
-        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)        
+        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
 
@@ -132,9 +132,9 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     return
             self.algs.append(alg)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))        
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):            
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             self.nextAlg(0)
         else:
             i=1
@@ -142,7 +142,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             for alg in self.algs:
                 self.setBaseText("Processing algorithm " + str(i) + "/" + str(len(self.algs)) + "...")
                 if UnthreadedAlgorithmExecutor.runalg(alg, self):#SilentProgress()):
-                    #self.progress.setValue(i)                    
+                    #self.progress.setValue(i)
                     #self.loadHTMLResults(alg, i)
                     i+=1
                 else:
@@ -167,21 +167,21 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     @pyqtSlot()
     def finish(self, i):
         i += 1
-        self.progress.setValue(i)        
+        self.progress.setValue(i)
         if len(self.algs) == i:
             self.finishAll()
             self.algEx = None
         else:
             self.nextAlg(i)
- 
+
     @pyqtSlot()
     def error(self, msg):
         QApplication.restoreOverrideCursor()
         QMessageBox.critical(self, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
         self.close()
-    
-    
+
+
     def nextAlg(self, i):
         self.setBaseText("Processing algorithm " + str(i) + "/" + str(len(self.algs)) + "...")
         self.algEx = AlgorithmExecutor(self.algs[i]);
@@ -191,25 +191,25 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algEx.finished.connect(lambda: self.finish(i))
         self.algEx.start()
 
-    def createSummaryTable(self): 
-        createTable = False           
+    def createSummaryTable(self):
+        createTable = False
         for out in self.algs[0].outputs:
             if isinstance(out, (OutputNumber,OutputString)):
                 createTable = True
                 break
         if not createTable:
-            return    
+            return
         outputFile = SextanteUtils.getTempFilename("html")
-        f = open(outputFile, "w")                                
+        f = open(outputFile, "w")
         for alg in self.algs:
             f.write("<hr>\n")
-            for out in alg.outputs:            
+            for out in alg.outputs:
                 if isinstance(out, (OutputNumber,OutputString)):
                     f.write("<p>" + out.description + ": " + str(out.value) + "</p>\n")
         f.write("<hr>\n")
         f.close()
-        SextanteResults.addResult(self.algs[0].name + "[summary]", outputFile)                            
-                         
+        SextanteResults.addResult(self.algs[0].name + "[summary]", outputFile)
+
     def finishAll(self):
         i = 0
         for alg in self.algs:
@@ -235,7 +235,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                 widget.useNewAlg(alg)
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterCrs):
-            return param.setValue(widget.getValue())        
+            return param.setValue(widget.getValue())
         else:
             return param.setValue(widget.text())
 
@@ -258,7 +258,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)            
+            item = CrsSelectionPanel(param.default)
         else:
             item = QtGui.QLineEdit()
             try:
@@ -294,9 +294,9 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if param.isAdvanced:
                 self.table.setColumnHidden(i, not self.showAdvanced)
             i+=1
-    
+
     def setText(self, text):
         self.progressLabel.setText(self.baseText + "   --- [" + text + "]")
-    
+
     def setBaseText(self, text):
         self.baseText = text

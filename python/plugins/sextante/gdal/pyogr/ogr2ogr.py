@@ -70,7 +70,7 @@ def TermProgress(dfComplete, pszMessage, pProgressArg):
     if nThisTick > 40:
         nThisTick = 40
 
-    # Have we started a new progress run?  
+    # Have we started a new progress run?
     if nThisTick < nLastTick and nLastTick >= 39:
         nLastTick = -1;
 
@@ -138,12 +138,12 @@ class Enum(set):
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
 def main(args=None, progress_func=TermProgress, progress_data=None):
-    
+
     global bSkipFailures
     global nGroupTransactions
     global bPreserveFID
     global nFIDToFetch
-    
+
     pszFormat = "ESRI Shapefile"
     pszDataSource = None
     pszDestDataSource = None
@@ -731,7 +731,7 @@ def ogr2ogrStdstreams(
                     poODS = None
 
             if bUpdate:
-                print("FAILURE:\n" + 
+                print("FAILURE:\n" +
                         "Unable to open existing output datasource `%s'." % pszDestDataSource)
                 return False
 
@@ -1402,7 +1402,7 @@ def TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
 
                 oFieldDefn.SetType(ogr.OFTString)
 
-            # The field may have been already created at layer creation 
+            # The field may have been already created at layer creation
             iDstField = -1;
             if poDstFDefn is not None:
                  iDstField = poDstFDefn.GetFieldIndex(oFieldDefn.GetNameRef())

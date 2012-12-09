@@ -8,8 +8,8 @@
 #    email                : See michaelminn.com
 #
 #   MMQGIS program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by 
-#   the Free Software Foundation; either version 2 of the License, or   
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
 #   (at your option) any later version.
 # ------------------------------------------------------------------------
 
@@ -105,16 +105,16 @@ def mmqgisx_gridify_points(hspacing, vspacing, points):
 	while (len(newpoints) > 1) and (newpoints[0] == newpoints[len(newpoints) - 1]):
 		newpoints.pop(len(newpoints) - 1)
 		deleted_points += 2
-				
+
 	return newpoints, point_count, deleted_points
 
-# mmqgisx_layer_attribute_bounds() is needed because the 
-# QgsVectorDataProvider::minimumValue() and maximumValue() 
+# mmqgisx_layer_attribute_bounds() is needed because the
+# QgsVectorDataProvider::minimumValue() and maximumValue()
 # do not work as of QGIS v1.5.0
 
 def mmqgisx_layer_attribute_bounds(layer, attribute_name):
 	#attribute_index = -1
-	#for index, field in layer.dataProvider().fields().iteritems():	
+	#for index, field in layer.dataProvider().fields().iteritems():
 	#	if str(field.name()) == attribute_name:
 	#		attribute_index = index
 
@@ -142,7 +142,7 @@ def mmqgisx_layer_attribute_bounds(layer, attribute_name):
 		# print str(value) + " : " + str(valid) + " : " + str(minimum) + " : " + str(maximum)
 		count += 1
 
-	return minimum, maximum, 1 
+	return minimum, maximum, 1
 
 def mmqgisx_wkbtype_to_text(wkbtype):
 	if wkbtype == QGis.WKBUnknown: return "Unknown"
@@ -392,7 +392,7 @@ def mmqgisx_attribute_export(qgis, outfilename, layer, attribute_names, field_de
 
 	if (not outfilename) or (len(outfilename) <= 0):
 		return "No output CSV file given"
-	
+
 	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
 		return "Layer not found"
@@ -467,13 +467,13 @@ def mmqgisx_attribute_join(qgis, layername, infilename, joinfield, joinattribute
 
 	if len(outfilename) <= 0:
 		return "No output shapefile name given"
-		
+
 	# Create a combined field list from the source layer and the CSV file header
 	try:
 		infile = open(infilename, 'r')
 	except:
 		return "Failure opening input file: " + unicode(infilename)
-			
+
 	try:
 		dialect = csv.Sniffer().sniff(infile.read(2048))
 	except:
@@ -565,7 +565,7 @@ def mmqgisx_attribute_join(qgis, layername, infilename, joinfield, joinattribute
 				for name, value in attributes.iteritems():
 					newattributes[len(newattributes)] = value
 					#print str(value)
-					
+
 				for combine in row:
 					newattributes[len(newattributes)] = QVariant(combine)
 					#print str(combine)
@@ -600,8 +600,8 @@ def mmqgisx_attribute_join(qgis, layername, infilename, joinfield, joinattribute
 				writer.writerow(csv_data[x])
 		del writer
 		del outfile
-	
-	if addlayer:	
+
+	if addlayer:
 		qgis.addVectorLayer(outfilename, os.path.basename(outfilename), "ogr")
 
 	qgis.mainWindow().statusBar().showMessage(unicode(matched_count) + " records joined from " + \
@@ -683,7 +683,7 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 				red = unicode(int(round(lowred + ((midred - lowred) * interpolate))))
 				green = unicode(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
 				blue = unicode(int(round(lowblue + ((midblue - lowblue) * interpolate))))
-				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue + 
+				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue +
 					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
 			else:
 				interpolate = (interpolate - 0.5) * 2.0
@@ -691,7 +691,7 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 				red = unicode(int(round(midred + ((highred - midred) * interpolate))))
 				green = unicode(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
 				blue = unicode(int(round(midblue + ((highblue - midblue) * interpolate))))
-				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue + 
+				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue +
 					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
 
 			#print str(x) + ", " + str(interpolate) + ", " + str(value)
@@ -719,7 +719,7 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 				value = midvalue + ((highvalue - midvalue) * interpolate)
 			values.append(value)
 			# print str(x) + ", " + str(value)
-		
+
 		for x in range(0, steps):
 			interpolate = x / float(steps)
 			if (interpolate < 0.5):
@@ -746,7 +746,7 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 			os.write(outfile, "<outlinecolor red=\"128\" blue=\"128\" green=\"128\"/>\n")
 			os.write(outfile, "<outlinestyle>SolidLine</outlinestyle>\n")
 			os.write(outfile, "<outlinewidth>0.26</outlinewidth>\n")
-			os.write(outfile, "<fillcolor red=\"" + unicode(red) + "\" blue=\"" + 
+			os.write(outfile, "<fillcolor red=\"" + unicode(red) + "\" blue=\"" +
 					unicode(blue) + "\" green=\"" + unicode(green) + "\"/>")
 			os.write(outfile, "<fillpattern>SolidPattern</fillpattern>\n")
 			os.write(outfile, "<texturepath></texturepath>\n")
@@ -798,7 +798,7 @@ def mmqgisx_delete_columns(qgis, layer, columns, savename, addlayer):
 
 	if len(destfields) <= 0:
 		return "All columns being deleted"
- 
+
 	# Create the output file
 	if QFile(savename).exists():
 		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
@@ -832,7 +832,7 @@ def mmqgisx_delete_columns(qgis, layer, columns, savename, addlayer):
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(len(columns)) + " columns deleted and written to " + savename)
 
 	return None
@@ -847,7 +847,7 @@ def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 	# Initialization and error checking
 	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Invalid layer" 
+		return "Invalid layer"
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -863,7 +863,7 @@ def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 	# Read geometries into an array
-	# Have to save as WKT because saving geometries causes segfault 
+	# Have to save as WKT because saving geometries causes segfault
 	# when they are used with equal() later
 	geometries = []
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
@@ -894,12 +894,12 @@ def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 			if geometries[x] != None:
 				writecount += 1
 				outfile.addFeature(feature)
-				
+
 	del outfile
 
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " of " + \
 		unicode(layer.dataProvider().featureCount()) + \
 		" unique features written to " + savename)
@@ -910,7 +910,7 @@ def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 #    mmqgisx_float_to_text - String format numeric fields
 # ---------------------------------------------------------
 
-def mmqgisx_float_to_text(qgis, layer, attributes, separator, 
+def mmqgisx_float_to_text(qgis, layer, attributes, separator,
 			decimals, prefix, suffix, savename, addlayer):
 
 	#layer = mmqgisx_find_layer(layername)
@@ -929,7 +929,7 @@ def mmqgisx_float_to_text(qgis, layer, attributes, separator,
 	for index, field in layer.dataProvider().fields().iteritems():
 		destfields[index] = QgsField (field.name(), field.type(), field.typeName(), \
 			field.length(), field.precision(), field.comment())
- 
+
 		if field.name() in attributes:
 			if (field.type() != QVariant.Int) and (field.type() != QVariant.Double):
 				return "Cannot convert non-numeric field " + unicode(field.name())
@@ -979,7 +979,7 @@ def mmqgisx_float_to_text(qgis, layer, attributes, separator,
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(changecount) + " numeric converted to text")
 
 	return None
@@ -1051,8 +1051,8 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 	for row in reader:
 		time.sleep(0.5) # to avoid Google rate quota limits
 
-		recordcount += 1	
-		qgis.mainWindow().statusBar().showMessage("Geocoding " + unicode(recordcount) + 
+		recordcount += 1
+		qgis.mainWindow().statusBar().showMessage("Geocoding " + unicode(recordcount) +
 			" (" + unicode(notfoundcount) + " not found)")
 
 		address = ""
@@ -1067,7 +1067,7 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 		if len(address) <= 0:
 			notfoundcount += 1
 			notwriter.writerow(row)
-	
+
 		else:
 			url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=" + address
 			xml = urllib.urlopen(url).read()
@@ -1089,7 +1089,7 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 						attributes[z] = QVariant(row[z].strip())
 
 				#y = 40.714353
-				#x = -74.005973 
+				#x = -74.005973
 				newfeature = QgsFeature()
 				newfeature.setAttributeMap(attributes)
 				geometry = QgsGeometry.fromPoint(QgsPoint(x, y))
@@ -1106,7 +1106,7 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 
 	if addlayer and (recordcount > notfoundcount) and (recordcount > 0):
 		vlayer = qgis.addVectorLayer(shapefilename, os.path.basename(shapefilename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(recordcount - notfoundcount) + " of " + unicode(recordcount)
 		+ " addresses geocoded with Google")
 
@@ -1131,7 +1131,7 @@ def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlaye
 		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
 			return "Failure deleting existing shapefile: " + savename
 
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), 
+	outfile = QgsVectorFileWriter(QString(savename), QString("System"),
 		layer.dataProvider().fields(), newtype, layer.dataProvider().crs())
 
 	if (outfile.hasError() != QgsVectorFileWriter.NoError):
@@ -1183,7 +1183,7 @@ def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlaye
 				newfeature.setAttributeMap(feature.attributeMap())
 				newfeature.setGeometry(feature.geometry())
 				outfile.addFeature(newfeature)
-				
+
 			else:
 				return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
 					" to " + mmqgisx_wkbtype_to_text(newtype)
@@ -1222,7 +1222,7 @@ def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlaye
 				newfeature.setAttributeMap(feature.attributeMap())
 				newfeature.setGeometry(feature.geometry())
 				outfile.addFeature(newfeature)
-				
+
 			else:
 				return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
 					" to " + mmqgisx_wkbtype_to_text(newtype)
@@ -1298,7 +1298,7 @@ def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlaye
 							newfeature.setAttributeMap(feature.attributeMap())
 							newfeature.setGeometry(QgsGeometry.fromPoint(point))
 							outfile.addFeature(newfeature)
-	
+
 			elif (newtype == QGis.WKBPoint):
 				newfeature = QgsFeature()
 				newfeature.setAttributeMap(feature.attributeMap())
@@ -1332,7 +1332,7 @@ def mmqgisx_geometry_convert(qgis, layer, newtype, splitnodes, savename, addlaye
 			else:
 				return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
 					" to " + mmqgisx_wkbtype_to_text(newtype)
-			
+
 	del outfile
 
 	if addlayer:
@@ -1424,7 +1424,7 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 			for attindex, attribute in feature.attributeMap().iteritems():
 				row.append(unicode(attribute.toString()).encode("iso-8859-1"))
 			attribute_writer.writerow(row)
-			
+
 	del nodefile
 	if (layer.geometryType() != QGis.Point):
 		del attributefile
@@ -1438,13 +1438,13 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 #    mmqgisx_geometry_import_from_csv - Shape node import from CSV
 # --------------------------------------------------------
 
-def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_colname, 
+def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_colname,
 	shapeid_colname, geometry_type, shapefile_name, addlayer):
 	try:
 		infile = open(node_filename, 'r')
 	except:
 		return "Failure opening " + node_filename
-			
+
 	try:
 		dialect = csv.Sniffer().sniff(infile.read(2048))
 	except:
@@ -1571,7 +1571,7 @@ def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_coln
 				newfeature.setGeometry(geometry)
 				outfile.addFeature(newfeature)
 				shape_count += 1
-	
+
 			polyline = []
 			if reading and point:
 				current_shape_id = row[shapeid_col]
@@ -1582,7 +1582,7 @@ def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_coln
 
 	if addlayer:
 		qgis.addVectorLayer(shapefile_name, os.path.basename(shapefile_name), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage("Loaded " + unicode(shape_count) + " shapes (" + unicode(node_count) + " nodes")
 
 	return None
@@ -1597,10 +1597,10 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 
 	if (hspacing <= 0) or (vspacing <= 0):
 		return "Invalid grid spacing: " + unicode(hspacing) + " / " + unicode(vspacing)
-	
+
 	if (width < hspacing) or (height < vspacing):
 		return "Invalid width / height: " + unicode(width) + " / " + unicode(height)
-		
+
 	fields = {
 		0 : QgsField("longitude", QVariant.Double, "real", 24, 16, "Longitude"),
 		1 : QgsField("latitude", QVariant.Double, "real", 24, 16, "Latitude") }
@@ -1616,8 +1616,8 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 		shapetype = QGis.WKBLineString
 
 	# print gridtype + "," + str(shapetype)
-		
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), fields, 
+
+	outfile = QgsVectorFileWriter(QString(savename), QString("System"), fields,
 		shapetype, QgsCoordinateReferenceSystem());
 
 	if (outfile.hasError() != QgsVectorFileWriter.NoError):
@@ -1630,7 +1630,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 			polyline = []
 			geometry = QgsGeometry()
 			feature = QgsFeature()
-			
+
 			y = originy
 			while y <= (originy + height):
 				polyline.append(QgsPoint(x, y))
@@ -1649,7 +1649,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 			polyline = []
 			geometry = QgsGeometry()
 			feature = QgsFeature()
-			
+
 			x = originx
 			while x <= (originx + width):
 				polyline.append(QgsPoint(x, y))
@@ -1756,7 +1756,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(linecount) + " feature grid shapefile created")
 
 	return None
@@ -1769,7 +1769,7 @@ def mmqgisx_gridify_layer(qgis, layer, hspacing, vspacing, savename, addlayer):
 	#layer = mmqgisx_find_layer(layername)
 	if not layer:
 		return "Project has no active vector layer to gridify"
-	
+
 	if (hspacing <= 0) or (vspacing <= 0):
 		return "Invalid grid spacing: " + unicode(hspacing) + "/" + unicode(vspacing)
 
@@ -1880,7 +1880,7 @@ def mmqgisx_gridify_layer(qgis, layer, hspacing, vspacing, savename, addlayer):
 				" on feature " + unicode(feature_number + 1)
 
 		# print "Closing feature"
-	
+
 		if geometry != None:
 			out_feature = QgsFeature()
 			out_feature.setGeometry(geometry)
@@ -1893,7 +1893,7 @@ def mmqgisx_gridify_layer(qgis, layer, hspacing, vspacing, savename, addlayer):
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-			
+
 	qgis.mainWindow().statusBar().showMessage("Gridified shapefile created (" + \
 		unicode(deleted_points) + " of " + unicode(point_count) + " points deleted)")
 
@@ -2024,7 +2024,7 @@ def mmqgisx_hub_distance(qgis, sourcelayer, hubslayer, nameattributename, units,
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-			
+
 	qgis.mainWindow().statusBar().showMessage("Hub distance file created from " + sourcename)
 
 	return None
@@ -2036,7 +2036,7 @@ def mmqgisx_hub_distance(qgis, sourcelayer, hubslayer, nameattributename, units,
 
 
 def mmqgisx_hub_lines(qgis, hublayer, hubattr, spokelayer, spokeattr, savename, addlayer):
-	
+
 	if hublayer == spokelayer:
 		return "Same layer given for both hubs and spokes"
 
@@ -2192,7 +2192,7 @@ def mmqgisx_label_point(qgis, layer, labelattributename, savename, addlayer):
 	writecount = 0
 	for key in keys:
 		label_point = features[key]
-		point = QgsPoint(label_point.xsum / label_point.feature_count, 
+		point = QgsPoint(label_point.xsum / label_point.feature_count,
 			label_point.ysum / label_point.feature_count)
 
 		feature = QgsFeature()
@@ -2212,7 +2212,7 @@ def mmqgisx_label_point(qgis, layer, labelattributename, savename, addlayer):
 
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " label shapefile created from " + layer.name())
 
 	return None
@@ -2240,10 +2240,10 @@ def mmqgisx_merge(qgis, layers, savename, addlayer):
 					mmqgisx_wkbtype_to_text(layers[0].dataProvider().geometryType()) + ")"
 
 			#if (layer.dataProvider().crs() != layers[0].dataProvider().crs()):
-			#	QMessageBox.critical(qgis.mainWindow(), 
+			#	QMessageBox.critical(qgis.mainWindow(),
 			#		"Merge Layers", "Merged layers must all have same coordinate system")
 			#	return None
-				
+
 		layers.append(layer)
 		totalfeaturecount += layer.featureCount()
 
@@ -2256,10 +2256,10 @@ def mmqgisx_merge(qgis, layers, savename, addlayer):
 
 			if not found:
 				fields[len(fields)] = sfield
-			
+
 	if (len(layers) <= 0):
 		return "No layers given to merge"
-	
+
 	# Create the output shapefile
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -2373,7 +2373,7 @@ def mmqgisx_select(qgis, layer, selectattributename, comparisonvalue, comparison
 			match = x.startswith(y)
 		elif (comparisonname == 'contains'):
 			match = (x.find(y) >= 0)
-	
+
 		readcount += 1
 		if (match):
 			outfile.addFeature(feature)
@@ -2387,7 +2387,7 @@ def mmqgisx_select(qgis, layer, selectattributename, comparisonvalue, comparison
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage("Selected " + unicode(writecount) + " features to " + savename)
 
 	return None
@@ -2410,7 +2410,7 @@ def mmqgisx_sort(qgis, layer, sortattributename, savename, direction, addlayer):
 	sortindex = layer.dataProvider().fieldNameIndex(sortattributename)
 	if sortindex < 0:
 		return "Invalid sort field name: " + sortattributename
-	
+
 	# print  "sortindex = " + str(sortindex)
 
 	if len(savename) <= 0:
@@ -2460,17 +2460,17 @@ def mmqgisx_sort(qgis, layer, sortattributename, savename, direction, addlayer):
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage("Sorted shapefile created from " + layername)
 
 	return None
 
 # --------------------------------------------------------
-#    mmqgisx_geocode_street_layer - Geocode addresses from street 
+#    mmqgisx_geocode_street_layer - Geocode addresses from street
 #			     address finder shapefile
 # --------------------------------------------------------
 
-def mmqgisx_geocode_street_layer(qgis, layername, csvname, addressfield, shapefilename, streetname, 
+def mmqgisx_geocode_street_layer(qgis, layername, csvname, addressfield, shapefilename, streetname,
 fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundfile, addlayer):
 
 	layer = mmqgisx_find_layer(layername)
@@ -2532,7 +2532,7 @@ fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundf
 		attributes = {}
 		for field in row:
 			attributes[len(attributes)] = QVariant(field)
-			
+
 		csv_attributes.append(attributes)
 		csv_found.append(0)
 
@@ -2603,7 +2603,7 @@ fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundf
 						else:
 							ratio = float(csv_streetnumber[row] - rightfrom) \
 								/ float(rightto - rightfrom)
-				
+
 					(tox, test) = attributes[tox_attribute].toDouble()
 					(toy, test) = attributes[toy_attribute].toDouble()
 					(fromx, test) = attributes[fromx_attribute].toDouble()
@@ -2658,7 +2658,7 @@ fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundf
 
 	if matched_count and addlayer:
 		vlayer = qgis.addVectorLayer(shapefilename, os.path.basename(shapefilename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(matched_count) + " of " + unicode(len(csv_attributes)) \
 		+ " addresses geocoded from " + unicode(feature_count) + " street records")
 
@@ -2704,7 +2704,7 @@ def mmqgisx_searchable_streetname(name):
 def mmqgisx_text_to_float(qgis, layer, attributes, savename, addlayer):
 	#layer = mmqgisx_find_layer(layername)
 	if layer == None:
-		return "Project has no active vector layer to convert" 
+		return "Project has no active vector layer to convert"
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -2715,7 +2715,7 @@ def mmqgisx_text_to_float(qgis, layer, attributes, savename, addlayer):
 	for index, field in layer.dataProvider().fields().iteritems():
 		destfields[index] = QgsField (field.name(), field.type(), field.typeName(), \
 			field.length(), field.precision(), field.comment())
- 
+
 		#print "Scan " + str(destfields[index].name())
 		if field.name() in attributes:
 			#print "Change " + str(destfields[index].name())
@@ -2766,11 +2766,11 @@ def mmqgisx_text_to_float(qgis, layer, attributes, savename, addlayer):
 				if string.find(",") >= 0:
 					string = string.replace(",", "")
 
-				try:	
+				try:
 					value = float(string) * multiplier
 				except:
 					value = 0
-						
+
 				attributes[index] = QVariant(value)
 
 		#for index, field in attributes.iteritems():
@@ -2783,7 +2783,7 @@ def mmqgisx_text_to_float(qgis, layer, attributes, savename, addlayer):
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-		
+
 	qgis.mainWindow().statusBar().showMessage(unicode(changecount) + " text converted to numeric")
 
 	return None
@@ -2797,7 +2797,7 @@ def mmqgisx_voronoi_diagram(qgis, layer, savename, addlayer):
 	#layer = mmqgisx_find_layer(sourcelayer)
 	if layer == None:
 		return "Layer not found"
-	
+
 	if len(savename) <= 0:
 		return "No output filename given"
 
@@ -2919,7 +2919,7 @@ def mmqgisx_voronoi_diagram(qgis, layer, savename, addlayer):
 				# If border intersects to the left
 				if (anglebetween < pi) and (anglebetween > 0):
 					# A typo here with a reversed slash cost 8/13/2009 debugging
-					tangents[scan].iangle = atan2( (tangents[scan].distance / 
+					tangents[scan].iangle = atan2( (tangents[scan].distance /
 						borders[len(borders) - 1].distance) \
 						- cos(anglebetween), sin(anglebetween))
 					tangents[scan].idistance = borders[len(borders) - 1].distance \
@@ -2980,7 +2980,7 @@ def mmqgisx_voronoi_diagram(qgis, layer, savename, addlayer):
 			feature.setGeometry(geometry)
 			feature.setAttributeMap(center[2])
 			outfile.addFeature(feature)
-				
+
 	del outfile
 
 	if addlayer:

@@ -8,7 +8,7 @@ Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 

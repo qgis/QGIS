@@ -58,10 +58,10 @@ class InfoViewer(QTextBrowser):
 
 	def refresh(self):
 		self.setDirty(True)
-		self.showInfo( self.item )		
+		self.showInfo( self.item )
 
 	def showInfo(self, item):
-		if item == self.item and not self.dirty: 
+		if item == self.item and not self.dirty:
 			return
 		self._clear()
 		if item is None:
@@ -107,13 +107,13 @@ class InfoViewer(QTextBrowser):
 			if connection.database() == None:
 				html += connection.info().toHtml()
 			else:
-				html += connection.database().info().toHtml()			
+				html += connection.database().info().toHtml()
 		except DbError, e:
 			html += u'<p style="color:red">%s</p>' % unicode(e).replace('\n', '<br>')
 		html += '</div>'
 		self.setHtml(html)
-	
-	
+
+
 	def _showSchemaInfo(self, schema):
 		html  = u'<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
 		html += '<div style="margin-left:8px;">'
@@ -125,7 +125,7 @@ class InfoViewer(QTextBrowser):
 		self.setHtml(html)
 
 
-	def _showTableInfo(self, table):		
+	def _showTableInfo(self, table):
 		html = u'<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
 		html += '<div style="margin-left:8px;">'
 		try:

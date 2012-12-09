@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -33,7 +33,7 @@ from .ui.ui_DlgCreateIndex import Ui_DlgCreateIndex
 
 
 class DlgCreateIndex(QDialog, Ui_DlgCreateIndex):
-	
+
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.table = table
@@ -41,7 +41,7 @@ class DlgCreateIndex(QDialog, Ui_DlgCreateIndex):
 		self.setupUi(self)
 
 		self.connect(self.buttonBox, SIGNAL("accepted()"), self.createIndex)
-		
+
 		self.connect(self.cboColumn, SIGNAL("currentIndexChanged(int)"), self.columnChanged)
 		self.populateColumns()
 
@@ -50,17 +50,17 @@ class DlgCreateIndex(QDialog, Ui_DlgCreateIndex):
 		self.cboColumn.clear()
 		for fld in self.table.fields():
 			self.cboColumn.addItem(fld.name)
-			
+
 	def columnChanged(self):
 		self.editName.setText(u"idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
-			
-			
+
+
 	def createIndex(self):
 		idx = self.getIndex()
 		if idx.name == "":
 			QMessageBox.critical(self, "error", "Please enter some name for the index")
 			return
-		
+
 		# now create the index
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		try:

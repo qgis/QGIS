@@ -52,8 +52,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.setParamsStatus(
         [
-          (self.inSelector, SIGNAL("filenameChanged()")), 
-          (self.outSelector, SIGNAL("filenameChanged()")), 
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
@@ -116,7 +116,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         QMessageBox.warning( self, self.tr( "Empty extent" ), self.tr( 'The computed extent is empty. \nDisable the "Use intersected extent" option to have a nonempty output.' ) )
 
       self.someValueChanged()
- 
+
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Merge output" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )

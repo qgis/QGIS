@@ -34,7 +34,7 @@ class ResultsDialog(QDialog, Ui_DlgResults):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-        
+
         self.keyIcon = QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 

@@ -371,16 +371,16 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
 
-    def fillAlgorithmTree(self):        
+    def fillAlgorithmTree(self):
         useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         if useCategories:
             self.fillAlgorithmTreeUsingCategories()
         else:
             self.fillAlgorithmTreeUsingProviders()
-            
+
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
-    def fillAlgorithmTreeUsingCategories(self):        
+    def fillAlgorithmTreeUsingCategories(self):
         providersToExclude = ["model", "script"]
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
@@ -399,20 +399,20 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if not alg.showInModeler:
                     continue
                 altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
-                if text =="" or text.lower() in altname.lower(): 
+                if text =="" or text.lower() in altname.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
                     group = groups[altgroup]
                     if altsubgroup not in group:
                         groups[altgroup][altsubgroup] = []
                     subgroup = groups[altgroup][altsubgroup]
-                    subgroup.append(alg) 
-  
+                    subgroup.append(alg)
+
         if len(groups) > 0:
             mainItem = QTreeWidgetItem()
             mainItem.setText(0, "Geoalgorithms")
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))            
+            mainItem.setToolTip(0, mainItem.text(0))
             for groupname, group in groups.items():
                 groupItem = QTreeWidgetItem()
                 groupItem.setText(0, groupname)
@@ -429,10 +429,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                         algItem = TreeAlgorithmItem(alg)
                         subgroupItem.addChild(algItem)
                     subgroupItem.setExpanded(text!="")
-                groupItem.setExpanded(text!="")                        
+                groupItem.setExpanded(text!="")
             self.algorithmTree.addTopLevelItem(mainItem)
             mainItem.setExpanded(text!="")
-                        
+
         for providerName in allAlgs.keys():
             groups = {}
             provider = allAlgs[providerName]
@@ -468,9 +468,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 providerItem.setExpanded(text!="")
                 for groupItem in groups.values():
                     if text != "":
-                        groupItem.setExpanded(True)        
-        
-        
+                        groupItem.setExpanded(True)
+
+
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())

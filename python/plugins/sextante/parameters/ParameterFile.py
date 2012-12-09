@@ -44,7 +44,7 @@ class ParameterFile(Parameter):
         if self.value.strip() == "":
             return False
         return True
-    
+
     def deserialize(self, s):
         tokens = s.split("|")
         return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True))

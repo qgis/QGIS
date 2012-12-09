@@ -72,8 +72,8 @@ class RAlgorithmProvider(AlgorithmProvider):
         self.loadFromFolder(folder)
         folder = os.path.join(os.path.dirname(__file__), "scripts")
         self.loadFromFolder(folder)
-        
-        
+
+
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return

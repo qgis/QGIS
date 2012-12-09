@@ -29,23 +29,23 @@ from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 from sextante.outputs.OutputString import OutputString
 
 class CreateWorkspace(GeoServerToolsAlgorithm):
-    
+
     WORKSPACE = "WORKSPACE"
     WORKSPACEURI = "WORKSPACEURI"
 
     def processAlgorithm(self, progress):
         self.createCatalog()
         workspaceName = self.getParameterValue(self.WORKSPACE)
-        workspaceUri = self.getParameterValue(self.WORKSPACEURI)                        
+        workspaceUri = self.getParameterValue(self.WORKSPACEURI)
         self.catalog.create_workspace(workspaceName, workspaceUri)
 
-        
+
     def defineCharacteristics(self):
         self.addBaseParameters()
         self.name = "Create workspace"
-        self.group = "GeoServer management tools"        
+        self.group = "GeoServer management tools"
         self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
-        self.addParameter(ParameterString(self.WORKSPACEURI, "Workspace URI"))  
-        self.addOutput(OutputString(self.WORKSPACE, "Workspace"))   
-                  
+        self.addParameter(ParameterString(self.WORKSPACEURI, "Workspace URI"))
+        self.addOutput(OutputString(self.WORKSPACE, "Workspace"))
+
 

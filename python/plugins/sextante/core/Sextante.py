@@ -120,7 +120,7 @@ class Sextante:
         Sextante.addProvider(MMQGISXAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
-        Sextante.addProvider(GdalOgrAlgorithmProvider())        
+        Sextante.addProvider(GdalOgrAlgorithmProvider())
         #Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
@@ -133,7 +133,7 @@ class Sextante:
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
-        SextanteConfig.initialize()        
+        SextanteConfig.initialize()
         SextanteConfig.loadSettings()
         RenderingStyles.loadStyles()
         AlgorithmDecorator.loadClassification()
@@ -300,10 +300,10 @@ class Sextante:
         # it will still be a wait cursor
         cursor = QApplication.overrideCursor()
         if cursor == None or cursor == 0:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor)) 
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         elif cursor.shape() != Qt.WaitCursor:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        
+
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()
@@ -378,14 +378,14 @@ def alghelp(name):
 def runalg(algOrName, *args):
     alg = Sextante.runAlgorithm(algOrName, None, *args)
     return alg.getOutputValuesAsDictionary()
-    
+
 def runandload(name, *args):
     Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
 
 
-def extent(layers):    
+def extent(layers):
     first = True
-    for layer in layers:        
+    for layer in layers:
         if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
             layer = QGisLayers.getObjectFromUri(layer)
         if first:
@@ -398,7 +398,7 @@ def extent(layers):
             xmax = max(xmax, layer.extent().xMaximum())
             ymin = min(ymin, layer.extent().yMinimum())
             ymax = max(ymax, layer.extent().yMaximum())
-        first = False                
+        first = False
     return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
 
 def getObjectFromName(name):
@@ -406,7 +406,7 @@ def getObjectFromName(name):
     for layer in layers:
         if layer.name() == name:
             return layer
-        
+
 def getObjectFromUri(uri):
     return QGisLayers.getObjectFromUri(uri, False)
 

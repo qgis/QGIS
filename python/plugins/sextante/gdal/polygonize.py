@@ -61,5 +61,5 @@ class polygonize(GeoAlgorithm):
         commands.append(output)
         commands.append(QtCore.QFileInfo(output).baseName())
         commands.append(self.getParameterValue(polygonize.FIELD))
-        
+
         GdalUtils.runGdal(commands, progress)

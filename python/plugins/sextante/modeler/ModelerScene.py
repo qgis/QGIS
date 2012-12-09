@@ -117,7 +117,7 @@ class ModelerScene(QtGui.QGraphicsScene):
                     for sourceItem in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, self.algItems[iAlg])
                         self.addItem(arrow)
-            iAlg+=1        
+            iAlg+=1
 
     def mousePressEvent(self, mouseEvent):
         if (mouseEvent.button() != QtCore.Qt.LeftButton):

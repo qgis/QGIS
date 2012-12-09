@@ -31,22 +31,22 @@ from sextante.core.GeoAlgorithm import GeoAlgorithm
 
 class GeoServerToolsAlgorithm(GeoAlgorithm):
 
-    URL = "URL"    
+    URL = "URL"
     USER = "USER"
     PASSWORD = "PASSWORD"
-    
+
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")        
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")
 
     def addBaseParameters(self):
         self.addParameter(ParameterString(self.URL, "URL", "http://localhost:8080/geoserver/rest"))
-        self.addParameter(ParameterString(self.USER, "User", "admin"))     
-        self.addParameter(ParameterString(self.PASSWORD, "Password", "geoserver"))          
+        self.addParameter(ParameterString(self.USER, "User", "admin"))
+        self.addParameter(ParameterString(self.PASSWORD, "Password", "geoserver"))
 
     def createCatalog(self):
         url = self.getParameterValue(self.URL)
         user = self.getParameterValue(self.USER)
         password = self.getParameterValue(self.PASSWORD)
-        self.catalog = Catalog(url, user, password) 
-        
-        
+        self.catalog = Catalog(url, user, password)
+
+

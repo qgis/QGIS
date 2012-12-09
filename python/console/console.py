@@ -64,7 +64,7 @@ class PythonConsole(QDockWidget):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-        #self.setAllowedAreas(Qt.BottomDockWidgetArea) 
+        #self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
         self.setWidget( self.console )
@@ -78,7 +78,7 @@ class PythonConsole(QDockWidget):
         self.activateWindow()
         self.raise_()
         QDockWidget.setFocus(self)
-        
+
     def closeEvent(self, event):
         self.console.edit.writeHistoryFile()
         QWidget.closeEvent(self, event)
@@ -86,18 +86,18 @@ class PythonConsole(QDockWidget):
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))        
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
         self.widgetButton = QWidget()
         #self.widgetEditors = QWidget()
-        
+
         self.options = optionsDialog(self)
         self.helpDlg = HelpDialog(self)
-        
+
         self.splitter = QSplitter(self)
         self.splitter.setOrientation(Qt.Vertical)
         self.splitter.setHandleWidth(3)
         self.splitter.setChildrenCollapsible(False)
-        
+
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
         self.toolBar.setFocusPolicy(Qt.NoFocus)
@@ -263,9 +263,9 @@ class PythonConsoleWidget(QWidget):
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit(self)
         self.textEditOut = EditorOutput(self)
-        
+
         self.setFocusProxy(self.edit)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -274,10 +274,10 @@ class PythonConsoleWidget(QWidget):
 
         self.splitter.addWidget(self.textEditOut)
         self.splitter.addWidget(self.edit)
-        
+
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
-                
+
         self.f.addWidget(self.widgetButton, 0, 0)
         self.f.addWidget(self.splitter, 0, 1)
 
@@ -289,7 +289,7 @@ class PythonConsoleWidget(QWidget):
 
         self.textEditOut.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.edit.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        
+
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
         self.loadIfaceButton.triggered.connect(self.iface)
@@ -300,7 +300,7 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"), 
+        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"),
                         self.prefChanged)
 
     def sextante(self):
@@ -308,10 +308,10 @@ class PythonConsoleWidget(QWidget):
 
     def iface(self):
        self.edit.commandConsole('iface')
-       
+
     def qtCore(self):
        self.edit.commandConsole('qtCore')
-    
+
     def qtGui(self):
        self.edit.commandConsole('qtGui')
 
@@ -354,14 +354,14 @@ class PythonConsoleWidget(QWidget):
                         sF.write('\n')
                     sF.write(s)
             sF.close()
-        
+
     def openHelp(self):
         self.helpDlg.show()
         self.helpDlg.activateWindow()
-                
+
     def openSettings(self):
         self.options.exec_()
-        
+
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()

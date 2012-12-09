@@ -169,11 +169,11 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith("output html"):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith("output file"):
-            out = OutputFile()          
+            out = OutputFile()
         elif tokens[1].lower().strip().startswith("output number"):
             out = OutputNumber()
         elif tokens[1].lower().strip().startswith("output string"):
-            out = OutputString()                        
+            out = OutputString()
 
         if param != None:
             self.addParameter(param)
@@ -183,7 +183,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addOutput(out)
         else:
             raise WrongScriptException("Could not load script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
-        
+
     def processDescriptionParameterLine(self, line):
         try:
             if line.startswith("Parameter"):
@@ -200,10 +200,10 @@ class ScriptAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
 
         script = "import sextante\n"
-        
+
         ns = {}
         ns['progress'] = progress
-    
+
         for param in self.parameters:
             #script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
             ns[param.name] = param.value
@@ -212,8 +212,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             ns[out.name] = out.value
             #script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
 
-        script+=self.script        
-        exec(script) in ns        
+        script+=self.script
+        exec(script) in ns
         for out in self.outputs:
             out.setValue(ns[out.name])
 
