@@ -624,6 +624,8 @@ class Table(DbItemObject):
 		ret = self.database().connector.deleteTableColumn( (self.schemaName(), self.name), fld.name)
 		if ret != False:
 			self.refreshFields()
+			self.refreshConstraints()
+			self.refreshIndexes()
 		return ret
 
 	def addGeometryColumn(self, geomCol, geomType, srid, dim, createSpatialIndex=False):
