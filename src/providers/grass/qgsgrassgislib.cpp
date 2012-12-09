@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "qgsgrassgislibfunctions.h"
 #include "qgsgrassgislib.h"
 
 #include "qgslogger.h"
@@ -292,7 +293,7 @@ int GRASS_LIB_EXPORT G_done_msg( const char *msg, ... )
   return 0;
 }
 
-char * GRASS_LIB_EXPORT QgsGrassGisLib::G_find_cell2( const char * name, const char * mapset )
+char GRASS_LIB_EXPORT *QgsGrassGisLib::G_find_cell2( const char * name, const char * mapset )
 {
   Q_UNUSED( name );
   Q_UNUSED( mapset );
@@ -309,12 +310,12 @@ char * GRASS_LIB_EXPORT QgsGrassGisLib::G_find_cell2( const char * name, const c
   return qstrdup( ms.toAscii() );  // memory lost
 }
 
-char * GRASS_LIB_EXPORT G_find_cell2( const char* name, const char *mapset )
+char GRASS_LIB_EXPORT *G_find_cell2( const char* name, const char *mapset )
 {
   return QgsGrassGisLib::instance()->G_find_cell2( name, mapset );
 }
 
-char * GRASS_LIB_EXPORT G_find_cell( char * name, const char * mapset )
+char GRASS_LIB_EXPORT *G_find_cell( char * name, const char * mapset )
 {
   // Not really sure about differences between G_find_cell and G_find_cell2
   return G_find_cell2( name, mapset );
@@ -966,7 +967,7 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QgsRasterBlock::DataType qgisTy
   return -1; // not reached
 }
 
-char * GRASS_LIB_EXPORT G_tempfile( void )
+char GRASS_LIB_EXPORT *G_tempfile( void )
 {
   QTemporaryFile file( "qgis-grass-temp.XXXXXX" );
   QString name = file.fileName();
@@ -974,12 +975,12 @@ char * GRASS_LIB_EXPORT G_tempfile( void )
   return name.toAscii().data();
 }
 
-char * GRASS_LIB_EXPORT G_mapset( void )
+char GRASS_LIB_EXPORT *G_mapset( void )
 {
   return qstrdup( "qgis" );
 }
 
-char * GRASS_LIB_EXPORT G_location( void )
+char GRASS_LIB_EXPORT *G_location( void )
 {
   return qstrdup( "qgis" );
 }
