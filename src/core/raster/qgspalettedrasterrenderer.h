@@ -31,6 +31,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   public:
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
     QgsRasterInterface * clone() const;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
@@ -43,6 +44,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int nColors() const { return mNColors; }
     /**Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
+    /**Returns copy of rgb array (caller takes ownership)*/
+    QRgb* rgbArray() const;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
@@ -53,7 +56,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   private:
     int mBand;
     /**Color array*/
-    QColor* mColors;
+    QRgb* mColors;
     /**Number of colors*/
     int mNColors;
 };
