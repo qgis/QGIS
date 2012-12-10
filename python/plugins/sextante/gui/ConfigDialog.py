@@ -111,5 +111,5 @@ class TreeSettingItem(QTreeWidgetItem):
             else:
                 self.setCheckState(1, Qt.Unchecked)
         else:
-            self.setText(1, str(setting.value))
+            self.setText(1, unicode(setting.value))
         self.setIcon(0, icon)
