@@ -239,28 +239,6 @@ bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
   return false;
 }
 
-bool QgsRasterBlock::isNoDataValue( double value ) const
-{
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
-  // not important and slower
-  if ( qIsNaN( value ) ||
-       doubleNear( value, mNoDataValue ) )
-  {
-    return true;
-  }
-  return false;
-}
-
-double QgsRasterBlock::value( size_t index ) const
-{
-  if ( index >= ( size_t )mWidth*mHeight )
-  {
-    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
-    return mNoDataValue;
-  }
-  return readValue( mData, mDataType, index );
-}
-
 double QgsRasterBlock::value( int row, int column ) const
 {
   return value(( size_t )row*mWidth + column );
