@@ -9,6 +9,10 @@
 ** GNU General Public License version 2 as published by the Free Software
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
+** 
+** This program is free software; you can redistribute it and/or modify  
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; version 2 of the License
 **
 ** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
