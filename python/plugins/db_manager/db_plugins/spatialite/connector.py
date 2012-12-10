@@ -554,7 +554,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
 
 	def execution_error_types(self):
-		return sqlite.Error, sqlite.ProgrammingError
+		return sqlite.Error, sqlite.ProgrammingError, sqlite.Warning
 
 	def connection_error_types(self):
 		return sqlite.InterfaceError, sqlite.OperationalError

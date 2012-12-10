@@ -25,7 +25,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import QgsDataSourceURI
 
-from .plugin import DbError, ConnectionError
+from .plugin import BaseError, DbError, ConnectionError
 
 class DBConnector:
 	def __init__(self, uri):
@@ -75,10 +75,10 @@ class DBConnector:
 		try:
 			cursor.execute(unicode(sql))
 
-		except self.connection_error_types(), e:
+		except self.connection_error_types() as e:
 			raise ConnectionError(e)
 
-		except self.execution_error_types(), e:
+		except self.execution_error_types() as e:
 			# do the rollback to avoid a "current transaction aborted, commands ignored" errors
 			self._rollback()
 			raise DbError(e, sql)

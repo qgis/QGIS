@@ -196,7 +196,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 			c = connector._execute(None, sql)
 			cols = connector._get_cursor_columns(c)
 
-		except (BaseError, Warning) as e:
+		except BaseError as e:
 			QApplication.restoreOverrideCursor()
 			DlgDbError.showError(e, self)
 			return
