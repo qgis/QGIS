@@ -13,7 +13,7 @@ class QgsMessageBar: QFrame
      * @param widget widget to add
      * @param level is 0 for information, 1 for warning, 2 for critical
      */
-    void pushWidget( QWidget *widget, int level = 0 );
+    void pushWidget( QWidget *widget /Transfer/, int level = 0 );
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
