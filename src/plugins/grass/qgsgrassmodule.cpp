@@ -342,17 +342,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   {
     // Set path to GRASS gis fake library
     QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
-#ifdef Q_OS_WIN
-    QString lp = environment.value( "PATH" );
-    lp =  QgsApplication::pluginPath() + ";" + lp;
-    environment.insert( "PATH", lp );
-    QgsDebugMsg( "PATH=" + lp );
-#else
-    QString lp = environment.value( "LD_LIBRARY_PATH" );
-    lp =  QgsApplication::pluginPath() + ":" + lp;
-    environment.insert( "LD_LIBRARY_PATH", lp );
-    QgsDebugMsg( "LD_LIBRARY_PATH=" + lp );
-#endif
+
+    QgsGrassModule::setDirectLibraryPath( environment );
     environment.insert( "QGIS_PREFIX", QgsApplication::prefixPath() );
     // Window to avoid crash in G__gisinit
     environment.insert( "GRASS_REGION", "west:0;south:0;east:1;north:1;cols:1;rows:1;proj:0;zone:0" );
@@ -1644,17 +1635,12 @@ void QgsGrassModule::run()
     if ( mDirect )
     {
       QStringList variables;
+      setDirectLibraryPath( environment );
 #ifdef Q_OS_WIN
-      QString lp = environment.value( "PATH" );
-      lp =  QgsApplication::pluginPath() + ";" + lp;
-      environment.insert( "PATH", lp );
-      QgsDebugMsg( "PATH=" + lp );
       variables << "PATH";
+#elif Q_OS_MAC
+      variables << "DYLD_LIBRARY_PATH";
 #else
-      QString lp = environment.value( "LD_LIBRARY_PATH" );
-      lp =  QgsApplication::pluginPath() + ":" + lp;
-      environment.insert( "LD_LIBRARY_PATH", lp );
-      QgsDebugMsg( "LD_LIBRARY_PATH=" + lp );
       variables << "LD_LIBRARY_PATH";
 #endif
       environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
@@ -2008,6 +1994,26 @@ QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
   }
 
   return QDomNode();
+}
+
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+{
+  QString pathVariable;
+  QString separator;
+#ifdef Q_OS_WIN
+  pathVariable = "PATH";
+  separator = ";";
+#elif Q_OS_MAC
+  pathVariable = "DYLD_LIBRARY_PATH";
+  separator = ":";
+#else
+  pathVariable = "LD_LIBRARY_PATH";
+  separator = ":";
+#endif
+  QString lp = environment.value( pathVariable );
+  lp =  QgsApplication::pluginPath() + separator + lp;
+  environment.insert( pathVariable, lp );
+  QgsDebugMsg( pathVariable + "=" + lp );
 }
 
 /******************* QgsGrassModuleOption ****************************/

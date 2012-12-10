@@ -17,7 +17,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
+#endif
 #include "qgsgrassgislib.h"
 
 #include "qgslogger.h"

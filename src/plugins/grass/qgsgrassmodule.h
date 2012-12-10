@@ -111,6 +111,9 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     //! Returns true if module is direct
     bool isDirect() { return mDirect; }
 
+    //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
+    static void setDirectLibraryPath( QProcessEnvironment & environment );
+
   signals:
     // ! emitted when the module started
     void moduleStarted();
