@@ -30,7 +30,7 @@ from qgis.utils import iface
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
-class DlgImportVector(QDialog, ):
+class DlgImportVector(QDialog, Ui_Dialog):
 
 	HAS_INPUT_MODE, ASK_FOR_INPUT_MODE = range(2)
 
