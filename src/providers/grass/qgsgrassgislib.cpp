@@ -162,7 +162,10 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char * version, const cha
   G_setenv( "OVERWRITE", "1" );  // avoid checking if map exists
 
   G_suppress_masking();
+
+#if GRASS_VERSION_MAJOR<6 || (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 4)
   G__init_null_patterns();
+#endif
 
   // Read projection if set
   //mCrs.createFromOgcWmsCrs( "EPSG:900913" );
