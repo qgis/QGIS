@@ -71,6 +71,7 @@ SET ( FUNCTIONS
   "G_define_standard_option"
   "G_free"
   "G_free_raster_cats"
+  "G__getenv"
   "G_get_fp_range_min_max"
   "G_get_range_min_max"
   "G_get_window"

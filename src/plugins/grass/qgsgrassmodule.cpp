@@ -338,13 +338,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   QProcess process( this );
 
+  QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
   if ( mDirect )
   {
     // Set path to GRASS gis fake library
-    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
 
     QgsGrassModule::setDirectLibraryPath( environment );
-    environment.insert( "QGIS_PREFIX", QgsApplication::prefixPath() );
+    environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
     // Window to avoid crash in G__gisinit
     environment.insert( "GRASS_REGION", "west:0;south:0;east:1;north:1;cols:1;rows:1;proj:0;zone:0" );
     process.setProcessEnvironment( environment );
@@ -361,8 +361,11 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
        || ( process.exitCode() != 0 && process.exitCode() != 255 &&
             ( !cmd.endsWith( ".py" ) || process.exitCode() != 1 ) ) )
   {
+    QString pathVariable = QgsGrassModule::libraryPathVariable();
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
+                  + "<br>" + pathVariable + "=" + environment.value( pathVariable )
+                  + "<br>QGIS_PREFIX_PATH=" + environment.value( "QGIS_PREFIX_PATH" )
                   + tr( "<br>command: %1 %2<br>%3<br>%4" )
                   .arg( cmd ).arg( arguments.join( " " ) )
                   .arg( process.readAllStandardOutput().constData() )
@@ -1996,18 +1999,26 @@ QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
   return QDomNode();
 }
 
+QString QgsGrassModule::libraryPathVariable()
+{
+#ifdef Q_OS_WIN
+  return "PATH";
+#elif defined(Q_OS_MAC)
+  return "DYLD_LIBRARY_PATH";
+#else
+  return "LD_LIBRARY_PATH";
+#endif
+}
+
 void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
 {
-  QString pathVariable;
+  QString pathVariable = libraryPathVariable();
   QString separator;
 #ifdef Q_OS_WIN
-  pathVariable = "PATH";
   separator = ";";
 #elif defined(Q_OS_MAC)
-  pathVariable = "DYLD_LIBRARY_PATH";
   separator = ":";
 #else
-  pathVariable = "LD_LIBRARY_PATH";
   separator = ":";
 #endif
   QString lp = environment.value( pathVariable );
