@@ -2,6 +2,8 @@
 
 """
 ***************************************************************************
+    DensifyGeometriesInterval.py by Anita Graser, Dec 2012
+      based on
     DensifyGeometries.py
     ---------------------
     Date                 : October 2012
@@ -17,12 +19,13 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'October 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Anita Graser'
+__date__ = 'Dec 2012'
+__copyright__ = '(C) 2012, Anita Graser'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from math import sqrt
 
 from PyQt4.QtCore import *
 
@@ -37,22 +40,21 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 from sextante.outputs.OutputVector import OutputVector
 
-class DensifyGeometries(GeoAlgorithm):
+class DensifyGeometriesInterval(GeoAlgorithm):
 
     INPUT = "INPUT"
-    VERTICES = "VERTICES"
+    #VERTICES = "VERTICES"
+    INTERVAL = "INTERVAL"
     USE_SELECTION = "USE_SELECTION"
     OUTPUT = "OUTPUT"
 
-    #def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/de.png")
-
     def defineCharacteristics(self):
-        self.name = "Densify geometries"
+        self.name = "Densify geometries given an interval"
         self.group = "Geometry tools"
 
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))
+        #self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))
+        self.addParameter(ParameterNumber(self.INTERVAL, "Interval between Vertices to add", 1, 10000000, 1))
         self.addParameter(ParameterBoolean(self.USE_SELECTION, "Use only selected features", False))
 
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
@@ -60,7 +62,7 @@ class DensifyGeometries(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         useSelection = self.getParameterValue(self.USE_SELECTION)
-        vertices =self.getParameterValue(self.VERTICES)        
+        interval =self.getParameterValue(self.INTERVAL)        
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
@@ -77,7 +79,7 @@ class DensifyGeometries(GeoAlgorithm):
             for f in selection:
                 featGeometry = QgsGeometry(f.geometry())
                 attrMap = f.attributeMap()
-                newGeometry = self.densifyGeometry(featGeometry, int(vertices), isPolygon)
+                newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
 
                 feature = QgsFeature()
                 feature.setGeometry(newGeometry)
@@ -92,7 +94,7 @@ class DensifyGeometries(GeoAlgorithm):
             while layer.nextFeature(f):
                 featGeometry = QgsGeometry(f.geometry())
                 attrMap = f.attributeMap()
-                newGeometry = self.densifyGeometry(featGeometry, int(vertices), isPolygon)
+                newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
 
                 feature = QgsFeature()
                 feature.setGeometry(newGeometry)
@@ -104,7 +106,7 @@ class DensifyGeometries(GeoAlgorithm):
 
         del writer
 
-    def densifyGeometry(self, geometry, pointsNumber, isPolygon):
+    def densifyGeometry(self, geometry, interval, isPolygon):
         output = []
         if isPolygon:
             if geometry.isMultipart():
@@ -112,36 +114,38 @@ class DensifyGeometries(GeoAlgorithm):
                 for poly in polygons:
                     p = []
                     for ring in poly:
-                        p.append(self.densify(ring, pointsNumber))
+                        p.append(self.densify(ring, interval))
                     output.append(p)
                 return QgsGeometry.fromMultiPolygon(output)
             else:
                 rings = geometry.asPolygon()
                 for ring in rings:
-                    output.append(self.densify(ring, pointsNumber))
+                    output.append(self.densify(ring, interval))
                 return QgsGeometry.fromPolygon(output)
         else:
             if geometry.isMultipart():
                 lines = geometry.asMultiPolyline()
                 for points in lines:
-                    output.append(self.densify(points, pointsNumber))
+                    output.append(self.densify(points, interval))
                 return QgsGeometry.fromMultiPolyline(output)
             else:
                 points = geometry.asPolyline()
-                output = self.densify(points, pointsNumber)
+                output = self.densify(points, interval)
                 return QgsGeometry.fromPolyline(output)
-
-    def densify(self, polyline, pointsNumber):
+    
+    def densify(self, polyline, interval):
         output = []
-        if pointsNumber != 1:
-            multiplier = 1.0 / float(pointsNumber + 1)
-        else:
-            multiplier = 1
         for i in xrange(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
-            for j in xrange(pointsNumber):
+            # calculate necessary number of points between p1 and p2
+            pointsNumber = sqrt(p1.sqrDist(p2)) / interval 
+            if pointsNumber > 1:
+                multiplier = 1.0 / float(pointsNumber)
+            else:
+                multiplier = 1
+            for j in xrange(int(pointsNumber)):
                 delta = multiplier * (j + 1)
                 x = p1.x() + delta * (p2.x() - p1.x())
                 y = p1.y() + delta * (p2.y() - p1.y())
