@@ -133,7 +133,7 @@ class GrassUtils:
         #gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
         output.write("GISDBASE: " + gisdbase + "\n");
         output.write("LOCATION_NAME: " + location + "\n");
-        output.write("MAPSET: PERMAMENT \n");
+        output.write("MAPSET: PERMANENT \n");
         output.write("GRASS_GUI: text\n");
         output.close()
 

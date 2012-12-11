@@ -1,12 +1,12 @@
 v.outlier
 v.outlier - Removes outliers from vector point data.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
+ParameterVector|input|Input vector layer|-1|False
 ParameterNumber|soe|Interpolation spline step value in east direction|None|None|10
 ParameterNumber|son|Interpolation spline step value in north direction|None|None|10
 ParameterNumber|lambda_i|Tykhonov regularization weight|None|None|0.1
 ParameterNumber|thres_o|Threshold for the outliers|None|None|50
 ParameterBoolean|-e|Estimate point density and distance|False
-OutputVector|output|Name for output vector map
-OutputVector|outlier|Name for output outlier vector map
+OutputVector|output|Layer without outliers
+OutputVector|outlier|Outliers
 

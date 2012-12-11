@@ -152,7 +152,7 @@ class ParametersPanel(QtGui.QWidget):
                 widget = OutputSelectionPanel(output,self.alg)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                     check = QtGui.QCheckBox()
                     check.setText("Open output file after running algorithm")
                     check.setChecked(True)

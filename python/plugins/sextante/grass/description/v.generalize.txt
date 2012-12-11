@@ -1,7 +1,7 @@
 v.generalize
 v.generalize - Vector based generalization.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
+ParameterVector|input|Input layer|-1|False
 ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann;remove_small;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement
 ParameterNumber|threshold|Maximal tolerance value|None|None|1.0
 ParameterNumber|look_ahead|Look-ahead parameter|None|None|7
@@ -15,5 +15,5 @@ ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
 ParameterNumber|beta|Snakes beta parameter|None|None|1.0
 ParameterNumber|iterations|Number of iterations|None|None|1
 ParameterBoolean|-c|Copy attributes|True
-OutputVector|output|Name for output vector map
+OutputVector|output|Output layer
 

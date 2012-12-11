@@ -1,7 +1,7 @@
 v.db.select
 v.db.select - Prints vector map attributes
 Vector (v.*)
-ParameterVector|map|Name of input vector map |-1|False
+ParameterVector|map|Input vector map |-1|False
 ParameterNumber|layer|Layer Number|1|None|1
 ParameterString|columns|Name of attribute column(s), comma separated|
 ParameterBoolean|-c|Do not include column names in output|False
@@ -11,6 +11,6 @@ ParameterString|fs|Output field separator|,
 *ParameterString|nv|Null value indicator|
 *ParameterBoolean|-v|Vertical output (instead of horizontal)|False
 *ParameterBoolean|-r|Print minimal region extent of selected vector features instead of attributes|False
-ParameterString|file|Name for output file| 
+OutputFile|file|Output file| 
 
 
