@@ -51,7 +51,7 @@ class DataStore(ResourceInfo):
 
     @property
     def href(self):
-        return url(self.catalog.service_url, 
+        return url(self.catalog.service_url,
             ["workspaces", self.workspace.name, "datastores", self.name + ".xml"])
 
     enabled = xml_property("enabled", lambda x: x.text == "true")

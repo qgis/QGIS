@@ -28,9 +28,9 @@ from PyQt4.QtGui import *
 import qgis.core
 from qgis.utils import iface
 
-from .ui.ui_DlgExportVector import Ui_DlgExportVector
+from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
-class DlgExportVector(QDialog, Ui_DlgExportVector):
+class DlgExportVector(QDialog, Ui_Dialog):
 
 	def __init__(self, inLayer, inDb, parent=None):
 		QDialog.__init__(self, parent)
@@ -58,7 +58,7 @@ class DlgExportVector(QDialog, Ui_DlgExportVector):
 		hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
 		self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
 		self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
-		self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
+		#self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
 
 
 	def chooseOutputFile(self):
@@ -158,8 +158,8 @@ class DlgExportVector(QDialog, Ui_DlgExportVector):
 			return
 
 		# create spatial index
-		if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
-			self.db.connector.createSpatialIndex( (schema, table), geom )
+		#if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
+		#	self.db.connector.createSpatialIndex( (schema, table), geom )
 
 		QMessageBox.information(self, "Export to file", "Export finished.")
 		return QDialog.accept(self)

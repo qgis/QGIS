@@ -143,7 +143,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
           fn = fn.join( "," )
         else:
           fn = QString()
-          
+
       else:
         fn = QString()
 
@@ -207,7 +207,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         self.filenameChanged()
       if self.layer() != prevLayer:
         self.layerChanged()
-      
+
 
   def clearComboState(self):
       self.prevState = None

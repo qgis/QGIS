@@ -28,21 +28,21 @@ from sextante.parameters.ParameterString import ParameterString
 from sextante.admintools.GeoServerToolsAlgorithm import GeoServerToolsAlgorithm
 
 class DeleteWorkspace(GeoServerToolsAlgorithm):
-    
+
     WORKSPACE = "WORKSPACE"
 
     def processAlgorithm(self, progress):
         self.createCatalog()
-        workspaceName = self.getParameterValue(self.WORKSPACE)                            
-        ws = self.catalog.get_workspace(workspaceName)        
+        workspaceName = self.getParameterValue(self.WORKSPACE)
+        ws = self.catalog.get_workspace(workspaceName)
         self.catalog.delete(ws)
 
-        
+
     def defineCharacteristics(self):
         self.addBaseParameters()
         self.name = "Delete workspace"
-        self.group = "GeoServer management tools"        
+        self.group = "GeoServer management tools"
         self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
 
-                  
+
 

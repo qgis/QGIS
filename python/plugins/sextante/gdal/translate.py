@@ -57,6 +57,6 @@ class translate(GeoAlgorithm):
         commands.append(extra)
         commands.append(self.getParameterValue(translate.INPUT))
         commands.append(out)
-        
+
 
         GdalUtils.runGdal(commands, progress)

@@ -41,7 +41,7 @@ class OTBUtils:
         folder = SextanteConfig.getSetting(OTBUtils.OTB_FOLDER)
         if folder == None:
             folder = ""
-            
+
             if os.path.exists("/usr/bin/otbcli"):
                 folder = "/usr/bin"
         return folder
@@ -51,7 +51,7 @@ class OTBUtils:
         folder = SextanteConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
         if folder == None:
             folder =""
-            
+
             linuxstandardpath = "/usr/lib/otb/applications"
             if os.path.exists(linuxstandardpath):
                 folder = linuxstandardpath

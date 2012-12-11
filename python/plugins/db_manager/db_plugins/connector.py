@@ -25,7 +25,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import QgsDataSourceURI
 
-from .plugin import DbError, ConnectionError
+from .plugin import BaseError, DbError, ConnectionError
 
 class DBConnector:
 	def __init__(self, uri):
@@ -34,7 +34,7 @@ class DBConnector:
 
 	def __del__(self):
 		pass	#print "DBConnector.__del__", self._uri.connectionInfo()
-		if self.connection != None: 
+		if self.connection != None:
 			self.connection.close()
 		self.connection = None
 
@@ -75,16 +75,16 @@ class DBConnector:
 		try:
 			cursor.execute(unicode(sql))
 
-		except self.connection_error_types(), e:
+		except self.connection_error_types() as e:
 			raise ConnectionError(e)
 
-		except self.execution_error_types(), e:
+		except self.execution_error_types() as e:
 			# do the rollback to avoid a "current transaction aborted, commands ignored" errors
 			self._rollback()
 			raise DbError(e, sql)
 
 		return cursor
-		
+
 	def _execute_and_commit(self, sql):
 		""" tries to execute and commit some action, on error it rolls back the change """
 		self._execute(None, sql)
@@ -111,7 +111,7 @@ class DBConnector:
 		try:
 			if c and not c.closed:
 				c.close()
-		
+
 		except self.error_types(), e:
 			pass
 
@@ -190,7 +190,7 @@ class DBConnector:
 
 		identifier = unicode(identifier) if identifier != None else unicode() # make sure it's python unicode string
 		return u'"%s"' % identifier.replace('"', '""')
-	
+
 	@classmethod
 	def quoteString(self, txt):
 		""" make the string safe - replace ' with '' """

@@ -31,8 +31,8 @@ class SLDatabaseInfo(DatabaseInfo):
 		self.db = db
 
 	def connectionDetails(self):
-		tbl = [ 
-			("Filename:", self.db.connector.dbname) 
+		tbl = [
+			("Filename:", self.db.connector.dbname)
 		]
 		return HtmlTable( tbl )
 

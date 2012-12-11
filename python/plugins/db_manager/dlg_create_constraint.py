@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -29,24 +29,23 @@ from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableConstraint
 
-from .ui.ui_DlgCreateConstraint import Ui_DlgCreateConstraint
+from .ui.ui_DlgCreateConstraint import Ui_DbManagerDlgCreateConstraint as Ui_Dialog
 
-class DlgCreateConstraint(QDialog, Ui_DlgCreateConstraint):
-	
+class DlgCreateConstraint(QDialog, Ui_Dialog):
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.table = table
 		self.db = self.table.database() if self.table and self.table.database() else db
 		self.setupUi(self)
-		
+
 		self.connect(self.buttonBox, SIGNAL("accepted()"), self.createConstraint)
 		self.populateColumns()
-		
+
 	def populateColumns(self):
 		self.cboColumn.clear()
 		for fld in self.table.fields():
 			self.cboColumn.addItem(fld.name)
-			
+
 
 	def createConstraint(self):
 		constr = self.getConstraint()

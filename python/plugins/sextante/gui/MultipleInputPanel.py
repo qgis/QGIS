@@ -57,7 +57,7 @@ class MultipleInputPanel(QtGui.QWidget):
         #no checking is performed!
         self.selectedoptions = selected
         self.label.setText(str(len(self.selectedoptions)) + " elements selected")
-        
+
     def showSelectionDialog(self):
         #If there is a datatype, we use it to create the list of options
         if self.datatype is not None:
@@ -70,7 +70,7 @@ class MultipleInputPanel(QtGui.QWidget):
             opts = []
             for opt in options:
                 opts.append(opt.name())
-            self.options = opts        
+            self.options = opts
         dlg = MultipleInputDialog(self.options, self.selectedoptions)
         dlg.exec_()
         if dlg.selectedoptions != None:

@@ -346,6 +346,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;
+
+    //! Save parent Project action
+    //! @note added in 1.9
+    QAction *mSaveProjectAction;
 };
 
 #endif

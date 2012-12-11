@@ -62,8 +62,8 @@ class merge(GeoAlgorithm):
             commands.append("-pct")
         commands.append("-o")
         out = self.getOutputValue(merge.OUTPUT)
-        commands.append(out)        
-        commands.append("-of")        
+        commands.append(out)
+        commands.append("-of")
         commands.append(GdalUtils.getFormatShortNameFromFilename(out))
         commands.append(self.getParameterValue(merge.INPUT).replace(";", " "))
 

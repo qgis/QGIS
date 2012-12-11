@@ -48,12 +48,12 @@ class SplitRGBBands(GeoAlgorithm):
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT, "Input layer", False))
         self.addOutput(OutputRaster(SplitRGBBands.R, "Output R band layer"))
         self.addOutput(OutputRaster(SplitRGBBands.G, "Output G band layer"))
-        self.addOutput(OutputRaster(SplitRGBBands.B, "Output B band layer"))        
+        self.addOutput(OutputRaster(SplitRGBBands.B, "Output B band layer"))
 
     def processAlgorithm(self, progress):
         #TODO:check correct num of bands
-        input = self.getParameterValue(SplitRGBBands.INPUT)        
-        temp = SextanteUtils.getTempFilename();        
+        input = self.getParameterValue(SplitRGBBands.INPUT)
+        temp = SextanteUtils.getTempFilename();
         r = self.getOutputValue(SplitRGBBands.R)
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
@@ -62,12 +62,12 @@ class SplitRGBBands(GeoAlgorithm):
             commands.append("io_gdal 0 -GRIDS \"" + temp + "\" -FILES \"" + input+"\"")
             commands.append("io_gdal 1 -GRIDS \"" + temp + "_0001.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + r + "\"");
             commands.append("io_gdal 1 -GRIDS \"" + temp + "_0002.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + g + "\"");
-            commands.append("io_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");            
+            commands.append("io_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");
         else:
             commands.append("libio_gdal 0 -GRIDS \"" + temp + "\" -FILES \"" + input + "\"")
             commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0001.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + r + "\"");
             commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0002.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + g + "\"");
-            commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");                        
+            commands.append("libio_gdal 1 -GRIDS \"" + temp + "_0003.sgrd\" -FORMAT 1 -TYPE 0 -FILE \"" + b + "\"");
 
-        SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)            
+        SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         SagaUtils.executeSaga(progress);

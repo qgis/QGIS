@@ -97,7 +97,7 @@ class Layer(ResourceInfo):
 
     @property
     def resource(self):
-        if self.dom is None: 
+        if self.dom is None:
             self.fetch()
         name = self.dom.find("resource/name").text
         return self.catalog.get_resource(name)
@@ -135,7 +135,7 @@ class Layer(ResourceInfo):
 
     attribution_object = xml_property("attribution", _read_attribution)
     enabled = xml_property("enabled", lambda x: x.text == "true")
-    
+
     def _get_attr_text(self):
         return self.attribution_object.title
 

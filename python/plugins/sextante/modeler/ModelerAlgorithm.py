@@ -117,7 +117,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
                     tokens = valueLine.split("===")
-                    
+
                     self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
@@ -380,7 +380,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 for param in self.parameters:
                     if aap.param == param.name:
                         return param.value
-        else:            
+        else:
             return self.producedOutputs[int(aap.alg)][aap.param]
 
     def processAlgorithm(self, progress):
@@ -409,7 +409,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             t0 = time.time()
                             alg.execute(progress)
                             dt = time.time() - t0
-                            for out in alg.outputs:                                
+                            for out in alg.outputs:
                                 outputs[out.name] = out.value
                             progress.setDebugInfo("Outputs: " +
                                 ', '.join([str(out).strip() + "=" + str(outputs[out.name]) for out in alg.outputs]))

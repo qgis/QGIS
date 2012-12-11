@@ -39,8 +39,8 @@ def get_app_list():
   blackList = ["TestApplication"]
   appNames = [app for app in otbApplication.Registry.GetAvailableApplications() if app not in blackList]
   return appNames
-  
-  
+
+
 def generate_all_app_descriptors( ) :
   appliIdx = 0
   for appliname in get_app_list():
@@ -50,12 +50,12 @@ def generate_all_app_descriptors( ) :
 
 def generate_app_descriptor( appliname ) :
   print appliname
-  
+
   appInstance = otbApplication.Registry.CreateApplication(appliname)
   appInstance.UpdateParameters() # TODO need this ?
-  
+
   out = ""
-  
+
   # the application key
   out += appliname + endl
 
@@ -64,15 +64,15 @@ def generate_app_descriptor( appliname ) :
 
   # long name
   out += convertendl(appInstance.GetDocName()) + endl
-  
+
   # group
   out += get_group(appInstance) + endl
 
   for paramKey in appInstance.GetParametersKeys():
-    pdesc =  generate_param_descriptor(appInstance, paramKey) 
+    pdesc =  generate_param_descriptor(appInstance, paramKey)
     if len(pdesc) > 0:
       out += pdesc + endl
-  
+
   with open( os.path.join(outputpath, appliname + '.txt'), 'w' ) as outfile:
     outfile.write(out)
 
@@ -80,11 +80,11 @@ def generate_app_doc( appliname ) :
   appInstance = otbApplication.Registry.CreateApplication(appliname)
   appInstance.UpdateParameters() # TODO need this ?
   html = appInstance.GetHtmlExample()
-  
+
   docpath= os.path.join(outputpath, 'doc')
   if not os.path.exists(docpath):
       os.makedirs(docpath)
-  
+
   with open( os.path.join(docpath, appliname + '.html'), 'w' ) as outfile:
       outfile.write(html)
 
@@ -134,22 +134,22 @@ def generate_parameter_Empty( appInstance, paramKey ):
     out += "True"
   return out
 
-  
+
 def generate_parameter_Int( appInstance, paramKey ):
   out = "ParameterNumber"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += "None"
   out += "|"
   out += "None"
   out += "|"
-  
+
   defaultVal = "0"
   try:
     defaultVal = str(appInstance.GetParameterInt(paramKey))
@@ -158,22 +158,22 @@ def generate_parameter_Int( appInstance, paramKey ):
   out += defaultVal
   return out
 
- 
+
 def generate_parameter_Float( appInstance, paramKey ):
   out = "ParameterNumber"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += "None"
   out += "|"
   out += "None"
   out += "|"
-  
+
   defaultVal = "0.0"
   try:
     defaultVal = str(appInstance.GetParameterFloat(paramKey))
@@ -185,13 +185,13 @@ def generate_parameter_Float( appInstance, paramKey ):
 def generate_parameter_String( appInstance, paramKey ):
   out = "ParameterString"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   defaultVal = ""
   try:
     defaultVal = str(appInstance.GetParameterString(paramKey))
@@ -204,148 +204,148 @@ def generate_parameter_String( appInstance, paramKey ):
 def generate_parameter_InputFilename( appInstance, paramKey ):
   out = "ParameterFile"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   try:
     defaultVal = str(appInstance.GetParameterString(paramKey))
     out += "|" + defaultVal
   except:
     pass
-  
+
   return out
 
 
 def generate_parameter_OutputFilename( appInstance, paramKey ):
   out = "OutputFile"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
-  
+
   return out
 
 def generate_parameter_Directory( appInstance, paramKey ):
   out = "ParameterFile"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
-  
+
   try:
     defaultVal = str(appInstance.GetParameterString(paramKey))
     out += "|" + defaultVal
   except:
     pass
-  
+
   return out
 
 def generate_parameter_Choice( appInstance, paramKey ):
   out = "ParameterSelection"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   choices = ""
   for choice in appInstance.GetChoiceKeys(paramKey):
     choices += choice
     choices += ";"
   out += choices[:-1]
-  
+
   out += "|"
   out += str(appInstance.GetParameterInt(paramKey))
-  
+
   return out
 
 def generate_parameter_InputImage( appInstance, paramKey ):
   out = "ParameterRaster"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += str(not appInstance.IsMandatory(paramKey))
-  
+
   return out
 
 
 def generate_parameter_InputImageList( appInstance, paramKey ):
   out = "ParameterMultipleInput"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += "3"
   out += "|"
-  
+
   out += str(not appInstance.IsMandatory(paramKey))
-  
+
   return out
 
 def generate_parameter_InputVectorData( appInstance, paramKey ):
   out = "ParameterVector"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += "-1"
   out += "|"
-  
+
   out += str(not appInstance.IsMandatory(paramKey))
-  
+
   return out
 
 
 def generate_parameter_InputVectorDataList( appInstance, paramKey ):
   out = "ParameterMultipleInput"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
-  
+
   out += "-1"
   out += "|"
-  
+
   out += str(not appInstance.IsMandatory(paramKey))
-  
+
   return out
 
 
 def generate_parameter_OutputImage( appInstance, paramKey ):
   out = "OutputRaster"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
-  
+
   return out
 
 
@@ -356,22 +356,22 @@ def generate_parameter_NOTHANDLED( appInstance, paramKey ):
 def generate_parameter_OutputVectorData( appInstance, paramKey ):
   out = "OutputVector"
   out += "|"
-  
+
   out += "-" + paramKey
   out += "|"
-  
+
   out += convertendl(appInstance.GetParameterName(paramKey))
-  
+
   return out
 
 
 def generate_parameter_Radius( appInstance, paramKey ):
   return generate_parameter_Int(appInstance, paramKey)
-  
+
 
 def generate_parameter_ComplexInputImage( appInstance, paramKey ):
   return generate_parameter_InputImage(appInstance, paramKey)
-  
+
 
 def generate_parameter_ComplexOutputImage( appInstance, paramKey ):
   return generate_parameter_OutputImage(appInstance, paramKey)

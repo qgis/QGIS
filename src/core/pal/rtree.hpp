@@ -4,6 +4,7 @@
  * from http://www.superliminal.com/
  *
  * LICENSE : Entirely free for all uses. Enjoy!
+ * This File is in the public domain
  *
  * AUTORS
  *    - 1983 Original algorithm and test code by Antonin Guttman and Michael Stonebraker, UC Berkely

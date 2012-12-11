@@ -34,8 +34,8 @@ class ParameterFixedTable(Parameter):
         self.fixedNumOfRows = fixedNumOfRows
         self.value = None
 
-    def setValue(self, obj):        
-        ##TODO: check that it contains a correct number of elements        
+    def setValue(self, obj):
+        ##TODO: check that it contains a correct number of elements
         if isinstance(obj, (str,unicode)):
             self.value = obj
         else:
@@ -46,7 +46,7 @@ class ParameterFixedTable(Parameter):
         return "\"" + str(self.value) + "\""
 
     @staticmethod
-    def tableToString(table):         
+    def tableToString(table):
         tablestring = ""
         for i in range(len(table)):
             for j in range(len(table[0])):

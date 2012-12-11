@@ -44,7 +44,7 @@ class OgrInfo(OgrAlgorithm):
     def defineCharacteristics(self):
         self.name = "ogrinfo"
         self.group = "[OGR] Miscellaneous"
-        
+
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
 
         self.addOutput(OutputHTML(self.OUTPUT, "Layer information"))
@@ -90,9 +90,9 @@ class OgrInfo(OgrAlgorithm):
         if bVerbose and pszDataSource != poDS_Name:
             self.out( "INFO: Internal data source name `%s'\n"
                     "      different from user name `%s'." % (poDS_Name, pszDataSource ))
-        #/* -------------------------------------------------------------------- */ 
-        #/*      Process each data source layer.                                 */ 
-        #/* -------------------------------------------------------------------- */ 
+        #/* -------------------------------------------------------------------- */
+        #/*      Process each data source layer.                                 */
+        #/* -------------------------------------------------------------------- */
         for iLayer in range(poDS.GetLayerCount()):
             poLayer = poDS.GetLayer(iLayer)
 
@@ -122,14 +122,14 @@ class OgrInfo(OgrAlgorithm):
     #/*      Report various overall information.                             */
     #/* -------------------------------------------------------------------- */
         self.out( "" )
-        
+
         self.out( "Layer name: %s" % poDefn.GetName() )
 
         if bVerbose:
             self.out( "Geometry: %s" % ogr.GeometryTypeToName( poDefn.GetGeomType() ) )
-            
+
             self.out( "Feature Count: %d" % poLayer.GetFeatureCount() )
-            
+
             oExt = poLayer.GetExtent(True, can_return_null = True)
             if oExt is not None:
                 self.out("Extent: (%f, %f) - (%f, %f)" % (oExt[0], oExt[1], oExt[2], oExt[3]))
@@ -140,16 +140,16 @@ class OgrInfo(OgrAlgorithm):
                 pszWKT = poLayer.GetSpatialRef().ExportToPrettyWkt()
 
             self.out( "Layer SRS WKT:\n%s" % pszWKT )
-        
+
             if len(poLayer.GetFIDColumn()) > 0:
                 self.out( "FID Column = %s" % poLayer.GetFIDColumn() )
-        
+
             if len(poLayer.GetGeometryColumn()) > 0:
                 self.out( "Geometry Column = %s" % poLayer.GetGeometryColumn() )
 
             for iAttr in range(poDefn.GetFieldCount()):
                 poField = poDefn.GetFieldDefn( iAttr )
-                
+
                 self.out( "%s: %s (%d.%d)" % ( \
                         poField.GetNameRef(), \
                         poField.GetFieldTypeName( poField.GetType() ), \

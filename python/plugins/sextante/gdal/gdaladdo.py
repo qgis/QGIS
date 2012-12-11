@@ -36,7 +36,7 @@ class gdaladdo(GeoAlgorithm):
     INPUT = "INPUT"
     LEVELS = "LEVELS"
     OUTPUT = "OUTPUT"
-    
+
 
     def getIcon(self):
         filepath = os.path.dirname(__file__) + "/icons/raster-overview.png"
@@ -50,10 +50,10 @@ class gdaladdo(GeoAlgorithm):
         self.addOutput(OutputRaster(gdaladdo.OUTPUT, "Output layer", True))
 
     def processAlgorithm(self, progress):
-        commands = ["gdaladdo"]        
+        commands = ["gdaladdo"]
         input = self.getParameterValue(gdaladdo.INPUT)
-        self.setOutputValue(gdaladdo.OUTPUT, input)                        
+        self.setOutputValue(gdaladdo.OUTPUT, input)
         commands.append(input)
-        commands.append(self.getParameterValue(gdaladdo.LEVELS))                
+        commands.append(self.getParameterValue(gdaladdo.LEVELS))
 
         GdalUtils.runGdal(commands, progress)

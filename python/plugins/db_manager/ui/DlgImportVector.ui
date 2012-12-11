@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgImportVector</class>
- <widget class="QDialog" name="DlgImportVector">
+ <class>DbManagerDlgImportVector</class>
+ <widget class="QDialog" name="DbManagerDlgImportVector">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -346,7 +346,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgImportVector</receiver>
+   <receiver>DbManagerDlgImportVector</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -458,7 +458,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>DlgImportVector</receiver>
+   <receiver>DbManagerDlgImportVector</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

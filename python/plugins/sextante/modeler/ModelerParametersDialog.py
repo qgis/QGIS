@@ -139,10 +139,10 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)        
+        self.tabWidget.setMinimumWidth(300)
         self.paramPanel = QtGui.QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, "Parameters")
@@ -182,7 +182,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
- 
+
     def getRasterLayers(self):
         layers = []
         params = self.model.parameters
@@ -324,14 +324,14 @@ class ModelerParametersDialog(QtGui.QDialog):
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
             dependent.append(self.algIndex)
-            
+
         i=0
         for alg in self.model.algs:
             if i not in dependent:
                 for out in alg.outputs:
                     if isinstance(out, OutputString):
                         strings.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
-            i+=1                
+            i+=1
         return strings
 
     def getTableFields(self):
@@ -518,10 +518,10 @@ class ModelerParametersDialog(QtGui.QDialog):
                     else:
                         options = self.getRasterLayers()
                     for i in range(len(options)):
-                        option = options[i] 
-                        for aap in (values):                                                                                
+                        option = options[i]
+                        for aap in (values):
                             if str(option) == aap:
-                                selectedoptions.append(i)        
+                                selectedoptions.append(i)
                     widget.setSelectedItems(selectedoptions)
                 else:
                     pass

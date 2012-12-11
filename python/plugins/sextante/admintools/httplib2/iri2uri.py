@@ -17,7 +17,7 @@ import urlparse
 
 
 # Convert an IRI to a URI following the rules in RFC 3987
-# 
+#
 # The characters we need to enocde and escape are defined in the spec:
 #
 # iprivate =  %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD
@@ -50,7 +50,7 @@ escape_range = [
    (0xF0000, 0xFFFFD ),
    (0x100000, 0x10FFFD)
 ]
- 
+
 def encode(c):
     retval = c
     i = ord(c)
@@ -64,19 +64,19 @@ def encode(c):
 
 
 def iri2uri(uri):
-    """Convert an IRI to a URI. Note that IRIs must be 
+    """Convert an IRI to a URI. Note that IRIs must be
     passed in a unicode strings. That is, do not utf-8 encode
-    the IRI before passing it into the function.""" 
+    the IRI before passing it into the function."""
     if isinstance(uri ,unicode):
         (scheme, authority, path, query, fragment) = urlparse.urlsplit(uri)
         authority = authority.encode('idna')
         # For each character in 'ucschar' or 'iprivate'
         #  1. encode as utf-8
-        #  2. then %-encode each octet of that utf-8 
+        #  2. then %-encode each octet of that utf-8
         uri = urlparse.urlunsplit((scheme, authority, path, query, fragment))
         uri = "".join([encode(c) for c in uri])
     return uri
-        
+
 if __name__ == "__main__":
     import unittest
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
         def test_uris(self):
             """Test that URIs are invariant under the transformation."""
-            invariant = [ 
+            invariant = [
                 u"ftp://ftp.is.co.za/rfc/rfc1808.txt",
                 u"http://www.ietf.org/rfc/rfc2396.txt",
                 u"ldap://[2001:db8::7]/c=GB?objectClass?one",
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                 u"urn:oasis:names:specification:docbook:dtd:xml:4.1.2" ]
             for uri in invariant:
                 self.assertEqual(uri, iri2uri(uri))
-            
+
         def test_iri(self):
             """ Test that the right type of escaping is done for each part of the URI."""
             self.assertEqual("http://xn--o3h.com/%E2%98%84", iri2uri(u"http://\N{COMET}.com/\N{COMET}"))
@@ -108,4 +108,4 @@ if __name__ == "__main__":
 
     unittest.main()
 
-    
+

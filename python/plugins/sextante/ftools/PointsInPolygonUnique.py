@@ -67,7 +67,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        classFieldName = self.getParameterValue(self.CLASSFIELD)        
+        classFieldName = self.getParameterValue(self.CLASSFIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 

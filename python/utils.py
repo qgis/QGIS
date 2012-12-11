@@ -230,7 +230,7 @@ def canUninstallPlugin(packageName):
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
   global plugins, active_plugins
-  
+
   if not plugins.has_key(packageName): return False
   if packageName not in active_plugins: return False
 
@@ -304,11 +304,11 @@ def showPluginHelp(packageName=None,filename="index",section=""):
   helpfile = os.path.join(path,filename+"-"+locale+".html")
   if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-"+locale.split("_")[0]+".html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en_US.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+".html")
   if os.path.exists(helpfile):
     url = "file://"+helpfile
@@ -376,15 +376,15 @@ def qgsfunction(args, group, **kwargs):
   """
   Decorator function used to define a user expression function.
 
-  Custom functions should take (values, feature, parent) as args, 
-  they can also shortcut naming feature and parent args by using *args 
+  Custom functions should take (values, feature, parent) as args,
+  they can also shortcut naming feature and parent args by using *args
   if they are not needed in the function.
 
   Functions should return a value compatible with QVariant
 
   Eval errors can be raised using parent.setEvalErrorString()
 
-  Functions must be unregistered when no longer needed using 
+  Functions must be unregistered when no longer needed using
   QgsExpression.unregisterFunction
 
   Example:
@@ -440,7 +440,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=-1):
   if mod and '__file__' in mod.__dict__:
     module_name = mod.__name__
     package_name = module_name.split('.')[0]
-    # check whether the module belongs to one of our plugins 
+    # check whether the module belongs to one of our plugins
     if package_name in available_plugins:
       if package_name not in _plugin_modules:
         _plugin_modules[package_name] = set()

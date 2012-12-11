@@ -29,7 +29,7 @@ def workspace_from_index(catalog, node):
     name = node.find("name")
     return Workspace(catalog, name.text)
 
-class Workspace(ResourceInfo): 
+class Workspace(ResourceInfo):
     resource_type = "workspace"
 
     def __init__(self, catalog, name):

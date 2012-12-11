@@ -22,10 +22,10 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
-                        QsciScintillaBase, 
+                        QsciScintillaBase,
                         QsciLexerPython)
 import sys
-              
+
 class writeOut:
     def __init__(self, edit, out=None, style=None):
         """
@@ -46,19 +46,19 @@ class writeOut:
 
         if self.out:
             self.out.write(m)
-            
+
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
         line, index = self.get_end_pos()
         self.outputArea.setCursorPosition(line, index)
         self.outputArea.ensureCursorVisible()
         self.outputArea.ensureLineVisible(line)
-        
+
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.outputArea.lines() - 1
         return (line, self.outputArea.text(line).length())
-    
+
     def flush(self):
         pass
 
@@ -68,17 +68,17 @@ class EditorOutput(QsciScintilla):
         super(EditorOutput,self).__init__(parent)
         self.parent = parent
         self.edit = self.parent.edit
-        
-        # Enable non-ascii chars for editor        
+
+        # Enable non-ascii chars for editor
         self.setUtf8(True)
-        
+
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "traceback")
-        
+
         self.insertInitText()
         self.setLexers()
         self.setReadOnly(True)
-        
+
         # Set the default font
         font = QFont()
         font.setFamily('Courier')
@@ -102,15 +102,15 @@ class EditorOutput(QsciScintilla):
         #self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
         #self.setFoldMarginColors(QColor("#99CC66"),QColor("#333300"))
         #self.setWrapMode(QsciScintilla.WrapCharacter)
-        
+
         ## Edge Mode
         #self.setEdgeMode(QsciScintilla.EdgeLine)
         #self.setEdgeColumn(80)
-        #self.setEdgeColor(QColor("#FF0000")) 
-        
+        #self.setEdgeColor(QColor("#FF0000"))
+
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
-        
+
         self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runShortcut.activated.connect(self.enteredSelected)
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
@@ -118,26 +118,26 @@ class EditorOutput(QsciScintilla):
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
         self.selectAllShortcut.activated.connect(self.selectAll)
-        
+
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "## To access Quantum GIS environment from this console\n"
                                              "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
         initText = self.setText(txtInit)
-                
+
     def refreshLexerProperties(self):
         self.setLexers()
-        
+
     def setLexers(self):
         self.lexer = QsciLexerPython()
-        
+
         settings = QSettings()
         loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
         fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
-        
+
         self.lexer.setDefaultFont(font)
         self.lexer.setColor(Qt.red, 1)
         self.lexer.setColor(Qt.darkGreen, 5)
@@ -153,40 +153,40 @@ class EditorOutput(QsciScintilla):
         text = self.text()
         textList = text.split("\n")
         return textList
-    
+
     def clearConsole(self):
         #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
         self.insertInitText()
         self.edit.setFocus()
-        
-    def contextMenuEvent(self, e):   
+
+    def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QIcon(":/images/console/iconRunConsole.png")
         iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
         iconClear = QIcon(":/images/console/iconClearConsole.png")
         iconHideTool = QIcon(":/images/console/iconHideToolConsole.png")
-        hideToolBar = menu.addAction(iconHideTool, 
-                                     "Hide/Show Toolbar", 
+        hideToolBar = menu.addAction(iconHideTool,
+                                     "Hide/Show Toolbar",
                                      self.hideToolBar)
         menu.addSeparator()
-        runAction = menu.addAction(iconRun, 
-                                   "Enter Selected", 
-                                   self.enteredSelected, 
+        runAction = menu.addAction(iconRun,
+                                   "Enter Selected",
+                                   self.enteredSelected,
                                    QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(iconClear, 
-                                     "Clear console", 
+        clearAction = menu.addAction(iconClear,
+                                     "Clear console",
                                      self.clearConsole)
         menu.addSeparator()
-        copyAction = menu.addAction("Copy", 
-                                    self.copy, 
+        copyAction = menu.addAction("Copy",
+                                    self.copy,
                                     QKeySequence.Copy)
-        pastebinAction = menu.addAction(iconPastebin, 
-                                        "Share on codepad", 
+        pastebinAction = menu.addAction(iconPastebin,
+                                        "Share on codepad",
                                         self.pastebin)
         menu.addSeparator()
-        selectAllAction = menu.addAction("Select All", 
-                                         self.selectAll, 
+        selectAllAction = menu.addAction("Select All",
+                                         self.selectAll,
                                          QKeySequence.SelectAll)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
@@ -201,12 +201,12 @@ class EditorOutput(QsciScintilla):
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        
+
     def hideToolBar(self):
         tB = self.parent.toolBar
         tB.hide() if tB.isVisible() else tB.show()
         self.edit.setFocus()
-            
+
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
         if self.hasSelectedText():
@@ -220,7 +220,7 @@ class EditorOutput(QsciScintilla):
         cmd = self.selectedText()
         self.edit.insertFromDropPaste(cmd)
         self.edit.entered()
-                
+
     def keyPressEvent(self, e):
         # empty text indicates possible shortcut key sequence so stay in output
         txt = e.text()

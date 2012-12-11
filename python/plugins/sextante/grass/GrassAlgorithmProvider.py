@@ -87,10 +87,10 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ["shp"]
-    
-    def getSupportedOutputRasterLayerExtensions(self):        
+
+    def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]
-        
+
     def createDescriptionFiles(self):
         folder = "C:\\descs\\grass"
         i = 0

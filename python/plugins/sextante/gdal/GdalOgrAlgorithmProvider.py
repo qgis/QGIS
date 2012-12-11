@@ -83,7 +83,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
     def createAlgsList(self):
         #First we populate the list of algorihtms with those created extending
         #GeoAlgorithm directly (those that execute GDAL using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), 
+        self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
                               rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
                               OgrInfo(), Ogr2Ogr(), OgrSql()]
         #And then we add those that are created as python scripts
@@ -99,6 +99,6 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
-    
+
     def getSupportedOutputVectorLayerExtensions(self):
         return ["shp", "sqlite"]

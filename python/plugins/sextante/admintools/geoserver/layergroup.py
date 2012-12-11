@@ -64,7 +64,7 @@ def _write_styles(builder, styles):
 
 class LayerGroup(ResourceInfo):
     """
-    Represents a layer group in geoserver 
+    Represents a layer group in geoserver
     """
 
     resource_type = "layerGroup"

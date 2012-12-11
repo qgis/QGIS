@@ -56,7 +56,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
 
 	def testZeroArgFunctionsAreSpecialColumns(self):
 		special = self.special
-		self.assertEqual(special.name(), '$special') 
+		self.assertEqual(special.name(), '$special')
 
 	def testDecoratorPreservesAttributes(self):
 		func = self.testfun

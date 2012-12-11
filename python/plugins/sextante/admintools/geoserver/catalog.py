@@ -290,8 +290,8 @@ class Catalog(object):
 
         message = open(bundle)
         headers = { 'Content-Type': 'application/zip', 'Accept': 'application/xml' }
-        upload_url = url(self.service_url, 
-            ["workspaces", workspace, "datastores", store, "file.shp"], params) 
+        upload_url = url(self.service_url,
+            ["workspaces", workspace, "datastores", store, "file.shp"], params)
 
         try:
             headers, response = self.http.request(upload_url, "PUT", message, headers)
@@ -447,7 +447,7 @@ class Catalog(object):
         return lyrs
 
     def get_layergroup(self, name=None):
-        try: 
+        try:
             group_url = url(self.service_url, ["layergroups", name + ".xml"])
             group = self.get_xml(group_url)
             return LayerGroup(self, group.find("name").text)

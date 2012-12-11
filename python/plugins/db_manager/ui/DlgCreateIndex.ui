@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgCreateIndex</class>
- <widget class="QDialog" name="DlgCreateIndex">
+ <class>DbManagerDlgCreateIndex</class>
+ <widget class="QDialog" name="DbManagerDlgCreateIndex">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -32,7 +32,11 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="editName"/>
+    <widget class="QLineEdit" name="editName">
+     <property name="text">
+      <string notr="true"/>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -56,7 +60,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgCreateIndex</receiver>
+   <receiver>DbManagerDlgCreateIndex</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

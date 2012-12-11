@@ -22,7 +22,7 @@ email                : brush.tyler@gmail.com
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-# The load function is called when the "db" database or either one of its 
+# The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
@@ -32,7 +32,7 @@ def load(db, mainwindow):
 	mainwindow.registerAction( action, "&Table", run )
 
 
-# The run function is called once the user clicks on the action TopoViewer 
+# The run function is called once the user clicks on the action TopoViewer
 # (look above at the load function) from the DBManager menu/toolbar.
 # @param item is the selected db item (either db, schema or table)
 # @param action is the clicked action on the DBManager menu/toolbar

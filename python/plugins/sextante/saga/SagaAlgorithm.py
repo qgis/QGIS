@@ -256,7 +256,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile  = SextanteUtils.getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
-                values = param.value.split(",")                
+                values = param.value.split(",")
                 for i in range(0, len(values), 3):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)
@@ -318,7 +318,7 @@ class SagaAlgorithm(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
-    
+
     def getOutputCellsize(self):
         '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
         cellsize = 0;
@@ -327,8 +327,8 @@ class SagaAlgorithm(GeoAlgorithm):
                 cellsize = float(param.value)
                 break;
         return cellsize
-    
-    
+
+
     def resampleRasterLayer(self,layer):
         '''this is supposed to be run after having exported all raster layers'''
         if layer in self.exportedLayers.keys():

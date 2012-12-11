@@ -33,10 +33,10 @@ class HelpDialog(QDialog, Ui_Help):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        
+
         self.setWindowTitle(QCoreApplication.translate("PythonConsole","Help Python Console"))
         self.setMaximumSize(530, 300)
-        
+
         qgisDataDir = QgsApplication.pkgDataPath()
         listFile = os.listdir(qgisDataDir + "/python/console/console_help/i18n")
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()

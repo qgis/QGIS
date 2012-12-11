@@ -65,7 +65,7 @@ class SextanteUtils:
         safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
         uniqueSufix = str(uuid.uuid4()).replace("-","");
         filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + uniqueSufix + "." + ext
-        out.value = filename                
+        out.value = filename
 
     @staticmethod
     def getTempFilename(ext):

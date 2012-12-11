@@ -114,7 +114,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def getInputFileName(self):
       return self.inSelector.filename()
-  
+
   def getMaskFileName(self):
       return self.maskSelector.filename()
 

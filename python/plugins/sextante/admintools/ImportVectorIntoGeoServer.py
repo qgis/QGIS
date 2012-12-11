@@ -36,12 +36,12 @@ class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
     INPUT = "INPUT"
     WORKSPACE = "WORKSPACE"
 
-    def processAlgorithm(self, progress):  
-        self.createCatalog()   
+    def processAlgorithm(self, progress):
+        self.createCatalog()
         inputFilename = self.getParameterValue(self.INPUT)
         layer = QGisLayers.getObjectFromUri(inputFilename)
-        workspaceName = self.getParameterValue(self.WORKSPACE)                            
-        filename = LayerExporter.exportVectorLayer(layer)            
+        workspaceName = self.getParameterValue(self.WORKSPACE)
+        filename = LayerExporter.exportVectorLayer(layer)
         basefilename = os.path.basename(filename)
         basepathname = os.path.dirname(filename) + os.sep + basefilename[:basefilename.find('.')]
         connection = {
@@ -50,15 +50,15 @@ class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
             'dbf': basepathname + '.dbf',
             'prj': basepathname + '.prj'
         }
- 
+
         workspace = self.catalog.get_workspace(workspaceName)
         self.catalog.create_featurestore(basefilename, connection, workspace)
 
-        
+
     def defineCharacteristics(self):
         self.addBaseParameters()
         self.name = "Import vector into GeoServer"
         self.group = "GeoServer management tools"
         self.addParameter(ParameterVector(self.INPUT, "Layer to import", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))     
+        self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
 

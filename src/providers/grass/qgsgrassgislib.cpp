@@ -16,7 +16,14 @@
 //#include <signal.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <QtGlobal>
 
+// If qgsgrassgislibfunctions.h is included on Linux, symbols defined here 
+// cannot be found (undefined symbol error) even if they are present in 
+// the library (in code section) - why? 
+#ifdef Q_OS_WIN
+#include "qgsgrassgislibfunctions.h"
+#endif
 #include "qgsgrassgislib.h"
 
 #include "qgslogger.h"
@@ -37,6 +44,7 @@
 
 #include <QTextCodec>
 
+#if 0
 extern "C"
 {
 #ifndef _MSC_VER
@@ -46,6 +54,7 @@ extern "C"
 #include <grass/Vect.h>
 #include <grass/version.h>
 }
+#endif
 
 #if !defined(GRASS_VERSION_MAJOR) || \
     !defined(GRASS_VERSION_MINOR) || \
@@ -158,7 +167,10 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char * version, const cha
   G_setenv( "OVERWRITE", "1" );  // avoid checking if map exists
 
   G_suppress_masking();
+
+#if GRASS_VERSION_MAJOR<6 || (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 4)
   G__init_null_patterns();
+#endif
 
   // Read projection if set
   //mCrs.createFromOgcWmsCrs( "EPSG:900913" );
@@ -292,7 +304,7 @@ int GRASS_LIB_EXPORT G_done_msg( const char *msg, ... )
   return 0;
 }
 
-char * GRASS_LIB_EXPORT QgsGrassGisLib::G_find_cell2( const char * name, const char * mapset )
+char GRASS_LIB_EXPORT *QgsGrassGisLib::G_find_cell2( const char * name, const char * mapset )
 {
   Q_UNUSED( name );
   Q_UNUSED( mapset );
@@ -309,12 +321,12 @@ char * GRASS_LIB_EXPORT QgsGrassGisLib::G_find_cell2( const char * name, const c
   return qstrdup( ms.toAscii() );  // memory lost
 }
 
-char * GRASS_LIB_EXPORT G_find_cell2( const char* name, const char *mapset )
+char GRASS_LIB_EXPORT *G_find_cell2( const char* name, const char *mapset )
 {
   return QgsGrassGisLib::instance()->G_find_cell2( name, mapset );
 }
 
-char * GRASS_LIB_EXPORT G_find_cell( char * name, const char * mapset )
+char GRASS_LIB_EXPORT *G_find_cell( char * name, const char * mapset )
 {
   // Not really sure about differences between G_find_cell and G_find_cell2
   return G_find_cell2( name, mapset );
@@ -779,13 +791,13 @@ int QgsGrassGisLib::G_put_raster_row( int fd, const void *buf, RASTER_MAP_TYPE d
     switch ( data_type )
     {
       case CELL_TYPE:
-        isNoData = G_is_c_null_value( &(( CELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_c_null_value( &(( CELL * ) buf )[i] ) != 0;
         break;
       case FCELL_TYPE:
-        isNoData = G_is_f_null_value( &(( FCELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_f_null_value( &(( FCELL * ) buf )[i] ) != 0;
         break;
       case DCELL_TYPE:
-        isNoData = G_is_d_null_value( &(( DCELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_d_null_value( &(( DCELL * ) buf )[i] ) != 0;
         break;
       default:
         break;
@@ -881,7 +893,6 @@ double QgsGrassGisLib::G_database_units_to_meters_factor( void )
     default:
       return 0.;
   }
-  return 0;
 }
 
 double GRASS_LIB_EXPORT G_database_units_to_meters_factor( void )
@@ -959,14 +970,12 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QgsRasterBlock::DataType qgisTy
     case QgsRasterBlock::CFloat64:
     case QgsRasterBlock::ARGB32:
     case QgsRasterBlock::ARGB32_Premultiplied:
-      return -1;
     default:
       return -1;
   }
-  return -1; // not reached
 }
 
-char * GRASS_LIB_EXPORT G_tempfile( void )
+char GRASS_LIB_EXPORT *G_tempfile( void )
 {
   QTemporaryFile file( "qgis-grass-temp.XXXXXX" );
   QString name = file.fileName();
@@ -974,12 +983,12 @@ char * GRASS_LIB_EXPORT G_tempfile( void )
   return name.toAscii().data();
 }
 
-char * GRASS_LIB_EXPORT G_mapset( void )
+char GRASS_LIB_EXPORT *G_mapset( void )
 {
   return qstrdup( "qgis" );
 }
 
-char * GRASS_LIB_EXPORT G_location( void )
+char GRASS_LIB_EXPORT *G_location( void )
 {
   return qstrdup( "qgis" );
 }

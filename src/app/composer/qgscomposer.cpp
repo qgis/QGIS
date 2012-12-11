@@ -93,6 +93,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
+  // ability to save parent project from composer
+  mSaveProjectAction = QgisApp::instance()->actionSaveProject();
+  QToolButton* saveProjectToolButton = new QToolButton( this );
+  saveProjectToolButton->addAction( mSaveProjectAction );
+  saveProjectToolButton->setDefaultAction( mSaveProjectAction );
+  toolBar->insertWidget( mActionLoadFromTemplate, saveProjectToolButton );
+  toolBar->insertSeparator( mActionLoadFromTemplate );
+
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
   orderingToolButton->setAutoRaise( true );
@@ -162,6 +170,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #endif
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
+  fileMenu->addAction( mSaveProjectAction );
+  fileMenu->addSeparator();
   fileMenu->addAction( mActionLoadFromTemplate );
   fileMenu->addAction( mActionSaveAsTemplate );
   fileMenu->addSeparator();
@@ -435,10 +445,15 @@ void QgsComposer::open( void )
 
 void QgsComposer::activate()
 {
+  bool shown = isVisible();
   show();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
+  if ( !shown )
+  {
+    on_mActionZoomAll_triggered();
+  }
 }
 
 #ifdef Q_WS_MAC

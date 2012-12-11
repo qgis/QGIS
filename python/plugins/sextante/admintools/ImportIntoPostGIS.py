@@ -34,24 +34,24 @@ from sextante.admintools import postgis_utils
 import PyQt4
 
 class ImportIntoPostGIS(GeoAlgorithm):
-    
+
     DATABASE = "DATABASE"
     TABLENAME = "TABLENAME"
     INPUT = "INPUT"
-    
+
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/../images/postgis.png")
 
-    def processAlgorithm(self, progress):   
-        pass            
-    
-    def defineCharacteristics(self):        
+    def processAlgorithm(self, progress):
+        pass
+
+    def defineCharacteristics(self):
         self.name = "Import into PostGIS"
-        self.group = "PostGIS management tools"        
+        self.group = "PostGIS management tools"
         self.addParameter(ParameterVector(self.INPUT, "Layer to import"))
         self.addParameter(ParameterString(self.DATABASE, "Database"))
-        self.addParameter(ParameterString(self.TABLENAME, "Name for new table"))        
-        
-         
-                  
+        self.addParameter(ParameterString(self.TABLENAME, "Name for new table"))
+
+
+
 

@@ -63,7 +63,7 @@ class EquivalentNumField(GeoAlgorithm):
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
           atMap = inFeat.attributeMap()
-          clazz = atMap[field_index].toString()         
+          clazz = atMap[field_index].toString()
           if clazz not in classes:
               classes[clazz] = len(classes.keys())
         while vprovider.nextFeature(inFeat):
