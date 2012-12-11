@@ -47,11 +47,15 @@ class QgsLegendGroup : public QgsLegendItem
     int drawingOrder() const { return mDrawingOrder; }
     void setDrawingOrder( int i ) { mDrawingOrder = i; }
 
+    int id( ) { return mID; }
+
   private:
     bool mEmbedded;
     /**Path to project from which the group is embedded. Empty for not-embedded groups*/
     QString mProjectPath;
     int mDrawingOrder;
+    int mID;
+    static int nextAvailableID;
 
 };
 

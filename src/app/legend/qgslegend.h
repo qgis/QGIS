@@ -228,6 +228,9 @@ class QgsLegend : public QTreeWidget
     /**Returns the legend layer to which a map layer belongs to*/
     QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
 
+    /**Returns legend group by group id */
+    QgsLegendGroup* findLegendGroup( int ID );
+
     /**Returns legend group by group name and project path (empty for not-embedded groups)*/
     QgsLegendGroup* findLegendGroup( const QString& name, const QString& projectPath = QString() );
 
@@ -267,7 +270,7 @@ class QgsLegend : public QTreeWidget
      * The user will be prompted for the name of the newly added group.
      * @param name name of the new group
      * @param expand expand the group
-     * @return index of inserted group
+     * @return id of inserted group
      */
     int addGroupToCurrentItem( QString name = QString(), bool expand = true );
 
@@ -276,7 +279,7 @@ class QgsLegend : public QTreeWidget
      * The user will be prompted for the name of the newly added group.
      * @param name name of the new group
      * @param expand expand the group
-     * @return index of inserted group
+     * @return id of inserted group
      */
     int addGroup( QString name = QString(), bool expand = true, QTreeWidgetItem* parent = 0 );
 
@@ -285,16 +288,16 @@ class QgsLegend : public QTreeWidget
      * All parameter are mandatory to be used to programatically nest a new group
      * @param name name of the new group
      * @param expand expand the group
-     * @return index of inserted group
+     * @return id of inserted group
      */
     int addGroup( QString name, bool expand, int parentIndex );
 
     /*!
-     * Removes all groups with the given name.
-     * @param name name of the groups to remove
+     * Removes group with the given ID
+     * @param groupID id of the group to remove
      * @return void
      */
-    void removeGroup( int groupIndex );
+    void removeGroup( int groupID );
 
     /*!
      * @deprecated - use removeLayers() rather
@@ -313,10 +316,10 @@ class QgsLegend : public QTreeWidget
     /*!
      * Moves a layer to a group.
      * @param ml the maplayer to move
-     * @param groupIndex index of group
+     * @param groupID id of group
      * @note keep in mind that the group's index changes, if the moved layer is above the group.
      */
-    void moveLayer( QgsMapLayer* ml, int groupIndex );
+    void moveLayer( QgsMapLayer* ml, int groupID );
 
     /**Toggle show in overview for current layer*/
     void legendLayerShowInOverview();

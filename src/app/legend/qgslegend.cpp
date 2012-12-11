@@ -230,31 +230,13 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
 
   emit itemAdded( groupIndex );
 
-  return groupIndex.row();
+  return group->id();
 }
 
-int QgsLegend::addGroup( QString name, bool expand, int groupIndex )
+int QgsLegend::addGroup( QString name, bool expand, int groupID )
 {
-  QTreeWidgetItem * parentItem = invisibleRootItem();
-
-  int itemCount = 0;
-  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
-  {
-    QgsLegendItem* legendItem = dynamic_cast<QgsLegendItem *>( theItem );
-    if ( legendItem->type() == QgsLegendItem::LEGEND_GROUP )
-    {
-      if ( itemCount == groupIndex )
-      {
-        // this is the matching group
-        parentItem = legendItem;
-        break;
-      }
-      else
-      {
-        itemCount = itemCount + 1;
-      }
-    }
-  }
+  QTreeWidgetItem * parentItem = findLegendGroup( groupID );
+  if ( parentItem ) parentItem = invisibleRootItem();
 
   return addGroup( name, expand, parentItem );
 }
@@ -298,29 +280,9 @@ void QgsLegend::setLayersVisible( bool visible )
   QgsProject::instance()->dirty( true );
 }
 
-void QgsLegend::removeGroup( int groupIndex )
+void QgsLegend::removeGroup( int groupID )
 {
-  QgsLegendGroup * lg = NULL;
-  int itemCount = 0;
-
-  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
-  {
-    QgsLegendItem* legendItem = dynamic_cast<QgsLegendItem *>( theItem );
-    if ( legendItem->type() == QgsLegendItem::LEGEND_GROUP )
-    {
-      if ( itemCount == groupIndex )
-      {
-        // this is the matching group
-        lg = dynamic_cast<QgsLegendGroup*>( legendItem );
-        break;
-      }
-      else
-      {
-        itemCount = itemCount + 1;
-      }
-    }
-  }
-
+  QgsLegendGroup * lg = findLegendGroup( groupID );
   if ( lg )
   {
     removeGroup( lg );
@@ -1455,7 +1417,7 @@ void QgsLegend::setGroupCRS( QgsLegendGroup *lg, const QgsCoordinateReferenceSys
   }
 }
 
-void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
+void QgsLegend::moveLayer( QgsMapLayer *ml, int groupID )
 {
   if ( !ml )
     return;
@@ -1464,34 +1426,13 @@ void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
   if ( !layer )
     return;
 
-  int itemCount = 0;
-  QgsLegendGroup *group = NULL;
-
-  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
-  {
-
-    QgsLegendItem* legendItem = dynamic_cast<QgsLegendItem *>( theItem );
-    if ( legendItem->type() == QgsLegendItem::LEGEND_GROUP )
-    {
-      if ( itemCount == groupIndex )
-      {
-        // this is the matching group
-        group = dynamic_cast<QgsLegendGroup*>( legendItem );
-        break;
-      }
-      else
-      {
-        itemCount = itemCount + 1;
-      }
-    }
-  }
-
+  QgsLegendGroup *group = findLegendGroup( groupID );
   if ( group == NULL )
     return;
 
   insertItem( layer, group );
 
-  emit itemMovedGroup( dynamic_cast<QgsLegendItem*>( layer ), groupIndex );
+  emit itemMovedGroup( dynamic_cast<QgsLegendItem*>( layer ), groupID );
 }
 
 void QgsLegend::legendLayerShowInOverview()
@@ -1932,6 +1873,16 @@ QgsLegendGroup* QgsLegend::findLegendGroup( const QString& name, const QString& 
         return group;
       }
     }
+  }
+  return 0;
+}
+
+QgsLegendGroup* QgsLegend::findLegendGroup( int id )
+{
+  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
+  {
+    QgsLegendGroup* group = dynamic_cast<QgsLegendGroup*>( theItem );
+    if ( group && group->id() == id ) return group;
   }
   return 0;
 }
