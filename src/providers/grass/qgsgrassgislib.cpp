@@ -18,6 +18,9 @@
 #include <stdarg.h>
 #include <QtGlobal>
 
+// If qgsgrassgislibfunctions.h is included on Linux, symbols defined here 
+// cannot be found (undefined symbol error) even if they are present in 
+// the library (in code section) - why? 
 #ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
 #endif
@@ -41,6 +44,7 @@
 
 #include <QTextCodec>
 
+#if 0
 extern "C"
 {
 #ifndef _MSC_VER
@@ -50,6 +54,7 @@ extern "C"
 #include <grass/Vect.h>
 #include <grass/version.h>
 }
+#endif
 
 #if !defined(GRASS_VERSION_MAJOR) || \
     !defined(GRASS_VERSION_MINOR) || \
