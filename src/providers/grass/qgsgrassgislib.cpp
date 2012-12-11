@@ -16,6 +16,7 @@
 //#include <signal.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <QtGlobal>
 
 #ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
@@ -782,13 +783,13 @@ int QgsGrassGisLib::G_put_raster_row( int fd, const void *buf, RASTER_MAP_TYPE d
     switch ( data_type )
     {
       case CELL_TYPE:
-        isNoData = G_is_c_null_value( &(( CELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_c_null_value( &(( CELL * ) buf )[i] ) != 0;
         break;
       case FCELL_TYPE:
-        isNoData = G_is_f_null_value( &(( FCELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_f_null_value( &(( FCELL * ) buf )[i] ) != 0;
         break;
       case DCELL_TYPE:
-        isNoData = G_is_d_null_value( &(( DCELL * ) buf )[i] ) == TRUE;
+        isNoData = G_is_d_null_value( &(( DCELL * ) buf )[i] ) != 0;
         break;
       default:
         break;
@@ -884,7 +885,6 @@ double QgsGrassGisLib::G_database_units_to_meters_factor( void )
     default:
       return 0.;
   }
-  return 0;
 }
 
 double GRASS_LIB_EXPORT G_database_units_to_meters_factor( void )
