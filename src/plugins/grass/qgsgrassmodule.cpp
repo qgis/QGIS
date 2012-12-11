@@ -1638,7 +1638,7 @@ void QgsGrassModule::run()
       setDirectLibraryPath( environment );
 #ifdef Q_OS_WIN
       variables << "PATH";
-#elif Q_OS_MAC
+#elif defined(Q_OS_MAC)
       variables << "DYLD_LIBRARY_PATH";
 #else
       variables << "LD_LIBRARY_PATH";
@@ -2003,7 +2003,7 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
 #ifdef Q_OS_WIN
   pathVariable = "PATH";
   separator = ";";
-#elif Q_OS_MAC
+#elif defined(Q_OS_MAC)
   pathVariable = "DYLD_LIBRARY_PATH";
   separator = ":";
 #else
