@@ -445,10 +445,15 @@ void QgsComposer::open( void )
 
 void QgsComposer::activate()
 {
+  bool shown = isVisible();
   show();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
+  if ( !shown )
+  {
+    on_mActionZoomAll_triggered();
+  }
 }
 
 #ifdef Q_WS_MAC
