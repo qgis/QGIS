@@ -23,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="mTabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="mModulesTreeTab">
       <attribute name="title">
@@ -33,10 +33,10 @@
        <item row="0" column="0">
         <widget class="QTreeWidget" name="mModulesTree">
          <property name="indentation">
-          <number>8</number>
+          <number>16</number>
          </property>
          <property name="rootIsDecorated">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -88,10 +88,10 @@
        <item row="0" column="0">
         <widget class="QTreeWidget" name="mDirectModulesTree">
          <property name="indentation">
-          <number>8</number>
+          <number>16</number>
          </property>
          <property name="rootIsDecorated">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
