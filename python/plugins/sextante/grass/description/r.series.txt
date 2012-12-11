@@ -4,7 +4,7 @@ Raster (r.*)
 ParameterMultipleInput|input|Name of input raster map(s)|3.0|False
 ParameterBoolean|-n|Propagate NULLs|True
 ParameterSelection|method|Aggregate operation|average;count;median;mode;minimum;min_raster;maximum;max_raster;stddev;range;sum;threshold;variance;diversity;slope;offset;detcoeff;quart1;quart3;perc90;quantile;skewness;kurtosis
-ParameterNumber|quantile|Quantile to calculate for method=quantile|0.0|1.0|0.0
-ParameterNumber|threshold|Threshold to calculate for method=threshold|None|None|0.0
-ParameterString|range|Ignore values outside this range (lo,hi)|-10000000000,10000000000
+*ParameterNumber|quantile|Quantile to calculate for method=quantile|0.0|1.0|0.0
+*ParameterNumber|threshold|Threshold to calculate for method=threshold|None|None|0.0
+*ParameterString|range|Ignore values outside this range (lo,hi)|-10000000000,10000000000
 OutputRaster|output|Name for output raster map

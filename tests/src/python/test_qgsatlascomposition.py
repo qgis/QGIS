@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-test_qgsatlascomposition.py 
+test_qgsatlascomposition.py
                      --------------------------------------
                Date                 : Oct 2012
                Copyright            : (C) 2012 by Dr. Hugo Mercier
@@ -16,7 +16,7 @@ test_qgsatlascomposition.py
 '''
 import unittest
 from utilities import *
-from PyQt4.QtCore import * 
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 from qgis.core import *
@@ -25,14 +25,14 @@ from qgscompositionchecker import QgsCompositionChecker
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsAtlasComposition(unittest.TestCase):
-        
+
     def testCase(self):
-        self.TEST_DATA_DIR = unitTestDataPath()        
+        self.TEST_DATA_DIR = unitTestDataPath()
         vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
         QgsMapLayerRegistry.instance().addMapLayer( mVectorLayer )
-        
+
         # create composition with composer map
         mMapRenderer = QgsMapRenderer()
         layerStringList = QStringList()
@@ -95,7 +95,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.autoscale_render_test()
         self.fixedscale_render_test()
         self.hidden_render_test()
-        
+
     def filename_test( self ):
 
         self.mAtlas.setFilenamePattern( "'output_' || $feature" )
@@ -124,7 +124,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
                                                QString( "autoscale_%1.png" ).arg( i ) )
             assert res[0] == True
         self.mAtlas.endRender()
-        
+
     def fixedscale_render_test( self ):
         self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
         self.mAtlas.setFixedScale( True )

@@ -20,6 +20,7 @@
 
 #include <QDomDocument>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <map>
 
@@ -28,10 +29,12 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
+class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -133,7 +136,7 @@ class QgsWMSServer
       */
     void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
                               const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
-                              double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
+                              double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
     /**Draws a (old generation) symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
     void drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight,
                            double layerOpacity, double dpi, double yDownShift ) const;
@@ -144,8 +147,8 @@ class QgsWMSServer
     void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
 
     /**Read legend parameter from the request or from the first print composer in the project*/
-    void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight,
-                           QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
+    void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
+                           double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
     QImage* printCompositionToImage( QgsComposition* c ) const;
 
@@ -164,6 +167,15 @@ class QgsWMSServer
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
+    /**Applies opacity on layer/group level*/
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                         QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
+
+    /**Restore original opacities*/
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers, QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
+
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
     /**Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
@@ -175,6 +187,9 @@ class QgsWMSServer
 
     /**Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)*/
     void addXMLDeclaration( QDomDocument& doc ) const;
+
+    /**Converts a feature info xml document to SIA2045 norm*/
+    void convertFeatureInfoToSIA2045( QDomDocument& doc );
 
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;

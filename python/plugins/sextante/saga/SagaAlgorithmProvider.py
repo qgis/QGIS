@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.saga.SplitRGBBands import SplitRGBBands
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -80,6 +81,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+        self.preloadedAlgs.append(SplitRGBBands())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
@@ -89,6 +91,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def getName(self):
         return "saga"
+
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp"]
+
+    def getSupportedOutputRasterLayerExtensions(self):
+        return ["tif"]
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")

@@ -51,7 +51,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>489</height>
+            <height>497</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -197,6 +197,45 @@
             </widget>
            </item>
            <item row="1" column="0">
+            <widget class="QGroupBox" name="btnGrpMeasureEllipsoid">
+             <property name="title">
+              <string>Measure tool</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayoutMeasureTool">
+              <item row="1" column="0" rowspan="2">
+               <widget class="QLabel" name="textLabel1_8">
+                <property name="text">
+                 <string>Ellipsoid for distance calculations</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="4">
+               <widget class="QComboBox" name="cmbEllipsoid"/>
+              </item>
+	      <item row="2" column="4">
+               <widget class="QLineEdit" name="leSemiMinor"/>
+              </item>
+              <item row="2" column="3">
+               <widget class="QLabel" name="label_42">
+                <property name="text">
+                 <string>Semi-minor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="leSemiMajor"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_41">
+                <property name="text">
+                 <string>Semi-major</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
             <widget class="QGroupBox" name="btnGrpMapUnits">
              <property name="toolTip">
               <string>Used when CRS transformation is turned off</string>
@@ -232,7 +271,7 @@
              </layout>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QGroupBox" name="btnGrpDegreeDisplay">
              <property name="title">
               <string>Degree display</string>
@@ -262,7 +301,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QGroupBox" name="btnGrpPrecision">
              <property name="title">
               <string>Precision</string>
@@ -326,7 +365,7 @@
              </layout>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="5" column="0">
             <widget class="QGroupBox" name="grpProjectScales">
              <property name="title">
               <string>Project scales</string>
@@ -799,7 +838,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>984</height>
+            <height>1085</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -815,6 +854,16 @@
               <bool>false</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Person</string>
+                </property>
+                <property name="buddy">
+                 <cstring>mWMSContactPerson</cstring>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
@@ -850,16 +899,6 @@
               </item>
               <item row="2" column="1">
                <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Person</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSContactPerson</cstring>
-                </property>
-               </widget>
               </item>
               <item row="3" column="1">
                <widget class="QLineEdit" name="mWMSContactPerson"/>
@@ -899,6 +938,36 @@
               </item>
               <item row="6" column="1">
                <widget class="QTextEdit" name="mWMSAbstract"/>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="mWMSFees"/>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="mWMSFeesLabel">
+                <property name="text">
+                 <string>Fees</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="mWMSAccessConstraints"/>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="mWMSAccessConstraintsLabel">
+                <property name="text">
+                 <string>Access constraints</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="mWMSKeywordList"/>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="mWMSKeywordListLabel">
+                <property name="text">
+                 <string>Keyword list</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

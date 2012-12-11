@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproviderregistry.h"
 #include "qgsrasterchecker.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -43,14 +44,16 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   bool ok = true;
   mReport += "\n\n";
 
-  QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( theVerifiedKey, theVerifiedUri );
+  //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( theVerifiedKey, theVerifiedUri );
+  QgsRasterDataProvider* verifiedProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( theVerifiedKey, theVerifiedUri );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QString( "Cannot load provider %1 with URI: %2" ).arg( theVerifiedKey ).arg( theVerifiedUri ), mReport );
     ok = false;
   }
 
-  QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( theExpectedKey, theExpectedUri );
+  //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( theExpectedKey, theExpectedUri );
+  QgsRasterDataProvider* expectedProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( theExpectedKey, theExpectedUri );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QString( "Cannot load provider %1 with URI: %2" ).arg( theExpectedKey ).arg( theExpectedUri ), mReport );

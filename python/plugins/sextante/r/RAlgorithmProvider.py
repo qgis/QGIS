@@ -69,10 +69,18 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         folder = RUtils.RScriptsFolder()
+        self.loadFromFolder(folder)
+        folder = os.path.join(os.path.dirname(__file__), "scripts")
+        self.loadFromFolder(folder)
+
+
+    def loadFromFolder(self, folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("rsx"):
                 try:
-                    fullpath = os.path.join(RUtils.RScriptsFolder(), descriptionFile)
+                    fullpath = os.path.join(folder, descriptionFile)
                     alg = RAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)

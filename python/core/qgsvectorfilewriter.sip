@@ -48,10 +48,10 @@ class QgsVectorFileWriter
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
                                             QString *errorMessage = 0,
-                                            const QStringList &datasourceOptions = QStringList(),
-                                            const QStringList &layerOptions = QStringList(),
-                                            bool skipAttributeCreation = false, // added in 1.7
-                                            QString *newFilename = 0
+                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
+                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
+                                            bool skipAttributeCreation = false, // added in 1.6
+                                            QString *newFilename = 0 // added in 1.9
                                           );
 
     /** create shapefile and initialize it */
@@ -61,9 +61,10 @@ class QgsVectorFileWriter
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
-                         const QStringList &datasourceOptions = QStringList(),
-                         const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = 0 );
+                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
+                         const QStringList &layerOptions = QStringList(), // added in 1.6
+                         QString *newFilename = 0 // added in 1.9
+                       );
 
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();

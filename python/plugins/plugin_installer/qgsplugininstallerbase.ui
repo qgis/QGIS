@@ -126,7 +126,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineFilter">
+          <widget class="QgsFilterLineEdit" name="lineFilter">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -641,6 +641,13 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>lineFilter</tabstop>

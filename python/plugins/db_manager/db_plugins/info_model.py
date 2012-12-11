@@ -41,8 +41,8 @@ class DatabaseInfo:
 		return HtmlTable( tbl )
 
 	def connectionDetails(self):
-		tbl = [ 
-			("Host:", self.db.connector.host), 
+		tbl = [
+			("Host:", self.db.connector.host),
 			("User:", self.db.connector.user)
 		]
 		return HtmlTable( tbl )
@@ -55,23 +55,14 @@ class DatabaseInfo:
 			return
 
 		tbl = [
-			("Library:", info[0]), 
-			("Scripts:", info[1]),
-			("GEOS:", info[3]), 
-			("Proj:", info[4]), 
-			("Use stats:", info[5]) 
+			("Library:", info[0]),
+			("GEOS:", info[1]),
+			("Proj:", info[2])
 		]
 		ret.append( HtmlTable( tbl ) )
 
-		if info[1] != None and info[1] != info[2]:
-			ret.append( HtmlParagraph( u"<warning> Version of installed scripts doesn't match version of released scripts!\n" \
-				"This is probably a result of incorrect PostGIS upgrade." ) )
-
 		if not self.db.connector.has_geometry_columns:
 			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
-				"This table is essential for many GIS applications for enumeration of tables." ) )
-		elif not self.db.connector.has_geometry_columns_access:
-			ret.append( HtmlParagraph( u"<warning> This user doesn't have privileges to read contents of geometry_columns table!\n" \
 				"This table is essential for many GIS applications for enumeration of tables." ) )
 
 		return ret
@@ -79,8 +70,8 @@ class DatabaseInfo:
 	def privilegesDetails(self):
 		details = self.db.connector.getDatabasePrivileges()
 		lst = []
-		if details[0]: lst.append("create new schemas") 
-		if details[1]: lst.append("create temporary tables") 
+		if details[0]: lst.append("create new schemas")
+		if details[1]: lst.append("create temporary tables")
 		return HtmlList( lst )
 
 	def toHtml(self):
@@ -103,7 +94,7 @@ class DatabaseInfo:
 		else:
 			ret.append( HtmlSection( 'General info', general_info ) )
 
-		# has spatial enabled? 
+		# has spatial enabled?
 		spatial_info = self.spatialInfo()
 		if spatial_info == None:
 			pass
@@ -185,15 +176,15 @@ class TableInfo:
 
 	def generalInfo(self):
 		if self.table.rowCount == None:
-			# row count information is not displayed yet, so just block 
+			# row count information is not displayed yet, so just block
 			# table signals to avoid double refreshing (infoViewer->refreshRowCount->tableChanged->infoViewer)
 			self.table.blockSignals(True)
 			self.table.refreshRowCount()
 			self.table.blockSignals(False)
 
 		tbl = [
-			("Relation type:", "View" if self.table.isView else "Table"), 
-			("Rows:", self.table.rowCount if self.table.rowCount != None else 'Unknown (<a href="action:rows/count">find out</a>)') 
+			("Relation type:", "View" if self.table.isView else "Table"),
+			("Rows:", self.table.rowCount if self.table.rowCount != None else 'Unknown (<a href="action:rows/count">find out</a>)')
 		]
 		if self.table.comment:
 			tbl.append( ("Comment:", self.table.comment) )
@@ -237,7 +228,7 @@ class TableInfo:
 
 		# add table contents
 		for con in self.table.constraints():
-			# get the fields the constraint is defined on 
+			# get the fields the constraint is defined on
 			cols = map(lambda p: p[1].name if p[1] != None else u"??? (#%d)" % p[0], con.fields().iteritems())
 			tbl.append( (con.name, con.type2String(), u'\n'.join(cols)) )
 
@@ -256,7 +247,7 @@ class TableInfo:
 
 		# add table contents
 		for idx in self.table.indexes():
-			# get the fields the index is defined on 
+			# get the fields the index is defined on
 			cols = map(lambda p: p[1].name if p[1] != None else u"??? (#%d)" % p[0], idx.fields().iteritems())
 			tbl.append( (idx.name, u'\n'.join(cols)) )
 
@@ -388,7 +379,7 @@ class VectorTableInfo(TableInfo):
 		# estimated extent
 		if not self.table.isView:
 			if self.table.estimatedExtent == None:
-				# estimated extent information is not displayed yet, so just block 
+				# estimated extent information is not displayed yet, so just block
 				# table signals to avoid double refreshing (infoViewer->refreshEstimatedExtent->tableChanged->infoViewer)
 				self.table.blockSignals(True)
 				self.table.refreshTableEstimatedExtent()
@@ -435,7 +426,7 @@ class RasterTableInfo(TableInfo):
 		# only if we have info from geometry_columns
 		srid = self.table.srid if self.table.srid != None else -1
 		sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else "Undefined"
-		if sr_info: 
+		if sr_info:
 			tbl.append( ("Spatial ref:", u"%s (%d)" % (sr_info, srid)) )
 
 		# extent

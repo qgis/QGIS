@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Inverse distance squared weighting raster interpolation" module="r.surf.idw">
+<qgisgrassmodule label="Inverse distance squared weighting raster interpolation" module="r.surf.idw" direct="1">
 	<option key="input" />
 	<option key="npoints" />
 	<option key="output" />

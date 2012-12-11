@@ -63,7 +63,6 @@ QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
 
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setInvertColor( mInvertColor );
   renderer->setRasterTransparency( mRasterTransparency );
 
   return renderer;

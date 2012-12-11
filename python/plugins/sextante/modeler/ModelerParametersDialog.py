@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -137,10 +139,10 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)        
+        self.tabWidget.setMinimumWidth(300)
         self.paramPanel = QtGui.QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, "Parameters")
@@ -180,7 +182,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
- 
+
     def getRasterLayers(self):
         layers = []
         params = self.model.parameters
@@ -316,6 +318,20 @@ class ModelerParametersDialog(QtGui.QDialog):
         for param in params:
             if isinstance(param, ParameterString):
                 strings.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+            dependent.append(self.algIndex)
+
+        i=0
+        for alg in self.model.algs:
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputString):
+                        strings.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            i+=1
         return strings
 
     def getTableFields(self):
@@ -329,7 +345,7 @@ class ModelerParametersDialog(QtGui.QDialog):
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QtGui.QComboBox()
-            item.setEditable(True)
+            #item.setEditable(True)
             layers = self.getRasterLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -337,7 +353,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterVector):
             item = QtGui.QComboBox()
-            item.setEditable(True)
+            #item.setEditable(True)
             layers = self.getVectorLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -486,12 +502,27 @@ class ModelerParametersDialog(QtGui.QDialog):
                 if isinstance(param, (ParameterRaster, ParameterVector,
                                       ParameterTable, ParameterTableField,
                                       ParameterSelection, ParameterNumber,
-                                      ParameterString,ParameterBoolean)):
+                                      ParameterString,ParameterBoolean, ParameterExtent)):
                     self.setComboBoxValue(widget, value, param)
+                elif isinstance(param, ParameterCrs):
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
+                    widget.setText(unicode(value))
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
-                    pass
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
+                    values = value.split(";")
+                    selectedoptions = []
+                    if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                        options = self.getVectorLayers()
+                    else:
+                        options = self.getRasterLayers()
+                    for i in range(len(options)):
+                        option = options[i]
+                        for aap in (values):
+                            if str(option) == aap:
+                                selectedoptions.append(i)
+                    widget.setSelectedItems(selectedoptions)
                 else:
                     pass
 
@@ -541,8 +572,6 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
         return True
 
-
-
         if widget.currentIndex() < 0:
             return False
         value = widget.itemData(widget.currentIndex()).toPyObject()
@@ -578,6 +607,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
     def setParamStringValue(self, param, widget):
+        if widget.currentText() == "":
+            return False
         idx = widget.findText(widget.currentText())
         if idx < 0:
             name =  self.getSafeNameForHarcodedParameter(param)

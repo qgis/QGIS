@@ -213,7 +213,7 @@ class RAlgorithm(GeoAlgorithm):
             f.close()
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
-            f = open(htmlfilename)
+            f = open(htmlfilename, "w")
             f.write(RUtils.getConsoleOutput())
             f.close()
 
@@ -270,7 +270,8 @@ class RAlgorithm(GeoAlgorithm):
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[:-4]
-                commands.append(param.name + " = readOGR(\"" + value + "\",layer=\"" + filename + "\")")
+                folder = os.path.dirname(value)
+                commands.append(param.name + " = readOGR(\"" + folder + "\",layer=\"" + filename + "\")")
             if isinstance(param, ParameterTable):
                 value = param.value
                 if not value.lower().endswith("csv"):

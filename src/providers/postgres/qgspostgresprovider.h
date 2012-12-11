@@ -335,7 +335,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      const QgsAttributeList &fetchAttributes );
 
     QString geomParam( int offset ) const;
-    QString pkParamWhereClause( int offset ) const;
+    /** Get parametrized primary key clause
+     * @param offset specifies offset to use for the pk value parameter
+     * @param alias specifies an optional alias given to the subject table
+     */
+    QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
     QString whereClause( QgsFeatureId featureId ) const;
 
     bool hasSufficientPermsAndCapabilities();
@@ -382,11 +386,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool mIsQuery;
 
     /**
-     * geometry is geography
-     */
-    bool mIsGeography;
-
-    /**
      * Name of the table with no schema
      */
     QString mTableName;
@@ -399,10 +398,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QString mSchemaName;
     /**
-     * Name of the current schema
-     */
-    QString mCurrentSchema;
-    /**
      * SQL statement used to limit the features retrieved
      */
     QString mSqlWhereClause;
@@ -411,6 +406,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Data type for the primary key
      */
     enum { pktUnknown, pktInt, pktTid, pktOid, pktFidMap } mPrimaryKeyType;
+
+    /**
+     * Data type for the spatial column
+     */
+    QgsPostgresGeometryColumnType mSpatialColType;
 
     /**
      * List of primary key attributes for fetching features.
@@ -436,6 +436,22 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     int mFeatureQueueSize;  //! Maximal size of the feature queue
 
     bool getGeometryDetails();
+
+    //! @{ Only used with TopoGeometry layers
+
+    struct TopoLayerInfo
+    {
+      QString topologyName;
+      long    layerId;
+    };
+
+    TopoLayerInfo mTopoLayerInfo; 
+
+    bool getTopoLayerInfo();
+
+    void dropOrphanedTopoGeoms();
+
+    //! @}
 
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata;
@@ -493,7 +509,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident, bool isGeography = false ) { return QgsPostgresConn::quotedIdentifier( ident, isGeography ); }
+    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     static int sProviderIds;

@@ -140,11 +140,15 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note added in 1.9
         QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
+        //! tell which rules will be used to render the feature
+        RuleList rulesForFeature( QgsFeature& feat );
+
         void stopRender( QgsRenderContext& context );
 
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
+        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->children(); } return l; }
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
@@ -234,7 +238,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return MoreSymbolsPerFeature; }
+    virtual int capabilities() { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 

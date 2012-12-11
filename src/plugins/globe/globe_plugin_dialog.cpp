@@ -255,10 +255,10 @@ void QgsGlobePluginDialog::resetElevationDatasources()
 {
   elevationDatasourcesWidget->clearContents();
   elevationDatasourcesWidget->setRowCount( 1 );
-  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem("TMS") );
+  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem( "TMS" ) );
   elevationDatasourcesWidget->setItem( 0, 1, new QTableWidgetItem() );
   //elevationDatasourcesWidget->item( 0, 1 )->setCheckState( Qt::Unchecked );
-  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem("http://readymap.org/readymap/tiles/1.0.0/9/") );
+  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem( "http://readymap.org/readymap/tiles/1.0.0/9/" ) );
 }
 
 void QgsGlobePluginDialog::readElevationDatasources()

@@ -32,6 +32,7 @@
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfeatureaction.h"
 #include "qgsattributeaction.h"
@@ -536,6 +537,13 @@ void QgsAttributeTableDialog::updateSelectionFromLayer()
 
 void QgsAttributeTableDialog::doSearch( QString searchString )
 {
+
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
   // parse search string and build parsed tree
   QgsExpression search( searchString );
   if ( search.hasParserError() )
@@ -556,6 +564,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
 
+  search.setGeomCalculator( myDa );
   if ( cbxSearchSelectedOnly->isChecked() )
   {
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();

@@ -31,6 +31,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
+#include "qgsrendererv2.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -196,7 +197,15 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   if ( !layer )
     return false;
 
-  QMap< QString, QString > attributes, derivedAttributes;
+  if ( layer->hasScaleBasedVisibility() &&
+       ( layer->minimumScale() > mCanvas->mapRenderer()->scale() ||
+         layer->maximumScale() <= mCanvas->mapRenderer()->scale() ) )
+  {
+    QgsDebugMsg( "Out of scale limits" );
+    return false;
+  }
+
+  QMap< QString, QString > derivedAttributes;
 
   QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
 
@@ -205,7 +214,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   // load identify radius from settings
   QSettings settings;
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
+
+  QString ellipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
 
   if ( identifyValue <= 0.0 )
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
@@ -250,14 +260,27 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     calc.setEllipsoid( ellipsoid );
     calc.setSourceCrs( layer->crs().srsid() );
   }
+
   QgsFeatureList::iterator f_it = featureList.begin();
+
+  bool filter = false;
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  {
+    // setup scale for scale dependent visibility (rule based)
+    renderer->startRender( *( mCanvas->mapRenderer()->rendererContext() ), layer );
+    filter = renderer->capabilities() & QgsFeatureRendererV2::Filter;
+  }
 
   for ( ; f_it != featureList.end(); ++f_it )
   {
-    featureCount++;
-
     QgsFeatureId fid = f_it->id();
-    QMap<QString, QString> derivedAttributes;
+
+    if ( filter && !renderer->willRenderFeature( *f_it ) )
+      continue;
+
+    featureCount++;
 
     // Calculate derived attributes and insert:
     // measure distance or area depending on geometry type
@@ -272,39 +295,50 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
            f_it->geometry()->wkbType() == QGis::WKBLineString25D )
       {
         // Add the start and end points in as derived attributes
-        str = QLocale::system().toString( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
+        QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, f_it->geometry()->asPolyline().first() );
+        str = QLocale::system().toString( pnt.x(), 'g', 10 );
         derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
-        str = QLocale::system().toString( f_it->geometry()->asPolyline().first().y(), 'g', 10 );
+        str = QLocale::system().toString( pnt.y(), 'g', 10 );
         derivedAttributes.insert( tr( "firstY" ), str );
-        str = QLocale::system().toString( f_it->geometry()->asPolyline().last().x(), 'g', 10 );
+        pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, f_it->geometry()->asPolyline().last() );
+        str = QLocale::system().toString( pnt.x(), 'g', 10 );
         derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
-        str = QLocale::system().toString( f_it->geometry()->asPolyline().last().y(), 'g', 10 );
+        str = QLocale::system().toString( pnt.y(), 'g', 10 );
         derivedAttributes.insert( tr( "lastY" ), str );
       }
     }
     else if ( layer->geometryType() == QGis::Polygon )
     {
       double area = calc.measure( f_it->geometry() );
+      double perimeter = calc.measurePerimeter( f_it->geometry() );
       QGis::UnitType myDisplayUnits;
       convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
       QString str = calc.textUnit( area, 3, myDisplayUnits, true );
       derivedAttributes.insert( tr( "Area" ), str );
+      convertMeasurement( calc, perimeter, myDisplayUnits, false );  // area and myDisplayUnits are out params
+      str = calc.textUnit( perimeter, 3, myDisplayUnits, false );
+      derivedAttributes.insert( tr( "Perimeter" ), str );
     }
     else if ( layer->geometryType() == QGis::Point &&
               ( f_it->geometry()->wkbType() == QGis::WKBPoint ||
                 f_it->geometry()->wkbType() == QGis::WKBPoint25D ) )
     {
       // Include the x and y coordinates of the point as a derived attribute
-      QString str;
-      str = QLocale::system().toString( f_it->geometry()->asPoint().x(), 'g', 10 );
+      QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, f_it->geometry()->asPoint() );
+      QString str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( "X", str );
-      str = QLocale::system().toString( f_it->geometry()->asPoint().y(), 'g', 10 );
+      str = QLocale::system().toString( pnt.y(), 'g', 10 );
       derivedAttributes.insert( "Y", str );
     }
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results()->addFeature( layer, *f_it, derivedAttributes );
+  }
+
+  if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
+  {
+    renderer->stopRender( *( mCanvas->mapRenderer()->rendererContext() ) );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );

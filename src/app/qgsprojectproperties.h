@@ -139,7 +139,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void on_cbxProjectionEnabled_stateChanged( int state );
-    
+
     /*!
      * Slot to link WFS checkboxes
      */
@@ -152,6 +152,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
       * If user changes the CRS, set the corresponding map units
       */
     void setMapUnitsToCurrentProjection();
+
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
@@ -188,4 +194,21 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     long mProjectSrsId;
     long mLayerSrsId;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
+
+    static const char * GEO_NONE_DESC;
+
 };

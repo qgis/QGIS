@@ -51,7 +51,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( true );
+    rubberBand->reset( QGis::Polygon );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( QgsPoint( ur.x(), ll.y() ), false );
     rubberBand->addPoint( ur, false );

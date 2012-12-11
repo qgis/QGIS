@@ -42,9 +42,7 @@ from sextante.gui.ResultsDialog import ResultsDialog
 
 from sextante.modeler.ModelerDialog import ModelerDialog
 
-from sextante.about.AboutDialog import AboutDialog
-
-import resources_rc
+import sextante.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -60,53 +58,49 @@ class SextantePlugin:
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
-        self.toolbox.setVisible(False)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
+        self.toolbox.hide()
         Sextante.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow())
         self.menu.setTitle(QCoreApplication.translate("SEXTANTE", "Analysis"))
 
-        self.toolboxAction = QAction(QIcon(":/sextante/images/toolbox.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Toolbox"),
-            self.iface.mainWindow())
-        QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
+        self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction.setIcon(QIcon(":/sextante/images/toolbox.png"))
+        self.toolboxAction.setText(QCoreApplication.translate("SEXTANTE", "&SEXTANTE toolbox"))
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(QIcon(":/sextante/images/model.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE Modeler"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE modeler"),
             self.iface.mainWindow())
-        QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
+        self.modelerAction.triggered.connect(self.openModeler)
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(QIcon(":/sextante/images/history.gif"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE History and log"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE history and log"),
             self.iface.mainWindow())
-        QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
+        self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)
 
         self.configAction = QAction(QIcon(":/sextante/images/config.png"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE options and configuration"),
             self.iface.mainWindow())
-        QObject.connect(self.configAction, SIGNAL("triggered()"), self.openConfig)
+        self.configAction.triggered.connect(self.openConfig)
         self.menu.addAction(self.configAction)
 
         self.resultsAction = QAction(QIcon(":/sextante/images/results.png"),
             QCoreApplication.translate("SEXTANTE", "&SEXTANTE results viewer"),
             self.iface.mainWindow())
-        QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
+        self.resultsAction.triggered.connect(self.openResults)
         self.menu.addAction(self.resultsAction)
 
-        self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
-            QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
-            self.iface.mainWindow())
-        QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
-        self.menu.addAction(self.helpAction)
-
-        self.aboutAction = QAction(QIcon(":/sextante/images/info.png"),
-            QCoreApplication.translate("SEXTANTE", "&About SEXTANTE"),
-            self.iface.mainWindow())
-        QObject.connect(self.aboutAction, SIGNAL("triggered()"), self.openAbout)
-        self.menu.addAction(self.aboutAction)
+        #=======================================================================
+        # self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
+        #    QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
+        #    self.iface.mainWindow())
+        # self.helpAction.triggered.connect(self.openHelp)
+        # self.menu.addAction(self.helpAction)
+        #=======================================================================
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
@@ -125,7 +119,10 @@ class SextantePlugin:
                 pass
 
     def openToolbox(self):
-        self.toolbox.setVisible(True)
+        if self.toolbox.isVisible():
+            self.toolbox.hide()
+        else:
+            self.toolbox.show()
 
     def openModeler(self):
         dlg = ModelerDialog()
@@ -145,9 +142,7 @@ class SextantePlugin:
         dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
 
-    def openAbout(self):
-        dlg = AboutDialog()
-        dlg.exec_()
-
-    def openHelp(self):
-        QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
+    #===========================================================================
+    # def openHelp(self):
+    #    QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
+    #===========================================================================

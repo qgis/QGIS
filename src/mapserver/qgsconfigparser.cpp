@@ -69,6 +69,7 @@ void QgsConfigParser::setDefaultLegendSettings()
 {
   mLegendBoxSpace = 2;
   mLegendLayerSpace = 3;
+  mLegendLayerTitleSpace = 3;
   mLegendSymbolSpace = 2;
   mLegendIconLabelSpace = 2;
   mLegendSymbolWidth = 7;

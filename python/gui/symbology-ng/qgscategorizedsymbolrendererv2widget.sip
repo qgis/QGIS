@@ -16,10 +16,10 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void changeCategorizedSymbol();
     void categoryColumnChanged();
     void categoriesDoubleClicked( const QModelIndex & idx );
+    void addCategory();
     void addCategories();
-    void deleteCategory();
+    void deleteCategories();
     void deleteAllCategories();
-    void changeCurrentValue( QStandardItem * item );
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -39,19 +39,11 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     //! populate column combo
     void populateColumns();
 
-    void addCategory( const QgsRendererCategoryV2& cat );
-
     //! return row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
-
-    //! return key for the currently selected category
-    QVariant currentCategory();
 
     void changeCategorySymbol();
 
     QList<QgsSymbolV2*> selectedSymbols();
     void refreshSymbolView();
-
-  protected slots:
-    void addCategory();
 };

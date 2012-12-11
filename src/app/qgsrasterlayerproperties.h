@@ -94,6 +94,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mMinimumScaleSetCurrentPushButton_clicked();
+    void on_mMaximumScaleSetCurrentPushButton_clicked();
+
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 

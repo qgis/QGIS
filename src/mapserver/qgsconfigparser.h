@@ -46,6 +46,8 @@ class QgsConfigParser
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned
@@ -88,6 +90,7 @@ class QgsConfigParser
 
     double legendBoxSpace() const { return mLegendBoxSpace; }
     double legendLayerSpace() const { return mLegendLayerSpace; }
+    double legendLayerTitleSpace() const { return mLegendLayerTitleSpace; }
     double legendSymbolSpace() const { return mLegendSymbolSpace; }
     double legendIconLabelSpace() const { return mLegendIconLabelSpace; }
     double legendSymbolWidth() const { return mLegendSymbolWidth; }
@@ -136,9 +139,17 @@ class QgsConfigParser
     virtual QString featureInfoDocumentElement( const QString& defaultValue ) const { return defaultValue; }
     /**Returns document element namespace in GetFeatureInfo response or empty string*/
     virtual QString featureInfoDocumentElementNS() const { return ""; }
+    /**Returns schema url for feature info xsd (or an empty string if there is no schema)*/
+    virtual QString featureInfoSchema() const { return ""; }
 
     /**Return feature info in format SIA2045?*/
     virtual bool featureInfoFormatSIA2045() const { return false; }
+
+    /**Possibility to draw specific items on a WMS image (e.g. annotation items from the QGIS project file)
+        @param dpi resolution of the output image
+        @param width width of output image
+        @param height height of output image*/
+    virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const { Q_UNUSED( p ); Q_UNUSED( dpi ); Q_UNUSED( width ); Q_UNUSED( height ); }
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
@@ -172,6 +183,7 @@ class QgsConfigParser
     //various parameters used for GetLegendGraphics
     double mLegendBoxSpace;
     double mLegendLayerSpace;
+    double mLegendLayerTitleSpace;
     double mLegendSymbolSpace;
     double mLegendIconLabelSpace;
     double mLegendSymbolWidth;

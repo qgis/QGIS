@@ -54,7 +54,12 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     //! Return the relationship between groups and layers in the legend
     virtual QList< GroupLayerInfo > groupLayerRelationship() { return QList< GroupLayerInfo >(); }
 
-    //! Return all layers in the project in legend order
+    //! Returns the currently selected layers of QgsLegendLayers.
+    //! @param inDrawOrder return layers in drawing order (added in 1.9)
+    //! @returns list of layers, else an empty list
+    virtual QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false ) const = 0;
+
+    //! Return all layers in the project in drawing order
     //! @note added in 1.5
     virtual QList< QgsMapLayer * > layers() const = 0;
 

@@ -66,7 +66,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
 
   setCheckState( 0, Qt::Checked );
 
-  setText( 0, layer->name() );
+  layerNameChanged();
   setupFont();
 
   // Set the initial visibility flag for layers
@@ -296,6 +296,7 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
     }
 
     changeSymbologySettings( layer, itemList );
+    layerNameChanged(); // update total count
   }
 }
 
@@ -334,7 +335,16 @@ void QgsLegendLayer::updateIcon()
   //editable
   if ( theLayer->isEditable() )
   {
-    QPixmap myPixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
+    QPixmap myPixmap;
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( theLayer );
+    if ( vlayer->isModified() )
+    {
+      myPixmap = QgsApplication::getThemePixmap( "/mIconEditableEdits.png" );
+    }
+    else
+    {
+      myPixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
+    }
     // use editable icon instead of the layer's type icon
     newIcon = myPixmap;
 
@@ -430,6 +440,9 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   // remove from canvas
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
+  // duplicate layer
+  QAction* duplicateLayersAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mActionAddMap.png" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+
   // set layer crs
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
@@ -457,6 +470,12 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       }
     }
 
+    // disable duplication of memory layers
+    if ( vlayer->storageType() == "Memory storage" && legend()->selectedLayers().count() == 1 )
+    {
+      duplicateLayersAction->setEnabled( false );
+    }
+
     // save as vector file
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
 
@@ -481,6 +500,11 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+  }
+  else if ( lyr->type() == QgsMapLayer::PluginLayer && legend()->selectedLayers().count() == 1 )
+  {
+    // disable duplication of plugin layers
+    duplicateLayersAction->setEnabled( false );
   }
 
   // properties goes on bottom of menu for consistency with normal ui standards
@@ -542,10 +566,42 @@ QgsMapCanvasLayer& QgsLegendLayer::canvasLayer()
   return mLyr;
 }
 
-void QgsLegendLayer::layerNameChanged()
+QString QgsLegendLayer::label()
 {
   QString name = mLyr.layer()->name();
-  setText( 0, name );
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
+  if ( mShowFeatureCount && vlayer && vlayer->featureCount() >= 0 )
+  {
+    name += QString( " [%1]" ).arg( vlayer->featureCount() );
+  }
+  return name;
+}
+
+void QgsLegendLayer::layerNameChanged()
+{
+  setText( 0, label() );
+}
+
+void QgsLegendLayer::beforeEdit()
+{
+  // Reset to layer name without possible feature count
+  setText( 0, mLyr.layer()->name() );
+}
+
+void QgsLegendLayer::afterEdit()
+{
+  // Reset label with possible feature count, important if text was not changed
+  layerNameChanged();
+}
+
+QString QgsLegendLayer::layerName()
+{
+  // The text could be edited (Rename), in that case we have to return the new name
+  if ( text( 0 ) != label() && text( 0 ) != mLyr.layer()->name() )
+  {
+    return text( 0 );
+  }
+  return mLyr.layer()->name();
 }
 
 void QgsLegendLayer::updateAfterLayerModification()
@@ -554,8 +610,12 @@ void QgsLegendLayer::updateAfterLayerModification()
 }
 void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 {
+  QgisApp::instance()->actionSaveAllEdits()->setEnabled(
+    QgisApp::instance()->unsavedEditableLayers().count() > 0 );
+
   if ( onlyGeomChanged )
   {
+    updateIcon();
     return;
   }
 
@@ -566,6 +626,7 @@ void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
     widthScale = canvas->map()->paintDevice().logicalDpiX() / 25.4;
   }
   refreshSymbology( mLyr.layer()->id(), widthScale );
+  layerNameChanged();
 }
 
 void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer )
@@ -580,48 +641,13 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   {
     return;
   }
-  QgsRenderContext dummyContext;
-  renderer->startRender( dummyContext, layer );
 
-  //create map holding the symbol count
-  QMap< QgsSymbolV2*, int > mSymbolCountMap;
-  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
-  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  // Count features
+  if ( !layer->countSymbolFeatures() )
   {
-    mSymbolCountMap.insert( symbolIt->second, 0 );
+    QgsDebugMsg( "Cannot get feature counts" );
+    return;
   }
-
-  //go through all features and count the number of occurrences
-  int nFeatures = layer->pendingFeatureCount();
-  QProgressDialog p( tr( "Updating feature count for layer %1" ).arg( layer->name() ), tr( "Abort" ), 0, nFeatures );
-  p.setWindowModality( Qt::WindowModal );
-  int featuresCounted = 0;
-
-
-  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
-  QgsFeature f;
-  QgsSymbolV2* currentSymbol = 0;
-
-  while ( layer->nextFeature( f ) )
-  {
-    currentSymbol = renderer->symbolForFeature( f );
-    mSymbolCountMap[currentSymbol] += 1;
-    ++featuresCounted;
-    if ( featuresCounted % 50 == 0 )
-    {
-      if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-      {
-        p.setMaximum( 0 );
-      }
-      p.setValue( featuresCounted );
-      if ( p.wasCanceled() )
-      {
-        return;
-      }
-    }
-  }
-  p.setValue( nFeatures );
 
   QMap<QString, QPixmap> itemMap;
   SymbologyList::const_iterator symbologyIt = itemList.constBegin();
@@ -629,13 +655,15 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   {
     itemMap.insert( symbologyIt->first, symbologyIt->second );
   }
+
   itemList.clear();
 
-  //
+  QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
   symbolIt = symbolList.constBegin();
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( mSymbolCountMap[symbolIt->second] ) + "]", itemMap[symbolIt->first] ) );
+    itemList.push_back( qMakePair( symbolIt->first + " [" + QString::number( layer->featureCount( symbolIt->second ) ) + "]", itemMap[symbolIt->first] ) );
   }
 }
 

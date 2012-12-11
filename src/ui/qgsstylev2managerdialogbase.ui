@@ -148,7 +148,7 @@ QMenu::item:selected {  background-color: gray; } */
         </spacer>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="searchBox">
+        <widget class="QgsFilterLineEdit" name="searchBox">
          <property name="text">
           <string/>
          </property>
@@ -296,6 +296,19 @@ QMenu::item:selected {  background-color: gray; } */
        <item row="4" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="symbolBtnsLayout">
            <property name="spacing">
             <number>-1</number>
@@ -367,6 +380,19 @@ QMenu::item:selected {  background-color: gray; } */
           </layout>
          </item>
          <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QDialogButtonBox" name="buttonBox">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -387,6 +413,13 @@ QMenu::item:selected {  background-color: gray; } */
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>

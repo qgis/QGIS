@@ -89,7 +89,7 @@ class CORE_EXPORT QgsGeometry
     /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt );
 
-    /** static method that creates geometry from GML2 
+    /** static method that creates geometry from GML2
       @note added in 1.9
       */
     static QgsGeometry* fromGML2( const QDomNode& geometryNode );

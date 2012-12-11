@@ -445,7 +445,7 @@ QString QgsPythonUtilsImpl::pythonPath()
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-    return pythonPath() + "/plugins";
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()
@@ -457,7 +457,7 @@ QString QgsPythonUtilsImpl::homePythonPath()
   }
   else
   {
-    return '"' + settingsDir + "python\"";
+    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\"";
   }
 }
 

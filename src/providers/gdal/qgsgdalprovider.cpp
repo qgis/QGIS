@@ -52,6 +52,7 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 
 static QString PROVIDER_KEY = "gdal";
 static QString PROVIDER_DESCRIPTION = "GDAL provider";
@@ -125,6 +126,19 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       setDataSourceUri( vsiPrefix + uri );
     QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
+  else
+  {
+    // TODO: this constructor is also called for new rasters, in that case GDAL prints error:
+    // "ERROR 4: `pok.tif' does not exist in the file system, and is not recognised as a supported dataset name."
+    // To avoid this message, we test first if the file exists at all.
+    // This should be done better adding static create() method or something like that
+    if ( !QFile::exists( uri ) )
+    {
+      QString msg = QString( "File does not exist: %1" ).arg( dataSourceUri() );
+      appendError( ERR( msg ) );
+      return;
+    }
+  }
 
   QString gdalUri = dataSourceUri();
 
@@ -134,8 +148,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( !mGdalBaseDataset )
   {
     QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsDebugMsg( msg );
-    QgsMessageLog::logMessage( msg );
+    appendError( ERR( msg ) );
     return;
   }
 
@@ -538,7 +551,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     QgsFree( tmpBlock );
     return;
   }
@@ -1898,7 +1910,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   // VSIFileHandler (see qgsogrprovider.cpp)
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
   QSettings settings;
-  if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
+  if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
   {
     QString glob = "*.zip";
     glob += " *.gz";
@@ -1943,10 +1955,10 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
     QStringList layers = QgsGdalProvider::subLayers( myDataset );
+    GDALClose( myDataset );
+    myDataset = NULL;
     if ( layers.size() == 0 )
     {
-      GDALClose( myDataset );
-      myDataset = NULL;
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
     }
@@ -2223,8 +2235,7 @@ void QgsGdalProvider::initBaseDataset()
     // if there are no subdatasets, then close the dataset
     if ( mSubLayers.size() == 0 )
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
+      appendError( ERR( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
 
       GDALDereferenceDataset( mGdalBaseDataset );
       mGdalBaseDataset = NULL;

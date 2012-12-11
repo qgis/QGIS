@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/images">
-        <file>developers/lyon-2012.jpg</file>
         <file>icons/qgis-icon-16x16.png</file>
+        <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
         <file>icons/qgis-icon-60x60.png</file>
         <file>north_arrows/gpsarrow2.svg</file>
         <file>north_arrows/gpsarrow.svg</file>
@@ -20,6 +20,7 @@
         <file>themes/default/join_miter.png</file>
         <file>themes/default/join_round.png</file>
         <file>themes/default/join_style.svg</file>
+        <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAddAllToOverview.png</file>
         <file>themes/default/mActionAddArrow.png</file>
         <file>themes/default/mActionAddBasicShape.png</file>
@@ -45,6 +46,8 @@
         <file>themes/default/mActionAnnotation.png</file>
         <file>themes/default/mActionArrowDown.png</file>
         <file>themes/default/mActionArrowUp.png</file>
+        <file>themes/default/mActionArrowLeft.png</file>
+        <file>themes/default/mActionArrowRight.png</file>
         <file>themes/default/mActionCalculateField.png</file>
         <file>themes/default/mActionCaptureLine.png</file>
         <file>themes/default/mActionCapturePoint.png</file>
@@ -76,6 +79,7 @@
         <file>themes/default/mActionFileSaveAs.png</file>
         <file>themes/default/mActionFileSave.png</file>
         <file>themes/default/mActionFileSmall.png</file>
+        <file>themes/default/mActionFilter.png</file>
         <file>themes/default/mActionFolder.png</file>
         <file>themes/default/mActionFormAnnotation.png</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
@@ -126,6 +130,7 @@
         <file>themes/default/mActionPropertyItem.png</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
+        <file>themes/default/mActionRefresh.png</file>
         <file>themes/default/mActionRedo.png</file>
         <file>themes/default/mActionRemoveAllFromOverview.png</file>
         <file>themes/default/mActionRemoveLayer.png</file>
@@ -138,6 +143,7 @@
         <file>themes/default/mActionSaveAsPDF.png</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
         <file>themes/default/mActionSaveEdits.png</file>
+        <file>themes/default/mActionSaveAllEdits.png</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
         <file>themes/default/mActionSelectedToTop.png</file>
@@ -148,6 +154,8 @@
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.png</file>
         <file>themes/default/mActionSelectRectangle.png</file>
+        <file>themes/default/mActionSignPlus.png</file>
+        <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
@@ -156,6 +164,7 @@
         <file>themes/default/mActionSimplify.png</file>
         <file>themes/default/mActionSplitFeatures.png</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
+        <file>themes/default/mActionSum.png</file>
         <file>themes/default/mActionTextAnnotation.png</file>
         <file>themes/default/mActionToggleEditing.png</file>
         <file>themes/default/mActionUndo.png</file>
@@ -172,9 +181,11 @@
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
         <file>themes/default/mIconConnect.png</file>
+        <file>themes/default/mIconClear.png</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconEditable.png</file>
+        <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
         <file>themes/default/mIconFavourites.png</file>
         <file>themes/default/mIconFirst.png</file>
@@ -341,6 +352,7 @@
         <file>themes/gis/mActionSaveAsPDF.png</file>
         <file>themes/gis/mActionSaveAsSVG.png</file>
         <file>themes/gis/mActionSaveEdits.png</file>
+        <file>themes/gis/mActionSaveAllEdits.png</file>
         <file>themes/gis/mActionSaveMapAsImage.png</file>
         <file>themes/gis/mActionScaleBar.png</file>
         <file>themes/gis/mActionSelectedToTop.png</file>
@@ -373,6 +385,7 @@
         <file>themes/gis/mActionZoomToSelected.png</file>
         <file>themes/gis/mIconClose.png</file>
         <file>themes/gis/mIconEditable.png</file>
+        <file>themes/gis/mIconEditableEdits.png</file>
         <file>themes/gis/mIconLineLayer.png</file>
         <file>themes/gis/mIconPointLayer.png</file>
         <file>themes/gis/mIconPolygonLayer.png</file>
@@ -478,9 +491,15 @@
         <file>console/iconQtCoreConsole.png</file>
         <file>console/iconQtGuiConsole.png</file>
         <file>console/iconRunConsole.png</file>
-		<file>console/iconAboutConsole.png</file>
+        <file>console/iconAboutConsole.png</file>
+        <file>console/iconCodepadConsole.png</file>
+        <file>console/imgHelpConsole.png</file>
+        <file>console/imgHelpMenu.png</file>
+        <file>console/iconHideToolConsole.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
+        <file>flags/sw.png</file>
+        <file>flags/eu_ES.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

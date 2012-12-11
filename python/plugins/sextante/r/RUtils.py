@@ -48,7 +48,8 @@ class RUtils:
     def RScriptsFolder():
         folder = SextanteConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
         if folder == None:
-            folder = os.path.join(os.path.dirname(__file__), "scripts")
+            #folder = os.path.join(os.path.dirname(__file__), "scripts")
+            folder = SextanteUtils.userFolder() + os.sep + "rscripts"
         mkdir(folder)
 
         return folder
@@ -82,7 +83,7 @@ class RUtils:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             command = "R CMD BATCH --vanilla " + RUtils.getRScriptFilename() + " "+ RUtils.getConsoleOutputFilename()
 
-        proc = subprocess.Popen(command, shell=SextanteUtils.isWindows(), stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT,
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT,
                                 universal_newlines=True)
         proc.wait()
         RUtils.createConsoleOutput()

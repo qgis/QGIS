@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QMultiHash>
 #include <QString>
+#include <QUrl>
 
 class QDomElement;
 class QImage;
@@ -59,8 +60,10 @@ class CORE_EXPORT QgsSvgCacheEntry
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"*/
-class CORE_EXPORT QgsSvgCache
+class CORE_EXPORT QgsSvgCache : public QObject
 {
+    Q_OBJECT
+
   public:
 
     static QgsSvgCache* instance();
@@ -76,8 +79,16 @@ class CORE_EXPORT QgsSvgCache
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
                          double& defaultOutlineWidth ) const;
 
+    /**Get image data*/
+    QByteArray getImageData( const QString &path ) const;
+
+  signals:
+    /** Emit a signal to be caught by qgisapp and display a msg on status bar */
+    void statusChanged( QString const &  theStatusQString );
+
   protected:
-    QgsSvgCache();
+    //! protected constructor
+    QgsSvgCache( QObject * parent = 0 );
 
     /**Creates new cache entry and returns pointer to it*/
     QgsSvgCacheEntry* insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
@@ -95,6 +106,9 @@ class CORE_EXPORT QgsSvgCache
 
     //Removes entry from the ordered list (but does not delete the entry itself)
     void takeEntryFromList( QgsSvgCacheEntry* entry );
+
+  private slots:
+    void downloadProgress( qint64, qint64 );
 
   private:
     static QgsSvgCache* mInstance;

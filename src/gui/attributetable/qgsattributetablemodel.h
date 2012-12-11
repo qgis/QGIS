@@ -154,6 +154,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public slots:
     void extentsChanged();
 
+    void layerRepaintRequested();
+
   private slots:
     /**
      * Launched when attribute has been added

@@ -456,7 +456,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
         QString srid = layer.srid;
         if ( !layer.geometryColName.isNull() )
         {
-          if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
+          if ( QgsPostgresConn::wkbTypeFromPostgis( type ) == QGis::WKBUnknown || srid.isEmpty() )
           {
             addSearchGeometryColumn( layer );
             type = "";

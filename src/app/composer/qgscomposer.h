@@ -78,7 +78,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposerView *view( void );
 
     //! Return current composition
-    QgsComposition* composition(void){ return mComposition; }
+    QgsComposition* composition( void ) { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -346,6 +346,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;
+
+    //! Save parent Project action
+    //! @note added in 1.9
+    QAction *mSaveProjectAction;
 };
 
 #endif

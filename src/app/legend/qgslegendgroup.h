@@ -37,6 +37,22 @@ class QgsLegendGroup : public QgsLegendItem
     QList<QgsLegendLayer*> legendLayers( bool recurse = true );
 
     Qt::CheckState pendingCheckState();
+
+    bool isEmbedded() const { return mEmbedded; }
+    void setEmbedded( bool b ) { mEmbedded = b; }
+
+    QString projectPath() const { return mProjectPath; }
+    void setProjectPath( const QString& path ) { mProjectPath = path; }
+
+    int drawingOrder() const { return mDrawingOrder; }
+    void setDrawingOrder( int i ) { mDrawingOrder = i; }
+
+  private:
+    bool mEmbedded;
+    /**Path to project from which the group is embedded. Empty for not-embedded groups*/
+    QString mProjectPath;
+    int mDrawingOrder;
+
 };
 
 #endif

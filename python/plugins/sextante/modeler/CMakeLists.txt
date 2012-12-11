@@ -1,3 +1,5 @@
 FILE(GLOB PY_FILES *.py)
+FILE(GLOB MODEL_FILES models/*.model)
 
-INSTALL(FILES ${PY_FILES} DESTINATION ${SEXTANTE_PLUGIN_DIR}/modeler)
+PLUGIN_INSTALL(sextante modeler ${PY_FILES})
+PLUGIN_INSTALL(sextante modeler/models ${MODEL_FILES})

@@ -668,7 +668,8 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
   // open new dataProvider so we can build pyramids with it
-  QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, filename );
+  //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, filename );
+  QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, filename );
   if ( !destProvider )
   {
     return;
@@ -834,7 +835,8 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   QgsRectangle mapRect( mapLeft, mapBottom, mapRight, mapTop );
 
   QString outputFile = outputUrl + "/" + QString::number( fileIndex );
-  QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, outputFile );
+  //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, outputFile );
+  QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, outputFile );
   if ( !destProvider )
   {
     return 0;
@@ -869,7 +871,8 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
   }
   else
   {
-    QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
+    //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
+    QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, mOutputUrl );
     if ( !destProvider )
     {
       return 0;

@@ -82,8 +82,14 @@ class QgsWFSServer
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;
+    /* The Type of Feature created */
     QString mTypeName;
+    /* The list of Feature's Type requested */
+    QStringList mTypeNames;
+    QString mPropertyName;
     bool mWithGeom;
+    /* Error messages */
+    QStringList mErrors;
 
   protected:
 

@@ -5,13 +5,15 @@ class QgsRubberBand: QgsMapCanvasItem
 %End
 
   public:
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon = false );
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QGis::GeometryType geometryType = QGis::Line );
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon );
     ~QgsRubberBand();
 
     void setColor( const QColor & color );
     void setWidth( int width );
 
-    void reset( bool isPolygon = false );
+    void reset( QGis::GeometryType geometryType = QGis::Line );
+    void reset( bool isPolygon );
 
     //! Add point to rubberband and update canvas
     //! If adding more points consider using update=false for better performance

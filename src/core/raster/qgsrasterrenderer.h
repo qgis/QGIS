@@ -92,8 +92,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    void setInvertColor( bool invert ) { mInvertColor = invert; }
-    bool invertColor() const { return mInvertColor; }
+    //void setInvertColor( bool invert ) { mInvertColor = invert; }
+    //bool invertColor() const { return mInvertColor; }
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
         Default: -1 (not set)*/
     int mAlphaBand;
 
-    bool mInvertColor;
+    //bool mInvertColor;
 };
 
 #endif // QGSRASTERRENDERER_H

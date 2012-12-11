@@ -12,9 +12,9 @@
       <rotationclassificationfieldname></rotationclassificationfieldname>
       <scaleclassificationfieldname></scaleclassificationfieldname>
       <symbolfieldname></symbolfieldname>
-      <outlinecolor red="28" blue="179" green="160"/>
+      <outlinecolor red="170" blue="0" green="0"/>
       <outlinestyle>SolidLine</outlinestyle>
-      <outlinewidth>0.26</outlinewidth>
+      <outlinewidth>1</outlinewidth>
       <fillcolor red="0" blue="0" green="0"/>
       <fillpattern>NoBrush</fillpattern>
       <texturepath>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</texturepath>
@@ -22,7 +22,7 @@
   </singlesymbol>
   <customproperties>
     <property key="labeling" value="pal"/>
-    <property key="labeling/addDirectionSymbol" value="false"/>
+    <property key="labeling/addDirectionSymbol" value="true"/>
     <property key="labeling/angleOffset" value="0"/>
     <property key="labeling/bufferColorB" value="255"/>
     <property key="labeling/bufferColorG" value="255"/>
@@ -46,6 +46,7 @@
     <property key="labeling/dataDefinedProperty18" value=""/>
     <property key="labeling/dataDefinedProperty19" value=""/>
     <property key="labeling/dataDefinedProperty2" value=""/>
+    <property key="labeling/dataDefinedProperty20" value=""/>
     <property key="labeling/dataDefinedProperty3" value=""/>
     <property key="labeling/dataDefinedProperty4" value=""/>
     <property key="labeling/dataDefinedProperty5" value=""/>
@@ -55,7 +56,7 @@
     <property key="labeling/dataDefinedProperty9" value=""/>
     <property key="labeling/decimals" value="0"/>
     <property key="labeling/displayAll" value="false"/>
-    <property key="labeling/dist" value="0"/>
+    <property key="labeling/dist" value="3"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
     <property key="labeling/fieldName" value="next_right_edge"/>
@@ -63,7 +64,10 @@
     <property key="labeling/fontFamily" value="Sans"/>
     <property key="labeling/fontItalic" value="false"/>
     <property key="labeling/fontLetterSpacing" value="0"/>
-    <property key="labeling/fontSize" value="6"/>
+    <property key="labeling/fontLimitPixelSize" value="false"/>
+    <property key="labeling/fontMaxPixelSize" value="10000"/>
+    <property key="labeling/fontMinPixelSize" value="3"/>
+    <property key="labeling/fontSize" value="7"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
@@ -73,29 +77,37 @@
     <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelPerPart" value="false"/>
+    <property key="labeling/leftDirectionSymbol" value="&lt; "/>
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
+    <property key="labeling/multilineAlign" value="1"/>
+    <property key="labeling/multilineHeight" value="0.6"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
+    <property key="labeling/placeDirectionSymbol" value="0"/>
     <property key="labeling/placement" value="2"/>
-    <property key="labeling/placementFlags" value="9"/>
+    <property key="labeling/placementFlags" value="4"/>
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
-    <property key="labeling/priority" value="5"/>
+    <property key="labeling/priority" value="3"/>
+    <property key="labeling/reverseDirectionSymbol" value="true"/>
+    <property key="labeling/rightDirectionSymbol" value=" &gt;"/>
     <property key="labeling/scaleMax" value="0"/>
     <property key="labeling/scaleMin" value="0"/>
     <property key="labeling/textColorB" value="0"/>
-    <property key="labeling/textColorG" value="85"/>
+    <property key="labeling/textColorG" value="0"/>
     <property key="labeling/textColorR" value="170"/>
     <property key="labeling/textTransp" value="0"/>
+    <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
     <property key="labeling/xOffset" value="0"/>
     <property key="labeling/xQuadOffset" value="0"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
+  <editorlayout>generatedlayout</editorlayout>
   <displayfield>edge_id</displayfield>
   <label>0</label>
   <labelattributes>
@@ -132,5 +144,7 @@
   <editform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</editform>
   <editforminit></editforminit>
   <annotationform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</annotationform>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>

@@ -39,6 +39,7 @@ class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
+class QgsPalLayerSettings;
 class QgsDiagramLayerSettings;
 
 class CORE_EXPORT QgsLabelPosition
@@ -75,6 +76,9 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
@@ -136,6 +140,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
+    //! Scale denominator
     double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
@@ -288,7 +293,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! map units per pixel
     double mMapUnitsPerPixel;
 
-    //! Map scale at its current zoom level
+    //! Map scale denominator at its current zoom level
     double mScale;
 
     //! scale calculator

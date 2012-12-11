@@ -38,27 +38,32 @@
 #include <QFile>
 #include <QHash>
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
+
 static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
-    : QgsRasterDataProvider( uri ), mValid( true )
+    : QgsRasterDataProvider( uri ), mValid( false )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
 
+  mValid = false;
   // Parse URI, it is the same like using GDAL, i.e. path to raster cellhd, i.e.
   // /path/to/gisdbase/location/mapset/cellhd/map
   QFileInfo fileInfo( uri );
-  mValid = fileInfo.exists(); // then we keep it valid forever
+  if ( !fileInfo.exists() ) // then we keep it valid forever
+  {
+    appendError( ERR( tr( "cellhd file %1 does not exist" ).arg( uri ) ) );
+    return;
+  }
+
   mMapName = fileInfo.fileName();
   QDir dir = fileInfo.dir();
   QString element = dir.dirName();
   if ( element != "cellhd" )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Groups not yet supported" ) + " (GRASS " + uri + ")" );
-
-    mValid = false;
+    appendError( ERR( tr( "Groups not yet supported" ) ) );
     return;
   }
   dir.cdUp(); // skip cellhd
@@ -133,6 +138,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   {
     mYBlockSize = mRows;
   }
+  mValid = true;
   QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
 }
 
@@ -398,10 +404,13 @@ QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
 
 QgsRectangle QgsGrassRasterProvider::extent()
 {
+  QgsDebugMsg( "Entered" );
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
   mExtent = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster );
+
+  QgsDebugMsg( "Extent got" );
   return mExtent;
 }
 

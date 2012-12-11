@@ -54,7 +54,6 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
-from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterString import ParameterString
 
 class ParametersPanel(QtGui.QWidget):

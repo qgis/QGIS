@@ -23,6 +23,9 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
 {
   setupUi( this );
 
+  mGradientComboBox->insertItem( 0, tr( "Black to white" ), QgsSingleBandGrayRenderer::BlackToWhite );
+  mGradientComboBox->insertItem( 1, tr( "White to black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
+
   mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
   mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
 
@@ -36,7 +39,12 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
 
     mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
     mMinMaxWidget->setExtent( extent );
-    layout()->addWidget( mMinMaxWidget );
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    mMinMaxContainerWidget->setLayout( layout );
+    layout->addWidget( mMinMaxWidget );
+
     connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
              this, SLOT( loadMinMax( int, double, double, int ) ) );
 
@@ -84,6 +92,9 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
+
+  renderer->setGradient(( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->itemData( mGradientComboBox->currentIndex() ).toInt() );
+
   return renderer;
 }
 
@@ -127,6 +138,8 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* 
     //band
     mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( gr->grayBand() ) );
     const QgsContrastEnhancement* ce = gr->contrastEnhancement();
+
+    mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );
     //minmax
     mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
     mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );

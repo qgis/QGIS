@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.Parameter import Parameter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -84,6 +85,9 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.horizontalLayout3 = QtGui.QHBoxLayout(self)
         self.horizontalLayout3.setSpacing(2)
         self.horizontalLayout3.setMargin(0)
+
+        if isinstance(self.param, Parameter):
+            self.nameTextBox.setText(self.param.description)
 
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
                     isinstance(self.param, ParameterBoolean):

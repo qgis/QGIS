@@ -24,6 +24,7 @@
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
+#include "qgssymbollayerv2utils.h"
 
 #include "qgsstylev2.h" //for symbol selector dialog
 
@@ -33,6 +34,7 @@
 
 #include <QAbstractButton>
 #include <QColorDialog>
+#include <QCursor>
 #include <QDir>
 #include <QFileDialog>
 #include <QPainter>
@@ -526,13 +528,13 @@ class QgsSvgListModel : public QAbstractListModel
   public:
     QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
     }
 
     // Constructor to create model for icons in a specific path
     QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( path );
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
     }
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const
@@ -683,12 +685,16 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mBorderWidthSpinBox->blockSignals( true );
   mBorderWidthSpinBox->setValue( layer->outlineWidth() );
   mBorderWidthSpinBox->blockSignals( false );
-
 }
 
 
 void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
+  if ( !layer )
+  {
+    return;
+  }
+
   if ( layer->layerType() != "SvgMarker" )
     return;
 
@@ -711,8 +717,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     }
   }
 
-
-
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
 
@@ -725,7 +729,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->blockSignals( false );
 
   setGuiForSvg( mLayer );
-
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -786,6 +789,25 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString
     return;
   }
   mLayer->setPath( text );
+  setGuiForSvg( mLayer );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_editingFinished()
+{
+  if ( !QFileInfo( mFileLineEdit->text() ).exists() )
+  {
+    QUrl url( mFileLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setPath( mFileLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
   setGuiForSvg( mLayer );
   emit changed();
 }
@@ -945,7 +967,7 @@ void QgsSVGFillSymbolLayerWidget::on_mTextureWidthSpinBox_valueChanged( double d
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & text )
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textEdited( const QString & text )
 {
   if ( !mLayer )
   {
@@ -958,14 +980,43 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & t
     return;
   }
   mLayer->setSvgFilePath( text );
-  emit changed();
   updateParamGui();
+  emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_editingFinished()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QFileInfo fi( mSVGLineEdit->text() );
+  if ( !fi.exists() )
+  {
+    QUrl url( mSVGLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setSvgFilePath( mSVGLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
+  updateParamGui();
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 {
-  mSVGLineEdit->setText( item.data( Qt::UserRole ).toString() );
+  QString file = item.data( Qt::UserRole ).toString();
+  mLayer->setSvgFilePath( file );
+  mSVGLineEdit->setText( file );
+
   updateParamGui();
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
@@ -1000,8 +1051,8 @@ void QgsSVGFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
   if ( mLayer )
   {
     mLayer->setAngle( d );
+    emit changed();
   }
-  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::updateParamGui()

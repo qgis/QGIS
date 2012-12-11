@@ -88,20 +88,20 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions()[i];
-    QString name = func.mName;
+    QgsExpression::Function* func = QgsExpression::Functions()[i];
+    QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
       continue;
-    if ( func.mParams >= 1 )
+    if ( func->params() >= 1 )
       name += "(";
-    registerItem( func.mGroup, func.mName, " " + name + " " );
+    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
 
-  QList<QgsExpression::FunctionDef> specials = QgsExpression::specialColumns();
+  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
   for ( int i = 0; i < specials.size(); ++i )
   {
-    QString name = specials[i].mName;
-    registerItem( specials[i].mGroup, name, " " + name + " " );
+    QString name = specials[i]->name();
+    registerItem( specials[i]->group(), name, " " + name + " " );
   }
 
 #if QT_VERSION >= 0x040700
@@ -240,6 +240,11 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
+void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
+{
+  mDa = da;
+}
+
 QString QgsExpressionBuilderWidget::expressionText()
 {
   return txtExpressionString->toPlainText();
@@ -266,10 +271,15 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     return;
   }
 
+
+
   QgsExpression exp( text );
 
   if ( mLayer )
   {
+    // Only set calculator if we have layer, else use default.
+    exp.setGeomCalculator( mDa );
+
     if ( !mFeature.isValid() )
     {
       mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() );
@@ -405,6 +415,14 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
   if ( expressionItem == NULL )
     return "";
 
+  QString helpContents;
+  // Return the function help that is set for the function if there is one.
+  if ( !expressionItem->getHelpText().isEmpty() )
+  {
+    QString myStyle = QgsApplication::reportStyleSheet();
+    helpContents = "<head><style>" + myStyle + "</style></head><body>" + expressionItem->getHelpText() + "</body>";
+    return helpContents;
+  }
   // set up the path to the help file
   QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";
   /*
@@ -412,7 +430,6 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
    * the context id
    */
   QString lang = QLocale::system().name();
-
   QSettings settings;
   if ( settings.value( "locale/overrideFlag", false ).toBool() )
   {
@@ -437,7 +454,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
 
   QString fullHelpPath = helpFilesPath + name + "-" + lang;
   // get the help content and title from the localized file
-  QString helpContents;
+
   QFile file( fullHelpPath );
 
   QString missingError = tr( "<h3>Oops! QGIS can't find help for this function.</h3>"

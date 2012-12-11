@@ -73,6 +73,13 @@ class QgsVectorLayer : QgsMapLayer
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
     };
 
+    enum EditorLayout
+    {
+      GeneratedLayout,
+      TabLayout,
+      UiFileLayout,
+    };
+
     struct RangeData
     {
       RangeData();
@@ -568,6 +575,12 @@ class QgsVectorLayer : QgsMapLayer
 
     /**set edit type*/
     void setEditType( int idx, EditType edit );
+
+    /**get editor layout**/
+    EditorLayout editorLayout();
+
+    /**set editor layout*/
+    void setEditorLayout( EditorLayout layout );
 
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );

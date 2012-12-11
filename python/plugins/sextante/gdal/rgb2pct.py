@@ -44,7 +44,7 @@ class rgb2pct(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "rgb2pct"
-        self.group = "Conversion"
+        self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(rgb2pct.INPUT, "Input layer", False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS, "Number of colors", 1, None, 2))
         self.addOutput(OutputRaster(rgb2pct.OUTPUT, "Output layer"))

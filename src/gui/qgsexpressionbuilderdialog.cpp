@@ -55,3 +55,9 @@ void QgsExpressionBuilderDialog::closeEvent( QCloseEvent *event )
   QSettings settings;
   settings.setValue( "/Windows/ExpressionBuilderDialog/geometry", saveGeometry() );
 }
+
+void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea & da )
+{
+  // Store in child widget only.
+  builder->setGeomCalculator( da );
+}

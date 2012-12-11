@@ -166,6 +166,11 @@ bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )
   return ( Qt::Checked == mLegend->layerCheckState( ml ) );
 }
 
+QList<QgsMapLayer *> QgsAppLegendInterface::selectedLayers( bool inDrawOrder ) const
+{
+  return mLegend->selectedLayers( inDrawOrder );
+}
+
 QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
 {
   return mLegend->layers();

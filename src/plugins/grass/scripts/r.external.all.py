@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 # MODULE:       qgis.r.external.all.py
 # AUTHOR(S):    Lorenzo Masini
 #
-# PURPOSE:      Link all GDAL supported raster files into a directory 
+# PURPOSE:      Link all GDAL supported raster files into a directory
 #		to binary raster map layers.
 # COPYRIGHT:    (C) 2009 by Lorenzo Masini
 #
@@ -99,9 +99,9 @@ def import_directory_of_rasters(directory, recursive):
 def main():
     input = options['input']
     recursive = flags['r']
-	
+
     import_directory_of_rasters(input, recursive)
-	 	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])

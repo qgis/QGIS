@@ -27,6 +27,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:
+    QgsRendererCategoryV2( );
 
     //! takes ownership of symbol
     QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label );
@@ -34,7 +35,10 @@ class CORE_EXPORT QgsRendererCategoryV2
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
 
+
     ~QgsRendererCategoryV2();
+
+    QgsRendererCategoryV2& operator=( const QgsRendererCategoryV2& cat );
 
     QVariant value() const;
     QgsSymbolV2* symbol() const;
@@ -81,7 +85,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
 
     virtual QgsSymbolV2List symbols();
     //! @note added in 2.0
@@ -99,6 +103,12 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void addCategory( const QgsRendererCategoryV2 &category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
+
+    //! Moves the category at index position from to index position to.
+    void moveCategory( int from, int to );
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+    void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( QString attr ) { mAttrName = attr; }

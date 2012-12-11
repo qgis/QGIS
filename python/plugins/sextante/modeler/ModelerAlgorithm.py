@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -116,7 +117,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
                     tokens = valueLine.split("===")
-                    
+
                     self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
@@ -436,6 +437,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     return "output html"
                 elif isinstance(out, OutputNumber):
                     return "output number"
+                elif isinstance(out, OutputString):
+                    return "output string"
 
 
     def getAsPythonCode(self):

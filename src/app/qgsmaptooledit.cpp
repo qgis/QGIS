@@ -66,10 +66,10 @@ QgsPoint QgsMapToolEdit::snapPointFromResults( const QList<QgsSnappingResult>& s
   }
 }
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand( bool isPolygon )
+QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType )
 {
   QSettings settings;
-  QgsRubberBand* rb = new QgsRubberBand( mCanvas, isPolygon );
+  QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
   QColor color( settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
                 settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
                 settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );

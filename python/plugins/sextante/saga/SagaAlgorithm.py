@@ -243,7 +243,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
-                    command+=(" -" + param.name + " " + value)
+                    command+=(" -" + param.name + " \"" + value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
@@ -256,16 +256,16 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile  = SextanteUtils.getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
-                values = param.value.split(",")                
+                values = param.value.split(",")
                 for i in range(0, len(values), 3):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)
                 f.close()
-                command+=( " -" + param.name + " " + tempTableFile)
+                command+=( " -" + param.name + " \"" + tempTableFile + "\"")
             elif isinstance(param, ParameterExtent):
-                #'we have to substract half cell size, since saga is center based, not corner based
+                #'we have to substract/add half cell size, since saga is center based, not corner based
                 halfcell = self.getOutputCellsize() / 2
-                offset = [halfcell, 0, halfcell, 0]
+                offset = [halfcell, -halfcell, halfcell, -halfcell]
                 values = param.value.split(",")
                 for i in range(4):
                     command+=(" -" + self.extentParamNames[i] + " " + str(float(values[i]) + offset[i]));
@@ -318,18 +318,17 @@ class SagaAlgorithm(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
-    
+
     def getOutputCellsize(self):
-        '''tries to guess the cellsize of the output, searchiing for a parameter with an appropriate name for it'''
+        '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
         cellsize = 0;
         for param in self.parameters:
             if param.value is not None and param.name == "USER_SIZE":
                 cellsize = float(param.value)
                 break;
-        QtGui.QMessageBox.critical(None, "", str(cellsize));
         return cellsize
-    
-    
+
+
     def resampleRasterLayer(self,layer):
         '''this is supposed to be run after having exported all raster layers'''
         if layer in self.exportedLayers.keys():

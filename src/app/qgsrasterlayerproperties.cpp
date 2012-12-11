@@ -72,6 +72,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mRGBMinimumMaximumEstimated = true;
 
   setupUi( this );
+
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -195,6 +199,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 
   //resampling
+  mResamplingGroupBox->setSaveCheckedState( true );
   const QgsRasterRenderer* renderer = mRasterLayer->renderer();
   mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
   mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
@@ -206,12 +211,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   //set combo boxes to current resampling types
   if ( resampleFilter )
   {
-    //invert color map
-    if ( renderer->invertColor() )
-    {
-      mInvertColorMapCheckBox->setCheckState( Qt::Checked );
-    }
-
     const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
@@ -744,9 +743,6 @@ void QgsRasterLayerProperties::apply()
 
     //set global transparency
     rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
-
-    //invert color map
-    rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
   }
 
   QgsDebugMsg( "processing general tab" );
@@ -1723,3 +1719,14 @@ void QgsRasterLayerProperties::updatePipeItems()
 #endif
   }
 }
+
+void QgsRasterLayerProperties::on_mMinimumScaleSetCurrentPushButton_clicked()
+{
+  cbMinimumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+}
+
+void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
+{
+  cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
+}
+

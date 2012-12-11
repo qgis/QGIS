@@ -75,6 +75,15 @@ class QgsLegendLayer : public QgsLegendItem
     void setDrawingOrder( int order );
     int drawingOrder() const { return mDrawingOrder; }
 
+    /** Get layer name currently set in legend */
+    QString layerName();
+
+    /**Called before edit*/
+    void beforeEdit();
+
+    /**Called after edit*/
+    void afterEdit();
+
   public slots:
 
     /**Toggle show in overview*/
@@ -119,6 +128,9 @@ class QgsLegendLayer : public QgsLegendItem
      *  from the QTreeWidgetItem base class.
      */
     void setupFont();
+
+    /** Label, may be layer name or layer name + [feature count] */
+    QString label();
 
   protected:
 

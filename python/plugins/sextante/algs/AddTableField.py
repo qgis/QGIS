@@ -73,13 +73,13 @@ class AddTableField(GeoAlgorithm):
         nFeat = vprovider.featureCount()
         nElement = 0
         while vprovider.nextFeature(inFeat):
-          progress.setPercentage(int((100 * nElement)/nFeat))
-          nElement += 1
-          inGeom = inFeat.geometry()
-          outFeat.setGeometry( inGeom )
-          atMap = inFeat.attributeMap()
-          outFeat.setAttributeMap( atMap )
-          outFeat.addAttribute( len(vprovider.fields()), QVariant() )
-          writer.addFeature( outFeat )
+            progress.setPercentage(int((100 * nElement)/nFeat))
+            nElement += 1
+            inGeom = inFeat.geometry()
+            outFeat.setGeometry( inGeom )
+            atMap = inFeat.attributeMap()
+            outFeat.setAttributeMap( atMap )
+            outFeat.addAttribute( len(vprovider.fields()), QVariant() )
+            writer.addFeature( outFeat )
         del writer
 

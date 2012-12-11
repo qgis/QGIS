@@ -52,7 +52,7 @@ void QgsMapToolPinLabels::canvasPressEvent( QMouseEvent * e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
 void QgsMapToolPinLabels::canvasMoveEvent( QMouseEvent * e )
@@ -105,7 +105,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QMouseEvent * e )
 
     delete selectGeom;
 
-    mRubberBand->reset( true );
+    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
     mRubberBand = 0;
   }

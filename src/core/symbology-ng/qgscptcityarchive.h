@@ -90,7 +90,8 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
       ColorRamp,
       Collection,
       Directory,
-      Selection
+      Selection,
+      AllRamps
     };
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
@@ -277,6 +278,20 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QStringList mSelectionsList;
 };
 
+/** An "All ramps item", which contains all items in a flat hierarchy */
+class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsCptCityAllRampsItem( QgsCptCityDataItem* parent, QString name,
+                            QVector<QgsCptCityDataItem*> items );
+    ~QgsCptCityAllRampsItem();
+
+    QVector<QgsCptCityDataItem*> createChildren();
+
+  protected:
+    QVector<QgsCptCityDataItem*> mItems;
+};
 
 
 class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel

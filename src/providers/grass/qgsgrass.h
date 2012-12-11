@@ -148,6 +148,11 @@ class QgsGrass
         QString mapsetName, QString element );
     static GRASS_LIB_EXPORT QStringList elements( QString mapsetPath, QString element );
 
+    //! Initialize GRASS region
+    static GRASS_LIB_EXPORT void initRegion( struct Cell_head *window );
+    //! Set region extent
+    static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
+
     // ! Get map region
     static GRASS_LIB_EXPORT bool mapRegion( int type, QString gisbase,
                                             QString location, QString mapset, QString map,

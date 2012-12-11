@@ -48,6 +48,7 @@ qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
 qgslegendinterface.cpp
+qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
 qgscomposerview.cpp
 qgscursors.cpp
@@ -56,6 +57,7 @@ qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
 qgsdialog.cpp
 qgsencodingfiledialog.cpp
+qgserrordialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
@@ -88,6 +90,7 @@ qgsrasterformatsaveoptionswidget.cpp
 qgsrasterpyramidsoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
+qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
@@ -97,6 +100,7 @@ qgsexpressionbuilderdialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
+qgsfilterlineedit.cpp
 )
 
 IF (WITH_TOUCH)
@@ -148,6 +152,7 @@ attributetable/qgsattributetablememorymodel.h
 attributetable/qgsattributetabledelegate.h
 
 qgsattributeeditor.h
+qgscharacterselectdialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -155,6 +160,7 @@ qgsdialog.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
+qgserrordialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
 qgshtmlannotationitem.h
@@ -184,6 +190,7 @@ qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -193,6 +200,7 @@ QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgscharacterselectdialog.h
 qgscolorbutton.h
 qgscursors.h
 qgsencodingfiledialog.h
@@ -223,6 +231,7 @@ qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h

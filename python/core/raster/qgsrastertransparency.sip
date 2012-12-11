@@ -42,10 +42,10 @@ class QgsRasterTransparency
     void initializeTransparentPixelList( double, double, double );
 
     /** \brief Accessor for transparentSingleValuePixelList */
-    void setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel> );
+    void setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel>  /Transfer/);
 
     /** \brief Accessor for transparentThreeValuePixelList */
-    void setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> );
+    void setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> /Transfer/);
 
     /** \brief Returns the transparency value for a single value Pixel */
     int alphaValue( double, int theGlobalTransparency = 255 ) const;

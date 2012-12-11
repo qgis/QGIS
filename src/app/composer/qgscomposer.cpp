@@ -93,6 +93,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
+  // ability to save parent project from composer
+  mSaveProjectAction = QgisApp::instance()->actionSaveProject();
+  QToolButton* saveProjectToolButton = new QToolButton( this );
+  saveProjectToolButton->addAction( mSaveProjectAction );
+  saveProjectToolButton->setDefaultAction( mSaveProjectAction );
+  toolBar->insertWidget( mActionLoadFromTemplate, saveProjectToolButton );
+  toolBar->insertSeparator( mActionLoadFromTemplate );
+
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
   orderingToolButton->setAutoRaise( true );
@@ -162,6 +170,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #endif
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
+  fileMenu->addAction( mSaveProjectAction );
+  fileMenu->addSeparator();
   fileMenu->addAction( mActionLoadFromTemplate );
   fileMenu->addAction( mActionSaveAsTemplate );
   fileMenu->addSeparator();
@@ -267,6 +277,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mPanelMenu->addAction( mUndoDock->toggleViewAction() );
   mAtlasDock = new QDockWidget( tr( "Atlas generation" ), this );
   mAtlasDock->setObjectName( "AtlasDock" );
+  mPanelMenu->addAction( mAtlasDock->toggleViewAction() );
 
   mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
@@ -434,10 +445,15 @@ void QgsComposer::open( void )
 
 void QgsComposer::activate()
 {
+  bool shown = isVisible();
   show();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
+  if ( !shown )
+  {
+    on_mActionZoomAll_triggered();
+  }
 }
 
 #ifdef Q_WS_MAC
@@ -586,22 +602,22 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     QSettings myQSettings;  // where we keep last used filter in persistent state
     QString lastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
     QFileInfo file( lastUsedFile );
-    
+
     outputFileName = QFileDialog::getSaveFileName(
-						  this,
-						  tr( "Choose a file name to save the map as" ),
-						  file.path(),
-						  tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+                       this,
+                       tr( "Choose a file name to save the map as" ),
+                       file.path(),
+                       tr( "PDF Format" ) + " (*.pdf *.PDF)" );
     if ( outputFileName.isEmpty() )
     {
       return;
     }
-    
+
     if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
     {
       outputFileName += ".pdf";
     }
-    
+
     myQSettings.setValue( "/UI/lastSaveAsPdfFile", outputFileName );
   }
   // else, we need to choose a directory
@@ -610,33 +626,33 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     if ( atlasMap->filenamePattern().size() == 0 )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
-				      tr( "The filename pattern is empty. A default one will be used." ),
-				      QMessageBox::Ok | QMessageBox::Cancel,
-				      QMessageBox::Ok );
+                                      tr( "The filename pattern is empty. A default one will be used." ),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Ok );
       if ( res == QMessageBox::Cancel )
       {
-	return;
+        return;
       }
       atlasMap->setFilenamePattern( "'output_'||$feature" );
     }
 
     QSettings myQSettings;
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsPdfDir", "." ).toString();
-    outputDir = QFileDialog::getExistingDirectory(this,
-						  tr("Directory where to save PDF files"),
-						  lastUsedDir,
-						  QFileDialog::ShowDirsOnly);
+    outputDir = QFileDialog::getExistingDirectory( this,
+                tr( "Directory where to save PDF files" ),
+                lastUsedDir,
+                QFileDialog::ShowDirsOnly );
     if ( outputDir.isEmpty() )
     {
       return;
     }
     // test directory (if it exists and is writeable)
-    if ( !QDir(outputDir).exists() || !QFileInfo(outputDir).isWritable() )
+    if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-			    tr( "The given output directory is not writeable. Cancelling." ),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            tr( "The given output directory is not writeable. Cancelling." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       return;
     }
 
@@ -658,7 +674,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       painter.begin( &printer );
     }
 
-    QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
+    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     for ( size_t featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
@@ -668,36 +684,36 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       QCoreApplication::processEvents();
       if ( progress.wasCanceled() )
       {
-	atlasMap->endRender();
-	break;
+        atlasMap->endRender();
+        break;
       }
       try
       {
-	atlasMap->prepareForFeature( featureI );
+        atlasMap->prepareForFeature( featureI );
       }
       catch ( std::runtime_error& e )
       {
-	QMessageBox::warning( this, tr( "Atlas processing error" ),
-			      e.what(),
-			      QMessageBox::Ok,
-			      QMessageBox::Ok);
-	break;
+        QMessageBox::warning( this, tr( "Atlas processing error" ),
+                              e.what(),
+                              QMessageBox::Ok,
+                              QMessageBox::Ok );
+        break;
       }
       if ( !atlasOnASingleFile )
       {
-	outputFileName = QDir(outputDir).filePath( atlasMap->currentFilename() ) + ".pdf";
-	mComposition->beginPrintAsPDF( printer, outputFileName );
-	painter.begin( &printer );
-	mComposition->doPrint( printer, painter );
-	painter.end();
+        outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
+        mComposition->beginPrintAsPDF( printer, outputFileName );
+        painter.begin( &printer );
+        mComposition->doPrint( printer, painter );
+        painter.end();
       }
       else
       {
-	if ( featureI > 0 )
-	{
-	  printer.newPage();
-	}
-	mComposition->doPrint( printer, painter );
+        if ( featureI > 0 )
+        {
+          printer.newPage();
+        }
+        mComposition->doPrint( printer, painter );
       }
     }
     atlasMap->endRender();
@@ -748,7 +764,7 @@ void QgsComposer::on_mActionPrint_triggered()
     mComposition->beginPrint( mPrinter );
     QPainter painter( &mPrinter );
     atlasMap->beginRender();
-    QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
+    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
     for ( size_t i = 0; i < atlasMap->numFeatures(); ++i )
     {
@@ -758,26 +774,26 @@ void QgsComposer::on_mActionPrint_triggered()
 
       if ( progress.wasCanceled() )
       {
-	atlasMap->endRender();
-	break;
+        atlasMap->endRender();
+        break;
       }
       try
       {
-	atlasMap->prepareForFeature( i );
+        atlasMap->prepareForFeature( i );
       }
       catch ( std::runtime_error& e )
       {
-	QMessageBox::warning( this, tr( "Atlas processing error" ),
-			      e.what(),
-			      QMessageBox::Ok,
-			      QMessageBox::Ok);
-	break;
+        QMessageBox::warning( this, tr( "Atlas processing error" ),
+                              e.what(),
+                              QMessageBox::Ok,
+                              QMessageBox::Ok );
+        break;
       }
 
 
       if ( i > 0 )
       {
-	mPrinter.newPage();
+        mPrinter.newPage();
       }
       mComposition->doPrint( mPrinter, painter );
     }
@@ -825,26 +841,26 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   if ( !atlasMap->enabled() )
   {
     QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-    
+
     if ( fileNExt.first.isEmpty() )
     {
       return;
     }
-    
+
     mView->setPaintingEnabled( false );
-    
+
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       QImage image = mComposition->printPageAsRaster( i );
       if ( i == 0 )
       {
-	image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
+        image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
       }
       else
       {
-	QFileInfo fi( fileNExt.first );
-	QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
-	image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+        QFileInfo fi( fileNExt.first );
+        QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+        image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
       }
     }
     mView->setPaintingEnabled( true );
@@ -855,12 +871,12 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     if ( atlasMap->filenamePattern().size() == 0 )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
-				      tr( "The filename pattern is empty. A default one will be used." ),
-				      QMessageBox::Ok | QMessageBox::Cancel,
-				      QMessageBox::Ok );
+                                      tr( "The filename pattern is empty. A default one will be used." ),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Ok );
       if ( res == QMessageBox::Cancel )
       {
-	return;
+        return;
       }
       atlasMap->setFilenamePattern( "'output_'||$feature" );
     }
@@ -869,7 +885,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsImagesDir", "." ).toString();
     QString lastUsedFormat = myQSettings.value( "/UI/lastSaveAtlasAsImagesFormat", "jpg" ).toString();
 
-    QFileDialog dlg( this, tr("Directory where to save image files") );
+    QFileDialog dlg( this, tr( "Directory where to save image files" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
 
@@ -878,22 +894,22 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     QComboBox *box = new QComboBox();
     QHBoxLayout* hlayout = new QHBoxLayout();
     QWidget* widget = new QWidget();
-    
+
     QList<QByteArray> formats = QImageWriter::supportedImageFormats();
     int selectedFormat = 0;
     for ( int i = 0; i < formats.size(); ++i )
     {
-      QString format = QString( formats.at(i) );
+      QString format = QString( formats.at( i ) );
       if ( format == lastUsedFormat )
       {
-	selectedFormat = i;
+        selectedFormat = i;
       }
       box->addItem( format );
     }
     box->setCurrentIndex( selectedFormat );
 
     hlayout->setMargin( 0 );
-    hlayout->addWidget( new QLabel( tr("Image format: ")) );
+    hlayout->addWidget( new QLabel( tr( "Image format: " ) ) );
     hlayout->addWidget( box );
     widget->setLayout( hlayout );
     dlg.layout()->addWidget( widget );
@@ -903,11 +919,11 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       return;
     }
     QStringList s = dlg.selectedFiles();
-    if ( s.size() < 1 || s.at(0).isEmpty() )
+    if ( s.size() < 1 || s.at( 0 ).isEmpty() )
     {
       return;
     }
-    QString dir = s.at(0);
+    QString dir = s.at( 0 );
     QString format = box->currentText();
     QString fileExt = "." + format;
 
@@ -916,12 +932,12 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       return;
     }
     // test directory (if it exists and is writeable)
-    if ( !QDir(dir).exists() || !QFileInfo(dir).isWritable() )
+    if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-			    tr( "The given output directory is not writeable. Cancelling." ),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            tr( "The given output directory is not writeable. Cancelling." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       return;
     }
 
@@ -932,49 +948,49 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     atlasMap->beginRender();
-    
-    QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
+
+    QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
     for ( size_t feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
       progress.setValue( feature );
       // process input events in order to allow cancelling
       QCoreApplication::processEvents();
-      
+
       if ( progress.wasCanceled() )
       {
-	atlasMap->endRender();
-	break;
+        atlasMap->endRender();
+        break;
       }
       try
       {
-	atlasMap->prepareForFeature( feature );
+        atlasMap->prepareForFeature( feature );
       }
       catch ( std::runtime_error& e )
       {
-	QMessageBox::warning( this, tr( "Atlas processing error" ),
-			      e.what(),
-			      QMessageBox::Ok,
-			      QMessageBox::Ok);
-	break;
+        QMessageBox::warning( this, tr( "Atlas processing error" ),
+                              e.what(),
+                              QMessageBox::Ok,
+                              QMessageBox::Ok );
+        break;
       }
 
-      QString filename = QDir(dir).filePath(atlasMap->currentFilename()) + fileExt;
-      
+      QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
+
       for ( int i = 0; i < mComposition->numPages(); ++i )
       {
-	QImage image = mComposition->printPageAsRaster( i );
-	
-	if ( i == 0 )
-	{
-	  image.save( filename, format.toLocal8Bit().constData() );
-	}
-	else
-	{
-	  QFileInfo fi( filename );
-	  QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
-	  image.save( outputFilePath, format.toLocal8Bit().constData() );
-	}
+        QImage image = mComposition->printPageAsRaster( i );
+
+        if ( i == 0 )
+        {
+          image.save( filename, format.toLocal8Bit().constData() );
+        }
+        else
+        {
+          QFileInfo fi( filename );
+          QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+          image.save( outputFilePath, format.toLocal8Bit().constData() );
+        }
       }
     }
     atlasMap->endRender();
@@ -1027,12 +1043,12 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   {
     QString lastUsedFile = settings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
     QFileInfo file( lastUsedFile );
-    
+
     outputFileName = QFileDialog::getSaveFileName(
-						  this,
-						  tr( "Choose a file name to save the map as" ),
-						  file.path(),
-						  tr( "SVG Format" ) + " (*.svg *.SVG)" );
+                       this,
+                       tr( "Choose a file name to save the map as" ),
+                       file.path(),
+                       tr( "SVG Format" ) + " (*.svg *.SVG)" );
     if ( outputFileName.isEmpty() )
       return;
 
@@ -1040,7 +1056,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     {
       outputFileName += ".svg";
     }
-    
+
     settings.setValue( "/UI/lastSaveAsSvgFile", outputFileName );
   }
   else
@@ -1049,12 +1065,12 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     if ( atlasMap->filenamePattern().size() == 0 )
     {
       int res = QMessageBox::warning( 0, tr( "Empty filename pattern" ),
-				      tr( "The filename pattern is empty. A default one will be used." ),
-				      QMessageBox::Ok | QMessageBox::Cancel,
-				      QMessageBox::Ok );
+                                      tr( "The filename pattern is empty. A default one will be used." ),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Ok );
       if ( res == QMessageBox::Cancel )
       {
-	return;
+        return;
       }
       atlasMap->setFilenamePattern( "'output_'||$feature" );
     }
@@ -1062,27 +1078,27 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     QSettings myQSettings;
     QString lastUsedDir = myQSettings.value( "/UI/lastSaveAtlasAsSvgDir", "." ).toString();
 
-    outputDir = QFileDialog::getExistingDirectory(this,
-						    tr("Directory where to save SVG files"),
-						    lastUsedDir,
-						    QFileDialog::ShowDirsOnly);
+    outputDir = QFileDialog::getExistingDirectory( this,
+                tr( "Directory where to save SVG files" ),
+                lastUsedDir,
+                QFileDialog::ShowDirsOnly );
     if ( outputDir.isEmpty() )
     {
       return;
     }
     // test directory (if it exists and is writeable)
-    if ( !QDir(outputDir).exists() || !QFileInfo(outputDir).isWritable() )
+    if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-			    tr( "The given output directory is not writeable. Cancelling." ),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            tr( "The given output directory is not writeable. Cancelling." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       return;
     }
-    
+
     myQSettings.setValue( "/UI/lastSaveAtlasAsSvgDir", outputDir );
   }
-    
+
   mView->setPaintingEnabled( false );
 
   size_t featureI = 0;
@@ -1090,36 +1106,36 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   {
     atlasMap->beginRender();
   }
-  QProgressDialog progress( tr("Rendering maps..."), tr("Abort"), 0, atlasMap->numFeatures(), this );
+  QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
   do
   {
     if ( hasAnAtlas )
     {
       if ( atlasMap->numFeatures() == 0 )
-	break;
+        break;
 
       progress.setValue( featureI );
       // process input events in order to allow aborting
       QCoreApplication::processEvents();
       if ( progress.wasCanceled() )
       {
-	atlasMap->endRender();
-	break;
+        atlasMap->endRender();
+        break;
       }
       try
       {
-	atlasMap->prepareForFeature( featureI );
+        atlasMap->prepareForFeature( featureI );
       }
       catch ( std::runtime_error& e )
       {
-	QMessageBox::warning( this, tr( "Atlas processing error" ),
-			      e.what(),
-			      QMessageBox::Ok,
-			      QMessageBox::Ok);
-	break;
+        QMessageBox::warning( this, tr( "Atlas processing error" ),
+                              e.what(),
+                              QMessageBox::Ok,
+                              QMessageBox::Ok );
+        break;
       }
-      outputFileName = QDir(outputDir).filePath( atlasMap->currentFilename() ) + ".svg";
+      outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
 
     for ( int i = 0; i < mComposition->numPages(); ++i )
@@ -1130,14 +1146,14 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 #endif
       if ( i == 0 )
       {
-	generator.setFileName( outputFileName );
+        generator.setFileName( outputFileName );
       }
       else
       {
-	QFileInfo fi( outputFileName );
-	generator.setFileName( fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
+        QFileInfo fi( outputFileName );
+        generator.setFileName( fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
       }
-      
+
       //width in pixel
       int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
       //height in pixel
@@ -1147,14 +1163,15 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
       generator.setViewBox( QRect( 0, 0, width, height ) );
 #endif
       generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
-      
+
       QPainter p( &generator );
-      
+
       mComposition->renderPage( &p, i );
       p.end();
     }
     featureI++;
-  } while ( hasAnAtlas && featureI < atlasMap->numFeatures() );
+  }
+  while ( hasAnAtlas && featureI < atlasMap->numFeatures() );
 
   if ( hasAnAtlas )
     atlasMap->endRender();

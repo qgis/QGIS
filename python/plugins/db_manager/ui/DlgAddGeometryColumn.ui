@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgAddGeometryColumn</class>
- <widget class="QDialog" name="DlgAddGeometryColumn">
+ <class>DbManagerDlgAddGeometryColumn</class>
+ <widget class="QDialog" name="DbManagerDlgAddGeometryColumn">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Add geometry column</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -27,7 +27,7 @@
    <item row="0" column="1" colspan="2">
     <widget class="QLineEdit" name="editName">
      <property name="text">
-      <string>geom</string>
+      <string notr="true">geom</string>
      </property>
     </widget>
    </item>
@@ -45,37 +45,37 @@
     <widget class="QComboBox" name="cboType">
      <item>
       <property name="text">
-       <string>POINT</string>
+       <string notr="true">POINT</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>LINESTRING</string>
+       <string notr="true">LINESTRING</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>POLYGON</string>
+       <string notr="true">POLYGON</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>MULTIPOINT</string>
+       <string notr="true">MULTIPOINT</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>MULTILINESTRING</string>
+       <string notr="true">MULTILINESTRING</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>MULTIPOLYGON</string>
+       <string notr="true">MULTIPOLYGON</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>GEOMETRYCOLLECTION</string>
+       <string notr="true">GEOMETRYCOLLECTION</string>
       </property>
      </item>
     </widget>
@@ -126,7 +126,7 @@
    <item row="3" column="1">
     <widget class="QLineEdit" name="editSrid">
      <property name="text">
-      <string>-1</string>
+      <string notr="true">-1</string>
      </property>
     </widget>
    </item>
@@ -154,7 +154,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgAddGeometryColumn</receiver>
+   <receiver>DbManagerDlgAddGeometryColumn</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

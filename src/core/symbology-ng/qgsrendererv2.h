@@ -75,7 +75,10 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     QString type() const { return mType; }
 
-    // to be overridden
+    /** to be overridden
+     * @param feature feature
+     * @return returns pointer to symbol or 0 if symbol was not found
+     */
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) = 0;
 
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) = 0;
@@ -97,7 +100,9 @@ class CORE_EXPORT QgsFeatureRendererV2
     {
       SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       RotationField = 1 <<  1,    // rotate symbols by attribute value
-      MoreSymbolsPerFeature = 1 << 2  // may use more than one symbol to render a feature: symbolsForFeature() will return them
+      MoreSymbolsPerFeature = 1 << 2,  // may use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter         = 1 << 3, // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent = 1 << 4 // dependends on scale if feature will be rendered (rule based )
     };
 
     //! returns bitwise OR-ed capabilities of the renderer

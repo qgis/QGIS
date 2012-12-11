@@ -15,7 +15,8 @@ import os
 import sys
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorFileWriter)
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
@@ -159,3 +160,26 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
     # Reproject all layers to WGS84 geographic CRS
     CANVAS.mapRenderer().setDestinationCrs(myCrs)
 
+def writeShape(theMemoryLayer, theFileName):
+    myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
+    print myFileName
+    # Explicitly giving all options, not really needed but nice for clarity
+    myErrorMessage = QtCore.QString()
+    myOptions = QtCore.QStringList()
+    myLayerOptions = QtCore.QStringList()
+    mySelectedOnlyFlag = False
+    mySkipAttributesFlag = False
+    myGeoCrs = QgsCoordinateReferenceSystem()
+    myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+    myResult = QgsVectorFileWriter.writeAsVectorFormat(
+        theMemoryLayer,
+        myFileName,
+        'utf-8',
+        myGeoCrs,
+        'ESRI Shapefile',
+        mySelectedOnlyFlag,
+        myErrorMessage,
+        myOptions,
+        myLayerOptions,
+        mySkipAttributesFlag)
+    assert myResult == QgsVectorFileWriter.NoError

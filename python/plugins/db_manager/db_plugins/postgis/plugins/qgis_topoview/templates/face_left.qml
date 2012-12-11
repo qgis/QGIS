@@ -55,7 +55,7 @@
     <property key="labeling/dataDefinedProperty9" value=""/>
     <property key="labeling/decimals" value="0"/>
     <property key="labeling/displayAll" value="false"/>
-    <property key="labeling/dist" value="3"/>
+    <property key="labeling/dist" value="7"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/enabled" value="true"/>
     <property key="labeling/fieldName" value="left_face"/>
@@ -76,6 +76,8 @@
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
+    <property key="labeling/multilineAlign" value="0"/>
+    <property key="labeling/multilineHeight" value="1"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
     <property key="labeling/placement" value="2"/>
@@ -83,19 +85,21 @@
     <property key="labeling/plussign" value="true"/>
     <property key="labeling/preserveRotation" value="true"/>
     <property key="labeling/previewBkgrdColor" value="#ffffff"/>
-    <property key="labeling/priority" value="5"/>
+    <property key="labeling/priority" value="3"/>
     <property key="labeling/scaleMax" value="0"/>
     <property key="labeling/scaleMin" value="0"/>
     <property key="labeling/textColorB" value="0"/>
     <property key="labeling/textColorG" value="170"/>
     <property key="labeling/textColorR" value="0"/>
     <property key="labeling/textTransp" value="0"/>
+    <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
     <property key="labeling/xOffset" value="0"/>
     <property key="labeling/xQuadOffset" value="0"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
+  <editorlayout>generatedlayout</editorlayout>
   <displayfield>edge_id</displayfield>
   <label>0</label>
   <labelattributes>

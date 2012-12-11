@@ -221,19 +221,21 @@ void QgsGrassPlugin::mapsetChanged()
 {
   if ( !QgsGrass::activeMode() )
   {
-    mOpenToolsAction->setEnabled( false );
+    mOpenToolsAction->setEnabled( true );
     mRegionAction->setEnabled( false );
     mEditRegionAction->setEnabled( false );
     mRegionBand->reset();
     mCloseMapsetAction->setEnabled( false );
     mNewVectorAction->setEnabled( false );
 
+#if 0
     if ( mTools )
     {
       mTools->hide();
       delete mTools;
       mTools = 0;
     }
+#endif
   }
   else
   {
@@ -248,10 +250,12 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setChecked( on );
     switchRegion( on );
 
+#if 0
     if ( mTools )
     {
       mTools->mapsetChanged();
     }
+#endif
     QString gisdbase = QgsGrass::getDefaultGisdbase();
     QString location = QgsGrass::getDefaultLocation();
     try
@@ -268,6 +272,7 @@ void QgsGrassPlugin::mapsetChanged()
     setTransform();
     redrawRegion();
   }
+  if ( mTools ) mTools->mapsetChanged();
 }
 
 void QgsGrassPlugin::saveMapset()

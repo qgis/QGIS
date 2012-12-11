@@ -86,7 +86,7 @@ class DBTree(QTreeView):
 		if isinstance(item, Table):
 			return item
 		return None
-			
+
 
 	def itemChanged(self, index):
 		self.setCurrentIndex(index)

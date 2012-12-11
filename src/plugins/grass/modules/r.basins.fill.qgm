@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Create watershed subbasins raster" module="r.basins.fill">
+<!-- direct note: the module runs, but it was not tested with real data -->
+<qgisgrassmodule label="Create watershed subbasins raster" module="r.basins.fill" direct="1">
 	<option key="number" />
 	<option key="c_map" />
 	<option key="t_map" />

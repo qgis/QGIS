@@ -32,30 +32,30 @@
 
 class TestQgsAtlasComposition: public QObject
 {
-  Q_OBJECT;
-private slots:
-  void initTestCase();// will be called before the first testfunction is executed.
-  void cleanupTestCase();// will be called after the last testfunction was executed.
-  void init();// will be called before each testfunction is executed.
-  void cleanup();// will be called after every testfunction.
-  
-  // test filename pattern evaluation
-  void filename();
-  // test rendering with an autoscale atlas
-  void autoscale_render();
-  // test rendering with a fixed scale atlas
-  void fixedscale_render();
-  // test rendering with a hidden coverage
-  void hiding_render();
+    Q_OBJECT;
+  private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+
+    // test filename pattern evaluation
+    void filename();
+    // test rendering with an autoscale atlas
+    void autoscale_render();
+    // test rendering with a fixed scale atlas
+    void fixedscale_render();
+    // test rendering with a hidden coverage
+    void hiding_render();
   private:
-  QgsComposition* mComposition;
-  QgsComposerLabel* mLabel1;
-  QgsComposerLabel* mLabel2;
-  QgsComposerMap* mAtlasMap;
-  QgsComposerMap* mOverview;
-  QgsMapRenderer* mMapRenderer;
-  QgsVectorLayer* mVectorLayer;
-  QgsAtlasComposition* mAtlas;
+    QgsComposition* mComposition;
+    QgsComposerLabel* mLabel1;
+    QgsComposerLabel* mLabel2;
+    QgsComposerMap* mAtlasMap;
+    QgsComposerMap* mOverview;
+    QgsMapRenderer* mMapRenderer;
+    QgsVectorLayer* mVectorLayer;
+    QgsAtlasComposition* mAtlas;
 };
 
 void TestQgsAtlasComposition::initTestCase()
@@ -67,7 +67,7 @@ void TestQgsAtlasComposition::initTestCase()
   QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
-				     "ogr" );
+                                     "ogr" );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
@@ -151,7 +151,7 @@ void TestQgsAtlasComposition::filename()
   for ( size_t fi = 0; fi < mAtlas->numFeatures(); ++fi )
   {
     mAtlas->prepareForFeature( fi );
-    QString expected = QString( "output_%1" ).arg( (int)(fi+1) );
+    QString expected = QString( "output_%1" ).arg(( int )( fi + 1 ) );
     QCOMPARE( mAtlas->currentFilename(), expected );
   }
   mAtlas->endRender();
@@ -171,9 +171,9 @@ void TestQgsAtlasComposition::autoscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( "Atlas autoscale test", mComposition,
-				   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-				   "expected_composermapatlas" + QDir::separator() +
-				   QString( "autoscale_%1.png" ).arg((int)fit) );
+                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+                                   "expected_composermapatlas" + QDir::separator() +
+                                   QString( "autoscale_%1.png" ).arg(( int )fit ) );
     QVERIFY( checker.testComposition( 0 ) );
   }
   mAtlas->endRender();
@@ -192,9 +192,9 @@ void TestQgsAtlasComposition::fixedscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( "Atlas fixedscale test", mComposition,
-				   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-				   "expected_composermapatlas" + QDir::separator() +
-				   QString( "fixedscale_%1.png" ).arg((int)fit) );
+                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+                                   "expected_composermapatlas" + QDir::separator() +
+                                   QString( "fixedscale_%1.png" ).arg(( int )fit ) );
     QVERIFY( checker.testComposition( 0 ) );
   }
   mAtlas->endRender();
@@ -215,9 +215,9 @@ void TestQgsAtlasComposition::hiding_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( "Atlas hidden test", mComposition,
-				   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
-				   "expected_composermapatlas" + QDir::separator() +
-				   QString( "hiding_%1.png" ).arg((int)fit) );
+                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+                                   "expected_composermapatlas" + QDir::separator() +
+                                   QString( "hiding_%1.png" ).arg(( int )fit ) );
     QVERIFY( checker.testComposition( 0 ) );
   }
   mAtlas->endRender();

@@ -91,7 +91,8 @@ void QgsApplication::init( QString customConfigPath )
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
-  foreach ( QString path, QStringList() << "" << "/.." << "/bin" )
+  // "/../../.." is for Mac bundled app in build directory
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/path.txt" );
     if ( f.exists() )
@@ -120,6 +121,7 @@ void QgsApplication::init( QString customConfigPath )
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
 #endif
+    setPkgDataPath( ABISYM( mBuildSourcePath ) ); // directly source path - used for: doc, resources, svg
     ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIB_SUBDIR + "/";
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
   }
@@ -856,3 +858,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
+
+

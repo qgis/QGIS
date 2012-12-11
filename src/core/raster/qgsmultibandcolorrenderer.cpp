@@ -57,7 +57,6 @@ QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
   }
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setInvertColor( mInvertColor );
   renderer->setRasterTransparency( mRasterTransparency );
 
   return renderer;
@@ -136,8 +135,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
   bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
-                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
-                    && !mInvertColor );
+                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement );
 
   QSet<int> bands;
   if ( mRedBand > 0 )
@@ -243,7 +241,9 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     }
 
     bool isNoData = false;
-    double redVal, greenVal, blueVal;
+    double redVal = 0;
+    double greenVal = 0;
+    double blueVal = 0;
     if ( mRedBand > 0 )
     {
       redVal = redBlock->value( i );
@@ -286,13 +286,6 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     if ( mBlueContrastEnhancement )
     {
       blueVal = mBlueContrastEnhancement->enhanceContrast( blueVal );
-    }
-
-    if ( mInvertColor )
-    {
-      redVal = 255 - redVal;
-      greenVal = 255 - greenVal;
-      blueVal = 255 - blueVal;
     }
 
     //opacity

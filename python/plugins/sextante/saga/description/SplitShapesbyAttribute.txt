@@ -1,5 +1,0 @@
-Split Shapes by Attribute
-shapes_tools
-ParameterVector|TABLE|Table/Shapes|-1|False
-ParameterTableField|FIELD|Attribute|TABLE
-OutputTable|CUTS|Cuts

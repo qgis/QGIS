@@ -1,13 +1,12 @@
 MeanShiftSegmentation
-otbcli_MeanShiftSegmentation
-Mean Shift segmentation
+otbcli_Segmentation
+Mean Shift segmentation (labeled raster output)
 Segmentation
-ParameterRaster|-in|Input Image|False
-OutputRaster|-fout|Filtered output
-OutputRaster|-cout|Clustered output
-OutputRaster|-lout|Label output
-OutputRaster|-cbout|Cluster Boundaries output
-ParameterNumber|-spatialr|Spatial radius|None|None|5
-ParameterNumber|-ranger|Range radius|None|None|15.0
-ParameterNumber|-minsize|Min region size|None|None|100
-ParameterNumber|-scale|Scale|None|None|100000.0
+ParameterRaster|-filter meanshift -in|Input Image|False
+ParameterNumber|-filter.meanshift.spatialr|Spatial radius|None|None|5
+ParameterNumber|-filter.meanshift.thres|Mode convergence threshold|None|None|0.1
+ParameterNumber|-filter.meanshift.ranger|Range radius|None|None|15.0
+ParameterNumber|-filter.meanshift.minsize|Min region size|0|None|100
+ParameterNumber|-filter.meanshift.maxiter|Maximum number of iterations|0|None|100
+OutputRaster|-mode raster -mode.raster.out|Output labeled image
+

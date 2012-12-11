@@ -34,7 +34,7 @@ __revision__ = '$Format:%H$'
 #% key: host
 #% type: string
 #% label: Host
-#% description: Host name of the machine on which the server is running. 
+#% description: Host name of the machine on which the server is running.
 #% required : no
 #%end
 
@@ -68,7 +68,7 @@ __revision__ = '$Format:%H$'
 #% key: user
 #% type: string
 #% label: User
-#% description: Connect to the database as the user username instead of the  default. 
+#% description: Connect to the database as the user username instead of the  default.
 #% required : no
 #%end
 
@@ -103,7 +103,7 @@ def main():
     if host: conn += ",host=" + host
     if port: conn += ",port=" + port
 
-    # Unfortunately we cannot test untill user/password is set 
+    # Unfortunately we cannot test untill user/password is set
     if user or password:
         print "Setting login (db.login) ... "
         sys.stdout.flush()
@@ -121,10 +121,10 @@ def main():
 		print "Cannot delete login."
 		sys.stdout.flush()
         grass.fatal("Cannot connect to database.")
-  
+
     if grass.run_command('db.connect', driver = "pg", database = conn, schema = schema) != 0:
         grass.fatal("Cannot connect to database.")
-	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     main()

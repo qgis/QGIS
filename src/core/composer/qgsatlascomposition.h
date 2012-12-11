@@ -37,35 +37,35 @@ class QgsExpression;
 class CORE_EXPORT QgsAtlasComposition : public QObject
 {
     Q_OBJECT
-public:
+  public:
     QgsAtlasComposition( QgsComposition* composition );
     ~QgsAtlasComposition();
-    
+
     /** Is the atlas generation enabled ? */
     bool enabled() const { return mEnabled; }
     void setEnabled( bool e ) { mEnabled = e; }
 
     QgsComposerMap* composerMap() const { return mComposerMap; }
     void setComposerMap( QgsComposerMap* map ) { mComposerMap = map; }
-    
+
     bool hideCoverage() const { return mHideCoverage; }
     void setHideCoverage( bool hide ) { mHideCoverage = hide; }
-    
+
     bool fixedScale() const { return mFixedScale; }
     void setFixedScale( bool fixed ) { mFixedScale = fixed; }
-    
+
     float margin() const { return mMargin; }
     void setMargin( float margin ) { mMargin = margin; }
-    
+
     QString filenamePattern() const { return mFilenamePattern; }
     void setFilenamePattern( const QString& pattern ) { mFilenamePattern = pattern; }
-    
+
     QgsVectorLayer* coverageLayer() const { return mCoverageLayer; }
     void setCoverageLayer( QgsVectorLayer* lmap );
-    
+
     bool singleFile() const { return mSingleFile; }
     void setSingleFile( bool single ) { mSingleFile = single; }
-    
+
     /** Begins the rendering. */
     void beginRender();
     /** Ends the rendering. Restores original extent */
@@ -85,11 +85,11 @@ public:
 
     QgsComposition* composition() { return mComposition; }
 
- signals:
+  signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
 
- private:
+  private:
     QgsComposition* mComposition;
 
     bool mEnabled;

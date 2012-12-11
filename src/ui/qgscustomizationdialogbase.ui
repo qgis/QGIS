@@ -16,6 +16,13 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
+     <widget class="QCheckBox" name="mCustomizationEnabledCheckBox">
+      <property name="text">
+       <string>Enable customization</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTreeWidget" name="treeWidget">
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectItems</enum>

@@ -837,11 +837,13 @@ void GlobePlugin::elevationLayersChanged()
 
 void GlobePlugin::reset()
 {
-  if (mViewerWidget) {
+  if ( mViewerWidget )
+  {
     delete mViewerWidget;
     mViewerWidget = 0;
   }
-  if (mOsgViewer) {
+  if ( mOsgViewer )
+  {
     delete mOsgViewer;
     mOsgViewer = 0;
   }

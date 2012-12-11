@@ -50,6 +50,7 @@ ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${OSGEARTH_INCLUDE_DIR}
+     ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui

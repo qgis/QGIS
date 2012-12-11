@@ -58,7 +58,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mOffsetXSpinBox_editingFinished();
     void on_mOffsetYSpinBox_editingFinished();
     void on_mLineWidthSpinBox_valueChanged( double d );
-    void on_mLineColorButton_clicked();
+    void on_mGridLineStyleButton_clicked();
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
     void on_mCrossWidthSpinBox_valueChanged( double d );
     void on_mAnnotationFontButton_clicked();
@@ -116,6 +116,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
 
     void updateOverviewSymbolMarker();
+    void updateLineSymbolMarker();
 
     /**Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();

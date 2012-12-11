@@ -355,7 +355,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
     double mitreLimit = s.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble();
 
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, leftSide ? offset : -offset, quadSegments, joinStyle, mitreLimit );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();

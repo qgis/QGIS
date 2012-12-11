@@ -36,21 +36,21 @@ class PGTableInfo(TableInfo):
 
 		# if the estimation is less than 100 rows, try to count them - it shouldn't take long time
 		if self.table.rowCount == None and self.table.estimatedRowCount < 100:
-			# row count information is not displayed yet, so just block 
+			# row count information is not displayed yet, so just block
 			# table signals to avoid double refreshing (infoViewer->refreshRowCount->tableChanged->infoViewer)
 			self.table.blockSignals(True)
 			self.table.refreshRowCount()
 			self.table.blockSignals(False)
 
 		tbl = [
-			("Relation type:", "View" if self.table.isView else "Table"), 
+			("Relation type:", "View" if self.table.isView else "Table"),
 			("Owner:", self.table.owner)
 		]
 		if self.table.comment:
 			tbl.append( ("Comment:", self.table.comment) )
 
 		tbl.extend([
-			("Pages:", self.table.pages), 
+			("Pages:", self.table.pages),
 			("Rows (estimation):", self.table.estimatedRowCount )
 		])
 
@@ -94,6 +94,34 @@ class PGTableInfo(TableInfo):
 		if not self.table.isView:
 			if len( filter(lambda fld: fld.primaryKey, self.table.fields()) ) <= 0:
 				ret.append( HtmlParagraph( u"<warning> No primary key defined for this table!" ) )
+
+		return ret
+
+	def getSpatialInfo(self):
+		ret = []
+
+		info = self.db.connector.getSpatialInfo()
+		if info == None:
+			return
+
+		tbl = [
+			("Library:", info[0]),
+			("Scripts:", info[3]),
+			("GEOS:", info[1]),
+			("Proj:", info[2])
+		]
+		ret.append( HtmlTable( tbl ) )
+
+		if info[1] != None and info[1] != info[2]:
+			ret.append( HtmlParagraph( u"<warning> Version of installed scripts doesn't match version of released scripts!\n" \
+				"This is probably a result of incorrect PostGIS upgrade." ) )
+
+		if not self.db.connector.has_geometry_columns:
+			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
+				"This table is essential for many GIS applications for enumeration of tables." ) )
+		elif not self.db.connector.has_geometry_columns_access:
+			ret.append( HtmlParagraph( u"<warning> This user doesn't have privileges to read contents of geometry_columns table!\n" \
+				"This table is essential for many GIS applications for enumeration of tables." ) )
 
 		return ret
 

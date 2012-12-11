@@ -64,10 +64,14 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
         return self.myEndItem
 
     def boundingRect(self):
-        extra = (self.pen().width() + 20) / 2.0
-        p1 = self.line().p1()
-        p2 = self.line().p2()
-        return QtCore.QRectF(p1, QtCore.QSizeF(p2.x() - p1.x(), p2.y() - p1.y())).normalized().adjusted(-extra, -extra, extra, extra)
+        #this is a quick fix to avoid arrows not being drawn
+        return QtCore.QRectF(0, 0, 4000,4000)
+        #=======================================================================
+        # extra = (self.pen().width() + 20) / 2.0
+        # p1 = self.line().p1()
+        # p2 = self.line().p2()
+        # return QtCore.QRectF(p1, QtCore.QSizeF(p2.x() - p1.x(), p2.y() - p1.y())).normalized().adjusted(-extra, -extra, extra, extra)
+        #=======================================================================
 
     def shape(self):
         path = super(ModelerArrowItem, self).shape()
@@ -123,3 +127,4 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
 
         painter.drawLine(line)
         painter.drawPolygon(self.arrowHead)
+

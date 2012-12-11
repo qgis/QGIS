@@ -22,9 +22,9 @@
 #include <QPainter>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
-  QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
-  mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
-  mExpressionFeature( 0 ), mExpressionLayer( 0 )
+    QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
+    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
+    mExpressionFeature( 0 ), mExpressionLayer( 0 )
 {
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
@@ -90,7 +90,7 @@ QString QgsComposerLabel::displayText() const
   QString displayText = mText;
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
-  subs[ "$page" ] = QVariant((int)mComposition->itemPageNumber( this ) + 1);
+  subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
   return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs );
 }
 
@@ -105,9 +105,9 @@ void QgsComposerLabel::replaceDateText( QString& text ) const
     int openingBracketPos = text.indexOf( "(", currentDatePos );
     int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
     if ( openingBracketPos != -1 &&
-	 closingBracketPos != -1 &&
-	 ( closingBracketPos - openingBracketPos ) > 1 && 
-	 openingBracketPos == currentDatePos + constant.size() )
+         closingBracketPos != -1 &&
+         ( closingBracketPos - openingBracketPos ) > 1 &&
+         openingBracketPos == currentDatePos + constant.size() )
     {
       formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
       text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );

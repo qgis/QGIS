@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include <QMouseEvent>
 #include <QSettings>
@@ -126,7 +127,7 @@ void QgsMapToolMeasureAngle::deactivate()
 void QgsMapToolMeasureAngle::createRubberBand()
 {
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, false );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
 
   QSettings settings;
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
@@ -182,7 +183,7 @@ void QgsMapToolMeasureAngle::updateSettings()
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
+  QString ellipsoidId = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
   mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
   // Only use ellipsoidal calculation when project wide transformation is enabled.

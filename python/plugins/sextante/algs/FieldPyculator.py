@@ -55,7 +55,7 @@ class FieldsPyculator(GeoAlgorithm):
         self.name = "Field Pyculator"
         self.group = "Algorithms for vector layers"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features", False))
+        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features (all if noone selected)", False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
         self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
@@ -67,8 +67,6 @@ class FieldsPyculator(GeoAlgorithm):
         code = self.getParameterValue(self.FORMULA)
         globalExpression = self.getParameterValue(self.GLOBAL)
         useSelected = self.getParameterValue(self.USE_SELECTED)
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = layer.dataProvider()
@@ -78,8 +76,6 @@ class FieldsPyculator(GeoAlgorithm):
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
-        nFeatures = vprovider.featureCount()
-        nElement = 0
         new_ns = {}
 
         #run global code
@@ -115,9 +111,12 @@ class FieldsPyculator(GeoAlgorithm):
                                  "Field code block can't be executed! %s \n %s"
                                  (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
-
         #run
-        if not useSelected:
+        nElement = 1
+        features = layer.selectedFeatures()
+        nFeatures = len(features)
+        if not useSelected or nFeatures == 0:
+            nFeatures = vprovider.featureCount()
             feat = QgsFeature()
             if need_attrs:
                 attr_ind = vprovider.attributeIndexes()

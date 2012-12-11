@@ -58,9 +58,11 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
     requestStringToParameterMap( queryString, parameters );
 
     QDomElement docElem = doc.documentElement();
-    parameters.insert( "VERSION", docElem.attribute( "version" ) );
-    parameters.insert( "SERVICE", docElem.attribute( "service" ) );
-    parameters.insert( "REQUEST", docElem.localName() );
+    if ( docElem.hasAttribute( "version" ) )
+      parameters.insert( "VERSION", docElem.attribute( "version" ) );
+    if ( docElem.hasAttribute( "service" ) )
+      parameters.insert( "SERVICE", docElem.attribute( "service" ) );
+    parameters.insert( "REQUEST", docElem.tagName() );
     parameters.insert( "REQUEST_BODY", inputString );
   }
 

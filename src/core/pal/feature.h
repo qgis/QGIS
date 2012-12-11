@@ -58,16 +58,19 @@ namespace pal
         double width;
       } CharacterInfo;
 
-      LabelInfo( int num, double height )
+      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
       {
-        max_char_angle_delta = 20;
+        max_char_angle_inside = maxinangle;
+        // outside angle should be negative
+        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
         label_height = height;
         char_num = num;
         char_info = new CharacterInfo[num];
       }
       ~LabelInfo() { delete [] char_info; }
 
-      double max_char_angle_delta;
+      double max_char_angle_inside;
+      double max_char_angle_outside;
       double label_height;
       int char_num;
       CharacterInfo* char_info;
@@ -93,6 +96,7 @@ namespace pal
       bool fixedPosition() const { return fixedPos; }
       //Set label rotation to fixed value
       void setFixedAngle( double a ) { fixedRotation = true; fixedAngle = a; }
+      void setAlwaysShow( bool bl ) { alwaysShow = bl; }
 
     protected:
       Layer *layer;
@@ -116,6 +120,8 @@ namespace pal
       //Fixed (e.g. data defined) angle only makes sense together with fixed position
       bool fixedRotation;
       double fixedAngle; //fixed angle value (in rad)
+
+      bool alwaysShow; //true is label is to always be shown (but causes overlapping)
 
       // array of parts - possibly not necessary
       //int nPart;
@@ -279,6 +285,7 @@ namespace pal
       bool getFixedRotation() { return f->fixedRotation; }
       double getLabelAngle() { return f->fixedAngle; }
       bool getFixedPosition() { return f->fixedPos; }
+      bool getAlwaysShow() { return f->alwaysShow; }
 
       int getNumSelfObstacles() const { return nbHoles; }
       PointSet* getSelfObstacle( int i ) { return holes[i]; }

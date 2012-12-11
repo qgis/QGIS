@@ -88,6 +88,13 @@ class CORE_EXPORT QgsPalLayerSettings
       ShowAll // show upside down for all labels, including dynamic ones
     };
 
+    enum DirectionSymbols
+    {
+      SymbolLeftRight, // place direction symbols on left/right of label
+      SymbolAbove, // place direction symbols on above label
+      SymbolBelow // place direction symbols on below label
+    };
+
     enum MultiLineAlign
     {
       MultiLeft = 0,
@@ -118,6 +125,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
+      AlwaysShow,
       PropertyCount, // keep last entry
     };
 
@@ -170,11 +178,23 @@ class CORE_EXPORT QgsPalLayerSettings
     bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
-    // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
+    bool limitNumLabels; // whether to limit the number of labels to be drawn
+    int maxNumLabels; // maximum number of labels to be drawn
+    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
+    // direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    QString leftDirectionSymbol;
+    QString rightDirectionSymbol;
+    bool reverseDirectionSymbol;
+    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
     unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
+    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
+    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
+    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
@@ -208,7 +228,7 @@ class CORE_EXPORT QgsPalLayerSettings
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
 
-    // temporary stuff: set when layer gets prepared
+    // temporary stuff: set when layer gets prepared or labeled
     pal::Layer* palLayer;
     int fieldIndex;
     const QgsMapToPixel* xform;
@@ -216,6 +236,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPoint ptZero, ptOne;
     QList<QgsPalGeometry*> geometries;
     QgsGeometry* extentGeom;
+    int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)
@@ -293,6 +316,14 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
                     const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
 
+    //! load/save engine settings to project file
+    //! @note added in QGIS 1.9
+    void loadEngineSettings();
+    void saveEngineSettings();
+    void clearEngineSettings();
+    bool isStoredWithProject() const { return mSavedWithProject; }
+    void setStoredWithProject( bool store ) { mSavedWithProject = store; }
+
   protected:
     // hashtable of layer settings, being filled during labeling
     QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
@@ -311,6 +342,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mShowingCandidates;
 
     bool mShowingAllLabels; // whether to avoid collisions or not
+
+    bool mSavedWithProject; // whether engine settings have been read from project file
 
     QgsLabelSearchTree* mLabelSearchTree;
 };
