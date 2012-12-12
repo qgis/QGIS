@@ -90,7 +90,6 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     tmpYRes = yRes;
   }
 
-#if 1 //disable for performance reason?
   if ( tmpExtent != theExtent ||
        tmpXRes > xRes || tmpYRes > yRes )
   {
@@ -192,8 +191,6 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   {
     readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
   }
-#endif //0
-  readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
