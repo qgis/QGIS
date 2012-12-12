@@ -25,6 +25,17 @@
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
     QColor* colorArray, int nColors ):
+    QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mNColors( nColors )
+{
+  mColors = new QRgb[nColors];
+  for ( int i = 0; i < nColors; ++i )
+  {
+    mColors[i] = colorArray[i].rgba();
+  }
+  delete[] colorArray;
+}
+
+QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors ):
     QgsRasterRenderer( input, "paletted" ), mBand( bandNumber ), mColors( colorArray ), mNColors( nColors )
 {
 }
@@ -36,7 +47,7 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 
 QgsRasterInterface * QgsPalettedRasterRenderer::clone() const
 {
-  QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBand, colors(), mNColors );
+  QgsPalettedRasterRenderer * renderer = new QgsPalettedRasterRenderer( 0, mBand, rgbArray(), mNColors );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
   renderer->setRasterTransparency( mRasterTransparency );
@@ -52,14 +63,14 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
 
   int bandNumber = elem.attribute( "band", "-1" ).toInt();
   int nColors = 0;
-  QColor* colors = 0;
+  QRgb* colors = 0;
 
   QDomElement paletteElem = elem.firstChildElement( "colorPalette" );
   if ( !paletteElem.isNull() )
   {
     QDomNodeList paletteEntries = paletteElem.elementsByTagName( "paletteEntry" );
     nColors = paletteEntries.size();
-    colors = new QColor[ nColors ];
+    colors = new QRgb[ nColors ];
 
     int value = 0;
     QDomElement entryElem;
@@ -68,7 +79,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
       entryElem = paletteEntries.at( i ).toElement();
       value = entryElem.attribute( "value", "0" ).toInt();
       QgsDebugMsg( entryElem.attribute( "color", "#000000" ) );
-      colors[value] = QColor( entryElem.attribute( "color", "#000000" ) );
+      colors[value] = QColor( entryElem.attribute( "color", "#000000" ) ).rgba();
     }
   }
   QgsRasterRenderer* r = new QgsPalettedRasterRenderer( input, bandNumber, colors, nColors );
@@ -85,9 +96,23 @@ QColor* QgsPalettedRasterRenderer::colors() const
   QColor* colorArray = new QColor[ mNColors ];
   for ( int i = 0; i < mNColors; ++i )
   {
-    colorArray[i] = mColors[i];
+    colorArray[i] = QColor( mColors[i] );
   }
   return colorArray;
+}
+
+QRgb* QgsPalettedRasterRenderer::rgbArray() const
+{
+  if ( mNColors < 1 )
+  {
+    return 0;
+  }
+  QRgb* rgbValues = new QRgb[mNColors];
+  for ( int i = 0; i < mNColors; ++i )
+  {
+    rgbValues[i] = mColors[i];
+  }
+  return rgbValues;
 }
 
 QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
@@ -146,7 +171,12 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     return outputBlock;
   }
 
-  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  //use direct data access instead of QgsRasterBlock::setValue
+  //because of performance
+  unsigned int* outputData = ( unsigned int* )( outputBlock->data() );
+
+  size_t rasterSize = ( size_t )width * height;
+  for ( size_t i = 0; i < rasterSize; ++i )
   {
     int val = ( int ) inputBlock->value( i );
     if ( inputBlock->isNoDataValue( val ) )
@@ -156,14 +186,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     }
     if ( !hasTransparency )
     {
-      if ( val < 0 || val > mNColors )
-      {
-        outputBlock->setColor( i, myDefaultColor );
-      }
-      else
-      {
-        outputBlock->setColor( i, mColors[ val ].rgba() );
-      }
+      outputData[i] = mColors[ val ];
     }
     else
     {
@@ -176,9 +199,8 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
       {
         currentOpacity *=  alphaBlock->value( i ) / 255.0;
       }
-      QColor& currentColor = mColors[val];
-
-      outputBlock->setColor( i, qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 ) );
+      QColor currentColor = QColor( mColors[val] );
+      outputData[i] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
     }
   }
 
@@ -207,7 +229,7 @@ void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   {
     QDomElement colorElem = doc.createElement( "paletteEntry" );
     colorElem.setAttribute( "value", i );
-    colorElem.setAttribute( "color", mColors[i].name() );
+    colorElem.setAttribute( "color", QColor( mColors[i] ).name() );
     colorPaletteElem.appendChild( colorElem );
   }
   rasterRendererElem.appendChild( colorPaletteElem );
@@ -219,7 +241,7 @@ void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QCo
 {
   for ( int i = 0; i < mNColors; ++i )
   {
-    symbolItems.push_back( qMakePair( QString::number( i ), mColors[i] ) );
+    symbolItems.push_back( qMakePair( QString::number( i ), QColor( mColors[i] ) ) );
   }
 }
 
