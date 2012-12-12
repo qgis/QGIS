@@ -654,7 +654,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( rotated )
     p->rotate( mAngle );
 
-  if ( drawOnScreen && !rotated )
+  if ( drawOnScreen && !rotated && !( size * size * 32 > QgsSvgCache::instance()->maximumCacheSize() ) )
   {
     const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );

@@ -82,6 +82,11 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /**Get image data*/
     QByteArray getImageData( const QString &path ) const;
 
+    /** Return maximum size for cache
+     * @note added in 1.9
+     */
+    int maximumCacheSize() { return mMaximumSize; }
+
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
