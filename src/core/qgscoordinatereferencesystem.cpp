@@ -286,8 +286,9 @@ void QgsCoordinateReferenceSystem::validate()
     mCustomSrsValidation( this );
 
   if ( !mIsValidFlag )
-    // set the default
-    createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  {
+    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )

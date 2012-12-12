@@ -24,7 +24,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsscalecalculator.h"
@@ -941,7 +940,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
     delete theImage;
     return 0;
   }
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   //find out the current scale denominater and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( theImage->logicalDpiX() + theImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );

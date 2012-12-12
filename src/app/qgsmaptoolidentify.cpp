@@ -315,7 +315,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
       convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
       QString str = calc.textUnit( area, 3, myDisplayUnits, true );
       derivedAttributes.insert( tr( "Area" ), str );
-      convertMeasurement( calc, perimeter, myDisplayUnits, false );  // area and myDisplayUnits are out params
+      convertMeasurement( calc, perimeter, myDisplayUnits, false );  // perimeter and myDisplayUnits are out params
       str = calc.textUnit( perimeter, 3, myDisplayUnits, false );
       derivedAttributes.insert( tr( "Perimeter" ), str );
     }

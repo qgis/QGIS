@@ -29,6 +29,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgswfsserver.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 #include <QDomDocument>
@@ -198,6 +199,7 @@ int main( int argc, char * argv[] )
 
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
+  theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   while ( fcgi_accept() >= 0 )
   {

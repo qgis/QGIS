@@ -48,12 +48,8 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 {
   mCoverageLayer = layer;
 
-  if ( mCoverageLayer != 0 )
-  {
-    // update the number of features
-    QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
-    QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )provider->featureCount() ) );
-  }
+  // update the number of features
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::beginRender()
@@ -93,6 +89,7 @@ void QgsAtlasComposition::beginRender()
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
+  mFeatureIds.clear();
   while ( provider->nextFeature( feat ) )
   {
     mFeatureIds.push_back( feat.id() );
@@ -115,7 +112,7 @@ void QgsAtlasComposition::beginRender()
 
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )provider->featureCount() ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::endRender()
@@ -147,11 +144,7 @@ void QgsAtlasComposition::endRender()
 
 size_t QgsAtlasComposition::numFeatures() const
 {
-  if ( mCoverageLayer )
-  {
-    return mCoverageLayer->dataProvider()->featureCount();
-  }
-  return 0;
+  return mFeatureIds.size();
 }
 
 void QgsAtlasComposition::prepareForFeature( size_t featureI )

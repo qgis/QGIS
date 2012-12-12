@@ -28,6 +28,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsattributeaction.h"
 #include "qgsfeatureaction.h"
+#include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -46,7 +48,36 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 
-#include "qgslogger.h"
+QgsWebView::QgsWebView( QWidget *parent ) : QWebView( parent )
+{
+  page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+#ifdef QGISDEBUG
+  settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
+}
+
+void QgsWebView::print( void )
+{
+  QPrinter printer;
+  QPrintDialog *dialog = new QPrintDialog( &printer );
+  if ( dialog->exec() == QDialog::Accepted )
+    QWebView::print( &printer );
+}
+
+void QgsWebView::contextMenuEvent( QContextMenuEvent *e )
+{
+  QMenu *menu = page()->createStandardContextMenu();
+  if ( menu )
+  {
+    QAction *action = new QAction( tr( "Print" ), this );
+    connect( action, SIGNAL( triggered() ), this, SLOT( print() ) );
+    menu->addAction( action );
+    menu->exec( e->globalPos() );
+    delete menu;
+  }
+}
 
 class QgsIdentifyResultsDock : public QDockWidget
 {
@@ -289,15 +320,9 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
     featItem->addChild( attrItem );
 
-    QWebView *wv = new QWebView( attrItem->treeWidget() );
+    QgsWebView *wv = new QgsWebView( attrItem->treeWidget() );
     wv->setHtml( attributes.begin().value() );
-    wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
-    QAction *action = new QAction( tr( "Print" ), wv );
-    connect( action, SIGNAL( triggered() ), this, SLOT( print() ) );
-    wv->insertAction( 0, action );
-
-    wv->setContextMenuPolicy( Qt::ActionsContextMenu );
     mPrintToolButton->setVisible( true );
 
     connect( wv, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
@@ -1038,22 +1063,6 @@ void QgsIdentifyResults::openUrl( const QUrl &url )
   {
     QMessageBox::warning( this, tr( "Could not open url" ), tr( "Could not open URL '%1'" ).arg( url.toString() ) );
   }
-}
-
-void QgsIdentifyResults::print()
-{
-  QAction *action = qobject_cast<QAction*>( sender() );
-  if ( !action )
-    return;
-
-  QWebView *wv = qobject_cast<QWebView*>( action->parent() );
-  if ( !wv )
-    return;
-
-  QPrinter printer;
-  QPrintDialog *dialog = new QPrintDialog( &printer );
-  if ( dialog->exec() == QDialog::Accepted )
-    wv->print( &printer );
 }
 
 void QgsIdentifyResults::printCurrentItem()
