@@ -121,11 +121,8 @@ class GrassUtils:
     @staticmethod
     def createGrassScript(commands):
         folder = GrassUtils.grassPath()
-        shell = GrassUtils.grassWinShell()
-
-        script = GrassUtils.grassScriptFilename()
         gisrc =  SextanteUtils.userFolder() + os.sep + "sextante.gisrc"
-
+        
         #temporary gisrc file
         output = open(gisrc, "w")
         location = "temp_location"
@@ -133,41 +130,45 @@ class GrassUtils:
         #gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
         output.write("GISDBASE: " + gisdbase + "\n");
         output.write("LOCATION_NAME: " + location + "\n");
-        output.write("MAPSET: PERMAMENT \n");
+        output.write("MAPSET: PERMANENT \n");
         output.write("GRASS_GUI: text\n");
         output.close()
-
-        output=open(script, "w")
-        output.write("set HOME=" + os.path.expanduser("~") + "\n");
-        output.write("set GISRC=" + gisrc + "\n")
-        output.write("set GRASS_SH=" + shell + "\\bin\\sh.exe\n")
-        output.write("set PATH=" + shell + os.sep + "bin;" + shell + os.sep + "lib;" + "%PATH%\n")
-        output.write("set WINGISBASE=" + folder + "\n")
-        output.write("set GISBASE=" + folder + "\n");
-        output.write("set GRASS_PROJSHARE=" + folder + os.sep + "share" + os.sep + "proj" + "\n")
-        output.write("set GRASS_MESSAGE_FORMAT=gui\n")
-        #Replacement code for etc/Init.bat
-        output.write("if \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n")
-        output.write("if not \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n")
-        output.write("\n")
-        output.write("set GRASS_VERSION=" + GrassUtils.getGrassVersion() + "\n")
-        output.write("if not \"%LANG%\"==\"\" goto langset\n")
-        output.write("FOR /F \"usebackq delims==\" %%i IN (`\"%WINGISBASE%\\etc\\winlocale\"`) DO @set LANG=%%i\n")
-        output.write(":langset\n")
-        output.write("\n")
-        output.write("set PATHEXT=%PATHEXT%;.PY\n")
-        output.write("set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n")
-        output.write("\n")
-        output.write("g.gisenv.exe set=\"MAPSET=PERMANENT\"\n")
-        output.write("g.gisenv.exe set=\"LOCATION=" + location + "\"\n")
-        output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\"\n")
-        output.write("g.gisenv.exe set=\"GISDBASE=" + gisdbase + "\"\n")
-        output.write("g.gisenv.exe set=\"GRASS_GUI=text\"\n")
-        for command in commands:
-            output.write(command + "\n")
-        output.write("\n");
-        output.write("exit\n");
-        output.close();
+        
+        if SextanteUtils.isWindows():
+            shell = GrassUtils.grassWinShell()
+            script = GrassUtils.grassScriptFilename()
+            
+            output=open(script, "w")
+            output.write("set HOME=" + os.path.expanduser("~") + "\n");
+            output.write("set GISRC=" + gisrc + "\n")
+            output.write("set GRASS_SH=" + shell + "\\bin\\sh.exe\n")
+            output.write("set PATH=" + shell + os.sep + "bin;" + shell + os.sep + "lib;" + "%PATH%\n")
+            output.write("set WINGISBASE=" + folder + "\n")
+            output.write("set GISBASE=" + folder + "\n");
+            output.write("set GRASS_PROJSHARE=" + folder + os.sep + "share" + os.sep + "proj" + "\n")
+            output.write("set GRASS_MESSAGE_FORMAT=gui\n")
+            #Replacement code for etc/Init.bat
+            output.write("if \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n")
+            output.write("if not \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n")
+            output.write("\n")
+            output.write("set GRASS_VERSION=" + GrassUtils.getGrassVersion() + "\n")
+            output.write("if not \"%LANG%\"==\"\" goto langset\n")
+            output.write("FOR /F \"usebackq delims==\" %%i IN (`\"%WINGISBASE%\\etc\\winlocale\"`) DO @set LANG=%%i\n")
+            output.write(":langset\n")
+            output.write("\n")
+            output.write("set PATHEXT=%PATHEXT%;.PY\n")
+            output.write("set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n")
+            output.write("\n")
+            output.write("g.gisenv.exe set=\"MAPSET=PERMANENT\"\n")
+            output.write("g.gisenv.exe set=\"LOCATION=" + location + "\"\n")
+            output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\"\n")
+            output.write("g.gisenv.exe set=\"GISDBASE=" + gisdbase + "\"\n")
+            output.write("g.gisenv.exe set=\"GRASS_GUI=text\"\n")
+            for command in commands:
+                output.write(command + "\n")
+            output.write("\n");
+            output.write("exit\n");
+            output.close();
 
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
@@ -237,8 +238,8 @@ class GrassUtils:
 
     @staticmethod
     def prepareGrassExecution(commands):
+        GrassUtils.createGrassScript(commands)
         if SextanteUtils.isWindows():
-            GrassUtils.createGrassScript(commands)
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
         else:
             gisrc =  SextanteUtils.userFolder() + os.sep + "sextante.gisrc"
@@ -248,9 +249,9 @@ class GrassUtils:
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             if SextanteUtils.isMac():
-                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/user"
+                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/PEMANENT"
             else:
-                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
+                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
 
         return command
 
