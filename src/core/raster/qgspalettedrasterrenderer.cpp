@@ -171,6 +171,8 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     return outputBlock;
   }
 
+  //use direct data access instead of QgsRasterBlock::setValue
+  //because of performance
   unsigned int* outputData = ( unsigned int* )( outputBlock->data() );
 
   size_t rasterSize = ( size_t )width * height;
