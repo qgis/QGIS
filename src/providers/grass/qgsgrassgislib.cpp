@@ -18,9 +18,9 @@
 #include <stdarg.h>
 #include <QtGlobal>
 
-// If qgsgrassgislibfunctions.h is included on Linux, symbols defined here 
-// cannot be found (undefined symbol error) even if they are present in 
-// the library (in code section) - why? 
+// If qgsgrassgislibfunctions.h is included on Linux, symbols defined here
+// cannot be found (undefined symbol error) even if they are present in
+// the library (in code section) - why?
 #ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
 #endif
@@ -973,6 +973,24 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QgsRasterBlock::DataType qgisTy
     default:
       return -1;
   }
+}
+
+typedef int G_vasprintf_type( char **, const char *, va_list );
+int G_vasprintf( char **out, const char *fmt, va_list ap )
+{
+  G_vasprintf_type* fn = ( G_vasprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_vasprintf_type" ) );
+  return fn( out, fmt, ap );
+}
+
+typedef int G_asprintf_type( char **, const char *, ... );
+int G_asprintf( char **out, const char *fmt, ... )
+{
+  G_asprintf_type* fn = ( G_asprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_asprintf_type" ) );
+  va_list ap;
+  va_start( ap, fmt );
+  int ret = fn( out, fmt, ap );
+  va_end( ap );
+  return ret;
 }
 
 char GRASS_LIB_EXPORT *G_tempfile( void )
