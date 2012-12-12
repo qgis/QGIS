@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>checkDock</class>
+ <widget class="QDockWidget" name="checkDock">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>436</width>
+    <height>439</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Topology Checker</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="mValidateAllButton">
+          <property name="text">
+           <string>Validate All</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mValidateExtentButton">
+          <property name="text">
+           <string>Validate Extent</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mToggleRubberbands">
+        <property name="text">
+         <string>Toggle Error Markers</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableView" name="mErrorTableView"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="mComment">
+        <property name="text">
+         <string>Topology not checked yet</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="mConfigureButton">
+          <property name="text">
+           <string>Configure</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="mFixBox">
+          <item>
+           <property name="text">
+            <string>Select automatic fix</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mFixButton">
+          <property name="text">
+           <string>Fix!</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
