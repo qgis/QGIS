@@ -90,7 +90,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     tmpYRes = yRes;
   }
 
-#if 0 //disable for performance reason
+#if 1 //disable for performance reason?
   if ( tmpExtent != theExtent ||
        tmpXRes > xRes || tmpYRes > yRes )
   {

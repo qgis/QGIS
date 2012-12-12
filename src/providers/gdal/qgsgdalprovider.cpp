@@ -395,14 +395,17 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   int dataSize = dataTypeSize( theBandNo );
 
-  // fill with null values
-  QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
-  char *nodata = ba.data();
-  char *block = ( char * ) theBlock;
-  for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
+  if( !mExtent.contains( theExtent ) )
   {
-    memcpy( block, nodata, dataSize );
-    block += dataSize;
+    // fill with null values
+    QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
+    char *nodata = ba.data();
+    char *block = ( char * ) theBlock;
+    for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
+    {
+        memcpy( block, nodata, dataSize );
+        block += dataSize;
+    }
   }
 
   QgsRectangle myRasterExtent = theExtent.intersect( &mExtent );
