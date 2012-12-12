@@ -248,9 +248,9 @@ class GrassUtils:
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             if SextanteUtils.isMac():
-                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/user"
+                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
             else:
-                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
+                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
 
         return command
 
