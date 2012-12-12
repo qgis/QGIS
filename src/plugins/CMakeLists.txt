@@ -16,6 +16,7 @@ ADD_SUBDIRECTORY(roadgraph)
 ADD_SUBDIRECTORY(zonal_statistics)
 ADD_SUBDIRECTORY(georeferencer)
 ADD_SUBDIRECTORY(gps_importer)
+ADD_SUBDIRECTORY(topology)
 
 IF (WITH_SPATIALITE)
   ADD_SUBDIRECTORY(offline_editing)
