@@ -19,6 +19,8 @@
 #include <QCoreApplication>
 #include <QIcon>
 
+int QgsLegendGroup::nextAvailableID = 0;
+
 QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
     : QgsLegendItem( theItem, theName )
 {
@@ -29,6 +31,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   setIcon( 0, myIcon );
   mEmbedded = false;
   mDrawingOrder = -1;
+  mID = nextAvailableID++;
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
     : QgsLegendItem( theListView, theString )
@@ -40,6 +43,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
   setIcon( 0, myIcon );
   mEmbedded = false;
   mDrawingOrder = -1;
+  mID = nextAvailableID++;
 }
 
 QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
@@ -52,6 +56,7 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
   setIcon( 0, myIcon );
   mEmbedded = false;
   mDrawingOrder = -1;
+  mID = nextAvailableID++;
 }
 
 QgsLegendGroup::~QgsLegendGroup()
