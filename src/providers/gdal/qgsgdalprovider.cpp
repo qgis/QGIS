@@ -395,7 +395,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   int dataSize = dataTypeSize( theBandNo );
 
-  if( !mExtent.contains( theExtent ) )
+  if ( !mExtent.contains( theExtent ) )
   {
     // fill with null values
     QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
@@ -403,8 +403,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     char *block = ( char * ) theBlock;
     for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
     {
-        memcpy( block, nodata, dataSize );
-        block += dataSize;
+      memcpy( block, nodata, dataSize );
+      block += dataSize;
     }
   }
 
@@ -564,23 +564,28 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
   double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
 
+  double y = myRasterExtent.yMaximum() - 0.5 * yRes;
   for ( int row = 0; row < height; row++ )
   {
-    double y = myRasterExtent.yMaximum() - ( row + 0.5 ) * yRes;
     int tmpRow = static_cast<int>( floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )theBlock + dataSize * ( top + row ) * thePixelWidth;
-    for ( int col = 0; col < width; col++ )
+
+    double x = myRasterExtent.xMinimum() + 0.5 * xRes; // cell center
+    char* dst = dstRowBlock + dataSize * left;
+    char* src = 0;
+    int tmpCol = 0;
+    for ( int col = 0; col < width; ++col )
     {
-      // cell center
-      double x = myRasterExtent.xMinimum() + ( col + 0.5 ) * xRes;
       // floor() is quite slow! Use just cast to int.
-      int tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
-      char *src = srcRowBlock + dataSize * tmpCol;
-      char *dst = dstRowBlock + dataSize * ( left + col );
+      tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
+      src = srcRowBlock + dataSize * tmpCol;
       memcpy( dst, src, dataSize );
+      dst += dataSize;
+      x += xRes;
     }
+    y -= yRes;
   }
 
   QgsFree( tmpBlock );
