@@ -382,7 +382,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
-  int size = context.outputPixelSize( mPatternWidth );
+  double size = context.outputPixelSize( mPatternWidth );
   const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
                                context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   QTransform brushTransform;
