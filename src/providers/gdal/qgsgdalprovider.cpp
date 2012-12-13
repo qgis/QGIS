@@ -363,6 +363,36 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
   return image;
 }
 
+QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight )
+{
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+
+  if ( block->isEmpty() )
+  {
+    return block;
+  }
+
+  readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
+
+  // apply user no data values
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( theBandNo );
+  if ( !myNoDataRangeList.isEmpty() )
+  {
+    double myNoDataValue = noDataValue( theBandNo );
+    size_t size = theWidth * theHeight;
+    for ( size_t i = 0; i < size; i++ )
+    {
+      double value = block->value( i );
+
+      if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+      {
+        block->setValue( i, myNoDataValue );
+      }
+    }
+  }
+  return block;
+}
+
 
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {

@@ -166,6 +166,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
 
+    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
