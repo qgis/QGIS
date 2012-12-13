@@ -63,13 +63,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString& driverName,
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
-  QString *newFilename
+  QString *newFilename,
+  SymbologyExport symbologyExport
 )
     : mDS( NULL )
     , mLayer( NULL )
     , mGeom( NULL )
     , mError( NoError )
-    , mExportFeatureStyle( true )
+    , mSymbologyExport( symbologyExport )
 {
   QString vectorFileName = theVectorFileName;
   QString fileEncoding = theFileEncoding;
@@ -568,7 +569,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   }
 
   //add OGR feature style type
-  if ( mExportFeatureStyle && renderer )
+  if ( mSymbologyExport != NoSymbology && renderer )
   {
     //concatenate ogr styles of all symbols
     QgsSymbolV2List symbols = renderer->symbolsForFeature( feature );
@@ -650,7 +651,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QStringList &datasourceOptions,
     const QStringList &layerOptions,
     bool skipAttributeCreation,
-    QString *newFilename )
+    QString *newFilename,
+    SymbologyExport symbologyExport )
 {
   QgsDebugMsg( "fileName = " + fileName );
   const QgsCoordinateReferenceSystem* outputCRS;
@@ -674,7 +676,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
+    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(),
+                             outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
 
   if ( newFilename )
   {

@@ -56,6 +56,14 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrInvalidLayer, // added in 2.0
     };
 
+    //added in 2.0
+    enum SymbologyExport
+    {
+      NoSymbology = 0, //export only data
+      FeatureSymbology, //Keeps the number of features and export symbology per feature
+      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
+    };
+
     /** Write contents of vector layer to a shapefile
         @deprecated Use writeAsVectorFormat instead*/
     Q_DECL_DEPRECATED static WriterError writeAsShapefile( QgsVectorLayer* layer,
@@ -93,7 +101,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QStringList &datasourceOptions = QStringList(),  // added in 1.6
                                             const QStringList &layerOptions = QStringList(),  // added in 1.6
                                             bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0 // added in 1.9
+                                            QString *newFilename = 0, // added in 1.9
+                                            SymbologyExport symbologyExport = NoSymbology //added in 2.0
                                           );
 
     /** create shapefile and initialize it */
@@ -105,7 +114,8 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(), // added in 1.6
                          const QStringList &layerOptions = QStringList(), // added in 1.6
-                         QString *newFilename = 0 // added in 1.9
+                         QString *newFilename = 0, // added in 1.9
+                         SymbologyExport symbologyExport = NoSymbology//added in 2.0
                        );
 
     /**Returns map with format filter string as key and OGR format key as value*/
@@ -146,6 +156,9 @@ class CORE_EXPORT QgsVectorFileWriter
      */
     static bool deleteShapeFile( QString theFileName );
 
+    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
+
   protected:
     //! @note not available in python bindings
     OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
@@ -168,8 +181,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
 
-    /** flag if OGR feature type style should be exported*/
-    bool mExportFeatureStyle;
+    SymbologyExport mSymbologyExport;
 
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
