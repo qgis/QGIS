@@ -1,6 +1,6 @@
 r.cross
 r.cross - Creates a cross product of the category values from multiple raster map layers.
 Raster (r.*)
-ParameterMultipleInput|input|Names of 2-30 input raster maps|3.0|False
+ParameterMultipleInput|input|Input raster layers|3.0|False
 ParameterBoolean|-z|Non-zero data only|False
-OutputRaster|output|Name for output raster map
+OutputRaster|output|Output layer

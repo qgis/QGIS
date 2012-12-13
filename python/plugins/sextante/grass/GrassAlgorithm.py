@@ -269,6 +269,8 @@ class GrassAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
                 command+=(" " + param.name + "=" + str(param.options[idx]));
+            elif isinstance(param, ParameterSelection):
+                command+=(" " + param.name + "=" + str(param.value));                                
             else:
                 command+=(" " + param.name + "=" + str(param.value));
 
@@ -331,7 +333,7 @@ class GrassAlgorithm(GeoAlgorithm):
     def postProcessResults(self):        
         name = self.commandLineName().replace('.','_')[len('grass:'):]
         try:            
-            module = importlib.import_module('sextante.grass.postproc.' + name)
+            module = importlib.import_module('sextante.grass.ext.' + name)
         except ImportError:                
             return
         if hasattr(module, 'postProcessResults'):                            
@@ -396,4 +398,14 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
+    
+    def checkParameterValuesBeforeExecuting(self):
+        name = self.commandLineName().replace('.','_')[len('grass:'):]
+        try:            
+            module = importlib.import_module('sextante.grass.ext.' + name)
+        except ImportError:                
+            return
+        if hasattr(module, 'checkParameterValuesBeforeExecuting'):                            
+            func = getattr(module,'checkParameterValuesBeforeExecuting')            
+            return func(self)
 
