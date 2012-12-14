@@ -92,7 +92,9 @@ def run(item, action, mainwindow):
 	prevRenderFlagState = iface.mapCanvas().renderFlag()
 	iface.mapCanvas().setRenderFlag( False )
 	try:
-		group = legend.addGroup(u'%s topology' % toponame)
+		# NOTE: -1 parent is an attempt to always add to the root, but
+		#       it is currently broken: http://hub.qgis.org/issues/6879
+		group = legend.addGroup(u'%s topology' % toponame, False, -1)
 
 		provider = db.dbplugin().providerName()
 		uri = db.uri();
