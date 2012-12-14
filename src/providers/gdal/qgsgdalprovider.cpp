@@ -373,26 +373,9 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
   }
 
   readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
-
-  // apply user no data values
-  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( theBandNo );
-  if ( !myNoDataRangeList.isEmpty() )
-  {
-    double myNoDataValue = noDataValue( theBandNo );
-    size_t size = theWidth * theHeight;
-    for ( size_t i = 0; i < size; i++ )
-    {
-      double value = block->value( i );
-
-      if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
-      {
-        block->setValue( i, myNoDataValue );
-      }
-    }
-  }
+  block->applyNodataValues( userNoDataValue( theBandNo ) );
   return block;
 }
-
 
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {
