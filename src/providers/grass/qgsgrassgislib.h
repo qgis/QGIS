@@ -84,10 +84,13 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int G_read_fp_range( const char *name, const char *mapset, struct FPRange *drange );
 
     int readRasterRow( int fd, void * buf, int row, RASTER_MAP_TYPE data_type, bool noDataAsZero = false );
+    int G_get_null_value_row( int fd, char *flags, int row );
     int G_put_raster_row( int fd, const void *buf, RASTER_MAP_TYPE data_type );
     int G_get_cellhd( const char *name, const char *mapset, struct Cell_head *cellhd );
 
+    double G_area_of_cell_at_row( int row );
     double G_database_units_to_meters_factor( void );
+    int G_begin_cell_area_calculations( void );
     double G_distance( double e1, double n1, double e2, double n2 );
 
     /** Get QGIS raster type for GRASS raster type */
@@ -131,6 +134,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int mRows;
     /** Current region columns */
     int mColumns;
+    /** X resolution */
+    double mXRes;
+    /** Y resolution */
+    double mYRes;
     /** Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
