@@ -29,6 +29,7 @@
 */
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType )
     : QgsMapCanvasItem( mapCanvas )
+    , mWidth( 1 )
     , mGeometryType( geometryType )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
