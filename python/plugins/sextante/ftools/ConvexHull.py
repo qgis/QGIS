@@ -184,6 +184,28 @@ class ConvexHull(GeoAlgorithm):
         if not FEATURE_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing convex hull")
 
+    def simpleMeasure(self, inGeom ):
+        measure = QgsDistanceArea()
+        attr1 = measure.measure(inGeom)
+        if inGeom.type() == QGis.Polygon:
+          attr2 = self.perimMeasure( inGeom, measure )
+        else:
+          attr2 = attr1
+        return ( attr1, attr2 )
+
+    def perimMeasure(self, inGeom, measure ):
+        value = 0.00
+        if inGeom.isMultipart():
+          poly = inGeom.asMultiPolygon()
+          for k in poly:
+            for j in k:
+              value = value + measure.measureLine( j )
+        else:
+          poly = inGeom.asPolygon()
+          for k in poly:
+            value = value + measure.measureLine( k )
+        return value
+    
     def defineCharacteristics(self):
         self.name = "Convex hull"
         self.group = "Geoprocessing tools"
