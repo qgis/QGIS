@@ -294,9 +294,6 @@ ErrorList topolTest::checkDuplicates(double tolerance, QgsVectorLayer *layer1, Q
     else // map was not filled in runtest()
       fillFeatureMap(layer1);
 
-    if (layer1->geometryType() != QGis::Line)
-      return errorList;
-
     QList<int>* duplicateIds = new QList<int>();
 
     QList<FeatureLayer>::Iterator it;

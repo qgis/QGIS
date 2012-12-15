@@ -65,9 +65,11 @@ checkDock::checkDock(QgisInterface* qIface, QWidget* parent)
   mConfigureDialog = new rulesDialog(mLayerRegistry->mapLayers().keys(), mTest->testMap(), qIface, parent);
   mTestTable = mConfigureDialog->testTable();
   
-  mValidateExtentButton->setIcon(QIcon(":/topol_c/topol.png"));
-  mValidateAllButton->setIcon(QIcon(":/topol_c/topol.png"));
-  mConfigureButton->setIcon(QIcon(":/topol_c/topol.png"));
+//  //these icons don't look good..maybe add different icons later
+//  mValidateExtentButton->setIcon(QIcon(":/topol.png"));
+//  mValidateAllButton->setIcon(QIcon(":/topol.png"));
+//  mConfigureButton->setIcon(QIcon(":/topol.png"));
+//  mValidateAllButton->setIcon(QIcon(":/topol.png"));
 
  // mQgisApp = QgisApp::instance();
   QgsMapCanvas* canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
@@ -241,8 +243,8 @@ void checkDock::errorListClicked(const QModelIndex& index)
   if (g->type() == QGis::Point)
   { 
     mVMFeature1 = new QgsVertexMarker(canvas);
-    mVMFeature1->setIconType(QgsVertexMarker::ICON_BOX);
-    mVMConflict->setPenWidth(5);
+    mVMFeature1->setIconType(QgsVertexMarker::ICON_X);
+    mVMFeature1->setPenWidth(5);
     mVMFeature1->setIconSize(5);
     mVMFeature1->setColor("blue");
     mVMFeature1->setCenter(g->asPoint());
@@ -270,8 +272,8 @@ void checkDock::errorListClicked(const QModelIndex& index)
   { 
     mVMFeature2 = new QgsVertexMarker(canvas);
     mVMFeature2->setIconType(QgsVertexMarker::ICON_BOX);
-    mVMConflict->setPenWidth(5);
-    mVMConflict->setIconSize(5);
+    mVMFeature2->setPenWidth(5);
+    mVMFeature2->setIconSize(5);
     mVMFeature2->setColor("red");
     mVMFeature2->setCenter(g->asPoint());
   }

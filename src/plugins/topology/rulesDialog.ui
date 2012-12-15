@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Current tests</string>
+        <string>Current Rules</string>
        </property>
       </widget>
      </item>
@@ -27,7 +27,7 @@
       <widget class="QTableWidget" name="mTestTable">
        <column>
         <property name="text">
-         <string>Test</string>
+         <string>Rule</string>
         </property>
        </column>
        <column>
@@ -120,14 +120,14 @@
        <item>
         <widget class="QPushButton" name="mAddTestButton">
          <property name="text">
-          <string>Add new test</string>
+          <string>Add New Rule</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="mDeleteTestButton">
          <property name="text">
-          <string>Delete test</string>
+          <string>Delete Rule</string>
          </property>
         </widget>
        </item>
