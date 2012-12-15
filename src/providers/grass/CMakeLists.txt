@@ -61,9 +61,13 @@ SET ( FUNCTIONS
   "G_add_c_raster_color_rule"
   "G_add_d_raster_color_rule"
   "G_add_f_raster_color_rule"
+  "G_add_modular_color_rule"
   "G_add_raster_color_rule"
   "G_adjust_Cell_head"
+  "G_adjust_easting"
+  "G_adjust_east_longitude"
   "G_align_window"
+  "G__allocate_null_bits"
   "G_allocate_cell_buf"
   "G_allocate_c_raster_buf"
   "G_allocate_d_raster_buf"
@@ -71,20 +75,50 @@ SET ( FUNCTIONS
   "G_allocate_null_buf"
   "G_allocate_raster_buf"
   "G__calloc"
+  "G_chop"
+  "G_chrcat"
+  "G_chrcpy"
+  "G_chrmov"
+  "G_colors_count"
   "G_col_to_easting"
   "G_convert_dirseps_to_host"
+  "G_create_key_value"
+  "G_database_projection_name"
+  "G_date"
   "G_define_flag"
   "G_define_module"
   "G_define_option"
   "G_define_standard_option"
+  "G_easting_to_col"
+  "G_find_key_value"
+  "G_find_cell_stat"
+  "G_fopen_new"
+  "G_format_easting"
+  "G_format_northing"
+  "G_format_resolution"
   "G_free"
+  "G_free_cats"
+  "G_free_cell_stats"
+  "G_free_key_value"
   "G_free_raster_cats"
+  "G_fseek"
+  "G_ftell"
+  "G_get_cat"
+  "G_get_c_raster_cat"
+  "G_get_d_raster_cat"
   "G_get_fp_range_min_max"
+  "G_get_f_raster_cat"
+  "G_getl"
+  "G_getl2"
   "G_get_range_min_max"
+  "G_get_raster_cat"
+  "G_get_raster_row_colors"
   "G_get_set_window"
   "G_gettext"
   "G_get_window"
   "G_incr_void_ptr"
+  "G_index"
+  "G_init_cell_stats"
   "G_init_colors"
   "G_init_fp_range"
   "G__init_null_patterns"
@@ -93,7 +127,16 @@ SET ( FUNCTIONS
   "G_is_c_null_value"
   "G_is_d_null_value"
   "G_is_f_null_value"
+  "G_lat_scan"
+  "G_llres_scan"
+  "G_lon_scan"
+  "G__ls"
+  "G_ls"
+  "G_ls_format"
   "G__malloc"
+  "G_make_random_colors"
+  "G_northing_to_row"
+  "G__projection_name"
   "G_percent"
   "G_program_name"
   "G_projection"
@@ -101,27 +144,50 @@ SET ( FUNCTIONS
   "G_quant_free"
   "G_quant_get_limits"
   "G_quant_init"
+  "G_putenv"
   "G_raster_size"
+  "G_read_key_value_file"
   "G__realloc"
+  "G_rindex"
   "G_row_to_northing"
+  "G_scan_easting"
+  "G_scan_northing"
   "G_set_c_null_value"
   "G_set_d_null_value"
   "G_set_d_raster_cat"
+  "G_set_color_range"
   "G_setenv"
   "G_set_f_null_value"
   "G_set_gisrc_mode"
+  "G_set_key_value"
   "G_set_null_value"
   "G_set_raster_cat"
   "G_set_raster_cats_title"
   "G_set_raster_value_d"
   "G_set_window"
+  "G_store"
+  "G_strcasecmp"
+  "G_strcat"
+  "G_strchg"
+  "G_strcpy"
+  "G_strdup"
+  "G_strend"
   "G_strip"
+  "G_strmov"
+  "G_strncpy"
+  "G_str_replace"
+  "G_strstr"
+  "G_str_to_lower"
+  "G_str_to_sql"
+  "G_str_to_upper"
   "G_suppress_masking"
   "G_trim_decimal"
   "G_update_fp_range"
+  "G_update_key_value_file"
   "G_update_range"
   "G_window_cols"
   "G_window_rows"
+  "G_write_key_value_file"
   "G_zero"
 )
 
@@ -133,20 +199,30 @@ SET ( FUNCTIONS
 #               module of the same name, i.e. in our fake library, not in the original 
 #               true GRASS gis lib, so we have to add all functions called in true lib
 #               also to mapped functions in fake lib  
+# Maybe that above is nonsese, but on Linux symbols are resolved when called, but on
+# Windows, all symbols are resolved at beginning and thus not all missing symbols are 
+# always catched on Linux if testing with different data
 
 IF(MSVC)
 SET ( FUNCTIONS
   ${FUNCTIONS}
   "G__getenv"
+  "G_get_gisrc_mode"
 )
 ENDIF(MSVC)
 
 # List of functions which are implemented in qgsgrassgislib.cpp and 
 # thus we only need prototype
 SET ( FUNCTION_PROTOTYPES
+  "G_area_of_cell_at_row"
+  "G_ask_cell_new"
+  "G_ask_cell_old"
   "G_asprintf"
+  "G_begin_cell_area_calculations"
   "G_begin_distance_calculations"
+  "G_begin_geodesic_distance"
   "G_check_input_output_name"
+  "G_check_overwrite"
   "G_close_cell"
   "G_command_history"
   "G_database_units_to_meters_factor"
@@ -154,8 +230,16 @@ SET ( FUNCTION_PROTOTYPES
   "G_distance"
   "G_done_msg"
   "G_fatal_error"
+  "G__file_name"
+  "G__file_name_misc"
   "G_find_cell"
   "G_find_cell2"
+  "G_find_file"
+  "G_find_file2"
+  "G_find_file_misc"
+  "G_find_file2_misc"
+  "G_fully_qualified_name"
+  "G_geodesic_distance_lon_to_lon"
   "G_get_cellhd"
   "G_get_c_raster_row"
   "G_get_c_raster_row_nomask"
@@ -165,6 +249,7 @@ SET ( FUNCTION_PROTOTYPES
   "G_get_f_raster_row_nomask"
   "G_get_map_row"
   "G_get_map_row_nomask"
+  "G_get_null_value_row"
   "G_get_raster_map_type"
   "G_get_raster_row"
   "G_get_raster_row_nomask"
@@ -177,20 +262,26 @@ SET ( FUNCTION_PROTOTYPES
   "G_message"
   "G_open_cell_new"
   "G_open_cell_old"
+  "G_open_fp_cell_new"
   "G_open_raster_new"
   "G_parser"
   "G_put_raster_row"
   "G_quantize_fp_map_range"
   "G_raster_map_is_fp"
+  "G_read_cats"
   "G_read_colors"
   "G_read_fp_range"
   "G_read_history"
   "G_read_range"
   "G_read_raster_cats"
+  "G_remove"
   "G_set_cats_title"
   "G_set_error_routine"
+  "G_set_geodesic_distance_lat1"
+  "G_set_geodesic_distance_lat2"
   "G_set_quant_rules"
   "G_short_history"
+  "G__temp_element"
   "G_tempfile"
   "G_vasprintf"
   "G_verbose_message"
@@ -213,6 +304,12 @@ FILE(READ "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" HEADER_FILE)
 # Remove comments and directives (some macros are lost)
 STRING(REGEX REPLACE "(/\\*([^*]|[\r\n]|(\\*+([^*/]|[\r\n])))*\\*+/)" "" HEADER_FILE "${HEADER_FILE}")
 STRING(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
+
+# Add G_gettext defined in glocale.h
+SET ( HEADER_FILE 
+  ${HEADER_FILE}
+  "char *G_gettext(const char *, const char *);"
+)
 
 SET ( PROTOTYPES "// Auto generated by cmake, do not edit\n" )
 LIST ( APPEND PROTOTYPES "#define GRASS_GISDEFS_H\n" )
@@ -290,9 +387,12 @@ ELSE(MSVC)
 ENDIF(MSVC)
 ADD_LIBRARY( ${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
+# GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same 
+# on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed 
+# in different directory
 SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
   CLEAN_DIRECT_OUTPUT 1
-  COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\" -DGRASS_LIBRARY_GIS=\\\"${GRASS_LIBRARY_gis}\\\" \"-I${CMAKE_CURRENT_SOURCE_DIR}\" ")
+  COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\" -DGRASS_VERSION=\\\"${GRASS_VERSION}\\\" -DGRASS_LIBRARY_GIS=\\\"${GRASS_LIBRARY_gis}\\\" \"-I${CMAKE_CURRENT_SOURCE_DIR}\" ")
 
 IF (NOT APPLE)
   SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES

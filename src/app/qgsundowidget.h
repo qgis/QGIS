@@ -58,6 +58,12 @@ class QgsUndoWidget : public QDockWidget
      */
     void destroyStack();
 
+    /**
+     * Access to dock's contents
+     * @note added in 1.9
+     */
+    QWidget* dockContents() { return dockWidgetContents; }
+
   public slots:
     /**
      * Changes undo stack which is displayed by undo view
@@ -77,7 +83,7 @@ class QgsUndoWidget : public QDockWidget
     /**
      * Slot to handle index changed signal
      */
-    void indexChanged( int value );
+    void indexChanged( int curIndx );
 
     /**
      * Undo operation called from button push
@@ -97,6 +103,8 @@ class QgsUndoWidget : public QDockWidget
     QUndoStack * mUndoStack;
     QgsMapCanvas* mMapCanvas;
 
+    int mPreviousIndex;
+    int mPreviousCount;
 };
 
 

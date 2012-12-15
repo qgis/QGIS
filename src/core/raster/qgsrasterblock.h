@@ -304,6 +304,8 @@ class CORE_EXPORT QgsRasterBlock
 
     inline static void writeValue( void *data, QgsRasterBlock::DataType type, size_t index, double value );
 
+    void applyNodataValues( const QList<Range>& rangeList );
+
   private:
 
     static QImage::Format imageFormat( QgsRasterBlock::DataType theDataType );

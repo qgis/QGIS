@@ -410,6 +410,24 @@ bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
   return true;
 }
 
+void QgsRasterBlock::applyNodataValues( const QList<Range>& rangeList )
+{
+  if ( rangeList.isEmpty() )
+  {
+    return;
+  }
+
+  size_t size = mWidth * mHeight;
+  for ( size_t i = 0; i < size; ++i )
+  {
+    double val = value( i );
+    if ( valueInRange( val, rangeList ) )
+    {
+      setValue( i, mNoDataValue );
+    }
+  }
+}
+
 QImage QgsRasterBlock::image() const
 {
   if ( mImage )

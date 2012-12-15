@@ -194,22 +194,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
-  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( theBandNo );
-  if ( !myNoDataRangeList.isEmpty() )
-  {
-    double myNoDataValue = noDataValue( theBandNo );
-    size_t size = theWidth * theHeight;
-    for ( size_t i = 0; i < size; i++ )
-    {
-      double value = block->value( i );
-
-      if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
-      {
-        block->setValue( i, myNoDataValue );
-      }
-    }
-  }
-
+  block->applyNodataValues( userNoDataValue( theBandNo ) );
   return block;
 }
 

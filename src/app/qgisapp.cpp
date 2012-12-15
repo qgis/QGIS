@@ -5238,7 +5238,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
           res = false;
         }
 
-        vlayer->triggerRepaint();
+        // canvas refreshes handled in QgsUndoWidget::indexChanged
+        //vlayer->triggerRepaint();
         break;
 
       default:
@@ -7215,11 +7216,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
         mActionSaveEdits->setEnabled( canChangeAttributes && vlayer->isEditable() );
+        mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
+        updateUndoActions();
       }
       else
       {
         mActionToggleEditing->setEnabled( false );
         mActionSaveEdits->setEnabled( false );
+        mUndoWidget->dockContents()->setEnabled( false );
+        mActionUndo->setEnabled( false );
+        mActionRedo->setEnabled( false );
       }
 
       if ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
