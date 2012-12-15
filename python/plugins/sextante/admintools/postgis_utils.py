@@ -5,7 +5,7 @@
     postgis_utils.py
     ---------------------
     Date                 : November 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Copyright            : (C) 2012 by Martin Dobias
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
+__author__ = 'Martin Dobias'
 __date__ = 'November 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__copyright__ = '(C) 2012, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -524,7 +524,7 @@ class GeoDB:
 	def create_spatial_index(self, table, schema=None, geom_column='the_geom'):
 		table_name = self._table_name(schema, table)
 		idx_name = self._quote("sidx_"+table)
-		sql = "CREATE INDEX %s ON %s USING GIST(%s GIST_GEOMETRY_OPS)" % (idx_name, table_name, self._quote(geom_column))
+		sql = "CREATE INDEX %s ON %s USING GIST(%s)" % (idx_name, table_name, self._quote(geom_column))
 		self._exec_sql_and_commit(sql)
 
 	def delete_index(self, name, schema=None):

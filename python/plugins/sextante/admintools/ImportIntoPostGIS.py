@@ -16,8 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterBoolean import ParameterBoolean
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -26,32 +27,79 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.admintools import postgis_utils
-import PyQt4
 
 class ImportIntoPostGIS(GeoAlgorithm):
 
     DATABASE = "DATABASE"
     TABLENAME = "TABLENAME"
     INPUT = "INPUT"
+    OVERWRITE = "OVERWRITE"
+    CREATEINDEX = "CREATEINDEX"
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/../images/postgis.png")
 
     def processAlgorithm(self, progress):
-        pass
+        connection = self.getParameterValue(self.DATABASE)
+        overwrite = self.getParameterValue(self.OVERWRITE)
+        createIndex = self.getParameterValue(self.CREATEINDEX)        
+        settings = QSettings()
+        mySettings = "/PostgreSQL/connections/"+ connection
+        try:
+            database = settings.value(mySettings+"/database").toString()
+            username = settings.value(mySettings+"/username").toString()
+            host = settings.value(mySettings+"/host").toString()
+            port = int(settings.value(mySettings+"/port").toString())
+            password = settings.value(mySettings+"/password").toString()
+        except Exception, e:
+            raise GeoAlgorithmExecutionException("Wrong database connection name: " + connection)
+        
+        table = self.getParameterValue(self.TABLENAME);
+        table.replace(" ", "")
+        providerName = "postgres"
+                
+        try:
+            db = postgis_utils.GeoDB(host=host, port=port, dbname=database, user=username, passwd=password)
+        except postgis_utils.DbError, e:
+            raise GeoAlgorithmExecutionException("Couldn't connect to database:\n"+e.message)
+
+        uri = QgsDataSourceURI()
+        uri.setConnection(host, str(port), database, username, password)        
+        uri.setDataSource("public", table, "the_geom", "")
+
+        options = {}
+        if overwrite:
+            options['overwrite'] = True
+
+        layerUri = self.getParameterValue(self.INPUT);        
+        layer = QGisLayers.getObjectFromUri(layerUri) 
+        ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, self.crs, False, False, options)
+        if ret != 0:
+            raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)            
+
+        if createIndex:
+            db.create_spatial_index(table, "public", "the_geom")
+            
+        db.vacuum_analyze(table, "public")
 
     def defineCharacteristics(self):
         self.name = "Import into PostGIS"
         self.group = "PostGIS management tools"
         self.addParameter(ParameterVector(self.INPUT, "Layer to import"))
-        self.addParameter(ParameterString(self.DATABASE, "Database"))
-        self.addParameter(ParameterString(self.TABLENAME, "Name for new table"))
-
+        self.addParameter(ParameterString(self.DATABASE, "Database (connection name)"))
+        self.addParameter(ParameterString(self.TABLENAME, "Table to import to"))
+        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite", True))   
+        self.addParameter(ParameterBoolean(self.CREATEINDEX, "Create spatial index", True))       
+        
+       
 
 
 

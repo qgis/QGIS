@@ -16,14 +16,17 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.admintools.PostGISExecuteSQL import PostGISExecuteSQL
+import os
+from PyQt4 import QtGui
+
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
-import os
+from sextante.admintools.ImportIntoPostGIS import ImportIntoPostGIS
 from sextante.admintools.ImportVectorIntoGeoServer import ImportVectorIntoGeoServer
 from sextante.admintools.CreateWorkspace import CreateWorkspace
 from sextante.admintools.ImportRasterIntoGeoServer import ImportRasterIntoGeoServer
@@ -38,7 +41,7 @@ class AdminToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.alglist = [ImportVectorIntoGeoServer(), ImportRasterIntoGeoServer(),
                         CreateWorkspace(), DeleteWorkspace(), DeleteDatastore(),
-                        CreateStyleGeoServer()]#] PostGISExecuteSQL(), ImportIntoPostGIS()]#, TruncateSeedGWC()]
+                        CreateStyleGeoServer(), ImportIntoPostGIS(), PostGISExecuteSQL()]#, TruncateSeedGWC()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -49,18 +52,16 @@ class AdminToolsAlgorithmProvider(AlgorithmProvider):
 
 
     def getName(self):
-        return "admintools"
+        return "gspg"
 
     def getDescription(self):
-        return "Administration tools"
+        return "GeoServer/PostGIS tools"
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/geoserver.png")
-    #===========================================================================
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/database.png")
 
     def _loadAlgorithms(self):
         self.algs = self.alglist
 
     def supportsNonFileBasedOutput(self):
-        return True
+        return False

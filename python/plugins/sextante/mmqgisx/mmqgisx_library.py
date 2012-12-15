@@ -2243,8 +2243,7 @@ def mmqgisx_merge(qgis, layers, savename, addlayer):
 			#	QMessageBox.critical(qgis.mainWindow(),
 			#		"Merge Layers", "Merged layers must all have same coordinate system")
 			#	return None
-
-		layers.append(layer)
+	
 		totalfeaturecount += layer.featureCount()
 
 		# Add any fields not in the composite field list
@@ -2280,19 +2279,18 @@ def mmqgisx_merge(qgis, layers, savename, addlayer):
 		feature = QgsFeature()
 		layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 		layer.dataProvider().rewind()
-                while layer.dataProvider().nextFeature(feature):
+		idx = {}
+		for dindex, dfield in fields.iteritems():				
+			for sindex, sfield in layer.dataProvider().fields().iteritems():
+				if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
+					idx[dindex] = sindex
+		while layer.dataProvider().nextFeature(feature):
 			sattributes = feature.attributeMap()
 			dattributes = {}
 			for dindex, dfield in fields.iteritems():
 				dattributes[dindex] = QVariant(dfield.type())
-				for sindex, sfield in layer.dataProvider().fields().iteritems():
-					if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
-						dattributes[dindex] = sattributes[sindex]
-						break
-
-			#for dindex, dfield in dattributes.iteritems():
-			#	print layer.name() + " (" + str(dindex) + ") " + str(dfield.toString())
-
+				dattributes[dindex] = sattributes[idx[dindex]]
+			
 			feature.setAttributeMap(dattributes)
 			outfile.addFeature(feature)
 			featurecount += 1
