@@ -1577,7 +1577,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerNameUtf8;
         layerId.chop( 1 );
-        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerId, true, false );
+        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ) , layerId, true, false );
       }
       continue;
     }
@@ -1690,7 +1690,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( mLabelSearchTree )
     {
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), false, palGeometry->isPinned() );
+      QString labeltext = (( QgsPalGeometry* )( *it )->getFeaturePart()->getUserGeometry() )->text();
+      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), labeltext, false, palGeometry->isPinned() );
     }
   }
 

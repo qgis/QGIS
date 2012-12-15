@@ -171,8 +171,8 @@ void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent *e )
     return;
   }
 
-  vlayer->beginEditCommand( tr( "Label rotated" ) );
-  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rotationCol, rotation, false );
+  vlayer->beginEditCommand( tr( "Rotated label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+  vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rotationCol, rotation, true );
   vlayer->endEditCommand();
   mCanvas->refresh();
 }

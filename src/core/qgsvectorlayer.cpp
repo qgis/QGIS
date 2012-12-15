@@ -5190,7 +5190,7 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
       if ( !FID_IS_NEW( fid ) )
       {
         // existing feature
-        if ( attrChIt.value().target.isNull() )
+        if ( !attrChIt.value().target.isValid() )
         {
           mChangedAttributeValues[fid].remove( attrChIt.key() );
           if ( mChangedAttributeValues[fid].isEmpty() )

@@ -145,22 +145,49 @@ QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
   return mInvalidLabelSettings;
 }
 
-QString QgsMapToolLabel::currentLabelText()
+QString QgsMapToolLabel::currentLabelText( int trunc )
 {
-  QgsVectorLayer* vlayer = currentLayer();
-  if ( !vlayer )
+  bool settingsOk;
+  QgsPalLayerSettings& labelSettings = currentLabelSettings( &settingsOk );
+  if ( !settingsOk )
   {
     return "";
   }
 
-  QString labelField = vlayer->customProperty( "labeling/fieldName" ).toString();
-  if ( !labelField.isEmpty() )
+  if ( labelSettings.isExpression )
   {
-    int labelFieldId = vlayer->fieldNameIndex( labelField );
-    QgsFeature f;
-    if ( vlayer->featureAtId( mCurrentLabelPos.featureId, f, false, true ) )
+    QString labelText = mCurrentLabelPos.labelText;
+
+    if ( trunc > 0 && labelText.length() > trunc )
     {
-      return f.attributeMap()[labelFieldId].toString();
+      labelText.truncate( trunc );
+      labelText += "...";
+    }
+    return labelText;
+  }
+  else
+  {
+    QgsVectorLayer* vlayer = currentLayer();
+    if ( !vlayer )
+    {
+      return "";
+    }
+
+    QString labelField = vlayer->customProperty( "labeling/fieldName" ).toString();
+    if ( !labelField.isEmpty() )
+    {
+      int labelFieldId = vlayer->fieldNameIndex( labelField );
+      QgsFeature f;
+      if ( vlayer->featureAtId( mCurrentLabelPos.featureId, f, false, true ) )
+      {
+        QString labelText = f.attributeMap()[labelFieldId].toString();
+        if ( trunc > 0 && labelText.length() > trunc )
+        {
+          labelText.truncate( trunc );
+          labelText += "...";
+        }
+        return labelText;
+      }
     }
   }
   return "";

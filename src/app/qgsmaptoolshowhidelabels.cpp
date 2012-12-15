@@ -280,12 +280,31 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
     return false;
   }
 
-  // edit attribute table
-  QString editTxt = hide ? tr( "Label hidden" ) : tr( "Label shown" );
-  vlayer->beginEditCommand( editTxt );
-  if ( !vlayer->changeAttributeValue( fid, showCol, ( hide ? 0 : 1 ), false ) )
+  // check if attribute value is already the same
+  QgsFeature f;
+  if ( !vlayer->featureAtId( fid, f, false, true ) )
+  {
+    return false;
+  }
+
+  int colVal = hide ? 0 : 1;
+  QVariant fQVal = f.attributeMap()[showCol];
+  bool convToInt;
+  int fVal = fQVal.toInt( &convToInt );
+
+  if ( !convToInt || fVal == colVal )
+  {
+    return false;
+  }
+
+  // different attribute value, edit table
+  QString labelText = currentLabelText( 24 );
+  QString editTxt = hide ? tr( "Hid label" ) : tr( "Showed label" );
+  vlayer->beginEditCommand( editTxt + QString( " '%1'" ).arg( labelText ) );
+  if ( !vlayer->changeAttributeValue( fid, showCol, colVal, true ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
+    vlayer->endEditCommand();
     return false;
   }
   vlayer->endEditCommand();

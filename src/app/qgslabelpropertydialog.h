@@ -30,7 +30,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, int featureId, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     /**Returns properties changed by the user*/
@@ -56,7 +56,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 
   private:
     /**Sets activation / values to the gui elements depending on the label settings and feature values*/
-    void init( const QString& layerId, int featureId );
+    void init( const QString& layerId, int featureId, const QString& labelText );
     void disableGuiElements();
     /**Block / unblock all input element signals*/
     void blockElementSignals( bool block );

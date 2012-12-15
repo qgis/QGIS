@@ -6,7 +6,7 @@ class QgsLabelPosition
 #include <qgsmaprenderer.h>
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false );
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, bool upside_down, bool diagram = false, bool pinned = false );
     QgsLabelPosition();
     int featureId;
     double rotation;
@@ -15,6 +15,7 @@ class QgsLabelPosition
     double width;
     double height;
     QString layerID;
+    QString labelText;
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
