@@ -77,6 +77,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     char *G_find_cell2( const char * name, const char * mapset );
     int G_open_cell_old( const char *name, const char *mapset );
     int G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type );
+    int G_open_fp_cell_new( const char *name );
     int G_close_cell( int fd );
     RASTER_MAP_TYPE G_raster_map_type( const char *name, const char *mapset );
     RASTER_MAP_TYPE G_get_raster_map_type( int fd );
@@ -92,6 +93,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     double G_database_units_to_meters_factor( void );
     int G_begin_cell_area_calculations( void );
     double G_distance( double e1, double n1, double e2, double n2 );
+
+    int G_set_geodesic_distance_lat1( double lat1 );
+    int G_set_geodesic_distance_lat2( double lat2 );
+    double G_geodesic_distance_lon_to_lon( double lon1, double lon2 );
 
     /** Get QGIS raster type for GRASS raster type */
     QgsRasterBlock::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
@@ -141,6 +146,8 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /** Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
+    /** lat1, lat2 used for geodesic distance calculation */
+    double mLat1, mLat2;
 };
 
 #endif // QGSGRASSGISLIB_H

@@ -61,6 +61,7 @@ SET ( FUNCTIONS
   "G_add_c_raster_color_rule"
   "G_add_d_raster_color_rule"
   "G_add_f_raster_color_rule"
+  "G_add_modular_color_rule"
   "G_add_raster_color_rule"
   "G_adjust_Cell_head"
   "G_adjust_easting"
@@ -116,6 +117,8 @@ SET ( FUNCTIONS
   "G_gettext"
   "G_get_window"
   "G_incr_void_ptr"
+  "G_index"
+  "G_init_cell_stats"
   "G_init_colors"
   "G_init_fp_range"
   "G__init_null_patterns"
@@ -124,10 +127,14 @@ SET ( FUNCTIONS
   "G_is_c_null_value"
   "G_is_d_null_value"
   "G_is_f_null_value"
+  "G_lat_scan"
+  "G_llres_scan"
+  "G_lon_scan"
   "G__ls"
   "G_ls"
   "G_ls_format"
   "G__malloc"
+  "G_make_random_colors"
   "G_northing_to_row"
   "G__projection_name"
   "G_percent"
@@ -137,13 +144,18 @@ SET ( FUNCTIONS
   "G_quant_free"
   "G_quant_get_limits"
   "G_quant_init"
+  "G_putenv"
   "G_raster_size"
   "G_read_key_value_file"
   "G__realloc"
+  "G_rindex"
   "G_row_to_northing"
+  "G_scan_easting"
+  "G_scan_northing"
   "G_set_c_null_value"
   "G_set_d_null_value"
   "G_set_d_raster_cat"
+  "G_set_color_range"
   "G_setenv"
   "G_set_f_null_value"
   "G_set_gisrc_mode"
@@ -187,6 +199,9 @@ SET ( FUNCTIONS
 #               module of the same name, i.e. in our fake library, not in the original 
 #               true GRASS gis lib, so we have to add all functions called in true lib
 #               also to mapped functions in fake lib  
+# Maybe that above is nonsese, but on Linux symbols are resolved when called, but on
+# Windows, all symbols are resolved at beginning and thus not all missing symbols are 
+# always catched on Linux if testing with different data
 
 IF(MSVC)
 SET ( FUNCTIONS
@@ -200,6 +215,8 @@ ENDIF(MSVC)
 # thus we only need prototype
 SET ( FUNCTION_PROTOTYPES
   "G_area_of_cell_at_row"
+  "G_ask_cell_new"
+  "G_ask_cell_old"
   "G_asprintf"
   "G_begin_cell_area_calculations"
   "G_begin_distance_calculations"
@@ -222,6 +239,7 @@ SET ( FUNCTION_PROTOTYPES
   "G_find_file_misc"
   "G_find_file2_misc"
   "G_fully_qualified_name"
+  "G_geodesic_distance_lon_to_lon"
   "G_get_cellhd"
   "G_get_c_raster_row"
   "G_get_c_raster_row_nomask"
@@ -244,18 +262,23 @@ SET ( FUNCTION_PROTOTYPES
   "G_message"
   "G_open_cell_new"
   "G_open_cell_old"
+  "G_open_fp_cell_new"
   "G_open_raster_new"
   "G_parser"
   "G_put_raster_row"
   "G_quantize_fp_map_range"
   "G_raster_map_is_fp"
+  "G_read_cats"
   "G_read_colors"
   "G_read_fp_range"
   "G_read_history"
   "G_read_range"
   "G_read_raster_cats"
+  "G_remove"
   "G_set_cats_title"
   "G_set_error_routine"
+  "G_set_geodesic_distance_lat1"
+  "G_set_geodesic_distance_lat2"
   "G_set_quant_rules"
   "G_short_history"
   "G__temp_element"
@@ -364,9 +387,12 @@ ELSE(MSVC)
 ENDIF(MSVC)
 ADD_LIBRARY( ${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
+# GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same 
+# on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed 
+# in different directory
 SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
   CLEAN_DIRECT_OUTPUT 1
-  COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\" -DGRASS_LIBRARY_GIS=\\\"${GRASS_LIBRARY_gis}\\\" \"-I${CMAKE_CURRENT_SOURCE_DIR}\" ")
+  COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\" -DGRASS_VERSION=\\\"${GRASS_VERSION}\\\" -DGRASS_LIBRARY_GIS=\\\"${GRASS_LIBRARY_gis}\\\" \"-I${CMAKE_CURRENT_SOURCE_DIR}\" ")
 
 IF (NOT APPLE)
   SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
