@@ -671,6 +671,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     if ( atlasOnASingleFile )
     {
       mComposition->beginPrintAsPDF( printer, outputFileName );
+      // set the correct resolution
+      mComposition->beginPrint( printer );
       painter.begin( &printer );
     }
 
@@ -703,6 +705,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       {
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
         mComposition->beginPrintAsPDF( printer, outputFileName );
+	// set the correct resolution
+	mComposition->beginPrint( printer );
         painter.begin( &printer );
         mComposition->doPrint( printer, painter );
         painter.end();
