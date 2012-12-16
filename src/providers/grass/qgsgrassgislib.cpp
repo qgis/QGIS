@@ -91,7 +91,7 @@ QgsGrassGisLib::QgsGrassGisLib()
   // on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed
   // in a different directory. qgis.env however calls GRASS etc/env.bat
   // which sets GISBASE and GRASS_LIBRARY_GIS on Windows is path to .lib, e.g
-  // grass_gis.lib.  Name of the DLL on Windows is e.g.: libgrass_gis6.4.3RC1.dll
+  // grass_gis.lib.  Name of the DLL on Windows is e.g.: libgrass_gis.6.4.3RC1.dll
 
   QString gisBase = getenv( "GISBASE" );
 #ifdef Q_OS_WIN
@@ -99,7 +99,7 @@ QgsGrassGisLib::QgsGrassGisLib()
   {
     fatal( "GISBASE environment variable not set" );
   }
-  QString libPath = gisBase + "/lib/libgrass_gis" + QString( GRASS_VERSION ) + ".dll";
+  QString libPath = gisBase + "\\lib\\libgrass_gis." + QString( GRASS_VERSION ) + ".dll";
 #else
   QString libPath = QString( GRASS_LIBRARY_GIS );
   // Prefere GISBASE if set
@@ -138,7 +138,7 @@ void QgsGrassGisLib::warning( QString msg )
 
 void * QgsGrassGisLib::resolve( const char * symbol )
 {
-  QgsDebugMsg( QString( "symbol = %1" ).arg( symbol ) );
+  QgsDebugMsgLevel( QString( "symbol = %1" ).arg( symbol ), 5 );
   void * fn = mLibrary.resolve( symbol );
   if ( !fn )
   {
@@ -396,7 +396,7 @@ char GRASS_LIB_EXPORT *G_find_file( const char *element, char *name, const char 
   return NULL;
 }
 
-char GRASS_LIB_EXPORT *G_find_file2( const char *element, char *name, const char *mapset )
+char GRASS_LIB_EXPORT *G_find_file2( const char *element, const char *name, const char *mapset )
 {
   Q_UNUSED( element );
   Q_UNUSED( name );
@@ -413,7 +413,7 @@ char GRASS_LIB_EXPORT *G_find_file_misc( const char *dir, const char *element, c
   return NULL;
 }
 
-char GRASS_LIB_EXPORT *G_find_file_misc2( const char *dir, const char *element, char *name, const char *mapset )
+char GRASS_LIB_EXPORT *G_find_file2_misc( const char *dir, const char *element, char *name, const char *mapset )
 {
   Q_UNUSED( dir );
   Q_UNUSED( element );
@@ -707,6 +707,28 @@ void GRASS_LIB_EXPORT G_verbose_message( const char *msg, ... )
   QString message = QString().vsprintf( msg, ap );
   va_end( ap );
   QgsDebugMsg( message );
+}
+
+typedef int G_spawn_type( const char *command, ... );
+int GRASS_LIB_EXPORT G_spawn( const char *command, ... )
+{
+  va_list ap;
+  G_spawn_type* fn = ( G_spawn_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_spawn" ) );
+  va_start( ap, command );
+  int ret = fn( command, ap );
+  va_end( ap );
+  return ret;
+}
+
+typedef int G_spawn_ex_type( const char *command, ... );
+int GRASS_LIB_EXPORT G_spawn_ex( const char *command, ... )
+{
+  va_list ap;
+  G_spawn_ex_type* fn = ( G_spawn_ex_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_spawn_ex" ) );
+  va_start( ap, command );
+  int ret = fn( command, ap );
+  va_end( ap );
+  return ret;
 }
 
 int GRASS_LIB_EXPORT G_set_quant_rules( int fd, struct Quant *q )
@@ -1167,14 +1189,14 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QgsRasterBlock::DataType qgisTy
 typedef int G_vasprintf_type( char **, const char *, va_list );
 int G_vasprintf( char **out, const char *fmt, va_list ap )
 {
-  G_vasprintf_type* fn = ( G_vasprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_vasprintf_type" ) );
+  G_vasprintf_type* fn = ( G_vasprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_vasprintf" ) );
   return fn( out, fmt, ap );
 }
 
 typedef int G_asprintf_type( char **, const char *, ... );
 int G_asprintf( char **out, const char *fmt, ... )
 {
-  G_asprintf_type* fn = ( G_asprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_asprintf_type" ) );
+  G_asprintf_type* fn = ( G_asprintf_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_asprintf" ) );
   va_list ap;
   va_start( ap, fmt );
   int ret = fn( out, fmt, ap );
@@ -1337,4 +1359,23 @@ int GRASS_LIB_EXPORT G_remove( const char *element, const char *name )
   Q_UNUSED( element );
   Q_UNUSED( name );
   return 1;
+}
+
+int G_put_cell_title( const char *name, const char *title )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( title );
+  return 1; // OK
+}
+
+int G_clear_screen( void )
+{
+  return 0; // OK
+}
+
+char *G_find_vector( char *name, const char *mapset )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( mapset );
+  return NULL;
 }
