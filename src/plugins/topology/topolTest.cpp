@@ -24,6 +24,8 @@
 #include <qgsfeature.h>
 #include <qgsspatialindex.h>
 #include <qgisinterface.h>
+#include <cmath>
+
 
 #include "geosFunctions.h"
 //#include "../../app/qgisapp.h"
@@ -34,26 +36,26 @@ topolTest::topolTest(QgisInterface* qgsIface)
   mTestCancelled = false;
 
   // one layer tests
-  mTestMap["Test geometry validity"].f = &topolTest::checkValid;
-  mTestMap["Test geometry validity"].useSecondLayer = false;
+  mTestMap["must not have invalid geometries"].f = &topolTest::checkValid;
+  mTestMap["must not have invalid geometries"].useSecondLayer = false;
 
-  mTestMap["Test segment lengths"].f = &topolTest::checkSegmentLength;
-  mTestMap["Test segment lengths"].useTolerance = true;
-  mTestMap["Test segment lengths"].useSecondLayer = false;
+  mTestMap["segments must have minimum length"].f = &topolTest::checkSegmentLength;
+  mTestMap["segments must have minimum length"].useTolerance = true;
+  mTestMap["segments must have minimum length"].useSecondLayer = false;
 
-  mTestMap["Test dangling lines"].f = &topolTest::checkDanglingLines;
-  mTestMap["Test dangling lines"].useSecondLayer = false;
+  mTestMap["must not have hanging lines"].f = &topolTest::checkDanglingLines;
+  mTestMap["must not have hanging lines"].useSecondLayer = false;
 
-  mTestMap["Duplicate Geometries"].f = &topolTest::checkDuplicates;
-  mTestMap["Duplicate Geometries"].useTolerance = true;
-  mTestMap["Duplicate Geometries"].useSecondLayer = false;
+  mTestMap["must not have duplicates"].f = &topolTest::checkDuplicates;
+  mTestMap["must not have duplicates"].useTolerance = false;
+  mTestMap["must not have duplicates"].useSecondLayer = false;
 
   // two layer tests
-  mTestMap["Test intersections"].f = &topolTest::checkIntersections;
-  mTestMap["Test features inside polygon"].f = &topolTest::checkPolygonContains;
-  mTestMap["Test points not covered by segments"].f = &topolTest::checkPointCoveredBySegment;
-  mTestMap["Test feature too close"].f = &topolTest::checkCloseFeature;
-  mTestMap["Test feature too close"].useTolerance = true;
+  mTestMap["layers must not intersect"].f = &topolTest::checkIntersections;
+  mTestMap["polygons must contain point"].f = &topolTest::checkPolygonContains;
+  mTestMap["points must be covered by segments"].f = &topolTest::checkPointCoveredBySegment;
+  mTestMap["features must not be closer than tolerance"].f = &topolTest::checkCloseFeature;
+  mTestMap["features must not be closer than tolerance"].useTolerance = true;
 }
 
 topolTest::~topolTest()
@@ -588,7 +590,9 @@ ErrorList topolTest::checkSegmentLength(double tolerance, QgsVectorLayer* layer1
 
 	for (int i = 1; i < ls.size(); ++i)
 	{
-	  if (ls[i-1].sqrDist(ls[i]) < tolerance)
+
+      double distance = sqrt(ls[i-1].sqrDist(ls[i]));
+      if (distance < tolerance)
 	  {
 	    fls.clear();
             fls << *it << *it;

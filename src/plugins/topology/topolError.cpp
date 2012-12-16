@@ -128,7 +128,7 @@ TopolError::TopolError(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QL
 
 TopolErrorIntersection::TopolErrorIntersection(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Intersecting geometries";
+  mName = "intersecting geometries";
 
   mFixMap["Move blue feature"] = &TopolErrorIntersection::fixMoveFirst;
   mFixMap["Move red feature"] = &TopolErrorIntersection::fixMoveSecond;
@@ -145,7 +145,7 @@ TopolErrorIntersection::TopolErrorIntersection(QgsRectangle theBoundingBox, QgsG
 
 TopolErrorClose::TopolErrorClose(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Features too close";
+  mName = "features too close";
 
   mFixMap["Move blue feature"] = &TopolErrorClose::fixMoveFirst;
   mFixMap["Move red feature"] = &TopolErrorClose::fixMoveSecond;
@@ -154,36 +154,36 @@ TopolErrorClose::TopolErrorClose(QgsRectangle theBoundingBox, QgsGeometry* theCo
 
 TopolErrorCovered::TopolErrorCovered(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Point not covered by segment";
+  mName = "point not covered by segment";
   mFixMap["Delete point"] = &TopolErrorCovered::fixDeleteFirst;
 }
 
 TopolErrorInside::TopolErrorInside(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Feature inside polygon";
+  mName = "feature inside polygon";
   mFixMap["Delete feature inside"] = &TopolErrorInside::fixDeleteSecond;
 }
 
 TopolErrorShort::TopolErrorShort(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Segment too short";
+  mName = "segment too short";
   mFixMap["Delete feature"] = &TopolErrorShort::fixDeleteFirst;
 }
 
 TopolErrorValid::TopolErrorValid(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Invalid geometry";
+  mName = "invalid geometry";
   mFixMap["Delete feature"] = &TopolErrorValid::fixDeleteFirst;
 }
 
 TopolErrorDangle::TopolErrorDangle(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Dangling line";
+  mName = "hanging line";
   mFixMap["Delete feature"] = &TopolErrorDangle::fixDeleteFirst;
 }
 
 TopolErrorDuplicates::TopolErrorDuplicates(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
 {
-  mName = "Duplicate Geometries";
+  mName = "duplicate geometry";
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
