@@ -316,6 +316,16 @@ int GRASS_LIB_EXPORT G_warning( const char * msg, ... )
   return ret;
 }
 
+typedef void G_important_message_type( const char *msg, ... );
+void GRASS_LIB_EXPORT G_important_message( const char * msg, ... )
+{
+  G_important_message_type* fn = ( G_important_message_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_important_message" ) );
+  va_list ap;
+  va_start( ap, msg );
+  fn( msg, ap );
+  va_end( ap );
+}
+
 // G_fatal_error is declared in gisdefs.h as int but noreturn
 //typedef int G_fatal_error_type( const char *, ... );
 int GRASS_LIB_EXPORT G_fatal_error( const char * msg, ... )
@@ -413,7 +423,7 @@ char GRASS_LIB_EXPORT *G_find_file_misc( const char *dir, const char *element, c
   return NULL;
 }
 
-char GRASS_LIB_EXPORT *G_find_file2_misc( const char *dir, const char *element, char *name, const char *mapset )
+char GRASS_LIB_EXPORT *G_find_file2_misc( const char *dir, const char *element, const char *name, const char *mapset )
 {
   Q_UNUSED( dir );
   Q_UNUSED( element );
@@ -1050,25 +1060,50 @@ double GRASS_LIB_EXPORT G_area_of_cell_at_row( int row )
   return QgsGrassGisLib::instance()->G_area_of_cell_at_row( row );
 }
 
+double QgsGrassGisLib::G_area_of_polygon( const double *x, const double *y, int n )
+{
+  QgsPolyline polyline;
+  for ( int i = 0; i < n; i++ )
+  {
+    polyline.append( QgsPoint( x[i], y[i] ) );
+  }
+  QgsPolygon polygon;
+  polygon.append( polyline );
+  QgsGeometry* geo = QgsGeometry::fromPolygon( polygon );
+  double area = mDistanceArea.measure( geo );
+  delete geo;
+  if ( !mCrs.geographicFlag() )
+  {
+    area *= qPow( G_database_units_to_meters_factor(), 2 );
+  }
+  return area;
+}
+
+double GRASS_LIB_EXPORT G_area_of_polygon( const double *x, const double *y, int n )
+{
+  return QgsGrassGisLib::instance()->G_area_of_polygon( x, y, n );
+}
+
 double GRASS_LIB_EXPORT G_database_units_to_meters_factor( void )
 {
   return QgsGrassGisLib::instance()->G_database_units_to_meters_factor();
 }
 
-int QgsGrassGisLib::G_begin_cell_area_calculations( void )
+int QgsGrassGisLib::beginCalculations( void )
 {
-  if ( mCrs.geographicFlag() ) return 2; // non-planimetric
-  return 1; // planimetric
+  if ( !mCrs.isValid() ) return 0;
+  if ( !mCrs.geographicFlag() ) return 1; // planimetric
+  return 2; // non-planimetric
 }
 
 int GRASS_LIB_EXPORT G_begin_cell_area_calculations( void )
 {
-  return QgsGrassGisLib::instance()->G_begin_cell_area_calculations();
+  return QgsGrassGisLib::instance()->beginCalculations();
 }
 
 int GRASS_LIB_EXPORT G_begin_distance_calculations( void )
 {
-  return 1; // nothing to do
+  return QgsGrassGisLib::instance()->beginCalculations();
 }
 
 int GRASS_LIB_EXPORT G_begin_geodesic_distance( double a, double e2 )
@@ -1078,8 +1113,13 @@ int GRASS_LIB_EXPORT G_begin_geodesic_distance( double a, double e2 )
   return 0; // nothing to do
 }
 
+int GRASS_LIB_EXPORT G_begin_polygon_area_calculations( void )
+{
+  return QgsGrassGisLib::instance()->beginCalculations();
+}
+
 // Distance in meters
-double QgsGrassGisLib::G_distance( double e1, double n1, double e2, double n2 )
+double QgsGrassGisLib::distance( double e1, double n1, double e2, double n2 )
 {
   // QgsDistanceArea states that results are in meters, but it does not
   // seem to be true,
@@ -1094,7 +1134,14 @@ double QgsGrassGisLib::G_distance( double e1, double n1, double e2, double n2 )
 
 double GRASS_LIB_EXPORT G_distance( double e1, double n1, double e2, double n2 )
 {
-  return QgsGrassGisLib::instance()->G_distance( e1, n1, e2, n2 );
+  return QgsGrassGisLib::instance()->distance( e1, n1, e2, n2 );
+}
+
+// TODO: verify if QgsGrassGisLib::distance is OK, in theory
+// a module could call distance for latlong even if current projection is projected
+double GRASS_LIB_EXPORT G_geodesic_distance( double lon1, double lat1, double lon2, double lat2 )
+{
+  return QgsGrassGisLib::instance()->distance( lon1, lat1, lon2, lat2 );
 }
 
 int GRASS_LIB_EXPORT G_legal_filename( const char *s )
@@ -1203,6 +1250,14 @@ int G_asprintf( char **out, const char *fmt, ... )
   va_end( ap );
   return ret;
 }
+
+typedef int G_lookup_key_value_from_file_type( const char *, const char *, char [], int );
+int GRASS_LIB_EXPORT G_lookup_key_value_from_file( const char *file, const char *key, char value[], int n )
+{
+  G_lookup_key_value_from_file_type *fn = ( G_lookup_key_value_from_file_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_lookup_key_value_from_file" ) );
+  return fn( file, key, value, n );
+}
+
 
 int GRASS_LIB_EXPORT G__temp_element( char *element )
 {
@@ -1358,7 +1413,15 @@ int GRASS_LIB_EXPORT G_remove( const char *element, const char *name )
 {
   Q_UNUSED( element );
   Q_UNUSED( name );
-  return 1;
+  return -1; // error
+}
+
+int GRASS_LIB_EXPORT G_rename( const char *element, const char *oldname, const char *newname )
+{
+  Q_UNUSED( element );
+  Q_UNUSED( oldname );
+  Q_UNUSED( newname );
+  return -1; // error
 }
 
 int G_put_cell_title( const char *name, const char *title )
@@ -1375,6 +1438,39 @@ int G_clear_screen( void )
 
 char *G_find_vector( char *name, const char *mapset )
 {
+  Q_UNUSED( name );
+  Q_UNUSED( mapset );
+  return qstrdup( "qgis" );
+}
+
+char *G_find_vector2( const char *name, const char *mapset )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( mapset );
+  return qstrdup( "qgis" );
+}
+
+int G__make_mapset_element( const char *p_element )
+{
+  Q_UNUSED( p_element );
+  return 1; // OK
+}
+
+char *G_location_path( void )
+{
+  return qstrdup( "qgis" );
+}
+
+FILE *G_fopen_modify( const char *element, const char *name )
+{
+  Q_UNUSED( element );
+  Q_UNUSED( name );
+  return NULL;
+}
+
+FILE *G_fopen_old( const char *element, const char *name, const char *mapset )
+{
+  Q_UNUSED( element );
   Q_UNUSED( name );
   Q_UNUSED( mapset );
   return NULL;

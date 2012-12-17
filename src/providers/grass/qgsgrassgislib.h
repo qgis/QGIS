@@ -90,9 +90,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int G_get_cellhd( const char *name, const char *mapset, struct Cell_head *cellhd );
 
     double G_area_of_cell_at_row( int row );
+    double G_area_of_polygon( const double *x, const double *y, int n );
     double G_database_units_to_meters_factor( void );
-    int G_begin_cell_area_calculations( void );
-    double G_distance( double e1, double n1, double e2, double n2 );
+    int beginCalculations( void );
+    double distance( double e1, double n1, double e2, double n2 );
 
     int G_set_geodesic_distance_lat1( double lat1 );
     int G_set_geodesic_distance_lat2( double lat2 );
