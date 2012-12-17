@@ -16,6 +16,46 @@
  ***************************************************************************/
 
 #include "qgscrscache.h"
+#include "qgscoordinatetransform.h"
+
+QgsCoordinateTransformCache* QgsCoordinateTransformCache::mInstance = 0;
+
+QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
+{
+  if ( !mInstance )
+  {
+    mInstance = new QgsCoordinateTransformCache();
+  }
+  return mInstance;
+}
+
+QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
+{
+  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator tIt = mTransforms.constBegin();
+  for ( ; tIt != mTransforms.constEnd(); ++tIt )
+  {
+    delete tIt.value();
+  }
+  delete mInstance;
+}
+
+const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId )
+{
+  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator ctIt =
+    mTransforms.find( qMakePair( srcAuthId, destAuthId ) );
+  if ( ctIt == mTransforms.constEnd() )
+  {
+    const QgsCoordinateReferenceSystem& srcCrs = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
+    const QgsCoordinateReferenceSystem& destCrs = QgsCRSCache::instance()->crsByAuthId( destAuthId );
+    QgsCoordinateTransform* ct = new QgsCoordinateTransform( srcCrs, destCrs );
+    mTransforms.insert( qMakePair( srcAuthId, destAuthId ), ct );
+    return ct;
+  }
+  else
+  {
+    return ctIt.value();
+  }
+}
 
 QgsCRSCache* QgsCRSCache::mInstance = 0;
 
