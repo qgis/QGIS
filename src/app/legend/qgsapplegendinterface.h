@@ -84,6 +84,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Collapse or expand a group
     virtual void setGroupExpanded( int groupIndex, bool expand );
 
+    //! Collapse or expand a layer
+    virtual void setLayerExpanded( QgsMapLayer * ml, bool expand );
+
     //! Set the visibility of a group
     virtual void setGroupVisible( int groupIndex, bool visible );
 

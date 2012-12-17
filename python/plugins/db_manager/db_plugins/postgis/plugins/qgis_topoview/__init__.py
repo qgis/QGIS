@@ -106,6 +106,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # node
@@ -114,6 +115,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # node labels
@@ -122,6 +124,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # edge
@@ -130,6 +133,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # edge labels
@@ -138,6 +142,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # face_left
@@ -146,6 +151,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # face_right
@@ -154,6 +160,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # next_left
@@ -162,6 +169,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # next_right
@@ -170,6 +178,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # face_seed
@@ -179,6 +188,7 @@ def run(item, action, mainwindow):
 		layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
 		registry.addMapLayer(layer)
 		legend.setLayerVisible(layer, False)
+		legend.setLayerExpanded(layer, False)
 		legend.moveLayer(layer, group)
 
 	  # TODO: add polygon0, polygon1 and polygon2 ?
