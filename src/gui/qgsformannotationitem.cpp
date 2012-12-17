@@ -40,7 +40,7 @@ QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
   if ( mVectorLayer && mMapCanvas ) //default to the layers edit form
   {
     mDesignerForm = mVectorLayer->annotationForm();
-    QObject::connect( mVectorLayer, SIGNAL( layerModified( bool ) ), this, SLOT( setFeatureForMapPosition() ) );
+    QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
   }
@@ -194,7 +194,7 @@ void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
     if ( mVectorLayer )
     {
-      QObject::connect( mVectorLayer, SIGNAL( layerModified( bool ) ), this, SLOT( setFeatureForMapPosition() ) );
+      QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
     }

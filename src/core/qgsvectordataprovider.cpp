@@ -300,11 +300,11 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
          field.length() >= mNativeTypes[i].mMinLen && field.length() <= mNativeTypes[i].mMaxLen &&
          field.precision() >= mNativeTypes[i].mMinPrec && field.precision() <= mNativeTypes[i].mMaxPrec )
     {
-      break;
+      return true;
     }
   }
 
-  return i < mNativeTypes.size();
+  return false;
 }
 
 QVariant QgsVectorDataProvider::minimumValue( int index )

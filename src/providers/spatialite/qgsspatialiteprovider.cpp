@@ -508,7 +508,6 @@ void QgsSpatiaLiteProvider::loadFields()
   char *errMsg = NULL;
   QString pkName;
   int pkCount = 0;
-  int fldNo = 0;
   QString sql;
 
   attributeFields.clear();
@@ -561,7 +560,7 @@ void QgsSpatiaLiteProvider::loadFields()
             fieldType = QVariant::Double;
           }
 
-          attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) );
+          attributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
         }
       }
     }
@@ -626,7 +625,7 @@ void QgsSpatiaLiteProvider::loadFields()
             fieldType = QVariant::Double;
           }
 
-          attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) );
+          attributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
         }
       }
     }

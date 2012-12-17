@@ -17,7 +17,6 @@ typedef QMap<int, QString> QgsFieldNameMap;
 typedef QList<QgsFeature> QgsFeatureList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
-typedef QVector<QgsField> QgsFields;
 
 class QgsFeature
 {

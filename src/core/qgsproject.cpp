@@ -706,7 +706,6 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
     vIt->first->createJoinCaches();
-    vIt->first->updateFieldMap();
     //for old symbology, it is necessary to read the symbology again after having the complete field map
     if ( !vIt->first->isUsingRendererV2() )
     {

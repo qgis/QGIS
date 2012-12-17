@@ -72,9 +72,9 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   mNextFeatureId = 1;
 
   mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 5 )
-  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 0, 20, 0, 5 )
+  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 0, 255 )
   ;
 
   if ( url.hasQueryItem( "field" ) )
@@ -315,14 +315,33 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 
     // add new field as a last one
     mFields.append( *it );
+
+    for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
+    {
+      QgsFeature& f = fit.value();
+      f.attributes().append( QVariant() );
+    }
   }
   return true;
 }
 
 bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
-  for ( QgsAttributeIds::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-    mFields.remove( *it );
+  QList<int> attrIdx = attributes.toList();
+  qSort( attrIdx.begin(), attrIdx.end(), qGreater<int>() );
+
+  // delete attributes one-by-one with decreasing index
+  for ( QList<int>::const_iterator it = attrIdx.constBegin(); it != attrIdx.constEnd(); ++it )
+  {
+    int idx = *it;
+    mFields.remove( idx );
+
+    for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
+    {
+      QgsFeature& f = fit.value();
+      f.attributes().remove( idx );
+    }
+  }
   return true;
 }
 

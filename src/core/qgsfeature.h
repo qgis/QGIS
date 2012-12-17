@@ -26,6 +26,7 @@ email                : sherman at mrcc.com
 class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
+class QgsFields;
 
 // feature id class (currently 64 bit)
 #if 0
@@ -100,7 +101,8 @@ typedef QVector<QVariant> QgsAttributes;
 class QgsField;
 typedef QMap<int, QgsField> QgsFieldMap;
 
-typedef QVector<QgsField> QgsFields;
+
+
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
@@ -159,7 +161,7 @@ class CORE_EXPORT QgsFeature
     /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry *geometry();
+    QgsGeometry *geometry() const;
 
     /**
      * Get the geometry object associated with this feature

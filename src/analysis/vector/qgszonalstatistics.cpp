@@ -211,7 +211,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALClose( inputDataset );
-  mPolygonLayer->updateFieldMap();
 
   if ( p && p->wasCanceled() )
   {

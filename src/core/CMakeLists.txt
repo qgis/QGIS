@@ -113,6 +113,10 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayercache.cpp
+  qgsvectorlayereditbuffer.cpp
+  qgsvectorlayereditutils.cpp
+  qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
@@ -288,6 +292,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsproject.h
   qgsrunprocess.h
   qgsvectorlayer.h
+  qgsvectorlayereditbuffer.h
   qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
@@ -397,7 +402,12 @@ SET(QGIS_CORE_HDRS
   qgsvectordataprovider.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
+  qgsvectorlayercache.h
+  qgsvectorlayereditbuffer.h
+  qgsvectorlayereditutils.h
+  qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerundocommand.h
   qgsvectoroverlay.h
   qgstolerance.h
 

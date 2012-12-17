@@ -140,6 +140,7 @@ bool QgsFeatureAction::addFeature()
 
   // add the fields to the QgsFeature
   const QgsFields& fields = mLayer->pendingFields();
+  mFeature.initAttributes( fields.count() );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )

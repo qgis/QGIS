@@ -59,6 +59,10 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayereditutils.h"
+#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectoroverlay.h"
@@ -78,9 +82,6 @@
 #endif
 
 
-// typedef for the QgsDataProvider class factory
-typedef QgsDataProvider * create_it( const QString* uri );
-
 
 
 QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
@@ -91,18 +92,15 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mUpdateThreshold( 0 )     // XXX better default value?
     , mDataProvider( NULL )
     , mProviderKey( providerKey )
-    , mEditable( false )
     , mReadOnly( false )
-    , mModified( false )
-    , mMaxUpdatedIndex( -1 )
-    , mActiveCommand( NULL )
     , mRenderer( 0 )
     , mRendererV2( NULL )
     , mUsingRendererV2( false )
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
-    , mFetching( false )
+    , mCache( new QgsVectorLayerCache(this) )
+    , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
@@ -122,7 +120,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
     mJoinBuffer = new QgsVectorLayerJoinBuffer();
 
-    updateFieldMap();
+    updateFields();
 
     QSettings settings;
     //Changed to default to true as of QGIS 1.7
@@ -186,12 +184,11 @@ QgsVectorLayer::~QgsVectorLayer()
 
   delete mRenderer;
   delete mDataProvider;
+  delete mEditBuffer;
   delete mJoinBuffer;
+  delete mCache;
   delete mLabel;
   delete mDiagramLayerSettings;
-
-  // Destroy any cached geometries and clear the references to them
-  deleteCachedGeometries();
 
   delete mActions;
 
@@ -471,7 +468,7 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
   p->drawPolyline( pa );
 
   // draw vertex markers if in editing mode, but only to the main canvas
-  if ( mEditable && renderContext.drawEditingInformation() )
+  if ( mEditBuffer && renderContext.drawEditingInformation() )
   {
 
     QVector<double>::const_iterator xIt;
@@ -627,7 +624,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
       p->drawPolygon( pa );
 
       // draw vertex markers if in editing mode, but only to the main canvas
-      if ( mEditable && renderContext.drawEditingInformation() )
+      if ( mEditBuffer && renderContext.drawEditingInformation() )
       {
         for ( register unsigned int j = 0; j != ringSize; ++j )
         {
@@ -691,7 +688,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
       p->drawPath( path );
 
       // draw vertex markers if in editing mode, but only to the main canvas
-      if ( mEditable && renderContext.drawEditingInformation() )
+      if ( mEditBuffer && renderContext.drawEditingInformation() )
       {
         for ( int i = 0; i < path.elementCount(); ++i )
         {
@@ -760,15 +757,15 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif // Q_WS_MAC
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
-      bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
+      bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
 
       // render feature
       bool rendered = mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
-      if ( mEditable )
+      if ( mEditBuffer )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCachedGeometries[fet.id()] = *fet.geometry();
+        mCache->cacheGeometry( fet.id(), *fet.geometry() );
       }
 
       // labeling - register feature
@@ -857,10 +854,10 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
     features[sym].append( fet );
 
-    if ( mEditable )
+    if ( mEditBuffer )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCachedGeometries[fet.id()] = *fet.geometry();
+      mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
     if ( sym && rendererContext.labelingEngine() )
@@ -931,7 +928,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 #endif //Q_WS_MAC
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
-        bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
+        bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
 
         try
         {
@@ -980,11 +977,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
 
-    if ( mEditable )
+    if ( mEditBuffer )
     {
       // Destroy all cached geometries and clear the references to them
-      deleteCachedGeometries();
-      mCachedGeometriesRect = rendererContext.extent();
+      mCache->deleteCachedGeometries();
+      mCache->setCachedGeometriesRect( rendererContext.extent() );
 
       // set editing vertex markers style
       mRendererV2->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
@@ -1032,11 +1029,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsVectorLayer::VertexMarkerType vertexMarker = QgsVectorLayer::NoMarker;
     int vertexMarkerSize = 7;
 
-    if ( mEditable )
+    if ( mEditBuffer )
     {
       // Destroy all cached geometries and clear the references to them
-      deleteCachedGeometries();
-      mCachedGeometriesRect = rendererContext.extent();
+      mCache->deleteCachedGeometries();
+      mCache->setCachedGeometriesRect( rendererContext.extent() );
       vertexMarker = currentVertexMarkerType();
       vertexMarkerSize = currentVertexMarkerSize();
       mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
@@ -1088,10 +1085,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
         mCurrentVertexMarkerSize = 7;
 
-        if ( mEditable )
+        if ( mEditBuffer )
         {
           // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-          mCachedGeometries[fet.id()] = *fet.geometry();
+          mCache->cacheGeometry( fet.id(), *fet.geometry() );
 
           if ( !mVertexMarkerOnlyForSelection || sel )
           {
@@ -1145,19 +1142,12 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsDebugMsg( "QgsRenderer is null" );
   }
 
-  if ( mEditable )
+  if ( mEditBuffer )
   {
-    QgsDebugMsg( QString( "Cached %1 geometries." ).arg( mCachedGeometries.count() ) );
+    QgsDebugMsg( QString( "Cached %1 geometries." ).arg( mCache->cachedGeometries().count() ) );
   }
 
   return true; // Assume success always
-}
-
-void QgsVectorLayer::deleteCachedGeometries()
-{
-  // Destroy any cached geometries
-  mCachedGeometries.clear();
-  mCachedGeometriesRect = QgsRectangle();
 }
 
 void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
@@ -1505,7 +1495,7 @@ QgsRectangle QgsVectorLayer::extent()
     QgsDebugMsg( "invoked with null mDataProvider" );
   }
 
-  if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
+  if ( mEditBuffer && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() )
   {
     mDataProvider->updateExtents();
 
@@ -1517,7 +1507,7 @@ QgsRectangle QgsVectorLayer::extent()
       rect.combineExtentWith( &r );
     }
 
-    for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
+    for ( QgsFeatureList::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
     {
       QgsRectangle r = it->geometry()->boundingBox();
       rect.combineExtentWith( &r );
@@ -1582,112 +1572,20 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
+#if 0
+void QgsVectorLayer::addJoinedAttributes( QgsFeature& f, bool all )
 {
-  if ( mDataProvider && ( all || ( mFetchAttributes.size() > 0 && mJoinBuffer->containsFetchJoins() ) ) )
+  if ( all || ( mFetchAttributes.size() > 0 && mJoinBuffer->containsFetchJoins() ) )
   {
-    mJoinBuffer->updateFeatureAttributes( f, mDataProvider->fields().count(), all );
+    mJoinBuffer->updateFeatureAttributes( f, f.attributes().count(), all );
   }
-
-
-  // do not update when we aren't in editing mode
-  if ( !mEditable )
-    return;
-
-  if ( mChangedAttributeValues.contains( f.id() ) )
-  {
-    const QgsAttributeMap &map = mChangedAttributeValues[f.id()];
-    for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
-      f.setAttribute( it.key(), it.value() );
-  }
-
-  // remove all attributes that will disappear
-  QgsAttributes& attrs = f.attributes();
-  foreach ( int idx, mDeletedAttributeIds )
-  {
-    attrs.remove( idx ); // TODO[MD]: this won't work with more than one deleted attribute!!
-  }
-
-  // TODO[MD]: added attributes!!
 }
-
-// TODO[MD] is this method really unused?
-/*
-void QgsVectorLayer::addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName,
-    const QVariant& joinValue, const QgsAttributeList& attributes, int attributeIndexOffset )
-{
-  f.attributes().resize(pendingFields().count()); // make sure we have enough space for newly added attributes
-  const QHash< QString, QgsAttributes>& memoryCache = joinInfo.cachedAttributes;
-  if ( !memoryCache.isEmpty() ) //use join memory cache
-  {
-    QgsAttributes featureAttributes = memoryCache.value( joinValue.toString() );
-    bool found = !featureAttributes.isEmpty();
-    for ( int i = 0; i < featureAttributes.count(); ++i )
-    {
-      if ( found )
-      {
-        f.setAttribute( i + attributeIndexOffset, featureAttributes.value( i ) );
-      }
-      else
-      {
-        f.setAttribute( i + attributeIndexOffset, QVariant() );
-      }
-    }
-  }
-  else //work with subset string
-  {
-    QgsVectorLayer* joinLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
-    if ( !joinLayer )
-    {
-      return;
-    }
-
-    //no memory cache, query the joined values by setting substring
-    QString subsetString = joinLayer->dataProvider()->subsetString(); //provider might already have a subset string
-    QString bkSubsetString = subsetString;
-    if ( !subsetString.isEmpty() )
-    {
-      subsetString.append( " AND " );
-    }
-
-    subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
-    joinLayer->dataProvider()->setSubsetString( subsetString, false );
-
-    //select (no geometry)
-    joinLayer->select( attributes, QgsRectangle(), false, false );
-
-    //get first feature
-    QgsFeature fet;
-    if ( joinLayer->nextFeature( fet ) )
-    {
-      const QgsAttributes& attrs = fet.attributes();
-      for ( int i = 0; i < attrs.count(); ++i )
-      {
-        f.setAttribute( i + attributeIndexOffset, attrs[i] );
-      }
-    }
-    else //no suitable join feature found, insert invalid variants
-    {
-      QgsAttributeList::const_iterator attIt = attributes.constBegin();
-      for ( ; attIt != attributes.constEnd(); ++attIt )
-      {
-        f.setAttribute( *attIt + attributeIndexOffset, QVariant() );
-      }
-    }
-
-    joinLayer->dataProvider()->setSubsetString( bkSubsetString, false );
-  }
-}*/
-
-void QgsVectorLayer::updateFeatureGeometry( QgsFeature &f )
-{
-  if ( mChangedGeometries.contains( f.id() ) )
-    f.setGeometry( mChangedGeometries[f.id()] );
-}
+#endif
 
 
 void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, bool fetchGeometries, bool useIntersect )
 {
+#if 0
   if ( !mDataProvider )
     return;
 
@@ -1695,29 +1593,23 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   mFetchRect       = rect;
   mFetchAttributes = attributes;
   mFetchGeometry   = fetchGeometries;
-  mFetchConsidered = mDeletedFeatureIds;
+  mFetchConsidered = mEditBuffer ? mEditBuffer->mDeletedFeatureIds : QSet<QgsFeatureId>();
   QgsAttributeList targetJoinFieldList;
 
-  if ( mEditable )
+  if ( mEditBuffer )
   {
-    mFetchAddedFeaturesIt = mAddedFeatures.begin();
-    mFetchChangedGeomIt = mChangedGeometries.begin();
+    mFetchAddedFeaturesIt = mEditBuffer->mAddedFeatures.begin();
+    mFetchChangedGeomIt = mEditBuffer->mChangedGeometries.begin();
   }
 
   //look in the normal features of the provider
   if ( mFetchAttributes.size() > 0 )
   {
-    if ( mEditable || mJoinBuffer->containsJoins() )
+    if ( mEditBuffer || mJoinBuffer->containsJoins() )
     {
       QgsAttributeList joinFields;
 
-      int providerFieldCount = 0;
-      if ( mDataProvider )
-      {
-        providerFieldCount = mDataProvider->fields().count();
-      }
-
-      mJoinBuffer->select( mFetchAttributes, joinFields, providerFieldCount );
+      mJoinBuffer->select( mFetchAttributes, joinFields, mUpdatedFields );
       QgsAttributeList::const_iterator joinFieldIt = joinFields.constBegin();
       for ( ; joinFieldIt != joinFields.constEnd(); ++joinFieldIt )
       {
@@ -1749,11 +1641,28 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   {
     mProviderIterator = mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
   }
+#endif
+
+  QgsFeatureRequest request;
+  if ( !rect.isEmpty() )
+    request.setFilterRect( rect );
+  if ( !fetchGeometries )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( useIntersect )
+    request.setFlags( request.flags() | QgsFeatureRequest::ExactIntersect );
+  if ( attributes != pendingAllAttributesList() )
+    request.setSubsetOfAttributes( attributes );
+
+  mLayerIterator = getFeatures( request );
 }
 
 
+#if 0
 void QgsVectorLayer::select( const QgsFeatureRequest& request )
 {
+  mLayerIterator = getFeatures( request );
+
+/*
   QgsAttributeList attrs;
   if ( !( request.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
     attrs = request.subsetOfAttributes();
@@ -1762,20 +1671,34 @@ void QgsVectorLayer::select( const QgsFeatureRequest& request )
   bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
   bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
   select( attrs, request.filterRect(), fetchGeom, exactIntersect );
+*/
+}
+#endif
+
+
+QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
+{
+  if ( !mDataProvider )
+    return QgsFeatureIterator();
+
+  return QgsFeatureIterator( new QgsVectorLayerFeatureIterator(this, request) );
 }
 
 
 bool QgsVectorLayer::nextFeature( QgsFeature &f )
 {
+  return mLayerIterator.nextFeature( f );
+
+#if 0
   if ( !mFetching )
     return false;
 
-  if ( mEditable )
+  if ( mEditBuffer )
   {
     if ( !mFetchRect.isEmpty() )
     {
       // check if changed geometries are in rectangle
-      for ( ; mFetchChangedGeomIt != mChangedGeometries.end(); mFetchChangedGeomIt++ )
+      for ( ; mFetchChangedGeomIt != mEditBuffer->mChangedGeometries.end(); mFetchChangedGeomIt++ )
       {
         QgsFeatureId fid = mFetchChangedGeomIt.key();
 
@@ -1802,13 +1725,13 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             // fid<0 => in mAddedFeatures
             bool found = false;
 
-            for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
+            for ( QgsFeatureList::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
             {
               if ( fid == it->id() )
               {
                 found = true;
                 f.setAttributes( it->attributes() );
-                updateFeatureAttributes( f );
+                // no need to update (always up-to-date) updateFeatureAttributes( f );
                 break;
               }
             }
@@ -1828,11 +1751,14 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             QgsFeatureIterator fi = mDataProvider->getFeatures( request );
             if ( fi.nextFeature( tmp ) )
             {
-              updateFeatureAttributes( tmp );
+              if (mEditBuffer)
+                mEditBuffer->updateChangedAttributes( tmp );
               f.setAttributes( tmp.attributes() );
             }
           }
         }
+
+        addJoinedAttributes( f );
 
         // return complete feature
         mFetchChangedGeomIt++;
@@ -1842,7 +1768,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
       // no more changed geometries
     }
 
-    for ( ; mFetchAddedFeaturesIt != mAddedFeatures.end(); mFetchAddedFeaturesIt++ )
+    for ( ; mFetchAddedFeaturesIt != mEditBuffer->mAddedFeatures.end(); mFetchAddedFeaturesIt++ )
     {
       QgsFeatureId fid = mFetchAddedFeaturesIt->id();
 
@@ -1865,8 +1791,10 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
       if ( mFetchAttributes.size() > 0 )
       {
         f.setAttributes( mFetchAddedFeaturesIt->attributes() );
-        updateFeatureAttributes( f );
+        // no need to do this (always up-to-date) updateFeatureAttributes( f );
       }
+
+      addJoinedAttributes( f );
 
       mFetchAddedFeaturesIt++;
       return true;
@@ -1883,11 +1811,13 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
     }
     if ( mFetchAttributes.size() > 0 )
     {
-      updateFeatureAttributes( f ); //check joined attributes / changed attributes
+      if (mEditBuffer)
+        mEditBuffer->updateChangedAttributes( f ); //check changed attributes
+      addJoinedAttributes( f ); // check joined attributes
     }
-    if ( mEditable && mFetchGeometry )
+    if ( mEditBuffer && mFetchGeometry )
     {
-      updateFeatureGeometry( f );
+      mEditBuffer->updateFeatureGeometry( f );
     }
 
     return true;
@@ -1895,30 +1825,42 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
 
   mFetching = false;
   return false;
+#endif
 }
 
 bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
 {
+  QgsFeatureRequest request;
+  request.setFilterFid( featureId );
+  if ( !fetchGeometries )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !fetchAttributes )
+    request.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fi = getFeatures( request );
+  return fi.nextFeature( f );
+
+#if 0
   if ( !mDataProvider )
     return false;
 
-  if ( mDeletedFeatureIds.contains( featureId ) )
+  if ( mEditBuffer && mEditBuffer->mDeletedFeatureIds.contains( featureId ) )
     return false;
 
-  if ( fetchGeometries && mChangedGeometries.contains( featureId ) )
+  if ( fetchGeometries && mEditBuffer->mChangedGeometries.contains( featureId ) )
   {
     f.setFeatureId( featureId );
     f.setValid( true );
-    f.setGeometry( mChangedGeometries[featureId] );
+    f.setGeometry( mEditBuffer->mChangedGeometries[featureId] );
 
     if ( fetchAttributes )
     {
-      if ( featureId < 0 )
+      if ( featureId < 0 && mEditBuffer )
       {
         // featureId<0 => in mAddedFeatures
         bool found = false;
 
-        for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
+        for ( QgsFeatureList::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
         {
           if ( featureId != it->id() )
           {
@@ -1942,27 +1884,34 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
         request.setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry );
         QgsFeatureIterator fi = mDataProvider->getFeatures( request );
         if ( fi.nextFeature( tmp ) )
+        {
           f.setAttributes( tmp.attributes() );
+          if (mEditBuffer)
+            mEditBuffer->updateChangedAttributes( f );
+        }
       }
-      updateFeatureAttributes( f, true );
+      addJoinedAttributes( f, true );
     }
     return true;
   }
 
   //added features
-  for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
+  if (mEditBuffer)
   {
-    if ( iter->id() == featureId )
+    for ( QgsFeatureList::iterator iter = mEditBuffer->mAddedFeatures.begin(); iter != mEditBuffer->mAddedFeatures.end(); ++iter )
     {
-      f.setFeatureId( iter->id() );
-      f.setValid( true );
-      if ( fetchGeometries )
-        f.setGeometry( *iter->geometry() );
+      if ( iter->id() == featureId )
+      {
+        f.setFeatureId( iter->id() );
+        f.setValid( true );
+        if ( fetchGeometries )
+          f.setGeometry( *iter->geometry() );
 
-      if ( fetchAttributes )
-        f.setAttributes( iter->attributes() );
+        if ( fetchAttributes )
+          f.setAttributes( iter->attributes() );
 
-      return true;
+        return true;
+      }
     }
   }
 
@@ -1977,56 +1926,23 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
   QgsFeatureIterator fi = mDataProvider->getFeatures( request );
   if ( fi.nextFeature( f ) )
   {
-    updateFeatureAttributes( f, true );
+    if (mEditBuffer)
+      mEditBuffer->updateChangedAttributes( f );
+    addJoinedAttributes( f, true );
     return true;
   }
 
   return false;
+#endif
 }
 
 bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 {
-  static int addedIdLowWaterMark = -1;
-
-  if ( !mDataProvider )
-  {
+  if ( !mEditBuffer || !mDataProvider )
     return false;
-  }
 
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-  {
-    return false;
-  }
-
-  if ( !isEditable() )
-  {
-    return false;
-  }
-
-  //assign a temporary id to the feature (use negative numbers)
-  addedIdLowWaterMark--;
-
-  QgsDebugMsg( "Assigned feature id " + QString::number( addedIdLowWaterMark ) );
-
-  // Force a feature ID (to keep other functions in QGIS happy,
-  // providers will use their own new feature ID when we commit the new feature)
-  // and add to the known added features.
-  f.setFeatureId( addedIdLowWaterMark );
-  editFeatureAdd( f );
-
-  if ( f.geometry() )
-    mCachedGeometries[f.id()] = *f.geometry();
-
-  setModified( true );
-
-  if ( alsoUpdateExtent )
-  {
-    updateExtents();
-  }
-
-  emit featureAdded( f.id() );
-
-  return true;
+  // TODO[MD]: alsoUpdateExtent
+  return mEditBuffer->addFeature(f);
 }
 
 bool QgsVectorLayer::updateFeature( QgsFeature &f )
@@ -2068,122 +1984,31 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 
 bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex )
 {
-  if ( !hasGeometryType() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( !mEditable )
-  {
-    return false;
-  }
-
-  if ( mDataProvider )
-  {
-    QgsGeometry geometry;
-    if ( !mChangedGeometries.contains( atFeatureId ) )
-    {
-      // first time this geometry has changed since last commit
-      if ( !mCachedGeometries.contains( atFeatureId ) )
-      {
-        return false;
-      }
-      geometry = mCachedGeometries[atFeatureId];
-      //mChangedGeometries[atFeatureId] = mCachedGeometries[atFeatureId];
-    }
-    else
-    {
-      geometry = mChangedGeometries[atFeatureId];
-    }
-    geometry.insertVertex( x, y, beforeVertex );
-    mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange( atFeatureId, geometry );
-
-    setModified( true, true ); // only geometry was changed
-
-    return true;
-  }
-  return false;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.insertVertex( x, y, atFeatureId, beforeVertex );
 }
 
 
 bool QgsVectorLayer::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
-  if ( !hasGeometryType() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( !mEditable )
-  {
-    return false;
-  }
-
-  if ( mDataProvider )
-  {
-    QgsGeometry geometry;
-    if ( !mChangedGeometries.contains( atFeatureId ) )
-    {
-      // first time this geometry has changed since last commit
-      if ( !mCachedGeometries.contains( atFeatureId ) )
-      {
-        return false;
-      }
-      geometry = mCachedGeometries[atFeatureId];
-      //mChangedGeometries[atFeatureId] = mCachedGeometries[atFeatureId];
-    }
-    else
-    {
-      geometry = mChangedGeometries[atFeatureId];
-    }
-
-    geometry.moveVertex( x, y, atVertex );
-    mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange( atFeatureId, geometry );
-
-    setModified( true, true ); // only geometry was changed
-
-    return true;
-  }
-  return false;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.moveVertex( x, y, atFeatureId, atVertex );
 }
 
 
 bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
-  if ( !hasGeometryType() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( !mEditable )
-  {
-    return false;
-  }
-
-  if ( mDataProvider )
-  {
-    QgsGeometry geometry;
-    if ( !mChangedGeometries.contains( atFeatureId ) )
-    {
-      // first time this geometry has changed since last commit
-      if ( !mCachedGeometries.contains( atFeatureId ) )
-      {
-        return false;
-      }
-      geometry = mCachedGeometries[atFeatureId];
-    }
-    else
-    {
-      geometry = mChangedGeometries[atFeatureId];
-    }
-
-    if ( !geometry.deleteVertex( atVertex ) )
-    {
-      return false;
-    }
-    mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange( atFeatureId, geometry );
-
-    setModified( true, true ); // only geometry was changed
-
-    return true;
-  }
-  return false;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.deleteVertex( atFeatureId, atVertex );
 }
 
 
@@ -2221,45 +2046,17 @@ bool QgsVectorLayer::deleteSelectedFeatures()
 
 int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 {
-  if ( !hasGeometryType() )
-    return 5;
+  if ( !mEditBuffer || !mDataProvider )
+    return 6;
 
-  int addRingReturnCode = 5; //default: return code for 'ring not inserted'
-  double xMin, yMin, xMax, yMax;
-  QgsRectangle bBox;
-
-  if ( boundingBoxFromPointList( ring, xMin, yMin, xMax, yMax ) == 0 )
-  {
-    bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-    bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
-  }
-  else
-  {
-    return 3; //ring not valid
-  }
-
-  select( QgsAttributeList(), bBox, true, true );
-
-  QgsFeature f;
-  while ( nextFeature( f ) )
-  {
-    addRingReturnCode = f.geometry()->addRing( ring );
-    if ( addRingReturnCode == 0 )
-    {
-      editGeometryChange( f.id(), *f.geometry() );
-
-      setModified( true, true );
-      break;
-    }
-  }
-
-  return addRingReturnCode;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.addRing( ring );
 }
 
 int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
 {
-  if ( !hasGeometryType() )
-    return 6;
+  if ( !mEditBuffer || !mDataProvider )
+    return 7;
 
   //number of selected features must be 1
 
@@ -2274,253 +2071,27 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
     return 5;
   }
 
-  QgsFeatureId selectedFeatureId = *mSelectedFeatureIds.constBegin();
-
-  //look if geometry of selected feature already contains geometry changes
-  QgsGeometryMap::iterator changedIt = mChangedGeometries.find( selectedFeatureId );
-  if ( changedIt != mChangedGeometries.end() )
-  {
-    QgsGeometry geom = *changedIt;
-    int returnValue = geom.addPart( points );
-    editGeometryChange( selectedFeatureId, geom );
-    mCachedGeometries[selectedFeatureId] = geom;
-    return returnValue;
-  }
-
-  //look if id of selected feature belongs to an added feature
-#if 0
-  for ( QgsFeatureList::iterator addedIt = mAddedFeatures.begin(); addedIt != mAddedFeatures.end(); ++addedIt )
-  {
-    if ( addedIt->id() == selectedFeatureId )
-    {
-      return addedIt->geometry()->addPart( ring );
-      mCachedGeometries[selectedFeatureId] = *addedIt->geometry();
-    }
-  }
-#endif
-
-  //is the feature contained in the view extent (mCachedGeometries) ?
-  QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( selectedFeatureId );
-  if ( cachedIt != mCachedGeometries.end() )
-  {
-    int errorCode = cachedIt->addPart( points );
-    if ( errorCode == 0 )
-    {
-      editGeometryChange( selectedFeatureId, *cachedIt );
-      mCachedGeometries[selectedFeatureId] = *cachedIt;
-      setModified( true, true );
-    }
-    return errorCode;
-  }
-  else //maybe the selected feature has been moved outside the visible area and therefore is not contained in mCachedGeometries
-  {
-    QgsFeature f;
-    QgsGeometry* fGeom = 0;
-    if ( featureAtId( selectedFeatureId, f, true, false ) )
-    {
-      fGeom = f.geometryAndOwnership();
-      if ( fGeom )
-      {
-        int errorCode = fGeom->addPart( points );
-        editGeometryChange( selectedFeatureId, *fGeom );
-        setModified( true, true );
-        delete fGeom;
-        return errorCode;
-      }
-    }
-  }
-
-  return 6; //geometry not found
+  QgsVectorLayerEditUtils utils(this);
+  return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
+
 
 int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
-  if ( !hasGeometryType() )
-    return 1;
+  if (!mEditBuffer || !mDataProvider)
+    return -1;
 
-  //look if geometry of selected feature already contains geometry changes
-  QgsGeometryMap::iterator changedIt = mChangedGeometries.find( featureId );
-  if ( changedIt != mChangedGeometries.end() )
-  {
-    QgsGeometry geom = *changedIt;
-    int errorCode = geom.translate( dx, dy );
-    editGeometryChange( featureId, geom );
-    return errorCode;
-  }
-
-  //look if id of selected feature belongs to an added feature
-#if 0
-  for ( QgsFeatureList::iterator addedIt = mAddedFeatures.begin(); addedIt != mAddedFeatures.end(); ++addedIt )
-  {
-    if ( addedIt->id() == featureId )
-    {
-      return addedIt->geometry()->translate( dx, dy );
-    }
-  }
-#endif
-
-  //else look in mCachedGeometries to make access faster
-  QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( featureId );
-  if ( cachedIt != mCachedGeometries.end() )
-  {
-    int errorCode = cachedIt->translate( dx, dy );
-    if ( errorCode == 0 )
-    {
-      editGeometryChange( featureId, *cachedIt );
-      setModified( true, true );
-    }
-    return errorCode;
-  }
-
-  //else get the geometry from provider (may be slow)
-  QgsFeature f;
-  QgsFeatureRequest request;
-  request.setFilterFid( featureId );
-  QgsFeatureIterator fi = mDataProvider->getFeatures( request );
-  if ( fi.nextFeature( f ) )
-  {
-    if ( f.geometry() )
-    {
-      QgsGeometry translateGeom( *( f.geometry() ) );
-      int errorCode = translateGeom.translate( dx, dy );
-      if ( errorCode == 0 )
-      {
-        editGeometryChange( featureId, translateGeom );
-        setModified( true, true );
-      }
-      return errorCode;
-    }
-  }
-  return 1; //geometry not found
+  QgsVectorLayerEditUtils utils(this);
+  return utils.translateFeature( featureId, dx, dy );
 }
 
 int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
-  if ( !hasGeometryType() )
-    return 4;
+  if (!mEditBuffer || !mDataProvider)
+    return -1;
 
-  QgsFeatureList newFeatures; //store all the newly created features
-  double xMin, yMin, xMax, yMax;
-  QgsRectangle bBox; //bounding box of the split line
-  int returnCode = 0;
-  int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
-  int numberOfSplittedFeatures = 0;
-
-  QgsFeatureList featureList;
-  const QgsFeatureIds selectedIds = selectedFeaturesIds();
-
-  if ( selectedIds.size() > 0 ) //consider only the selected features if there is a selection
-  {
-    featureList = selectedFeatures();
-  }
-  else //else consider all the feature that intersect the bounding box of the split line
-  {
-    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
-    {
-      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
-    }
-    else
-    {
-      return 1;
-    }
-
-    if ( bBox.isEmpty() )
-    {
-      //if the bbox is a line, try to make a square out of it
-      if ( bBox.width() == 0.0 && bBox.height() > 0 )
-      {
-        bBox.setXMinimum( bBox.xMinimum() - bBox.height() / 2 );
-        bBox.setXMaximum( bBox.xMaximum() + bBox.height() / 2 );
-      }
-      else if ( bBox.height() == 0.0 && bBox.width() > 0 )
-      {
-        bBox.setYMinimum( bBox.yMinimum() - bBox.width() / 2 );
-        bBox.setYMaximum( bBox.yMaximum() + bBox.width() / 2 );
-      }
-      else
-      {
-        return 2;
-      }
-    }
-
-    select( pendingAllAttributesList(), bBox, true, true );
-
-    QgsFeature f;
-    while ( nextFeature( f ) )
-      featureList << QgsFeature( f );
-  }
-
-  QgsFeatureList::iterator select_it = featureList.begin();
-  for ( ; select_it != featureList.end(); ++select_it )
-  {
-    QList<QgsGeometry*> newGeometries;
-    QList<QgsPoint> topologyTestPoints;
-    QgsGeometry* newGeometry = 0;
-    splitFunctionReturn = select_it->geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
-    if ( splitFunctionReturn == 0 )
-    {
-      //change this geometry
-      editGeometryChange( select_it->id(), *( select_it->geometry() ) );
-      //update of cached geometries is necessary because we use addTopologicalPoints() later
-      mCachedGeometries[select_it->id()] = *( select_it->geometry() );
-
-      //insert new features
-      for ( int i = 0; i < newGeometries.size(); ++i )
-      {
-        newGeometry = newGeometries.at( i );
-        QgsFeature newFeature;
-        newFeature.setGeometry( newGeometry );
-
-        if ( mDataProvider )
-        {
-          //use default value where possible (primary key issue), otherwise the value from the original (split) feature
-          QgsAttributes newAttributes = select_it->attributes();
-          QVariant defaultValue;
-          for ( int j = 0; j < newAttributes.count(); ++j )
-          {
-            defaultValue = mDataProvider->defaultValue( j );
-            if ( !defaultValue.isNull() )
-            {
-              newAttributes[ j ] = defaultValue;
-            }
-          }
-
-          newFeature.setAttributes( newAttributes );
-        }
-
-        newFeatures.append( newFeature );
-      }
-
-      setModified( true, true );
-      if ( topologicalEditing )
-      {
-        QList<QgsPoint>::const_iterator topol_it = topologyTestPoints.constBegin();
-        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
-        {
-          addTopologicalPoints( *topol_it );
-        }
-      }
-      ++numberOfSplittedFeatures;
-    }
-    else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
-    {
-      returnCode = splitFunctionReturn;
-    }
-  }
-
-  if ( numberOfSplittedFeatures == 0 && selectedIds.size() > 0 )
-  {
-    //There is a selection but no feature has been split.
-    //Maybe user forgot that only the selected features are split
-    returnCode = 4;
-  }
-
-
-  //now add the new features to this vectorlayer
-  addFeatures( newFeatures, false );
-
-  return returnCode;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.splitFeatures( splitLine, topologicalEditing );
 }
 
 int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds ignoreFeatures )
@@ -2565,166 +2136,20 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
 
 int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 {
-  if ( !hasGeometryType() )
-    return 1;
+  if (!mEditBuffer || !mDataProvider)
+    return -1;
 
-  if ( !geom )
-  {
-    return 1;
-  }
-
-  int returnVal = 0;
-
-  QGis::WkbType wkbType = geom->wkbType();
-
-  switch ( wkbType )
-  {
-      //line
-    case QGis::WKBLineString25D:
-    case QGis::WKBLineString:
-    {
-      QgsPolyline theLine = geom->asPolyline();
-      QgsPolyline::const_iterator line_it = theLine.constBegin();
-      for ( ; line_it != theLine.constEnd(); ++line_it )
-      {
-        if ( addTopologicalPoints( *line_it ) != 0 )
-        {
-          returnVal = 2;
-        }
-      }
-      break;
-    }
-
-    //multiline
-    case QGis::WKBMultiLineString25D:
-    case QGis::WKBMultiLineString:
-    {
-      QgsMultiPolyline theMultiLine = geom->asMultiPolyline();
-      QgsPolyline currentPolyline;
-
-      for ( int i = 0; i < theMultiLine.size(); ++i )
-      {
-        QgsPolyline::const_iterator line_it = currentPolyline.constBegin();
-        for ( ; line_it != currentPolyline.constEnd(); ++line_it )
-        {
-          if ( addTopologicalPoints( *line_it ) != 0 )
-          {
-            returnVal = 2;
-          }
-        }
-      }
-      break;
-    }
-
-    //polygon
-    case QGis::WKBPolygon25D:
-    case QGis::WKBPolygon:
-    {
-      QgsPolygon thePolygon = geom->asPolygon();
-      QgsPolyline currentRing;
-
-      for ( int i = 0; i < thePolygon.size(); ++i )
-      {
-        currentRing = thePolygon.at( i );
-        QgsPolyline::const_iterator line_it = currentRing.constBegin();
-        for ( ; line_it != currentRing.constEnd(); ++line_it )
-        {
-          if ( addTopologicalPoints( *line_it ) != 0 )
-          {
-            returnVal = 2;
-          }
-        }
-      }
-      break;
-    }
-
-    //multipolygon
-    case QGis::WKBMultiPolygon25D:
-    case QGis::WKBMultiPolygon:
-    {
-      QgsMultiPolygon theMultiPolygon = geom->asMultiPolygon();
-      QgsPolygon currentPolygon;
-      QgsPolyline currentRing;
-
-      for ( int i = 0; i < theMultiPolygon.size(); ++i )
-      {
-        currentPolygon = theMultiPolygon.at( i );
-        for ( int j = 0; j < currentPolygon.size(); ++j )
-        {
-          currentRing = currentPolygon.at( j );
-          QgsPolyline::const_iterator line_it = currentRing.constBegin();
-          for ( ; line_it != currentRing.constEnd(); ++line_it )
-          {
-            if ( addTopologicalPoints( *line_it ) != 0 )
-            {
-              returnVal = 2;
-            }
-          }
-        }
-      }
-      break;
-    }
-    default:
-      break;
-  }
-  return returnVal;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.addTopologicalPoints( geom );
 }
 
 int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 {
-  if ( !hasGeometryType() )
-    return 1;
+  if (!mEditBuffer || !mDataProvider)
+    return -1;
 
-  QMultiMap<double, QgsSnappingResult> snapResults; //results from the snapper object
-  //we also need to snap to vertex to make sure the vertex does not already exist in this geometry
-  QMultiMap<double, QgsSnappingResult> vertexSnapResults;
-
-  QList<QgsSnappingResult> filteredSnapResults; //we filter out the results that are on existing vertices
-
-  //work with a tolerance because coordinate projection may introduce some rounding
-  double threshold =  0.0000001;
-  if ( crs().mapUnits() == QGis::Meters )
-  {
-    threshold = 0.001;
-  }
-  else if ( crs().mapUnits() == QGis::Feet )
-  {
-    threshold = 0.0001;
-  }
-
-
-  if ( snapWithContext( p, threshold, snapResults, QgsSnapper::SnapToSegment ) != 0 )
-  {
-    return 2;
-  }
-
-  QMultiMap<double, QgsSnappingResult>::const_iterator snap_it = snapResults.constBegin();
-  QMultiMap<double, QgsSnappingResult>::const_iterator vertex_snap_it;
-  for ( ; snap_it != snapResults.constEnd(); ++snap_it )
-  {
-    //test if p is already a vertex of this geometry. If yes, don't insert it
-    bool vertexAlreadyExists = false;
-    if ( snapWithContext( p, threshold, vertexSnapResults, QgsSnapper::SnapToVertex ) != 0 )
-    {
-      continue;
-    }
-
-    vertex_snap_it = vertexSnapResults.constBegin();
-    for ( ; vertex_snap_it != vertexSnapResults.constEnd(); ++vertex_snap_it )
-    {
-      if ( snap_it.value().snappedAtGeometry == vertex_snap_it.value().snappedAtGeometry )
-      {
-        vertexAlreadyExists = true;
-      }
-    }
-
-    if ( !vertexAlreadyExists )
-    {
-      filteredSnapResults.push_back( *snap_it );
-    }
-  }
-  insertSegmentVerticesForSnap( filteredSnapResults );
-  return 0;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.addTopologicalPoints( p );
 }
 
 QgsLabel *QgsVectorLayer::label()
@@ -2765,19 +2190,24 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
-  if ( mEditable )
+  if ( mEditBuffer )
   {
     // editing already underway
     return false;
   }
 
-  mEditable = true;
+  mEditBuffer = new QgsVectorLayerEditBuffer(this);
+  // forward signals
+  connect(mEditBuffer, SIGNAL(layerModified()), this, SIGNAL(layerModified())); // TODO[MD]: necessary?
+  connect(mEditBuffer, SIGNAL(layerModified()), this, SLOT(triggerRepaint())); // TODO[MD]: works well?
+  connect(mEditBuffer, SIGNAL(featureAdded(QgsFeatureId)), this, SIGNAL(featureAdded(QgsFeatureId)));
+  connect(mEditBuffer, SIGNAL(featureDeleted(QgsFeatureId)), this, SIGNAL(featureDeleted(QgsFeatureId)));
+  connect(mEditBuffer, SIGNAL(geometryChanged(QgsFeatureId,QgsGeometry&)), this, SIGNAL(geometryChanged(QgsFeatureId,QgsGeometry&)));
+  connect(mEditBuffer, SIGNAL(attributeValueChanged(QgsFeatureId,int,QVariant)), this, SIGNAL(attributeValueChanged(QgsFeatureId,int,QVariant)));
+  connect(mEditBuffer, SIGNAL(attributeAdded(int)), this, SIGNAL(attributeAdded(int)));
+  connect(mEditBuffer, SIGNAL(attributeDeleted(int)), this, SIGNAL(attributeDeleted(int)));
 
-  mAddedAttributeIds.clear();
-  mDeletedAttributeIds.clear();
-  updateFieldMap();
-
-  mMaxUpdatedIndex = mUpdatedFields.count() - 1;
+  updateFields();
 
   emit editingStarted();
 
@@ -2838,7 +2268,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   mJoinBuffer->readXml( layer_node );
 
-  updateFieldMap();
+  updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
@@ -3549,66 +2979,30 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
 
 bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
-  if ( !mEditable || !mDataProvider || !hasGeometryType() )
+  if ( !mEditBuffer || !mDataProvider )
   {
     return false;
   }
 
-  editGeometryChange( fid, *geom );
-  mCachedGeometries[fid] = *geom;
-  setModified( true, true );
-
-  return true;
+  return mEditBuffer->changeGeometry( fid, geom );
 }
 
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal )
 {
-  if ( !isEditable() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  editAttributeChange( fid, field, value );
-  setModified( true, false );
-
-  if ( emitSignal )
-    emit attributeValueChanged( fid, field, value );
-
-  return true;
+  // TODO[MD]: emitSignal
+  return mEditBuffer->changeAttributeValue( fid, field, value );
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )
 {
-  if ( !isEditable() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( field.name().isEmpty() )
-    return false;
-
-  for ( int idx = 0; idx < mUpdatedFields.count(); ++idx )
-  {
-    if ( mUpdatedFields[idx].name() == field.name() )
-      return false;
-  }
-
-  if ( !mDataProvider->supportedType( field ) )
-    return false;
-
-  mMaxUpdatedIndex++;
-
-  if ( mActiveCommand != NULL )
-  {
-    mActiveCommand->storeAttributeAdd( mMaxUpdatedIndex, field );
-  }
-
-  Q_ASSERT( mMaxUpdatedIndex == mUpdatedFields.count() );
-  mUpdatedFields.append( field );
-  mAddedAttributeIds.insert( mMaxUpdatedIndex );
-
-  setModified( true, false );
-
-  emit attributeAdded( mMaxUpdatedIndex );
-
-  return true;
+  return mEditBuffer->addAttribute( field );
 }
 
 bool QgsVectorLayer::addAttribute( QString name, QString type )
@@ -3630,7 +3024,7 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
   QString name = pendingFields()[ attIndex ].name();
 
   mAttributeAliasMap.insert( name, aliasString );
-  emit layerModified( false );
+  emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -3659,51 +3053,22 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
 
 bool QgsVectorLayer::deleteAttribute( int index )
 {
-  if ( !isEditable() )
+  if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( index < 0 )
-    return false;
-
-  if ( mDeletedAttributeIds.contains( index ) )
-    return false;
-
-  if ( index >= mDataProvider->fields().count() &&
-       !mAddedAttributeIds.contains( index ) )
-    return false;
-
-  if ( mActiveCommand != NULL )
-  {
-    mActiveCommand->storeAttributeDelete( index, mUpdatedFields[index] );
-  }
-
-  mDeletedAttributeIds.insert( index );
-  mAddedAttributeIds.remove( index );
-  mUpdatedFields.remove( index );
-
-  setModified( true, false );
-
-  emit attributeDeleted( index );
-
-  return true;
+  return mEditBuffer->deleteAttribute( index );
 }
 
 bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
 {
-  if ( !isEditable() )
+  if ( !mEditBuffer )
     return false;
 
-  if ( mDeletedFeatureIds.contains( fid ) )
-    return true;
+  bool res = mEditBuffer->deleteFeature(fid);
+  if (res)
+    mSelectedFeatureIds.remove( fid ); // remove it from selection
 
-  mSelectedFeatureIds.remove( fid ); // remove it from selection
-  editFeatureDelete( fid );
-
-  setModified( true, false );
-
-  emit featureDeleted( fid );
-
-  return true;
+  return res;
 }
 
 const QgsFields &QgsVectorLayer::pendingFields() const
@@ -3721,18 +3086,12 @@ QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 
 int QgsVectorLayer::pendingFeatureCount()
 {
-  return mDataProvider->featureCount()
-         + mAddedFeatures.size()
-         - mDeletedFeatureIds.size();
+  return mDataProvider->featureCount() +
+    (mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
 }
 
 bool QgsVectorLayer::commitChanges()
 {
-  bool success = true;
-
-  //clear the cache image so markers don't appear anymore on next draw
-  setCacheImage( 0 );
-
   mCommitErrors.clear();
 
   if ( !mDataProvider )
@@ -3741,315 +3100,31 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
-  if ( !isEditable() )
+  if ( !mEditBuffer )
   {
     mCommitErrors << tr( "ERROR: layer not editable" );
     return false;
   }
 
-  int cap = mDataProvider->capabilities();
-
-  //
-  // delete attributes
-  //
-  bool attributesChanged = false;
-  if ( mDeletedAttributeIds.size() > 0 )
-  {
-    if (( cap & QgsVectorDataProvider::DeleteAttributes ) && mDataProvider->deleteAttributes( mDeletedAttributeIds ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
-
-      emit committedAttributesDeleted( id(), mDeletedAttributeIds );
-
-      mDeletedAttributeIds.clear();
-      attributesChanged = true;
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n attribute(s) not deleted.", "not deleted attributes count", mDeletedAttributeIds.size() );
-      success = false;
-    }
-  }
-
-  //
-  // add attributes
-  //
-  if ( mAddedAttributeIds.size() > 0 )
-  {
-    QList<QgsField> addedAttributes;
-    for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.constBegin(); it != mAddedAttributeIds.constEnd(); it++ )
-    {
-      addedAttributes << mUpdatedFields[*it];
-    }
-
-
-    if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributeIds.size() );
-
-      emit committedAttributesAdded( id(), addedAttributes );
-
-      mAddedAttributeIds.clear();
-      attributesChanged = true;
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n new attribute(s) not added", "not added attributes count", mAddedAttributeIds.size() );
-      success = false;
-    }
-  }
-
-  //
-  // remap changed and attributes of added features
-  //
-  bool attributeChangesOk = true;
-  if ( attributesChanged )
-  {
-    // map updates field indexes to names
-    QMap<int, QString> src;
-    for ( int idx = 0; idx < mUpdatedFields.count(); ++idx )
-    {
-      src[idx] = mUpdatedFields[idx].name();
-    }
-
-    const QgsFields &pFields = mDataProvider->fields();
-    int attrCount = pFields.count();
-
-    // map provider table names to field indexes
-    QMap<QString, int> dst = mDataProvider->fieldNameMap();
-
-    // if adding attributes failed add fields that are now missing
-    // (otherwise we'll loose updates when doing the remapping)
-    if ( mAddedAttributeIds.size() > 0 )
-    {
-      for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.constBegin(); it != mAddedAttributeIds.constEnd(); it++ )
-      {
-        QString name =  mUpdatedFields[ *it ].name();
-        if ( dst.contains( name ) )
-        {
-          // it's there => so we don't need to add it anymore
-          mAddedAttributeIds.remove( *it );
-          mCommitErrors << tr( "SUCCESS: attribute %1 was added." ).arg( name );
-        }
-        else
-        {
-          // field not there => put it behind the existing attributes
-          dst[ name ] = attrCount++;
-          attributeChangesOk = false;   // don't try attribute updates - they'll fail.
-          mCommitErrors << tr( "ERROR: attribute %1 not added" ).arg( name );
-        }
-      }
-    }
-
-    // map updated fields to provider fields
-    QMap<int, int> remap;
-    for ( QMap<int, QString>::const_iterator it = src.begin(); it != src.end(); it++ )
-    {
-      if ( dst.contains( it.value() ) )
-      {
-        remap[ it.key()] = dst[ it.value()];
-      }
-    }
-
-    // remap changed attributes
-    for ( QgsChangedAttributesMap::iterator fit = mChangedAttributeValues.begin(); fit != mChangedAttributeValues.end(); fit++ )
-    {
-      QgsAttributeMap &src = fit.value();
-      QgsAttributeMap dst;
-
-      for ( QgsAttributeMap::const_iterator it = src.begin(); it != src.end(); it++ )
-      {
-        if ( remap.contains( it.key() ) )
-        {
-          dst[ remap[it.key()] ] = it.value();
-        }
-      }
-      src = dst;
-    }
-
-    // remap attributes of added features
-    for ( QgsFeatureList::iterator fit = mAddedFeatures.begin(); fit != mAddedFeatures.end(); fit++ )
-    {
-      const QgsAttributes &src = fit->attributes();
-      QgsAttributes dst( pendingFields().count() );
-
-      for ( int it = 0; it < src.count(); ++it )
-        if ( remap.contains( it ) )
-          dst[ remap[it] ] = src[it];
-
-      fit->setAttributes( dst );
-    }
-
-    QgsFields attributes( mUpdatedFields.count() );
-
-    // update private field map
-    // TODO[MD]: should not be necessary anymore, fields have no holes
-    for ( QMap<int, int>::iterator it = remap.begin(); it != remap.end(); it++ )
-      attributes[it.value()] = mUpdatedFields[it.key()];
-
-    if ( attributes != mUpdatedFields )
-    {
-      QgsDebugMsg("Addition/removal of fields failed!");
-    }
-    mUpdatedFields = attributes;
-  }
-
-  if ( attributeChangesOk )
-  {
-    //
-    // change attributes
-    //
-    if ( mChangedAttributeValues.size() > 0 )
-    {
-      if (( cap & QgsVectorDataProvider::ChangeAttributeValues ) && mDataProvider->changeAttributeValues( mChangedAttributeValues ) )
-      {
-        mCommitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
-
-        emit committedAttributeValuesChanges( id(), mChangedAttributeValues );
-
-        mChangedAttributeValues.clear();
-      }
-      else
-      {
-        mCommitErrors << tr( "ERROR: %n attribute value change(s) not applied.", "not changed attribute values count", mChangedAttributeValues.size() );
-        success = false;
-      }
-    }
-
-    //
-    //  add features
-    //
-    if ( mAddedFeatures.size() > 0 )
-    {
-      for ( int i = 0; i < mAddedFeatures.size(); i++ )
-      {
-        QgsFeature &f = mAddedFeatures[i];
-
-        if ( mDeletedFeatureIds.contains( f.id() ) )
-        {
-          mDeletedFeatureIds.remove( f.id() );
-
-          if ( mChangedGeometries.contains( f.id() ) )
-            mChangedGeometries.remove( f.id() );
-
-          mAddedFeatures.removeAt( i-- );
-          continue;
-        }
-
-        if ( mChangedGeometries.contains( f.id() ) )
-        {
-          f.setGeometry( mChangedGeometries.take( f.id() ) );
-        }
-      }
-
-      if ( cap & QgsVectorDataProvider::AddFeatures )
-      {
-        QList<QgsFeatureId> ids;
-        foreach ( const QgsFeature &f, mAddedFeatures )
-        {
-          ids << f.id();
-        }
-
-        if ( mDataProvider->addFeatures( mAddedFeatures ) )
-        {
-          mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
-
-          emit committedFeaturesAdded( id(), mAddedFeatures );
-
-          // notify everyone that the features with temporary ids were updated with permanent ids
-          for ( int i = 0; i < mAddedFeatures.size(); i++ )
-          {
-            if ( mAddedFeatures[i].id() != ids[i] )
-            {
-              emit featureDeleted( ids[i] );
-              emit featureAdded( mAddedFeatures[i].id() );
-            }
-          }
-
-          mAddedFeatures.clear();
-        }
-        else
-        {
-          mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
-          success = false;
-        }
-      }
-      else
-      {
-        mCommitErrors << tr( "ERROR: %n feature(s) not added - provider doesn't support adding features.", "not added features count", mAddedFeatures.size() );
-        success = false;
-      }
-    }
-  }
-
-  //
-  // update geometries
-  //
-  if ( mChangedGeometries.size() > 0 )
-  {
-    if (( cap & QgsVectorDataProvider::ChangeGeometries ) && mDataProvider->changeGeometryValues( mChangedGeometries ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
-
-      emit committedGeometriesChanges( id(), mChangedGeometries );
-
-      mChangedGeometries.clear();
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n geometries not changed.", "not changed geometries count", mChangedGeometries.size() );
-      success = false;
-    }
-  }
-
-  //
-  // delete features
-  //
-  if ( mDeletedFeatureIds.size() > 0 )
-  {
-    if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
-      for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
-      {
-        mChangedAttributeValues.remove( *it );
-        mChangedGeometries.remove( *it );
-      }
-
-      emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
-
-      mDeletedFeatureIds.clear();
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
-      success = false;
-    }
-  }
-
-  if ( !success )
-  {
-    if ( mDataProvider->hasErrors() )
-    {
-      mCommitErrors << tr( "\n  Provider errors:" ) << mDataProvider->errors();
-      mDataProvider->clearErrors();
-    }
-
-    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
-  }
-
-  deleteCachedGeometries();
+  bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   if ( success )
   {
-    mEditable = false;
-    setModified( false );
+    delete mEditBuffer;
+    mEditBuffer = 0;
     undoStack()->clear();
     emit editingStopped();
   }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
+  }
 
-  updateFieldMap();
+  updateFields();
   mDataProvider->updateExtents();
+
+  //clear the cache image so markers don't appear anymore on next draw
+  setCacheImage( 0 );
 
   return success;
 }
@@ -4061,33 +3136,19 @@ const QStringList &QgsVectorLayer::commitErrors()
 
 bool QgsVectorLayer::rollBack()
 {
-  if ( !isEditable() )
+  if ( !mEditBuffer )
   {
     return false;
   }
 
-  if ( isModified() )
-  {
-    while ( undoStack()->canUndo() )
-    {
-      undoStack()->undo();
-    }
+  mEditBuffer->rollBack();
 
-    Q_ASSERT( mAddedAttributeIds.isEmpty() );
-    Q_ASSERT( mDeletedAttributeIds.isEmpty() );
-    Q_ASSERT( mChangedAttributeValues.isEmpty() );
-    Q_ASSERT( mChangedGeometries.isEmpty() );
-    Q_ASSERT( mAddedFeatures.isEmpty() );
+  updateFields();
 
-    updateFieldMap();
-  }
-
-  deleteCachedGeometries();
-
-  mEditable = false;
+  delete mEditBuffer;
+  mEditBuffer = 0;
   emit editingStopped();
 
-  setModified( false );
   // invalidate the cache so the layer updates properly to show its original
   // after the rollback
   setCacheImage( 0 );
@@ -4131,47 +3192,24 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 
 bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 {
-  if ( !mDataProvider )
-  {
+  if ( !mEditBuffer || !mDataProvider )
     return false;
-  }
 
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-  {
-    return false;
-  }
-
-  if ( !isEditable() )
-  {
-    return false;
-  }
+  bool res = mEditBuffer->addFeatures( features );
 
   if ( makeSelected )
   {
     mSelectedFeatureIds.clear();
-  }
-
-  for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
-  {
-    addFeature( *iter );
-
-    if ( makeSelected )
-    {
+    for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
       mSelectedFeatureIds.insert( iter->id() );
-    }
-  }
 
-  updateExtents();
-
-  if ( makeSelected )
-  {
     // invalidate cache
     setCacheImage( 0 );
 
     emit selectionChanged();
   }
 
-  return true;
+  return res;
 }
 
 
@@ -4220,10 +3258,10 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   int n = 0;
   QgsFeature f;
 
-  if ( mCachedGeometriesRect.contains( searchRect ) )
+  if ( mCache->cachedGeometriesRect().contains( searchRect ) )
   {
-    QgsGeometryMap::iterator it = mCachedGeometries.begin();
-    for ( ; it != mCachedGeometries.end() ; ++it )
+    QgsGeometryMap& cachedGeometries = mCache->cachedGeometries();
+    for ( QgsGeometryMap::iterator it = cachedGeometries.begin(); it != cachedGeometries.end() ; ++it )
     {
       QgsGeometry* g = &( it.value() );
       if ( g->boundingBox().intersects( searchRect ) )
@@ -4314,61 +3352,10 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
 
 int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults )
 {
-  if ( !hasGeometryType() )
-    return 1;
-
-  int returnval = 0;
-  QgsPoint layerPoint;
-
-  QList<QgsSnappingResult>::const_iterator it = snapResults.constBegin();
-  for ( ; it != snapResults.constEnd(); ++it )
-  {
-    if ( it->snappedVertexNr == -1 ) // segment snap
-    {
-      layerPoint = it->snappedVertex;
-      if ( !insertVertex( layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr ) )
-      {
-        returnval = 3;
-      }
-    }
-  }
-  return returnval;
+  QgsVectorLayerEditUtils utils(this);
+  return utils.insertSegmentVerticesForSnap( snapResults );
 }
 
-int QgsVectorLayer::boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const
-{
-  if ( list.size() < 1 )
-  {
-    return 1;
-  }
-
-  xmin = std::numeric_limits<double>::max();
-  xmax = -std::numeric_limits<double>::max();
-  ymin = std::numeric_limits<double>::max();
-  ymax = -std::numeric_limits<double>::max();
-
-  for ( QList<QgsPoint>::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
-  {
-    if ( it->x() < xmin )
-    {
-      xmin = it->x();
-    }
-    if ( it->x() > xmax )
-    {
-      xmax = it->x();
-    }
-    if ( it->y() < ymin )
-    {
-      ymin = it->y();
-    }
-    if ( it->y() > ymax )
-    {
-      ymax = it->y();
-    }
-  }
-
-  return 0;
-}
 
 QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
 {
@@ -4584,7 +3571,7 @@ const QString QgsVectorLayer::displayField() const
 
 bool QgsVectorLayer::isEditable() const
 {
-  return ( mEditable && mDataProvider );
+  return ( mEditBuffer && mDataProvider );
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -4595,7 +3582,7 @@ bool QgsVectorLayer::isReadOnly() const
 bool QgsVectorLayer::setReadOnly( bool readonly )
 {
   // exit if the layer is in editing mode
-  if ( readonly && mEditable )
+  if ( readonly && mEditBuffer )
     return false;
 
   mReadOnly = readonly;
@@ -4604,13 +3591,7 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
 
 bool QgsVectorLayer::isModified() const
 {
-  return mModified;
-}
-
-void QgsVectorLayer::setModified( bool modified, bool onlyGeometry )
-{
-  mModified = modified;
-  emit layerModified( onlyGeometry );
+  return mEditBuffer && mEditBuffer->isModified();
 }
 
 QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
@@ -4758,356 +3739,23 @@ void QgsVectorLayer::setUsingRendererV2( bool usingRendererV2 )
 }
 
 
-void QgsVectorLayer::editGeometryChange( QgsFeatureId featureId, QgsGeometry& geometry )
-{
-  if ( mActiveCommand )
-  {
-    mActiveCommand->storeGeometryChange( featureId, mChangedGeometries[ featureId ], geometry );
-  }
-  mChangedGeometries[ featureId ] = geometry;
-  emit geometryChanged( featureId, geometry );
-}
-
-
-void QgsVectorLayer::editFeatureAdd( QgsFeature& feature )
-{
-  if ( mActiveCommand )
-  {
-    mActiveCommand->storeFeatureAdd( feature );
-  }
-  mAddedFeatures.append( feature );
-}
-
-void QgsVectorLayer::editFeatureDelete( QgsFeatureId featureId )
-{
-  if ( mActiveCommand )
-  {
-    mActiveCommand->storeFeatureDelete( featureId );
-  }
-  mDeletedFeatureIds.insert( featureId );
-}
-
-void QgsVectorLayer::editAttributeChange( QgsFeatureId featureId, int field, QVariant value )
-{
-  if ( mActiveCommand != NULL )
-  {
-    QVariant original;
-    bool isFirstChange = true;
-    if ( featureId < 0 )
-    {
-      // work with added feature
-      for ( int i = 0; i < mAddedFeatures.size(); i++ )
-      {
-        if ( mAddedFeatures[i].id() == featureId && mAddedFeatures[i].attribute( field ).isValid() )
-        {
-          original = mAddedFeatures[i].attribute( field );
-          isFirstChange = false;
-          break;
-        }
-      }
-    }
-    else
-    {
-      if ( mChangedAttributeValues.contains( featureId ) && mChangedAttributeValues[featureId].contains( field ) )
-      {
-        original = mChangedAttributeValues[featureId][field];
-        isFirstChange = false;
-      }
-    }
-    mActiveCommand->storeAttributeChange( featureId, field, original, value, isFirstChange );
-  }
-
-  if ( !FID_IS_NEW( featureId ) )
-  {
-    // changed attribute of existing feature
-    if ( !mChangedAttributeValues.contains( featureId ) )
-    {
-      mChangedAttributeValues.insert( featureId, QgsAttributeMap() );
-    }
-
-    mChangedAttributeValues[featureId].insert( field, value );
-  }
-  else
-  {
-    // updated added feature
-    for ( int i = 0; i < mAddedFeatures.size(); i++ )
-    {
-      if ( mAddedFeatures[i].id() == featureId )
-      {
-        mAddedFeatures[i].setAttribute( field, value );
-        break;
-      }
-    }
-  }
-}
 
 void QgsVectorLayer::beginEditCommand( QString text )
 {
-  if ( !mActiveCommand )
-  {
-    mActiveCommand = new QgsUndoCommand( this, text );
-  }
+  undoStack()->beginMacro(text);
 }
 
 void QgsVectorLayer::endEditCommand()
 {
-  if ( mActiveCommand )
-  {
-    undoStack()->push( mActiveCommand );
-    mActiveCommand = 0;
-  }
-
+  undoStack()->endMacro();
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
-  if ( mActiveCommand )
-  {
-    undoEditCommand( mActiveCommand );
-    delete mActiveCommand;
-    mActiveCommand = 0;
-  }
-
+  undoStack()->endMacro();
+  undoStack()->undo();
 }
 
-void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
-{
-  QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>& geometryChange = cmd->mGeometryChange;
-  QgsFeatureIds& deletedFeatureIdChange = cmd->mDeletedFeatureIdChange;
-  QgsFeatureList& addedFeatures = cmd->mAddedFeatures;
-  QMap<QgsFeatureId, QgsUndoCommand::AttributeChanges>& attributeChange = cmd->mAttributeChange;
-  QgsFieldMap& addedAttributes = cmd->mAddedAttributes;
-  QgsFieldMap& deletedAttributes = cmd->mDeletedAttributes;
-
-
-  // geometry changes
-  QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
-  for ( ; it != geometryChange.end(); ++it )
-  {
-    if ( !it.value().target )
-    {
-      mChangedGeometries.remove( it.key() );
-
-      QgsFeature f;
-      if ( featureAtId( it.key(), f, true, false ) && f.geometry() )
-      {
-        emit geometryChanged( it.key(), *f.geometry() );
-      }
-    }
-    else
-    {
-      mChangedGeometries[it.key()] = *it.value().target;
-      emit geometryChanged( it.key(), *it.value().target );
-    }
-  }
-
-  // deleted features
-  QgsFeatureIds::iterator delIt = deletedFeatureIdChange.begin();
-  for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
-  {
-    mDeletedFeatureIds.insert( *delIt );
-    emit featureDeleted( *delIt );
-  }
-
-  // added features
-  QgsFeatureList::iterator addIt = addedFeatures.begin();
-  for ( ; addIt != addedFeatures.end(); ++addIt )
-  {
-    mAddedFeatures.append( *addIt );
-    emit featureAdded( addIt->id() );
-  }
-
-  // changed attributes
-  QMap<QgsFeatureId, QgsUndoCommand::AttributeChanges>::iterator attrFeatIt = attributeChange.begin();
-  for ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
-  {
-    QgsFeatureId fid = attrFeatIt.key();
-    // for every changed attribute in feature
-    QMap<int, QgsUndoCommand::AttributeChangeEntry>::iterator attrChIt = attrFeatIt.value().begin();
-    for ( ; attrChIt != attrFeatIt.value().end(); ++attrChIt )
-    {
-      if ( !FID_IS_NEW( fid ) )
-      {
-        // existing feature
-        if ( attrChIt.value().target.isNull() )
-        {
-          mChangedAttributeValues[fid].remove( attrChIt.key() );
-          if ( mChangedAttributeValues[fid].isEmpty() )
-            mChangedAttributeValues.remove( fid );
-        }
-        else
-        {
-          mChangedAttributeValues[fid][attrChIt.key()] = attrChIt.value().target;
-        }
-      }
-      else
-      {
-        // added feature
-        for ( int i = 0; i < mAddedFeatures.size(); i++ )
-        {
-          if ( mAddedFeatures[i].id() == fid )
-          {
-            mAddedFeatures[i].setAttribute( attrChIt.key(), attrChIt.value().target );
-            break;
-          }
-        }
-      }
-      emit attributeValueChanged( fid, attrChIt.key(), attrChIt.value().target );
-    }
-  }
-
-  // added attributes
-  QgsFieldMap::iterator attrIt = addedAttributes.begin();
-  for ( ; attrIt != addedAttributes.end(); ++attrIt )
-  {
-    int attrIndex = attrIt.key();
-    mAddedAttributeIds.insert( attrIndex );
-    mUpdatedFields.insert( attrIndex, attrIt.value() );
-    emit attributeAdded( attrIndex );
-  }
-
-  // deleted attributes
-  QgsFieldMap::iterator dAttrIt = deletedAttributes.begin();
-  for ( ; dAttrIt != deletedAttributes.end(); ++dAttrIt )
-  {
-    int attrIndex = dAttrIt.key();
-    mDeletedAttributeIds.insert( attrIndex );
-    mUpdatedFields.remove( attrIndex );
-    emit attributeDeleted( attrIndex );
-  }
-  setModified( true );
-
-  // it's not ideal to trigger refresh from here
-  triggerRepaint();
-}
-
-void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
-{
-  QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>& geometryChange = cmd->mGeometryChange;
-  QgsFeatureIds& deletedFeatureIdChange = cmd->mDeletedFeatureIdChange;
-  QgsFeatureList& addedFeatures = cmd->mAddedFeatures;
-  QMap<QgsFeatureId, QgsUndoCommand::AttributeChanges>& attributeChange = cmd->mAttributeChange;
-  QgsFieldMap& addedAttributes = cmd->mAddedAttributes;
-  QgsFieldMap& deletedAttributes = cmd->mDeletedAttributes;
-
-  // deleted attributes
-  QgsFieldMap::iterator dAttrIt = deletedAttributes.begin();
-  for ( ; dAttrIt != deletedAttributes.end(); ++dAttrIt )
-  {
-    int attrIndex = dAttrIt.key();
-    mDeletedAttributeIds.remove( attrIndex );
-    mUpdatedFields.insert( attrIndex, dAttrIt.value() );
-    emit attributeAdded( attrIndex );
-  }
-
-  // added attributes
-  QgsFieldMap::iterator attrIt = addedAttributes.begin();
-  for ( ; attrIt != addedAttributes.end(); ++attrIt )
-  {
-    int attrIndex = attrIt.key();
-    mAddedAttributeIds.remove( attrIndex );
-    mUpdatedFields.remove( attrIndex );
-    emit attributeDeleted( attrIndex );
-  }
-
-  // geometry changes
-  QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
-  for ( ; it != geometryChange.end(); ++it )
-  {
-    if ( !it.value().original )
-    {
-      mChangedGeometries.remove( it.key() );
-
-      QgsFeature f;
-      if ( featureAtId( it.key(), f, true, false ) && f.geometry() )
-      {
-        emit geometryChanged( it.key(), *f.geometry() );
-      }
-    }
-    else
-    {
-      mChangedGeometries[it.key()] = *( it.value().original );
-      emit geometryChanged( it.key(), *it.value().original );
-    }
-  }
-
-  // deleted features
-  QgsFeatureIds::iterator delIt = deletedFeatureIdChange.begin();
-  for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
-  {
-    mDeletedFeatureIds.remove( *delIt );
-    emit featureAdded( *delIt );
-  }
-
-  // added features
-  QgsFeatureList::iterator addIt = addedFeatures.begin();
-  for ( ; addIt != addedFeatures.end(); ++addIt )
-  {
-    QgsFeatureList::iterator addedIt = mAddedFeatures.begin();
-    for ( ; addedIt != mAddedFeatures.end(); ++addedIt )
-    {
-      if ( addedIt->id() == addIt->id() )
-      {
-        mAddedFeatures.erase( addedIt );
-        emit featureDeleted( addIt->id() );
-        break; // feature was found so move to next one
-      }
-    }
-  }
-
-  // updated attributes
-  QMap<QgsFeatureId, QgsUndoCommand::AttributeChanges>::iterator attrFeatIt = attributeChange.begin();
-  for ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
-  {
-    QgsFeatureId fid = attrFeatIt.key();
-    QMap<int, QgsUndoCommand::AttributeChangeEntry>::iterator  attrChIt = attrFeatIt.value().begin();
-    for ( ; attrChIt != attrFeatIt.value().end(); ++attrChIt )
-    {
-      if ( !FID_IS_NEW( fid ) )
-      {
-        if ( attrChIt.value().isFirstChange )
-        {
-          mChangedAttributeValues[fid].remove( attrChIt.key() );
-          if ( mChangedAttributeValues[fid].isEmpty() )
-            mChangedAttributeValues.remove( fid );
-        }
-        else
-        {
-          mChangedAttributeValues[fid][attrChIt.key()] = attrChIt.value().original;
-        }
-      }
-      else
-      {
-        // added feature TODO:
-        for ( int i = 0; i < mAddedFeatures.size(); i++ )
-        {
-          if ( mAddedFeatures[i].id() == fid )
-          {
-            mAddedFeatures[i].setAttribute( attrChIt.key(), attrChIt.value().original );
-            break;
-          }
-        }
-      }
-      QVariant original = attrChIt.value().original;
-      if ( attrChIt.value().isFirstChange )
-      {
-        QgsFeature tmp;
-        //mDataProvider->featureAtId( fid, tmp, false, QgsAttributeList() << attrChIt.key() );
-        QgsFeatureRequest request;
-        request.setFlags( QgsFeatureRequest::NoGeometry );
-        request.setSubsetOfAttributes( QgsAttributeList() << attrChIt.key() );
-        QgsFeatureIterator fi = mDataProvider->getFeatures( request );
-        if ( fi.nextFeature( tmp ) )
-          original = tmp.attribute( attrChIt.key() );
-      }
-      emit attributeValueChanged( fid, attrChIt.key(), original );
-    }
-  }
-  setModified( true );
-
-  // it's not ideal to trigger refresh from here
-  triggerRepaint();
-}
 
 void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecked )
 {
@@ -5139,10 +3787,10 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
   return -1;
 }
 
-void QgsVectorLayer::addJoin( QgsVectorJoinInfo joinInfo )
+void QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
   mJoinBuffer->addJoin( joinInfo );
-  updateFieldMap();
+  updateFields();
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
@@ -5153,7 +3801,7 @@ void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
 void QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
   mJoinBuffer->removeJoin( joinLayerId );
-  updateFieldMap();
+  updateFields();
 }
 
 const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
@@ -5161,65 +3809,22 @@ const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
-void QgsVectorLayer::updateFieldMap()
+void QgsVectorLayer::updateFields()
 {
-  //first backup mAddedAttributes
-  QgsFieldMap bkAddedAttributes;
-  QgsAttributeIds::const_iterator attIdIt = mAddedAttributeIds.constBegin();
-  for ( ; attIdIt != mAddedAttributeIds.constEnd(); ++attIdIt )
-  {
-    bkAddedAttributes.insert( *attIdIt, mUpdatedFields[*attIdIt] );
-  }
+  if ( !mDataProvider )
+    return;
 
-  if ( mDataProvider )
-  {
-    mUpdatedFields = mDataProvider->fields();
-  }
-  else
-    mUpdatedFields = QgsFields();
+  mUpdatedFields = mDataProvider->fields();
 
-  //joined fields
+  // added / removed fields
+  if ( mEditBuffer )
+    mEditBuffer->updateFields( mUpdatedFields );
+
+  // joined fields
   if ( mJoinBuffer->containsJoins() )
-  {
     mJoinBuffer->updateFields( mUpdatedFields );
-  }
-
-  mMaxUpdatedIndex = mUpdatedFields.count() - 1;
-
-  //insert added attributes after provider fields and joined fields
-  mAddedAttributeIds.clear();
-  QgsFieldMap::const_iterator fieldIt = bkAddedAttributes.constBegin();
-  for ( ; fieldIt != bkAddedAttributes.constEnd(); ++fieldIt )
-  {
-    ++mMaxUpdatedIndex;
-    mUpdatedFields.append( fieldIt.value() );
-    mAddedAttributeIds.insert( mMaxUpdatedIndex );
-
-    //go through the changed attributes map and adapt indices of added attributes
-    for ( int i = 0; i < mChangedAttributeValues.size(); ++i )
-    {
-      updateAttributeMapIndex( mChangedAttributeValues[i], fieldIt.key(), mMaxUpdatedIndex );
-    }
-
-    //go through added features and adapt attribute maps
-    QgsFeatureList::iterator featureIt = mAddedFeatures.begin();
-    for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
-    {
-      QgsAttributes& attrs = featureIt->attributes();
-      attrs[mMaxUpdatedIndex] = attrs[fieldIt.key()];
-      attrs[fieldIt.key()].clear();
-      // updateAttributeMapIndex( attrs, fieldIt.key(), mMaxUpdatedIndex );
-      // featureIt->setAttributes( attrs );
-    }
-  }
-
-  //remove deleted attributes
-  QgsAttributeIds::const_iterator deletedIt = mDeletedAttributeIds.constBegin();
-  for ( ; deletedIt != mDeletedAttributeIds.constEnd(); ++deletedIt )
-  {
-    mUpdatedFields.remove( *deletedIt );
-  }
 }
+
 
 void QgsVectorLayer::createJoinCaches()
 {
@@ -5237,56 +3842,55 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return;
   }
 
-  int providerFieldCount = mDataProvider->fields().count();
+  QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin(index);
 
-  if ( index < providerFieldCount && !mEditable ) //a provider field
+  if ( origin == QgsFields::OriginProvider ) //a provider field
   {
     return mDataProvider->uniqueValues( index, uniqueValues, limit );
   }
-  else // a joined field?
+  else if ( origin == QgsFields::OriginJoin )
   {
-    if ( mJoinBuffer )
+    int sourceLayerIndex;
+    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
+    Q_ASSERT( join );
+
+    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+    Q_ASSERT( vl );
+
+    return vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
+  }
+  else if ( origin == QgsFields::OriginEdit )
+  {
+    // the layer is editable, but in certain cases it can still be avoided going through all features
+    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
-      int indexOffset; //offset between layer index and joined provider index
-      const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, providerFieldCount, indexOffset );
-      if ( join )
+      return mDataProvider->uniqueValues( index, uniqueValues, limit );
+    }
+
+    // we need to go through each feature
+    QgsAttributeList attList;
+    attList << index;
+
+    select( attList, QgsRectangle(), false, false );
+
+    QgsFeature f;
+    QVariant currentValue;
+    QHash<QString, QVariant> val;
+    while ( nextFeature( f ) )
+    {
+      currentValue = f.attribute( index );
+      val.insert( currentValue.toString(), currentValue );
+      if ( limit >= 0 && val.size() >= limit )
       {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-        if ( vl && vl->dataProvider() )
-        {
-          return vl->dataProvider()->uniqueValues( index - indexOffset, uniqueValues, limit );
-        }
+        break;
       }
     }
+
+    uniqueValues = val.values();
+    return;
   }
 
-
-  //the layer is editable, but in certain cases it can still be avoided going through all features
-  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
-  {
-    return mDataProvider->uniqueValues( index, uniqueValues, limit );
-  }
-
-  //we need to go through each feature
-  QgsAttributeList attList;
-  attList << index;
-
-  select( attList, QgsRectangle(), false, false );
-
-  QgsFeature f;
-  QVariant currentValue;
-  QHash<QString, QVariant> val;
-  while ( nextFeature( f ) )
-  {
-    currentValue = f.attribute( index );
-    val.insert( currentValue.toString(), currentValue );
-    if ( limit >= 0 && val.size() >= limit )
-    {
-      break;
-    }
-  }
-
-  uniqueValues = val.values();
+  Q_ASSERT_X(false, "QgsVectorLayer::uniqueValues()", "Unknown source of the field!");
 }
 
 QVariant QgsVectorLayer::minimumValue( int index )
@@ -5296,50 +3900,53 @@ QVariant QgsVectorLayer::minimumValue( int index )
     return QVariant();
   }
 
-  int providerFieldCount = mDataProvider->fields().count();
+  QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin(index);
 
-  if ( index < providerFieldCount && !mEditable ) //a provider field
+  if ( origin == QgsFields::OriginProvider ) //a provider field
   {
     return mDataProvider->minimumValue( index );
   }
-  else // a joined field?
+  else if ( origin == QgsFields::OriginJoin )
   {
-    int indexOffset; //offset between layer index and joined provider index
-    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, providerFieldCount, indexOffset );
-    if ( join )
+    int sourceLayerIndex;
+    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
+    Q_ASSERT( join );
+
+    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+    Q_ASSERT( vl );
+
+    return vl->minimumValue( sourceLayerIndex );
+  }
+  else if ( origin == QgsFields::OriginEdit )
+  {
+    // the layer is editable, but in certain cases it can still be avoided going through all features
+    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
-      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-      if ( vl )
+      return mDataProvider->minimumValue( index );
+    }
+
+    // we need to go through each feature
+    QgsAttributeList attList;
+    attList << index;
+
+    select( attList, QgsRectangle(), false, false );
+
+    QgsFeature f;
+    double minimumValue = std::numeric_limits<double>::max();
+    double currentValue = 0;
+    while ( nextFeature( f ) )
+    {
+      currentValue = f.attribute( index ).toDouble();
+      if ( currentValue < minimumValue )
       {
-        return vl->minimumValue( index );
+        minimumValue = currentValue;
       }
     }
+    return QVariant( minimumValue );
   }
 
-  //the layer is editable, but in certain cases it can still be avoided going through all features
-  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
-  {
-    return mDataProvider->minimumValue( index );
-  }
-
-  //we need to go through each feature
-  QgsAttributeList attList;
-  attList << index;
-
-  select( attList, QgsRectangle(), false, false );
-
-  QgsFeature f;
-  double minimumValue = std::numeric_limits<double>::max();
-  double currentValue = 0;
-  while ( nextFeature( f ) )
-  {
-    currentValue = f.attribute( index ).toDouble();
-    if ( currentValue < minimumValue )
-    {
-      minimumValue = currentValue;
-    }
-  }
-  return QVariant( minimumValue );
+  Q_ASSERT_X(false, "QgsVectorLayer::minimumValue()", "Unknown source of the field!");
+  return QVariant();
 }
 
 QVariant QgsVectorLayer::maximumValue( int index )
@@ -5349,50 +3956,53 @@ QVariant QgsVectorLayer::maximumValue( int index )
     return QVariant();
   }
 
-  int providerFieldCount = mDataProvider->fields().count();
+  QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin(index);
 
-  if ( index < providerFieldCount && !mEditable ) //a provider field
+  if ( origin == QgsFields::OriginProvider ) //a provider field
   {
     return mDataProvider->maximumValue( index );
   }
-  else // a joined field?
+  else if ( origin == QgsFields::OriginJoin )
   {
-    int indexOffset; //offset between layer index and joined provider index
-    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, providerFieldCount, indexOffset );
-    if ( join )
+    int sourceLayerIndex;
+    const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
+    Q_ASSERT( join );
+
+    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
+    Q_ASSERT( vl );
+
+    return vl->maximumValue( index );
+  }
+  else if ( origin == QgsFields::OriginEdit )
+  {
+    // the layer is editable, but in certain cases it can still be avoided going through all features
+    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
-      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-      if ( vl )
+      return mDataProvider->maximumValue( index );
+    }
+
+    // we need to go through each feature
+    QgsAttributeList attList;
+    attList << index;
+
+    select( attList, QgsRectangle(), false, false );
+
+    QgsFeature f;
+    double maximumValue = -std::numeric_limits<double>::max();
+    double currentValue = 0;
+    while ( nextFeature( f ) )
+    {
+      currentValue = f.attribute( index ).toDouble();
+      if ( currentValue > maximumValue )
       {
-        return vl->maximumValue( index );
+        maximumValue = currentValue;
       }
     }
+    return QVariant( maximumValue );
   }
 
-  //the layer is editable, but in certain cases it can still be avoided going through all features
-  if ( mDeletedFeatureIds.size() < 1 && mAddedFeatures.size() < 1 && !mDeletedAttributeIds.contains( index ) && mChangedAttributeValues.size() < 1 )
-  {
-    return mDataProvider->maximumValue( index );
-  }
-
-  //we need to go through each feature
-  QgsAttributeList attList;
-  attList << index;
-
-  select( attList, QgsRectangle(), false, false );
-
-  QgsFeature f;
-  double maximumValue = -std::numeric_limits<double>::max();
-  double currentValue = 0;
-  while ( nextFeature( f ) )
-  {
-    currentValue = f.attribute( index ).toDouble();
-    if ( currentValue > maximumValue )
-    {
-      maximumValue = currentValue;
-    }
-  }
-  return QVariant( maximumValue );
+  Q_ASSERT_X(false, "QgsVectorLayer::maximumValue()", "Unknown source of the field!");
+  return QVariant();
 }
 
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )
@@ -5403,18 +4013,6 @@ void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingl
     selRenderer->stopRender( rendererContext );
     delete selRenderer;
   }
-}
-
-void QgsVectorLayer::updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const
-{
-  QgsAttributeMap::const_iterator it = map.find( oldIndex );
-  if ( it == map.constEnd() )
-  {
-    return;
-  }
-
-  map.insert( newIndex, it.value() );
-  map.remove( oldIndex );
 }
 
 void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )

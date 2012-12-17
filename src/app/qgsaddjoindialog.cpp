@@ -74,19 +74,9 @@ QString QgsAddJoinDialog::joinedLayerId() const
   return mJoinLayerComboBox->itemData( mJoinLayerComboBox->currentIndex() ).toString();
 }
 
-int QgsAddJoinDialog::joinField() const
-{
-  return mJoinFieldComboBox->itemData( mJoinFieldComboBox->currentIndex() ).toInt();
-}
-
 QString QgsAddJoinDialog::joinFieldName() const
 {
   return mJoinFieldComboBox->itemText( mJoinFieldComboBox->currentIndex() );
-}
-
-int QgsAddJoinDialog::targetField() const
-{
-  return mTargetFieldComboBox->itemData( mTargetFieldComboBox->currentIndex() ).toInt();
 }
 
 QString QgsAddJoinDialog::targetFieldName() const

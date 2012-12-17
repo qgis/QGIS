@@ -66,7 +66,7 @@ QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
 
 void QgsOgrFeatureIterator::ensureRelevantFields()
 {
-  bool needGeom = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || ( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+  bool needGeom = ( mRequest.filterType() == QgsFeatureRequest::FilterRect ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : P->attributeIndexes();
   P->setRelevantFields( needGeom, attrs );
   P->mRelevantFieldsForNextFeature = true;
@@ -131,7 +131,7 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
       if ( env.MinX != 0 || env.MinY != 0 || env.MaxX != 0 || env.MaxY != 0 ) //if envelope is invalid, skip the precise intersection test
       {
         selectionRect.set( env.MinX, env.MinY, env.MaxX, env.MaxY );
-        if ( !feature.geometry()->intersects( selectionRect ) )
+        if ( !feature.geometry() || !feature.geometry()->intersects( selectionRect ) )
         {
           OGR_F_Destroy( fet );
           continue;

@@ -98,7 +98,7 @@ void QgsFeature::deleteAttribute( int field )
 }
 
 
-QgsGeometry *QgsFeature::geometry()
+QgsGeometry *QgsFeature::geometry() const
 {
   return mGeometry;
 }

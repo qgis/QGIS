@@ -30,6 +30,7 @@ class QgsGrassModuleItem;
 class QgsGrassModuleOptions;
 
 class QgisInterface;
+class QgsFields;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -40,7 +41,6 @@ class QDomElement;
 class QLineEdit;
 class QValidator;
 
-typedef QVector<QgsField> QgsFields;
 
 /*! \class QgsGrassModule
  *  \brief Interface to GRASS modules.

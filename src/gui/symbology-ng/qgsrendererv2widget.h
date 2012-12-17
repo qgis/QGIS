@@ -80,8 +80,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
 
 class QMenu;
 class QgsField;
+class QgsFields;
 
-typedef QVector<QgsField> QgsFields;
 
 /**
 Utility class for prividing GUI for data-defined rendering.

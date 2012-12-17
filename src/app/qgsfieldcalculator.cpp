@@ -144,9 +144,6 @@ void QgsFieldCalculator::accept()
   bool onlySelected = mOnlyUpdateSelectedCheckBox->isChecked();
   QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
 
-  // block layerModified signals (that would trigger table update)
-  mVectorLayer->blockSignals( true );
-
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
 
@@ -178,9 +175,6 @@ void QgsFieldCalculator::accept()
     rownum++;
   }
 
-  // stop blocking layerModified signals and make sure that one layerModified signal is emitted
-  mVectorLayer->blockSignals( false );
-  mVectorLayer->setModified( true, false );
 
   if ( !calculationSuccess )
   {

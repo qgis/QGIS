@@ -174,9 +174,10 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
     return;
 
   QStringList fieldNames;
-  foreach ( const QgsField& field, fields )
+  //foreach ( const QgsField& field, fields )
+  for ( int i = 0; i < fields.count(); ++i )
   {
-    QString fieldName = field.name();
+    QString fieldName = fields[i].name();
     fieldNames << fieldName;
     registerItem( tr( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }

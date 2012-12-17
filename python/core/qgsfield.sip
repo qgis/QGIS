@@ -38,6 +38,7 @@ public:
     ~QgsField();
 
     bool operator==( const QgsField& other ) const;
+    bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
     const QString & name() const;
@@ -108,3 +109,68 @@ public:
     void setComment( const QString & comment );
 
 }; // class QgsField
+
+
+
+class QgsFields
+{
+%TypeHeaderCode
+#include <qgsfield.h>
+%End
+
+public:
+
+  enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
+
+  void clear();
+  void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+  void remove( int fieldIdx );
+
+  bool isEmpty() const;
+  int count() const /__len__/;
+  int size() const;
+  //const QgsField& operator[](int i) const;
+  //QgsField& operator[](int i);
+  const QgsField& at(int i) const;
+  QList<QgsField> toList() const;
+
+  const QgsField& field( int fieldIdx ) const;
+  const QgsField& field( const QString& name ) const;
+  FieldOrigin fieldOrigin( int fieldIdx ) const;
+  int fieldOriginIndex( int fieldIdx ) const;
+
+  int indexFromName( const QString& name ) const;
+
+
+  QgsField& operator[](int i);
+%MethodCode
+  int idx = (int)sipConvertFromSequenceIndex(a0, sipCpp->count());
+  if (idx < 0)
+    sipIsErr = 1;
+  else
+    sipRes = new QgsField(sipCpp->operator[](idx));
+%End
+
+/*  SIP_PYOBJECT __getitem__(int key);
+%MethodCode
+  if (a0 = sipConvertFromSequenceIndex(a0, sipCpp->count()) < 0)
+    sipIsErr = 1;
+  else
+  {
+    qDebug("__getitem__ %d", a0);
+    QgsField* fld = new QgsField(sipCpp->at(a0));
+    sipRes = sipConvertFromInstance(fld, sipClass_QgsField, Py_None);
+  }
+%End*/
+
+void __setitem__(int key, const QgsField& field);
+%MethodCode
+  int idx = (int)sipConvertFromSequenceIndex(a0, sipCpp->count());
+  if (idx < 0)
+    sipIsErr = 1;
+  else
+    (*sipCpp)[idx] = *a1;
+%End
+
+};
+

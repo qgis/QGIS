@@ -42,7 +42,7 @@ class QgsLabelAttributes;
 typedef QList<int> QgsAttributeList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
-typedef QVector<QgsField> QgsFields;
+class QgsFields;
 
 /** \ingroup core
   * A class to render labels.

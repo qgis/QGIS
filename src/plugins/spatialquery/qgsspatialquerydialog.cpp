@@ -282,7 +282,7 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
   // Database Postgis and Spatialite
   if ( providerType  == "POSTGRES" || providerType  == "SPATIALITE" )
   {
-    fieldFID = mLayerTarget->dataProvider()->fields().value( 0 ).name();
+    fieldFID = mLayerTarget->dataProvider()->fields().at( 0 ).name();
     msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
     return verifyTry;
   }
