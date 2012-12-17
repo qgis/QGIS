@@ -204,7 +204,7 @@ QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle() const
   symbolStyle.append( "c:" );
   symbolStyle.append( mPen.color().name() );
   symbolStyle.append( ",w:" );
-  symbolStyle.append( QString::number( mPen.width() ) );
+  symbolStyle.append( QString::number( mWidth ) );
   symbolStyle.append( "mm" );
   symbolStyle.append( ")" );
 
