@@ -24,8 +24,6 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 
-#include "gdal.h" // only for data types for now
-
 /** \ingroup core
  * Raster data container.
  */
@@ -332,19 +330,19 @@ inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t
   switch ( type )
   {
     case QGis::Byte:
-      return ( double )(( GByte * )data )[index];
+      return ( double )(( quint8 * )data )[index];
       break;
     case QGis::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
+      return ( double )(( quint16 * )data )[index];
       break;
     case QGis::Int16:
-      return ( double )(( GInt16 * )data )[index];
+      return ( double )(( qint16 * )data )[index];
       break;
     case QGis::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
+      return ( double )(( quint32 * )data )[index];
       break;
     case QGis::Int32:
-      return ( double )(( GInt32 * )data )[index];
+      return ( double )(( qint32 * )data )[index];
       break;
     case QGis::Float32:
       return ( double )(( float * )data )[index];
@@ -369,19 +367,19 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t 
   switch ( type )
   {
     case QGis::Byte:
-      (( GByte * )data )[index] = ( GByte ) value;
+      (( quint8 * )data )[index] = ( quint8 ) value;
       break;
     case QGis::UInt16:
-      (( GUInt16 * )data )[index] = ( GUInt16 ) value;
+      (( quint16 * )data )[index] = ( quint16 ) value;
       break;
     case QGis::Int16:
-      (( GInt16 * )data )[index] = ( GInt16 ) value;
+      (( qint16 * )data )[index] = ( qint16 ) value;
       break;
     case QGis::UInt32:
-      (( GUInt32 * )data )[index] = ( GUInt32 ) value;
+      (( quint32 * )data )[index] = ( quint32 ) value;
       break;
     case QGis::Int32:
-      (( GInt32 * )data )[index] = ( GInt32 ) value;
+      (( qint32 * )data )[index] = ( qint32 ) value;
       break;
     case QGis::Float32:
       (( float * )data )[index] = ( float ) value;

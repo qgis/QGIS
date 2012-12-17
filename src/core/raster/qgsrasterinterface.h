@@ -26,8 +26,6 @@
 #include "qgsrasterblock.h"
 #include "qgsrectangle.h"
 
-#include "gdal.h"
-
 /** \ingroup core
  * Base class for processing modules.
  */

@@ -527,34 +527,33 @@ QByteArray QgsRasterBlock::valueBytes( QGis::DataType theDataType, double theVal
   QByteArray ba;
   ba.resize(( int )size );
   char * data = ba.data();
-  unsigned char uc;
-  unsigned short us;
-  short s;
-  unsigned int ui;
-  int i;
+  quint8 uc;
+  quint16 us;
+  qint16 s;
+  quint32 ui;
+  qint32 i;
   float f;
   double d;
-  // TODO: define correct data types (typedef) like in GDAL
   switch ( theDataType )
   {
     case QGis::Byte:
-      uc = ( unsigned char )theValue;
+      uc = ( quint8 )theValue;
       memcpy( data, &uc, size );
       break;
     case QGis::UInt16:
-      us = ( unsigned short )theValue;
+      us = ( quint16 )theValue;
       memcpy( data, &us, size );
       break;
     case QGis::Int16:
-      s = ( short )theValue;
+      s = ( qint16 )theValue;
       memcpy( data, &s, size );
       break;
     case QGis::UInt32:
-      ui = ( unsigned int )theValue;
+      ui = ( quint32 )theValue;
       memcpy( data, &ui, size );
       break;
     case QGis::Int32:
-      i = ( int )theValue;
+      i = ( qint32 )theValue;
       memcpy( data, &i, size );
       break;
     case QGis::Float32:

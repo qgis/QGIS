@@ -26,8 +26,6 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-#include "gdal.h"
-
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
     mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ),
     mTiledMode( false ), mMaxTileWidth( 500 ), mMaxTileHeight( 500 ),
@@ -726,6 +724,7 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
   }
 }
 
+#if 0
 int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMessage, void* pData )
 {
   Q_UNUSED( pszMessage );
@@ -743,6 +742,7 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
   }
   return 1;
 }
+#endif
 
 void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform )
 {

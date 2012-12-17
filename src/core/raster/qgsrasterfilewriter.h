@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRasterFileWriter
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
+    //static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
 
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,

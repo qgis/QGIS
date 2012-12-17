@@ -51,7 +51,7 @@ extern "C"
 #include <grass/glocale.h>
 }
 
-#include <gdal.h>         // to collect version information
+//#include <gdal.h>         // to collect version information
 
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
