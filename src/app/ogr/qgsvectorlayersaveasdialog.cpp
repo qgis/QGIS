@@ -62,6 +62,11 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
 
   mEncodingComboBox->setCurrentIndex( idx );
   on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
+
+  //symbology export combo box
+  mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
 }
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
@@ -189,4 +194,9 @@ bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
   return mAddToCanvas->isChecked();
+}
+
+int QgsVectorLayerSaveAsDialog::symbologyExport() const
+{
+  return mSymbologyExportComboBox->itemData( mSymbologyExportComboBox->currentIndex() ).toInt();
 }

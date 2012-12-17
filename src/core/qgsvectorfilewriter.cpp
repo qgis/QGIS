@@ -26,6 +26,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
 
 #include <QFile>
 #include <QSettings>
@@ -571,7 +572,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   //add OGR feature style type
   if ( mSymbologyExport != NoSymbology && renderer )
   {
-    //concatenate ogr styles of all symbols
+    //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
     QgsSymbolV2List symbols = renderer->symbolsForFeature( feature );
     QString styleString;
     QString currentStyle;
@@ -579,35 +580,59 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
     QgsSymbolV2List::const_iterator symbolIt = symbols.constBegin();
     for ( ; symbolIt != symbols.constEnd(); ++symbolIt )
     {
-      currentStyle = ( *symbolIt )->ogrFeatureStyle();
-      if ( currentStyle.isEmpty() )
+      int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
+      for ( int i = 0; i < nSymbolLayers; ++i )
       {
-        continue;
-      }
-      if ( symbolIt != symbols.constBegin() )
-      {
-        styleString.append( ";" );
-      }
-      styleString.append( currentStyle );
-    }
+        /*QMap< QgsSymbolLayerV2*, QString >::const_iterator it = mSymbolLayerTable.find( (*symbolIt)->symbolLayer( i ) );
+        if( it == mSymbolLayerTable.constEnd() )
+        {
+            continue;
+        }*/
+        currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle();//"@" + it.value();
 
+        if ( mSymbologyExport == FeatureSymbology )
+        {
+          if ( symbolIt != symbols.constBegin() || i != 0 )
+          {
+            styleString.append( ";" );
+          }
+          styleString.append( currentStyle );
+        }
+        else if ( mSymbologyExport == SymbolLayerSymbology )
+        {
+          OGR_F_SetStyleString( poFeature, currentStyle.toLocal8Bit().data() );
+          if ( !createFeature( mLayer, poFeature ) )
+          {
+            return false;
+          }
+        }
+      }
+    }
     OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().data() );
   }
 
-  // put the created feature to layer
-  if ( OGR_L_CreateFeature( mLayer, poFeature ) != OGRERR_NONE )
+  if ( mSymbologyExport == NoSymbology || mSymbologyExport == FeatureSymbology )
   {
-    mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    mError = ErrFeatureWriteFailed;
-
-    QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-
-    OGR_F_Destroy( poFeature );
-    return false;
+    if ( !createFeature( mLayer, poFeature ) )
+    {
+      return false;
+    }
   }
 
   OGR_F_Destroy( poFeature );
+  return true;
+}
 
+bool QgsVectorFileWriter::createFeature( OGRLayerH layer, OGRFeatureH feature )
+{
+  if ( OGR_L_CreateFeature( layer, feature ) != OGRERR_NONE )
+  {
+    mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    mError = ErrFeatureWriteFailed;
+    QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+    OGR_F_Destroy( feature );
+    return false;
+  }
   return true;
 }
 
@@ -717,6 +742,12 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   {
     shallTransform = false;
   }
+
+  //create symbol table if neede
+  /*if( writer->symbologyExport() != NoSymbology )
+  {
+    writer->createSymbolLayerTable( layer,  writer->mDS );
+  }*/
 
   int n = 0, errors = 0;
 
@@ -1113,4 +1144,43 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
 
   return true;
+}
+
+void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSourceH ds )
+{
+  if ( !vl || !ds )
+  {
+    return;
+  }
+
+  if ( !vl->isUsingRendererV2() )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = vl->rendererV2();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  mSymbolLayerTable.clear();
+  OGRStyleTableH ogrStyleTable = OGR_STBL_Create();
+  OGRStyleMgrH styleManager = OGR_SM_Create( ogrStyleTable );
+
+  //get symbols
+  int nTotalLevels = 0;
+  QgsSymbolV2List symbolList = renderer->symbols();
+  QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+  for ( ; symbolIt != symbolList.end(); ++symbolIt )
+  {
+    int nLevels = ( *symbolIt )->symbolLayerCount();
+    for ( int i = 0; i < nLevels; ++i )
+    {
+      mSymbolLayerTable.insert(( *symbolIt )->symbolLayer( i ), QString::number( nTotalLevels ) );
+      OGR_SM_AddStyle( styleManager, QString::number( nTotalLevels ).toLocal8Bit(), ( *symbolIt )->ogrFeatureStyle().toLocal8Bit() );
+      ++nTotalLevels;
+    }
+  }
+  OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
 }

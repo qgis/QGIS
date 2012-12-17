@@ -27,7 +27,9 @@
 typedef void *OGRDataSourceH;
 typedef void *OGRLayerH;
 typedef void *OGRGeometryH;
+typedef void *OGRFeatureH;
 
+class QgsSymbolLayerV2;
 class QTextCodec;
 
 /** \ingroup core
@@ -183,8 +185,12 @@ class CORE_EXPORT QgsVectorFileWriter
 
     SymbologyExport mSymbologyExport;
 
+    QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
+
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
+    void createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSourceH ds );
+    bool createFeature( OGRLayerH layer, OGRFeatureH feature );
 };
 
 #endif
