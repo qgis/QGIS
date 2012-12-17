@@ -116,7 +116,7 @@ void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
 void QgsAppLegendInterface::setLayerExpanded( QgsMapLayer * ml, bool expand )
 {
   QgsLegendLayer * item = mLegend->findLegendLayer( ml );
-  item->setExpanded( expand );
+  if ( item ) item->setExpanded( expand );
 }
 
 QStringList QgsAppLegendInterface::groups()
