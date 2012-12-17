@@ -38,8 +38,8 @@ class QgsRenderContext
 
     //setters
 
-    /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
-    void setCoordinateTransform( QgsCoordinateTransform* t /Transfer/ );
+    /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
+    void setCoordinateTransform( const QgsCoordinateTransform* t );
     void setMapToPixel( const QgsMapToPixel& mtp );
     void setExtent( const QgsRectangle& extent );
     void setDrawEditingInformation( bool b );
