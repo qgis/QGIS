@@ -122,12 +122,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
+    virtual QGis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const = 0;
+    virtual QGis::DataType srcDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -350,7 +350,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterBlock::DataType type,
+                         QGis::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ );

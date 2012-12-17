@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual QgsRasterInterface *clone() const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
+    virtual QGis::DataType dataType( int bandNo ) const = 0;
 #if 0
     {
       Q_UNUSED( bandNo );

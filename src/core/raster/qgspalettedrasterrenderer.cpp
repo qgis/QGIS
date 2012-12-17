@@ -124,13 +124,13 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   }
   QRgb myDefaultColor = NODATA_COLOR;
 
-  //QgsRasterBlock::DataType transparencyType = QgsRasterBlock::UnknownDataType;
+  //QGis::DataType transparencyType = QGis::UnknownDataType;
   //if ( mAlphaBand > 0 )
   //{
-  //  transparencyType = ( QgsRasterBlock::DataType )mInput->dataType( mAlphaBand );
+  //  transparencyType = ( QGis::DataType )mInput->dataType( mAlphaBand );
   //}
 
-  //QgsRasterBlock::DataType rasterType = ( QgsRasterBlock::DataType )mInput->dataType( mBand );
+  //QGis::DataType rasterType = ( QGis::DataType )mInput->dataType( mBand );
   //void* rasterData = mInput->block( bandNo, extent, width, height );
   QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
 
@@ -164,7 +164,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     delete alphaBlock;

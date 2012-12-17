@@ -17,7 +17,7 @@ class QgsRasterNuller : QgsRasterInterface
 
     int bandCount() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
 

@@ -80,8 +80,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 
   QgsRasterIterator iter( pipe->last() );
 
-  if ( iface->dataType( 1 ) == QgsRasterBlock::ARGB32 ||
-       iface->dataType( 1 ) == QgsRasterBlock::ARGB32_Premultiplied )
+  if ( iface->dataType( 1 ) == QGis::ARGB32 ||
+       iface->dataType( 1 ) == QGis::ARGB32_Premultiplied )
   {
     WriterError e = writeImageRaster( &iter, nCols, nRows, outputExtent, crs, progressDialog );
     mProgressDialog = 0;
@@ -159,7 +159,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   // (not used) value available
   QList<bool> destHasNoDataValueList;
   QList<double> destNoDataValueList;
-  QList<QgsRasterBlock::DataType> destDataTypeList;
+  QList<QGis::DataType> destDataTypeList;
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
     QgsRasterNuller *nuller = pipe->nuller();
@@ -167,8 +167,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
-    QgsRasterBlock::DataType destDataType = srcProvider->srcDataType( bandNo );
-    //QgsRasterBlock::DataType destDataType = srcProvider->dataType( bandNo );
+    QGis::DataType destDataType = srcProvider->srcDataType( bandNo );
+    //QGis::DataType destDataType = srcProvider->dataType( bandNo );
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
     QgsDebugMsg( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ) );
     if ( srcHasNoDataValue )
@@ -229,7 +229,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     destNoDataValueList.append( destNoDataValue );
   }
 
-  QgsRasterBlock::DataType destDataType = destDataTypeList.value( 0 );
+  QGis::DataType destDataType = destDataTypeList.value( 0 );
   // Currently write API supports one output type for dataset only -> find the widest
   for ( int i = 1; i < nBands; i++ )
   {
@@ -254,7 +254,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     for ( int i = 0; i < nBands; i++ )
     {
       double destNoDataValue;
-      QgsRasterBlock::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+      QGis::DataType destDataType = QgsRasterBlock::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
       destDataTypeList.replace( i, destDataType );
       destNoDataValueList.replace( i, destNoDataValue );
     }
@@ -274,7 +274,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   int nCols, int nRows,
   const QgsRectangle& outputExtent,
   const QgsCoordinateReferenceSystem& crs,
-  QgsRasterBlock::DataType destDataType,
+  QGis::DataType destDataType,
   QList<bool> destHasNoDataValueList,
   QList<double> destNoDataValueList,
   QgsRasterDataProvider* destProvider,
@@ -420,9 +420,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
 
   const QgsRasterInterface* iface = iter->input();
-  QgsRasterBlock::DataType inputDataType = iface->dataType( 1 );
-  if ( !iface || ( inputDataType != QgsRasterBlock::ARGB32 &&
-                   inputDataType != QgsRasterBlock::ARGB32_Premultiplied ) )
+  QGis::DataType inputDataType = iface->dataType( 1 );
+  if ( !iface || ( inputDataType != QGis::ARGB32 &&
+                   inputDataType != QGis::ARGB32_Premultiplied ) )
   {
     return SourceProviderError;
   }
@@ -452,7 +452,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, 4, QgsRasterBlock::Byte );
+  destProvider = initOutput( nCols, nRows, crs, geoTransform, 4, QGis::Byte );
 
   //iter->select( outputExtent, outputMapUnitsPerPixel );
   iter->startRasterRead( 1, nCols, nRows, outputExtent );
@@ -502,7 +502,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       alpha = qAlpha( c );
       red = qRed( c ); green = qGreen( c ); blue = qBlue( c );
 
-      if ( inputDataType == QgsRasterBlock::ARGB32_Premultiplied )
+      if ( inputDataType == QGis::ARGB32_Premultiplied )
       {
         double a = alpha / 255.;
         QgsDebugMsgLevel( QString( "red = %1 green = %2 blue = %3 alpha = %4 p = %5 a = %6" ).arg( red ).arg( green ).arg( blue ).arg( alpha ).arg(( int )c, 0, 16 ).arg( a ), 5 );
@@ -522,7 +522,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     {
       delete destProvider;
       destProvider = createPartProvider( outputExtent, nCols, iterCols, iterRows,
-                                         iterLeft, iterTop, mOutputUrl, fileIndex, 4, QgsRasterBlock::Byte, crs );
+                                         iterLeft, iterTop, mOutputUrl, fileIndex, 4, QGis::Byte, crs );
 
       //write data to output file
       destProvider->write( redData, 1, iterCols, iterRows, 0, 0 );
@@ -824,7 +824,7 @@ bool QgsRasterFileWriter::writeVRT( const QString& file )
 }
 
 QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectangle& extent, int nCols, int iterCols,
-    int iterRows, int iterLeft, int iterTop, const QString& outputUrl, int fileIndex, int nBands, QgsRasterBlock::DataType type,
+    int iterRows, int iterLeft, int iterTop, const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
     const QgsCoordinateReferenceSystem& crs )
 {
   double mup = extent.width() / nCols;
@@ -862,7 +862,7 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
 }
 
 QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs,
-    double* geoTransform, int nBands, QgsRasterBlock::DataType type )
+    double* geoTransform, int nBands, QGis::DataType type )
 {
   if ( mTiledMode )
   {

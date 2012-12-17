@@ -50,7 +50,7 @@ class QgsRasterInterface
     virtual QgsRasterInterface *clone() const = 0 /Factory/;
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
+    virtual QGis::DataType dataType( int bandNo ) const = 0;
 
     int dataTypeSize ( int bandNo );
 

@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     int bandCount() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
 
     /** \brief set source and destination CRS */
     void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS );

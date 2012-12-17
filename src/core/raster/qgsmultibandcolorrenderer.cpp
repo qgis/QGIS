@@ -209,7 +209,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     alphaBlock = bandBlocks[mAlphaBand];
   }
 
-  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
     for ( int i = 0; i < bandBlocks.size(); i++ )
     {

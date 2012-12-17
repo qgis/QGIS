@@ -676,7 +676,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
 
   if ( qIsNaN( theHistogram.minimum ) )
   {
-    if ( mySrcDataType == QgsRasterBlock::Byte )
+    if ( mySrcDataType == QGis::Byte )
     {
       theHistogram.minimum = 0; // see histogram() for shift for rounding
     }
@@ -691,7 +691,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
   }
   if ( qIsNaN( theHistogram.maximum ) )
   {
-    if ( mySrcDataType == QgsRasterBlock::Byte )
+    if ( mySrcDataType == QGis::Byte )
     {
       theHistogram.maximum = 255;
     }
@@ -750,7 +750,7 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
   int myBinCount = theBinCount;
   if ( myBinCount == 0 )
   {
-    if ( mySrcDataType == QgsRasterBlock::Byte )
+    if ( mySrcDataType == QGis::Byte )
     {
       myBinCount = 256; // Cannot store more values in byte
     }
@@ -964,25 +964,25 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
 
   switch ( type )
   {
-    case QgsRasterBlock::Byte:
+    case QGis::Byte:
       return ( double )(( GByte * )data )[index];
       break;
-    case QgsRasterBlock::UInt16:
+    case QGis::UInt16:
       return ( double )(( GUInt16 * )data )[index];
       break;
-    case QgsRasterBlock::Int16:
+    case QGis::Int16:
       return ( double )(( GInt16 * )data )[index];
       break;
-    case QgsRasterBlock::UInt32:
+    case QGis::UInt32:
       return ( double )(( GUInt32 * )data )[index];
       break;
-    case QgsRasterBlock::Int32:
+    case QGis::Int32:
       return ( double )(( GInt32 * )data )[index];
       break;
-    case QgsRasterBlock::Float32:
+    case QGis::Float32:
       return ( double )(( float * )data )[index];
       break;
-    case QgsRasterBlock::Float64:
+    case QGis::Float64:
       return ( double )(( double * )data )[index];
       break;
     default:

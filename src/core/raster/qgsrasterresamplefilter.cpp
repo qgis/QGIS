@@ -70,13 +70,13 @@ int QgsRasterResampleFilter::bandCount() const
   return 0;
 }
 
-QgsRasterBlock::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
+QGis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 {
-  if ( mOn ) return QgsRasterBlock::ARGB32_Premultiplied;
+  if ( mOn ) return QGis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
@@ -104,8 +104,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QgsRasterBlock::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != QgsRasterBlock::ARGB32 )
+  if ( input->dataType( 1 ) != QGis::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != QGis::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;
@@ -186,7 +186,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
     return inputBlock;
   }
 
-  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     return outputBlock;

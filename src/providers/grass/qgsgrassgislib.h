@@ -99,10 +99,10 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     double G_geodesic_distance_lon_to_lon( double lon1, double lon2 );
 
     /** Get QGIS raster type for GRASS raster type */
-    QgsRasterBlock::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
+    QGis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
 
     /** Get GRASS raster type for QGIS raster type */
-    RASTER_MAP_TYPE grassRasterType( QgsRasterBlock::DataType qgisType );
+    RASTER_MAP_TYPE grassRasterType( QGis::DataType qgisType );
 
     /** Grass does not seem to have any function to init Cell_head,
      * initialisation is done in G__read_Cell_head_array */

@@ -15,7 +15,7 @@ class QgsRasterResampleFilter : QgsRasterInterface
 
     int bandCount() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
 
     bool setInput( QgsRasterInterface* input );
 

@@ -57,15 +57,15 @@ int QgsRasterRenderer::bandCount() const
   return 0;
 }
 
-QgsRasterBlock::DataType QgsRasterRenderer::dataType( int bandNo ) const
+QGis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsg( "Entered" );
 
-  if ( mOn ) return QgsRasterBlock::ARGB32_Premultiplied;
+  if ( mOn ) return QGis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface* input )

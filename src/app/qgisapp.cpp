@@ -7355,8 +7355,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterBlock::ARGB32
-         && rlayer->dataProvider()->dataType( 1 ) != QgsRasterBlock::ARGB32_Premultiplied )
+    if ( rlayer->dataProvider()->dataType( 1 ) != QGis::ARGB32
+         && rlayer->dataProvider()->dataType( 1 ) != QGis::ARGB32_Premultiplied )
     {
       if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {

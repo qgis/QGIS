@@ -595,8 +595,8 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     QString valueString;
     switch ( mRasterLayer->dataProvider()->srcDataType( 1 ) )
     {
-      case QgsRasterBlock::Float32:
-      case QgsRasterBlock::Float64:
+      case QGis::Float32:
+      case QGis::Float64:
         lineEdit->setValidator( new QDoubleValidator( 0 ) );
         if ( !qIsNaN( value ) )
         {

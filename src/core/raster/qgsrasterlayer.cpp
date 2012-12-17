@@ -492,7 +492,7 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
   if ( !theMinMax )
     return;
 
-  QgsRasterBlock::DataType myDataType = mDataProvider->dataType( theBand );
+  QGis::DataType myDataType = mDataProvider->dataType( theBand );
   void* myScanData = readData( theBand, &mLastViewPort );
 
   /* Check for out of memory error */
@@ -952,7 +952,7 @@ bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theRe
   QMap<int, void *> dataMap = mDataProvider->identify( point );
   foreach ( int bandNo, dataMap.keys() )
   {
-    QgsRasterBlock::DataType dataType = mDataProvider->dataType( bandNo );
+    QGis::DataType dataType = mDataProvider->dataType( bandNo );
     void * data = dataMap.value( bandNo );
     QString str;
     if ( !data )
@@ -1685,8 +1685,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterBlock::ARGB32
-            ||  mDataProvider->dataType( 1 ) == QgsRasterBlock::ARGB32_Premultiplied )
+  else if ( mDataProvider->dataType( 1 ) == QGis::ARGB32
+            ||  mDataProvider->dataType( 1 ) == QGis::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }
@@ -1840,7 +1840,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   {
     if ( myBand != -1 )
     {
-      QgsRasterBlock::DataType myType = ( QgsRasterBlock::DataType )mDataProvider->dataType( myBand );
+      QGis::DataType myType = ( QGis::DataType )mDataProvider->dataType( myBand );
       QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )myType );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 

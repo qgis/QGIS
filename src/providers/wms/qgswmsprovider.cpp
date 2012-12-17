@@ -1424,15 +1424,15 @@ void QgsWmsProvider::capabilitiesReplyFinished()
   mCapabilitiesReply = 0;
 }
 
-QgsRasterBlock::DataType QgsWmsProvider::dataType( int bandNo ) const
+QGis::DataType QgsWmsProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-QgsRasterBlock::DataType QgsWmsProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsWmsProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
-  return QgsRasterBlock::ARGB32;
+  return QGis::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const

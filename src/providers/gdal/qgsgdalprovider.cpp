@@ -969,60 +969,60 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
+QGis::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Unknown:
-      return QgsRasterBlock::UnknownDataType;
+      return QGis::UnknownDataType;
       break;
     case GDT_Byte:
-      return QgsRasterBlock::Byte;
+      return QGis::Byte;
       break;
     case GDT_UInt16:
-      return QgsRasterBlock::UInt16;
+      return QGis::UInt16;
       break;
     case GDT_Int16:
-      return QgsRasterBlock::Int16;
+      return QGis::Int16;
       break;
     case GDT_UInt32:
-      return QgsRasterBlock::UInt32;
+      return QGis::UInt32;
       break;
     case GDT_Int32:
-      return QgsRasterBlock::Int32;
+      return QGis::Int32;
       break;
     case GDT_Float32:
-      return QgsRasterBlock::Float32;
+      return QGis::Float32;
       break;
     case GDT_Float64:
-      return QgsRasterBlock::Float64;
+      return QGis::Float64;
       break;
     case GDT_CInt16:
-      return QgsRasterBlock::CInt16;
+      return QGis::CInt16;
       break;
     case GDT_CInt32:
-      return QgsRasterBlock::CInt32;
+      return QGis::CInt32;
       break;
     case GDT_CFloat32:
-      return QgsRasterBlock::CFloat32;
+      return QGis::CFloat32;
       break;
     case GDT_CFloat64:
-      return QgsRasterBlock::CFloat64;
+      return QGis::CFloat64;
       break;
   }
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   return dataTypeFromGdal( myGdalDataType );
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::dataType( int bandNo ) const
+QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( mGdalDataType.size() == 0 ) return QgsRasterBlock::UnknownDataType;
+  if ( mGdalDataType.size() == 0 ) return QGis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
@@ -2352,23 +2352,23 @@ void QgsGdalProvider::initBaseDataset()
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterBlock::Byte:
+      case QGis::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterBlock::Int16:
+      case QGis::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::UInt16:
+      case QGis::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::Int32:
+      case QGis::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterBlock::UInt32:
+      case QGis::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -2396,7 +2396,7 @@ char** papszFromStringList( const QStringList& list )
 }
 
 bool QgsGdalProvider::create( const QString& format, int nBands,
-                              QgsRasterBlock::DataType type,
+                              QGis::DataType type,
                               int width, int height, double* geoTransform,
                               const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
