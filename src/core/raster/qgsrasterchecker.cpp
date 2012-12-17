@@ -159,8 +159,8 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
       for ( int col = 0; col < width; col ++ )
       {
         bool cellOk = true;
-        double verifiedVal =  verifiedProvider->readValue( verifiedData,  verifiedProvider->dataType( band ), row * width + col );
-        double expectedVal =  expectedProvider->readValue( expectedData,  expectedProvider->dataType( band ), row * width + col );
+        double verifiedVal =  QgsRasterBlock::readValue( verifiedData,  verifiedProvider->dataType( band ), row * width + col );
+        double expectedVal =  QgsRasterBlock::readValue( expectedData,  expectedProvider->dataType( band ), row * width + col );
 
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )
