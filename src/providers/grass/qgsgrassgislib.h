@@ -86,7 +86,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
 
     int readRasterRow( int fd, void * buf, int row, RASTER_MAP_TYPE data_type, bool noDataAsZero = false );
     int G_get_null_value_row( int fd, char *flags, int row );
-    int G_put_raster_row( int fd, const void *buf, RASTER_MAP_TYPE data_type );
+    int putRasterRow( int fd, const void *buf, RASTER_MAP_TYPE data_type );
     int G_get_cellhd( const char *name, const char *mapset, struct Cell_head *cellhd );
 
     double G_area_of_cell_at_row( int row );
@@ -98,6 +98,8 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     int G_set_geodesic_distance_lat1( double lat1 );
     int G_set_geodesic_distance_lat2( double lat2 );
     double G_geodesic_distance_lon_to_lon( double lon1, double lon2 );
+
+    int G_get_ellipsoid_parameters( double *a, double *e2 );
 
     /** Get QGIS raster type for GRASS raster type */
     QGis::DataType qgisRasterType( RASTER_MAP_TYPE grassType );
