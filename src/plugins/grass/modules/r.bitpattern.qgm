@@ -4,7 +4,6 @@
 <qgisgrassmodule label="Compares bit patterns with raster" module="r.bitpattern" direct="1">
 	<flag key="q" />
 	<option key="input" />
-	<option key="input" />
 	<option key="output" />
 	<option key="pattern" />
 	<option key="patval" />
