@@ -516,6 +516,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           relay = new QgsStringRelay( myWidget );
         }
 
+        // note: per-widget-type relay-->sender connections need to be replicated in QgsStringRelay::changeText slot
         if ( cb && cb->isEditable() )
         {
           synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setEditText( QString ) ) );
@@ -888,9 +889,10 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
       QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
-      if ( !le && !te && !pte )
+      if ( !le && ! cb && !te && !pte )
         return false;
 
       QString text;
@@ -910,6 +912,8 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       if ( le )
         le->setText( text );
+      if ( cb && cb->isEditable() )
+        cb->setEditText( text );
       if ( te )
         te->setHtml( text );
       if ( pte )
@@ -1010,4 +1014,24 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
   }
 
   return newWidget;
+}
+
+void QgsStringRelay::changeText( QString str )
+{
+  QLineEdit* le = qobject_cast<QLineEdit *>( QObject::sender() );
+  QComboBox* cb = qobject_cast<QComboBox *>( QObject::sender() );
+
+  // temporarily disconnect sender's text-updating slot from relay to avoid bounce-back signals
+  if ( le )
+    disconnect( this, SIGNAL( textChanged( QString ) ), le, SLOT( setText( QString ) ) );
+  if ( cb )
+    disconnect( this, SIGNAL( textChanged( QString ) ), cb, SLOT( setEditText( QString ) ) );
+
+  emit textChanged( str );
+
+  // reconnect to relay
+  if ( le )
+    connect( this, SIGNAL( textChanged( QString ) ), le, SLOT( setText( QString ) ) );
+  if ( cb )
+    connect( this, SIGNAL( textChanged( QString ) ), cb, SLOT( setEditText( QString ) ) );
 }
