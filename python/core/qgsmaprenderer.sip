@@ -228,12 +228,6 @@ class QgsMapRenderer : QObject
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
 
-    //! invalidate cached layer CRS
-    void invalidateCachedLayerCrs();
-
-    //! cached layer was destroyed
-    void cachedLayerDestroyed();
-
   protected:
 
     //! adjust extent to fit the pixmap size

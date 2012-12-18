@@ -265,12 +265,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
 
-    //! invalidate cached layer CRS
-    void invalidateCachedLayerCrs();
-
-    //! cached layer was destroyed
-    void cachedLayerDestroyed();
-
   protected:
 
     //! adjust extent to fit the pixmap size
@@ -343,9 +337,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QMutex mRenderMutex;
 
   private:
-    QgsCoordinateTransform *tr( QgsMapLayer *layer );
-    QgsCoordinateTransform *mCachedTr;
-    QgsMapLayer *mCachedTrForLayer;
+    const QgsCoordinateTransform* tr( QgsMapLayer *layer );
 };
 
 #endif

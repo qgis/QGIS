@@ -66,8 +66,8 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
-    void setCoordinateTransform( QgsCoordinateTransform* t );
+    /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
+    void setCoordinateTransform( const QgsCoordinateTransform* t );
     void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
     void setExtent( const QgsRectangle& extent ) {mExtent = extent;}
     void setDrawEditingInformation( bool b ) {mDrawEditingInformation = b;}
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsRenderContext
     QPainter* mPainter;
 
     /**For transformation between coordinate systems. Can be 0 if on-the-fly reprojection is not used*/
-    QgsCoordinateTransform* mCoordTransform;
+    const QgsCoordinateTransform* mCoordTransform;
 
     /**True if vertex markers for editing should be drawn*/
     bool mDrawEditingInformation;

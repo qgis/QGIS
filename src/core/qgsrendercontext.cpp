@@ -34,12 +34,10 @@ QgsRenderContext::QgsRenderContext()
 
 QgsRenderContext::~QgsRenderContext()
 {
-  delete mCoordTransform;
 }
 
-void QgsRenderContext::setCoordinateTransform( QgsCoordinateTransform* t )
+void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
 {
-  delete mCoordTransform;
   mCoordTransform = t;
 }
 
