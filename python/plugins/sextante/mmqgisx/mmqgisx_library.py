@@ -2279,18 +2279,16 @@ def mmqgisx_merge(qgis, layers, savename, addlayer):
 		feature = QgsFeature()
 		layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 		layer.dataProvider().rewind()
-		idx = {}
-		for dindex, dfield in fields.iteritems():				
-			for sindex, sfield in layer.dataProvider().fields().iteritems():
-				if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
-					idx[dindex] = sindex
 		while layer.dataProvider().nextFeature(feature):
 			sattributes = feature.attributeMap()
 			dattributes = {}
 			for dindex, dfield in fields.iteritems():
 				dattributes[dindex] = QVariant(dfield.type())
-				dattributes[dindex] = sattributes[idx[dindex]]
-			
+				for sindex, sfield in layer.dataProvider().fields().iteritems():
+					if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
+						dattributes[dindex] = sattributes[sindex]
+						break
+
 			feature.setAttributeMap(dattributes)
 			outfile.addFeature(feature)
 			featurecount += 1
