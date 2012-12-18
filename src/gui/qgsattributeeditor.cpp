@@ -494,8 +494,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         myWidget = pte;
       }
 
+      QLineEdit* cble = 0;
       if ( cb )
       {
+        cble = cb->lineEdit();
         myWidget = cb;
       }
 
@@ -516,15 +518,17 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           relay = new QgsStringRelay( myWidget );
         }
 
-        if ( cb && cb->isEditable() )
+        if ( cb && cb->isEditable() && cble )
         {
-          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setEditText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( editTextChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), cb, SLOT( setEditText( QString ) ) );
+          synchronized &= connect( cble, SIGNAL( textChanged( QString ) ), relay, SLOT( storeText( QString ) ) );
+          synchronized &= connect( cble, SIGNAL( editingFinished() ), relay, SLOT( sendStoredText() ) );
         }
         else
         {
           synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), relay, SLOT( storeText( QString ) ) );
+          synchronized &= connect( myWidget, SIGNAL( editingFinished() ), relay, SLOT( sendStoredText() ) );
         }
 
         if ( !cb || cb->isEditable() )
@@ -888,9 +892,10 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
       QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
-      if ( !le && !te && !pte )
+      if ( !le && ! cb && !te && !pte )
         return false;
 
       QString text;
@@ -910,6 +915,8 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       if ( le )
         le->setText( text );
+      if ( cb && cb->isEditable() )
+        cb->setEditText( text );
       if ( te )
         te->setHtml( text );
       if ( pte )

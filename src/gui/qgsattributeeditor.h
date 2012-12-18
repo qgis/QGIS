@@ -95,8 +95,21 @@ class QgsStringRelay : public QObject
       emit textChanged( str );
     }
 
+    void storeText( QString str )
+    {
+      mStoredText = str;
+    }
+
+    void sendStoredText()
+    {
+      emit textChanged( mStoredText );
+    }
+
   signals:
     void textChanged( QString );
+
+  private:
+    QString mStoredText;
 };
 
 #endif
