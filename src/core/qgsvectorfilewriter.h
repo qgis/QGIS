@@ -190,7 +190,11 @@ class CORE_EXPORT QgsVectorFileWriter
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
     void createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSourceH ds );
-    bool createFeature( OGRLayerH layer, OGRFeatureH feature );
+    OGRFeatureH createFeature( QgsFeature& feature );
+    bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
+
+    /**Writes features considering symbol level order*/
+    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
 };
 
 #endif
