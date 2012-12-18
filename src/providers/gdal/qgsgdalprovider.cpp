@@ -132,12 +132,16 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     // "ERROR 4: `pok.tif' does not exist in the file system, and is not recognised as a supported dataset name."
     // To avoid this message, we test first if the file exists at all.
     // This should be done better adding static create() method or something like that
+    // TODO: Cannot test for file existence, for example NetCDF with sublayers
+    // is using URI: NETCDF:"/path/to/file.cdf":layer1
+    /*
     if ( !QFile::exists( uri ) )
     {
       QString msg = QString( "File does not exist: %1" ).arg( dataSourceUri() );
       appendError( ERR( msg ) );
       return;
     }
+    */
   }
 
   QString gdalUri = dataSourceUri();

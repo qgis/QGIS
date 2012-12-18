@@ -3585,6 +3585,9 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   }
   // TODO - should we really call isValidRasterFileName() before addRasterLayer()
   //        this results in 2 calls to GDALOpen()
+  // I think (Radim) that it is better to test only first if valid,
+  // addRasterLayer() is really trying to add layer and gives error if fails
+  //
   // if ( addRasterLayer( fileName, fileInfo.completeBaseName() ) )
   // {
   //   ok  = true );
@@ -7546,8 +7549,6 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
 
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
-      // TODO fix this - provider is not deleted in ~QgsRasterLayer()
-      delete layer->dataProvider();
       delete layer;
       layer = 0;
     }
@@ -7723,8 +7724,6 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
           // The first layer loaded is not useful in that case. The user can select it in
           // the list if he wants to load it.
-          // TODO fix this - provider is not deleted in ~QgsRasterLayer()
-          delete layer->dataProvider();
           delete layer;
           layer = 0;
         }

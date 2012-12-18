@@ -193,8 +193,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  // TODO fix this - provider is not deleted!
-  //delete mDataProvider; // deleted by pipe
+  // Note: provider and other interfaces are owned and deleted by pipe
 }
 
 //////////////////////////////////////////////////////////
@@ -1603,13 +1602,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   }
   QgsDebugMsg( "Data provider created" );
 
+  // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
+  mPipe.set( mDataProvider );
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
     appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey ).arg( mDataSource ) ) );
     return;
   }
-  mPipe.set( mDataProvider );
 
   if ( provider == "gdal" )
   {
