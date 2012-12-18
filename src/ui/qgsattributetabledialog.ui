@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>763</width>
+    <width>775</width>
     <height>570</height>
    </rect>
   </property>
@@ -433,7 +433,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="query"/>
+      <widget class="QgsFilterLineEdit" name="query"/>
      </item>
      <item>
       <widget class="QLabel" name="searchIn">
@@ -464,6 +464,11 @@
    <class>QgsAttributeTableView</class>
    <extends>QTableView</extends>
    <header>qgsattributetableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

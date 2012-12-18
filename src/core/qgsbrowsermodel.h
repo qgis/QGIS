@@ -89,7 +89,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     void connectItem( QgsDataItem *item );
 
+    bool canFetchMore( const QModelIndex & parent ) const;
+    void fetchMore( const QModelIndex & parent );
+
   public slots:
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );

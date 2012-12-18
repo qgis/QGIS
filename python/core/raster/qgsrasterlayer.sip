@@ -147,10 +147,6 @@ class QgsRasterLayer : QgsMapLayer
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
-    static QLibrary* loadProviderLibrary( QString theProviderKey );
-    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
-
-
     /** \brief  Accessor for blue band name mapping */
     QString blueBandName() const;
 
@@ -250,7 +246,7 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
-    void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
+    //void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
     // void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
@@ -260,7 +256,7 @@ class QgsRasterLayer : QgsMapLayer
 
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
-    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
@@ -299,21 +295,21 @@ class QgsRasterLayer : QgsMapLayer
     QString drawingStyleAsString() const;
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
-%MethodCode
-      sipRes = sipCpp->identify( *a0, *a1 );
-%End
+//    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
+//%MethodCode
+//      sipRes = sipCpp->identify( *a0, *a1 );
+//%End
 
     /** \brief Identify arbitrary details from the WMS server found on the point position */
-    QString identifyAsText( const QgsPoint & point );
+    //QString identifyAsText( const QgsPoint & point );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      * @note added in 1.5
      */
-    QString identifyAsHtml( const QgsPoint & point );
+    //QString identifyAsHtml( const QgsPoint & point );
 
     /** \brief Currently returns always false */
     bool isEditable() const;

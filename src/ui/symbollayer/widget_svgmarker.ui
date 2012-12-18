@@ -32,18 +32,19 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="6">
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="3" column="1">
+      <widget class="QgsColorButtonV2" name="mChangeBorderColorButton">
+       <property name="text">
+        <string>Change</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>115</width>
-         <height>51</height>
-        </size>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Offset X,Y</string>
        </property>
-      </spacer>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
@@ -52,16 +53,22 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinAngle">
+     <item row="0" column="1">
+      <widget class="QDoubleSpinBox" name="spinSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="decimals">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="maximum">
-        <double>360.000000000000000</double>
+        <double>100000.000000000000000</double>
        </property>
-       <property name="singleStep">
-        <double>5.000000000000000</double>
+       <property name="value">
+        <double>1.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -95,50 +102,10 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_4">
+     <item row="3" column="0">
+      <widget class="QLabel" name="mBorderColorLabel">
        <property name="text">
-        <string>Offset X,Y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="spinSize">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="maximum">
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="mChangeColorButton">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="mColorLabel">
-       <property name="text">
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QDoubleSpinBox" name="mBorderWidthSpinBox">
-       <property name="decimals">
-        <number>5</number>
+        <string>Border color</string>
        </property>
       </widget>
      </item>
@@ -149,17 +116,37 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="mChangeBorderColorButton">
+     <item row="2" column="0">
+      <widget class="QLabel" name="mColorLabel">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsColorButtonV2" name="mChangeColorButton">
        <property name="text">
         <string>Change</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="mBorderColorLabel">
-       <property name="text">
-        <string>Border color</string>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="spinAngle">
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>5.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="mBorderWidthSpinBox">
+       <property name="decimals">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -238,6 +225,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>spinSize</tabstop>
   <tabstop>spinAngle</tabstop>

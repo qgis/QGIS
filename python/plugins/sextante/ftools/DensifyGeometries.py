@@ -23,16 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.SextanteLog import SextanteLog
 
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterNumber import ParameterNumber
@@ -61,13 +58,9 @@ class DensifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         useSelection = self.getParameterValue(self.USE_SELECTION)
-        vertices =self.getParameterValue(self.VERTICES)
-        output = self.getOutputValue(self.OUTPUT)
+        vertices =self.getParameterValue(self.VERTICES)        
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
@@ -79,7 +72,8 @@ class DensifyGeometries(GeoAlgorithm):
 
         current = 0
         if useSelection:
-            total = 100.0 / float(len(layer.selectedFeatures()))
+            selection = layer.selectedFeatures()
+            total = 100.0 / float(len(selection))
             for f in selection:
                 featGeometry = QgsGeometry(f.geometry())
                 attrMap = f.attributeMap()

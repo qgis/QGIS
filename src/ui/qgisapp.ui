@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -163,11 +163,14 @@
     <addaction name="mActionPasteStyle"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
-    <addaction name="mActionSaveEdits"/>
     <addaction name="mActionToggleEditing"/>
+    <addaction name="mActionSaveEdits"/>
+    <addaction name="mActionSaveAllEdits"/>
+    <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
     <addaction name="mActionLayerSelectionSaveAs"/>
     <addaction name="mActionRemoveLayer"/>
+    <addaction name="mActionDuplicateLayer"/>
     <addaction name="mActionSetLayerCRS"/>
     <addaction name="mActionSetProjectCRSFromLayer"/>
     <addaction name="mActionLayerProperties"/>
@@ -278,6 +281,7 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionSaveAllEdits"/>
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveEdits"/>
    <addaction name="mActionAddFeature"/>
@@ -1810,6 +1814,9 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionHtmlAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
@@ -1819,6 +1826,45 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Html Annotation</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+   </property>
+   <property name="text">
+    <string>Duplicate Layer(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate Layer(s)</string>
+   </property>
+  </action>
+  <action name="mActionSvgAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text">
+    <string>SVG annotation</string>
+   </property>
+  </action>
+  <action name="mActionSaveAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.png</normaloff>:/images/themes/default/mActionSaveAllEdits.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Edits for All Layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Edits for All Layers</string>
+   </property>
+   <property name="statusTip">
+    <string>Save edits for all layers, but continue editing</string>
    </property>
   </action>
  </widget>

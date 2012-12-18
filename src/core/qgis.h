@@ -21,6 +21,8 @@
 #include <QEvent>
 #include <QString>
 #include <QMetaType>
+#include <QVariant>
+#include <stdlib.h>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -65,6 +67,27 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
+    static WkbType flatType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBMultiPoint:
+          return WKBPoint;
+        case WKBMultiLineString:
+          return WKBLineString;
+        case WKBMultiPolygon:
+          return WKBPolygon;
+        case WKBMultiPoint25D:
+          return WKBPoint25D;
+        case WKBMultiLineString25D:
+          return WKBLineString25D;
+        case WKBMultiPolygon25D:
+          return WKBPolygon25D;
+        default:
+          return type;
+      }
+    }
+
     enum GeometryType
     {
       Point,
@@ -81,6 +104,30 @@ class CORE_EXPORT QGis
     //! description strings for feature types
     //! @note not available in python bindings
     static const char *qgisFeatureTypes[];
+
+    /** Raster data types.
+     *  This is modified and extended copy of GDALDataType.
+     */
+    enum DataType
+    {
+      /*! Unknown or unspecified type */                UnknownDataType = 0,
+      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
+      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
+      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
+      /*! Thirty two bit floating point (float) */      Float32 = 6,
+      /*! Sixty four bit floating point (double) */     Float64 = 7,
+      /*! Complex Int16 */                              CInt16 = 8,
+      /*! Complex Int32 */                              CInt32 = 9,
+      /*! Complex Float32 */                            CFloat32 = 10,
+      /*! Complex Float64 */                            CFloat64 = 11,
+      /*! Color, alpha, red, green, blue, 4 bytes the same as
+          QImage::Format_ARGB32 */                      ARGB32 = 12,
+      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+    };
+
 
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
@@ -171,6 +218,29 @@ inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
   return aexp == bexp &&
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
 }
+
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+
+/** Allocates size bytes and returns a pointer to the allocated  memory.
+    Works like C malloc() but prints debug message by QgsLogger if allocation fails.
+    @param size size in bytes
+ */
+void CORE_EXPORT *QgsMalloc( size_t size );
+
+/** Allocates  memory for an array of nmemb elements of size bytes each and returns
+    a pointer to the allocated memory. Works like C calloc() but prints debug message
+    by QgsLogger if allocation fails.
+    @param nmemb number of elements
+    @param size size of element in bytes
+ */
+void CORE_EXPORT *QgsCalloc( size_t nmemb, size_t size );
+
+/** Frees the memory space  pointed  to  by  ptr. Works like C free().
+    @param ptr pointer to memory space
+ */
+void CORE_EXPORT QgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt

@@ -63,19 +63,19 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.setParamsStatus(
         [
-          (self.inSelector, SIGNAL("filenameChanged()")), 
-          (self.outSelector, SIGNAL("filenameChanged()")), 
-          (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
-          (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck), 
-          (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox), 
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
+          (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"),
+          (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck),
+          (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"),
+          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox),
           (self.modeCombo, SIGNAL("currentIndexChanged(int)")),
-          ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], SIGNAL("valueChanged(double)")), 
-          (self.slopeScaleSpin, SIGNAL("valueChanged(double)")), 
-          (self.slopePercentCheck, SIGNAL("stateChanged(int)")), 
-          ([self.aspectTrigonometricCheck, self.aspectZeroForFlatCheck], SIGNAL("stateChanged(int)")), 
-          (self.configSelector, SIGNAL("filenameChanged()")), 
-          ([self.colorExactRadio, self.colorNearestRadio], SIGNAL("toggled(bool)"), self.colorMatchGroupBox), 
+          ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], SIGNAL("valueChanged(double)")),
+          (self.slopeScaleSpin, SIGNAL("valueChanged(double)")),
+          (self.slopePercentCheck, SIGNAL("stateChanged(int)")),
+          ([self.aspectTrigonometricCheck, self.aspectZeroForFlatCheck], SIGNAL("stateChanged(int)")),
+          (self.configSelector, SIGNAL("filenameChanged()")),
+          ([self.colorExactRadio, self.colorNearestRadio], SIGNAL("toggled(bool)"), self.colorMatchGroupBox),
           (self.colorAlphaCheck, SIGNAL("stateChanged(int)"))
         ]
       )

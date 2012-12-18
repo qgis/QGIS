@@ -1,0 +1,8 @@
+Move Outlets To Streams
+moveoutletstostrm
+Stream Network Analysis tools
+ParameterRaster|-p|D8 Flow Direction Grid|False
+ParameterRaster|-src|Stream Raster Grid|False
+ParameterVector|-o|Outlets Shapefile|0|False
+ParameterNumber|-md|Maximum Number of Grid Cells to traverse|1|500|50
+OutputVector|-om|Output Outlet Shapefile

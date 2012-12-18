@@ -57,9 +57,6 @@ class Delaunay(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Delaunay triangulation"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputValue(self.OUTPUT)
 

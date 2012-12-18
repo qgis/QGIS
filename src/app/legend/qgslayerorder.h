@@ -48,7 +48,6 @@ class QgsLayerOrder : public QListWidget
   private slots:
     void updateDrawingOrderChecked( bool );
     void itemChanged( QListWidgetItem * );
-    void legendItemChanged( QTreeWidgetItem *, int );
     void refreshLayerList();
 
   private:

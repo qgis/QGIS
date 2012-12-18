@@ -280,16 +280,24 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
-    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
+    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
+    /** @note added in 1.9 */
+    QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
+    /** @note added in 1.9 */
+    QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
+    /** @note added in 1.9 */
+    QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    /** @note added in 1.9 */
+    QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
@@ -371,6 +379,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! returns pointer to map legend
     QgsLegend *legend();
 
+    /** Return vector layers with unsaved provider edits
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    QList<QgsMapLayer *> unsavedEditableLayers() const;
+
 #ifdef Q_OS_WIN
     //! ugly hack
     void skipNextContextMenuEvent();
@@ -435,13 +448,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
-
+    //! copies style of the active layer to the clipboard
     /**
        \param sourceLayer  The layer where the style will be taken from
                                         (defaults to the active layer on the legend)
      */
     void copyStyle( QgsMapLayer * sourceLayer = 0 );
-    //! copies style on the clipboard to the active layer
+    //! pastes style on the clipboard to the active layer
     /**
        \param destinatioLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
@@ -543,6 +556,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+    /** Duplicate map layer(s) in legend
+     * @note added in 1.9 */
+    void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set CRS of a layer
     void setLayerCRS();
     //! Assign layer CRS to project
@@ -765,6 +781,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! save current edits and start new transaction
     void saveEdits();
 
+    /** Save all edits and start new transactions
+     * @note added in 1.9 */
+    void saveAllEdits();
+
     //! change layer subset of current vector layer
     void layerSubsetString();
 
@@ -825,6 +845,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addFormAnnotation();
     void addTextAnnotation();
     void addHtmlAnnotation();
+    void addSvgAnnotation();
     void modifyAnnotation();
 
     //! shows label settings dialog (for labeling-ng)
@@ -1094,6 +1115,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mHtmlAnnotation;
+        QgsMapTool* mSvgAnnotation;
         QgsMapTool* mTextAnnotation;
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;

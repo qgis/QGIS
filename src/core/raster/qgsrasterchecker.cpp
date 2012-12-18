@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproviderregistry.h"
 #include "qgsrasterchecker.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -43,14 +44,16 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   bool ok = true;
   mReport += "\n\n";
 
-  QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( theVerifiedKey, theVerifiedUri );
+  //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( theVerifiedKey, theVerifiedUri );
+  QgsRasterDataProvider* verifiedProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( theVerifiedKey, theVerifiedUri );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QString( "Cannot load provider %1 with URI: %2" ).arg( theVerifiedKey ).arg( theVerifiedUri ), mReport );
     ok = false;
   }
 
-  QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( theExpectedKey, theExpectedUri );
+  //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( theExpectedKey, theExpectedUri );
+  QgsRasterDataProvider* expectedProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( theExpectedKey, theExpectedUri );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QString( "Cannot load provider %1 with URI: %2" ).arg( theExpectedKey ).arg( theExpectedUri ), mReport );
@@ -141,7 +144,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     int width = expectedProvider->xSize();
     int height = expectedProvider->ySize();
-    int blockSize =  width * height * expectedProvider->typeSize( expectedProvider->dataType( band ) ) ;
+    int blockSize =  width * height * QgsRasterBlock::typeSize( expectedProvider->dataType( band ) ) ;
     void * expectedData = malloc( blockSize );
     void * verifiedData = malloc( blockSize );
 
@@ -156,8 +159,8 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
       for ( int col = 0; col < width; col ++ )
       {
         bool cellOk = true;
-        double verifiedVal =  verifiedProvider->readValue( verifiedData,  verifiedProvider->dataType( band ), row * width + col );
-        double expectedVal =  expectedProvider->readValue( expectedData,  expectedProvider->dataType( band ), row * width + col );
+        double verifiedVal =  QgsRasterBlock::readValue( verifiedData,  verifiedProvider->dataType( band ), row * width + col );
+        double expectedVal =  QgsRasterBlock::readValue( expectedData,  expectedProvider->dataType( band ), row * width + col );
 
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )

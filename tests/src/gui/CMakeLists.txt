@@ -48,7 +48,7 @@ ENDIF(WIN32)
 # ensure the omg libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/gui)
+#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/gui)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our

@@ -50,5 +50,5 @@ def authorName():
   return "Carson J. Q. Farmer"
 
 def classFactory( iface ):
-  from fTools import fToolsPlugin
+  from .fTools import fToolsPlugin
   return fToolsPlugin( iface )

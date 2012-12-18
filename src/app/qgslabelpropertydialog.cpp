@@ -22,20 +22,20 @@
 #include <QColorDialog>
 #include <QFontDialog>
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, QgsMapRenderer* renderer, QWidget * parent, Qt::WindowFlags f ):
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mMapRenderer( renderer ), mCurrentLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
   fillValiComboBox();
-  init( layerId, featureId );
+  init( layerId, featureId, labelText );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
 }
 
-void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
+void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const QString& labelText )
 {
   if ( !mMapRenderer )
   {
@@ -65,30 +65,40 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 
   blockElementSignals( true );
 
+  QgsPalLayerSettings& layerSettings = lbl->layer( layerId );
+
   //get label field and fill line edit
-  QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
-  if ( !labelFieldName.isEmpty() )
+  if ( layerSettings.isExpression && !labelText.isNull() )
   {
-    mCurrentLabelField = vlayer->fieldNameIndex( labelFieldName );
-    mLabelTextLineEdit->setText( attributeValues[mCurrentLabelField].toString() );
-    const QgsFields& layerFields = vlayer->pendingFields();
-    switch ( layerFields[mCurrentLabelField].type() )
+    mLabelTextLineEdit->setText( labelText );
+    mLabelTextLineEdit->setEnabled( false );
+    mLabelTextLabel->setText( tr( "Expression result" ) );
+  }
+  else
+  {
+    QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
+    if ( !labelFieldName.isEmpty() )
     {
-      case QVariant::Double:
-        mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
-        break;
-      case QVariant::Int:
-      case QVariant::UInt:
-      case QVariant::LongLong:
-        mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
-        break;
-      default:
-        break;
+      mCurrentLabelField = vlayer->fieldNameIndex( labelFieldName );
+      mLabelTextLineEdit->setText( attributeValues[mCurrentLabelField].toString() );
+      const QgsFields& layerFields = vlayer->pendingFields();
+      switch ( layerFields[mCurrentLabelField].type() )
+      {
+        case QVariant::Double:
+          mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
+          break;
+        case QVariant::Int:
+        case QVariant::UInt:
+        case QVariant::LongLong:
+          mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
+          break;
+        default:
+          break;
+      }
     }
   }
 
   //get attributes of the feature and fill data defined values
-  QgsPalLayerSettings& layerSettings = lbl->layer( layerId );
   mLabelFont = layerSettings.textFont;
 
   //set all the gui elements to the default values
@@ -113,6 +123,10 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
       case QgsPalLayerSettings::Show:
         mShowLabelChkbx->setEnabled( true );
         mShowLabelChkbx->setChecked( attributeValues[propIt.value()].toInt() != 0 );
+        break;
+      case QgsPalLayerSettings::AlwaysShow:
+        mAlwaysShowChkbx->setEnabled( true );
+        mAlwaysShowChkbx->setChecked( attributeValues[propIt.value()].toBool() );
         break;
       case QgsPalLayerSettings::MinScale:
         mMinScaleSpinBox->setEnabled( true );
@@ -191,6 +205,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
 void QgsLabelPropertyDialog::disableGuiElements()
 {
   mShowLabelChkbx->setEnabled( false );
+  mAlwaysShowChkbx->setEnabled( false );
   mMinScaleSpinBox->setEnabled( false );
   mMaxScaleSpinBox->setEnabled( false );
   mFontSizeSpinBox->setEnabled( false );
@@ -209,6 +224,7 @@ void QgsLabelPropertyDialog::disableGuiElements()
 void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
   mShowLabelChkbx->blockSignals( block );
+  mAlwaysShowChkbx->blockSignals( block );
   mMinScaleSpinBox->blockSignals( block );
   mMaxScaleSpinBox->blockSignals( block );
   mFontSizeSpinBox->blockSignals( block );
@@ -241,6 +257,11 @@ void QgsLabelPropertyDialog::fillValiComboBox()
 void QgsLabelPropertyDialog::on_mShowLabelChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::Show, ( chkd ? 1 : 0 ) );
+}
+
+void QgsLabelPropertyDialog::on_mAlwaysShowChkbx_toggled( bool chkd )
+{
+  insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
 }
 
 void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )

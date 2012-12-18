@@ -27,24 +27,24 @@
 
 class TestQgsComposerLabel: public QObject
 {
-  Q_OBJECT;
-private slots:
-  void initTestCase();// will be called before the first testfunction is executed.
-  void cleanupTestCase();// will be called after the last testfunction was executed.
-  void init();// will be called before each testfunction is executed.
-  void cleanup();// will be called after every testfunction.
-  
-  // test simple expression evaluation
-  void evaluation();
-  // test expression evaluation when a feature is set
-  void feature_evaluation();
-  // test "$page" expressions
-  void page_evaluation();
+    Q_OBJECT;
+  private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+
+    // test simple expression evaluation
+    void evaluation();
+    // test expression evaluation when a feature is set
+    void feature_evaluation();
+    // test "$page" expressions
+    void page_evaluation();
   private:
-  QgsComposition* mComposition;
-  QgsComposerLabel* mComposerLabel;
-  QgsMapRenderer* mMapRenderer;
-  QgsVectorLayer* mVectorLayer;
+    QgsComposition* mComposition;
+    QgsComposerLabel* mComposerLabel;
+    QgsMapRenderer* mMapRenderer;
+    QgsVectorLayer* mVectorLayer;
 };
 
 void TestQgsComposerLabel::initTestCase()
@@ -56,7 +56,7 @@ void TestQgsComposerLabel::initTestCase()
   QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
-				     "ogr" );
+                                     "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
@@ -108,8 +108,8 @@ void TestQgsComposerLabel::evaluation()
     // $CURRENT_DATE() evaluation (inside an expression)
     QDate now = QDate::currentDate();
     int dd = now.day();
-    
-    QString expected = "__" + QString("%1").arg(dd+1) + "(ok)__";
+
+    QString expected = "__" + QString( "%1" ).arg( dd + 1 ) + "(ok)__";
     mComposerLabel->setText( "__[%$CURRENT_DATE(dd) + 1%](ok)__" );
     QString evaluated = mComposerLabel->displayText();
     QCOMPARE( evaluated, expected );
@@ -171,7 +171,7 @@ void TestQgsComposerLabel::page_evaluation()
 
     // move to the second page and re-evaluate
     mComposerLabel->setItemPosition( 0, 320 );
-    QCOMPARE( mComposerLabel->displayText(), QString("2/2") );
+    QCOMPARE( mComposerLabel->displayText(), QString( "2/2" ) );
   }
 }
 

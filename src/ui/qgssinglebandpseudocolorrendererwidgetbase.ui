@@ -345,6 +345,13 @@
           </item>
          </layout>
         </item>
+        <item>
+         <widget class="QCheckBox" name="mInvertCheckBox">
+          <property name="text">
+           <string>Invert colors order</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -356,7 +363,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <zorder>grpGenerateColorMap</zorder>
       </widget>
      </item>
     </layout>

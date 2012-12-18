@@ -210,8 +210,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myData.setCheckable( true );
     myData.setRenderAsWidget( false );
     myData.setChecked( false ); //start off assuming false
-    if ( iconName == "__error__" )
+
+    if ( iconName == "__error__" || iconName.isEmpty() )
+    {
       myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+    }
     else
     {
       bool relative = QFileInfo( iconName ).isRelative();
@@ -221,7 +224,14 @@ void QgsPluginManager::getPythonPluginDescriptions()
         mPythonUtils->evalString( QString( "qgis.utils.pluginDirectory('%1')" ).arg( packageName ), pluginDir );
         iconName = pluginDir + "/" + iconName;
       }
-      myData.setIcon( QPixmap( iconName ) );
+      if ( QFileInfo( iconName ).isFile() )
+      {
+        myData.setIcon( QPixmap( iconName ) );
+      }
+      else
+      {
+        myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+      }
     }
 
     // check to see if the plugin is loaded and set the checkbox accordingly

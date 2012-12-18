@@ -26,11 +26,11 @@
 #include "qgsmaplayerregistry.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
-  mComposition( composition ),
-  mEnabled( false ),
-  mComposerMap( 0 ),
-  mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
-  mCoverageLayer( 0 ), mSingleFile( false )
+    mComposition( composition ),
+    mEnabled( false ),
+    mComposerMap( 0 ),
+    mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
+    mCoverageLayer( 0 ), mSingleFile( false )
 {
 
   // declare special columns with a default value
@@ -48,12 +48,8 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
 {
   mCoverageLayer = layer;
 
-  if ( mCoverageLayer != 0 )
-  {
-    // update the number of features
-    QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
-    QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)provider->featureCount() ) );
-  }
+  // update the number of features
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::beginRender()
@@ -91,6 +87,7 @@ void QgsAtlasComposition::beginRender()
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
+  mFeatureIds.clear();
   while ( mCoverageLayer->nextFeature( feat ) )
   {
     mFeatureIds.push_back( feat.id() );
@@ -113,7 +110,7 @@ void QgsAtlasComposition::beginRender()
 
   // special columns for expressions
   QgsExpression::setSpecialColumn( "$numpages", QVariant( mComposition->numPages() ) );
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mCoverageLayer->pendingFeatureCount() ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::endRender()
@@ -145,11 +142,7 @@ void QgsAtlasComposition::endRender()
 
 size_t QgsAtlasComposition::numFeatures() const
 {
-  if ( mCoverageLayer )
-  {
-    return mCoverageLayer->dataProvider()->featureCount();
-  }
-  return 0;
+  return mFeatureIds.size();
 }
 
 void QgsAtlasComposition::prepareForFeature( size_t featureI )
@@ -286,9 +279,9 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   atlasElem.setAttribute( "hideCoverage", mHideCoverage ? "true" : "false" );
   atlasElem.setAttribute( "fixedScale", mFixedScale ? "true" : "false" );
   atlasElem.setAttribute( "singleFile", mSingleFile ? "true" : "false" );
-  atlasElem.setAttribute( "margin", QString::number(mMargin) );
+  atlasElem.setAttribute( "margin", QString::number( mMargin ) );
   atlasElem.setAttribute( "filenamePattern", mFilenamePattern );
-  
+
   elem.appendChild( atlasElem );
 }
 
@@ -306,9 +299,9 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::const_iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    if ( it.key() == atlasElem.attribute("coverageLayer") )
+    if ( it.key() == atlasElem.attribute( "coverageLayer" ) )
     {
-      mCoverageLayer = dynamic_cast<QgsVectorLayer*>(it.value());
+      mCoverageLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
       break;
     }
   }
@@ -317,7 +310,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   QList<const QgsComposerMap*> maps = mComposition->composerMapItems();
   for ( QList<const QgsComposerMap*>::const_iterator it = maps.begin(); it != maps.end(); ++it )
   {
-    if ( (*it)->id() == atlasElem.attribute( "composerMap" ).toInt() )
+    if (( *it )->id() == atlasElem.attribute( "composerMap" ).toInt() )
     {
       mComposerMap = const_cast<QgsComposerMap*>( *it );
       break;

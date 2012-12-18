@@ -8,7 +8,7 @@
 #
 # Additional changes by Carson Farmer added November 2010
 #
-# Calculate Delaunay triangulation or the Voronoi polygons for a set of 
+# Calculate Delaunay triangulation or the Voronoi polygons for a set of
 # 2D input points.
 #
 # Derived from code bearing the following notice:
@@ -25,7 +25,7 @@
 #  REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
 #  OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
 #
-# Comments were incorporated from Shane O'Sullivan's translation of the 
+# Comments were incorporated from Shane O'Sullivan's translation of the
 # original code into C++ (http://mapviewer.skynet.ie/voronoi.html)
 #
 # Steve Fortune's homepage: http://netlib.bell-labs.com/cm/cs/who/sjf/index.html
@@ -38,33 +38,33 @@ voronoi - compute Voronoi diagram or Delaunay triangulation
 
 voronoi [-t -p -d]  [filename]
 
-Voronoi reads from filename (or standard input if no filename given) for a set 
-of points in the plane and writes either the Voronoi diagram or the Delaunay 
-triangulation to the standard output.  Each input line should consist of two 
+Voronoi reads from filename (or standard input if no filename given) for a set
+of points in the plane and writes either the Voronoi diagram or the Delaunay
+triangulation to the standard output.  Each input line should consist of two
 real numbers, separated by white space.
 
-If option -t is present, the Delaunay triangulation is produced. 
+If option -t is present, the Delaunay triangulation is produced.
 Each output line is a triple i j k, which are the indices of the three points
 in a Delaunay triangle. Points are numbered starting at 0.
 
-If option -t is not present, the Voronoi diagram is produced.  
+If option -t is not present, the Voronoi diagram is produced.
 There are four output record types.
 
 s a b      indicates that an input point at coordinates a b was seen.
 l a b c    indicates a line with equation ax + by = c.
 v a b      indicates a vertex at a b.
 e l v1 v2  indicates a Voronoi segment which is a subsegment of line number l
-           with endpoints numbered v1 and v2.  If v1 or v2 is -1, the line 
+           with endpoints numbered v1 and v2.  If v1 or v2 is -1, the line
            extends to infinity.
 
 Other options include:
 
 d    Print debugging info
 
-p    Produce output suitable for input to plot (1), rather than the forms 
+p    Produce output suitable for input to plot (1), rather than the forms
      described above.
 
-On unsorted data uniformly distributed in the unit square, voronoi uses about 
+On unsorted data uniformly distributed in the unit square, voronoi uses about
 20n+140 bytes of storage.
 
 AUTHOR
@@ -81,13 +81,13 @@ Algorithmica 2, 153-174.
 #        Takes a list of point objects (which must have x and y fields).
 #        Returns a 3-tuple of:
 #
-#           (1) a list of 2-tuples, which are the x,y coordinates of the 
+#           (1) a list of 2-tuples, which are the x,y coordinates of the
 #               Voronoi diagram vertices
 #           (2) a list of 3-tuples (a,b,c) which are the equations of the
 #               lines in the Voronoi diagram: a*x + b*y = c
-#           (3) a list of 3-tuples, (l, v1, v2) representing edges of the 
+#           (3) a list of 3-tuples, (l, v1, v2) representing edges of the
 #               Voronoi diagram.  l is the index of the line, v1 and v2 are
-#               the indices of the vetices at the end of the edge.  If 
+#               the indices of the vetices at the end of the edge.  If
 #               v1 or v2 is -1, the line extends to infinity.
 #
 #   computeDelaunayTriangulation(points):
@@ -111,7 +111,7 @@ class Context(object):
         self.plot    = 0
         self.triangulate = False
         self.vertices  = []    # list of vertex 2-tuples: (x,y)
-        self.lines     = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c  
+        self.lines     = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
         self.edges     = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
         self.triangles = []    # 3-tuple of vertex indices
         self.polygons  = {}    # a dict of site:[edges] pairs
@@ -178,7 +178,7 @@ class Context(object):
         if(not self.triangulate):
             if self.plot:
                 self.clip_line(edge)
-            elif(self.doPrint): 
+            elif(self.doPrint):
                 print "e %d" % edge.edgenum,
                 print " %d " % sitenumL,
                 print "%d" % sitenumR
@@ -189,7 +189,7 @@ def voronoi(siteList,context):
       edgeList  = EdgeList(siteList.xmin,siteList.xmax,len(siteList))
       priorityQ = PriorityQueue(siteList.ymin,siteList.ymax,len(siteList))
       siteIter = siteList.iterator()
-      
+
       bottomsite = siteIter.next()
       context.outSite(bottomsite)
       newsite = siteIter.next()
@@ -201,24 +201,24 @@ def voronoi(siteList,context):
           if (newsite and (priorityQ.isEmpty() or cmp(newsite,minpt) < 0)):
               # newsite is smallest -  this is a site event
               context.outSite(newsite)
-              
-              # get first Halfedge to the LEFT and RIGHT of the new site 
-              lbnd = edgeList.leftbnd(newsite) 
-              rbnd = lbnd.right                    
-              
+
+              # get first Halfedge to the LEFT and RIGHT of the new site
+              lbnd = edgeList.leftbnd(newsite)
+              rbnd = lbnd.right
+
               # if this halfedge has no edge, bot = bottom site (whatever that is)
               # create a new edge that bisects
-              bot  = lbnd.rightreg(bottomsite)     
-              edge = Edge.bisect(bot,newsite)      
+              bot  = lbnd.rightreg(bottomsite)
+              edge = Edge.bisect(bot,newsite)
               context.outBisector(edge)
-              
-              # create a new Halfedge, setting its pm field to 0 and insert 
+
+              # create a new Halfedge, setting its pm field to 0 and insert
               # this new bisector edge between the left and right vectors in
               # a linked list
-              bisector = Halfedge(edge,Edge.LE)    
-              edgeList.insert(lbnd,bisector)       
+              bisector = Halfedge(edge,Edge.LE)
+              edgeList.insert(lbnd,bisector)
 
-              # if the new bisector intersects with the left edge, remove 
+              # if the new bisector intersects with the left edge, remove
               # the left edge's vertex, and put in the new one
               p = lbnd.intersect(bisector)
               if p is not None:
@@ -228,58 +228,58 @@ def voronoi(siteList,context):
               # create a new Halfedge, setting its pm field to 1
               # insert the new Halfedge to the right of the original bisector
               lbnd = bisector
-              bisector = Halfedge(edge,Edge.RE)     
-              edgeList.insert(lbnd,bisector)        
+              bisector = Halfedge(edge,Edge.RE)
+              edgeList.insert(lbnd,bisector)
 
               # if this new bisector intersects with the right Halfedge
               p = bisector.intersect(rbnd)
               if p is not None:
                   # push the Halfedge into the ordered linked list of vertices
                   priorityQ.insert(bisector,p,newsite.distance(p))
-              
+
               newsite = siteIter.next()
 
           elif not priorityQ.isEmpty():
-              # intersection is smallest - this is a vector (circle) event 
+              # intersection is smallest - this is a vector (circle) event
 
-              # pop the Halfedge with the lowest vector off the ordered list of 
+              # pop the Halfedge with the lowest vector off the ordered list of
               # vectors.  Get the Halfedge to the left and right of the above HE
               # and also the Halfedge to the right of the right HE
-              lbnd  = priorityQ.popMinHalfedge()      
-              llbnd = lbnd.left               
-              rbnd  = lbnd.right              
-              rrbnd = rbnd.right              
-              
+              lbnd  = priorityQ.popMinHalfedge()
+              llbnd = lbnd.left
+              rbnd  = lbnd.right
+              rrbnd = rbnd.right
+
               # get the Site to the left of the left HE and to the right of
               # the right HE which it bisects
-              bot = lbnd.leftreg(bottomsite)  
-              top = rbnd.rightreg(bottomsite) 
-              
+              bot = lbnd.leftreg(bottomsite)
+              top = rbnd.rightreg(bottomsite)
+
               # output the triple of sites, stating that a circle goes through them
               mid = lbnd.rightreg(bottomsite)
-              context.outTriple(bot,top,mid)          
+              context.outTriple(bot,top,mid)
 
               # get the vertex that caused this event and set the vertex number
               # couldn't do this earlier since we didn't know when it would be processed
-              v = lbnd.vertex                 
+              v = lbnd.vertex
               siteList.setSiteNumber(v)
               context.outVertex(v)
-              
+
               # set the endpoint of the left and right Halfedge to be this vector
               if lbnd.edge.setEndpoint(lbnd.pm,v):
                   context.outEdge(lbnd.edge)
-              
+
               if rbnd.edge.setEndpoint(rbnd.pm,v):
                   context.outEdge(rbnd.edge)
 
-              
-              # delete the lowest HE, remove all vertex events to do with the 
+
+              # delete the lowest HE, remove all vertex events to do with the
               # right HE and delete the right HE
-              edgeList.delete(lbnd)           
+              edgeList.delete(lbnd)
               priorityQ.delete(rbnd)
               edgeList.delete(rbnd)
-              
-              
+
+
               # if the site to the left of the event is higher than the Site
               # to the right of it, then swap them and set 'pm' to RIGHT
               pm = Edge.LE
@@ -287,30 +287,30 @@ def voronoi(siteList,context):
                   bot,top = top,bot
                   pm = Edge.RE
 
-              # Create an Edge (or line) that is between the two Sites.  This 
+              # Create an Edge (or line) that is between the two Sites.  This
               # creates the formula of the line, and assigns a line number to it
-              edge = Edge.bisect(bot, top)     
+              edge = Edge.bisect(bot, top)
               context.outBisector(edge)
 
-              # create a HE from the edge 
-              bisector = Halfedge(edge, pm)    
-              
+              # create a HE from the edge
+              bisector = Halfedge(edge, pm)
+
               # insert the new bisector to the right of the left HE
               # set one endpoint to the new edge to be the vector point 'v'
               # If the site to the left of this bisector is higher than the right
               # Site, then this endpoint is put in position 0; otherwise in pos 1
-              edgeList.insert(llbnd, bisector) 
+              edgeList.insert(llbnd, bisector)
               if edge.setEndpoint(Edge.RE - pm, v):
                   context.outEdge(edge)
-              
-              # if left HE and the new bisector don't intersect, then delete 
-              # the left HE, and reinsert it 
+
+              # if left HE and the new bisector don't intersect, then delete
+              # the left HE, and reinsert it
               p = llbnd.intersect(bisector)
               if p is not None:
                   priorityQ.delete(llbnd);
                   priorityQ.insert(llbnd, p, bot.distance(p))
 
-              # if right HE and the new bisector don't intersect, then reinsert it 
+              # if right HE and the new bisector don't intersect, then reinsert it
               p = bisector.intersect(rrbnd)
               if p is not None:
                   priorityQ.insert(bisector, p, bot.distance(p))
@@ -399,9 +399,9 @@ class Edge(object):
         dy = float(s2.y - s1.y)
         adx = abs(dx)  # make sure that the difference in positive
         ady = abs(dy)
-        
+
         # get the slope of the line
-        newedge.c = float(s1.x * dx + s1.y * dy + (dx*dx + dy*dy)*0.5)  
+        newedge.c = float(s1.x * dx + s1.y * dy + (dx*dx + dy*dy)*0.5)
         if adx > ady :
             # set formula of line, with x fixed to 1
             newedge.a = 1.0
@@ -431,14 +431,14 @@ class Halfedge(object):
 
     def dump(self):
         print "Halfedge--------------------------"
-        print "left: ",    self.left  
-        print "right: ",   self.right 
-        print "edge: ",    self.edge  
-        print "pm: ",      self.pm    
+        print "left: ",    self.left
+        print "right: ",   self.right
+        print "edge: ",    self.edge
+        print "pm: ",      self.pm
         print "vertex: ",
         if self.vertex: self.vertex.dump()
         else: print "None"
-        print "ystar: ",   self.ystar 
+        print "ystar: ",   self.ystar
 
 
     def __cmp__(self,other):
@@ -454,7 +454,7 @@ class Halfedge(object):
             return 0
 
     def leftreg(self,default):
-        if not self.edge: 
+        if not self.edge:
             return default
         elif self.pm == Edge.LE:
             return self.edge.reg[Edge.LE]
@@ -462,7 +462,7 @@ class Halfedge(object):
             return self.edge.reg[Edge.RE]
 
     def rightreg(self,default):
-        if not self.edge: 
+        if not self.edge:
             return default
         elif self.pm == Edge.LE:
             return self.edge.reg[Edge.RE]
@@ -475,13 +475,13 @@ class Halfedge(object):
         e = self.edge
         topsite = e.reg[1]
         right_of_site = pt.x > topsite.x
-        
-        if(right_of_site and self.pm == Edge.LE): 
+
+        if(right_of_site and self.pm == Edge.LE):
             return True
-        
+
         if(not right_of_site and self.pm == Edge.RE):
             return False
-        
+
         if(e.a == 1.0):
             dyp = pt.y - topsite.y
             dxp = pt.x - topsite.x
@@ -500,13 +500,13 @@ class Halfedge(object):
                 above = e.b * (dxp*dxp - dyp*dyp) < dxs*dyp*(1.0+2.0*dxp/dxs + e.b*e.b)
                 if(e.b < 0.0):
                     above = not above
-        else:  # e.b == 1.0 
+        else:  # e.b == 1.0
             yl = e.c - e.a * pt.x
             t1 = pt.y - yl
             t2 = pt.x - topsite.x
             t3 = yl - topsite.y
             above = t1*t1 > t2*t2 + t3*t3
-        
+
         if(self.pm==Edge.LE):
             return above
         else:
@@ -542,22 +542,22 @@ class Halfedge(object):
            (not rightOfSite and he.pm == Edge.RE)):
             return None
 
-        # create a new site at the point of intersection - this is a new 
+        # create a new site at the point of intersection - this is a new
         # vector event waiting to happen
         return Site(xint,yint)
 
-        
+
 
 #------------------------------------------------------------------
 class EdgeList(object):
     def __init__(self,xmin,xmax,nsites):
         if xmin > xmax: xmin,xmax = xmax,xmin
         self.hashsize = int(2*math.sqrt(nsites+4))
-        
+
         self.xmin   = xmin
         self.deltax = float(xmax - xmin)
         self.hash   = [None]*self.hashsize
-        
+
         self.leftend  = Halfedge()
         self.rightend = Halfedge()
         self.leftend.right = self.rightend
@@ -576,7 +576,7 @@ class EdgeList(object):
         he.right.left = he.left
         he.edge = Edge.DELETED
 
-    # Get entry from hash table, pruning any deleted nodes 
+    # Get entry from hash table, pruning any deleted nodes
     def gethash(self,b):
         if(b < 0 or b >= self.hashsize):
             return None
@@ -589,13 +589,13 @@ class EdgeList(object):
         return None
 
     def leftbnd(self,pt):
-        # Use hash table to get close to desired halfedge 
+        # Use hash table to get close to desired halfedge
         bucket = int(((pt.x - self.xmin)/self.deltax * self.hashsize))
-        
-        if(bucket < 0): 
+
+        if(bucket < 0):
             bucket =0;
-        
-        if(bucket >=self.hashsize): 
+
+        if(bucket >=self.hashsize):
             bucket = self.hashsize-1
 
         he = self.gethash(bucket)
@@ -607,7 +607,7 @@ class EdgeList(object):
                 he = self.gethash(bucket+i)
                 if (he is not None): break;
                 i += 1
-    
+
         # Now search linear list of halfedges for the corect one
         if (he is self.leftend) or (he is not self.rightend and he.isPointRightOf(pt)):
             he = he.right
@@ -711,7 +711,7 @@ class SiteList(object):
     class Iterator(object):
         def __init__(this,lst):  this.generator = (s for s in lst)
         def __iter__(this):      return this
-        def next(this): 
+        def next(this):
             try:
                 return this.generator.next()
             except StopIteration:
@@ -741,13 +741,13 @@ def computeVoronoiDiagram(points):
     """ Takes a list of point objects (which must have x and y fields).
         Returns a 3-tuple of:
 
-           (1) a list of 2-tuples, which are the x,y coordinates of the 
+           (1) a list of 2-tuples, which are the x,y coordinates of the
                Voronoi diagram vertices
            (2) a list of 3-tuples (a,b,c) which are the equations of the
                lines in the Voronoi diagram: a*x + b*y = c
-           (3) a list of 3-tuples, (l, v1, v2) representing edges of the 
+           (3) a list of 3-tuples, (l, v1, v2) representing edges of the
                Voronoi diagram.  l is the index of the line, v1 and v2 are
-               the indices of the vetices at the end of the edge.  If 
+               the indices of the vetices at the end of the edge.  If
                v1 or v2 is -1, the line extends to infinity.
     """
     siteList = SiteList(points)
@@ -774,7 +774,7 @@ if __name__=="__main__":
     except getopt.GetoptError:
         usage()
         sys.exit(2)
-      
+
     doHelp = 0
     c = Context()
     c.doPrint = 1

@@ -1063,6 +1063,8 @@ bool QgsProject::write()
 
   dirty( false );               // reset to pristine state
 
+  emit projectSaved();
+
   return true;
 } // QgsProject::write
 

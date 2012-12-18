@@ -76,7 +76,7 @@
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="obsolete">Coordonnées du système de coordonnées de référence du caneva de la carte</translation>
+        <translation type="obsolete">Coordonnées du système de coordonnées de référence du canevas de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Cliquez pour activer le suivi du curseur. Cliquez sur le caneva pour arrêter</translation>
+        <translation>Cliquez pour activer le suivi du curseur. Cliquez sur le canevas pour arrêter</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -815,12 +815,12 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation>Mettre à jour l&apos;étendue depuis la couche</translation>
+        <translation>Mettre à jour l&apos;emprise depuis la couche</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation>Mettre à jour l&apos;étendue depuis l&apos;emprise courante de la carte</translation>
+        <translation>Mettre à jour l&apos;emprise depuis l&apos;emprise courante de la carte</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
@@ -1140,7 +1140,7 @@ Cela peut provoquer des effets inattendus.</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation>Veuillez spécifier une étendue de coordonnées valide</translation>
+        <translation>Veuillez spécifier une emprise de coordonnées valide</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
@@ -1229,7 +1229,7 @@ Cela peut provoquer des effets inattendus.</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation>Veuillez spécifier une étendue de coordonnées valide</translation>
+        <translation>Veuillez spécifier une emprise de coordonnées valide</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
@@ -2810,8 +2810,8 @@ Voulez-vous quand même la stopper ?</translation>
     <message>
         <source>GDAL was unable to retrieve the extent from any file. 
 The &quot;Use intersected extent&quot; option will be unchecked.</source>
-        <translation>GDAL a été incapable de déterminer l&apos;étendue depuis les fichiers.
-L&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; sera décochée.</translation>
+        <translation>GDAL a été incapable de déterminer l&apos;emprise depuis les fichiers.
+L&apos;option &quot;Utiliser l&apos;emprise intersectée&quot; sera décochée.</translation>
     </message>
     <message>
         <source>Empty extent</source>
@@ -2820,8 +2820,8 @@ L&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; sera décochée.
     <message>
         <source>The computed extent is empty. 
 Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
-        <translation>L&apos;étendue calculée est vide.
-Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour obtenir un résultat no-vide.</translation>
+        <translation>L&apos;emprise calculée est vide.
+Désactivez l&apos;option &quot;Utiliser l&apos;emprise intersectée&quot; pour obtenir un résultat no-vide.</translation>
     </message>
     <message>
         <source>Select the input directory with files for VRT</source>
@@ -2853,7 +2853,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation>Ce raster dse trouve déjà dans le caneva de la carte</translation>
+        <translation>Ce raster se trouve déjà dans le canevas de la carte</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogExtractProjection.ui" line="14"/>
@@ -2894,7 +2894,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="27"/>
         <source>or change the extent coordinates</source>
-        <translation>ou modifier les coordonnées de l&apos;étendue</translation>
+        <translation>ou modifier les coordonnées de l&apos;emprise</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="37"/>
@@ -3188,11 +3188,11 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Select the extent by drag &amp; drop on canvas</source>
-        <translation type="obsolete">Sélectionner l&apos;étendue avec un glisser/déposer sur la carte</translation>
+        <translation type="obsolete">Sélectionner l&apos;emprise avec un glisser/déposer sur la carte</translation>
     </message>
     <message>
         <source>or change the extent coordinates</source>
-        <translation type="obsolete">ou modifier les coordonnées de l&apos;étendue</translation>
+        <translation type="obsolete">ou modifier les coordonnées de l&apos;emprise</translation>
     </message>
     <message>
         <source>1</source>
@@ -3204,7 +3204,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>or change the extent coordinates:</source>
-        <translation type="obsolete">ou en changeant les coordonnées de l&apos;étendue :</translation>
+        <translation type="obsolete">ou en changeant les coordonnées de l&apos;emprise :</translation>
     </message>
     <message>
         <source>1:</source>
@@ -3540,7 +3540,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="97"/>
         <source>Use intersected extent</source>
-        <translation>Utiliser l&apos;étendue intersectée</translation>
+        <translation>Utiliser l&apos;emprise intersectée</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="20"/>
@@ -4459,7 +4459,7 @@ Veulliez essayer un autre champ...</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Créer un polygone à partir de l&apos;étendue de la couche</translation>
+        <translation>Créer un polygone à partir de l&apos;emprise de la couche</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -5601,7 +5601,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="938"/>
         <source>Zoom Full</source>
-        <translation>Zoom sur l&apos;étendue</translation>
+        <translation>Zoom sur l&apos;emprise</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="941"/>
@@ -6012,7 +6012,7 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1402"/>
         <source>Local Histogram Stretch</source>
-        <translation>Histogramme de l&apos;étendue locale</translation>
+        <translation>Histogramme de l&apos;emprise locale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1405"/>
@@ -6397,19 +6397,19 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation>Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
+        <translation>Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;emprise de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle emprise mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation>L&apos;ensemble des étendues est trop large !</translation>
+        <translation>L&apos;ensemble des emprises est trop large !</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation>L&apos;étendue de la latitude est trop large !</translation>
+        <translation>L&apos;emprise de la latitude est trop large !</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation>L&apos;étendue de la longitude est trop large !</translation>
+        <translation>L&apos;emprise de la longitude est trop large !</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
@@ -8333,7 +8333,7 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1339"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1364"/>
         <source>Cannot get raster extent</source>
-        <translation>Impossible de déterminer l&apos;étendue du raster</translation>
+        <translation>Impossible de déterminer l&apos;emprise du raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1396"/>
@@ -10710,7 +10710,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation type="obsolete">Zoom sur l&apos;étendue</translation>
+        <translation type="obsolete">Zoom sur l&apos;emprise</translation>
     </message>
     <message>
         <source>Zoom to Full Extents</source>
@@ -10730,7 +10730,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     </message>
     <message>
         <source>Zoom to Last Extent</source>
-        <translation type="obsolete">Zoom sur l&apos;étendue précédente</translation>
+        <translation type="obsolete">Zoom sur l&apos;emprise précédente</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
@@ -11665,7 +11665,7 @@ Veuillez contacter les développeurs.
     </message>
     <message>
         <source>Local Histogram Stretch</source>
-        <translation type="obsolete">Histogramme de l&apos;étendue locale</translation>
+        <translation type="obsolete">Histogramme de l&apos;emprise locale</translation>
     </message>
     <message>
         <source>Stretch histogram of active raster to view extents</source>
@@ -15375,7 +15375,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="105"/>
         <source>Zoom Full</source>
-        <translation>Zoom sur l&apos;étendue totale</translation>
+        <translation>Zoom sur l&apos;emprise totale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="51"/>
@@ -16111,22 +16111,22 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="74"/>
         <source>Title Font...</source>
-        <translation>Police du tite...</translation>
+        <translation>Police du titre...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Group Font...</source>
-        <translation>Groupe de police...</translation>
+        <translation>Police des groupes...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation>Police de la couche...</translation>
+        <translation>Police des couches...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation>Police de l&apos;objet...</translation>
+        <translation>Police des objets...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
@@ -16182,7 +16182,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="205"/>
         <source>Wrap text on</source>
-        <translation>Retour à la ligne activé</translation>
+        <translation>Activer le retour à la ligne après</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="240"/>
@@ -26118,7 +26118,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="20"/>
         <source>Extent</source>
-        <translation>Étendue</translation>
+        <translation>Emprise</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="32"/>
@@ -26144,7 +26144,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="96"/>
         <source>Select the extent by dragging on canvas 
 or change the following values</source>
-        <translation>Sélectionnez l&apos;étendue sur le canevas
+        <translation>Sélectionnez l&apos;emprise sur le canevas
 ou changez manuellement les valeurs suivantes</translation>
     </message>
     <message>
@@ -28850,7 +28850,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialog.cpp" line="31"/>
         <source>From map canvas</source>
-        <translation>Depuis le caneva de la carte</translation>
+        <translation>Depuis le canevas de la carte</translation>
     </message>
 </context>
 <context>
@@ -32778,12 +32778,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="209"/>
         <source>Show selected features</source>
-        <translation>Montrer que les entités sélectionnés</translation>
+        <translation>Ne montrer que les entités sélectionnés</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="210"/>
         <source>Show features in current canvas</source>
-        <translation>Montrer les entités dans le caneva actuel</translation>
+        <translation>Montrer les entités dans le canevas actuel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="221"/>
@@ -34511,10 +34511,10 @@ Complément d&apos;information sur l&apos;erreur :
 &lt;/html&gt;</source>
         <translation>&lt;html&gt;
 &lt;body&gt;
-&lt;p&gt;Quand la couche est créée, des métadonnées sont nécessaire à la talbe PostGIS. Elles incluent des informations telles que le nombre d&apos;enregistrements, le type de géométrie et l&apos;étendue spatiale des données. Si la table contient un grand nombre d&apos;enregistrements, l&apos;estimation des ces métadonnées peut devenir longue.&lt;/p&gt;
+&lt;p&gt;Quand la couche est créée, des métadonnées sont nécessaire à la talbe PostGIS. Elles incluent des informations telles que le nombre d&apos;enregistrements, le type de géométrie et l&apos;emprise spatiale des données. Si la table contient un grand nombre d&apos;enregistrements, l&apos;estimation des ces métadonnées peut devenir longue.&lt;/p&gt;
 &lt;p&gt;En activant cette option, les opérations rapides suivantes sont effectuées :&lt;/p&gt;
 &lt;p&gt;1) Le décompte est déterminé depuis les statistiques de la table obtenues lors l&apos;exécution de la fonction d&apos;analyse de table de PostgreSQL.&lt;/p&gt;
-&lt;p&gt;2) L&apos;étendue est toujours déterminée selon la fonction estimated_extent de PostGIS , et ce même si un filtre est activé.&lt;/p&gt;
+&lt;p&gt;2) L&apos;emprise est toujours déterminée selon la fonction estimated_extent de PostGIS , et ce même si un filtre est activé.&lt;/p&gt;
 &lt;p&gt;3) Si le type de géométrie est inconnu, il est déterminé depuis les 100 premiers enregistrements géométriques non-nuls de la table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
@@ -37869,7 +37869,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation>Étendue actuelle de la couche</translation>
+        <translation>Emprise actuelle de la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
@@ -38409,7 +38409,7 @@ Click on help button to get valid creation options for this format</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1307"/>
         <source>Layer Extent (layer original source projection): </source>
-        <translation>Étendue de la couche (dans la projection originelle de la couche) : </translation>
+        <translation>Emprise de la couche (dans la projection originelle de la couche) : </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1333"/>
@@ -45564,7 +45564,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="5668"/>
         <source>(Invalid transformation of layer extents)</source>
-        <translation>(Transformation invalide des étendues de couche)</translation>
+        <translation>(Transformation invalide des emprises de couche)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="5678"/>
@@ -45973,7 +45973,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     </message>
     <message>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="obsolete">(Transformation invalide des étendues de couche)</translation>
+        <translation type="obsolete">(Transformation invalide des emprises de couche)</translation>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
@@ -46907,7 +46907,7 @@ en mémoire</translation>
     </message>
     <message>
         <source>Only request features overlapping the current view extent</source>
-        <translation type="obsolete">Demander uniquement les entités dépassant l&apos;étendue de la vue actuelle</translation>
+        <translation type="obsolete">Demander uniquement les entités dépassant l&apos;emprise de la vue actuelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="14"/>
@@ -51645,7 +51645,7 @@ L&apos;extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Créer un polygone à partir de l&apos;étendue de la couche</translation>
+        <translation>Créer un polygone à partir de l&apos;emprise de la couche</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>

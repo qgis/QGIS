@@ -41,64 +41,54 @@ class QgsRasterInterface
 %End
 
   public:
-
-    /** Data types.
-     *  This is modified and extended copy of GDALDataType.
-     */
-    enum DataType
+    enum Capability
     {
-      /*! Unknown or unspecified type */          UnknownDataType = 0,
-      /*! Eight bit unsigned integer */           Byte = 1,
-      /*! Sixteen bit unsigned integer */         UInt16 = 2,
-      /*! Sixteen bit signed integer */           Int16 = 3,
-      /*! Thirty two bit unsigned integer */      UInt32 = 4,
-      /*! Thirty two bit signed integer */        Int32 = 5,
-      /*! Thirty two bit floating point */        Float32 = 6,
-      /*! Sixty four bit floating point */        Float64 = 7,
-      /*! Complex Int16 */                        CInt16 = 8,
-      /*! Complex Int32 */                        CInt32 = 9,
-      /*! Complex Float32 */                      CFloat32 = 10,
-      /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */  ARGB32_Premultiplied = 13,
-
-      TypeCount = 14          /* maximum type # + 1 */
-    };
-
-    struct Range
-    {
-      double min;
-      double max;
-      bool operator==( const QgsRasterInterface::Range &o ) const;
+      NoCapabilities,
+      Identify,
+      ExactMinimumMaximum,
+      ExactResolution,
+      EstimatedMinimumMaximum,
+      BuildPyramids,
+      Histogram,
+      Size,
+      Create,
+      Remove,
+      IdentifyValue,
+      IdentifyText,
+      IdentifyHtml,
+      IdentifyFeature
     };
 
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
 
-    int typeSize( int dataType ) const;
-
     /** Clone itself, create deep copy */
     virtual QgsRasterInterface *clone() const = 0 /Factory/;
 
-    int dataTypeSize( int bandNo ) const;
-
-    /** Returns true if data type is numeric */
-    bool typeIsNumeric( QgsRasterInterface::DataType type ) const;
-
-    /** Returns true if data type is color */
-    bool typeIsColor( QgsRasterInterface::DataType type ) const;
+    /** Returns a bitmask containing the supported capabilities */
+    virtual int capabilities() const;
+    
+    /**
+     *  Returns the above in friendly format.
+     */ 
+    QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const = 0;
 
-    /** For given data type returns wider type and sets no data value */
-    static QgsRasterInterface::DataType typeWithNoDataValue( DataType dataType, double *noDataValue );
+    int dataTypeSize ( int bandNo );
 
     /** Get number of bands */
-    virtual int bandCount() const;
+    virtual int bandCount() const = 0;
+
+    /** Get block size */
+    virtual int xBlockSize() const;
+    virtual int yBlockSize() const;
+
+    /** Get raster size */
+    virtual int xSize() const;
+    virtual int ySize() const;
 
     /** Return no data value for specific band. Each band/provider must have
      * no data value, if there is no one set in original data, provider decides one
@@ -113,18 +103,7 @@ class QgsRasterInterface
      * @return true if value is nodata */
     virtual bool isNoDataValue( int bandNo, double value ) const;
 
-    /** Read block of data using given extent and size.
-     *  Returns pointer to data.
-     *  Caller is responsible to free the memory returned.
-     */
-    void *block( int bandNo, const QgsRectangle &extent, int width, int height );
-
-    /** Read block of data using given extent and size.
-     *  Method to be implemented by subclasses.
-     *  Returns pointer to data.
-     *  Caller is responsible to free the memory returned.
-     */
-    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -134,7 +113,7 @@ class QgsRasterInterface
     virtual QgsRasterInterface * input() const;
 
     /** Is on/off */
-    virtual bool on();
+    virtual bool on() const;
 
     /** Set on/off */
     virtual void setOn( bool on );
@@ -145,45 +124,73 @@ class QgsRasterInterface
      */
     virtual QgsRasterInterface *srcInput();
 
-    /** Create a new image with extraneous data, such data may be used
-     *  after the image is destroyed. The memory is not initialized.
+    /** \brief Get band statistics.
+     * @param theBandNo The band (number).
+     * @param theStats Requested statistics
+     * @param theExtent Extent used to calc statistics, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @return Band statistics.
      */
-    QImage * createImage( int width, int height, QImage::Format format ) /Factory/;
+    virtual QgsRasterBandStats bandStatistics( int theBandNo,
+        int theStats = QgsRasterBandStats::All,
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theSampleSize = 0 );
 
-    /** Switch on (and clear old statistics) or off collection of statistics */
-    void setStatsOn( bool on );
-
-    /** Last total time (for allbands) consumed by this interface for call to block()
-     * If cumulative is true, the result includes also time spent in all preceding
-     * interfaces. If cumulative is false, only time consumed by this interface is
-     * returned. */
-    double time( bool cumulative = false );
-
-    static double readValue( void *data, QgsRasterInterface::DataType type, int index );
-
-    static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
-
-    /** \brief Print double value with all necessary significant digits.
-     *         It is ensured that conversion back to double gives the same number.
-     *  @param value the value to be printed
-     *  @return string representing the value*/
-    static QString printValue( double value );
-
-    /** \brief Convert block of data from one type to another. Original block memory
-     *         is not release.
-     *  @param srcData source data
-     *  @param srcDataType source data type
-     *  @param destDataType dest data type
-     *  @param size block size (width * height)
-     *  @return block of data in destDataType */
-    static void * convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size ) /Factory/;
-
-  protected:
-    /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
+    /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+     * @return true if statistics are available (ready to use)
      */
-    static bool valueInRange( double value, QList<QgsRasterInterface::Range> rangeList );
+    virtual bool hasStatistics( int theBandNo,
+                                int theStats = QgsRasterBandStats::All,
+                                const QgsRectangle & theExtent = QgsRectangle(),
+                                int theSampleSize = 0 );
+
+
+    /** \brief Get histogram. Histograms are cached in providers.
+     * @param theBandNo The band (number).
+     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
+     * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
+     * @param theMaximum Maximum value, if NaN, raster minimum value will be used.
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @param theIncludeOutOfRange include out of range values
+     * @return Vector of non NULL cell counts for each bin.
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
+    virtual QgsRasterHistogram histogram( int theBandNo,
+                                          int theBinCount,
+                                          double theMinimum,
+                                          double theMaximum,
+                                          const QgsRectangle & theExtent,
+                                          int theSampleSize,
+                                          bool theIncludeOutOfRange );
+                                          
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()    
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
+    virtual bool hasHistogram( int theBandNo,
+                               int theBinCount,
+                               double theMinimum,   
+                               double theMaximum,                              
+                               const QgsRectangle & theExtent,
+                               int theSampleSize,
+                               bool theIncludeOutOfRange );
+
+    /** \brief Find values for cumulative pixel count cut.
+     * @param theBandNo The band (number).
+     * @param theLowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
+     * @param theUpperCount The upper count as fraction of 1, e.g. 0.98 = 98%
+     * @param theLowerValue Location into which the lower value will be set.
+     * @param theUpperValue  Location into which the upper value will be set.
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     */
+    virtual void cumulativeCut( int theBandNo,
+                                double theLowerCount,
+                                double theUpperCount,
+                                double &theLowerValue,
+                                double &theUpperValue,
+                                const QgsRectangle & theExtent = QgsRectangle(),
+                                int theSampleSize = 0 );
+
 };
 

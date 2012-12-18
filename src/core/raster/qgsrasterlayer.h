@@ -309,10 +309,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
-    static QLibrary* loadProviderLibrary( QString theProviderKey );
-    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
-
-
     /** \brief  Accessor for blue band name mapping */
     QString blueBandName() const { return mBlueBandName; }
 
@@ -407,30 +403,30 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       @note python bindings not available
       */
-    void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
+    //void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       @note python bindings not available
       */
-    void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
+    //void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
       \note added in v1.6 */
-    void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
+    //void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       @note python bindings not available
       */
-    void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
 
     /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       @note python bindings not available
       */
-    void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
+    //void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
-    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
+    //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
@@ -468,20 +464,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString drawingStyleAsString() const;
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
     /** \brief Identify raster value(s) found on the point position
       * @note available in python bindings as identifyMap
       */
-    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<int, QString>& results );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position */
-    QString identifyAsText( const QgsPoint & point );
+    //QString identifyAsText( const QgsPoint & point );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      * @note added in 1.5
      */
-    QString identifyAsHtml( const QgsPoint & point );
+    //QString identifyAsHtml( const QgsPoint & point );
 
     /** \brief Currently returns always false */
     bool isEditable() const;
@@ -782,7 +778,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Allocate memory and load data to that allocated memory */
     //void* readData( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
-    void* readData( int bandNo, QgsRasterViewPort *viewPort );
+    //void* readData( int bandNo, QgsRasterViewPort *viewPort );
 
     /** \brief Load the given raster file */
     bool readFile( const QString & fileName );

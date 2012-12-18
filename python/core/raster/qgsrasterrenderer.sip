@@ -1,3 +1,4 @@
+
 class QgsRasterRenderer : QgsRasterInterface
 {
 %TypeHeaderCode
@@ -33,27 +34,24 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual QgsRasterBlock * block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 
     bool usesTransparency() const;
 
     void setOpacity( double opacity );
     double opacity() const;
 
-    void setRasterTransparency( QgsRasterTransparency* t );
+    void setRasterTransparency( QgsRasterTransparency* t /Transfer/);
     const QgsRasterTransparency* rasterTransparency() const;
 
     void setAlphaBand( int band );
     int alphaBand() const;
-
-    void setInvertColor( bool invert );
-    bool invertColor() const;
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;

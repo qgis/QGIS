@@ -148,8 +148,13 @@ class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem
     void setLayerID( const QString& id ) { mLayerID = id; }
     QString layerID() const { return mLayerID; }
 
+    void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
+    bool showFeatureCount() const { return mShowFeatureCount; }
+
   private:
     QString mLayerID;
+    // Show vector feature counts
+    bool mShowFeatureCount;
 };
 
 class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem

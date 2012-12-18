@@ -158,7 +158,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 
   dock->setWidget( tws );
 
-  connect( dock->toggleViewAction(), SIGNAL( triggered( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
+  connect( dock, SIGNAL( visibilityChanged( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
 
   QSettings settings;
   dock->setVisible( settings.value( "/UI/tileScaleEnabled", false ).toBool() );

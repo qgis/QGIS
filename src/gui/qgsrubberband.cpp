@@ -27,14 +27,21 @@
   \brief The QgsRubberBand class provides a transparent overlay widget
   for tracking the mouse while drawing polylines or polygons.
 */
-QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
+QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType )
     : QgsMapCanvasItem( mapCanvas )
-    , mIsPolygon( isPolygon )
+    , mWidth( 1 )
+    , mGeometryType( geometryType )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
-  reset( isPolygon );
+  reset( geometryType );
   setColor( QColor( Qt::lightGray ) );
+}
+
+QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
+    : QgsMapCanvasItem( mapCanvas )
+{
+  QgsRubberBand( mapCanvas, isPolygon ? QGis::Polygon : QGis::Line );
 }
 
 QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
@@ -61,16 +68,24 @@ void QgsRubberBand::setColor( const QColor & color )
   */
 void QgsRubberBand::setWidth( int width )
 {
-  mPen.setWidth( width );
+  mWidth = width;
 }
 
 /*!
   Remove all points from the shape being created.
   */
+void QgsRubberBand::reset( QGis::GeometryType geometryType )
+{
+  mPoints.clear();
+  mGeometryType = geometryType;
+  updateRect();
+  update();
+}
+
 void QgsRubberBand::reset( bool isPolygon )
 {
   mPoints.clear();
-  mIsPolygon = isPolygon;
+  mGeometryType = isPolygon ? QGis::Polygon : QGis::Line;
   updateRect();
   update();
 }
@@ -170,7 +185,7 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 
 void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
 {
-  reset( mIsPolygon );
+  reset( mGeometryType );
   addGeometry( geom, layer );
 }
 
@@ -196,7 +211,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBPoint:
     case QGis::WKBPoint25D:
     {
-      mIsPolygon = true;
       double d = mMapCanvas->extent().width() * 0.005;
       QgsPoint pt;
       if ( layer )
@@ -217,7 +231,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
     {
-      mIsPolygon = true;
       double d = mMapCanvas->extent().width() * 0.005;
       QgsMultiPoint mpt = geom->asMultiPoint();
       for ( int i = 0; i < mpt.size(); ++i, ++idx )
@@ -244,7 +257,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
     {
-      mIsPolygon = false;
       QgsPolyline line = geom->asPolyline();
       for ( int i = 0; i < line.count(); i++ )
       {
@@ -263,13 +275,18 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
     {
-      mIsPolygon = false;
       mPoints.clear();
 
       QgsMultiPolyline mline = geom->asMultiPolyline();
       for ( int i = 0; i < mline.size(); ++i, ++idx )
       {
         QgsPolyline line = mline[i];
+
+        if ( line.size() == 0 )
+        {
+          --idx;
+        }
+
         for ( int j = 0; j < line.size(); ++j )
         {
           if ( layer )
@@ -288,7 +305,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
     {
-      mIsPolygon = true;
       QgsPolygon poly = geom->asPolygon();
       QgsPolyline line = poly[0];
       for ( int i = 0; i < line.count(); i++ )
@@ -308,7 +324,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
     {
-      mIsPolygon = true;
       mPoints.clear();
 
       QgsMultiPolygon multipoly = geom->asMultiPolygon();
@@ -351,7 +366,7 @@ void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
   QgsPoint ll = transform->toMapCoordinates( rect.left(), rect.bottom() );
   QgsPoint ur = transform->toMapCoordinates( rect.right(), rect.top() );
 
-  reset( true );
+  reset( QGis::Polygon );
   addPoint( ll, false );
   addPoint( QgsPoint( ur.x(), ll.y() ), false );
   addPoint( ur, false );
@@ -366,25 +381,47 @@ void QgsRubberBand::paint( QPainter* p )
   QList<QgsPoint> currentList;
   if ( mPoints.size() > 0 )
   {
-    p->setPen( mPen );
     p->setBrush( mBrush );
 
     for ( int i = 0; i < mPoints.size(); ++i )
     {
-      QPolygonF pts;
+      QVector<QPointF> pts;
       QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
         pts.append( toCanvasCoordinates( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos() );
       }
 
-      if ( mIsPolygon )
+      switch ( mGeometryType )
       {
-        p->drawPolygon( pts );
-      }
-      else
-      {
-        p->drawPolyline( pts );
+        case QGis::Polygon:
+        {
+          mPen.setWidth( mWidth );
+          p->setPen( mPen );
+          p->drawPolygon( pts );
+        }
+        break;
+
+        case QGis::Point:
+        {
+          mPen.setWidth( 1 );
+          p->setPen( mPen );
+          QVector<QPointF>::const_iterator ptIt = pts.constBegin();
+          for( ; ptIt != pts.constEnd(); ++ptIt )
+          {
+            p->drawEllipse( (*ptIt).x() - mWidth/2, (*ptIt).y() - mWidth/2, mWidth, mWidth );
+          }
+        }
+        break;
+
+        case QGis::Line:
+        default:
+        {
+          mPen.setWidth( mWidth );
+          p->setPen( mPen );
+          p->drawPolyline( pts );
+        }
+        break;
       }
     }
   }
@@ -458,34 +495,55 @@ const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
 QgsGeometry *QgsRubberBand::asGeometry()
 {
   QgsGeometry *geom = NULL;
-  if ( mIsPolygon )
+
+  switch( mGeometryType )
   {
-    QgsPolygon polygon;
-    QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
-    for ( ; it != mPoints.constEnd(); ++it )
+    case QGis::Polygon:
     {
-      polygon.append( getPolyline( *it ) );
+      QgsPolygon polygon;
+      QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
+      for ( ; it != mPoints.constEnd(); ++it )
+      {
+        polygon.append( getPolyline( *it ) );
+      }
+      geom = QgsGeometry::fromPolygon( polygon );
+      break;
     }
-    geom = QgsGeometry::fromPolygon( polygon );
-  }
-  else
-  {
-    if ( mPoints.size() > 0 )
+
+    case QGis::Point:
     {
-      if ( mPoints.size() > 1 )
+      QgsMultiPoint multiPoint;
+
+      QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
+      for ( ; it != mPoints.constEnd(); ++it )
       {
-        QgsMultiPolyline multiPolyline;
-        QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
-        for ( ; it != mPoints.constEnd(); ++it )
+        multiPoint += getPolyline( *it );
+      }
+      geom = QgsGeometry::fromMultiPoint( multiPoint );
+      break;
+    }
+
+    case QGis::Line:
+    default:
+    {
+      if ( mPoints.size() > 0 )
+      {
+        if ( mPoints.size() > 1 )
         {
-          multiPolyline.append( getPolyline( *it ) );
+          QgsMultiPolyline multiPolyline;
+          QList< QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
+          for ( ; it != mPoints.constEnd(); ++it )
+          {
+            multiPolyline.append( getPolyline( *it ) );
+          }
+          geom = QgsGeometry::fromMultiPolyline( multiPolyline );
         }
-        geom = QgsGeometry::fromMultiPolyline( multiPolyline );
+        else
+        {
+          geom = QgsGeometry::fromPolyline( getPolyline( mPoints[0] ) );
+        }
       }
-      else
-      {
-        geom = QgsGeometry::fromPolyline( getPolyline( mPoints[0] ) );
-      }
+      break;
     }
   }
   return geom;

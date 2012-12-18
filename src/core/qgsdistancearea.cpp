@@ -543,16 +543,15 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
         if ( perimeter )
         {
-          *perimeter += measureLine( points );
+          if ( idx == 0 )
+          {
+            // exterior ring
+            *perimeter += measureLine( points );
+          }
         }
       }
 
       points.clear();
-
-      if ( !area )
-      {
-        break;
-      }
     }
   }
   catch ( QgsCsException &cse )

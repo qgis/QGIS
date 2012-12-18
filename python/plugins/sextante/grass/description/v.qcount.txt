@@ -1,8 +1,8 @@
 v.qcount
-v.qcount - Indices for quadrat counts of sites lists.
+v.qcount - Indices for quadrant counts of sites lists.
 Vector (v.*)
-ParameterVector|input|Vector of points defining sample points|0|False
-ParameterNumber|n|Number of quadrats|0|None|4
+ParameterVector|input|Vector points layer|0|False
+ParameterNumber|n|Number of quadrants|0|None|4
 ParameterNumber|r|Quadrat radius|0.0|None|10
-OutputVector|output|Output quadrant centres, number of points is written as category
+OutputVector|output|Output quadrant layer
 

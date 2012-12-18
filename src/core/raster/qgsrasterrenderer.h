@@ -56,6 +56,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
       MinMaxExact           = 1 << 7
     };
 
+    static const QRgb NODATA_COLOR;
+
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
@@ -63,17 +65,21 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input );
 
+#if 0
     virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
     }
+#endif
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     bool usesTransparency() const;
 
@@ -86,8 +92,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    void setInvertColor( bool invert ) { mInvertColor = invert; }
-    bool invertColor() const { return mInvertColor; }
+    //void setInvertColor( bool invert ) { mInvertColor = invert; }
+    //bool invertColor() const { return mInvertColor; }
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
@@ -118,10 +124,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
         Default: -1 (not set)*/
     int mAlphaBand;
 
-    bool mInvertColor;
-
-    /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
-    double mMaxOversampling;
+    //bool mInvertColor;
 };
 
 #endif // QGSRASTERRENDERER_H

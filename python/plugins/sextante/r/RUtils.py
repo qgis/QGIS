@@ -48,7 +48,8 @@ class RUtils:
     def RScriptsFolder():
         folder = SextanteConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
         if folder == None:
-            folder = os.path.join(os.path.dirname(__file__), "scripts")
+            #folder = os.path.join(os.path.dirname(__file__), "scripts")
+            folder = SextanteUtils.userFolder() + os.sep + "rscripts"
         mkdir(folder)
 
         return folder

@@ -62,7 +62,8 @@ class QgsAttributeDialog : public QObject
 
     QDialog *mDialog;
     QString mSettingsPath;
-    QList<QWidget *> mpWidgets;
+    // Used to sync multiple widgets for the same field
+    QMap<int, QWidget*> mProxyWidgets;
     QgsVectorLayer *mLayer;
     QgsFeature *mFeature;
     bool mFeatureOwner;

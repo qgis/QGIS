@@ -43,8 +43,8 @@ class information(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "information"
-        self.group = "Miscellaneous"
+        self.name = "Information"
+        self.group = "[GDAL] Miscellaneous"
         self.addParameter(ParameterRaster(information.INPUT, "Input layer", False))
         self.addParameter(ParameterBoolean(information.NOGCP, "Suppress GCP info", False))
         self.addParameter(ParameterBoolean(information.NOMETADATA, "Suppress metadata info", False))

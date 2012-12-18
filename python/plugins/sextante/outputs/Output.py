@@ -58,7 +58,7 @@ class Output(object):
 
     def setValue(self, value):
         try:
-            if value != None:
+            if value != None and isinstance(value, basestring):
                 value = value.strip()
             self.value = value
             return True

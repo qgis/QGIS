@@ -103,12 +103,12 @@ template <TYPE>
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, sipClass_TYPE, state);
+      sipReleaseMappedType(t, qvector_qgspoint, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseInstance(t, sipClass_TYPE, state);
+    sipReleaseMappedType(t, qvector_qgspoint, state);
   }
 
   *sipCppPtr = ql;
@@ -185,12 +185,12 @@ template <TYPE>
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, sipClass_TYPE, state);
+      sipReleaseMappedType(t, qvector_qgspoint, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseInstance(t, sipClass_TYPE, state);
+    sipReleaseMappedType(t, qvector_qgspoint, state);
   }
 
   *sipCppPtr = ql;
@@ -261,12 +261,12 @@ template <TYPE>
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, sipClass_TYPE, state);
+      sipReleaseMappedType(t, qlist_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseInstance(t, sipClass_TYPE, state);
+    sipReleaseMappedType(t, qlist_type, state);
   }
 
   *sipCppPtr = ql;
@@ -571,6 +571,12 @@ template<TYPE>
 
 %ConvertToTypeCode
   PyObject *kobj, *tobj, *kobj2, *tobj2;
+  Py_ssize_t i = 0;
+
+  //TODO: it works using SIP
+#if (SIP_VERSION >= 0x041200)
+  const sipMappedType* qmap2 = sipFindMappedType("QMap<int, TYPE>");
+#endif
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -578,31 +584,50 @@ template<TYPE>
     if (!PyDict_Check(sipPy))
       return 0;
 
-    Py_ssize_t i = 0;
     while (PyDict_Next(sipPy, &i, &kobj, &tobj))
     {
       if (!PyDict_Check(tobj))
         return 0;
 
+#if (SIP_VERSION >= 0x041200)
+      if (!sipCanConvertToMappedType(tobj, qmap2, SIP_NOT_NONE))
+        return 0;
+#else
       Py_ssize_t j = 0;
       while (PyDict_Next(tobj, &j, &kobj2, &tobj2))
       {
         if (!sipCanConvertToInstance(tobj2, sipClass_TYPE, SIP_NOT_NONE))
           return 0;
       }
-
+#endif
     }
     return 1;
   }
 
   QMap<qint64, QMap<int, TYPE> > *qm = new QMap<qint64, QMap<int, TYPE> >;
 
-
-  Py_ssize_t i = 0;
   while (PyDict_Next(sipPy, &i, &kobj, &tobj))
   {
     qint64 k = PyLong_AsLongLong(kobj);
 
+#if (SIP_VERSION >= 0x041200)
+    // TODO: search for the minimum SIP version this code works on, it works
+    // on SIP 4.13.3 (GS). See #else to know why the version check is needed.
+
+    int state;
+
+    TYPE* t = reinterpret_cast<TYPE*>(sipConvertToMappedType(tobj, qmap2, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
+
+    if (*sipIsErr)
+    {
+      sipReleaseMappedType(t, qmap2, state);
+      delete qm;
+      return 0;
+    }
+
+    qm.insert(k, *t);
+    sipReleaseMappedType(t, qmap2, state);
+#else
     // using sipConvertToMappedType to convert directly to QMap<int, TYPE> doesn't work
     // and ends with a segfault
 
@@ -614,19 +639,20 @@ template<TYPE>
       int k2 = PyInt_AsLong(kobj2);
       int state;
 
-      TYPE* fa = reinterpret_cast<TYPE*>(sipConvertToInstance(tobj2, sipClass_TYPE, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
+      TYPE* t2 = reinterpret_cast<TYPE*>(sipConvertToInstance(tobj2, sipClass_TYPE, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
 
       if (*sipIsErr)
       {
-        sipReleaseInstance(tobj2, sipClass_TYPE, state);
+        sipReleaseInstance(t2, sipClass_TYPE, state);
         delete qm;
         return 0;
       }
 
-      qm2.insert(k2, *fa);
-      sipReleaseInstance(tobj2, sipClass_TYPE, state);
+      qm2.insert(k2, *t2);
+      sipReleaseInstance(t2, sipClass_TYPE, state);
     }
     qm->insert(k, qm2);
+#endif
   }
 
   *sipCppPtr = qm;
@@ -703,16 +729,17 @@ template<TYPE>
   {
     int state;
     qint64 k = PyLong_AsLongLong(kobj);
-    QgsGeometry * fa = reinterpret_cast<QgsGeometry*>(sipConvertToInstance(tobj, sipClass_QgsGeometry, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
+    QgsGeometry * t = reinterpret_cast<QgsGeometry*>(sipConvertToInstance(tobj, sipClass_QgsGeometry, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(tobj, sipClass_QgsGeometry, state);
+      sipReleaseInstance(t, sipClass_QgsGeometry, state);
       delete qm;
       return 0;
     }
 
-    qm->insert(k, *fa);
+    qm->insert(k, *t);
+    sipReleaseInstance(t, sipClass_QgsGeometry, state);
   }
 
   *sipCppPtr = qm;

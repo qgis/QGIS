@@ -152,7 +152,7 @@ class ParametersPanel(QtGui.QWidget):
                 widget = OutputSelectionPanel(output,self.alg)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                     check = QtGui.QCheckBox()
                     check.setText("Open output file after running algorithm")
                     check.setChecked(True)
@@ -275,7 +275,7 @@ class ParametersPanel(QtGui.QWidget):
             opts = []
             for opt in options:
                 opts.append(opt.name())
-            item = MultipleInputPanel(opts)
+            item = MultipleInputPanel(opts, param.datatype)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):

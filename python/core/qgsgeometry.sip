@@ -14,7 +14,12 @@ typedef QVector< QVector<QgsPoint> > QgsMultiPolyline;
 /** a collection of QgsPolygons that share a common collection of attributes */
 typedef QVector< QVector< QVector<QgsPoint> > > QgsMultiPolygon;
 
+%If (WS_MACX)
+typedef unsigned long size_t;
+%End
+%If (WS_X11 || WS_WIN)
 typedef unsigned int size_t;
+%End
 
 class QgsGeometry
 {

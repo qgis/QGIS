@@ -31,18 +31,21 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   public:
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
     QgsRasterInterface * clone() const;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
-    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock * block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /**Returns number of colors*/
     int nColors() const { return mNColors; }
     /**Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
+    /**Returns copy of rgb array (caller takes ownership)*/
+    QRgb* rgbArray() const;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
@@ -51,9 +54,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QList<int> usesBands() const;
 
   private:
-    int mBandNumber;
+    int mBand;
     /**Color array*/
-    QColor* mColors;
+    QRgb* mColors;
     /**Number of colors*/
     int mNColors;
 };

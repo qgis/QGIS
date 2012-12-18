@@ -19,7 +19,8 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include "../qgisplugin.h"
+#include "qgsconfig.h"
+#include "qgisplugin.h"
 #include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
 #include <QObject>
@@ -27,8 +28,16 @@
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
-//#include <osgEarthUtil/Controls>
+#ifndef HAVE_OSGEARTHQT //use backported controls if osgEarth <= 2.1
+#define USE_BACKPORTED_CONTROLS
+#endif
+#ifdef USE_BACKPORTED_CONTROLS
 #include "osgEarthUtil/Controls"
+using namespace osgEarth::Util::Controls21;
+#else
+#include <osgEarthUtil/Controls>
+using namespace osgEarth::Util::Controls;
+#endif
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
 
@@ -52,6 +61,8 @@ class GlobePlugin : public QObject, public QgisPlugin
     void run();
     //! Show the settings dialog box
     void settings();
+    //!  Reset globe
+    void reset();
     //! unload the plugin
     void unload();
     //! show the help document
@@ -86,7 +97,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     double getSelectedLat();
     //! get elevation of user right click
     double getSelectedElevation();
-
 
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
@@ -125,7 +135,7 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarth::Util::Controls21::ControlCanvas* mControlCanvas;
+    ControlCanvas* mControlCanvas;
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
@@ -192,7 +202,11 @@ namespace osgEarth
 {
   namespace Util
   {
+#ifdef USE_BACKPORTED_CONTROLS
     namespace Controls21
+#else
+    namespace Controls
+#endif
     {
       class NavigationControlHandler : public ControlEventHandler
       {

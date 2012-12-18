@@ -72,7 +72,7 @@ class QgsRubberSelectId
     QgsRubberBand* mRubberBand;
     int mColorRGB[3];
     int mWidth;
-    bool mIsPolygon;
+    QGis::GeometryType mGeometryType;
     QgsMapCanvas* mMapCanvas;
 };
 

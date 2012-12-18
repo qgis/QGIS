@@ -60,6 +60,17 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
+
+#define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
+#define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
+
 static QString WCS_KEY = "wcs";
 static QString WCS_DESCRIPTION = "OGC Web Coverage Service version 1.0/1.1 data provider";
 
@@ -117,7 +128,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // 1.0 get additional coverage info
   if ( !mCapabilities.describeCoverage( mIdentifier ) )
   {
-    QgsMessageLog::logMessage( tr( "Cannot describe coverage" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Cannot describe coverage" ) ) );
     return;
   }
 
@@ -125,7 +136,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   if ( !mCoverageSummary.valid )
   {
     // Should not happen if describeCoverage() did not fail
-    QgsMessageLog::logMessage( tr( "Coverage not found" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Coverage not found" ) ) );
     return;
   }
 
@@ -182,7 +193,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   if ( !calculateExtent() )
   {
-    QgsMessageLog::logMessage( tr( "Cannot calculate extent" ), tr( "WCS" ) );
+    appendError( ERR( tr( "Cannot calculate extent" ) ) );
     return;
   }
 
@@ -239,7 +250,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   if ( !mCachedGdalDataset )
   {
-    QgsMessageLog::logMessage( tr( "Cannot get test dataset." ), tr( "WCS" ) );
+    setError( mCachedError );
+    appendError( ERR( tr( "Cannot get test dataset." ) ) );
     return;
   }
 
@@ -307,23 +319,23 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     double myInternalNoDataValue;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterDataProvider::Byte:
+      case QGis::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterDataProvider::Int16:
+      case QGis::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::UInt16:
+      case QGis::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterDataProvider::Int32:
+      case QGis::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterDataProvider::UInt32:
+      case QGis::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -503,7 +515,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   QgsDebugMsg( "Entered" );
 
   // TODO: set block to null values, move that to function and call only if fails
-  memset( block, 0, pixelWidth * pixelHeight * typeSize( dataType( bandNo ) ) / 8 );
+  memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
 
   // Requested extent must at least partialy overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
@@ -579,7 +591,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
       QgsDebugMsg( tr( "Rotating raster" ) );
-      int pixelSize = typeSize( dataType( bandNo ) ) / 8;
+      int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
@@ -871,9 +883,9 @@ void QgsWcsProvider::cacheReplyFinished()
             contentType.startsWith( "application/vnd.ogc.se_xml", Qt::CaseInsensitive ) )
           && parseServiceExceptionReportDom( text ) )
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
-                                   .arg( mErrorCaption ).arg( mError )
-                                   .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+        mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" )
+                                     .arg( mErrorCaption ).arg( mError )
+                                     .arg( mCacheReply->url().toString() ) ) );
       }
       else
       {
@@ -1128,21 +1140,21 @@ void QgsWcsProvider::cacheReplyFinished()
 }
 
 // This could be shared with GDAL provider
-QgsRasterInterface::DataType QgsWcsProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsWcsProvider::srcDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return QgsRasterDataProvider::UnknownDataType;
+    return QGis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
-QgsRasterInterface::DataType QgsWcsProvider::dataType( int bandNo ) const
+QGis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {
-    return QgsRasterDataProvider::UnknownDataType;
+    return QGis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
@@ -1186,6 +1198,7 @@ void QgsWcsProvider::clearCache()
   }
   QgsDebugMsg( "Clear mCachedData" );
   mCachedData.clear();
+  mCachedError.clear();
   QgsDebugMsg( "Cleared" );
 }
 
@@ -1456,6 +1469,7 @@ bool QgsWcsProvider::calculateExtent()
   else
   {
     QgsDebugMsg( "Cannot get cache to verify extent" );
+    setError( mCachedError );
     return false;
   }
 
@@ -1467,6 +1481,7 @@ int QgsWcsProvider::capabilities() const
 {
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
+  capability |= QgsRasterDataProvider::IdentifyValue;
   capability |= QgsRasterDataProvider::Histogram;
 
   if ( mHasSize )
@@ -1633,56 +1648,67 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
+QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entered" );
-  QMap<int, void *> results;
+  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
+  QgsDebugMsg( "theExtent = " + theExtent.toString() );
+  QMap<int, QVariant> results;
+
+  if ( theFormat != IdentifyFormatValue ) return results;
 
   if ( !extent().contains( thePoint ) )
   {
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
-      writeValue( data, dataType( i ), 0, noDataValue( i ) );
-      results.insert( i, data );
+      results.insert( i, noDataValue( i ) );
     }
     return results;
   }
 
-  // It would be nice to use last cached block if possible, unfortunately we don't know
-  // at which resolution identify() is called. It may happen, that user zoomed in with
-  // layer switched off, canvas resolution increased, but provider cache was not refreshed.
-  // In that case the resolution is too low and identify() could give wron results.
-  // So we have to read always a block of data around the point on highest resolution
-  // if not already cached.
-  // TODO: change provider identify() prototype to pass also the resolution
-
-  int width, height;
-  if ( mHasSize )
+  QgsRectangle myExtent = theExtent;
+  int maxSize = 2000;
+  // if context size is to large we have to cut it, in that case caching big
+  // big part does not make sense
+  if ( myExtent.isEmpty() || theWidth == 0 || theHeight == 0 ||
+       theWidth > maxSize || theHeight > maxSize )
   {
-    width = mWidth;
-    height = mHeight;
+    // context missing, use an area around the point and highest resolution if known
+
+    // 1000 is bad in any case, either not precise or too much data requests
+    if ( theWidth == 0 ) theWidth = mHasSize ? mWidth : 1000;
+    if ( theHeight == 0 ) theHeight = mHasSize ? mHeight : 1000;
+
+    if ( myExtent.isEmpty() )  myExtent = extent();
+
+    double xRes = myExtent.width() / theWidth;
+    double yRes = myExtent.height() / theHeight;
+
+    if ( !mCachedGdalDataset ||
+         !mCachedViewExtent.contains( thePoint ) ||
+         mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
+         mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
+         mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
+    {
+      int half = 50;
+      QgsRectangle extent( thePoint.x() - xRes * half, thePoint.y() - yRes * half,
+                           thePoint.x() + xRes * half, thePoint.y() + yRes * half );
+      getCache( 1, extent, 2*half, 2*half );
+
+    }
   }
   else
   {
-    // Bad in any case, either not precise or too much data requests
-    width = height = 1000;
-  }
-  double xRes = mCoverageExtent.width() / width;
-  double yRes = mCoverageExtent.height() / height;
-
-  if ( !mCachedGdalDataset ||
-       !mCachedViewExtent.contains( thePoint ) ||
-       mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
-       mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
-       mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
-  {
-    int half = 50;
-    QgsRectangle extent( thePoint.x() - xRes * half, thePoint.y() - yRes * half,
-                         thePoint.x() + xRes * half, thePoint.y() + yRes * half );
-    getCache( 1, extent, 2*half, 2*half );
-
+    // Use context -> effective caching (usually, if context is constant)
+    QgsDebugMsg( "Using context extent and resolution" );
+    if ( !mCachedGdalDataset ||
+         mCachedViewExtent != theExtent ||
+         mCachedViewWidth != theWidth ||
+         mCachedViewHeight != theHeight )
+    {
+      getCache( 1, theExtent, theWidth, theHeight );
+    }
   }
 
   if ( !mCachedGdalDataset ||
@@ -1695,8 +1721,8 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   double y = thePoint.y();
 
   // Calculate the row / column where the point falls
-  xRes = ( mCachedViewExtent.xMaximum() - mCachedViewExtent.xMinimum() ) / mCachedViewWidth;
-  yRes = ( mCachedViewExtent.yMaximum() - mCachedViewExtent.yMinimum() ) / mCachedViewHeight;
+  double xRes = mCachedViewExtent.width() / mCachedViewWidth;
+  double yRes = mCachedViewExtent.height() / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
   int col = ( int ) floor(( x - mCachedViewExtent.xMinimum() ) / xRes );
@@ -1708,31 +1734,28 @@ QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
 
-    void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+    double value;
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                               data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
+                               &value, 1, 1, GDT_Float64, 0, 0 );
 
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      results.clear();
+      return results;
     }
 
-    results.insert( i, data );
+    // Apply user no data
+    QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( i );
+    if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+    {
+      value = noDataValue( i );
+    }
+
+    results.insert( i, value );
   }
 
   return results;
-}
-
-QString QgsWcsProvider::identifyAsText( const QgsPoint &point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
-}
-
-QString QgsWcsProvider::identifyAsHtml( const QgsPoint &point )
-{
-  Q_UNUSED( point );
-  return QString( "Not implemented" );
 }
 
 QgsCoordinateReferenceSystem QgsWcsProvider::crs()

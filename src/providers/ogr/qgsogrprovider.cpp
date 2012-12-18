@@ -207,7 +207,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsApplication::registerOgrDrivers();
 
   QSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() ? "" : 0 );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
 
   // make connection to the data source
 
@@ -768,7 +768,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
   {
     // don't try to set field from attribute map if it's not present in layer
-    if ( targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
+    if ( targetAttributeId < 0 || targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
       continue;
 
     //if(!s.isEmpty())
@@ -1536,7 +1536,7 @@ QString createFilters( QString type )
     // This does not work for some file types, see VSIFileHandler doc.
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
-    if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
+    if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
     {
       myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
       myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";

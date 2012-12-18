@@ -37,7 +37,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
 {
   setupUi( this );
   tableWidget->insertRow( 0 );
-  connect( selectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setStackPage( int ) ) );
+  connect( selectionListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setStackPage( int ) ) );
   connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
@@ -454,7 +454,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
-  selectionComboBox->setCurrentIndex( index );
+  selectionListWidget->setCurrentRow( index );
   setStackPage( index );
 }
 
@@ -509,7 +509,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
 void QgsAttributeTypeDialog::accept()
 {
   //store data to output variables
-  switch ( selectionComboBox->currentIndex() )
+  switch ( selectionListWidget->currentRow() )
   {
     default:
     case 0:

@@ -21,10 +21,13 @@
 class CORE_EXPORT QgsRendererRangeV2
 {
   public:
+    QgsRendererRangeV2();
     QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     ~QgsRendererRangeV2();
+
+    QgsRendererRangeV2& operator=( const QgsRendererRangeV2& range );
 
     double lowerValue() const;
     double upperValue() const;
@@ -76,7 +79,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
 
     virtual QgsSymbolV2List symbols();
 
@@ -92,6 +95,13 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     void addClass( QgsSymbolV2* symbol );
     void deleteClass( int idx );
+    void deleteAllClasses();
+
+    //! Moves the category at index position from to index position to.
+    void moveClass( int from, int to );
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+    void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     enum Mode
     {

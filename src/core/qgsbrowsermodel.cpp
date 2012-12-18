@@ -399,3 +399,19 @@ QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
   Q_ASSERT( !v || d );
   return d;
 }
+
+bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+{
+  QgsDataItem* item = dataItem( parent );
+  // if ( item )
+  //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
+  return ( item && ! item->isPopulated() );
+}
+
+void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+{
+  QgsDataItem* item = dataItem( parent );
+  if ( item )
+    item->populate();
+  QgsDebugMsg( "path = " + item->path() );
+}

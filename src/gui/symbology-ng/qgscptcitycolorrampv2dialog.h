@@ -41,6 +41,8 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     QString selectedName() const
     { return mRamp ? QFileInfo( mRamp->schemeName() ).baseName() + mRamp->variantName() : QString(); }
 
+    bool saveAsGradientRamp() const;
+
   public slots:
     void populateVariants();
 
@@ -50,7 +52,6 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     void on_pbtnLicenseDetails_pressed();
     void on_cboVariantName_currentIndexChanged( int index );
     void onFinished();
-
     /* void refresh(); */
 
   protected:

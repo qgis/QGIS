@@ -46,7 +46,10 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Return the relationship between groups and layers in the legend
     QList< GroupLayerInfo > groupLayerRelationship();
 
-    //! Return all layers in the project in legend order
+    //! Returns the currently selected layers of QgsLegendLayers.
+    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false ) const;
+
+    //! Return all layers in the project in drawing order
     QList< QgsMapLayer * > layers() const;
 
     //! Check if a group exists

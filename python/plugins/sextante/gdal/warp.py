@@ -31,6 +31,7 @@ import os
 from qgis.core import *
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.gdal.GdalUtils import GdalUtils
 
 class warp(GeoAlgorithm):
 
@@ -46,8 +47,8 @@ class warp(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "warp"
-        self.group = "Projections"
+        self.name = "Warp (reproject)"
+        self.group = "[GDAL] Projections"
         self.addParameter(ParameterRaster(warp.INPUT, "Input layer", False))
         self.addParameter(ParameterCrs(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "4326"))
         self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "4326"))

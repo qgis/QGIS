@@ -1,0 +1,11 @@
+D-Infinity Avalanche Runout
+dinfavalanche
+Specialized Grid Analysis tools
+ParameterRaster|-ang|D-Infinity Flow Direction Grid|False
+ParameterRaster|-fel|Pit Filled Elevation Grid|False
+ParameterRaster|-ass|Avalanche Source Site Grid|False
+ParameterNumber|-thresh|Proportion Threshold|0.00001|10.0|0.2
+ParameterNumber|-alpha|Alpha Angle Threshold|0|360|18
+ParameterBoolean|-direct|Measure distance along flow path|True
+OutputRaster|-rz|Runout Zone Grid
+OutputRaster|-dfs|Path Distance Grid

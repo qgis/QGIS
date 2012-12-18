@@ -40,11 +40,9 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
 from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
-from sextante.core.SextanteLog import SextanteLog
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -53,6 +51,7 @@ import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtGui
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
+from sextante.core.SextanteLog import SextanteLog
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -92,6 +91,12 @@ class SagaAlgorithm(GeoAlgorithm):
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
         self.name = line
+        if "|" in self.name:
+            tokens = self.name.split("|")
+            self.name = tokens[0]
+            self.cmdname = tokens[1]
+        else:
+            self.cmdname = self.name
         line = lines.readline().strip("\n").strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
@@ -226,9 +231,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
         #2: set parameters and outputs
         if SextanteUtils.isWindows():
-            command = self.undecoratedGroup  + " \"" + self.name + "\""
+            command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
-            command = "lib" + self.undecoratedGroup  + " \"" + self.name + "\""
+            command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
 
         for param in self.parameters:
             if param.value is None:
@@ -238,7 +243,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
-                    command+=(" -" + param.name + " " + value)
+                    command+=(" -" + param.name + " \"" + value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
@@ -251,16 +256,19 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile  = SextanteUtils.getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
-                values = param.value.split(",")                
+                values = param.value.split(",")
                 for i in range(0, len(values), 3):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)
                 f.close()
-                command+=( " -" + param.name + " " + tempTableFile)
+                command+=( " -" + param.name + " \"" + tempTableFile + "\"")
             elif isinstance(param, ParameterExtent):
+                #'we have to substract/add half cell size, since saga is center based, not corner based
+                halfcell = self.getOutputCellsize() / 2
+                offset = [halfcell, -halfcell, halfcell, -halfcell]
                 values = param.value.split(",")
                 for i in range(4):
-                    command+=(" -" + self.extentParamNames[i] + " " + str(values[i]));
+                    command+=(" -" + self.extentParamNames[i] + " " + str(float(values[i]) + offset[i]));
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 command+=(" -" + param.name + " " + str(param.value));
             else:
@@ -309,6 +317,16 @@ class SagaAlgorithm(GeoAlgorithm):
         if SextanteConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
+
+
+    def getOutputCellsize(self):
+        '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
+        cellsize = 0;
+        for param in self.parameters:
+            if param.value is not None and param.name == "USER_SIZE":
+                cellsize = float(param.value)
+                break;
+        return cellsize
 
 
     def resampleRasterLayer(self,layer):

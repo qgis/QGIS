@@ -61,8 +61,6 @@
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
-%Include qgsrasterdataprovider.sip
-%Include qgsrasterprojector.sip
 %Include qgsrectangle.sip
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
@@ -133,7 +131,9 @@
 %Include raster/qgslinearminmaxenhancementwithclip.sip
 %Include raster/qgspseudocolorshader.sip
 %Include raster/qgsrasterbandstats.sip
+%Include raster/qgsrasterblock.sip
 %Include raster/qgsrasterchecker.sip
+%Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterfilewriter.sip
 %Include raster/qgsrasterhistogram.sip
 %Include raster/qgsrasterinterface.sip
@@ -141,6 +141,7 @@
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
+%Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
 %Include raster/qgsrasterrenderer.sip
 %Include raster/qgsrasterresamplefilter.sip

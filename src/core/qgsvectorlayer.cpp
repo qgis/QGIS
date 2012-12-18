@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QString>
 #include <QDomNode>
@@ -105,6 +106,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
+    , mSymbolFeatureCounted( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -1451,8 +1453,6 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   return retval;
 }
 
-
-
 long QgsVectorLayer::featureCount() const
 {
   if ( !mDataProvider )
@@ -1462,6 +1462,82 @@ long QgsVectorLayer::featureCount() const
   }
 
   return mDataProvider->featureCount();
+}
+
+long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
+{
+  if ( !mSymbolFeatureCounted ) return -1;
+  return mSymbolFeatureCountMap.value( symbol );
+}
+
+bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+{
+  if ( mSymbolFeatureCounted ) return true;
+  mSymbolFeatureCountMap.clear();
+
+  if ( !mDataProvider )
+  {
+    QgsDebugMsg( "invoked with null mDataProvider" );
+    return false;
+  }
+  if ( !mRendererV2 )
+  {
+    QgsDebugMsg( "invoked with null mRendererV2" );
+    return false;
+  }
+
+  QgsLegendSymbolList symbolList = mRendererV2->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
+
+  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  {
+    mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
+  }
+
+  long nFeatures = pendingFeatureCount();
+  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+  progressDialog.setWindowModality( Qt::WindowModal );
+  int featuresCounted = 0;
+
+  select( pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeature f;
+
+  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
+  QgsRenderContext renderContext;
+  renderContext.setRendererScale( 0 );
+  mRendererV2->startRender( renderContext, this );
+
+  while ( nextFeature( f ) )
+  {
+    QgsSymbolV2List featureSymbolList = mRendererV2->symbolsForFeature( f );
+    for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
+    {
+      mSymbolFeatureCountMap[*symbolIt] += 1;
+    }
+    ++featuresCounted;
+
+    if ( showProgress )
+    {
+      if ( featuresCounted % 50 == 0 )
+      {
+        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
+        {
+          progressDialog.setMaximum( 0 );
+        }
+        progressDialog.setValue( featuresCounted );
+        if ( progressDialog.wasCanceled() )
+        {
+          mSymbolFeatureCountMap.clear();
+          mRendererV2->stopRender( renderContext );
+          return false;
+        }
+      }
+    }
+  }
+  mRendererV2->stopRender( renderContext );
+  progressDialog.setValue( nFeatures );
+  mSymbolFeatureCounted = true;
+  return true;
 }
 
 long QgsVectorLayer::updateFeatureCount() const
@@ -1486,6 +1562,7 @@ QgsRectangle QgsVectorLayer::extent()
     return QgsMapLayer::extent();
 
   QgsRectangle rect;
+  rect.setMinimal();
 
   if ( !hasGeometryType() )
     return rect;
@@ -2519,6 +2596,28 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
+    // tab display
+    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+    if ( editorLayoutNode.isNull() )
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+    else
+    {
+      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+      {
+        mEditorLayout = UiFileLayout;
+      }
+      else if ( editorLayoutNode.toElement().text() == "tablayout" )
+      {
+        mEditorLayout = TabLayout;
+      }
+      else
+      {
+        mEditorLayout = GeneratedLayout;
+      }
+    }
+
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -2698,7 +2797,70 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+
+  //Attributes excluded from WMS and WFS
+  mExcludeAttributesWMS.clear();
+  QDomNode excludeWMSNode = node.namedItem( "excludeAttributesWMS" );
+  if ( !excludeWMSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  mExcludeAttributesWFS.clear();
+  QDomNode excludeWFSNode = node.namedItem( "excludeAttributesWFS" );
+  if ( !excludeWFSNode.isNull() )
+  {
+    QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( "attribute" );
+    for ( int i = 0; i < attributeNodeList.size(); ++i )
+    {
+      mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
+    }
+  }
+
+  // tabs and groups display info
+  mAttributeEditorElements.clear();
+  QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
+  QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
+
+  for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
+  {
+    QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
+
+    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
+    mAttributeEditorElements.append( attributeEditorWidget );
+  }
   return true;
+}
+
+QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
+{
+  QgsAttributeEditorElement* newElement = NULL;
+
+  if ( elem.tagName() == "attributeEditorContainer" )
+  {
+    QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( "name" ), parent );
+
+    QDomNodeList childNodeList = elem.childNodes();
+
+    for ( int i = 0; i < childNodeList.size(); i++ )
+    {
+      QDomElement childElem = childNodeList.at( i ).toElement();
+      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
+      container->addChildElement( myElem );
+    }
+
+    newElement = container;
+  }
+  else if ( elem.tagName() == "attributeEditorField" )
+  {
+    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+  }
+
+  return newElement;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
@@ -2750,6 +2912,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
+
+    // tab display
+    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+    switch ( mEditorLayout )
+    {
+      case UiFileLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+        break;
+
+      case TabLayout:
+        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+        break;
+
+      case GeneratedLayout:
+      default:
+        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+        break;
+    }
+
+    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -2913,6 +3095,44 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     node.appendChild( aliasElem );
   }
 
+  //exclude attributes WMS
+  QDomElement excludeWMSElem = doc.createElement( "excludeAttributesWMS" );
+  QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
+  for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWMSIt );
+    attrElem.appendChild( attrText );
+    excludeWMSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWMSElem );
+
+  //exclude attributes WFS
+  QDomElement excludeWFSElem = doc.createElement( "excludeAttributesWFS" );
+  QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
+  for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
+  {
+    QDomElement attrElem = doc.createElement( "attribute" );
+    QDomText attrText = doc.createTextNode( *attWFSIt );
+    attrElem.appendChild( attrText );
+    excludeWFSElem.appendChild( attrElem );
+  }
+  node.appendChild( excludeWFSElem );
+
+  // tabs and groups of edit form
+  if ( mAttributeEditorElements.size() > 0 )
+  {
+    QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
+
+    for ( QList< QgsAttributeEditorElement* >::const_iterator it = mAttributeEditorElements.begin(); it != mAttributeEditorElements.end(); it++ )
+    {
+      QDomElement attributeEditorWidgetElem = ( *it )->toDomElement( doc );
+      tabsElem.appendChild( attributeEditorWidgetElem );
+    }
+
+    node.appendChild( tabsElem );
+  }
+
   // add attribute actions
   mActions->writeXML( node, doc );
 
@@ -3025,6 +3245,11 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified(); // TODO[MD]: should have a different signal?
+}
+
+void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
+{
+  mAttributeEditorElements.append( data );
 }
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
@@ -3142,6 +3367,13 @@ bool QgsVectorLayer::rollBack()
   }
 
   mEditBuffer->rollBack();
+
+  if ( isModified() )
+  {
+    // new undo stack roll back method
+    // old method of calling every undo could cause many canvas refreshes
+    undoStack()->setIndex( 0 );
+  }
 
   updateFields();
 
@@ -3610,6 +3842,16 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
     mEditTypes[ fields[idx].name()] = type;
 }
 
+QgsVectorLayer::EditorLayout QgsVectorLayer::editorLayout()
+{
+  return mEditorLayout;
+}
+
+void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
+{
+  mEditorLayout = editorLayout;
+}
+
 QString QgsVectorLayer::editForm()
 {
   return mEditForm;
@@ -3724,6 +3966,8 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
       setUsingRendererV2( true );
     delete mRendererV2;
     mRendererV2 = r;
+    mSymbolFeatureCounted = false;
+    mSymbolFeatureCountMap.clear();
   }
 }
 bool QgsVectorLayer::isUsingRendererV2()
@@ -4034,6 +4278,21 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     labeling = true;
   }
 
+  if ( labeling )
+  {
+    // see if feature count limit is set for labeling
+    QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+    if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
+    {
+      select( QgsAttributeList(), rendererContext.extent() );
+      // total number of features that may be labeled
+      QgsFeature ftr;
+      int nFeatsToLabel = 0;
+      while ( nextFeature( ftr ) ) { nFeatsToLabel += 1; }
+      palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+  }
+
   //register diagram layers
   if ( mDiagramRenderer && mDiagramLayerSettings )
   {
@@ -4326,4 +4585,39 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   }
 
   return mValueRelations[fieldName];
+}
+
+QList<QgsAttributeEditorElement*> &QgsVectorLayer::attributeEditorElements()
+{
+  return mAttributeEditorElements;
+}
+
+void QgsVectorLayer::clearAttributeEditorWidgets()
+{
+  mAttributeEditorElements.clear();
+}
+
+QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorContainer" );
+  elem.setAttribute( "name", mName );
+  for ( QList< QgsAttributeEditorElement* >::const_iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    elem.appendChild(( *it )->toDomElement( doc ) );
+  }
+  return elem;
+}
+
+
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
+{
+  mChildren.append( widget );
+}
+
+QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( "attributeEditorField" );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "index", mIdx );
+  return elem;
 }

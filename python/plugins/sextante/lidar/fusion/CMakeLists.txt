@@ -1,3 +1,3 @@
 FILE(GLOB PY_FILES *.py)
 
-INSTALL(FILES ${PY_FILES} DESTINATION ${SEXTANTE_PLUGIN_DIR}/lidar/fusion)
+PLUGIN_INSTALL(sextante ./lidar/fusion ${PY_FILES})

@@ -77,6 +77,8 @@ class QgsFeatureRendererV2
       SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       RotationField = 2,    // rotate symbols by attribute value
       MoreSymbolsPerFeature = 4  // may use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter         = 8,   // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent = 16   // dependends on scale if feature will be rendered (rule based )
     };
 
     //! returns bitwise OR-ed capabilities of the renderer

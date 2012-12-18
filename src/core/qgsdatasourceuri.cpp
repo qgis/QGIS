@@ -149,7 +149,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
         {
           mWkbType = QGis::WKBMultiPoint;
         }
-        else if ( geomTypeUpper == "MULTLINESTRING" )
+        else if ( geomTypeUpper == "MULTILINESTRING" )
         {
           mWkbType = QGis::WKBMultiLineString;
         }
@@ -480,6 +480,10 @@ QString QgsDataSourceURI::connectionInfo() const
   else if ( mHost != "" )
   {
     connectionItems << "host=" + mHost;
+  }
+
+  if ( mService.isEmpty() )
+  {
     if ( mPort != "" )
       connectionItems << "port=" + mPort;
   }

@@ -1,0 +1,11 @@
+diff --git a/grass/description/r.neighbors.txt b/grass/description/r.neighbors.txt
+index 076ad54..5d7017e 100644
+--- a/grass/description/r.neighbors.txt
++++ b/grass/description/r.neighbors.txt
+@@ -5,4 +5,6 @@
+ ParameterSelection|method|Neighborhood operation|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
+ ParameterNumber|size|Neighborhood size|1.0|None|3
+ ParameterBoolean|-c|Use circular neighborhood|False
++*ParameterBoolean|-a|Do not align output with the input|False
++*ParameterFile|weight|File containing weights|False
+ OutputRaster|output|Name for output raster map

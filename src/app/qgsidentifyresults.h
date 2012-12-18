@@ -25,6 +25,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QWebView>
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -113,7 +114,13 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void on_mExpandNewToolButton_toggled( bool checked );
+
+    void on_mExpandToolButton_clicked( bool checked ) { Q_UNUSED( checked ); expandAll(); }
+    void on_mCollapseToolButton_clicked( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
+
     void openUrl( const QUrl &url );
+    void printCurrentItem();
 
   private:
     QMenu *mActionPopup;
@@ -140,5 +147,17 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     QDockWidget *mDock;
 };
+
+class QgsWebView : public QWebView
+{
+    Q_OBJECT;
+  public:
+    QgsWebView( QWidget *parent = 0 );
+  public slots:
+    void print( void );
+  protected:
+    void contextMenuEvent( QContextMenuEvent* );
+};
+
 
 #endif

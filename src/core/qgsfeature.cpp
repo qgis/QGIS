@@ -94,7 +94,7 @@ QgsFeatureId QgsFeature::id() const
 /**Deletes an attribute and its value*/
 void QgsFeature::deleteAttribute( int field )
 {
-  mAttributes[field].clear();
+  mAttributes.remove( field );
 }
 
 

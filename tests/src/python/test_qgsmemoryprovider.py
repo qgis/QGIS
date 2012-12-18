@@ -74,28 +74,40 @@ class TestQgsMemoryProvider(TestCase):
         assert provider.featureCount() == 1, myMessage
 
         for f in provider.getFeatures(QgsFeatureRequest()):
-          attrs = f.attributes()
-          myMessage = ('Expected: %s\nGot: %s\n' %
-                        ("Johny", str(attrs[0].toString())))
+            attrs = f.attributes()
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                          ("Johny", str(attrs[0].toString())))
 
-          assert str(attrs[0].toString()) == "Johny", myMessage
+            assert str(attrs[0].toString()) == "Johny", myMessage
 
-          myMessage = ('Expected: %s\nGot: %s\n' %
-                        (20, attrs[1].toInt()[0]))
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                          (20, attrs[1].toInt()[0]))
 
-          assert attrs[1].toInt()[0] == 20, myMessage
+            assert attrs[1].toInt()[0] == 20, myMessage
 
-          myMessage = ('Expected: %s\nGot: %s\n' %
-                        (0.3, attrs[2].toFloat()[0]))
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                          (0.3, attrs[2].toFloat()[0]))
 
-          assert (attrs[0].toFloat()[0] - 0.3) < 0.0000001, myMessage
+            assert (attrs[0].toFloat()[0] - 0.3) < 0.0000001, myMessage
 
-          geom = f.geometry()
+            geom = f.geometry()
 
-          myMessage = ('Expected: %s\nGot: %s\n' %
+            myMessage = ('Expected: %s\nGot: %s\n' %
                         ("POINT(10.0 10.0)", str(geom.exportToWkt())))
 
-          assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
+            assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
+
+    def testFromUri(self):
+        """Test we can construct the mem provider from a uri"""
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double&index=yes'),
+            'test',
+            'memory')
+
+        assert myMemoryLayer is not None, 'Provider not initialised'
+        myProvider = myMemoryLayer.dataProvider()
+        assert myProvider is not None
 
 if __name__ == '__main__':
     unittest.main()

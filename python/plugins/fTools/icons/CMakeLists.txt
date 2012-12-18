@@ -5,7 +5,8 @@ gis-0.1.svg
 logo.svg
 menu_icons.svg
 )
-INSTALL(FILES ${VECTOR_GRAPHICS_FILES} logo_small.png DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/icons)
+
+PLUGIN_INSTALL(fTools icons ${VECTOR_GRAPHICS_FILES} logo_small.png)
 
 ADD_SUBDIRECTORY(default)
 ADD_SUBDIRECTORY(gis)

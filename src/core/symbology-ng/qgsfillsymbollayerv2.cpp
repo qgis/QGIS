@@ -309,13 +309,9 @@ QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
 {
-  QFile svgFile( svgPath );
-  if ( svgFile.open( QFile::ReadOnly ) )
-  {
-    mSvgData = svgFile.readAll();
+  mSvgData = QgsSvgCache::instance()->getImageData( svgPath );
+  storeViewBox();
 
-    storeViewBox();
-  }
   mSvgFilePath = svgPath;
   setDefaultSvgParams();
 }
@@ -334,7 +330,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   if ( properties.contains( "svgFile" ) )
   {
     QString svgName = properties["svgFile"];
-    QString savePath = QgsSvgMarkerSymbolLayerV2::symbolNameToPath( svgName );
+    QString savePath = QgsSymbolLayerV2Utils::symbolNameToPath( svgName );
     svgFilePath = ( savePath.isEmpty() ? svgName : savePath );
   }
   if ( properties.contains( "angle" ) )
@@ -422,7 +418,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   QgsStringMap map;
   if ( !mSvgFilePath.isEmpty() )
   {
-    map.insert( "svgFile", QgsSvgMarkerSymbolLayerV2::symbolPathToName( mSvgFilePath ) );
+    map.insert( "svgFile", QgsSymbolLayerV2Utils::symbolPathToName( mSvgFilePath ) );
   }
   else
   {

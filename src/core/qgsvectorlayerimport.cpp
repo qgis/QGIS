@@ -121,12 +121,13 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   const QgsAttributes &attrs = feat.attributes();
 
   QgsFeature newFeat;
-  newFeat.setGeometry( *feat.geometry() );
+  if ( feat.geometry() )
+    newFeat.setGeometry( *feat.geometry() );
   newFeat.initAttributes( attrs.count() );
 
   for ( int i = 0; i < attrs.count(); ++i )
   {
-    // add only mapped attributes (un-mapped ones are not present in the
+    // add only mapped attributes (un-mapped ones will not be present in the
     // destination layer)
     if ( mOldToNewAttrIdx.contains( i ) )
     {
@@ -204,7 +205,18 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
 
+  bool overwrite = false;
+  bool forceSinglePartGeom = false;
+  if ( options )
+  {
+    overwrite = options->take( "overwrite" ).toBool();
+    forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
+  }
+
   QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QGis::WkbType wkbType = layer->wkbType();
+
+  // Special handling for Shapefiles
   if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
   {
     // convert field names to lowercase
@@ -212,16 +224,38 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       fields[fldIdx].setName( fields[fldIdx].name().toLower() );
     }
-  }
 
-  bool overwrite = false;
-  if ( options )
-  {
-    overwrite = options->take( "overwrite" ).toBool();
+    if ( !forceSinglePartGeom )
+    {
+      // convert wkbtype to multipart (see #5547)
+      switch ( wkbType )
+      {
+        case QGis::WKBPoint:
+          wkbType = QGis::WKBMultiPoint;
+          break;
+        case QGis::WKBLineString:
+          wkbType = QGis::WKBMultiLineString;
+          break;
+        case QGis::WKBPolygon:
+          wkbType = QGis::WKBMultiPolygon;
+          break;
+        case QGis::WKBPoint25D:
+          wkbType = QGis::WKBMultiPoint25D;
+          break;
+        case QGis::WKBLineString25D:
+          wkbType = QGis::WKBMultiLineString25D;
+          break;
+        case QGis::WKBPolygon25D:
+          wkbType = QGis::WKBMultiPolygon25D;
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, overwrite, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -241,7 +275,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
+  layer->select( allAttr, QgsRectangle(), wkbType != QGis::WKBNoGeometry );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 

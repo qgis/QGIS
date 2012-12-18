@@ -24,9 +24,11 @@
 
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
+#include "qgsdistancearea.h"
+#include "qgsgeometry.h"
 
-class QgsDistanceArea;
 class QgsFeature;
+class QgsGeometry;
 class QDomElement;
 
 /**
@@ -138,7 +140,11 @@ class CORE_EXPORT QgsExpression
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
+    QgsDistanceArea* geomCalculator() { return & mCalc; }
+
+    //! Sets the geometry calculator used in evaluation of expressions,
+    // instead of the default.
+    void setGeomCalculator( QgsDistanceArea& calc );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
@@ -155,8 +161,6 @@ class CORE_EXPORT QgsExpression
     static QString replaceExpressionText( QString action, QgsFeature& feat,
                                           QgsVectorLayer* layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
-    //
-
     enum UnaryOperator
     {
       uoNot,
@@ -194,42 +198,94 @@ class CORE_EXPORT QgsExpression
       // strings
       boConcat,
     };
+    enum SpatialOperator
+    {
+      soBbox,
+      soIntersects,
+      soContains,
+      soCrosses,
+      soEquals,
+      soDisjoint,
+      soOverlaps,
+      soTouches,
+      soWithin,
+    };
 
     static const char* BinaryOperatorText[];
     static const char* UnaryOperatorText[];
 
     static const char* BinaryOgcOperatorText[];
     static const char* UnaryOgcOperatorText[];
+    static const char* SpatialOgcOperatorText[];
 
     typedef QVariant( *FcnEval )( const QVariantList& values, QgsFeature* f, QgsExpression* parent );
 
-    struct FunctionDef
+
+    /**
+      * A abstract base class for defining QgsExpression functions.
+      */
+    class CORE_EXPORT Function
     {
-      FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
-          : mName( fnname ), mParams( params ), mFcn( fcn ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
-      /** The name of the function. */
-      QString mName;
-      /** The number of parameters this function takes. */
-      int mParams;
-      /** Pointer to funntion.
-        * @note not available in python bindings
-         */
-      FcnEval mFcn;
-      /** Does this function use a geometry object. */
-      bool mUsesGeometry;
-      /** The group the function belongs to. */
-      QString mGroup;
-      /** The help text for the function. */
-      QString mHelpText;
+      public:
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false )
+            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
+        /** The name of the function. */
+        QString name() { return mName; }
+        /** The number of parameters this function takes. */
+        int params() { return mParams; }
+        /** Does this function use a geometry object. */
+        bool usesgeometry() { return mUsesGeometry; }
+        /** The group the function belongs to. */
+        QString group() { return mGroup; }
+        /** The help text for the function. */
+        QString helptext() { return mHelpText; }
+
+        virtual QVariant func( const QVariantList& values, QgsFeature* f, QgsExpression* parent ) = 0;
+
+        bool operator==( const Function& other ) const
+        {
+          if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
+            return true;
+
+          return false;
+        }
+
+      private:
+        QString mName;
+        int mParams;
+        bool mUsesGeometry;
+        QString mGroup;
+        QString mHelpText;
     };
 
-    static const QList<FunctionDef> &BuiltinFunctions();
-    static QList<FunctionDef> gmBuiltinFunctions;
+    class StaticFunction : public Function
+    {
+      public:
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
+            : Function( fnname, params, group, helpText, usesGeometry ), mFnc( fcn ) {}
+
+        virtual QVariant func( const QVariantList& values, QgsFeature* f, QgsExpression* parent )
+        {
+          return mFnc( values, f, parent );
+        }
+
+      private:
+        FcnEval mFnc;
+    };
+
+    const static QList<Function*> &Functions();
+    static QList<Function*> gmFunctions;
+
+    static QStringList gmBuiltinFunctions;
+    const static QStringList &BuiltinFunctions();
+
+    static bool registerFunction( Function* function );
+    static bool unregisterFunction( QString name );
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
 
-    // return index of the function in BuiltinFunctions array
+    // return index of the function in Functions array
     static int functionIndex( QString name );
 
     /**  Returns the number of functions defined in the parser
@@ -240,7 +296,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns a list of special Column definitions
      */
-    static QList<FunctionDef> specialColumns();
+    static QList<Function*> specialColumns();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
@@ -302,7 +358,7 @@ class CORE_EXPORT QgsExpression
         static const int HOUR = 60 * 60;
         static const int MINUTE = 60;
       public:
-        Interval( double seconds = 0 ) { mSeconds = seconds; }
+        Interval( double seconds = 0 ): mSeconds(seconds), mValid(true) { }
         ~Interval();
         double years() { return mSeconds / YEARS;}
         double months() { return mSeconds / MONTHS; }
@@ -422,7 +478,7 @@ class CORE_EXPORT QgsExpression
         static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach ( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
         virtual void accept( Visitor& v ) { v.visit( this ); }
 
       protected:
@@ -535,7 +591,7 @@ class CORE_EXPORT QgsExpression
 
   protected:
     // internally used to create an empty expression
-    QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ), mCalc( NULL ) {}
+    QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ) {}
 
     void initGeomCalculator();
 
@@ -549,10 +605,11 @@ class CORE_EXPORT QgsExpression
     double mScale;
 
     static QMap<QString, QVariant> gmSpecialColumns;
+    QgsDistanceArea mCalc;
 
-    QgsDistanceArea* mCalc;
 };
 
-Q_DECLARE_METATYPE( QgsExpression::Interval )
+Q_DECLARE_METATYPE( QgsExpression::Interval );
+Q_DECLARE_METATYPE( QgsGeometry );
 
 #endif // QGSEXPRESSION_H

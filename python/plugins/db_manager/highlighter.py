@@ -8,7 +8,7 @@ Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - Python Syntax Highlighting Example by Carson J. Q. Farmer (GPLv2 license)
  ***************************************************************************/
 
@@ -103,7 +103,7 @@ class SqlHighlighter(QSyntaxHighlighter):
 		if self.previousBlockState() != 1:
 			index = self.multiLineCommentStart.indexIn(text, index)
 		while index >= 0:
-			# if the last applied rule is a single-line comment,  
+			# if the last applied rule is a single-line comment,
 			# then avoid multiline comments that start after it
 			if rule_sel != None and rule_sel.type() == 'comment' and index >= rule_index:
 				break
@@ -140,7 +140,7 @@ class SqlHighlighter(QSyntaxHighlighter):
 				self.rules.append( rule )
 
 		# delimiter
-		regex = QRegExp( "[\)\(]" ) 
+		regex = QRegExp( "[\)\(]" )
 		rule = HighlightingRule('delimiter', regex)
 		self.rules.append( rule )
 
@@ -157,13 +157,13 @@ class SqlHighlighter(QSyntaxHighlighter):
 		rule = HighlightingRule('constant', regex)
 		self.rules.append( rule )
 		# number
-		regex = QRegExp( r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b' ) 
+		regex = QRegExp( r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b' )
 		regex.setMinimal( True )
 		rule = HighlightingRule('constant', regex)
 		self.rules.append( rule )
 
 		# single-line comment
-		regex = QRegExp( "--.*$" ) 
+		regex = QRegExp( "--.*$" )
 		rule = HighlightingRule('comment', regex)
 		self.rules.append( rule )
 

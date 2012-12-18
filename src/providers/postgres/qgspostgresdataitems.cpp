@@ -74,7 +74,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
       mSchemaMap[ layerProperty.schemaName ] = schemaItem;
     }
 
-    if ( layerProperty.type == "GEOMETRY" )
+    if ( QgsPostgresConn::wkbTypeFromPostgis( layerProperty.type ) == QGis::WKBUnknown )
     {
       if ( !columnTypeThread )
       {

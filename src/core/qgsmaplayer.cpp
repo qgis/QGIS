@@ -103,7 +103,9 @@ QString QgsMapLayer::id() const
 void QgsMapLayer::setLayerName( const QString & name )
 {
   QgsDebugMsg( "new name is '" + name + "'" );
-  mLayerName = capitaliseLayerName( name );
+  QString newName = capitaliseLayerName( name );
+  if ( newName == mLayerName ) return;
+  mLayerName = newName;
   emit layerNameChanged();
 }
 

@@ -25,30 +25,37 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
+from qgis.core import *
 from sextante.core.QGisLayers import QGisLayers
-from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteLog import SextanteLog
-from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
-from sextante.gui.SextantePostprocessing import SextantePostprocessing
-from sextante.modeler.Providers import Providers
-from sextante.r.RAlgorithmProvider import RAlgorithmProvider
-from sextante.parameters.ParameterSelection import ParameterSelection
-from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from sextante.core.AlgorithmClassification import AlgorithmDecorator
+from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
-from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
-from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
-from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
-from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
-from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
-from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
     SilentProgress
+
+from sextante.modeler.Providers import Providers
+from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
+from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
+from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
+from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
+from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from sextante.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
+from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
+from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+#from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
+from sextante.r.RAlgorithmProvider import RAlgorithmProvider
+from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
+from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
+from sextante.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorithmProvider
+
+
 
 class Sextante:
 
@@ -113,20 +120,23 @@ class Sextante:
         Sextante.addProvider(MMQGISXAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
-        Sextante.addProvider(GdalAlgorithmProvider())
-        Sextante.addProvider(PymorphAlgorithmProvider())
+        Sextante.addProvider(GdalOgrAlgorithmProvider())
+        #Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(ScriptAlgorithmProvider())
+        Sextante.addProvider(TauDEMAlgorithmProvider())
+        Sextante.addProvider(AdminToolsAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
         RenderingStyles.loadStyles()
+        AlgorithmDecorator.loadClassification()
         Sextante.loadFromProviders()
 
     @staticmethod
@@ -230,45 +240,14 @@ class Sextante:
                 return provider[name]
         return None
 
-
-    ##This methods are here to be used from the python console,
-    ##making it easy to use SEXTANTE from there
-    ##==========================================================
+    @staticmethod
+    def getObject(uri):
+        '''Returns the QGIS object identified by the given URI'''
+        return QGisLayers.getObjectFromUri(uri)
 
     @staticmethod
-    def alglist(text=None):
-        s=""
-        for provider in Sextante.algs.values():
-            sortedlist = sorted(provider.values(), key= lambda alg: alg.name)
-            for alg in sortedlist:
-                if text == None or text.lower() in alg.name.lower():
-                    s+=(alg.name.ljust(50, "-") + "--->" + alg.commandLineName() + "\n")
-        print s
-
-
-    @staticmethod
-    def algoptions(name):
-        alg = Sextante.getAlgorithm(name)
-        if alg != None:
-            s =""
-            for param in alg.parameters:
-                if isinstance(param, ParameterSelection):
-                    s+=param.name + "(" + param.description + ")\n"
-                    i=0
-                    for option in param.options:
-                        s+= "\t" + str(i) + " - " + str(option) + "\n"
-                        i+=1
-            print(s)
-        else:
-            print "Algorithm not found"
-
-    @staticmethod
-    def alghelp(name):
-        alg = Sextante.getAlgorithm(name)
-        if alg != None:
-            print(str(alg))
-        else:
-            print "Algorithm not found"
+    def runandload(name, *args):
+        Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args):
@@ -281,7 +260,7 @@ class Sextante:
             return
         if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
             print ("Error: Wrong number of parameters")
-            Sextante.alghelp(algOrName)
+            alghelp(algOrName)
             return
 
         alg = alg.getCopy()#copy.deepcopy(alg)
@@ -317,7 +296,14 @@ class Sextante:
 
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        # don't set the wait cursor twice, because then when you restore it
+        # it will still be a wait cursor
+        cursor = QApplication.overrideCursor()
+        if cursor == None or cursor == 0:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        elif cursor.shape() != Qt.WaitCursor:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()
@@ -351,28 +337,84 @@ class Sextante:
             QApplication.restoreOverrideCursor()
         return alg
 
-    @staticmethod
-    def runalg(algOrName, *args):
-        alg = Sextante.runAlgorithm(algOrName, None, *args)
-        return alg.getOutputValuesAsDictionary()
+
+    ##==========================================================
+    ##This methods are here to be used from the python console,
+    ##making it easy to use SEXTANTE from there
+    ##==========================================================
 
 
-    @staticmethod
-    def load(layer):
-        '''Loads a layer into QGIS'''
-        QGisLayers.load(layer)
+def alglist(text=None):
+    s=""
+    for provider in Sextante.algs.values():
+        sortedlist = sorted(provider.values(), key= lambda alg: alg.name)
+        for alg in sortedlist:
+            if text == None or text.lower() in alg.name.lower():
+                s+=(alg.name.ljust(50, "-") + "--->" + alg.commandLineName() + "\n")
+    print s
 
-    @staticmethod
-    def loadFromAlg(layersdict):
-        '''Load all layer resulting from a given algorithm.
-        Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
-        QGisLayers.loadFromDict(layersdict)
+def algoptions(name):
+    alg = Sextante.getAlgorithm(name)
+    if alg != None:
+        s =""
+        for param in alg.parameters:
+            if isinstance(param, ParameterSelection):
+                s+=param.name + "(" + param.description + ")\n"
+                i=0
+                for option in param.options:
+                    s+= "\t" + str(i) + " - " + str(option) + "\n"
+                    i+=1
+        print(s)
+    else:
+        print "Algorithm not found"
 
-    @staticmethod
-    def getObject(uri):
-        '''Returns the QGIS object identified by the given URI'''
-        return QGisLayers.getObjectFromUri(uri)
+def alghelp(name):
+    alg = Sextante.getAlgorithm(name)
+    if alg != None:
+        print(str(alg))
+    else:
+        print "Algorithm not found"
 
-    @staticmethod
-    def runandload(name, *args):
-        Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
+def runalg(algOrName, *args):
+    alg = Sextante.runAlgorithm(algOrName, None, *args)
+    return alg.getOutputValuesAsDictionary()
+
+def runandload(name, *args):
+    Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
+
+
+def extent(layers):
+    first = True
+    for layer in layers:
+        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
+            layer = QGisLayers.getObjectFromUri(layer)
+        if first:
+            xmin = layer.extent().xMinimum()
+            xmax = layer.extent().xMaximum()
+            ymin = layer.extent().yMinimum()
+            ymax = layer.extent().yMaximum()
+        else:
+            xmin = min(xmin, layer.extent().xMinimum())
+            xmax = max(xmax, layer.extent().xMaximum())
+            ymin = min(ymin, layer.extent().yMinimum())
+            ymax = max(ymax, layer.extent().yMaximum())
+        first = False
+    return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
+
+def getObjectFromName(name):
+    layers = QGisLayers.getAllLayers()
+    for layer in layers:
+        if layer.name() == name:
+            return layer
+
+def getObjectFromUri(uri):
+    return QGisLayers.getObjectFromUri(uri, False)
+
+def load(layer):
+    '''Loads a layer into QGIS'''
+    QGisLayers.load(layer)
+
+def loadFromAlg(layersdict):
+    '''Load all layer resulting from a given algorithm.
+    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
+    QGisLayers.loadFromDict(layersdict)

@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 #******************************************************************************
 ##src_filename=raster
 ##dst_filename=output raster
-##Analysis=group
+##[GDAL] Analysis=group
 from sextante.gdal.GdalUtils import GdalUtils
 
 try:

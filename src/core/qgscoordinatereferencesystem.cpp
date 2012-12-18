@@ -188,7 +188,9 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
     QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
   }
   else
+  {
     QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
+  }
 #endif
 }
 
@@ -284,8 +286,9 @@ void QgsCoordinateReferenceSystem::validate()
     mCustomSrsValidation( this );
 
   if ( !mIsValidFlag )
-    // set the default
-    createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  {
+    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )

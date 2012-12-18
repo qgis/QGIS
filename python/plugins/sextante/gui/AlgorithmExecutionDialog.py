@@ -65,7 +65,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     class InvalidParameterValue(Exception):
         def __init__(self, param, widget):
             self.parameter, self.widget = param, widget
-    
+
     '''Base class for dialogs that execute algorithms'''
     def __init__(self, alg, mainWidget):
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
@@ -158,7 +158,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
             if not SextanteConfig.getSetting(SextanteConfig.TABLE_LIKE_PARAM_PANEL):
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                     output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
@@ -191,7 +191,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 value.append(options[index])
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
-            return param.setValue(widget.getValue())
+            return param.setValue(widget.getValue())                    
         elif isinstance(param, ParameterString):
             if param.multiline:
                 return param.setValue(unicode(widget.toPlainText()))
@@ -199,7 +199,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 return param.setValue(unicode(widget.text()))
         else:
             return param.setValue(unicode(widget.text()))
-            
+
     @pyqtSlot()
     def accept(self):
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
@@ -252,7 +252,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             else:
                 self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
                 if iterateParam:
-                    UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
+                    if UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self):
+                        self.finish()
+                    else:
+                        QApplication.restoreOverrideCursor()
+                        if not keepOpen:
+                            self.close()
+                        else:
+                            self.resetGUI()
                 else:
                     command = self.alg.getAsCommand()
                     if command:
@@ -325,7 +332,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-        
+
 
     @pyqtSlot(str)
     @pyqtSlot(str, bool)

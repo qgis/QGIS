@@ -65,11 +65,18 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()
+        self.loadFromFolder(folder)
+        folder = os.path.join(os.path.dirname(__file__), "models")
+        self.loadFromFolder(folder)
+
+    def loadFromFolder(self,folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("model"):
                 try:
                     alg = ModelerAlgorithm()
-                    fullpath = os.path.join(ModelerUtils.modelsFolder(),descriptionFile)
+                    fullpath = os.path.join(folder ,descriptionFile)
                     alg.openModel(fullpath)
                     if alg.name.strip() != "":
                         alg.provider = self

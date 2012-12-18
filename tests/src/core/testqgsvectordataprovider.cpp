@@ -98,16 +98,18 @@ static void checkFid4( QgsFeature& f, bool hasGeometry, bool hasAttrs, int onlyO
 
   QCOMPARE( f.id(), ( QgsFeatureId )4 );
 
+  QCOMPARE( f.attributes().count(), 6 );
   if ( hasAttrs )
   {
-    QCOMPARE( f.attributes().count(), 3 );
     QCOMPARE( attrs[0].toString(), ( onlyOneAttribute == -1 || onlyOneAttribute == 0 ) ? QString( "Jet" ) : QString() );
     QCOMPARE( attrs[1].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 1 ) ? 90 : 0 );
     QCOMPARE( attrs[2].toInt(), ( onlyOneAttribute == -1 || onlyOneAttribute == 2 ) ? 3 : 0 );
   }
   else
   {
-    QCOMPARE( f.attributes().count(), 0 );
+    QCOMPARE( attrs[0].type(), QVariant::Invalid );
+    QCOMPARE( attrs[1].type(), QVariant::Invalid );
+    QCOMPARE( attrs[2].type(), QVariant::Invalid );
   }
 
   if ( hasGeometry )

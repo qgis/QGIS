@@ -23,6 +23,9 @@ back to QgsVectorLayer.
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
@@ -173,6 +176,13 @@ void QgsAttributeActionDialog::insertExpression()
   // display the expression builder
   QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
   dlg.setWindowTitle( tr( "Insert expression" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mActions->layer()->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
   if ( dlg.exec() == QDialog::Accepted )
   {
     QString expression =  dlg.expressionBuilder()->expressionText();
@@ -330,7 +340,7 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", false );
   insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clickx %])\")", false );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.it/?q=[% \"ATTRIBUTE\" %]", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", false );
 }
 
 void QgsAttributeActionDialog::itemSelectionChanged()

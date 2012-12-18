@@ -1,7 +1,0 @@
-r.distance
-r.distance - Locates the closest points between objects in two raster maps.
-Raster (r.*)
-ParameterRaster|maps|Maps for computing inter-class distances|False
-ParameterString|fs|Output field separator|:
-ParameterBoolean|-l|Include category labels in the output|False
-ParameterBoolean|-o|Report zero distance if rasters are overlapping|False

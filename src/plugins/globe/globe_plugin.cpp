@@ -19,7 +19,11 @@
 #include "globe_plugin.h"
 #include "globe_plugin_dialog.h"
 #include "qgsosgearthtilesource.h"
+#ifdef HAVE_OSGEARTHQT
+#include <osgEarthQt/ViewerWidget>
+#else
 #include "osgEarthQt/ViewerWidget"
+#endif
 
 #include <cmath>
 
@@ -52,12 +56,13 @@
 #include <osgEarth/Map>
 #include <osgEarth/MapNode>
 #include <osgEarth/TileSource>
+#include <osgEarthUtil/SkyNode>
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/tms/TMSOptions>
 
 using namespace osgEarth::Drivers;
-using namespace osgEarth::Util::Controls21;
+using namespace osgEarth::Util;
 
 #define MOVE_OFFSET 0.05
 
@@ -187,18 +192,25 @@ void GlobePlugin::initGui()
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
+  QAction* actionUnload = new QAction( tr( "Unload Globe" ), this );
+
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
   mQActionSettingsPointer->setWhatsThis( tr( "Settings for 3D globe" ) );
-  // Connect the action to the run
+  actionUnload->setWhatsThis( tr( "Unload globe" ) );
+
+  // Connect actions
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  // Connect to the setting slot
   connect( mQActionSettingsPointer, SIGNAL( triggered() ), this, SLOT( settings() ) );
+  connect( actionUnload, SIGNAL( triggered() ), this, SLOT( reset() ) );
+
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
+
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
+  mQGisIface->addPluginToMenu( tr( "&Globe" ), actionUnload );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
@@ -231,9 +243,9 @@ void GlobePlugin::run()
     mIsGlobeRunning = true;
     setupProxy();
 
-    if ( getenv( "MAPXML" ) )
+    if ( getenv( "GLOBE_MAPXML" ) )
     {
-      char* mapxml = getenv( "MAPXML" );
+      char* mapxml = getenv( "GLOBE_MAPXML" );
       QgsDebugMsg( mapxml );
       osg::Node* node = osgDB::readNodeFile( mapxml );
       if ( !node )
@@ -248,6 +260,15 @@ void GlobePlugin::run()
     else
     {
       setupMap();
+    }
+
+    if ( getenv( "GLOBE_SKY" ) )
+    {
+      SkyNode* sky = new SkyNode( mMapNode->getMap() );
+      sky->setDateTime( 2011, 1, 6, 17.0 );
+      //sky->setSunPosition( osg::Vec3(0,-1,0) );
+      sky->attach( mOsgViewer );
+      mRootNode->addChild( sky );
     }
 
     // create a surface to house the controls
@@ -312,12 +333,14 @@ void GlobePlugin::settings()
 void GlobePlugin::setupMap()
 {
   QSettings settings;
+  /*
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
   TMSCacheOptions cacheOptions;
   cacheOptions.setPath( cacheDirectory.toStdString() );
+  */
 
   MapOptions mapOptions;
-  mapOptions.cache() = cacheOptions;
+  //mapOptions.cache() = cacheOptions;
   osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
@@ -325,7 +348,6 @@ void GlobePlugin::setupMap()
   GDALOptions driverOptions;
   driverOptions.url() = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" ).toStdString();
   ImageLayerOptions layerOptions( "world", driverOptions );
-  layerOptions.cacheEnabled() = false;
   map->addImageLayer( new osgEarth::ImageLayer( layerOptions ) );
   */
   TMSOptions imagery;
@@ -633,9 +655,14 @@ void GlobePlugin::setupControls()
 
 //END ZOOM CONTROLS
 
-//EXTRA CONTROLS
+  //EXTRA CONTROLS
+  //#define ENABLE_SYNC_BUTTON 1
+#if ENABLE_SYNC_BUTTON
   //Horizontal container
   HBox* extraControls = new HBox();
+#else
+  VBox* extraControls = new VBox();
+#endif
   extraControls->setFrame( new RoundedFrame() );
   extraControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   extraControls->setMargin( 0 );
@@ -646,13 +673,19 @@ void GlobePlugin::setupControls()
 #endif
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
-  extraControls->setPosition( 5, 220 );
+#if ENABLE_SYNC_BUTTON
+  extraControls->setPosition( 5, 231 );
+#else
+  extraControls->setPosition( 35, 231 );
+#endif
   extraControls->setPadding( 6 );
 
   //Sync Extent
+#if ENABLE_SYNC_BUTTON
   osg::Image* extraSyncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
   ImageControl* extraSync = new NavigationControl( extraSyncImg );
   extraSync->addEventHandler( new SyncExtentControlHandler( this ) );
+#endif
 
   //Zoom Reset
   osg::Image* extraHomeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
@@ -665,7 +698,9 @@ void GlobePlugin::setupControls()
   extraRefresh->addEventHandler( new RefreshControlHandler( this ) );
 
   //add controls to extraControls group
+#if ENABLE_SYNC_BUTTON
   extraControls->addControl( extraSync );
+#endif
   extraControls->addControl( extraHome );
   extraControls->addControl( extraRefresh );
 
@@ -735,7 +770,7 @@ void GlobePlugin::imageLayersChanged()
     ImageLayerOptions options( "QGIS" );
     mQgisMapLayer = new ImageLayer( options, mTileSource );
     map->addImageLayer( mQgisMapLayer );
-    mQgisMapLayer->setCache( 0 ); //disable caching
+    //[layer->setCache is private in 1.3.0] mQgisMapLayer->setCache( 0 ); //disable caching
   }
   else
   {
@@ -772,7 +807,7 @@ void GlobePlugin::elevationLayersChanged()
     for ( int i = 0; i < table->rowCount(); ++i )
     {
       QString type = table->item( i, 0 )->text();
-      bool cache = table->item( i, 1 )->checkState();
+      //bool cache = table->item( i, 1 )->checkState();
       QString uri = table->item( i, 2 )->text();
       ElevationLayer* layer = 0;
 
@@ -790,7 +825,7 @@ void GlobePlugin::elevationLayersChanged()
       }
       map->addElevationLayer( layer );
 
-      if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
+      //if ( !cache || type == "Worldwind" ) layer->setCache( 0 ); //no tms cache for worldwind (use worldwind_cache)
     }
   }
   else
@@ -800,8 +835,23 @@ void GlobePlugin::elevationLayersChanged()
   }
 }
 
+void GlobePlugin::reset()
+{
+  if ( mViewerWidget )
+  {
+    delete mViewerWidget;
+    mViewerWidget = 0;
+  }
+  if ( mOsgViewer )
+  {
+    delete mOsgViewer;
+    mOsgViewer = 0;
+  }
+}
+
 void GlobePlugin::unload()
 {
+  reset();
   // remove the GUI
   mQGisIface->removePluginMenu( "&Globe", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );

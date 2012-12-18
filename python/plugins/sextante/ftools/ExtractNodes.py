@@ -56,9 +56,6 @@ class ExtractNodes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        encoding = settings.value("/UI/encoding", "System").toString()
-
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputValue(self.OUTPUT)
 

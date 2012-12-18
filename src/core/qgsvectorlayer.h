@@ -54,9 +54,71 @@ class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
 class QgsVectorLayerCache;
 class QgsVectorLayerEditBuffer;
+class QgsSymbolV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+
+/** @note Added in 1.9 */
+class CORE_EXPORT QgsAttributeEditorElement : public QObject
+{
+    Q_OBJECT
+  public:
+
+    enum AttributeEditorType
+    {
+      AeTypeContainer,
+      AeTypeField,
+      AeTypeInvalid
+    };
+
+    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
+        : QObject( parent ), mType( type ), mName( name ) {}
+
+    virtual ~QgsAttributeEditorElement() {}
+
+    QString name() const { return mName; }
+    AttributeEditorType type() const { return mType; }
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
+
+  protected:
+    AttributeEditorType mType;
+    QString mName;
+};
+
+/** @note Added in 1.9 */
+class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorContainer( QString name, QObject *parent )
+        : QgsAttributeEditorElement( AeTypeContainer, name, parent ) {}
+
+    ~QgsAttributeEditorContainer() {}
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    virtual void addChildElement( QgsAttributeEditorElement *widget );
+    QList<QgsAttributeEditorElement*> children() const { return mChildren; }
+
+  private:
+    QList<QgsAttributeEditorElement*> mChildren;
+};
+
+/** @note Added in 1.9 */
+class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorField( QString name , int idx, QObject *parent )
+        : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
+
+    ~QgsAttributeEditorField() {}
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    int idx() const { return mIdx; }
+
+  private:
+    int mIdx;
+};
 
 /** @note added in 1.7 */
 struct CORE_EXPORT QgsVectorJoinInfo
@@ -88,6 +150,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
+    /** The different types to layout the attribute editor. @note added in 1.9 */
+    enum EditorLayout
+    {
+      GeneratedLayout = 0,
+      TabLayout = 1,
+      UiFileLayout = 2
+    };
+
     enum EditType
     {
       LineEdit,
@@ -145,6 +215,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */
+    };
+
+    struct GroupData
+    {
+      GroupData() {}
+      GroupData( QString name , QList<QString> fields )
+          : mName( name ), mFields( fields ) {}
+      QString mName;
+      QList<QString> mFields;
+    };
+
+    struct TabData
+    {
+      TabData() {}
+      TabData( QString name , QList<QString> fields , QList<GroupData> groups )
+          : mName( name ), mFields( fields ), mGroups( groups ) {}
+      QString mName;
+      QList<QString> mFields;
+      QList<GroupData> mGroups;
     };
 
     /** Constructor */
@@ -289,6 +378,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
+    /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
+     * @param elem the DOM element
+     * @param parent the QObject which will own this object
+     */
+    static QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
+
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
@@ -315,6 +410,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return long containing number of features
      */
     virtual long featureCount() const;
+
+    /**
+     * Number of features rendered with specified symbol. Features must be first
+     * calculated by countSymbolFeatures()
+     * @param symbol the symbol
+     * @return number of features rendered by symbol or -1 if failed or counts are not available
+     */
+    long featureCount( QgsSymbolV2* symbol );
+
+    /**
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * @param showProgress show progress dialog
+     * @return true if calculated, false if failed or was canceled by user
+     */
+    bool countSymbolFeatures( bool showProgress = true );
 
     /** This function does nothing useful, it's kept only for compatibility.
      * @todo to be removed
@@ -566,6 +676,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     void addAttributeAlias( int attIndex, QString aliasString );
 
+    /**Adds a tab (for the attribute editor form) holding groups and fields
+      @note added in version 1.9*/
+    void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+    /**Returns a list of tabs holding groups and fields
+      @note added in version 1.9*/
+    QList< QgsAttributeEditorElement* > &attributeEditorElements();
+    /**Clears all the tabs for the attribute editor form
+      @note added in version 1.9*/
+    void clearAttributeEditorWidgets();
+
     /**Returns the alias of an attribute name or an empty string if there is no alias
       @note added in version 1.2*/
     QString attributeAlias( int attributeIndex ) const;
@@ -573,6 +693,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Convenience function that returns the attribute alias if defined or the field name else
       @note added in version 1.2*/
     QString attributeDisplayName( int attributeIndex ) const;
+
+    const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
+
+    const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
+    void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
+
+    const QSet<QString>& excludeAttributesWFS() const { return mExcludeAttributesWFS; }
+    void setExcludeAttributesWFS( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
 
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
@@ -609,6 +737,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**set edit type*/
     void setEditType( int idx, EditType edit );
+
+    /** get the active layout for the attribute editor for this layer (added in 1.9) */
+    EditorLayout editorLayout();
+
+    /** set the active layout for the attribute editor for this layer (added in 1.9) */
+    void setEditorLayout( EditorLayout editorLayout );
 
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
@@ -894,6 +1028,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;
 
+    /**Stores a list of attribute editor elements (Each holding a tree structure for a tab in the attribute editor)*/
+    QList< QgsAttributeEditorElement* > mAttributeEditorElements;
+
+    /**Attributes which are not published in WMS*/
+    QSet<QString> mExcludeAttributesWMS;
+    /**Attributes which are not published in WFS*/
+    QSet<QString> mExcludeAttributesWFS;
+
+    /**Map that stores the tab for attributes in the edit form. Key is the tab order and value the tab name*/
+    QList< TabData > mTabs;
+
     /** Geometry type as defined in enum WkbType (qgis.h) */
     int mWkbType;
 
@@ -918,10 +1063,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** The current size of editing marker */
     int mCurrentVertexMarkerSize;
 
-    /**Flag if the vertex markers should be drawn only for selection (true) or for all features (false)*/
+    /** Flag if the vertex markers should be drawn only for selection (true) or for all features (false) */
     bool mVertexMarkerOnlyForSelection;
 
-    /**List of overlays. Vector overlays will be rendered on top of all maplayers*/
+    /** List of overlays. Vector overlays will be rendered on top of all maplayers */
     QList<QgsVectorOverlay*> mOverlays;
 
     QStringList mCommitErrors;
@@ -931,6 +1076,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
+
+    /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
+    EditorLayout mEditorLayout;
 
     QString mEditForm, mEditFormInit;
     //annotation form for this layer
@@ -967,6 +1115,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsDiagramLayerSettings *mDiagramLayerSettings;
 
     bool mValidExtent;
+
+    // Features in renderer classes counted
+    bool mSymbolFeatureCounted;
+
+    // Feature counts for each renderer symbol
+    QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
 };
 
 #endif

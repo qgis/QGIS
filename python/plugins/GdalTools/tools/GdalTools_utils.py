@@ -258,9 +258,9 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
   return shortName
 
 class UnsupportedOGRFormat(Exception):
-    def __init__(self): 
+    def __init__(self):
       msg = QCoreApplication.translate( "GdalTools", "The selected file is not a supported OGR format" )
-      Exception.__init__(self, msg) 
+      Exception.__init__(self, msg)
 
 def getVectorFields(vectorFile):
     hds = ogr.Open( unicode(vectorFile).encode('utf8') )
@@ -312,10 +312,10 @@ def getRasterExtent(parent, fileName):
     if processSRS.waitForFinished():
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
-      
+
     if arr.isEmpty():
       return
-      
+
     info = QString( arr ).split( "\n" )
     ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
     lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
@@ -426,7 +426,7 @@ class FileFilter:
       QgsRasterLayer.buildSupportedRasterFileFilter(self.rastersFilter)
 
       # workaround for QGis < 1.5 (see #2376)
-      # separates multiple extensions that joined by a slash 
+      # separates multiple extensions that joined by a slash
       if QGis.QGIS_VERSION[0:3] < "1.5":
           formats = self.rastersFilter.split( ";;" )
           self.rastersFilter = QString()
@@ -771,7 +771,7 @@ class Version:
       vers = ['0', '0', '0']
 
       nums = str(string).split(".")
-      
+
       if len(nums) > 0:
         vers[0] = nums[0]
       if len(nums) > 1:
@@ -797,7 +797,7 @@ class Version:
 
 def setProcessEnvironment(process):
     envvar_list = {
-        "PATH" : getGdalBinPath(), 
+        "PATH" : getGdalBinPath(),
         "PYTHONPATH" : getGdalPymodPath()
     }
 
@@ -836,13 +836,13 @@ def setMacOSXDefaultEnvironment():
   # QgsApplication.prefixPath() contains the path to qgis executable (i.e. .../Qgis.app/MacOS)
   # get the path to Qgis application folder
   qgis_app = u"%s/.." % QgsApplication.prefixPath()
-  qgis_app = QDir( qgis_app ).absolutePath()   
+  qgis_app = QDir( qgis_app ).absolutePath()
 
   qgis_bin = u"%s/bin" % QgsApplication.prefixPath()   # path to QGis bin folder
   qgis_python = u"%s/Resources/python" % qgis_app    # path to QGis python folder
 
   # path to the GDAL framework within the Qgis application folder (QGis standalone only)
-  qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app   
+  qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
   # path to the GDAL framework when installed as external framework
   gdal_bin_path = u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3]

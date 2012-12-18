@@ -27,6 +27,27 @@ class QgsPalLayerSettings
       MapOrientation = 8
     };
 
+    enum UpsideDownLabels
+    {
+      Upright, // upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, // show upside down when rotation is layer- or data-defined
+      ShowAll // show upside down for all labels, including dynamic ones
+    };
+
+    enum DirectionSymbols
+    {
+      SymbolLeftRight, // place direction symbols on left/right of label
+      SymbolAbove, // place direction symbols on above label
+      SymbolBelow // place direction symbols on below label
+    };
+
+    enum MultiLineAlign
+    {
+      MultiLeft = 0,
+      MultiCenter,
+      MultiRight
+    };
+
     // increment iterator in _writeDataDefinedPropertyMap() when adding more
     enum DataDefinedProperties
     {
@@ -50,6 +71,7 @@ class QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
+      AlwaysShow,
       PropertyCount, // keep last entry
     };
 
@@ -102,14 +124,29 @@ class QgsPalLayerSettings
     bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
-    // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
+    bool limitNumLabels; // whether to limit the number of labels to be drawn
+    int maxNumLabels; // maximum number of labels to be drawn
+    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
+    // direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    QString leftDirectionSymbol;
+    QString rightDirectionSymbol;
+    bool reverseDirectionSymbol;
+    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
+    unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
+    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
+    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
+    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QString wrapChar;
+    double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
+    MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
 

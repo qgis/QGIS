@@ -22,8 +22,8 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     /**Adds a class manually to the classification*/
     void addClass();
-    /**Removes a class from the classification*/
-    void deleteCurrentClass();
+    /**Removes selected classes*/
+    void deleteClasses();
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -38,9 +38,6 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     //! populate column combos in categorized and graduated page
     void populateColumns();
-
-    //! populate ranges of graduated symbol renderer
-    void populateRanges();
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );

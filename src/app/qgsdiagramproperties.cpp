@@ -297,11 +297,15 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
+    mBackgroundColorLabel->show();
+    mBackgroundColorButton->show();
   }
   else
   {
     mLabelPlacementComboBox->hide();
     mLabelPlacementLabel->hide();
+    mBackgroundColorLabel->hide();
+    mBackgroundColorButton->hide();
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType )

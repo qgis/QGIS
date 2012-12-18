@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 #******************************************************************************
 #  Adapted from gdal_sieve.py, Copyright (c) 2008, Frank Warmerdam
 #******************************************************************************
-##Analysis=group
+##[GDAL] Analysis=group
 ##src_filename=raster
 ##dst_filename=output raster
 ##connectedness=selection 4;8

@@ -32,7 +32,6 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
   {
     mTextDocument = mItem->document();
     mTextEdit->setDocument( mTextDocument );
-    mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
   }
   setCurrentFontPropertiesToGui();
 
@@ -146,26 +145,5 @@ void QgsTextAnnotationDialog::deleteItem()
   }
   delete mItem;
   mItem = 0;
-}
-
-void QgsTextAnnotationDialog::on_mBackgroundColorButton_clicked()
-{
-  if ( !mItem )
-  {
-    return;
-  }
-
-  QColor bgColor;
-#if QT_VERSION >= 0x040500
-  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor(), 0, tr( "Select background color" ), QColorDialog::ShowAlphaChannel );
-#else
-  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor() );
-#endif
-
-  if ( bgColor.isValid() )
-  {
-    mItem->setFrameBackgroundColor( bgColor );
-    mBackgroundColorButton->setColor( bgColor );
-  }
 }
 

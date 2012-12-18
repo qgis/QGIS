@@ -10,7 +10,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 };

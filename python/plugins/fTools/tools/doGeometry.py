@@ -1032,7 +1032,7 @@ class geometryThread( QThread ):
     for i in fieldKeys:
       nameList.append( fieldList[ i ].name().toLower() )
     if geomType == QGis.Polygon:
-      if len( fieldKeys ) == max( fieldKeys ): # if equal, then the field geometry is not at the end of the fields list 
+      if len( fieldKeys ) == max( fieldKeys ): # if equal, then the field geometry is not at the end of the fields list
         ( found, index ) = self.checkForField( nameList, "AREA" )
         index1 = index + 1
       else:

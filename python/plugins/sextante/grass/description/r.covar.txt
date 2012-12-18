@@ -1,5 +1,6 @@
 r.covar
-r.covar - Outputs a covariance/correlation matrix for user-specified raster map layer(s).
+r.covar - Outputs a covariance/correlation matrix for user-specified raster layer(s).
 Raster (r.*)
-ParameterMultipleInput|map|Name of input raster map(s)|3.0|False
+ParameterMultipleInput|map|Input layers|3.0|False
 ParameterBoolean|-r|Print correlation matrix|True
+OutputHTML|html|Covariance report

@@ -1,5 +1,5 @@
 v.transform
-v.transform - Performs an affine transformation (shift, scale and rotate, or GPCs) on vector map.
+v.transform - Performs an affine transformation (shift, scale and rotate, or GPCs) on a vector layer.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterNumber|xshift|X shift|None|None|0.0
@@ -9,6 +9,5 @@ ParameterNumber|xscale|X scale|None|None|1.0
 ParameterNumber|yscale|Y scale|None|None|1.0
 ParameterNumber|zscale|Z scale|None|None|1.0
 ParameterNumber|zrot|Rotation around z axis in degrees counterclockwise|None|None|0.0
-ParameterFile|pointsfile|Name of input text file with GCPs|False
-OutputVector|output|Name for output vector map
+OutputVector|output|Transformed layer
 

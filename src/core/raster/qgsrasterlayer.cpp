@@ -86,6 +86,8 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 // doubles can take for the current system.  (Yes, 20 was arbitrary.)
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
+
 const double QgsRasterLayer::CUMULATIVE_CUT_LOWER = 0.02;
 const double QgsRasterLayer::CUMULATIVE_CUT_UPPER = 0.98;
 const double QgsRasterLayer::SAMPLE_SIZE = 250000;
@@ -121,6 +123,7 @@ QgsRasterLayer::QgsRasterLayer(
   // TODO, call constructor with provider key
   init();
   setDataProvider( "gdal" );
+  if ( !mValid ) return;
 
   bool defaultLoadedFlag = false;
   if ( mValid && loadDefaultStyleFlag )
@@ -157,6 +160,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
   QgsDebugMsg( "Entered" );
   init();
   setDataProvider( providerKey );
+  if ( !mValid ) return;
 
   // load default style
   bool defaultLoadedFlag = false;
@@ -189,6 +193,8 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
+  // TODO fix this - provider is not deleted!
+  //delete mDataProvider; // deleted by pipe
 }
 
 //////////////////////////////////////////////////////////
@@ -207,21 +213,14 @@ QgsRasterLayer::~QgsRasterLayer()
 void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersString )
 {
   QgsDebugMsg( "Entered" );
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "Could not load gdal provider library" );
-    return;
-  }
-  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib->resolve( "buildSupportedRasterFileFilter" ) );
+  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal", "buildSupportedRasterFileFilter" ) );
   if ( ! pBuild )
   {
-    QgsDebugMsg( "Could not resolve buildSupportedRasterFileFilter in gdal provider library" );
+    QgsDebugMsg( "Could get buildSupportedRasterFileFilter in gdal provider library" );
     return;
   }
 
   pBuild( theFileFiltersString );
-  delete myLib;
 }
 
 /**
@@ -229,14 +228,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
  */
 bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, QString & retErrMsg )
 {
-
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( "gdal" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "Could not load gdal provider library" );
-    return false;
-  }
-  isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( myLib->resolve( "isValidRasterFileName" ) );
+  isvalidrasterfilename_t *pValid = ( isvalidrasterfilename_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) );
   if ( ! pValid )
   {
     QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
@@ -244,7 +236,6 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString, 
   }
 
   bool myIsValid = pValid( theFileNameQString, retErrMsg );
-  delete myLib;
   return myIsValid;
 }
 
@@ -458,6 +449,7 @@ QString QgsRasterLayer::colorShadingAlgorithmAsString() const
   return QString( "UndefinedShader" );
 }
 
+#if 0
 /**
  * @param theBand The band (number) for which to estimate the min max values
  * @param theMinMax Pointer to a double[2] which hold the estimated min max
@@ -500,7 +492,7 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
   if ( !theMinMax )
     return;
 
-  QgsRasterInterface::DataType myDataType = mDataProvider->dataType( theBand );
+  QGis::DataType myDataType = mDataProvider->dataType( theBand );
   void* myScanData = readData( theBand, &mLastViewPort );
 
   /* Check for out of memory error */
@@ -551,6 +543,7 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double& t
   theMin = theMinMax[0];
   theMax = theMinMax[1];
 }
+#endif
 
 /**
  * @param theBand The band (number) for which to get the contrast enhancement for
@@ -831,34 +824,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
     projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
   }
 
-#ifdef QGISDEBUG
-  // Collect stats only for larger sizes to avoid confusion (small time values)
-  // after thumbnail render e.g. 120 is current thumbnail size
-  // TODO: consider another way to switch stats on/off or storing of last significant
-  //       stats somehow
-  if ( theRasterViewPort->drawableAreaXDim > 120 && theRasterViewPort->drawableAreaYDim > 120 )
-  {
-    mPipe.setStatsOn( true );
-  }
-#endif
-
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe.last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-#ifdef QGISDEBUG
-  mPipe.setStatsOn( false );
-  // Print time stats
-  QgsDebugMsg( QString( "interface                  bands  time" ) );
-  for ( int i = 0; i < mPipe.size(); i++ )
-  {
-    QgsRasterInterface * interface = mPipe.at( i );
-    QString name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" ).left( 30 );
-    QgsDebugMsg( QString( "%1 %2 %3" ).arg( name, -30 ).arg( interface->bandCount() ).arg( interface->time(), 5 ) );
-  }
   QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
-#endif
 } //end of draw method
 
 QString QgsRasterLayer::drawingStyleAsString() const
@@ -923,6 +894,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
 }
 #endif
 
+#if 0
 /**
  * @param thePoint the QgsPoint for which to obtain pixel values
  * @param theResults QMap to hold the pixel values at thePoint for each layer in the raster file
@@ -954,7 +926,7 @@ bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theRe
   QMap<int, void *> dataMap = mDataProvider->identify( point );
   foreach ( int bandNo, dataMap.keys() )
   {
-    QgsRasterInterface::DataType dataType = mDataProvider->dataType( bandNo );
+    QGis::DataType dataType = mDataProvider->dataType( bandNo );
     void * data = dataMap.value( bandNo );
     QString str;
     if ( !data )
@@ -963,7 +935,7 @@ bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theRe
     }
     else
     {
-      if ( mDataProvider->typeIsNumeric( dataType ) )
+      if ( QgsRasterBlock::typeIsNumeric( dataType ) )
       {
         double value = mDataProvider->readValue( data, dataType, 0 );
         if ( mDataProvider->isNoDataValue( bandNo, value ) )
@@ -1020,11 +992,8 @@ QString QgsRasterLayer::identifyAsHtml( const QgsPoint& thePoint )
 
   return mDataProvider->identifyAsHtml( thePoint );
 }
+#endif
 
-/**
- * @note Note implemented yet
- * @return Always returns false
- */
 bool QgsRasterLayer::isEditable() const
 {
   return false;
@@ -1579,96 +1548,18 @@ void QgsRasterLayer::init()
   mLastViewPort.drawableAreaYDim = 0;
 }
 
-QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
-{
-  QgsDebugMsg( "theProviderKey = " + theProviderKey );
-  // load the plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString myLibPath = pReg->library( theProviderKey );
-  QgsDebugMsg( "myLibPath = " + myLibPath );
-
-#ifdef TESTPROVIDERLIB
-  const char *cOgrLib = ( const char * ) myLibPath;
-  // test code to help debug provider loading problems
-  //  void *handle = dlopen(cOgrLib, RTLD_LAZY);
-  void *handle = dlopen( cOgrLib, RTLD_LAZY | RTLD_GLOBAL );
-  if ( !handle )
-  {
-    QgsLogger::warning( "Error in dlopen: " );
-  }
-  else
-  {
-    QgsDebugMsg( "dlopen suceeded" );
-    dlclose( handle );
-  }
-
-#endif
-
-  // load the data provider
-  QLibrary*  myLib = new QLibrary( myLibPath );
-
-  QgsDebugMsg( "Library name is " + myLib->fileName() );
-  bool loaded = myLib->load();
-
-  if ( !loaded )
-  {
-    QgsMessageLog::logMessage( tr( "Failed to load provider %1 (Reason: %2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Loaded data provider library" );
-  return myLib;
-}
-
-// This code should be shared also by vector layer -> move it to QgsMapLayer
-QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QString theDataSource )
-{
-  QgsDebugMsg( "Entered" );
-  QLibrary*  myLib = QgsRasterLayer::loadProviderLibrary( theProviderKey );
-  QgsDebugMsg( "Library loaded" );
-  if ( !myLib )
-  {
-    QgsDebugMsg( "myLib is NULL" );
-    return NULL;
-  }
-
-  QgsDebugMsg( "Attempting to resolve the classFactory function" );
-  classFactoryFunction_t * classFactory = ( classFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "classFactory" ) );
-
-  if ( !classFactory )
-  {
-    QgsMessageLog::logMessage( tr( "Cannot resolve the classFactory function" ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Getting pointer to a mDataProvider object from the library" );
-  //XXX - This was a dynamic cast but that kills the Windows
-  //      version big-time with an abnormal termination error
-  //      mDataProvider = (QgsRasterDataProvider*)(classFactory((const
-  //                                              char*)(dataSource.utf8())));
-
-  // Copied from qgsproviderregistry in preference to the above.
-  QgsRasterDataProvider* myDataProvider = ( QgsRasterDataProvider* )( *classFactory )( &theDataSource );
-
-  if ( !myDataProvider )
-  {
-    QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
-    return NULL;
-  }
-  QgsDebugMsg( "Data driver created" );
-  return myDataProvider;
-}
-
-/** Copied from QgsVectorLayer::setDataProvider
- *  TODO: Make it work in the raster environment
- */
 void QgsRasterLayer::setDataProvider( QString const & provider )
 {
   QgsDebugMsg( "Entered" );
+  mValid = false; // assume the layer is invalid until we determine otherwise
+
+  mPipe.remove( mDataProvider ); // deletes if exists
+  mDataProvider = 0;
+
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
   mProviderKey = provider;
-  mValid = false;            // assume the layer is invalid until we determine otherwise
-
   // set the layer name (uppercase first character)
   if ( ! mLayerName.isEmpty() )   // XXX shouldn't this happen in parent?
   {
@@ -1677,13 +1568,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 
   mBandCount = 0;
 
-  mDataProvider = QgsRasterLayer::loadProvider( mProviderKey, mDataSource );
+  mDataProvider = ( QgsRasterDataProvider* )QgsProviderRegistry::instance()->provider( mProviderKey, mDataSource );
   if ( !mDataProvider )
   {
+    //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
+    appendError( ERR( tr( "Cannot instantiate the '%1' data provider" ).arg( mProviderKey ) ) );
     return;
   }
+  QgsDebugMsg( "Data provider created" );
+
   if ( !mDataProvider->isValid() )
   {
+    setError( mDataProvider->error() );
+    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey ).arg( mDataSource ) ) );
     return;
   }
   mPipe.set( mDataProvider );
@@ -1762,8 +1659,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32
-            ||  mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
+  else if ( mDataProvider->dataType( 1 ) == QGis::ARGB32
+            ||  mDataProvider->dataType( 1 ) == QGis::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }
@@ -1917,7 +1814,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   {
     if ( myBand != -1 )
     {
-      QgsRasterDataProvider::DataType myType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( myBand );
+      QGis::DataType myType = ( QGis::DataType )mDataProvider->dataType( myBand );
       QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )myType );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
@@ -2031,7 +1928,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
   else if ( mDrawingStyle == MultiBandColor )
   {
-    if ( dataProvider()->typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
+    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
     {
       myKey = "multiBandSingleByte";
       myDefault = "NoEnhancement";
@@ -2611,7 +2508,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   }
 
   setDataProvider( mProviderKey );
-
+  if ( !mValid ) return false;
 
   QString theError;
   bool res = readSymbology( layer_node, theError );
@@ -2636,6 +2533,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
+      if ( !mValid ) return false;
     }
   }
 
@@ -2653,14 +2551,14 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSrcNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
-      QList<QgsRasterInterface::Range> myNoDataRangeList;
+      QList<QgsRasterBlock::Range> myNoDataRangeList;
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();
-        QgsRasterInterface::Range myNoDataRange;
+        QgsRasterBlock::Range myNoDataRange;
         myNoDataRange.min = rangeElement.attribute( "min" ).toDouble();
         myNoDataRange.max = rangeElement.attribute( "max" ).toDouble();
         QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min ) );
@@ -2737,7 +2635,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterInterface::Range range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterBlock::Range range, mDataProvider->userNoDataValue( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 
@@ -2810,9 +2708,10 @@ QString QgsRasterLayer::projectionWkt()
  *data type is the same as raster band. The memory must be released later!
  *  \return pointer to the memory
  */
+#if 0
 void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
 {
-  int size = mDataProvider->dataTypeSize( bandNo ) / 8;
+  int size = mDataProvider->dataTypeSize( bandNo );
 
 #if 0
   QgsDebugMsg( "calling RasterIO with " +
@@ -2823,7 +2722,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 #endif
-  void *data = VSIMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
+  void *data = QgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
   if ( data == NULL )
@@ -2847,6 +2746,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
   }
   return data;
 }
+#endif
 
 /*
  * @note Called from ctor if a raster image given there

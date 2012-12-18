@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -25,10 +24,15 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import subprocess
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import webbrowser
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.modeler.Providers import Providers
+from sextante.core.AlgorithmClassification import AlgorithmDecorator
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
@@ -38,17 +42,30 @@ from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
+from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
+
 try:
     _fromUtf8 = QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-
-class SextanteToolbox(QDockWidget):
+class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
     def __init__(self, iface):
-        QDialog.__init__(self)
+        QDockWidget.__init__(self, None)
+        self.setupUi(self)
+        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+
         self.iface=iface
-        self.setupUi()
+
+        self.externalAppsButton.clicked.connect(self.configureProviders)
+        self.searchBox.textChanged.connect(self.fillTree)
+        self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
+        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
+
+        if hasattr(self.searchBox, 'setPlaceholderText'):
+            self.searchBox.setPlaceholderText(self.tr("Search..."))
+
+        self.fillTree()
 
     def algsListHasChanged(self):
         self.fillTree()
@@ -56,36 +73,18 @@ class SextanteToolbox(QDockWidget):
     def updateTree(self):
         Sextante.updateAlgsList()
 
-    def setupUi(self):
-        self.setObjectName("SEXTANTE_Toolbox")
-        self.setFloating(False)
-        self.resize(400, 500)
-        self.setWindowTitle(self.tr("SEXTANTE Toolbox"))
-        self.contents = QWidget()
-        self.verticalLayout = QVBoxLayout(self.contents)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.externalAppsButton = QPushButton()
-        self.externalAppsButton.setText(self.tr("Click here to configure\nadditional algorithm providers"))
-        QObject.connect(self.externalAppsButton, SIGNAL("clicked()"), self.configureProviders)
-        self.verticalLayout.addWidget(self.externalAppsButton)
-        self.searchBox = QLineEdit(self.contents)
-        self.searchBox.textChanged.connect(self.fillTree)
-        self.verticalLayout.addWidget(self.searchBox)
-        self.algorithmTree = QTreeWidget(self.contents)
-        self.algorithmTree.setHeaderHidden(True)
-        self.algorithmTree.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.fillTree()
-        self.connect(self.algorithmTree, SIGNAL('customContextMenuRequested(QPoint)'),
-                     self.showPopupMenu)
-        self.verticalLayout.addWidget(self.algorithmTree)
-        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
-        self.setWidget(self.contents)
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self)
-        QMetaObject.connectSlotsByName(self)
-
     def configureProviders(self):
-        QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
+        webbrowser.open("http://docs.qgis.org/html/en/user_manual/sextante/3rdParty.html")
+        #=======================================================================
+        # #QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
+        # filename = os.path.join(os.path.dirname(__file__), "..", "help", "3rdParty.html")
+        # if os.name == "nt":
+        #    os.startfile(filename)
+        # elif sys.platform == "darwin":
+        #    subprocess.Popen(('open', filename))
+        # else:
+        #    subprocess.call(('xdg-open', filename))
+        #=======================================================================
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)
@@ -157,54 +156,11 @@ class SextanteToolbox(QDockWidget):
             action.execute()
 
     def fillTree(self):
-        self.algorithmTree.clear()
-        text = unicode(self.searchBox.text())
-        for providerName in Sextante.algs.keys():
-            groups = {}
-            provider = Sextante.algs[providerName]
-            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
-            if not SextanteConfig.getSetting(name):
-                continue
-            algs = provider.values()
-            #add algorithms
-            for alg in algs:
-                if not alg.showInToolbox:
-                    continue
-                if text =="" or text.lower() in alg.name.lower():
-                    if alg.group in groups:
-                        groupItem = groups[alg.group]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        groupItem.setText(0,alg.group)
-                        groups[alg.group] = groupItem
-                    algItem = TreeAlgorithmItem(alg)
-                    groupItem.addChild(algItem)
-
-            actions = Sextante.actions[providerName]
-            for action in actions:
-                if text =="" or text.lower() in action.name.lower():
-                    if action.group in groups:
-                        groupItem = groups[action.group]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        groupItem.setText(0,action.group)
-                        groups[action.group] = groupItem
-                    algItem = TreeActionItem(action)
-                    groupItem.addChild(algItem)
-
-
-            if len(groups) > 0:
-                providerItem = QTreeWidgetItem()
-                providerItem.setText(0, Sextante.getProviderFromName(providerName).getDescription()
-                                     + " [" + str(len(provider)) + " geoalgorithms]")
-                providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
-                for groupItem in groups.values():
-                    providerItem.addChild(groupItem)
-                self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text!="")
-                for groupItem in groups.values():
-                    if text != "":
-                        groupItem.setExpanded(True)
+        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        if useCategories:
+            self.fillTreeUsingCategories()
+        else:
+            self.fillTreeUsingProviders()
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
@@ -227,14 +183,175 @@ class SextanteToolbox(QDockWidget):
 
             self.algorithmTree.setWordWrap(True)
 
+
+    def fillTreeUsingCategories(self):
+        providersToExclude = ["model", "script"]
+        self.algorithmTree.clear()
+        text = unicode(self.searchBox.text())
+        groups = {}
+        for providerName in Sextante.algs.keys():
+            provider = Sextante.algs[providerName]
+            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            if not SextanteConfig.getSetting(name):
+                continue
+            if providerName in providersToExclude or len(Providers.providers[providerName].actions) != 0:
+                continue
+            algs = provider.values()
+            #add algorithms
+            for alg in algs:
+                if not alg.showInToolbox:
+                    continue
+                altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
+                if text =="" or text.lower() in altname.lower():
+                    if altgroup not in groups:
+                        groups[altgroup] = {}
+                    group = groups[altgroup]
+                    if altsubgroup not in group:
+                        groups[altgroup][altsubgroup] = []
+                    subgroup = groups[altgroup][altsubgroup]
+                    subgroup.append(alg)
+
+        if len(groups) > 0:
+            mainItem = QTreeWidgetItem()
+            mainItem.setText(0, "Geoalgorithms")
+            mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
+            mainItem.setToolTip(0, mainItem.text(0))
+            for groupname, group in groups.items():
+                groupItem = QTreeWidgetItem()
+                groupItem.setText(0, groupname)
+                groupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
+                groupItem.setToolTip(0, groupItem.text(0))
+                mainItem.addChild(groupItem)
+                for subgroupname, subgroup in group.items():
+                    subgroupItem = QTreeWidgetItem()
+                    subgroupItem.setText(0, subgroupname)
+                    subgroupItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
+                    subgroupItem.setToolTip(0, subgroupItem.text(0))
+                    groupItem.addChild(subgroupItem)
+                    for alg in subgroup:
+                        algItem = TreeAlgorithmItem(alg)
+                        subgroupItem.addChild(algItem)
+                    subgroupItem.setExpanded(text!="")
+                groupItem.setExpanded(text!="")
+            self.algorithmTree.addTopLevelItem(mainItem)
+            mainItem.setExpanded(text!="")
+
+        for providerName in Sextante.algs.keys():
+            groups = {}
+            provider = Sextante.algs[providerName]
+            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            if not SextanteConfig.getSetting(name):
+                continue
+            if providerName not in providersToExclude:
+                continue
+            algs = provider.values()
+            #add algorithms
+            for alg in algs:
+                if not alg.showInToolbox:
+                    continue
+                if text =="" or text.lower() in alg.name.lower():
+                    if alg.group in groups:
+                        groupItem = groups[alg.group]
+                    else:
+                        groupItem = QTreeWidgetItem()
+                        groupItem.setText(0, alg.group)
+                        groupItem.setToolTip(0, alg.group)
+                        groups[alg.group] = groupItem
+                    algItem = TreeAlgorithmItem(alg)
+                    groupItem.addChild(algItem)
+
+            actions = Sextante.actions[providerName]
+            for action in actions:
+                if text =="" or text.lower() in action.name.lower():
+                    if action.group in groups:
+                        groupItem = groups[action.group]
+                    else:
+                        groupItem = QTreeWidgetItem()
+                        groupItem.setText(0,action.group)
+                        groups[action.group] = groupItem
+                    algItem = TreeActionItem(action)
+                    groupItem.addChild(algItem)
+
+            if len(groups) > 0:
+                providerItem = QTreeWidgetItem()
+                providerItem.setText(0, Sextante.getProviderFromName(providerName).getDescription())
+                providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
+                providerItem.setToolTip(0, providerItem.text(0))
+                for groupItem in groups.values():
+                    providerItem.addChild(groupItem)
+                self.algorithmTree.addTopLevelItem(providerItem)
+                providerItem.setExpanded(text!="")
+                for groupItem in groups.values():
+                    if text != "":
+                        groupItem.setExpanded(True)
+
+    def fillTreeUsingProviders(self):
+        self.algorithmTree.clear()
+        text = unicode(self.searchBox.text())
+        for providerName in Sextante.algs.keys():
+            groups = {}
+            provider = Sextante.algs[providerName]
+            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            if not SextanteConfig.getSetting(name):
+                continue
+            algs = provider.values()
+            #add algorithms
+            for alg in algs:
+                if not alg.showInToolbox:
+                    continue
+                if text =="" or text.lower() in alg.name.lower():
+                    if alg.group in groups:
+                        groupItem = groups[alg.group]
+                    else:
+                        groupItem = QTreeWidgetItem()
+                        groupItem.setText(0, alg.group)
+                        groupItem.setToolTip(0, alg.group)
+                        groups[alg.group] = groupItem
+                    algItem = TreeAlgorithmItem(alg)
+                    groupItem.addChild(algItem)
+
+            actions = Sextante.actions[providerName]
+            for action in actions:
+                if text =="" or text.lower() in action.name.lower():
+                    if action.group in groups:
+                        groupItem = groups[action.group]
+                    else:
+                        groupItem = QTreeWidgetItem()
+                        groupItem.setText(0,action.group)
+                        groups[action.group] = groupItem
+                    algItem = TreeActionItem(action)
+                    groupItem.addChild(algItem)
+
+            if len(groups) > 0:
+                providerItem = QTreeWidgetItem()
+                providerItem.setText(0, Sextante.getProviderFromName(providerName).getDescription()
+                                     + " [" + str(len(provider)) + " geoalgorithms]")
+                providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
+                providerItem.setToolTip(0, providerItem.text(0))
+                for groupItem in groups.values():
+                    providerItem.addChild(groupItem)
+                self.algorithmTree.addTopLevelItem(providerItem)
+                providerItem.setExpanded(text!="")
+                for groupItem in groups.values():
+                    if text != "":
+                        groupItem.setExpanded(True)
+
+
+
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
+        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         self.setText(0, alg.name)
-        self.setIcon(0, alg.getIcon())
-        self.setToolTip(0, alg.name)
+        icon = alg.getIcon()
+        name = alg.name
+        if useCategories:
+            icon = GeoAlgorithm.getDefaultIcon()
+            group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
+        self.setIcon(0, icon)
+        self.setToolTip(0, name)
 
 class TreeActionItem(QTreeWidgetItem):
 

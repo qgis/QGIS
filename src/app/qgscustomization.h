@@ -89,6 +89,8 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
     void on_actionCollapseAll_triggered( bool checked );
     void on_actionSelectAll_triggered( bool checked );
 
+    void on_mCustomizationEnabledCheckBox_toggled( bool checked );
+
   private:
     void init();
     QTreeWidgetItem * createTreeItemWidgets( );

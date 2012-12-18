@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-test_qgscomposerlabel.py 
+test_qgscomposerlabel.py
                      --------------------------------------
                Date                 : Oct 2012
                Copyright            : (C) 2012 by Dr. Hugo Mercier
@@ -16,7 +16,7 @@ test_qgscomposerlabel.py
 '''
 import unittest
 from utilities import *
-from PyQt4.QtCore import * 
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 from qgis.core import *
@@ -24,14 +24,14 @@ from qgis.core import *
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsComposerLabel(unittest.TestCase):
-        
+
     def testCase(self):
-        TEST_DATA_DIR = unitTestDataPath()        
+        TEST_DATA_DIR = unitTestDataPath()
         vectorFileInfo = QFileInfo( TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
         QgsMapLayerRegistry.instance().addMapLayer( mVectorLayer )
-        
+
         # create composition with composer map
         mMapRenderer = QgsMapRenderer()
         layerStringList = QStringList()

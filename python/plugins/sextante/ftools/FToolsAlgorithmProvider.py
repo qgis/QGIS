@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
+from sextante.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -41,6 +43,7 @@ from sextante.ftools.LinesIntersection import LinesIntersection
 from sextante.ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
 
 # data management tools
+from sextante.ftools.ReprojectLayer import ReprojectLayer
 
 # geometry tools
 from sextante.ftools.Delaunay import Delaunay
@@ -75,10 +78,11 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [SumLines(), PointsInPolygon(), BasicStatisticsStrings(),
-                        BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
+        self.alglist = [SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
+                        BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
                         # data management
+                        ReprojectLayer(),
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), MultipartToSingleparts(),

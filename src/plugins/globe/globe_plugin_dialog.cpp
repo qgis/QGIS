@@ -186,7 +186,7 @@ void QgsGlobePluginDialog::on_elevationAdd_clicked()
     QTableWidgetItem *type = new QTableWidgetItem( elevationCombo->currentText() );
     QTableWidgetItem *uri = new QTableWidgetItem( elevationPath->text() );
     QTableWidgetItem* cache = new QTableWidgetItem();
-    cache->setCheckState(( elevationCombo->currentText() == "Worldwind" ) ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
+    //cache->setCheckState(( elevationCombo->currentText() == "Worldwind" ) ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
     elevationDatasourcesWidget->setRowCount( 1 + i );
     elevationDatasourcesWidget->setItem( i, 0, type );
     elevationDatasourcesWidget->setItem( i, 1, cache );
@@ -255,15 +255,14 @@ void QgsGlobePluginDialog::resetElevationDatasources()
 {
   elevationDatasourcesWidget->clearContents();
   elevationDatasourcesWidget->setRowCount( 1 );
-  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem("TMS") );
+  elevationDatasourcesWidget->setItem( 0, 0, new QTableWidgetItem( "TMS" ) );
   elevationDatasourcesWidget->setItem( 0, 1, new QTableWidgetItem() );
-  elevationDatasourcesWidget->item( 0, 1 )->setCheckState( Qt::Unchecked );
-  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem("http://readymap.org/readymap/tiles/1.0.0/9/") );
+  //elevationDatasourcesWidget->item( 0, 1 )->setCheckState( Qt::Unchecked );
+  elevationDatasourcesWidget->setItem( 0, 2, new QTableWidgetItem( "http://readymap.org/readymap/tiles/1.0.0/9/" ) );
 }
 
 void QgsGlobePluginDialog::readElevationDatasources()
 {
-  //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
   elevationDatasourcesWidget->setRowCount( 0 );
@@ -276,12 +275,12 @@ void QgsGlobePluginDialog::readElevationDatasources()
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type" ) );
     QTableWidgetItem *uri = new QTableWidgetItem(
       QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri" ) );
-    bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
+    //bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
 
     elevationDatasourcesWidget->setRowCount( 1 + i );
     elevationDatasourcesWidget->setItem( i, 0, type );
     QTableWidgetItem* chkBoxItem = new QTableWidgetItem();
-    chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
+    //chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
     elevationDatasourcesWidget->setItem( i, 1, chkBoxItem );
     elevationDatasourcesWidget->setItem( i, 2, uri );
   }

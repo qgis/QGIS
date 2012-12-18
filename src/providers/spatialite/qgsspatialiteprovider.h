@@ -253,6 +253,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
+    QString geomParam() const;
+
+    //! get SpatiaLite version string
+    QString spatialiteVersion();
+
     QgsFields attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
@@ -356,6 +361,18 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     const QgsField & field( int index ) const;
 
+    //! SpatiaLite version string
+    QString mSpatialiteVersionInfo;
+
+    //! Are mSpatialiteVersionMajor, mSpatialiteVersionMinor valid?
+    bool mGotSpatialiteVersion;
+
+    //! SpatiaLite major version
+    int mSpatialiteVersionMajor;
+
+    //! SpatiaLite minor version
+    int mSpatialiteVersionMinor;
+
     /**
     * internal utility functions used to handle common SQLite tasks
     */
@@ -369,6 +386,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+    // only if libspatialite version is >= 4.0.0
+    bool checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr );
+    bool getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr );
+    bool getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr );
+    void loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr );
+    void getViewSpatialIndexName();
+#endif
     bool prepareStatement( sqlite3_stmt *&stmt,
                            const QgsAttributeList &fetchAttributes,
                            bool fetchGeometry,

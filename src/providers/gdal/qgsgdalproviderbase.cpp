@@ -124,51 +124,48 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-QgsRasterInterface::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
+QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Unknown:
-      return QgsRasterDataProvider::UnknownDataType;
+      return QGis::UnknownDataType;
       break;
     case GDT_Byte:
-      return QgsRasterDataProvider::Byte;
+      return QGis::Byte;
       break;
     case GDT_UInt16:
-      return QgsRasterDataProvider::UInt16;
+      return QGis::UInt16;
       break;
     case GDT_Int16:
-      return QgsRasterDataProvider::Int16;
+      return QGis::Int16;
       break;
     case GDT_UInt32:
-      return QgsRasterDataProvider::UInt32;
+      return QGis::UInt32;
       break;
     case GDT_Int32:
-      return QgsRasterDataProvider::Int32;
+      return QGis::Int32;
       break;
     case GDT_Float32:
-      return QgsRasterDataProvider::Float32;
+      return QGis::Float32;
       break;
     case GDT_Float64:
-      return QgsRasterDataProvider::Float64;
+      return QGis::Float64;
       break;
     case GDT_CInt16:
-      return QgsRasterDataProvider::CInt16;
+      return QGis::CInt16;
       break;
     case GDT_CInt32:
-      return QgsRasterDataProvider::CInt32;
+      return QGis::CInt32;
       break;
     case GDT_CFloat32:
-      return QgsRasterDataProvider::CFloat32;
+      return QGis::CFloat32;
       break;
     case GDT_CFloat64:
-      return QgsRasterDataProvider::CFloat64;
-      break;
-    case GDT_TypeCount:
-      // make gcc happy
+      return QGis::CFloat64;
       break;
   }
-  return QgsRasterDataProvider::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( int gdalColorInterpretation ) const

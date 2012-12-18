@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -34,34 +34,33 @@ from .dlg_add_geometry_column import DlgAddGeometryColumn
 from .dlg_create_constraint import DlgCreateConstraint
 from .dlg_create_index import DlgCreateIndex
 
-from .ui.ui_DlgTableProperties import Ui_DlgTableProperties
+from .ui.ui_DlgTableProperties import Ui_DbManagerDlgTableProperties as Ui_Dialog
 
-class DlgTableProperties(QDialog, Ui_DlgTableProperties):
-	
+class DlgTableProperties(QDialog, Ui_Dialog):
 	def __init__(self, table, parent=None):
 		QDialog.__init__(self, parent)
 		self.table = table
 		self.setupUi(self)
-		
+
 		self.db = self.table.database()
-		
+
 		m = TableFieldsModel(self)
 		self.viewFields.setModel(m)
-		
+
 		m = TableConstraintsModel(self)
 		self.viewConstraints.setModel(m)
-		
+
 		m = TableIndexesModel(self)
 		self.viewIndexes.setModel(m)
-		
+
 		self.connect(self.btnAddColumn, SIGNAL("clicked()"), self.addColumn)
 		self.connect(self.btnAddGeometryColumn, SIGNAL("clicked()"), self.addGeometryColumn)
 		self.connect(self.btnEditColumn, SIGNAL("clicked()"), self.editColumn)
 		self.connect(self.btnDeleteColumn, SIGNAL("clicked()"), self.deleteColumn)
-		
+
 		self.connect(self.btnAddConstraint, SIGNAL("clicked()"), self.addConstraint)
 		self.connect(self.btnDeleteConstraint, SIGNAL("clicked()"), self.deleteConstraint)
-		
+
 		self.connect(self.btnAddIndex, SIGNAL("clicked()"), self.createIndex)
 		self.connect(self.btnAddSpatialIndex, SIGNAL("clicked()"), self.createSpatialIndex)
 		self.connect(self.btnDeleteIndex, SIGNAL("clicked()"), self.deleteIndex)
@@ -88,13 +87,13 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 
 	def populateFields(self):
 		""" load field information from database """
-		
+
 		m = self.viewFields.model()
 		m.clear()
 
 		for fld in self.table.fields():
 			m.append( fld )
-		
+
 		for col in range(4):
 			self.viewFields.resizeColumnToContents(col)
 
@@ -113,7 +112,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		if not dlg.exec_():
 			return
 		fld = dlg.getField()
-		
+
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		self.emit(SIGNAL("aboutToChangeTable()"))
 		try:
@@ -138,7 +137,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		index = self.currentColumn()
 		if index == -1:
 			return
-		
+
 		m = self.viewFields.model()
 		# get column in table
 		# (there can be missing number if someone deleted a column)
@@ -148,7 +147,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		if not dlg.exec_():
 			return
 		new_fld = dlg.getField(True)
-		
+
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		self.emit(SIGNAL("aboutToChangeTable()"))
 		try:
@@ -165,14 +164,14 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		index = self.currentColumn()
 		if index == -1:
 			return
-		
+
 		m = self.viewFields.model()
 		fld = m.getObject(index)
-		
+
 		res = QMessageBox.question(self, "are you sure", u"really delete column '%s' ?" % fld.name, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
-		
+
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		self.emit(SIGNAL("aboutToChangeTable()"))
 		try:
@@ -184,7 +183,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		finally:
 			QApplication.restoreOverrideCursor()
 
-	
+
 	def populateConstraints(self):
 		constraints = self.table.constraints()
 		if constraints == None:
@@ -193,7 +192,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 
 		m = self.viewConstraints.model()
 		m.clear()
-		
+
 		for constr in constraints:
 			m.append( constr )
 
@@ -207,7 +206,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 
 	def addConstraint(self):
 		""" add primary key or unique constraint """
-		
+
 		dlg = DlgCreateConstraint(self, self.table)
 		if not dlg.exec_():
 			return
@@ -215,7 +214,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 
 	def deleteConstraint(self):
 		""" delete a constraint """
-		
+
 		index = self.currentConstraint()
 		if index == -1:
 			return
@@ -226,7 +225,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 		res = QMessageBox.question(self, "are you sure", u"really delete constraint '%s' ?" % constr.name, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
-		
+
 		QApplication.setOverrideCursor(Qt.WaitCursor)
 		self.emit(SIGNAL("aboutToChangeTable()"))
 		try:
@@ -296,8 +295,8 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 			DlgDbError.showError(e, self)
 			return
 		finally:
-			QApplication.restoreOverrideCursor()	
-	
+			QApplication.restoreOverrideCursor()
+
 	def currentIndex(self):
 		""" returns row index of selected index """
 		sel = self.viewIndexes.selectionModel()
@@ -306,7 +305,7 @@ class DlgTableProperties(QDialog, Ui_DlgTableProperties):
 			QMessageBox.information(self, "sorry", "nothing selected")
 			return -1
 		return indexes[0].row()
-	
+
 	def deleteIndex(self):
 		""" delete currently selected index """
 		index = self.currentIndex()

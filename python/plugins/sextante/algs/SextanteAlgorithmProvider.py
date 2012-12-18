@@ -16,13 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from sextante.algs.EquivalentNumField import EquivalentNumField
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.algs.AddTableField import AddTableField
 from PyQt4 import QtGui
@@ -38,7 +38,7 @@ class SextanteAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(),
-                        AutoincrementalField(), Explode(), FieldsPyculator()]
+                        AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

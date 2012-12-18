@@ -1,3 +1,10 @@
+# Concatenation/editing of QScintilla API files for PyQGIS
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Copyright (c) 2012, Larry Shaffer <larrys@dakotacarto.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+
 SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
 
 IF(EXISTS "${CMAKE_BINARY_DIR}/python/qgis.gui.api")

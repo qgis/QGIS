@@ -19,7 +19,7 @@ SET (coordinatecapture_RCCS  coordinatecapture.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS}) 
+QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS})
 
 QT4_WRAP_CPP (coordinatecapture_MOC_SRCS  ${coordinatecapture_MOC_HDRS})
 
@@ -30,9 +30,9 @@ ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordina
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
-     ../../core 
-     ../../core/raster 
-     ../../core/renderer 
+     ../../core
+     ../../core/raster
+     ../../core/renderer
      ../../core/symbology
      ../../gui
      ..

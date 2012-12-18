@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -29,16 +29,16 @@ from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
 from .dlg_db_error import DlgDbError
 
-from .ui.ui_DlgCreateTable import Ui_DlgCreateTable
+from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 
 
 class TableFieldsDelegate(QItemDelegate):
 	""" delegate with some special item editors """
-	
+
 	def __init__(self, field_types, parent=None):
 		QItemDelegate.__init__(self, parent)
 		self.fieldTypes = field_types
-		
+
 	def createEditor(self, parent, option, index):
 		# special combobox for field type
 		if index.column() == 1:
@@ -52,7 +52,7 @@ class TableFieldsDelegate(QItemDelegate):
 		elif index.column() == 2:
 			return QCheckBox(parent)
 		return QItemDelegate.createEditor(self, parent, option, index)
-		
+
 	def setEditorData(self, editor, index):
 		""" load data from model to editor """
 		m = index.model()
@@ -65,7 +65,7 @@ class TableFieldsDelegate(QItemDelegate):
 		else:
 			# use default
 			QItemDelegate.setEditorData(self, editor, index)
-		
+
 	def setModelData(self, editor, model, index):
 		""" save data from editor back to model """
 		if index.column() == 1:
@@ -79,8 +79,7 @@ class TableFieldsDelegate(QItemDelegate):
 				self.emit(SIGNAL("columnNameChanged()"))
 
 
-class DlgCreateTable(QDialog, Ui_DlgCreateTable):
-	
+class DlgCreateTable(QDialog, Ui_Dialog):
 	GEOM_TYPES = ["POINT", "LINESTRING", "POLYGON", "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", "GEOMETRYCOLLECTION"]
 
 	def __init__(self, item, parent=None):
@@ -96,14 +95,14 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		m = TableFieldsModel(self, True)	# it's editable
 		self.fields.setModel(m)
 		self.fields.setColumnHidden(3, True)	# hide Default column
-		
+
 		d = TableFieldsDelegate(self.fieldTypes, self)
 		self.fields.setItemDelegate(d)
-		
+
 		self.fields.setColumnWidth(0,140)
 		self.fields.setColumnWidth(1,140)
 		self.fields.setColumnWidth(2,50)
-		
+
 		b = QPushButton("&Create")
 		self.buttonBox.addButton(b, QDialogButtonBox.ActionRole)
 
@@ -112,17 +111,17 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		self.connect(self.btnFieldUp, SIGNAL("clicked()"), self.fieldUp)
 		self.connect(self.btnFieldDown, SIGNAL("clicked()"), self.fieldDown)
 		self.connect(b, SIGNAL("clicked()"), self.createTable)
-		
+
 		self.connect(self.chkGeomColumn, SIGNAL("clicked()"), self.updateUi)
-		
+
 		self.connect(self.fields.selectionModel(), SIGNAL("selectionChanged(const QItemSelection &, const QItemSelection &)"), self.updateUiFields)
 		self.connect(d, SIGNAL("columnNameChanged()"), self.updatePkeyCombo)
 
-		self.populateSchemas()		
+		self.populateSchemas()
 		self.updateUi()
 		self.updateUiFields()
-		
-		
+
+
 	def populateSchemas(self):
 		self.cboSchema.clear()
 		if not self.hasSchemas:
@@ -139,7 +138,7 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 	def hideSchemas(self):
 		self.cboSchema.setEnabled(False)
 
-		
+
 	def updateUi(self):
 		useGeom = self.chkGeomColumn.isChecked()
 		self.cboGeomType.setEnabled(useGeom)
@@ -147,7 +146,7 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		self.spinGeomDim.setEnabled(useGeom)
 		self.editGeomSrid.setEnabled(useGeom)
 		self.chkSpatialIndex.setEnabled(useGeom)
-		
+
 	def updateUiFields(self):
 		fld = self.selectedField()
 		if fld is not None:
@@ -159,32 +158,32 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		self.btnFieldUp.setEnabled(up_enabled)
 		self.btnFieldDown.setEnabled(down_enabled)
 		self.btnDeleteField.setEnabled(del_enabled)
-		
+
 	def updatePkeyCombo(self, selRow=None):
 		""" called when list of columns changes. if 'sel' is None, it keeps current index """
-		
+
 		if selRow is None:
 			selRow = self.cboPrimaryKey.currentIndex()
-		
+
 		self.cboPrimaryKey.clear()
-		
+
 		m = self.fields.model()
 		for row in xrange(m.rowCount()):
 			name = m.data(m.index(row,0)).toString()
 			self.cboPrimaryKey.addItem(name)
 
 		self.cboPrimaryKey.setCurrentIndex(selRow)
-		
+
 	def addField(self):
 		""" add new field to the end of field table """
 		m = self.fields.model()
 		newRow = m.rowCount()
 		m.insertRows(newRow,1)
-		
+
 		indexName = m.index(newRow,0,QModelIndex())
 		indexType = m.index(newRow,1,QModelIndex())
 		indexNull = m.index(newRow,2,QModelIndex())
-		
+
 		m.setData(indexName, QVariant("new_field"))
 		colType = self.fieldTypes[0]
 		if newRow == 0:
@@ -193,22 +192,22 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 				colType = "serial"
 		m.setData(indexType, QVariant(colType))
 		m.setData(indexNull, QVariant(False))
-		
+
 		# selects the new row
 		sel = self.fields.selectionModel()
 		sel.select(indexName, QItemSelectionModel.Rows | QItemSelectionModel.ClearAndSelect)
-		
+
 		# starts editing
 		self.fields.edit(indexName)
-		
+
 		self.updatePkeyCombo(0 if newRow == 0 else None)
-		
+
 	def selectedField(self):
 		sel = self.fields.selectedIndexes()
 		if len(sel) < 1:
 			return None
 		return sel[0].row()
-	
+
 	def deleteField(self):
 		""" delete selected field """
 		row = self.selectedField()
@@ -216,9 +215,9 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 			QMessageBox.information(self, "sorry", "no field selected")
 		else:
 			self.fields.model().removeRows(row,1)
-			
+
 		self.updatePkeyCombo()
-	
+
 	def fieldUp(self):
 		""" move selected field up """
 		row = self.selectedField()
@@ -228,17 +227,17 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		if row == 0:
 			QMessageBox.information(self, "sorry", "field is at top already")
 			return
-		
+
 		# take row and reinsert it
 		rowdata = self.fields.model().takeRow(row)
 		self.fields.model().insertRow(row-1, rowdata)
-		
+
 		# set selection again
 		index = self.fields.model().index(row-1, 0, QModelIndex())
 		self.fields.selectionModel().select(index, QItemSelectionModel.Rows | QItemSelectionModel.ClearAndSelect)
 
 		self.updatePkeyCombo()
-	
+
 	def fieldDown(self):
 		""" move selected field down """
 		row = self.selectedField()
@@ -248,17 +247,17 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 		if row == self.fields.model().rowCount()-1:
 			QMessageBox.information(self, "sorry", "field is at bottom already")
 			return
-		
+
 		# take row and reinsert it
 		rowdata = self.fields.model().takeRow(row)
 		self.fields.model().insertRow(row+1, rowdata)
-		
+
 		# set selection again
 		index = self.fields.model().index(row+1, 0, QModelIndex())
 		self.fields.selectionModel().select(index, QItemSelectionModel.Rows | QItemSelectionModel.ClearAndSelect)
-	
+
 		self.updatePkeyCombo()
-	
+
 	def createTable(self):
 		""" create table with chosen fields, optionally add a geometry column """
 		if not self.hasSchemas:
@@ -268,17 +267,17 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 			if len(schema) == 0:
 				QMessageBox.information(self, "sorry", "select schema!")
 				return
-		
+
 		table = unicode(self.editName.text())
 		if len(table) == 0:
 			QMessageBox.information(self, "sorry", "enter table name!")
 			return
-		
+
 		m = self.fields.model()
 		if m.rowCount() == 0:
 			QMessageBox.information(self, "sorry", "add some fields!")
 			return
-		
+
 		useGeomColumn = self.chkGeomColumn.isChecked()
 		if useGeomColumn:
 			geomColumn = unicode(self.editGeomColumn.text())

@@ -26,6 +26,7 @@
 #include <QDomNode>
 
 #include "qgis.h"
+#include "qgserror.h"
 #include "qgsrectangle.h"
 
 class QgsRenderContext;
@@ -212,6 +213,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString lastError();
 
+    /** Get current status error. This error describes some principal problem
+     *  for which layer cannot work and thus is not valid. It is not last error
+     *  after accessing data by draw() etc.
+     */
+    virtual QgsError error() const { return mError; }
+
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
     */
@@ -329,11 +336,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale member */
+    /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
     float minimumScale();
 
-    /** Accessor and mutator for the maximum scale member */
+    /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
     float maximumScale();
 
@@ -413,6 +420,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    /** Set error message */
+    void setError( const QgsError & theError ) { mError = theError;}
+
     /** Transparency level for this layer should be 0-255 (255 being opaque) */
     unsigned int mTransparencyLevel;
 
@@ -432,6 +444,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**Description of the layer*/
     QString mAbstract;
+
+    /** \brief Error */
+    QgsError mError;
 
   private:
     /** layer's spatial reference system.
@@ -453,9 +468,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Tag for embedding additional information */
     QString mTag;
 
-    /** Minimum scale at which this layer should be displayed */
+    /** Minimum scale denominator at which this layer should be displayed */
     float mMinScale;
-    /** Maximum scale at which this layer should be displayed */
+    /** Maximum scale denominator at which this layer should be displayed */
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;

@@ -2,6 +2,7 @@
 ** alias MACROs to avoid any potential collision
 ** for linker symbols declared into the sqlite3 code
 ** internally embedded into SpatiaLite
+** This file is in the public domain.
 */
 #define sqlite3_version SPLite3_version
 #define sqlite3_libversion SPLite3_libversion

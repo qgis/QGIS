@@ -32,7 +32,7 @@ class SLTableDataModel(TableDataModel):
 
 		fields_txt = u", ".join(self.fields)
 		table_txt = self.db.quoteId( (self.table.schemaName(), self.table.name) )
-		
+
 		# run query and get results
 		sql = u"SELECT %s FROM %s" % (fields_txt, table_txt)
 		c = self.db._get_cursor()

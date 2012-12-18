@@ -28,8 +28,9 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication,QLocale
-from qgis.core import QGis
+from PyQt4.QtCore import QCoreApplication,QLocale, QString
+from qgis.core import QGis, QgsExpression
+from string import Template
 import sys
 import traceback
 import glob
@@ -229,7 +230,7 @@ def canUninstallPlugin(packageName):
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
   global plugins, active_plugins
-  
+
   if not plugins.has_key(packageName): return False
   if packageName not in active_plugins: return False
 
@@ -303,11 +304,11 @@ def showPluginHelp(packageName=None,filename="index",section=""):
   helpfile = os.path.join(path,filename+"-"+locale+".html")
   if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-"+locale.split("_")[0]+".html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en_US.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+".html")
   if os.path.exists(helpfile):
     url = "file://"+helpfile
@@ -371,6 +372,59 @@ def closeProjectMacro():
     mod.closeProject()
 
 
+def qgsfunction(args, group, **kwargs):
+  """
+  Decorator function used to define a user expression function.
+
+  Custom functions should take (values, feature, parent) as args,
+  they can also shortcut naming feature and parent args by using *args
+  if they are not needed in the function.
+
+  Functions should return a value compatible with QVariant
+
+  Eval errors can be raised using parent.setEvalErrorString()
+
+  Functions must be unregistered when no longer needed using
+  QgsExpression.unregisterFunction
+
+  Example:
+    @qgsfunction(2, 'test'):
+    def add(values, feature, parent):
+      pass
+
+    Will create and register a function in QgsExpression called 'add' in the
+    'test' group that takes two arguments.
+
+    or not using feature and parent:
+
+    @qgsfunction(2, 'test'):
+    def add(values, *args):
+      pass
+  """
+  helptemplate = Template("""<h3>$name function</h3><br>$doc""")
+  class QgsExpressionFunction(QgsExpression.Function):
+    def __init__(self, name, args, group, helptext=''):
+      QgsExpression.Function.__init__(self, name, args, group, QString(helptext))
+
+    def func(self, values, feature, parent):
+      pass
+
+  def wrapper(func):
+    name = kwargs.get('name', func.__name__)
+    help = func.__doc__ or ''
+    help = help.strip()
+    if args == 0 and not name[0] == '$':
+      name = '${0}'.format(name)
+    func.__name__ = name
+    help = helptemplate.safe_substitute(name=name, doc=help)
+    f = QgsExpressionFunction(name, args, group, help)
+    f.func = func
+    register = kwargs.get('register', True)
+    if register:
+      QgsExpression.registerFunction(f)
+    return f
+  return wrapper
+
 #######################
 # IMPORT wrapper
 
@@ -386,7 +440,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=-1):
   if mod and '__file__' in mod.__dict__:
     module_name = mod.__name__
     package_name = module_name.split('.')[0]
-    # check whether the module belongs to one of our plugins 
+    # check whether the module belongs to one of our plugins
     if package_name in available_plugins:
       if package_name not in _plugin_modules:
         _plugin_modules[package_name] = set()

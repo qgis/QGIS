@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRasterFileWriter
                                  int nCols, int nRows,
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
-                                 QgsRasterInterface::DataType destDataType,
+                                 QGis::DataType destDataType,
                                  QList<bool> destHasNoDataValueList,
                                  QList<double> destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
@@ -116,17 +116,17 @@ class CORE_EXPORT QgsRasterFileWriter
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
+    //static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
 
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
+        const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
     /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
     QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
-                                       QgsRasterInterface::DataType type );
+                                       QGis::DataType type );
 
     /**Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );

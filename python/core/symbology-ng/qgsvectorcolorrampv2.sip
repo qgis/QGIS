@@ -26,6 +26,15 @@ class QgsVectorColorRampV2
 
 };
 
+struct QgsGradientStop
+{
+  double offset;
+  QColor color;
+  QgsGradientStop( double o, const QColor& c );
+};
+
+typedef QList<QgsGradientStop> QgsGradientStopsList;
+
 class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 {
 %TypeHeaderCode
@@ -33,7 +42,9 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 %End
   public:
     QgsVectorGradientColorRampV2( QColor color1 = DEFAULT_GRADIENT_COLOR1,
-                                  QColor color2 = DEFAULT_GRADIENT_COLOR2 );
+                                  QColor color2 = QColor(0,255,0),
+                                  bool discrete = false,
+                                  QgsGradientStopsList stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -51,10 +62,11 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     void setColor1( QColor color );
     void setColor2( QColor color );
 
-    typedef QMap<double, QColor> StopsMap;
+    bool isDiscrete() const;
+    void setDiscrete( bool discrete );
 
-    void setStops( const StopsMap& stops );
-    const StopsMap& stops() const;
+    void setStops( const QgsGradientStopsList& stops );
+    const QgsGradientStopsList& stops() const;
 };
 
 class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
@@ -144,19 +156,7 @@ class QgsCptCityColorRampV2
     QgsCptCityColorRampV2( QString schemeName, QStringList variantList,
                            QString variantName = QString(), bool doLoadFile = true );
 
-
-    enum GradientType
-    {
-      Discrete, //discrete stops, e.g. Color Brewer
-      Continuous, //continuous, e.g. QgsVectorColorRampV2
-      ContinuousMulti //continuous with 2 values in intermediate stops
-    };
-    typedef QList< QPair < double, QColor > > GradientList;
-
-
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-
-    virtual QColor color( double value ) const;
 
     virtual QString type() const;
 
@@ -164,8 +164,6 @@ class QgsCptCityColorRampV2
     void copy( const QgsCptCityColorRampV2* other );
 
     virtual QgsStringMap properties() const;
-
-    int count() const;
 
     QString schemeName() const;
     QString variantName() const;
@@ -178,7 +176,8 @@ class QgsCptCityColorRampV2
     void setName( QString schemeName, QString variantName = "", QStringList variantList = QStringList() );
 
     void loadPalette();
-    GradientType gradientType() const;
+    bool hasMultiStops() const;
+    int count() const;
 
     QString fileName() const;
     bool loadFile();

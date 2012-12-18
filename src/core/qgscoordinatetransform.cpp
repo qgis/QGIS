@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
@@ -148,9 +149,8 @@ void QgsCoordinateTransform::initialise()
   if ( !mDestCRS.isValid() )
   {
     //No destination projection is set so we set the default output projection to
-    //be the same as input proj. This only happens on the first layer loaded
-    //whatever that may be...
-    mDestCRS.createFromOgcWmsCrs( mSourceCRS.authid() );
+    //be the same as input proj.
+    mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
   }
 
   // init the projections (destination and source)

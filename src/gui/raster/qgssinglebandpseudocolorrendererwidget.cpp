@@ -80,6 +80,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mNumberOfEntriesSpinBox->setValue( 5 ); // some default
 
   setFromRenderer( layer->renderer() );
+
+  resetClassifyButton();
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
@@ -276,7 +278,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       QColor currentColor;
-      currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
+      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+      currentColor.setRgb( colorDiff*idx, 0, 255 - colorDiff * idx );
       entryColors.push_back( currentColor );
     }
   }
@@ -284,7 +287,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   {
     for ( int i = 0; i < numberOfEntries; ++i )
     {
-      entryColors.push_back( colorRamp->color((( double ) i ) / numberOfEntries ) );
+      int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
+      entryColors.push_back( colorRamp->color((( double ) idx ) / numberOfEntries ) );
     }
   }
 
@@ -559,6 +563,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mBandComboBox_currentIndexChange
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
 {
+  Q_UNUSED( theBandNo );
   QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
   if ( qIsNaN( theMin ) )

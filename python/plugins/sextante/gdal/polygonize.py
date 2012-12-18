@@ -43,8 +43,8 @@ class polygonize(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "polygonize"
-        self.group = "Conversion"
+        self.name = "Polygonize"
+        self.group = "[GDAL] Conversion"
         self.addParameter(ParameterRaster(polygonize.INPUT, "Input layer", False))
         self.addParameter(ParameterString(polygonize.FIELD, "Output field name", "DN"))
         self.addOutput(OutputVector(polygonize.OUTPUT, "Output layer"))
@@ -61,5 +61,5 @@ class polygonize(GeoAlgorithm):
         commands.append(output)
         commands.append(QtCore.QFileInfo(output).baseName())
         commands.append(self.getParameterValue(polygonize.FIELD))
-        
+
         GdalUtils.runGdal(commands, progress)

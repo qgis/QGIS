@@ -21,6 +21,7 @@
 #include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QRegExp>
 #include <qnumeric.h>
 
 #include "qgspoint.h"
@@ -52,6 +53,33 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   ymin = r.yMinimum();
   xmax = r.xMaximum();
   ymax = r.yMaximum();
+}
+
+QgsRectangle::QgsRectangle( const QDomNode& boxNode )
+{
+  QDomElement boxElem = boxNode.toElement();
+  if ( boxElem.tagName() == "Box" )
+  {
+    QDomElement bElem = boxElem.firstChild().toElement();
+    QString coordSeparator = ",";
+    QString tupelSeparator = " ";
+    if ( bElem.hasAttribute( "cs" ) )
+    {
+      coordSeparator = bElem.attribute( "cs" );
+    }
+    if ( bElem.hasAttribute( "ts" ) )
+    {
+      tupelSeparator = bElem.attribute( "ts" );
+    }
+
+    QString bString = bElem.text();
+    bool conversionSuccess;
+    xmin = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    ymin = bString.section( tupelSeparator, 0, 0 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+    xmax = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 0, 0 ).toDouble( &conversionSuccess );
+    ymax = bString.section( tupelSeparator, 1, 1 ).section( coordSeparator, 1, 1 ).toDouble( &conversionSuccess );
+  }
+  normalize();
 }
 
 void QgsRectangle::set( const QgsPoint& p1, const QgsPoint& p2 )
@@ -185,10 +213,10 @@ bool QgsRectangle::isEmpty() const
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 );
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) );
 
   return rep;
 }
@@ -197,16 +225,16 @@ QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
     QString( "POLYGON((" ) +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 ) + ", " +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 ) + ", " +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) +
     QString( "))" );
 
   return rep;

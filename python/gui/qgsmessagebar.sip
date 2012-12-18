@@ -32,6 +32,9 @@ class QgsMessageBar: QFrame
     static QWidget* createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent = 0 ) /Factory/;
 
   signals:
+    //! emitted when a message widget is added to the bar
+    void widgetAdded( QWidget *widget );
+
     //! emitted when a widget was removed from the bar
     void widgetRemoved( QWidget *widget );
 
@@ -41,4 +44,9 @@ class QgsMessageBar: QFrame
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget();
+
+    /*! remove all items from the bar's widget list
+     *  @return true if all items were removed, false otherwise
+     */
+    bool clearWidgets();
 };

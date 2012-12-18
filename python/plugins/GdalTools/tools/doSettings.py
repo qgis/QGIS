@@ -45,8 +45,8 @@ class GdalToolsSettingsDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.btnSetBinPath, SIGNAL( "clicked()" ), self.setBinPath )
     self.bin_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.bin_tooltip_label.setToolTip( self.tr( \
-u"""A list of colon-separated (Linux and MacOS) or 
-semicolon-separated (Windows) paths to both binaries 
+u"""A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to both binaries
 and python executables.
 
 MacOS users usually need to set it to something like
@@ -57,7 +57,7 @@ MacOS users usually need to set it to something like
     QObject.connect( self.btnSetPymodPath, SIGNAL( "clicked()" ), self.setPymodPath )
     self.pymod_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.pymod_tooltip_label.setToolTip( self.tr( \
-u"""A list of colon-separated (Linux and MacOS) or 
+u"""A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.""") )
 
     # help
@@ -65,7 +65,7 @@ semicolon-separated (Windows) paths to python modules.""") )
     QObject.connect( self.btnSetHelpPath, SIGNAL( "clicked()" ), self.setHelpPath )
     self.help_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.help_tooltip_label.setToolTip( self.tr( \
-u"""Useful to open local GDAL documentation instead of online help 
+u"""Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog's Help button.""") )
 
 

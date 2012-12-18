@@ -1,0 +1,11 @@
+D-Infinity Concentration Limited Accumulation
+dinfconclimaccum
+Specialized Grid Analysis tools
+ParameterRaster|-ang|D-Infinity Flow Direction Grid|False
+ParameterRaster|-dg|Disturbance Indicator Grid|False
+ParameterRaster|-dm|Decay Multiplier Grid|False
+ParameterRaster|-q|Effective Runoff Weight Grid|False
+ParameterVector|-o|Outlets shapefile|0|True
+ParameterNumber|-csol|Concentration Threshold|1.0|100.0|1.0
+ParameterBoolean|-nc|Check for edge contamination|True
+OutputRaster|-ctpt|Concentration Grid
