@@ -763,6 +763,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     {
       QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, ct, errorMessage );
       delete writer;
+      delete ct;
       return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
     }
   }
@@ -1221,6 +1222,29 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QgsSymbolV2* featureSymbol = 0;
   while ( layer->nextFeature( fet ) )
   {
+    if ( ct )
+    {
+      try
+      {
+        if ( fet.geometry() )
+        {
+          fet.geometry()->transform( *ct );
+        }
+      }
+      catch ( QgsCsException &e )
+      {
+        delete ct;
+
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.typeName() ).arg( e.what() );
+        QgsLogger::warning( msg );
+        if ( errorMessage )
+          *errorMessage = msg;
+
+        return ErrProjection;
+      }
+    }
+
     featureSymbol = renderer->symbolForFeature( fet );
     if ( !featureSymbol )
     {
