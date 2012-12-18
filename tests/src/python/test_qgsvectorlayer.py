@@ -72,7 +72,7 @@ def dumpEditBuffer(layer):
       print "NO EDITING!"
       return
     print "ADDED:"
-    for f in editBuffer.addedFeatures(): print "%d: %s | %s" % (f.id(), formatAttributes(f.attributes()), f.geometry().exportToWkt())
+    for fid,f in editBuffer.addedFeatures().iteritems(): print "%d: %s | %s" % (f.id(), formatAttributes(f.attributes()), f.geometry().exportToWkt())
     print "CHANGED GEOM:"
     for fid,geom in editBuffer.changedGeometries().iteritems(): print "%d | %s" % (f.id(), f.geometry().exportToWkt())
 
@@ -136,7 +136,7 @@ class TestQgsVectorLayer(TestCase):
         checkBefore()
         layer.undoStack().redo()
         checkAfter()
-                
+        
         assert layer.commitChanges()
 
         checkAfter()
@@ -232,7 +232,6 @@ class TestQgsVectorLayer(TestCase):
         fid = feat.id()
         assert layer.deleteFeature(fid)
         checkAfter2()
-        dumpEditBuffer(layer)
               
         # now try undo/redo
         layer.undoStack().undo()
@@ -244,7 +243,6 @@ class TestQgsVectorLayer(TestCase):
         layer.undoStack().redo()
         checkAfter2()
 
-        dumpEditBuffer(layer)
         assert layer.commitChanges()
         checkAfter2()
 

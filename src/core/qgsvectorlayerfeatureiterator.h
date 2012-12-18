@@ -5,6 +5,8 @@
 
 #include <QSet>
 
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
+
 class QgsVectorLayer;
 class QgsVectorJoinInfo;
 
@@ -40,7 +42,7 @@ protected:
   // only related to editing
   QSet<QgsFeatureId> mFetchConsidered;
   QgsGeometryMap::iterator mFetchChangedGeomIt;
-  QgsFeatureList::iterator mFetchAddedFeaturesIt;
+  QgsFeatureMap::iterator mFetchAddedFeaturesIt;
 
   bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
 

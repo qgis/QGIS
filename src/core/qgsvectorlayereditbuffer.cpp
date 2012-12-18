@@ -113,16 +113,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
   if ( FID_IS_NEW( fid ) )
   {
-    bool found = false;
-    for ( int i = 0; i < mAddedFeatures.count(); ++i )
-    {
-      if ( mAddedFeatures[i].id() == fid )
-      {
-        found = true;
-        break;
-      }
-    }
-    if (!found)
+    if (!mAddedFeatures.contains(fid))
       return false;
   }
   else // existing feature
@@ -304,25 +295,22 @@ bool QgsVectorLayerEditBuffer::commitChanges(QStringList& commitErrors)
     {
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
-        QList<QgsFeatureId> ids;
-        foreach ( const QgsFeature &f, mAddedFeatures )
-        {
-          ids << f.id();
-        }
+        QList<QgsFeatureId> ids = mAddedFeatures.keys();
+        QgsFeatureList featuresToAdd = mAddedFeatures.values();
 
-        if ( provider->addFeatures( mAddedFeatures ) )
+        if ( provider->addFeatures( featuresToAdd ) )
         {
-          commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
+          commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
 
-          emit committedFeaturesAdded( L->id(), mAddedFeatures );
+          emit committedFeaturesAdded( L->id(), featuresToAdd );
 
           // notify everyone that the features with temporary ids were updated with permanent ids
-          for ( int i = 0; i < mAddedFeatures.size(); i++ )
+          for ( int i = 0; i < featuresToAdd.count(); ++i )
           {
-            if ( mAddedFeatures[i].id() != ids[i] )
+            if ( featuresToAdd[i].id() != ids[i] )
             {
               emit featureDeleted( ids[i] );
-              emit featureAdded( mAddedFeatures[i].id() );
+              emit featureAdded( featuresToAdd[i].id() );
             }
           }
 
@@ -448,7 +436,7 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
   }
 
   // go through added features and adapt attributes
-  QgsFeatureList::iterator featureIt = mAddedFeatures.begin();
+  QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
   for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
   {
     QgsAttributes& attrs = featureIt->attributes();
@@ -471,7 +459,7 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
   }
 
   // go through added features and adapt attributes
-  QgsFeatureList::iterator featureIt = mAddedFeatures.begin();
+  QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
   for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
   {
     QgsAttributes& attrs = featureIt->attributes();

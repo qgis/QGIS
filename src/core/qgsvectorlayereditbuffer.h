@@ -15,6 +15,7 @@ class QgsVectorLayer;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 {
@@ -79,7 +80,7 @@ public:
 
 
   /** New features which are not commited. */
-  inline const QgsFeatureList& addedFeatures() { return mAddedFeatures; }
+  inline const QgsFeatureMap& addedFeatures() { return mAddedFeatures; }
 
   /** Changed attributes values which are not commited */
   inline const QgsChangedAttributesMap& changedAttributeValues() { return mChangedAttributeValues; }
@@ -161,7 +162,7 @@ protected:
   QgsFeatureIds mDeletedFeatureIds;
 
   /** New features which are not commited. */
-  QgsFeatureList mAddedFeatures;
+  QgsFeatureMap mAddedFeatures;
 
   /** Changed attributes values which are not commited */
   QgsChangedAttributesMap mChangedAttributeValues;

@@ -1,4 +1,5 @@
 
+typedef QMap<qint64, QgsFeature> QgsFeatureMap;
 
 class QgsVectorLayerEditBuffer : QObject
 {
@@ -65,7 +66,7 @@ public:
 
 
   /** New features which are not commited. */
-  const QgsFeatureList& addedFeatures();
+  const QgsFeatureMap& addedFeatures();
 
   /** Changed attributes values which are not commited */
   const QgsChangedAttributesMap& changedAttributeValues();

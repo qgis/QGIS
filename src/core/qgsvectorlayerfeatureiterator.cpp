@@ -430,7 +430,7 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
     }
 
     // added features
-    for ( QgsFeatureList::iterator iter = editBuffer->mAddedFeatures.begin(); iter != editBuffer->mAddedFeatures.end(); ++iter )
+    for ( QgsFeatureMap::iterator iter = editBuffer->mAddedFeatures.begin(); iter != editBuffer->mAddedFeatures.end(); ++iter )
     {
       if ( iter->id() == featureId )
       {
