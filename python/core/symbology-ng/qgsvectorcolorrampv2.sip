@@ -16,6 +16,10 @@ class QgsVectorColorRampV2
   public:
     virtual ~QgsVectorColorRampV2();
 
+    virtual int count() const = 0;
+    
+    virtual double value( int index ) const = 0;
+
     virtual QColor color( double value ) const = 0;
 
     virtual QString type() const = 0;
