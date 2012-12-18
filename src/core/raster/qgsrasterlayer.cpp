@@ -1954,7 +1954,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
   else if ( mDrawingStyle == MultiBandColor )
   {
-    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
+    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 1 )
     {
       myKey = "multiBandSingleByte";
       myDefault = "NoEnhancement";
