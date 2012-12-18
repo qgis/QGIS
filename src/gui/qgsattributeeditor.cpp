@@ -496,6 +496,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
       if ( cb )
       {
+        if ( cb->isEditable() )
+          cb->setValidator( new QgsFieldValidator( cb, field ) );
         myWidget = cb;
       }
 
@@ -516,19 +518,34 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           relay = new QgsStringRelay( myWidget );
         }
 
+        const char* rSlot = SLOT( changeText( QString ) );
+        const char* rSig = SIGNAL( textChanged( QString ) );
+        const char* wSlot = SLOT( setText( QString ) );
+        const char* wSig = SIGNAL( textChanged( QString ) );
+        if ( te || pte )
+        {
+          rSlot = SLOT( changeText() );
+          wSig = SIGNAL( textChanged() );
+        }
+        if ( pte )
+        {
+          wSlot = SLOT( setPlainText( QString ) );
+        }
         if ( cb && cb->isEditable() )
         {
-          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setEditText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( editTextChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+          wSlot = SLOT( setEditText( QString ) );
+          wSig = SIGNAL( editTextChanged( QString ) );
         }
-        else
-        {
-          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
-        }
+
+        synchronized =  connect( relay, rSig, myWidget, wSlot );
+        synchronized &= connect( myWidget, wSig, relay, rSlot );
+
+        // store list of proxies in relay
+        relay->appendProxy( myWidget );
 
         if ( !cb || cb->isEditable() )
         {
+          myWidget->setProperty( "QgisAttrEditSlot", QVariant( QByteArray( wSlot ) ) );
           myWidget->setProperty( "QgisAttrEditProxy", QVariant( QMetaType::QObjectStar, &relay ) );
         }
       }
@@ -888,9 +905,10 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
       QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
-      if ( !le && !te && !pte )
+      if ( !le && ! cb && !te && !pte )
         return false;
 
       QString text;
@@ -910,6 +928,8 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       if ( le )
         le->setText( text );
+      if ( cb && cb->isEditable() )
+        cb->setEditText( text );
       if ( te )
         te->setHtml( text );
       if ( pte )
@@ -1010,4 +1030,42 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
   }
 
   return newWidget;
+}
+
+void QgsStringRelay::changeText()
+{
+  QObject* sObj = QObject::sender();
+  QTextEdit *te = qobject_cast<QTextEdit *>( sObj );
+  QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( sObj );
+
+  if ( te )
+    changeText( te->toPlainText() );
+  if ( pte )
+    changeText( pte->toPlainText() );
+}
+
+void QgsStringRelay::changeText( QString str )
+{
+  QObject* sObj = QObject::sender();
+  const char* sSlot = sObj->property( "QgisAttrEditSlot" ).toByteArray().constData();
+
+  // disconnect widget being edited from relay's signal
+  disconnect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
+
+  // block all proxies' signals
+  QList<bool> oldBlockSigs;
+  for ( int i = 0; i < mProxyList.size(); ++i )
+  {
+    oldBlockSigs << ( mProxyList[i] )->blockSignals( true );
+  }
+
+  // update all proxies not being edited without creating cyclical signals/slots
+  emit textChanged( str );
+
+  // reconnect widget being edited and reset blockSignals state
+  connect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
+  for ( int i = 0; i < mProxyList.size(); ++i )
+  {
+    ( mProxyList[i] )->blockSignals( oldBlockSigs[i] );
+  }
 }
