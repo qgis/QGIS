@@ -505,7 +505,7 @@ QStringList QgsStyleV2::symbolsOfGroup( StyleEntity type, int groupid )
 {
   if ( !mCurrentDB )
   {
-    QgsDebugMsg( "Cannot Open database for getting group symbols of groupid: " + groupid );
+    QgsDebugMsg( QString( "Cannot Open database for getting group symbols of groupid: %1" ).arg( groupid ) );
     return QStringList();
   }
 
@@ -546,7 +546,7 @@ QStringList QgsStyleV2::symbolsWithTag( StyleEntity type, int tagid )
 {
   if ( !mCurrentDB )
   {
-    QgsDebugMsg( "Cannot open database to get symbols of tagid " + tagid );
+    QgsDebugMsg( QString( "Cannot open database to get symbols of tagid %1" ).arg( tagid ) );
     return QStringList();
   }
 
@@ -1111,7 +1111,7 @@ QStringList QgsStyleV2::symbolsOfSmartgroup( StyleEntity type, int id )
     QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
     if ( !doc.setContent( xmlstr ) )
     {
-      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+      QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
     }
     QDomElement smartEl = doc.documentElement();
     QString op = smartEl.attribute( "operator" );
@@ -1226,7 +1226,7 @@ QgsSmartConditionMap QgsStyleV2::smartgroup( int id )
     QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
     if ( !doc.setContent( xmlstr ) )
     {
-      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+      QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
     }
 
     QDomElement smartEl = doc.documentElement();
@@ -1268,7 +1268,7 @@ QString QgsStyleV2::smartgroupOperator( int id )
     QString xmlstr = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
     if ( !doc.setContent( xmlstr ) )
     {
-      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+      QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
     }
     QDomElement smartEl = doc.documentElement();
     op = smartEl.attribute( "operator" );
