@@ -90,10 +90,7 @@ class QgsStringRelay : public QObject
         : QObject( parent ) {}
 
   public slots:
-    void changeText( QString str )
-    {
-      emit textChanged( str );
-    }
+    void changeText( QString str );
 
   signals:
     void textChanged( QString );
