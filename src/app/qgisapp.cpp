@@ -4131,7 +4131,14 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setPyramidsResampling( d.pyramidsResampling() );
     fileWriter.setPyramidsFormat( d.pyramidsFormat() );
 
-    fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+    if ( err != QgsRasterFileWriter::NoError )
+    {
+      QMessageBox::warning( this, tr( "Error" ),
+                            tr( "Cannot write raster error code: %1" ).arg( err ),
+                            QMessageBox::Ok );
+
+    }
     delete pipe;
   }
 }
