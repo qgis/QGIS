@@ -415,6 +415,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
   QgsMapLayer *lyr = layer();
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
+  QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
   // zoom to layer extent
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
@@ -468,6 +469,11 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
         theMenu.addAction( toggleEditingAction );
         toggleEditingAction->setChecked( vlayer->isEditable() );
       }
+    }
+
+    if ( allEditsAction->isEnabled() )
+    {
+      theMenu.addAction( allEditsAction );
     }
 
     // disable duplication of memory layers
@@ -608,11 +614,9 @@ void QgsLegendLayer::updateAfterLayerModification()
 {
   updateAfterLayerModification( false );
 }
+
 void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 {
-  QgisApp::instance()->actionSaveAllEdits()->setEnabled(
-    QgisApp::instance()->unsavedEditableLayers().count() > 0 );
-
   if ( onlyGeomChanged )
   {
     updateIcon();

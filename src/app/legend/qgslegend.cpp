@@ -1124,6 +1124,25 @@ QList<QgsMapLayer *> QgsLegend::selectedLayers( bool inDrawOrder )
   return layers;
 }
 
+bool QgsLegend::selectedLayersEditable( bool modified )
+{
+  bool hasEditable = false;
+  foreach ( QgsMapLayer * layer, selectedLayers() )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layer );
+    if ( !vl )
+    {
+      continue;
+    }
+    if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
+    {
+      hasEditable = true;
+      break;
+    }
+  }
+  return hasEditable;
+}
+
 QList<QgsLegendLayer *> QgsLegend::legendLayers()
 {
   if ( mUpdateDrawingOrder )

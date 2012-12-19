@@ -290,9 +290,19 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
+    /** @note added in 1.9 */
+    QAction *actionAllEdits() { return mActionAllEdits; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
     /** @note added in 1.9 */
     QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
+    /** @note added in 1.9 */
+    QAction *actionRollbackEdits() { return mActionRollbackEdits; }
+    /** @note added in 1.9 */
+    QAction *actionRollbackAllEdits() { return mActionRollbackAllEdits; }
+    /** @note added in 1.9 */
+    QAction *actionCancelEdits() { return mActionCancelEdits; }
+    /** @note added in 1.9 */
+    QAction *actionCancelAllEdits() { return mActionCancelAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
@@ -379,10 +389,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! returns pointer to map legend
     QgsLegend *legend();
 
-    /** Return vector layers with unsaved provider edits
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
      * @note added in 1.9 */
-    QList<QgsMapLayer *> unsavedEditableLayers() const;
+    QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
 #ifdef Q_OS_WIN
     //! ugly hack
@@ -778,18 +789,56 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! starts/stops editing mode of the current layer
     void toggleEditing();
 
-    //! save current edits and start new transaction
+    //! starts/stops editing mode of a layer
+    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
+
+    //! Save edits of a layer
+    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    /** Cancel edits for a layer
+      * @note added in 1.9 */
+    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    //! Save current edits for selected layer(s) and start new transaction(s)
     void saveEdits();
 
-    /** Save all edits and start new transactions
+    /** Save edits for all layers and start new transactions
      * @note added in 1.9 */
-    void saveAllEdits();
+    void saveAllEdits( bool verifyAction = true );
+
+    /** Rollback current edits for selected layer(s) and start new transaction(s)
+      * @note added in 1.9 */
+    void rollbackEdits();
+
+    /** Rollback edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void rollbackAllEdits( bool verifyAction = true );
+
+    /** Cancel edits for selected layer(s) and toggle off editing
+      * @note added in 1.9 */
+    void cancelEdits();
+
+    /** Cancel all edits for all layers and toggle off editing
+     * @note added in 1.9 */
+    void cancelAllEdits( bool verifyAction = true );
+
+    /** Dialog for verification of action on many edits
+     * @note added in 1.9 */
+    bool verifyEditsActionDialog( QString act, QString upon );
+
+    /** Update gui actions/menus when layers are modified
+     * @note added in 1.9 */
+    void updateLayerModifiedActions();
 
     //! change layer subset of current vector layer
     void layerSubsetString();
 
     //! map tool changed
     void mapToolChanged( QgsMapTool *tool );
+
+    /** Called when some layer's editing mode was toggled on/off
+     * @note added in 1.9 */
+    void layerEditStateChanged();
 
     /** Activates or deactivates actions depending on the current maplayer type.
     Is called from the legend when the current legend item has changed*/
@@ -850,12 +899,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
-
-    //! starts/stops editing mode of a layer
-    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
-
-    //! save edits of a layer
-    void saveEdits( QgsMapLayer *layer );
 
     //! save current vector layer
     void saveAsFile();

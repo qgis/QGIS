@@ -436,8 +436,13 @@ QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayer
 QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }
 QAction *QgisAppInterface::actionToggleEditing() { return qgis->actionToggleEditing(); }
+QAction *QgisAppInterface::actionAllEdits() { return qgis->actionAllEdits(); }
 QAction *QgisAppInterface::actionSaveEdits() { return qgis->actionSaveEdits(); }
 QAction *QgisAppInterface::actionSaveAllEdits() { return qgis->actionSaveAllEdits(); }
+QAction *QgisAppInterface::actionRollbackEdits() { return qgis->actionRollbackEdits(); }
+QAction *QgisAppInterface::actionRollbackAllEdits() { return qgis->actionRollbackAllEdits(); }
+QAction *QgisAppInterface::actionCancelEdits() { return qgis->actionCancelEdits(); }
+QAction *QgisAppInterface::actionCancelAllEdits() { return qgis->actionCancelAllEdits(); }
 QAction *QgisAppInterface::actionLayerSaveAs() { return qgis->actionLayerSaveAs(); }
 QAction *QgisAppInterface::actionLayerSelectionSaveAs() { return qgis->actionLayerSelectionSaveAs(); }
 QAction *QgisAppInterface::actionRemoveLayer() { return qgis->actionRemoveLayer(); }
@@ -473,4 +478,9 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
   return action.editFeature();
+}
+
+QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
+{
+  return qgis->editableLayers( modified );
 }

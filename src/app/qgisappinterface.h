@@ -296,9 +296,19 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionOpenTable();
     virtual QAction *actionToggleEditing();
     /** @note added in 1.9 */
+    virtual QAction *actionAllEdits();
+    /** @note added in 1.9 */
     virtual QAction *actionSaveEdits();
     /** @note added in 1.9 */
     virtual QAction *actionSaveAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelAllEdits();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
@@ -334,6 +344,12 @@ class QgisAppInterface : public QgisInterface
     // @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
+
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
   signals:
     void currentThemeChanged( QString );

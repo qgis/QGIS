@@ -950,6 +950,10 @@ void QgisApp::createActions()
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
   connect( mActionSaveAllEdits, SIGNAL( triggered() ), this, SLOT( saveAllEdits() ) );
+  connect( mActionRollbackEdits, SIGNAL( triggered() ), this, SLOT( rollbackEdits() ) );
+  connect( mActionRollbackAllEdits, SIGNAL( triggered() ), this, SLOT( rollbackAllEdits() ) );
+  connect( mActionCancelEdits, SIGNAL( triggered() ), this, SLOT( cancelEdits() ) );
+  connect( mActionCancelAllEdits, SIGNAL( triggered() ), this, SLOT( cancelAllEdits() ) );
   connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
@@ -998,6 +1002,17 @@ void QgisApp::createActions()
   // list of open windows
   mWindowActions = new QActionGroup( this );
 #endif
+
+  // Vector edits menu
+  QMenu* menuAllEdits = new QMenu( tr( "Current Edits" ), this );
+  menuAllEdits->addAction( mActionSaveEdits );
+  menuAllEdits->addAction( mActionRollbackEdits );
+  menuAllEdits->addAction( mActionCancelEdits );
+  menuAllEdits->addSeparator();
+  menuAllEdits->addAction( mActionSaveAllEdits );
+  menuAllEdits->addAction( mActionRollbackAllEdits );
+  menuAllEdits->addAction( mActionCancelAllEdits );
+  mActionAllEdits->setMenu( menuAllEdits );
 
   // Raster toolbar items
   connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
@@ -1413,6 +1428,10 @@ void QgisApp::createToolBars()
   annotationAction->setObjectName( "ActionAnnotation" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
+  // vector layer edits tool buttons
+  QToolButton* tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
+  tbAllEdits->setPopupMode( QToolButton::InstantPopup );
+
   // Help Toolbar
 
   mHelpToolBar->addAction( QWhatsThis::createAction() );
@@ -1649,9 +1668,14 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAbout->setIcon( QgsApplication::getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionSponsors->setIcon( QgsApplication::getThemeIcon( "/mActionHelpSponsors.png" ) );
   mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
-  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
-  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.png" ) );
-  mActionSaveAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.png" ) );
+  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
+  mActionAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionAllEdits.svg" ) );
+  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
+  mActionSaveAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
+  mActionRollbackEdits->setIcon( QgsApplication::getThemeIcon( "/mActionRollbackEdits.svg" ) );
+  mActionRollbackAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionRollbackAllEdits.svg" ) );
+  mActionCancelEdits->setIcon( QgsApplication::getThemeIcon( "/mActionCancelEdits.svg" ) );
+  mActionCancelAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionCancelAllEdits.svg" ) );
   mActionCutFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditCut.png" ) );
   mActionCopyFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.png" ) );
@@ -5083,101 +5107,6 @@ void QgisApp::toggleEditing()
   }
 }
 
-void QgisApp::saveEdits()
-{
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
-  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
-  {
-    saveEdits( layer );
-  }
-}
-
-void QgisApp::saveEdits( QgsMapLayer *layer )
-{
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
-    return;
-
-  if ( !vlayer->commitChanges() )
-  {
-    QMessageBox::information( 0,
-                              tr( "Error" ),
-                              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                              .arg( vlayer->name() )
-                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
-  }
-
-  vlayer->startEditing();
-  vlayer->triggerRepaint();
-
-  actionSaveAllEdits()->setEnabled( unsavedEditableLayers().count() > 0 );
-}
-
-void QgisApp::saveAllEdits()
-{
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
-  foreach ( QgsMapLayer * layer, unsavedEditableLayers() )
-  {
-    saveEdits( layer );
-  }
-}
-
-QList<QgsMapLayer *> QgisApp::unsavedEditableLayers() const
-{
-  QList<QgsMapLayer*> unsavedLayers;
-  // use legend layers (instead of registry) so message listing mirrors its order
-  QList<QgsMapLayer*> layers = mMapLegend->layers();
-  if ( layers.count() > 0 )
-  {
-    foreach ( QgsMapLayer* layer, layers )
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-      if ( vl && vl->isEditable() && vl->isModified() )
-      {
-        unsavedLayers.append( vl );
-      }
-    }
-  }
-  return unsavedLayers;
-}
-
-void QgisApp::layerSubsetString()
-{
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-    return;
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( !vlayer )
-    return;
-
-  // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
-  QString subsetBefore = vlayer->subsetString();
-
-  // Set the sql in the query builder to the same in the prop dialog
-  // (in case the user has already changed it)
-  qb->setSql( vlayer->subsetString() );
-  // Open the query builder
-  if ( qb->exec() )
-  {
-    if ( subsetBefore != qb->sql() )
-    {
-      mMapCanvas->refresh();
-      if ( mMapLegend )
-      {
-        mMapLegend->refreshLayerSymbology( vlayer->id(), false );
-      }
-    }
-  }
-
-  // delete the query builder object
-  delete qb;
-}
-
 bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -5192,6 +5121,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   {
     if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
+      mActionToggleEditing->setChecked( false );
+      mActionToggleEditing->setEnabled( false );
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
       return false;
     }
@@ -5263,12 +5194,243 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     vlayer->triggerRepaint();
   }
 
-  if ( layer == activeLayer() )
+  if ( !res && layer == activeLayer() )
   {
+    // while also called when layer sends editingStarted/editingStopped signals,
+    // this ensures correct restoring of gui state if toggling was canceled
+    // or layer commit/rollback functions failed
     activateDeactivateLayerRelatedActions( layer );
   }
 
   return res;
+}
+
+void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
+    return;
+
+  if ( !vlayer->commitChanges() )
+  {
+    QMessageBox::information( 0,
+                              tr( "Error" ),
+                              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                              .arg( vlayer->name() )
+                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
+  }
+
+  if ( leaveEditable )
+  {
+    vlayer->startEditing();
+  }
+  vlayer->triggerRepaint();
+}
+
+void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer || !vlayer->isEditable() )
+    return;
+
+  if ( !vlayer->rollBack() )
+  {
+    QMessageBox::information( 0,
+                              tr( "Error" ),
+                              tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
+                              .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ) )
+                              .arg( vlayer->name() )
+                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
+  }
+
+  if ( leaveEditable )
+  {
+    vlayer->startEditing();
+  }
+  vlayer->triggerRepaint();
+}
+
+void QgisApp::saveEdits()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  {
+    saveEdits( layer );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+void QgisApp::saveAllEdits( bool verifyAction )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  if ( verifyAction )
+  {
+    if ( !verifyEditsActionDialog( tr( "Save" ), tr( "all" ) ) )
+      return;
+  }
+
+  foreach ( QgsMapLayer * layer, editableLayers( true ) )
+  {
+    saveEdits( layer );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+void QgisApp::rollbackEdits()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  {
+    cancelEdits( layer );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+void QgisApp::rollbackAllEdits( bool verifyAction )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  if ( verifyAction )
+  {
+    if ( !verifyEditsActionDialog( tr( "Rollback" ), tr( "all" ) ) )
+      return;
+  }
+
+  foreach ( QgsMapLayer * layer, editableLayers( true ) )
+  {
+    cancelEdits( layer );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+void QgisApp::cancelEdits()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  {
+    cancelEdits( layer, false );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+void QgisApp::cancelAllEdits( bool verifyAction )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  if ( verifyAction )
+  {
+    if ( !verifyEditsActionDialog( tr( "Cancel" ), tr( "all" ) ) )
+      return;
+  }
+
+  foreach ( QgsMapLayer * layer, editableLayers() )
+  {
+    cancelEdits( layer, false );
+  }
+  activateDeactivateLayerRelatedActions( activeLayer() );
+}
+
+bool QgisApp::verifyEditsActionDialog( QString act, QString upon )
+{
+  bool res = false;
+  switch ( QMessageBox::information( 0,
+                                     tr( "Current edits" ),
+                                     tr( "%1 current changes for %2 layer(s)?" )
+                                     .arg( act )
+                                     .arg( upon ),
+                                     QMessageBox::Cancel | QMessageBox::Ok ) )
+  {
+    case QMessageBox::Ok:
+      res = true;
+      break;
+    default:
+      break;
+  }
+  return res;
+}
+
+void QgisApp::updateLayerModifiedActions()
+{
+  mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
+  mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
+  mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
+
+  bool hasEditLayers = ( editableLayers().count() > 0 );
+  mActionAllEdits->setEnabled( hasEditLayers );
+  mActionCancelAllEdits->setEnabled( hasEditLayers );
+
+  bool hasModifiedLayers = ( editableLayers( true ).count() > 0 );
+  mActionSaveAllEdits->setEnabled( hasModifiedLayers );
+  mActionRollbackAllEdits->setEnabled( hasModifiedLayers );
+}
+
+QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
+{
+  QList<QgsMapLayer*> editLayers;
+  // use legend layers (instead of registry) so QList mirrors its order
+  QList<QgsMapLayer*> layers = mMapLegend->layers();
+  if ( layers.count() > 0 )
+  {
+    foreach ( QgsMapLayer* layer, layers )
+    {
+      // get layer's editable/modified state from registry since we may be
+      // responding to same signal that legend is also responding to
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>(
+                             QgsMapLayerRegistry::instance()->mapLayer( layer->id() ) );
+      if ( !vl )
+      {
+        continue;
+      }
+      if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
+      {
+        editLayers << vl;
+      }
+    }
+  }
+  return editLayers;
+}
+
+void QgisApp::layerSubsetString()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !vlayer )
+    return;
+
+  // launch the query builder
+  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
+  QString subsetBefore = vlayer->subsetString();
+
+  // Set the sql in the query builder to the same in the prop dialog
+  // (in case the user has already changed it)
+  qb->setSql( vlayer->subsetString() );
+  // Open the query builder
+  if ( qb->exec() )
+  {
+    if ( subsetBefore != qb->sql() )
+    {
+      mMapCanvas->refresh();
+      if ( mMapLegend )
+      {
+        mMapLegend->refreshLayerSymbology( vlayer->id(), false );
+      }
+    }
+  }
+
+  // delete the query builder object
+  delete qb;
 }
 
 void QgisApp::showMouseCoordinate( const QgsPoint & p )
@@ -6868,7 +7030,16 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
-      provider = vlayer->dataProvider();
+    {
+      QgsVectorDataProvider* vProvider = vlayer->dataProvider();
+      if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
+      {
+        connect( vlayer, SIGNAL( layerModified( bool ) ), this, SLOT( updateLayerModifiedActions() ) );
+        connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
+        connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
+      }
+      provider = vProvider;
+    }
 
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
     if ( rlayer )
@@ -7074,6 +7245,19 @@ void QgisApp::legendLayerSelectionChanged( void )
   mActionDuplicateLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
   mActionSetLayerCRS->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() > 0 );
   mActionSetProjectCRSFromLayer->setEnabled( mMapLegend && mMapLegend->selectedLayers().size() == 1 );
+
+  mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
+  mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
+  mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
+}
+
+void QgisApp::layerEditStateChanged()
+{
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer *>( sender() );
+  if ( layer && layer == activeLayer() )
+  {
+    activateDeactivateLayerRelatedActions( layer );
+  }
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
@@ -7123,6 +7307,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
 
+  updateLayerModifiedActions();
+
   if ( !layer )
   {
     mActionSelect->setEnabled( false );
@@ -7133,8 +7319,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
-    mActionSaveEdits->setEnabled( false );
-    mActionSaveAllEdits->setEnabled( false );
+    mActionToggleEditing->setChecked( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
@@ -7152,6 +7337,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
 
+    mUndoWidget->dockContents()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );
@@ -7225,14 +7411,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
         mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionSaveEdits->setEnabled( canChangeAttributes && vlayer->isEditable() );
         mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
         updateUndoActions();
       }
       else
       {
         mActionToggleEditing->setEnabled( false );
-        mActionSaveEdits->setEnabled( false );
+        mActionToggleEditing->setChecked( false );
         mUndoWidget->dockContents()->setEnabled( false );
         mActionUndo->setEnabled( false );
         mActionRedo->setEnabled( false );
@@ -7358,6 +7543,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
       return;
     }
+    else
+    {
+      mUndoWidget->dockContents()->setEnabled( false );
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+    }
 
     mActionLayerSubsetString->setEnabled( false );
   }//end vector layer block
@@ -7394,7 +7585,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionZoomActualSize->setEnabled( true );
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
-    mActionSaveEdits->setEnabled( false );
+    mActionToggleEditing->setChecked( false );
+    mUndoWidget->dockContents()->setEnabled( false );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionAddFeature->setEnabled( false );

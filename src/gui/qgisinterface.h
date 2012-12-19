@@ -392,9 +392,19 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
     /** @note added in 1.9 */
+    virtual QAction *actionAllEdits() = 0;
+    /** @note added in 1.9 */
     virtual QAction *actionSaveEdits() = 0;
     /** @note added in 1.9 */
     virtual QAction *actionSaveAllEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackAllEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
@@ -427,6 +437,12 @@ class GUI_EXPORT QgisInterface : public QObject
     // returns true when dialog was accepted
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.

@@ -122,6 +122,11 @@ class QgsLegend : public QTreeWidget
       * @returns list of layers, else an empty list */
     QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false );
 
+    /** Returns true if layer selection has any editable vector layers
+     * @param modified return true of any of layers is also modified
+     * @note added in 1.9 */
+    bool selectedLayersEditable( bool modified = false );
+
     /*!Returns all layers loaded in QgsMapCanvas in drawing order
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> layers();
