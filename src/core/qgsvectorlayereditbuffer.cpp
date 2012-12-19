@@ -86,6 +86,12 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
     return false;
   }
 
+  int layerFieldCount = L->dataProvider()->fields().count() + mAddedAttributes.count() - mDeletedAttributeIds.count();
+  if (layerFieldCount != f.attributes().count())
+    return false;
+
+  // TODO: check correct geometry type
+
   L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
   return true;
 }
@@ -94,9 +100,7 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
 bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList& features )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-  {
     return false;
-  }
 
   for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
   {
@@ -111,6 +115,9 @@ bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList& features )
 
 bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
+    return false;
+
   if ( FID_IS_NEW( fid ) )
   {
     if (!mAddedFeatures.contains(fid))
@@ -129,10 +136,21 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+    return false;
+
   if ( !L->hasGeometryType() )
   {
     return false;
   }
+
+  if ( FID_IS_NEW( fid ) )
+  {
+    if (!mAddedFeatures.contains(fid))
+      return false;
+  }
+
+  // TODO: check compatible geometry
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, geom ) );
   return true;
@@ -141,6 +159,19 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 
 bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value )
 {
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+    return false;
+
+  if ( FID_IS_NEW( fid ) )
+  {
+    if (!mAddedFeatures.contains(fid))
+      return false;
+  }
+
+  if ( field < 0 || field >= L->pendingFields().count() ||
+       L->pendingFields().fieldOrigin(field) == QgsFields::OriginJoin )
+    return false;
+
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, value ) );
   return true;
 }
@@ -148,6 +179,9 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
 
 bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
 {
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+    return false;
+
   if ( field.name().isEmpty() )
     return false;
 
@@ -168,6 +202,9 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
 
 bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
 {
+  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes ) )
+    return false;
+
   if ( index < 0 || index >= L->pendingFields().count() )
     return false;
 

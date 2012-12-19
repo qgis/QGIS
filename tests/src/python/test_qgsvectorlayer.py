@@ -187,6 +187,9 @@ class TestQgsVectorLayer(TestCase):
         assert layer.deleteFeature(fid)
         
         checkAfter()
+
+        # make sure calling it twice does not work
+        assert not layer.deleteFeature(fid)
         
         # now try undo/redo
         layer.undoStack().undo()
@@ -950,12 +953,42 @@ class TestQgsVectorLayer(TestCase):
         assert f2[3].toInt()[0] == 321
 
 
+    def test_InvalidOperations(self):
+        layer = createLayerWithOnePoint()
+
+        layer.startEditing()
+        
+        # ADD FEATURE
+
+        newF1 = QgsFeature()
+        assert not layer.addFeature(newF1)  # need attributes like the layer has
+        
+        # DELETE FEATURE
+        
+        assert not layer.deleteFeature(-333)
+        # we do not check for existence of the feature id if it's not newly added feature
+        #assert not layer.deleteFeature(333)
+        
+        # CHANGE GEOMETRY
+        
+        assert not layer.changeGeometry(-333, QgsGeometry.fromPoint(QgsPoint(1,1)))
+        
+        # CHANGE VALUE
+        
+        assert not layer.changeAttributeValue(-333, 0, QVariant(1))
+        assert not layer.changeAttributeValue(1, -1, QVariant(1))
+        
+        # ADD ATTRIBUTE
+        
+        assert not layer.addAttribute( QgsField() )
+        
+        # DELETE ATTRIBUTE
+        
+        assert not layer.deleteAttribute(-1)
 
         
 # TODO:
-# - invalid API usage (wrong FID, field index, ...)
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
-# - rollback: each case with two variants: 1. commit, 2. rollback
 # - more join tests
 # - import
 
