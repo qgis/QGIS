@@ -58,7 +58,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         self.name = "Create new layer with selected features"
 
         #the branch of the toolbox under which the algorithm will appear
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector general tools"
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
@@ -66,8 +66,10 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''

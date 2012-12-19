@@ -16,34 +16,37 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.outputs.OutputString import OutputString
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import copy
+import os.path
+import codecs
+import time
+from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerUtils import ModelerUtils
-import copy
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtCore, QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import os.path
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.Parameter import Parameter
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.gui.Help2Html import Help2Html
-import codecs
-import time
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -343,6 +346,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         for param in alg.parameters:
             aap = self.algParameters[iAlg][param.name]
             if aap == None:
+                if isinstance(param, ParameterExtent):
+                    value = self.getValueFromAlgorithmAndParameter(aap)                    
+                    if value is None:
+                        value = self.getMinCoveringExtent()
+                    if not param.setValue(value):
+                        raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
                 continue
             if isinstance(param, ParameterMultipleInput):
                 value = self.getValueFromAlgorithmAndParameter(aap)
@@ -356,6 +365,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 value = ";".join(layerslist)
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
+           
             else:
                 value = self.getValueFromAlgorithmAndParameter(aap)
                 if not param.setValue(value):
@@ -368,11 +378,53 @@ class ModelerAlgorithm(GeoAlgorithm):
             else:
                 out.value = None
 
+
+    def getMinCoveringExtent(self):
+        first = True
+        found = False
+        for param in self.parameters:
+            if param.value:
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    found = True
+                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
+                        layer = param.value
+                    else:
+                        layer = QGisLayers.getObjectFromUri(param.value)
+                    self.addToRegion(layer, first)
+                    first = False
+                elif isinstance(param, ParameterMultipleInput):
+                    found = True
+                    layers = param.value.split(";")
+                    for layername in layers:
+                        layer = QGisLayers.getObjectFromUri(layername)
+                        self.addToRegion(layer, first)
+                        first = False
+        if found:
+            return str(self.xmin) + "," + str(self.xmax) + "," + str(self.ymin) + "," + str(self.ymax)
+        else:
+            return None
+
+
+    def addToRegion(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
+
+            
     def getSafeNameForOutput(self, ialg, out):
         return out.name +"_ALG" + str(ialg)
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
+        if aap is None:
+            return None        
         if float(aap.alg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
                 for key in self.paramValues.keys():
                     if aap.param == key:

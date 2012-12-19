@@ -38,8 +38,10 @@ class Explode(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -88,7 +90,7 @@ class Explode(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Explode lines"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer",ParameterVector.VECTOR_TYPE_LINE))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

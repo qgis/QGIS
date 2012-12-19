@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.outputs.OutputNumber import OutputNumber
-from sextante.outputs.OutputString import OutputString
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -36,6 +33,8 @@ from sextante.script.WrongScriptException import WrongScriptException
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean

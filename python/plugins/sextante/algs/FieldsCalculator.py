@@ -43,12 +43,14 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = "FORMULA"
     OUTPUT_LAYER ="OUTPUT_LAYER"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Field calculator"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))

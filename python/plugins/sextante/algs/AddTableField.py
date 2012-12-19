@@ -45,12 +45,14 @@ class AddTableField(GeoAlgorithm):
     TYPE_NAMES = ["Integer", "Float", "String"]
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Add field to attributes table"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))

@@ -27,6 +27,8 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterExtent(Parameter):
 
+    USE_MIN_COVERING_EXTENT = "USE_MIN_COVERING_EXTENT"
+
     def __init__(self, name="", description="", default="0,1,0,1"):
         Parameter.__init__(self, name, description)
         self.default = default
