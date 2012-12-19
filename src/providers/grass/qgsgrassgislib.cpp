@@ -1560,6 +1560,11 @@ struct Key_Value GRASS_LIB_EXPORT *G_get_projinfo( void )
   return NULL;
 }
 
+struct Key_Value GRASS_LIB_EXPORT *G_get_projunits( void )
+{
+  return NULL;
+}
+
 int GRASS_LIB_EXPORT G_get_reclass( const char *name, const char *mapset, struct Reclass *reclass )
 {
   Q_UNUSED( name );
@@ -1583,4 +1588,38 @@ int GRASS_LIB_EXPORT G_round_fp_map( const char *name, const char *mapset )
   Q_UNUSED( name );
   Q_UNUSED( mapset );
   return -1; // error
+}
+
+char GRASS_LIB_EXPORT *G_mask_info( void )
+{
+  return qstrdup( "none" );
+}
+
+int GRASS_LIB_EXPORT G_read_quant( const char *name, const char *mapset, struct Quant *quant )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( mapset );
+  G_quant_init( quant );
+  return 0; // does not exist
+}
+
+int G_write_fp_range( const char *name, const struct FPRange *range )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( range );
+  return 0; // OK
+}
+
+int G_write_range( const char *name, const struct Range *range )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( range );
+  return 0; // OK
+}
+
+int G_write_raster_units( const char *name, const char *str )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( str );
+  return 0; // OK
 }
