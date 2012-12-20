@@ -51,7 +51,7 @@ class TestQgsComposerMap(TestCase):
         mRasterLayer.setRenderer(rasterRenderer)
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsMapLayerRegistry.instance().addMapLayer(mRasterLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([mRasterLayer])
 
         # create composition with composer map
         self.mMapRenderer = QgsMapRenderer()

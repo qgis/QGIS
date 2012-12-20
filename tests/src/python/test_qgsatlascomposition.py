@@ -31,7 +31,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
-        QgsMapLayerRegistry.instance().addMapLayer( mVectorLayer )
+        QgsMapLayerRegistry.instance().addMapLayers( [mVectorLayer] )
 
         # create composition with composer map
         mMapRenderer = QgsMapRenderer()
