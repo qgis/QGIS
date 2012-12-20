@@ -73,11 +73,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString id() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @deprecated use id()
-     */
-    Q_DECL_DEPRECATED QString getLayerID() const { return id(); }
-
     /** Set the display name of the layer
      * @param name New name for the layer
      */
@@ -229,13 +224,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     @note This was introduced in QGIS 1.4
     */
     const QgsCoordinateReferenceSystem& crs() const;
-
-    /** Returns layer's spatial reference system
-    @note This method is here for API compatibility
-    and will be deprecated in 2.0
-    @deprecated use crs()
-    */
-    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& srs();
 
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */

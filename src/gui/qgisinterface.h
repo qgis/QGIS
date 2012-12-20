@@ -240,14 +240,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
-    /** refresh the legend of a layer
-     \deprecated use QgsLegendInterface::refreshLayerSymbology
-     */
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual void refreshLegend( QgsMapLayer *l ) = 0;
-
     /** open layer properties dialog
      \note added in 1.5
      */
@@ -341,79 +333,27 @@ class GUI_EXPORT QgisInterface : public QObject
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator1() = 0;
     virtual QAction *actionSaveProject() = 0;
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator2() = 0;
     virtual QAction *actionProjectProperties() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator3() = 0;
     virtual QAction *actionPrintComposer() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator4() = 0;
     virtual QAction *actionExit() = 0;
 
     //! Edit menu actions
     virtual QAction *actionCutFeatures() = 0;
     virtual QAction *actionCopyFeatures() = 0;
     virtual QAction *actionPasteFeatures() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionEditSeparator1() = 0;
     virtual QAction *actionAddFeature() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCapturePoint() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCaptureLine() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCapturePolygon() = 0;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionAddVertex() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionDeleteVertex() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionAddIsland() = 0;
     virtual QAction *actionAddPart() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
     virtual QAction *actionNodeTool() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionEditSeparator2() = 0;
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
@@ -429,27 +369,15 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionIdentify() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator1() = 0;
     virtual QAction *actionZoomFullExtent() = 0;
     virtual QAction *actionZoomToLayer() = 0;
     virtual QAction *actionZoomToSelected() = 0;
     virtual QAction *actionZoomLast() = 0;
     virtual QAction *actionZoomActualSize() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator2() = 0;
     virtual QAction *actionMapTips() = 0;
     virtual QAction *actionNewBookmark() = 0;
     virtual QAction *actionShowBookmarks() = 0;
     virtual QAction *actionDraw() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator3() = 0;
 
     //! Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0;
@@ -457,10 +385,6 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator1() = 0;
     /** @note added in 1.9 */
     virtual QAction *actionCopyLayerStyle() = 0;
     /** @note added in 1.9 */
@@ -477,55 +401,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator2() = 0;
     virtual QAction *actionAddToOverview() = 0;
     virtual QAction *actionAddAllToOverview() = 0;
     virtual QAction *actionRemoveAllFromOverview() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator3() = 0;
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionPluginSeparator1() = 0;
     virtual QAction *actionPluginListSeparator() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionPluginSeparator2() = 0;
-    virtual QAction *actionPluginPythonSeparator() = 0;
     virtual QAction *actionShowPythonDialog() = 0;
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionSettingsSeparator1() = 0;
     virtual QAction *actionOptions() = 0;
     virtual QAction *actionCustomProjection() = 0;
 
     //! Help menu actions
     virtual QAction *actionHelpContents() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionHelpSeparator1() = 0;
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionHelpSeparator2() = 0;
     virtual QAction *actionAbout() = 0;
 
     //! Open feature form

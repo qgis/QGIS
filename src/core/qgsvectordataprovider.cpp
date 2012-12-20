@@ -44,11 +44,6 @@ QString QgsVectorDataProvider::storageType() const
   return "Generic vector file";
 }
 
-long QgsVectorDataProvider::updateFeatureCount()
-{
-  return -1;
-}
-
 bool QgsVectorDataProvider::featureAtId( QgsFeatureId featureId,
     QgsFeature& feature,
     bool fetchGeometry,
@@ -86,26 +81,6 @@ bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
   Q_UNUSED( attributes );
   return false;
-}
-
-bool QgsVectorDataProvider::addAttributes( const QMap<QString, QString> &attributes )
-{
-  const QList< NativeType > &types = nativeTypes();
-  QList< QgsField > list;
-
-  for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); it++ )
-  {
-    int i;
-    for ( i = 0; i < types.size() && types[i].mTypeName != it.value(); i++ )
-      ;
-
-    if ( i == types.size() )
-      return false;
-
-    list << QgsField( it.key(), types[i].mType, it.value() );
-  }
-
-  return addAttributes( list );
 }
 
 bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
@@ -285,23 +260,6 @@ void QgsVectorDataProvider::enableGeometrylessFeatures( bool fetch )
 const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
 {
   return mNativeTypes;
-}
-
-const QMap<QString, QVariant::Type> &QgsVectorDataProvider::supportedNativeTypes() const
-{
-  if ( mOldTypeList.size() > 0 )
-    return mOldTypeList;
-
-  QgsVectorDataProvider *p = ( QgsVectorDataProvider * )this;
-
-  const QList< QgsVectorDataProvider::NativeType > &types = nativeTypes();
-
-  for ( QList< QgsVectorDataProvider::NativeType >::const_iterator it = types.constBegin(); it != types.constEnd(); it++ )
-  {
-    p->mOldTypeList.insert( it->mTypeName, it->mType );
-  }
-
-  return p->mOldTypeList;
 }
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const

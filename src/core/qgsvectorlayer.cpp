@@ -1540,11 +1540,6 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   return true;
 }
 
-long QgsVectorLayer::updateFeatureCount() const
-{
-  return -1;
-}
-
 void QgsVectorLayer::updateExtents()
 {
   mValidExtent = false;
@@ -3796,17 +3791,6 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   emit attributeAdded( mMaxUpdatedIndex );
 
   return true;
-}
-
-bool QgsVectorLayer::addAttribute( QString name, QString type )
-{
-  const QList< QgsVectorDataProvider::NativeType > &types = mDataProvider->nativeTypes();
-
-  int i;
-  for ( i = 0; i < types.size() && types[i].mTypeName != type; i++ )
-    ;
-
-  return i < types.size() && addAttribute( QgsField( name, types[i].mType, type ) );
 }
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )

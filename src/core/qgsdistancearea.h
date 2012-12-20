@@ -48,18 +48,12 @@ class CORE_EXPORT QgsDistanceArea
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
-    Q_DECL_DEPRECATED void setProjectionsEnabled( bool flag ) { setEllipsoidalMode( flag ); };
 
     //! returns projections enabled flag
     bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
-    Q_DECL_DEPRECATED bool hasCrsTransformEnabled() { return mEllipsoidalMode; }
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
-
-    //! sets source spatial reference system (by EpsgCrsId)
-    // @deprecated use setSourceAuthid()
-    Q_DECL_DEPRECATED void setSourceEpsgCrsId( long epsgId );
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );

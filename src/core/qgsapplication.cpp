@@ -428,11 +428,6 @@ const QString QgsApplication::translatorsFilePath()
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
-const QString QgsApplication::developerPath()
-{
-  return QString(); // developer images are no longer shipped!
-}
-
 /*!
   Returns the path to the help application.
 */
@@ -540,15 +535,6 @@ const QStringList QgsApplication::svgPaths()
 
   myPathList << ABISYM( mDefaultSvgPaths );
   return myPathList;
-}
-
-/*!
-  Returns the path to the applications svg directories.
-*/
-const QString QgsApplication::svgPath()
-{
-  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
-  return ABISYM( mPkgDataPath ) + svgSubDir;
 }
 
 const QString QgsApplication::userStyleV2Path()

@@ -117,9 +117,6 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
-    //! Return the measuring object
-    //! @deprecated
-    QgsDistanceArea* distanceArea() /Deprecated/;
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 
@@ -155,18 +152,6 @@ class QgsMapRenderer : QObject
 
     //! returns true if projections are enabled for this layer set
     bool hasCrsTransformEnabled() const;
-
-    /** sets destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see setDestinationCrs
-     */
-    void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) /Deprecated/;
-
-    /** returns CRS of destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see destinationCrs
-     */
-    const QgsCoordinateReferenceSystem& destinationSrs() /Deprecated/;
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );

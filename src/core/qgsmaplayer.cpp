@@ -584,13 +584,6 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
   return *mCRS;
 }
 
-const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
-{
-  // This will be dropped in QGIS 2.0 due to conflicting name
-  // Please use crs() in the future
-  return *mCRS;
-}
-
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;

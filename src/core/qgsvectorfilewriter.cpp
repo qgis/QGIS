@@ -594,22 +594,6 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   }
 }
 
-
-
-
-QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
-                                       const QString& shapefileName,
-                                       const QString& fileEncoding,
-                                       const QgsCoordinateReferenceSystem* destCRS,
-                                       bool onlySelected,
-                                       QString *errorMessage,
-                                       const QStringList &datasourceOptions,
-                                       const QStringList &layerOptions )
-{
-  return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage, datasourceOptions, layerOptions );
-}
-
 QgsVectorFileWriter::WriterError
 QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QString& fileName,

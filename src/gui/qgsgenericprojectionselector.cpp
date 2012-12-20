@@ -65,11 +65,6 @@ QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
   settings.setValue( "/Windows/ProjectionSelector/geometry", saveGeometry() );
 }
 
-void QgsGenericProjectionSelector::setSelectedEpsg( long theId )
-{
-  projectionSelector->setSelectedAuthId( QString( "EPSG:%1" ).arg( theId ) );
-}
-
 void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
 {
   projectionSelector->setSelectedCrsName( theName );
@@ -85,25 +80,10 @@ void QgsGenericProjectionSelector::setSelectedAuthId( QString theID )
   projectionSelector->setSelectedAuthId( theID );
 }
 
-QString QgsGenericProjectionSelector::selectedProj4String()
-{
-  //@note don't use getSelectedWkt as that just returns the name part!
-  return projectionSelector->selectedProj4String();
-}
-
 long QgsGenericProjectionSelector::selectedCrsId()
 {
   //@note don't use getSelectedWkt as that just returns the name part!
   return projectionSelector->selectedCrsId();
-}
-
-long QgsGenericProjectionSelector::selectedEpsg()
-{
-  QString authid = projectionSelector->selectedAuthId();
-  if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )
-    return authid.mid( 5 ).toLong();
-  else
-    return 0;
 }
 
 QString QgsGenericProjectionSelector::selectedAuthId()

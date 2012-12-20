@@ -124,10 +124,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static const QString translatorsFilePath();
 
-    //! Returns the path to the developer image directory.
-    //! @deprecated images are not provided anymore :-P
-    static const QString developerPath() /Deprecated/;
-
     //! Returns the path to the help application.
     static const QString helpAppPath();
 
@@ -155,10 +151,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the pathes to svg directories.
     //! @note added in 1.4
     static const QStringList svgPaths();
-
-    //! Returns the paths to svg applications svg directory.
-    //! @deprecated since 1.4 - use svgPaths()
-    static const QString svgPath() /Deprecated/;
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();

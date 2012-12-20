@@ -160,23 +160,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @return boolean - true if there is a frame around this item, otherwise false.
-     * @note deprecated since 1.8 don't use!
-     * @see hasFrame
-     */
-    Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
-    /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
      * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
-    /** Set whether this item has a frame drawn around it or not.
-     * @returns void
-     * @note deprecated since 1.8 don't use!
-     * @see setFrameEnabled
-     */
-    Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
+
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @returns nothing

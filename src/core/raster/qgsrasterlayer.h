@@ -368,11 +368,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
-     * @deprecated in 2.0
-     */
-    Q_DECL_DEPRECATED bool usesProvider();
-
     /** \brief Accessor that returns the width of the (unclipped) raster  */
     int width() { return mWidth; }
 
@@ -498,18 +493,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       @note this method was added in version 1.8*/
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
-    /** \brief Get a legend image for this layer */
-    Q_DECL_DEPRECATED QPixmap legendAsPixmap();
-
-    /** \brief  Overloaded version of above function that can print layer name onto legend */
-    //! @deprecated
-    //! @note available as legendAsPixmapBool in python bindings
-    Q_DECL_DEPRECATED QPixmap legendAsPixmap( bool );
-
-    /** \brief Use this method when you want an annotated legend suitable for print output etc */
-    //! @note available as legendAsPixmapCount in python bindings
-    Q_DECL_DEPRECATED QPixmap legendAsPixmap( int theLabelCount );
-
     /** \brief Accessor for maximum value user for contrast enhancement */
     double maximumValue( unsigned int theBand );
 
@@ -533,11 +516,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
-     * @deprecated use providerType()
-     */
-    Q_DECL_DEPRECATED QString providerKey() const { return providerType(); }
-
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
@@ -551,12 +529,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Mutator for blue band name mapping */
     void setBlueBandName( const QString & theBandName );
-
-    /** \brief Mutator for color shader algorithm */
-    void setColorShadingAlgorithm( QgsRasterLayer::ColorShadingAlgorithm theShaderAlgorithm );
-
-    /** \brief Mutator for color shader algorithm */
-    Q_DECL_DEPRECATED void setColorShadingAlgorithm( QString theShaderAlgorithm );
 
     static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
     static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
@@ -593,17 +565,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString );
 
-    /** \brief Mutator for gray band name mapping  */
-    Q_DECL_DEPRECATED void setGrayBandName( const QString & theBandName );
-
-    /** \brief Mutator for green band name mapping  */
-    Q_DECL_DEPRECATED void setGreenBandName( const QString & theBandName );
-
     /** \brief Mutator for setting the maximum value for contrast enhancement */
     void setMaximumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for setting the maximum value for contrast enhancement */
-    Q_DECL_DEPRECATED void setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Sets the minimum and maximum values for the band(s) currently
      * being displayed using the only pixel values from the last/current extent
@@ -614,30 +577,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * being displayed using the only pixel values from the dataset min/max */
     void setMinimumMaximumUsingDataset();
 
-    /** \brief Mutator for setting the minimum value for contrast enhancement */
-    Q_DECL_DEPRECATED void setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for setting the minimum value for contrast enhancement */
-    Q_DECL_DEPRECATED void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Set the raster shader function to a user defined function
-      \note ownership of the shader function is transfered to raster shader */
-    Q_DECL_DEPRECATED void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
-
-    /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color) */
-    Q_DECL_DEPRECATED void setRedBandName( const QString & theBandName );
-
-    /** \brief Mutator for transparent band name mapping  */
-    Q_DECL_DEPRECATED void setTransparentBandName( const QString & theBandName );
-
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
-
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
-    Q_DECL_DEPRECATED void thumbnailAsPixmap( QPixmap * theQPixmap );
 
     /** \brief Draws a preview of the rasterlayer into a pixmap */
     QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );

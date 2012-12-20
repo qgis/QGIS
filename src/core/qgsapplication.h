@@ -92,10 +92,6 @@ class CORE_EXPORT QgsApplication: public QApplication
      */
     static const QString translatorsFilePath();
 
-    //! Returns the path to the developer image directory.
-    //! @deprecated images are not provided anymore :-P
-    Q_DECL_DEPRECATED static const QString developerPath();
-
     //! Returns the path to the help application.
     static const QString helpAppPath();
 
@@ -123,10 +119,6 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the pathes to svg directories.
     //! @note added in 1.4
     static const QStringList svgPaths();
-
-    //! Returns the paths to svg applications svg directory.
-    //! @deprecated since 1.4 - use svgPaths()
-    Q_DECL_DEPRECATED static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();

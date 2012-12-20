@@ -10,7 +10,7 @@ class QgsRectangle
 %TypeHeaderCode
 #include <qgsrectangle.h>
 %End
- 
+
   public:
     //! Constructor
     QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
@@ -59,8 +59,6 @@ class QgsRectangle
     //! Scale the rectangle around its center point
     void scale( double, const QgsPoint *c = 0 );
     //! Expand the rectangle to support zoom out scaling
-    // @deprecated in 1.9 use scale instead
-    void expand( double, const QgsPoint *c = 0 ) /Deprecated/;
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle

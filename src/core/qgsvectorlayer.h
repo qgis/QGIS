@@ -433,11 +433,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool countSymbolFeatures( bool showProgress = true );
 
-    /** This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
-     */
-    Q_DECL_DEPRECATED virtual long updateFeatureCount() const;
-
     /**
      * Set the string (typically sql) used to define a subset of the layer
      * @param subset The subset string. This may be the where clause of a sql statement
@@ -531,7 +526,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        5 if several features are selected,
        6 if selected geometry not found*/
     int addPart( const QList<QgsPoint>& ring );
-    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint>& ring ) { return addPart( ring ); }
 
     /**Translates feature by dx, dy
        @param featureId id of the feature to translate
@@ -664,11 +658,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
         returns true if the field was added
       @note added in version 1.2 */
     bool addAttribute( const QgsField &field );
-
-    /** add an attribute field (but does not commit it)
-      returns true if the field was added
-      @deprecated */
-    Q_DECL_DEPRECATED bool addAttribute( QString name, QString type );
 
     /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/

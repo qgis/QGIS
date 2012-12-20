@@ -91,17 +91,6 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   return myResultList;
 } // QgsMapLayerRegistry::addMapLayers
 
-//this is deprecated by addMapLayers and is just a thin wrapper for that
-QgsMapLayer *
-QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer,
-                                  bool theEmitSignal )
-{
-  QList<QgsMapLayer *> myList;
-  myList.append( theMapLayer );
-  addMapLayers( myList, theEmitSignal );
-  return theMapLayer;
-} //  QgsMapLayerRegistry::addMapLayer
-
 //introduced in 1.8
 void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
     bool theEmitSignal )
@@ -117,15 +106,6 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
     mMapLayers.remove( myId );
   }
   emit layersWillBeRemoved( theLayerIds );
-}
-
-//deprecated 1.8 use removeMapLayers rather
-void QgsMapLayerRegistry::removeMapLayer( QString theLayerId,
-    bool theEmitSignal )
-{
-  QStringList myList;
-  myList << theLayerId;
-  removeMapLayers( myList, theEmitSignal );
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
