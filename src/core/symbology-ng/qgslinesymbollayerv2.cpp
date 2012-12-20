@@ -204,8 +204,9 @@ QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle() const
   symbolStyle.append( "c:" );
   symbolStyle.append( mPen.color().name() );
   symbolStyle.append( ",w:" );
+  //dxf driver writes ground units as mm? Should probably be changed in ogr
   symbolStyle.append( QString::number( mWidth ) );
-  symbolStyle.append( "mm" );
+  symbolStyle.append( "g" );
   symbolStyle.append( ")" );
 
   return symbolStyle;
