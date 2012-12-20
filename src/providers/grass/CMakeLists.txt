@@ -102,6 +102,7 @@ SET ( FUNCTIONS
   "G_format_easting"
   "G_format_northing"
   "G_format_resolution"
+  "G_format_timestamp"
   "G__write_timestamp"
   "G_free"
   "G_free_cats"
@@ -202,6 +203,7 @@ SET ( FUNCTIONS
   "G_quant_set_neg_infinite_rule"
   "G_putenv"
   "G_raster_cmp"
+  "G_raster_cpy"
   "G_raster_size"
   "G_read_key_value_file"
   "G__realloc"
@@ -210,6 +212,8 @@ SET ( FUNCTIONS
   "G_rewind_raster_cats"
   "G_rindex"
   "G_row_to_northing"
+  "G_row_update_fp_range"
+  "G_row_update_range"
   "G_scan_easting"
   "G_scan_northing"
   "G_scan_timestamp"
@@ -231,6 +235,7 @@ SET ( FUNCTIONS
   "G_set_raster_value_d"
   "G_set_window"
   "G_sleep"
+  "G_sleep_on_error"
   "G_store"
   "G_strcasecmp"
   "G_strcat"
@@ -267,6 +272,7 @@ SET ( FUNCTIONS
   "G_window_overlap"
   "G_window_rows"
   "G_write_key_value_file"
+  "G_yes"
   "G_zero"
   "G_zero_cell_buf"
   "G_zero_raster_buf"
@@ -348,6 +354,7 @@ SET ( FUNCTION_PROTOTYPES
   "G_open_fp_cell_new"
   "G_open_new"
   "G_open_raster_new"
+  "G_open_update"
   "G_parser"
   "G_put_cell_title"
   "G_put_c_raster_row"
@@ -383,6 +390,7 @@ SET ( FUNCTION_PROTOTYPES
   "G_verbose_message"
   "G_warning"
   "G_write_cats"
+  "G__write_colors"
   "G_write_colors"
   "G_write_fp_range"
   "G_write_history"
@@ -405,10 +413,11 @@ FILE(READ "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" HEADER_FILE)
 STRING(REGEX REPLACE "(/\\*([^*]|[\r\n]|(\\*+([^*/]|[\r\n])))*\\*+/)" "" HEADER_FILE "${HEADER_FILE}")
 STRING(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
 
-# Add functions defined in glocale.h and spawn.h
+# Add functions defined in glocale.h, colors.h and spawn.h
 SET ( HEADER_FILE 
   ${HEADER_FILE}
   "char *G_gettext(const char *, const char *);"
+  "int G_num_standard_colors(void);"
   "int G_spawn(const char *, ...);"
   "int G_spawn_ex(const char *, ...);"
   "int G_wait(int);"

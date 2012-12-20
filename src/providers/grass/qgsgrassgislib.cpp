@@ -24,6 +24,11 @@
 // the library (in code section) - why?
 #ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
+extern "C"
+{
+// defined here because too complex for parser in CMakeLists.txt
+  int GRASS_LIB_EXPORT G_cell_stats_histo_eq( struct Cell_stats *statf, CELL min1, CELL max1, CELL min2, CELL max2, int zero, void ( *func )( CELL, CELL, CELL ) );
+}
 #endif
 #include "qgsgrassgislib.h"
 
@@ -1299,6 +1304,13 @@ int GRASS_LIB_EXPORT G_lookup_key_value_from_file( const char *file, const char 
   return fn( file, key, value, n );
 }
 
+typedef int G_cell_stats_histo_eq_type( struct Cell_stats *, CELL, CELL, CELL, CELL, int, void ( * )( CELL, CELL, CELL ) );
+
+int GRASS_LIB_EXPORT G_cell_stats_histo_eq( struct Cell_stats *statf, CELL min1, CELL max1, CELL min2, CELL max2, int zero, void ( *func )( CELL, CELL, CELL ) )
+{
+  G_cell_stats_histo_eq_type *fn = ( G_cell_stats_histo_eq_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_cell_stats_histo_eq_type" ) );
+  return fn( statf, min1, max1, min2, max2, zero, func );
+}
 
 int GRASS_LIB_EXPORT G__temp_element( char *element )
 {
@@ -1322,6 +1334,13 @@ char GRASS_LIB_EXPORT *G_mapset( void )
 char GRASS_LIB_EXPORT *G_location( void )
 {
   return qstrdup( "qgis" );
+}
+
+int GRASS_LIB_EXPORT G__write_colors( FILE * fd, struct Colors *colors )
+{
+  Q_UNUSED( fd );
+  Q_UNUSED( colors );
+  return 1; // OK
 }
 
 int GRASS_LIB_EXPORT G_write_colors( const char *name, const char *mapset, struct Colors *colors )
@@ -1599,23 +1618,33 @@ int GRASS_LIB_EXPORT G_read_quant( const char *name, const char *mapset, struct 
   return 0; // does not exist
 }
 
-int G_write_fp_range( const char *name, const struct FPRange *range )
+int GRASS_LIB_EXPORT G_write_fp_range( const char *name, const struct FPRange *range )
 {
   Q_UNUSED( name );
   Q_UNUSED( range );
   return 0; // OK
 }
 
-int G_write_range( const char *name, const struct Range *range )
+int GRASS_LIB_EXPORT G_write_range( const char *name, const struct Range *range )
 {
   Q_UNUSED( name );
   Q_UNUSED( range );
   return 0; // OK
 }
 
-int G_write_raster_units( const char *name, const char *str )
+int GRASS_LIB_EXPORT G_write_raster_units( const char *name, const char *str )
 {
   Q_UNUSED( name );
   Q_UNUSED( str );
   return 0; // OK
+}
+
+int GRASS_LIB_EXPORT G_open_update( const char *element, const char *name )
+{
+  // G_open_update is used in r.flow if parm.seg, but parm.seg doesnt seem
+  // to be set to 1
+  Q_UNUSED( element );
+  Q_UNUSED( name );
+  qFatal( "G_open_update not imlemented" );
+  return -1; // Cannot open
 }
