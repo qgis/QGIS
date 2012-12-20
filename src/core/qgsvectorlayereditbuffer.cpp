@@ -20,7 +20,7 @@ QgsVectorLayerEditBuffer::~QgsVectorLayerEditBuffer()
 
 bool QgsVectorLayerEditBuffer::isModified() const
 {
-  return L->undoStack()->isClean(); // TODO[MD]: test
+  return !L->undoStack()->isClean();
 }
 
 
