@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
@@ -473,6 +474,32 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterBlock
     }
     mUserNoDataValue[bandNo-1] = noData;
   }
+}
+
+typedef QgsRasterDataProvider * createFunction_t( const QString&,
+    const QString&, int,
+    QGis::DataType,
+    int, int, double*,
+    const QgsCoordinateReferenceSystem&,
+    QStringList );
+
+QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey,
+    const QString &uri,
+    const QString& format, int nBands,
+    QGis::DataType type,
+    int width, int height, double* geoTransform,
+    const QgsCoordinateReferenceSystem& crs,
+    QStringList createOptions )
+{
+  createFunction_t *createFn = ( createFunction_t* ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey, "create" ) );
+  if ( !createFn )
+  {
+    QgsDebugMsg( "Cannot resolve 'create' function in " + providerKey + " provider" );
+    // TODO: it would be good to return invalid QgsRasterDataProvider
+    // with QgsError set, but QgsRasterDataProvider has pure virtual methods
+    return 0;
+  }
+  return createFn( uri, format, nBands, type, width, height, geoTransform, crs, createOptions );
 }
 
 // ENDS

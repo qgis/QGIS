@@ -92,10 +92,17 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
+QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
+    : QgsRasterDataProvider( uri )
+    , mValid( false )
+{
+  setError( error );
+}
 
-QgsGdalProvider::QgsGdalProvider( QString const & uri )
+QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
+    , mUpdate( update )
     , mValid( true )
 {
   QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
@@ -126,28 +133,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       setDataSourceUri( vsiPrefix + uri );
     QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
-  else
-  {
-    // TODO: this constructor is also called for new rasters, in that case GDAL prints error:
-    // "ERROR 4: `pok.tif' does not exist in the file system, and is not recognised as a supported dataset name."
-    // To avoid this message, we test first if the file exists at all.
-    // This should be done better adding static create() method or something like that
-    // TODO: Cannot test for file existence, for example NetCDF with sublayers
-    // is using URI: NETCDF:"/path/to/file.cdf":layer1
-    /*
-    if ( !QFile::exists( uri ) )
-    {
-      QString msg = QString( "File does not exist: %1" ).arg( dataSourceUri() );
-      appendError( ERR( msg ) );
-      return;
-    }
-    */
-  }
 
   QString gdalUri = dataSourceUri();
 
   CPLErrorReset();
-  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
 
   if ( !mGdalBaseDataset )
   {
@@ -1481,7 +1471,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -1523,7 +1513,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -2401,17 +2391,27 @@ char** papszFromStringList( const QStringList& list )
   return papszRetList;
 }
 
+#if 0
 bool QgsGdalProvider::create( const QString& format, int nBands,
                               QGis::DataType type,
                               int width, int height, double* geoTransform,
                               const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
+#endif
+QGISEXTERN QgsGdalProvider * create(
+  const QString &uri,
+  const QString& format, int nBands,
+  QGis::DataType type,
+  int width, int height, double* geoTransform,
+  const QgsCoordinateReferenceSystem& crs,
+  QStringList createOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( !driver )
   {
-    return false;
+    QgsError error( "Cannot load GDAL driver " + format, "GDAL provider" );
+    return new QgsGdalProvider( uri, error );
   }
 
   QString tmpStr = "create options:";
@@ -2420,27 +2420,21 @@ bool QgsGdalProvider::create( const QString& format, int nBands,
   QgsDebugMsg( tmpStr );
 
   //create dataset
+  CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  GDALDatasetH dataset = GDALCreate( driver, uri.toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
-    return false;
+    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    return new QgsGdalProvider( uri, error );
   }
 
-  mGeoTransform[0] = geoTransform[0];
-  mGeoTransform[1] = geoTransform[1];
-  mGeoTransform[2] = geoTransform[2];
-  mGeoTransform[3] = geoTransform[3];
-  mGeoTransform[4] = geoTransform[4];
-  mGeoTransform[5] = geoTransform[5];
-
-  GDALSetGeoTransform( dataset, mGeoTransform );
+  GDALSetGeoTransform( dataset, geoTransform );
   GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
+  GDALClose( dataset );
 
-  mGdalBaseDataset = dataset;
-  initBaseDataset();
-  return mValid;
+  return new QgsGdalProvider( uri, true );
 }
 
 bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )

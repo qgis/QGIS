@@ -573,12 +573,6 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   raster.name = name;
   //raster.writer = new QgsRasterFileWriter( dataSource );
 
-  raster.provider = ( QgsRasterDataProvider* )QgsProviderRegistry::instance()->provider( providerKey, dataSource );
-  if ( !raster.provider )
-  {
-    fatal( "Cannot load raster provider with data source: " + dataSource );
-  }
-
   QString outputFormat = "GTiff";
   int nBands = 1;
   QGis::DataType type = qgisRasterType( wr_type );
@@ -591,11 +585,13 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   geoTransform[4] = 0.0;
   geoTransform[5] = -1. * mExtent.height() / mRows;
 
-  if ( !raster.provider->create( outputFormat, nBands, type, mColumns, mRows, geoTransform, mCrs ) )
+  raster.provider = QgsRasterDataProvider::create( providerKey, dataSource, outputFormat, nBands, type, mColumns, mRows, geoTransform, mCrs );
+  if ( !raster.provider || !raster.provider->isValid() )
   {
-    delete raster.provider;
+    if ( raster.provider ) delete raster.provider;
     fatal( "Cannot create output data source: " + dataSource );
   }
+
   raster.band = 1;
   double noDataValue = std::numeric_limits<double>::quiet_NaN();
   switch ( wr_type )

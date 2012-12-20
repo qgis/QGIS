@@ -873,11 +873,11 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
 
   QString outputFile = outputUrl + "/" + partFileName( fileIndex );
   //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, outputFile );
-  QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, outputFile );
-  if ( !destProvider )
-  {
-    return 0;
-  }
+  //QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, outputFile );
+  //if ( !destProvider )
+  //{
+  //  return 0;
+  //}
 
   //geotransform
   double geoTransform[6];
@@ -889,12 +889,29 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   geoTransform[5] = -mup;
 
   // perhaps we need a separate createOptions for tiles ?
-  if ( !destProvider->create( mOutputFormat, nBands, type, iterCols, iterRows, geoTransform,
-                              crs ) )
+  /*
+    if ( !destProvider->create( mOutputFormat, nBands, type, iterCols, iterRows, geoTransform,
+                                crs ) )
+    {
+      delete destProvider;
+      return 0;
+    }
+  */
+
+  QgsRasterDataProvider* destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, iterCols, iterRows, geoTransform, crs, mCreateOptions ) ;
+
+  if ( !destProvider )
+  {
+    return 0;
+  }
+
+  // TODO: return provider and report error
+  if ( !destProvider->isValid() )
   {
     delete destProvider;
     return 0;
   }
+
   return destProvider;
 }
 
@@ -909,24 +926,35 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
   }
   else
   {
-    //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
-    QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, mOutputUrl );
-    if ( !destProvider )
-    {
-      return 0;
-    }
-
     // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
     // should this belong in provider? should also test that source provider is gdal
     // if ( mBuildPyramidsFlag == -4 && mOutputProviderKey == "gdal" && mOutputFormat.toLower() == "gtiff" )
     //   mCreateOptions << "COPY_SRC_OVERVIEWS=YES";
 
-    if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
-                                crs, mCreateOptions ) )
+    //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
+    //QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, mOutputUrl );
+    QgsRasterDataProvider* destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreateOptions ) ;
+
+    if ( !destProvider )
+    {
+      return 0;
+    }
+
+    // TODO: return provider and report error
+    if ( !destProvider->isValid() )
     {
       delete destProvider;
       return 0;
     }
+
+    /*
+        if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
+                                    crs, mCreateOptions ) )
+        {
+          delete destProvider;
+          return 0;
+        }
+    */
     return destProvider;
   }
 }
