@@ -306,21 +306,23 @@ QString QgsGdalProvider::metadata()
   myMetadata += "</p>\n";
 
   //just use the first band
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
-  if ( GDALGetOverviewCount( myGdalBand ) > 0 )
+  if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    int myOverviewInt;
-    for ( myOverviewInt = 0;
-          myOverviewInt < GDALGetOverviewCount( myGdalBand );
-          myOverviewInt++ )
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
+    if ( GDALGetOverviewCount( myGdalBand ) > 0 )
     {
-      GDALRasterBandH myOverview;
-      myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
-      myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
-      myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      int myOverviewInt;
+      for ( myOverviewInt = 0;
+            myOverviewInt < GDALGetOverviewCount( myGdalBand );
+            myOverviewInt++ )
+      {
+        GDALRasterBandH myOverview;
+        myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
+        myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
+        myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      }
     }
   }
-  myMetadata += "</p>\n";
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
