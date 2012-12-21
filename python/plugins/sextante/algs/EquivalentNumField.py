@@ -39,8 +39,10 @@ class EquivalentNumField(GeoAlgorithm):
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD)
@@ -80,7 +82,7 @@ class EquivalentNumField(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Create equivalent numerical field"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterTableField(self.FIELD, "Class field", self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))

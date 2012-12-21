@@ -37,8 +37,10 @@ class AutoincrementalField(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         output = self.getOutputFromName(self.OUTPUT)
@@ -67,7 +69,7 @@ class AutoincrementalField(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Add autoincremental field"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

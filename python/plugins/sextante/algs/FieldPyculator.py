@@ -48,12 +48,14 @@ class FieldsPyculator(GeoAlgorithm):
     OUTPUT_LAYER ="OUTPUT_LAYER"
     RESULT_VAR_NAME = "value"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def defineCharacteristics(self):
-        self.name = "Field Pyculator"
-        self.group = "Algorithms for vector layers"
+        self.name = "Advanced Python field calculator"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features (all if noone selected)", False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -195,7 +196,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjection(value, commands)
+                    self.setSessionProjectionFromLayer(value, commands)
                     commands.append(self.exportRasterLayer(value))
             if isinstance(param, ParameterVector):
                 if param.value == None:
@@ -204,7 +205,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjection(value, commands)
+                    self.setSessionProjectionFromLayer(value, commands)
                     commands.append(self.exportVectorLayer(value))
             if isinstance(param, ParameterTable):
                 pass
@@ -219,16 +220,18 @@ class GrassAlgorithm(GeoAlgorithm):
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(layer, commands)
+                            self.setSessionProjectionFromLayer(layer, commands)
                             commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(layer, commands)
+                            self.setSessionProjectionFromLayer(layer, commands)
                             commands.append(self.exportVectorLayer(layer))
 
+        self.setSessionProjectionFromProject(commands)
+        
         region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(",")
         command = "g.region"
@@ -368,8 +371,18 @@ class GrassAlgorithm(GeoAlgorithm):
         command +=" --overwrite -o"
         return command
 
+    def setSessionProjectionFromProject(self, commands):
+        if not GrassUtils.projectionSet:  
+            from sextante.core.Sextante import Sextante     
+            qgis = Sextante.getInterface()
+            proj4 = qgis.mapCanvas().mapRenderer().getDestinationCrs().toProj4()
+            command = "g.proj"
+            command +=" -c"
+            command +=" proj4=\""+proj4+"\""
+            commands.append(command)
+            GrassUtils.projectionSet = True
 
-    def setSessionProjection(self, layer, commands):
+    def setSessionProjectionFromLayer(self, layer, commands):
         if not GrassUtils.projectionSet:
             qGisLayer = QGisLayers.getObjectFromUri(layer)
             if qGisLayer:

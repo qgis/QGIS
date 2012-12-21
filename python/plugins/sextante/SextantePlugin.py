@@ -110,13 +110,14 @@ class SextantePlugin:
         self.menu.deleteLater()
         #delete temporary output files
         folder = SextanteUtils.tempFolder()
-        for f in os.listdir(folder):
-            path = os.path.join(folder,f)
-            try:
-                os.unlink(path)
-            except:
-                #leave files that could not be deleted
-                pass
+        if QDir(folder).exists():
+            for f in os.listdir(folder):
+                path = os.path.join(folder, f)
+                try:
+                    os.unlink(path)
+                except:
+                    #leave files that could not be deleted
+                    pass
 
     def openToolbox(self):
         if self.toolbox.isVisible():

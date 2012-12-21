@@ -36,10 +36,10 @@ class ModelerUtils:
     def modelsFolder():
         folder = SextanteConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder == None:
-            folder = SextanteUtils.userFolder() + os.sep + "models"
+            folder = unicode(os.path.join(SextanteUtils.userFolder(), "models"))
         mkdir(folder)
 
-        return folder
+        return os.path.abspath(folder)
 
     @staticmethod
     def getAlgorithm(name):

@@ -24,6 +24,11 @@
 // the library (in code section) - why?
 #ifdef Q_OS_WIN
 #include "qgsgrassgislibfunctions.h"
+extern "C"
+{
+// defined here because too complex for parser in CMakeLists.txt
+  int GRASS_LIB_EXPORT G_cell_stats_histo_eq( struct Cell_stats *statf, CELL min1, CELL max1, CELL min2, CELL max2, int zero, void ( *func )( CELL, CELL, CELL ) );
+}
 #endif
 #include "qgsgrassgislib.h"
 
@@ -573,12 +578,6 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   raster.name = name;
   //raster.writer = new QgsRasterFileWriter( dataSource );
 
-  raster.provider = ( QgsRasterDataProvider* )QgsProviderRegistry::instance()->provider( providerKey, dataSource );
-  if ( !raster.provider )
-  {
-    fatal( "Cannot load raster provider with data source: " + dataSource );
-  }
-
   QString outputFormat = "GTiff";
   int nBands = 1;
   QGis::DataType type = qgisRasterType( wr_type );
@@ -591,11 +590,13 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   geoTransform[4] = 0.0;
   geoTransform[5] = -1. * mExtent.height() / mRows;
 
-  if ( !raster.provider->create( outputFormat, nBands, type, mColumns, mRows, geoTransform, mCrs ) )
+  raster.provider = QgsRasterDataProvider::create( providerKey, dataSource, outputFormat, nBands, type, mColumns, mRows, geoTransform, mCrs );
+  if ( !raster.provider || !raster.provider->isValid() )
   {
-    delete raster.provider;
+    if ( raster.provider ) delete raster.provider;
     fatal( "Cannot create output data source: " + dataSource );
   }
+
   raster.band = 1;
   double noDataValue = std::numeric_limits<double>::quiet_NaN();
   switch ( wr_type )
@@ -1303,6 +1304,13 @@ int GRASS_LIB_EXPORT G_lookup_key_value_from_file( const char *file, const char 
   return fn( file, key, value, n );
 }
 
+typedef int G_cell_stats_histo_eq_type( struct Cell_stats *, CELL, CELL, CELL, CELL, int, void ( * )( CELL, CELL, CELL ) );
+
+int GRASS_LIB_EXPORT G_cell_stats_histo_eq( struct Cell_stats *statf, CELL min1, CELL max1, CELL min2, CELL max2, int zero, void ( *func )( CELL, CELL, CELL ) )
+{
+  G_cell_stats_histo_eq_type *fn = ( G_cell_stats_histo_eq_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_cell_stats_histo_eq_type" ) );
+  return fn( statf, min1, max1, min2, max2, zero, func );
+}
 
 int GRASS_LIB_EXPORT G__temp_element( char *element )
 {
@@ -1326,6 +1334,13 @@ char GRASS_LIB_EXPORT *G_mapset( void )
 char GRASS_LIB_EXPORT *G_location( void )
 {
   return qstrdup( "qgis" );
+}
+
+int GRASS_LIB_EXPORT G__write_colors( FILE * fd, struct Colors *colors )
+{
+  Q_UNUSED( fd );
+  Q_UNUSED( colors );
+  return 1; // OK
 }
 
 int GRASS_LIB_EXPORT G_write_colors( const char *name, const char *mapset, struct Colors *colors )
@@ -1560,6 +1575,11 @@ struct Key_Value GRASS_LIB_EXPORT *G_get_projinfo( void )
   return NULL;
 }
 
+struct Key_Value GRASS_LIB_EXPORT *G_get_projunits( void )
+{
+  return NULL;
+}
+
 int GRASS_LIB_EXPORT G_get_reclass( const char *name, const char *mapset, struct Reclass *reclass )
 {
   Q_UNUSED( name );
@@ -1583,4 +1603,48 @@ int GRASS_LIB_EXPORT G_round_fp_map( const char *name, const char *mapset )
   Q_UNUSED( name );
   Q_UNUSED( mapset );
   return -1; // error
+}
+
+char GRASS_LIB_EXPORT *G_mask_info( void )
+{
+  return qstrdup( "none" );
+}
+
+int GRASS_LIB_EXPORT G_read_quant( const char *name, const char *mapset, struct Quant *quant )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( mapset );
+  G_quant_init( quant );
+  return 0; // does not exist
+}
+
+int GRASS_LIB_EXPORT G_write_fp_range( const char *name, const struct FPRange *range )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( range );
+  return 0; // OK
+}
+
+int GRASS_LIB_EXPORT G_write_range( const char *name, const struct Range *range )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( range );
+  return 0; // OK
+}
+
+int GRASS_LIB_EXPORT G_write_raster_units( const char *name, const char *str )
+{
+  Q_UNUSED( name );
+  Q_UNUSED( str );
+  return 0; // OK
+}
+
+int GRASS_LIB_EXPORT G_open_update( const char *element, const char *name )
+{
+  // G_open_update is used in r.flow if parm.seg, but parm.seg doesnt seem
+  // to be set to 1
+  Q_UNUSED( element );
+  Q_UNUSED( name );
+  qFatal( "G_open_update not imlemented" );
+  return -1; // Cannot open
 }

@@ -40,19 +40,18 @@ class RUtils:
     def RFolder():
         folder = SextanteConfig.getSetting(RUtils.R_FOLDER)
         if folder == None:
-            folder =""
+            folder = ""
 
-        return folder
+        return os.path.abspath(unicode(folder))
 
     @staticmethod
     def RScriptsFolder():
         folder = SextanteConfig.getSetting(RUtils.RSCRIPTS_FOLDER)
         if folder == None:
-            #folder = os.path.join(os.path.dirname(__file__), "scripts")
-            folder = SextanteUtils.userFolder() + os.sep + "rscripts"
+            folder = unicode(os.path.join(SextanteUtils.userFolder(), "rscripts"))
         mkdir(folder)
 
-        return folder
+        return os.path.abspath(folder)
 
     @staticmethod
     def createRScriptFromRCommands(commands):
@@ -61,16 +60,13 @@ class RUtils:
             scriptfile.write(command + "\n")
         scriptfile.close()
 
-
     @staticmethod
     def getRScriptFilename():
         return SextanteUtils.userFolder() + os.sep + "sextante_script.r"
 
-
     @staticmethod
     def getConsoleOutputFilename():
         return RUtils.getRScriptFilename()+".Rout"
-
 
     @staticmethod
     def executeRAlgorithm(alg, progress):
@@ -113,7 +109,6 @@ class RUtils:
                     RUtils.consoleResults.append("<p>" + line + "</p>\n");
                 RUtils.allConsoleResults.append(line);
 
-
     @staticmethod
     def getConsoleOutput():
         s = "<font face=\"courier\">\n"
@@ -123,5 +118,3 @@ class RUtils:
         s+="</font>\n"
 
         return s
-
-
