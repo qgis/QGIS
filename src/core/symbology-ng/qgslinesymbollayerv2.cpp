@@ -206,7 +206,24 @@ QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) c
   symbolStyle.append( ",w:" );
   //dxf driver writes ground units as mm? Should probably be changed in ogr
   symbolStyle.append( QString::number( mWidth * widthScaleFactor ) );
-  symbolStyle.append( "g" );
+  symbolStyle.append( "mm" );
+
+  //dash dot vector
+  if ( mCustomDashVector.size() > 0 )
+  {
+    symbolStyle.append( ",p:\"" );
+    QVector<qreal>::const_iterator pIt = mCustomDashVector.constBegin();
+    for ( ; pIt != mCustomDashVector.constEnd(); ++pIt )
+    {
+      if ( pIt != mCustomDashVector.constBegin() )
+      {
+        symbolStyle.append( " " );
+      }
+      symbolStyle.append( QString::number( *pIt * widthScaleFactor ) );
+      symbolStyle.append( "mm" );
+    }
+    symbolStyle.append( "\"" );
+  }
   symbolStyle.append( ")" );
 
   return symbolStyle;
