@@ -127,7 +127,14 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::errorRoutine( const char *msg, int fatal )
   Q_UNUSED( fatal );
   QgsDebugMsg( QString( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ) );
   // qFatal does core dump, useful for backtrace
-  qFatal( "Fatal error: %s", msg );
+  if ( fatal )
+  {
+    qFatal( "Fatal: %s", msg );
+  }
+  else
+  {
+    qWarning( "Warning: %s", msg );
+  }
   return 1;
 }
 
@@ -312,7 +319,7 @@ int GRASS_LIB_EXPORT G_set_error_routine( int ( *error_routine )( const char *, 
 typedef int G_warning_type( const char *, ... );
 int GRASS_LIB_EXPORT G_warning( const char * msg, ... )
 {
-  //QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "Entered" );
   G_warning_type* fn = ( G_warning_type* ) cast_to_fptr( QgsGrassGisLib::instance()->resolve( "G_warning" ) );
   va_list ap;
   va_start( ap, msg );
@@ -1067,7 +1074,7 @@ double QgsGrassGisLib::G_database_units_to_meters_factor( void )
     case QGis::Feet:
       return .3048;
     case QGis::Degrees:
-      return 0.; // should not be used
+      return 1.;
     default:
       return 0.;
   }
