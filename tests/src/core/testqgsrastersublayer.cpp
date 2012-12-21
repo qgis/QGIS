@@ -87,9 +87,9 @@ void TestQgsRasterSubLayer::initTestCase()
 
   mReport += "<h1>Raster Sub Layer Tests</h1>\n";
   //mReport += "<p>" + mySettings + "</p>";
-  
-  if ( mHasNetCDF ) 
-  { 
+
+  if ( mHasNetCDF )
+  {
     QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
@@ -125,12 +125,19 @@ void TestQgsRasterSubLayer::subLayersList()
     // Layer with sublayers is not valid
     //QVERIFY( mpRasterLayer->isValid() );
     QStringList expected;
-    expected << "NETCDF:\"" + mFileName + "\":Band1";
-    expected << "NETCDF:\"" + mFileName + "\":Band2";
+    // Sublayer format: NETCDF:"/path/to/landsat2.nc":Band1
+    // File path is delicate on Windows -> compare only sublayers
+    expected << "Band1";
+    expected << "Band2";
 
-    QStringList sublayers = mpRasterLayer->subLayers();
-    mReport += QString( "sublayers:<br>%1<br>\n" ).arg( sublayers.join("<br>") );
-    mReport += QString( "expected:<br>%1<br>\n" ).arg( expected.join("<br>") );
+    QStringList sublayers;
+    foreach ( QString s, mpRasterLayer->subLayers() )
+    {
+      sublayers << s.split( ':' ).value( 2 );
+    }
+    qDebug() << "sublayers: " << sublayers.join( "," );
+    mReport += QString( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( "<br>" ) );
+    mReport += QString( "expected:<br>%1<br>\n" ).arg( expected.join( "<br>" ) );
     QVERIFY( sublayers == expected );
     mReport += "<p>Passed</p>";
   }
@@ -141,7 +148,7 @@ void TestQgsRasterSubLayer::checkStats()
   if ( mHasNetCDF )
   {
     mReport += "<h2>Check Stats</h2>\n";
-    QString sublayerUri = mpRasterLayer->subLayers().value(0);
+    QString sublayerUri = mpRasterLayer->subLayers().value( 0 );
     mReport += "sublayer: " + sublayerUri + "<br>\n";
 
     QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, "Sublayer 1" );
@@ -159,8 +166,8 @@ void TestQgsRasterSubLayer::checkStats()
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
-    QVERIFY( doubleNear ( myStatistics.minimumValue, min ) );
-    QVERIFY( doubleNear ( myStatistics.maximumValue, max ) );
+    QVERIFY( doubleNear( myStatistics.minimumValue, min ) );
+    QVERIFY( doubleNear( myStatistics.maximumValue, max ) );
     mReport += "<p>Passed</p>";
     delete sublayer;
   }
