@@ -102,6 +102,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
+    , mEditorLayout( GeneratedLayout )
     , mFetching( false )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
@@ -3134,28 +3135,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
-    // tab display
-    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
-    if ( editorLayoutNode.isNull() )
-    {
-      mEditorLayout = GeneratedLayout;
-    }
-    else
-    {
-      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
-      {
-        mEditorLayout = UiFileLayout;
-      }
-      else if ( editorLayoutNode.toElement().text() == "tablayout" )
-      {
-        mEditorLayout = TabLayout;
-      }
-      else
-      {
-        mEditorLayout = GeneratedLayout;
-      }
-    }
-
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
@@ -3335,6 +3314,27 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+  // tab display
+  QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+  if ( editorLayoutNode.isNull() )
+  {
+    mEditorLayout = GeneratedLayout;
+  }
+  else
+  {
+    if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+    {
+      mEditorLayout = UiFileLayout;
+    }
+    else if ( editorLayoutNode.toElement().text() == "tablayout" )
+    {
+      mEditorLayout = TabLayout;
+    }
+    else
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+  }
 
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
@@ -3450,26 +3450,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
-
-    // tab display
-    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-    switch ( mEditorLayout )
-    {
-      case UiFileLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-        break;
-
-      case TabLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-        break;
-
-      case GeneratedLayout:
-      default:
-        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-        break;
-    }
-
-    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3612,6 +3592,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
   afField.appendChild( afText );
   node.appendChild( afField );
+
+  // tab display
+  QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+  switch ( mEditorLayout )
+  {
+    case UiFileLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+      break;
+
+    case TabLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+      break;
+
+    case GeneratedLayout:
+    default:
+      editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+      break;
+  }
+
+  node.appendChild( editorLayoutElem );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
