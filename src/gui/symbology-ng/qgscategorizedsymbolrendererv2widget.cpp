@@ -445,10 +445,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
 
 void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 {
-  QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+  QList<int> selectedCats = selectedCategories();
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( selectedCats.size() > 0 )
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
@@ -458,15 +457,13 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( QModelIndex idx, selectedIndexes )
+    foreach ( const int idx, selectedCats )
     {
-      if ( idx.isValid() )
-      {
-        int catIdx = mRenderer->categoryIndexForValue( idx.data( Qt::UserRole + 1 ) );
-        QgsSymbolV2* newCatSymbol = newSymbol->clone();
-        newCatSymbol->setColor( mRenderer->categories()[catIdx].symbol()->color() );
-        mRenderer->updateCategorySymbol( catIdx, newCatSymbol );
-      }
+      QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
+
+      QgsSymbolV2* newCatSymbol = newSymbol->clone();
+      newCatSymbol->setColor( mRenderer->categories()[idx].symbol()->color() );
+      mRenderer->updateCategorySymbol( idx, newCatSymbol );
     }
   }
 }
