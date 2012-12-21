@@ -62,7 +62,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    QString ogrFeatureStyle() const;
+    QString ogrFeatureStyle( double widthScaleFactor ) const;
 
     QString name() const { return mName; }
     void setName( QString name ) { mName = name; }

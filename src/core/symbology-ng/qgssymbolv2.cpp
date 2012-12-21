@@ -314,27 +314,6 @@ void QgsSymbolV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap p
   }
 }
 
-QString QgsSymbolV2::ogrFeatureStyle() const
-{
-  QString styleString;
-  QString currentStyleString;
-  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin(); it != mLayers.constEnd(); ++it )
-  {
-    currentStyleString = ( *it )->ogrFeatureStyle();
-    if ( currentStyleString.isEmpty() )
-    {
-      continue;
-    }
-
-    if ( it != mLayers.constBegin() )
-    {
-      styleString.append( ";" );
-    }
-    styleString.append( currentStyleString );
-  }
-  return styleString;
-}
-
 QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 {
   QgsSymbolLayerV2List lst;

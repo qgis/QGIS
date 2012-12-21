@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    QString ogrFeatureStyle() const;
+    QString ogrFeatureStyle( double widthScaleFactor ) const;
 
     // new stuff
 

@@ -168,9 +168,9 @@ class QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 

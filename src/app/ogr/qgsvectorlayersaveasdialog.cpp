@@ -200,3 +200,8 @@ int QgsVectorLayerSaveAsDialog::symbologyExport() const
 {
   return mSymbologyExportComboBox->itemData( mSymbologyExportComboBox->currentIndex() ).toInt();
 }
+
+double QgsVectorLayerSaveAsDialog::scaleDenominator() const
+{
+  return mScaleSpinBox->value();
+}

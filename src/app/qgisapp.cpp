@@ -4205,7 +4205,8 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation(),
               &newFilename,
-              ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ) );
+              ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
+              dialog->scaleDenominator() );
 
     QApplication::restoreOverrideCursor();
 

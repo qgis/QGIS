@@ -46,6 +46,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
         1: Feature symbology
         2: Symbol level symbology*/
     int symbologyExport() const;
+    double scaleDenominator() const;
 
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );

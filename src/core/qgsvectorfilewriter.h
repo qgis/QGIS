@@ -21,6 +21,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
+#include "qgssymbolv2.h"
 
 #include <QPair>
 
@@ -104,7 +105,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QStringList &layerOptions = QStringList(),  // added in 1.6
                                             bool skipAttributeCreation = false, // added in 1.6
                                             QString *newFilename = 0, // added in 1.9
-                                            SymbologyExport symbologyExport = NoSymbology //added in 2.0
+                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
+                                            double symbologyScale = 1.0 // added in 2.0
                                           );
 
     /** create shapefile and initialize it */
@@ -144,7 +146,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** add feature to the currently opened shapefile */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0 );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -160,6 +162,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
+
+    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
 
   protected:
     //! @note not available in python bindings
@@ -187,14 +192,18 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
 
+    /**Scale for symbology export (e.g. for symbols units in map units)*/
+    double mSymbologyScaleDenominator;
+
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
-    void createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSourceH ds );
+    void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     /**Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
+    double widthScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 };
 
 #endif

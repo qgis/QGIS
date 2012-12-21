@@ -25,7 +25,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
 #include <QFile>
@@ -435,7 +434,7 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer )
+bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer, QGis::UnitType outputUnit )
 {
   // create the feature
   OGRFeatureH poFeature = createFeature( feature );
@@ -459,7 +458,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
         {
             continue;
         }*/
-        currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle();//"@" + it.value();
+        double wScaleFactor = widthScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
+        currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( wScaleFactor );//"@" + it.value();
 
         if ( mSymbologyExport == FeatureSymbology )
         {
@@ -683,7 +683,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QStringList &layerOptions,
     bool skipAttributeCreation,
     QString *newFilename,
-    SymbologyExport symbologyExport )
+    SymbologyExport symbologyExport,
+    double symbologyScale )
 {
   QgsDebugMsg( "fileName = " + fileName );
   const QgsCoordinateReferenceSystem* outputCRS;
@@ -709,6 +710,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(),
                              outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+  writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
   {
@@ -750,10 +752,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   //create symbol table if needed
-  /*if( writer->symbologyExport() != NoSymbology )
+  if ( writer->symbologyExport() != NoSymbology )
   {
-    writer->createSymbolLayerTable( layer,  writer->mDS );
-  }*/
+    //writer->createSymbolLayerTable( layer,  writer->mDS );
+  }
 
   if ( writer->symbologyExport() == SymbolLayerSymbology && layer->isUsingRendererV2() )
   {
@@ -769,6 +771,13 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   }
 
   int n = 0, errors = 0;
+
+  //unit type
+  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
 
   // write all features
   while ( layer->nextFeature( fet ) )
@@ -803,7 +812,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     {
       fet.clearAttributeMap();
     }
-    if ( !writer->addFeature( fet, layer->rendererV2() ) )
+    if ( !writer->addFeature( fet, layer->rendererV2(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
@@ -1165,7 +1174,7 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   return true;
 }
 
-void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSourceH ds )
+void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds )
 {
   if ( !vl || !ds )
   {
@@ -1183,6 +1192,13 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSo
     return;
   }
 
+  //unit type
+  QGis::UnitType mapUnits = vl->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
+
   mSymbolLayerTable.clear();
   OGRStyleTableH ogrStyleTable = OGR_STBL_Create();
   OGRStyleMgrH styleManager = OGR_SM_Create( ogrStyleTable );
@@ -1197,7 +1213,8 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  OGRDataSo
     for ( int i = 0; i < nLevels; ++i )
     {
       mSymbolLayerTable.insert(( *symbolIt )->symbolLayer( i ), QString::number( nTotalLevels ) );
-      OGR_SM_AddStyle( styleManager, QString::number( nTotalLevels ).toLocal8Bit(), ( *symbolIt )->ogrFeatureStyle().toLocal8Bit() );
+      OGR_SM_AddStyle( styleManager, QString::number( nTotalLevels ).toLocal8Bit(),
+                       ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( widthScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits ) ).toLocal8Bit() );
       ++nTotalLevels;
     }
   }
@@ -1216,6 +1233,13 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     //return error
   }
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
+
+  //unit type
+  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
 
   //fetch features
   QgsFeature fet;
@@ -1307,7 +1331,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
           continue;
         }
 
-        QString styleString = levelIt.key()->symbolLayer( llayer )->ogrFeatureStyle();
+        QString styleString = levelIt.key()->symbolLayer( llayer )->ogrFeatureStyle( widthScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(),
+                              mapUnits ) );
         if ( !styleString.isEmpty() )
         {
           OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().data() );
@@ -1327,4 +1352,22 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   }
 
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
+}
+
+double QgsVectorFileWriter::widthScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+{
+  if ( symbolUnits == QgsSymbolV2::MM )
+  {
+    return 1.0;
+  }
+  else
+  {
+    //conversion factor map units -> mm
+    if ( mapUnits == QGis::Meters )
+    {
+      return 1000 / scaleDenominator;
+    }
+
+  }
+  return 1.0; //todo: map units
 }

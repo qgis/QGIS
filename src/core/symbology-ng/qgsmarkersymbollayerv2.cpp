@@ -480,7 +480,7 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
 }
 
-QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle() const
+QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) const
 {
 #if 0
   QString ogrType = "3"; //default is circle

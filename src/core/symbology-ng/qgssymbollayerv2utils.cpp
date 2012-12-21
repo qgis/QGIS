@@ -2455,7 +2455,7 @@ QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
   return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
 
   if ( u == QgsSymbolV2::MM )
@@ -2476,7 +2476,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymb
   }
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
   if ( u == QgsSymbolV2::MM )
   {
