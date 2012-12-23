@@ -779,6 +779,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     mapUnits = ct->destCRS().mapUnits();
   }
 
+  writer->startRender( layer );
+
   // write all features
   while ( layer->nextFeature( fet ) )
   {
@@ -839,6 +841,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     n++;
   }
 
+  writer->stopRender( layer );
   delete writer;
 
   if ( shallTransform )
@@ -1241,6 +1244,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     mapUnits = ct->destCRS().mapUnits();
   }
 
+  startRender( layer );
+
   //fetch features
   QgsFeature fet;
   QgsSymbolV2* featureSymbol = 0;
@@ -1346,6 +1351,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     }
   }
 
+  stopRender( layer );
+
   if ( nErrors > 0 && errorMessage )
   {
     *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( nTotalFeatures - nErrors ).arg( nTotalFeatures );
@@ -1370,4 +1377,49 @@ double QgsVectorFileWriter::widthScaleFactor( double scaleDenominator, QgsSymbol
 
   }
   return 1.0; //todo: map units
+}
+
+QgsRenderContext QgsVectorFileWriter::renderContext() const
+{
+  QgsRenderContext context;
+  context.setRendererScale( mSymbologyScaleDenominator );
+  return context;
+}
+
+void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->startRender( ctx, vl );
+}
+
+void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->stopRender( ctx );
+}
+
+QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl ) const
+{
+  if ( mSymbologyExport == NoSymbology )
+  {
+    return 0;
+  }
+  if ( !vl || !vl->isUsingRendererV2() )
+  {
+    return 0;
+  }
+
+  return vl->rendererV2();
 }

@@ -209,7 +209,7 @@ QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) c
   symbolStyle.append( "mm" );
 
   //dash dot vector
-  if ( mCustomDashVector.size() > 0 )
+  if ( mUseCustomDashPattern && mCustomDashVector.size() > 0 )
   {
     symbolStyle.append( ",p:\"" );
     QVector<qreal>::const_iterator pIt = mCustomDashVector.constBegin();
