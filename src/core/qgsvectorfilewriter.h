@@ -208,6 +208,8 @@ class CORE_EXPORT QgsVectorFileWriter
     void startRender( QgsVectorLayer* vl ) const;
     void stopRender( QgsVectorLayer* vl ) const;
     QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
+    /**Adds attributes needed for classification*/
+    void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
 
 };
 

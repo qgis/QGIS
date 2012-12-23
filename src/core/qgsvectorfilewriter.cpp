@@ -735,6 +735,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
+  //add possible attributes needed by renderer
+  writer->addRendererAttributes( layer, allAttr );
   layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
@@ -810,10 +812,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
         return ErrProjection;
       }
     }
-    if ( skipAttributeCreation )
+    if ( allAttr.size() < 1 && skipAttributeCreation )
     {
       fet.clearAttributeMap();
     }
+
     if ( !writer->addFeature( fet, layer->rendererV2(), mapUnits ) )
     {
       WriterError err = writer->hasError();
@@ -1422,4 +1425,21 @@ QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl
   }
 
   return vl->rendererV2();
+}
+
+void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList )
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( renderer )
+  {
+    QList<QString> rendererAttributes = renderer->usedAttributes();
+    for ( int i = 0; i < rendererAttributes.size(); ++i )
+    {
+      int index = vl->fieldNameIndex( rendererAttributes.at( i ) );
+      if ( index != -1 )
+      {
+        attList.push_back( vl->fieldNameIndex( rendererAttributes.at( i ) ) );
+      }
+    }
+  }
 }
