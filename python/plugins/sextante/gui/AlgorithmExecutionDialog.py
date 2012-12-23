@@ -236,7 +236,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     if command:
                         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     self.algEx = AlgorithmExecutor(self.alg)
-                self.algEx.finished.connect(self.finish)
+                self.algEx.algExecuted.connect(self.finish)
                 self.algEx.error.connect(self.error)
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
@@ -298,10 +298,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def error(self, msg):
+        #self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        self.setInfo(msg, True)
-        self.algEx.finished.disconnect()
+        self.setInfo(msg, True)        
         if not keepOpen:
             QMessageBox.critical(self, "Error", msg)
             self.close()
@@ -318,7 +318,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def cancel(self):
         self.setInfo("<b>Algorithm %s canceled</b>" % self.alg.name)
         try:
-            self.algEx.finished.disconnect()
+            self.algEx.algExecuted.disconnect()
             self.algEx.terminate()
         except:
             pass

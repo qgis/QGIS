@@ -25,19 +25,12 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from math import *
+from sextante.core.QGisLayers import QGisLayers
 
 # --------------------------------------------------------
 #    MMQGIS Utility Functions
 # --------------------------------------------------------
 
-def mmqgisx_find_layer(layer_name):
-	# print "find_layer(" + str(layer_name) + ")"
-
-	for name, search_layer in QgsMapLayerRegistry.instance().mapLayers().iteritems():
-		if search_layer.name() == layer_name:
-			return search_layer
-
-	return None
 
 def mmqgisx_is_float(s):
 	try:
@@ -165,223 +158,6 @@ def mmqgisx_wkbtype_to_text(wkbtype):
 #    mmqgisx_animate_columns - Create animations by
 #		interpolating offsets from attributes
 # --------------------------------------------------------
-
-def mmqgisx_animate_columns(qgis, layer_name, long_col, lat_col, outdir, frame_count):
-
-	# Error Checks
-	layer = mmqgisx_find_layer(layer_name)
-	if layer == None:
-		return "Invalid map layer ID: " + unicode(map_layer_id)
-
-	long_col_index = layer.dataProvider().fieldNameIndex(long_col)
-	if (long_col_index < 0):
-		return "Invalid longitude column index: " + unicode(long_col)
-
-	lat_col_index = layer.dataProvider().fieldNameIndex(lat_col)
-	if (lat_col_index < 0):
-		return "Invalid latitude column: " + unicode(lat_col)
-
-	if not os.path.isdir(outdir):
-		return "Invalid output directory: " + unicode(outdir)
-
-	if frame_count <= 0:
-		return "Invalid number of frames specified: " + unicode(frame_count)
-
-
-	# Initialize temporary shapefile
-
-	tempdir = tempfile.mkdtemp()
-	tempfilename = tempdir + "/mmqgisx_animate.shp"
-	tempcrs = layer.dataProvider().crs()
-	if not tempcrs.isValid():
-		tempcrs.createFromSrid(4326)
-		print "Defaulting layer " + unicode(layer.id()) + " to CRS " + unicode(tempcrs.epsg())
-
-	tempwriter = QgsVectorFileWriter(QString(tempfilename), QString("System"), \
-		layer.dataProvider().fields(), layer.dataProvider().geometryType(), tempcrs)
-	del tempwriter
-
-	templayer = qgis.addVectorLayer(tempfilename, "animate", "ogr")
-	templayer.setRenderer(layer.renderer().clone())
-	templayer.enableLabels(layer.hasLabelsEnabled())
-
-	qgis.legendInterface().setLayerVisible(layer, 0)
-
-
-	# Iterate Frames
-
-	for frame in range(frame_count + 1):
-		qgis.mainWindow().statusBar().showMessage("Rendering frame " + unicode(frame))
-
-		# Read, move and rewrite features
-
-		feature = QgsFeature()
-		feature_ids = []
-		layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-		layer.dataProvider().rewind()
-		while layer.dataProvider().nextFeature(feature):
-			attributes = feature.attributeMap()
-			xoffset, valid = attributes[long_col_index].toDouble()
-			yoffset, valid = attributes[lat_col_index].toDouble()
-			xoffset = xoffset * frame / frame_count;
-			yoffset = yoffset * frame / frame_count;
-
-			newfeature = QgsFeature()
-			newgeometry = feature.geometry()
-			newgeometry.translate(xoffset, yoffset)
-			newfeature.setGeometry(newgeometry)
-			newfeature.setAttributeMap(attributes)
-
-			if templayer.dataProvider().addFeatures([newfeature]):
-				feature_ids.append(newfeature.id())
-
-		# Write Frame
-
-		# templayer.commitChanges()
-		qgis.mapCanvas().refresh()
-		framefile = outdir + "/frame" + format(frame, "06d") + ".png"
-		qgis.mapCanvas().saveAsImage(QString(framefile))
-
-		# Delete features from temporary shapefile
-
-		for feature_id in feature_ids:
-			templayer.dataProvider().deleteFeatures([feature_id])
-
-	# Clean up
-
-	QgsMapLayerRegistry.instance().removeMapLayer(templayer.id())
-	QgsVectorFileWriter.deleteShapeFile(QString(tempfilename))
-	qgis.legendInterface().setLayerVisible(layer, 1)
-
-	return None
-
-# --------------------------------------------------------
-#    mmqgisx_animate_rows - Create animations by
-#		displaying successive rows
-# --------------------------------------------------------
-
-def mmqgisx_animate_rows(qgis, layer_names, cumulative, outdir):
-
-	#print "mmqgisx_animate_rows()"
-	#for id in animate_layer_ids:
-	#	print str(id)
-	#print "cumulative = " + str(cumulative)
-	#print outdir
-
-	# Error Checks
-	if not os.path.isdir(outdir):
-		return "Invalid output directory: " + unicode(outdir)
-
-	layers = []
-	for layer_name in layer_names:
-		layer = mmqgisx_find_layer(layer_name)
-		if layer == None:
-			return "Invalid layer name: " + unicode(layer_name)
-		layers.append(layer)
-
-	frame_count = 0
-	for layer in layers:
-		if frame_count < layer.dataProvider().featureCount():
-			frame_count = layer.dataProvider().featureCount()
-
-	if frame_count <= 0:
-		return "Invalid number of frames specified"
-
-
-	# Feature ID arrays
-
-	feature_ids = [None] * len(layers)
-	for index in range(len(layers)):
-		layer = layers[index]
-		feature = QgsFeature()
-		feature_ids[index] = []
-		layer.dataProvider().select()
-		layer.dataProvider().rewind()
-		while layer.dataProvider().nextFeature(feature):
-			feature_ids[index].append(feature.id());
-			# print feature.id()
-
-	# Create temporary layers
-
-	tempdir = tempfile.mkdtemp()
-	tempnames = [None] * len(layers)
-	templayers = [None] * len(layers)
-	for layer_index in range(len(layers)):
-		tempnames[layer_index] = tempdir + "/mmqgisx_animate" + unicode(layer_index) + ".shp"
-		tempcrs = layers[layer_index].dataProvider().crs()
-		if not tempcrs.isValid():
-			tempcrs.createFromSrid(4326)
-			print "Defaulting layer " + unicode(animate_layer_ids[layer_index]) + \
-				" to CRS " + unicode(tempcrs.epsg())
-
-		tempwriter = QgsVectorFileWriter(QString(tempnames[layer_index]), QString("System"), \
-			layers[layer_index].dataProvider().fields(), \
-			layers[layer_index].dataProvider().geometryType(), tempcrs)
-		del tempwriter
-
-		templayers[layer_index] = qgis.addVectorLayer(tempnames[layer_index], "animate" + unicode(layer_index), "ogr")
-		templayers[layer_index].setRenderer(layers[layer_index].renderer().clone())
-
-		# There doesn't seem to be a way to directly copy labeling fields and attributes
-		if layers[layer_index].hasLabelsEnabled():
-			templayers[layer_index].enableLabels(1)
-			label = layers[layer_index].label()
-			templabel = templayers[layer_index].label()
-			templabel.setFields(label.fields())
-
-			for field_index, field in templabel.fields().iteritems():
-				if field.name() == label.labelField(0):
-					templabel.setLabelField(0, field_index)
-
-			attributes = label.labelAttributes()
-			tempattributes = templabel.labelAttributes()
-			tempattributes.setFamily(attributes.family())
-			tempattributes.setBold(attributes.bold())
-			tempattributes.setItalic(attributes.italic())
-			tempattributes.setUnderline(attributes.underline())
-			tempattributes.setSize(attributes.size(), attributes.sizeType())
-			tempattributes.setColor(attributes.color())
-
-		qgis.legendInterface().setLayerVisible(layers[layer_index], 0)
-
-	# return "Testing"
-
-	# Iterate frames
-
-	for frame in range(int(frame_count + 1)):
-		qgis.mainWindow().statusBar().showMessage("Rendering frame " + unicode(frame))
-
-		for layer_index in range(len(layers)):
-			if frame < layers[layer_index].featureCount():
-				feature = QgsFeature()
-				featureid = feature_ids[layer_index][frame]
-				layers[layer_index].dataProvider().featureAtId(featureid, feature, 1, \
-					layers[layer_index].dataProvider().attributeIndexes())
-
-				newfeature = QgsFeature()
-				newfeature.setGeometry(feature.geometry())
-				newfeature.setAttributeMap(feature.attributeMap())
-				if templayers[layer_index].dataProvider().addFeatures([newfeature]):
-					feature_ids[layer_index][frame] = newfeature.id()
-			#templayers[layer_index].commitChanges()
-
-		qgis.mapCanvas().refresh()
-		framefile = outdir + "/frame" + format(frame, "06d") + ".png"
-		qgis.mapCanvas().saveAsImage(QString(framefile))
-
-		if not cumulative:
-			for layer_index in range(len(layers)):
-				if frame < layers[layer_index].featureCount():
-					feature = QgsFeature()
-					featureid = feature_ids[layer_index][frame]
-					templayers[layer_index].dataProvider().deleteFeatures([featureid])
-
-	for layer_index in range(len(layers)):
-		QgsMapLayerRegistry.instance().removeMapLayer(templayers[layer_index].id())
-		QgsVectorFileWriter.deleteShapeFile(QString(tempnames[layer_index]))
-		qgis.legendInterface().setLayerVisible(layers[layer_index], 1)
-
-	return None
 
 # ----------------------------------------------------------
 #    mmqgisx_attribute_export - Export attributes to CSV file
@@ -601,162 +377,6 @@ def mmqgisx_attribute_join(progress, layername, infilename, joinfield, joinattri
 	return None
 
 
-# --------------------------------------------------------
-#    mmqgisx_color_map - Robust layer coloring
-# --------------------------------------------------------
-
-def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highvalue, steps, lowcolor, midcolor, highcolor):
-	layer = mmqgisx_find_layer(layername)
-	if layer == None:
-		return "Invalid layer name: " + layername
-
-	# temp_filename = "/tmp/mmqgisx.qml"
-	# outfile = open(temp_filename, 'w')
-	# if outfile == None:
-	try:
-		outfile, temp_filename = tempfile.mkstemp()
-	except:
-		return "Failure creating temporary style file"
-
-	lowred = (lowcolor >> 16) & 0xff
-	lowgreen = (lowcolor >> 8) & 0xff
-	lowblue = lowcolor & 0xff
-	midred = (midcolor >> 16) & 0xff
-	midgreen = (midcolor >> 8) & 0xff
-	midblue = midcolor & 0xff
-	highred = (highcolor >> 16) & 0xff
-	highgreen = (highcolor >> 8) & 0xff
-	highblue = highcolor & 0xff
-
-	os.write(outfile, "<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>")
-	os.write(outfile, "<qgis version=\"1.4.0-Enceladus\" minimumScale=\"1\" ")
-	os.write(outfile, "  maximumScale=\"1e+08\" hasScaleBasedVisibilityFlag=\"0\" >")
-	os.write(outfile, "<transparencyLevelInt>255</transparencyLevelInt>")
-
-	if layer.type() == QgsMapLayer.RasterLayer:
-		# http://www.osgeo.org/pipermail/qgis-developer/2009-January/005742.html
-		os.write(outfile, "<rasterproperties>")
-		os.write(outfile, "<mDrawingStyle>SingleBandPseudoColor</mDrawingStyle>")
-		os.write(outfile, "<mColorShadingAlgorithm>ColorRampShader</mColorShadingAlgorithm>")
-		os.write(outfile, "<mInvertColor boolean=\"false\"/>")
-		os.write(outfile, "<mRedBandName>Not Set</mRedBandName>")
-		os.write(outfile, "<mGreenBandName>Not Set</mGreenBandName>")
-		os.write(outfile, "<mBlueBandName>Not Set</mBlueBandName>")
-		os.write(outfile, "<mGrayBandName>" + bandname + "</mGrayBandName>")
-		os.write(outfile, "<mStandardDeviations>0</mStandardDeviations>")
-		os.write(outfile, "<mUserDefinedRGBMinimumMaximum boolean=\"false\"/>")
-    		os.write(outfile, "<mRGBMinimumMaximumEstimated boolean=\"true\"/>")
-		os.write(outfile, "<mUserDefinedGrayMinimumMaximum boolean=\"false\"/>")
-		os.write(outfile, "<mGrayMinimumMaximumEstimated boolean=\"true\" />")
-		os.write(outfile, "<mContrastEnhancementAlgorithm>StretchToMinimumMaximum</mContrastEnhancementAlgorithm>")
-		os.write(outfile, "<contrastEnhancementMinMaxValues>")
-		os.write(outfile, "<minMaxEntry>")
-		os.write(outfile, "<min>" + unicode(lowvalue) + "</min>")
-		os.write(outfile, "<max>" + unicode(highvalue) + "</max>")
-		os.write(outfile, "</minMaxEntry>")
-		os.write(outfile, "</contrastEnhancementMinMaxValues>")
-		os.write(outfile, "<mNoDataValue mValidNoDataValue=\"true\" >-1.000000</mNoDataValue>")
-		os.write(outfile, "<singleValuePixelList>")
-		os.write(outfile, "<pixelListEntry pixelValue=\"-1.000000\" percentTransparent=\"100\" />")
-		os.write(outfile, "</singleValuePixelList>")
-		os.write(outfile, "<threeValuePixelList>")
-		os.write(outfile, "<pixelListEntry red=\"-1.000000\" blue=\"-1.000000\" ")
-		os.write(outfile, "  green=\"-1.000000\" percentTransparent=\"100\" />")
-		os.write(outfile, "</threeValuePixelList>\n")
-		os.write(outfile, "<customColorRamp>\n")
-		os.write(outfile, "<colorRampType>DISCRETE</colorRampType>\n")
-
-		for x in range(0, steps):
-			interpolate = x / float(steps)
-			if (interpolate < 0.5):
-				interpolate = interpolate * 2.0;
-				value = lowvalue + ((midvalue - lowvalue) * interpolate)
-				red = unicode(int(round(lowred + ((midred - lowred) * interpolate))))
-				green = unicode(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
-				blue = unicode(int(round(lowblue + ((midblue - lowblue) * interpolate))))
-				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue +
-					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
-			else:
-				interpolate = (interpolate - 0.5) * 2.0
-				value = midvalue + ((highvalue - midvalue) * interpolate)
-				red = unicode(int(round(midred + ((highred - midred) * interpolate))))
-				green = unicode(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
-				blue = unicode(int(round(midblue + ((highblue - midblue) * interpolate))))
-				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue +
-					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
-
-			#print str(x) + ", " + str(interpolate) + ", " + str(value)
-
-   		os.write(outfile, "</customColorRamp>\n")
-		os.write(outfile, "</rasterproperties>\n")
-
-	else: # vector
-		os.write(outfile, "<classificationattribute>" + bandname + "</classificationattribute>\n")
-		os.write(outfile, "<graduatedsymbol>\n")
-		os.write(outfile, "<mode>Quantile</mode>\n")
-		os.write(outfile, "<classificationfield>" + bandname + "</classificationfield>\n")
-
-		if (steps < 3):
-			steps = 3
-
-		values = []
-		for x in range(0, steps + 1):
-			interpolate = x / float(steps)
-			if (interpolate < 0.5):
-				interpolate = interpolate * 2.0
-				value = lowvalue + ((midvalue - lowvalue) * interpolate)
-			else:
-				interpolate = (interpolate - 0.5) * 2.0
-				value = midvalue + ((highvalue - midvalue) * interpolate)
-			values.append(value)
-			# print str(x) + ", " + str(value)
-
-		for x in range(0, steps):
-			interpolate = x / float(steps)
-			if (interpolate < 0.5):
-				interpolate = interpolate * 2.0
-				red = unicode(int(round(lowred + ((midred - lowred) * interpolate))))
-				green = unicode(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
-				blue = unicode(int(round(lowblue + ((midblue - lowblue) * interpolate))))
-			else:
-				interpolate = (interpolate - 0.5) * 2.0
-				red = unicode(int(round(midred + ((highred - midred) * interpolate))))
-				green = unicode(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
-				blue = unicode(int(round(midblue + ((highblue - midblue) * interpolate))))
-
-			os.write(outfile, "<symbol>\n")
-			os.write(outfile, "<lowervalue>" + unicode(values[x]) + "</lowervalue>\n")
-			os.write(outfile, "<uppervalue>" + unicode(values[x + 1]) + "</uppervalue>\n")
-			os.write(outfile, "<label></label>\n")
-			os.write(outfile, "<pointsymbol>hard:circle</pointsymbol>\n")
-			os.write(outfile, "<pointsize>2</pointsize>\n")
-			os.write(outfile, "<pointsizeunits>pixels</pointsizeunits>\n")
-			os.write(outfile, "<rotationclassificationfieldname></rotationclassificationfieldname>\n")
-			os.write(outfile, "<scaleclassificationfieldname></scaleclassificationfieldname>\n")
-			os.write(outfile, "<symbolfieldname></symbolfieldname>\n")
-			os.write(outfile, "<outlinecolor red=\"128\" blue=\"128\" green=\"128\"/>\n")
-			os.write(outfile, "<outlinestyle>SolidLine</outlinestyle>\n")
-			os.write(outfile, "<outlinewidth>0.26</outlinewidth>\n")
-			os.write(outfile, "<fillcolor red=\"" + unicode(red) + "\" blue=\"" +
-					unicode(blue) + "\" green=\"" + unicode(green) + "\"/>")
-			os.write(outfile, "<fillpattern>SolidPattern</fillpattern>\n")
-			os.write(outfile, "<texturepath></texturepath>\n")
-			os.write(outfile, "</symbol>\n")
-
-		os.write(outfile, "</graduatedsymbol>\n")
-
-	os.write(outfile, "</qgis>\n")
-	os.close(outfile)
-
-	load_message = layer.loadNamedStyle(temp_filename)
-	# print load_message
-
-	layer.triggerRepaint()
-	# qgis.refreshLegend(layer)
-	qgis.legendInterface().refreshLayerSymbology(layer)
-
-	return None
-
 # ---------------------------------------------------------
 #    mmqgisx_delete_columns - Change text fields to numbers
 # ---------------------------------------------------------
@@ -801,14 +421,14 @@ def mmqgisx_delete_columns(progress, layer, columns, savename, addlayer):
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 
-	# Write the features with modified attributes
-	feature = QgsFeature()
+	# Write the features with modified attributes	
 	featurecount = layer.dataProvider().featureCount();
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 
 	i = 0
-	while layer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(layer)
+	for feature in features:
 		progress.setPercentage(float(i) /featurecount * 100)
 		i += 1
 		attributes = {}
@@ -888,84 +508,6 @@ def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
 	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " of " + \
 		unicode(layer.dataProvider().featureCount()) + \
 		" unique features written to " + savename)
-
-	return None
-
-# ---------------------------------------------------------
-#    mmqgisx_float_to_text - String format numeric fields
-# ---------------------------------------------------------
-
-def mmqgisx_float_to_text(qgis, layer, attributes, separator,
-			decimals, prefix, suffix, savename, addlayer):
-
-	#layer = mmqgisx_find_layer(layername)
-	if layer == None:
-		return "Project has no active vector layer to convert: "
-
-	if decimals < 0:
-		return "Invalid number of decimals: " + unicode(decimals)
-
-	if len(savename) <= 0:
-		return "No output filename given"
-
-	# Build dictionary of fields with selected fields for conversion to floating point
-	destfields = {};
-	changecount = 0
-	for index, field in layer.dataProvider().fields().iteritems():
-		destfields[index] = QgsField (field.name(), field.type(), field.typeName(), \
-			field.length(), field.precision(), field.comment())
-
-		if field.name() in attributes:
-			if (field.type() != QVariant.Int) and (field.type() != QVariant.Double):
-				return "Cannot convert non-numeric field " + unicode(field.name())
-
-			destfields[index].setType(QVariant.String)
-			destfields[index].setLength(20)
-			changecount += 1
-
-	if (changecount <= 0):
-		return "No numeric fields selected for conversion"
-
-
-	# Create the output file
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), destfields,
-			layer.dataProvider().geometryType(), layer.dataProvider().crs())
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
-
-	# Write the features with modified attributes
-	feature = QgsFeature()
-	featurecount = layer.dataProvider().featureCount();
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-	while layer.dataProvider().nextFeature(feature):
-		qgis.mainWindow().statusBar().showMessage("Writing feature " + \
-			unicode(feature.id()) + " of " + unicode(featurecount))
-
-		attributes = feature.attributeMap()
-		for index, field in layer.dataProvider().fields().iteritems():
-			if (field.type() != destfields[index].type()):
-				floatvalue, test = attributes[index].toDouble()
-				if not test:
-					floatvalue = 0
-				value = prefix + format_float(floatvalue, separator, decimals) + suffix
-				attributes[index] = QVariant(value)
-
-		feature.setAttributeMap(attributes)
-		outfile.addFeature(feature)
-
-	del outfile
-
-	if addlayer:
-		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-
-	qgis.mainWindow().statusBar().showMessage(unicode(changecount) + " numeric converted to text")
 
 	return None
 
@@ -1123,14 +665,14 @@ def mmqgisx_geometry_convert(progress, layer, newtype, splitnodes, savename, add
 
 	# Iterate through each feature in the source layer
 	feature_count = layer.dataProvider().featureCount()
-
-	feature = QgsFeature()
+	
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
-        while layer.dataProvider().nextFeature(feature):
-		shapeid = unicode(feature.id()).strip()
-
-		qgis.mainWindow().statusBar().showMessage("Converting feature " + shapeid + " of " + unicode(feature_count))
+	features = QGisLayers.features(layer)
+	i = 0
+	for feature in features:
+		i += 1		
+		progress.setPercentage(float(i) / feature_count * 100)		
 
 		if (feature.geometry().wkbType() == QGis.WKBPoint) or \
 		   (feature.geometry().wkbType() == QGis.WKBPoint25D):
@@ -1320,98 +862,6 @@ def mmqgisx_geometry_convert(progress, layer, newtype, splitnodes, savename, add
 	del outfile
 
 	return None
-
-# --------------------------------------------------------
-#    mmqgisx_geometry_export_to_csv - Shape node dump to CSV
-# --------------------------------------------------------
-
-def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_filename, field_delimiter, line_terminator):
-	layer = mmqgisx_find_layer(layername)
-
-	if (layer == None) or (layer.type() != QgsMapLayer.VectorLayer):
-		return "Invalid Vector Layer " + layername
-
-	node_header = ["shapeid", "x", "y"]
-	attribute_header = ["shapeid"]
-	for index, field in layer.dataProvider().fields().iteritems():
-		if (layer.geometryType() == QGis.Point):
-			node_header.append(field.name())
-		else:
-			attribute_header.append(field.name())
-
-	try:
-		nodefile = open(node_filename, 'w')
-    	except:
-		return "Failure opening " + node_filename
-
-	node_writer = csv.writer(nodefile, delimiter = field_delimiter, lineterminator = line_terminator)
-	node_writer.writerow(node_header)
-
-	if (layer.geometryType() != QGis.Point):
-		try:
-			attributefile = open(attribute_filename, 'w')
- 	   	except:
-			return "Failure opening " + attribute_filename
-
-		attribute_writer = csv.writer(attributefile, delimiter = field_delimiter, lineterminator = line_terminator)
-		attribute_writer.writerow(attribute_header)
-
-
-	# Iterate through each feature in the source layer
-	feature_count = layer.dataProvider().featureCount()
-
-	feature = QgsFeature()
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-        while layer.dataProvider().nextFeature(feature):
-		shapeid = unicode(feature.id()).strip()
-
-		qgis.mainWindow().statusBar().showMessage("Exporting feature " + shapeid + " of " + unicode(feature_count))
-
-		if (feature.geometry() == None):
-			return "Cannot export layer with no shape data"
-
-		elif (feature.geometry().type() == QGis.Point):
-			point = feature.geometry().asPoint()
-			row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
-			for attindex, attribute in feature.attributeMap().iteritems():
-				row.append(unicode(attribute.toString()).encode("iso-8859-1"))
-			node_writer.writerow(row)
-
-		# elif (feature.geometry().wkbType() == QGis.WKBLineString):
-		elif (feature.geometry().type() == QGis.Line):
-			polyline = feature.geometry().asPolyline()
-			#for point in polyline.iteritems():
-			for point in polyline:
-				row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
-				node_writer.writerow(row)
-
-			row = []
-			for attindex, attribute in feature.attributeMap().iteritems():
-				row.append(attribute.toString())
-			attribute_writer.writerow(row)
-
-		# elif (feature.geometry().wkbType() == QGis.WKBPolygon):
-		elif (feature.geometry().type() == QGis.Polygon):
-			polygon = feature.geometry().asPolygon()
-			for polyline in polygon:
-				for point in polyline:
-					row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
-					node_writer.writerow(row)
-
-			row = [shapeid]
-			for attindex, attribute in feature.attributeMap().iteritems():
-				row.append(unicode(attribute.toString()).encode("iso-8859-1"))
-			attribute_writer.writerow(row)
-
-	del nodefile
-	if (layer.geometryType() != QGis.Point):
-		del attributefile
-
-	qgis.mainWindow().statusBar().showMessage(unicode(feature_count) + " records exported")
-
-	return None
-
 
 # --------------------------------------------------------
 #    mmqgisx_geometry_import_from_csv - Shape node import from CSV
@@ -1762,8 +1212,8 @@ def mmqgisx_gridify_layer(progress, layer, hspacing, vspacing, savename, addlaye
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 
-	feature = QgsFeature()
-	while layer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(layer)
+	for feature in features:		
 		progress.setPercentage(float(feature_number) / feature_count * 100)		
 		geometry = feature.geometry()
 
@@ -1915,11 +1365,11 @@ def mmqgisx_hub_distance(progress, sourcelayer, hubslayer, nameattributename, un
 
 
 	# Create array of hubs in memory
-	hubs = []
-	feature = QgsFeature()
+	hubs = []	
 	hubslayer.dataProvider().select(hubslayer.dataProvider().attributeIndexes())
 	hubslayer.dataProvider().rewind()
-	while hubslayer.dataProvider().nextFeature(feature):		
+	features = QGisLayers.features(hubslayer)
+	for feature in features:		
 		hubs.append(mmqgisx_hub(feature.geometry().boundingBox().center(), \
 				feature.attributeMap()[nameindex].toString()))
 
@@ -1932,7 +1382,8 @@ def mmqgisx_hub_distance(progress, sourcelayer, hubslayer, nameattributename, un
 	feature = QgsFeature()
 	sourcelayer.dataProvider().select(sourcelayer.dataProvider().attributeIndexes())
 	sourcelayer.dataProvider().rewind()
-	while sourcelayer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(sourcelayer)
+	for feature in features:
 		source = feature.geometry().boundingBox().center()
 		distance = QgsDistanceArea()
 		distance.setSourceCrs(sourcelayer.dataProvider().crs().srsid())
@@ -2034,17 +1485,20 @@ def mmqgisx_hub_lines(progress, hublayer, hubattr, spokelayer, spokeattr, savena
 	spokepoint = QgsFeature()
 	spokelayer.dataProvider().select(spokelayer.dataProvider().attributeIndexes())
 	spokelayer.dataProvider().rewind()
-	while spokelayer.dataProvider().nextFeature(spokepoint):
+	spokepoints = QGisLayers.features(spokelayer)
+	i = 0
+	for spokepoint in spokepoints:
+		i += 1
 		spokex = spokepoint.geometry().boundingBox().center().x()
 		spokey = spokepoint.geometry().boundingBox().center().y()
-		spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())
-		qgis.mainWindow().statusBar().showMessage("Reading spoke " + unicode(spokepoint.id()))
-
+		spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())		
+		progress.setPercentage(float(i) / len(spokepoints) * 100)
 		# Scan hub points to find first matching hub
 		hubpoint = QgsFeature()
 		hublayer.dataProvider().select(hublayer.dataProvider().attributeIndexes())
 		hublayer.dataProvider().rewind()
-		while hublayer.dataProvider().nextFeature(hubpoint):
+		hubpoints = QGisLayers.features(hublayer)
+		for hubpoint in hubpoints:		
 			hubid = unicode(hubpoint.attributeMap()[hubindex].toString())
 			if hubid == spokeid:
 				hubx = hubpoint.geometry().boundingBox().center().x()
@@ -2111,14 +1565,14 @@ def mmqgisx_label_point(progress, layer, labelattributename, savename, addlayer)
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 	# Build dictionary of items, averaging center for multi-feature items
-	features = {}
-	feature = QgsFeature()
+	features = {}	
 	readcount = 0
 	feature_count = layer.featureCount()
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 
-	while layer.dataProvider().nextFeature(feature):
+	layerFeatures = QGisLayers.features(layer)
+	for feature in layerFeatures:
 		key = unicode(feature.attributeMap()[labelindex].toString())
 		if not features.has_key(key):
 			features[key] = mmqgisx_label(key, feature.attributeMap())
@@ -2130,8 +1584,6 @@ def mmqgisx_label_point(progress, layer, labelattributename, savename, addlayer)
 
 		readcount += 1
 		progress.setPercentage(float(readcount) / feature_count * 100)
-
-
 
 	# Sort keys so features appear in alphabetical order
 	keys = features.keys()
@@ -2212,8 +1664,7 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 
 	# Copy layer features to output file
 	featurecount = 0
-	for layer in layers:
-		feature = QgsFeature()
+	for layer in layers:		
 		layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 		layer.dataProvider().rewind()
 		idx = {}
@@ -2221,7 +1672,8 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 			for sindex, sfield in layer.dataProvider().fields().iteritems():
 				if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
 					idx[dindex] = sindex
-		while layer.dataProvider().nextFeature(feature):
+		features = QGisLayers.features(layer)
+		for feature in features:
 			sattributes = feature.attributeMap()
 			dattributes = {}
 			for dindex, dfield in fields.iteritems():				
@@ -2271,7 +1723,8 @@ def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, compar
 	layer.dataProvider().rewind()
 
 	totalcount = layer.featureCount()
-	while layer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(layer)
+	for feature in features:
 		if (comparisonname == 'begins with') or (comparisonname == 'contains') or \
 		   (feature.attributeMap()[selectindex].type() == QVariant.String):
 			x = unicode(feature.attributeMap()[selectindex].toString())
@@ -2319,17 +1772,9 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 	if layer == None:
 		return "Project has no active vector layer to sort"
 
-	#sortindex = -1
-	#sortattributename = self.sortattribute.currentText()
-	#for index, fieldname in layer.dataProvider().fields().iteritems():
-	#	if fieldname.name() == sortattributename:
-	#		sortindex = index
-
 	sortindex = layer.dataProvider().fieldNameIndex(sortattributename)
 	if sortindex < 0:
 		return "Invalid sort field name: " + sortattributename
-
-	# print  "sortindex = " + str(sortindex)
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -2344,11 +1789,11 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 	if (outfile.hasError() != QgsVectorFileWriter.NoError):
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
-	table = []
-	feature = QgsFeature()
+	table = []	
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
-	while layer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(layer)
+	for feature in features:
 		featuretype = feature.attributeMap()[sortindex].type()
 		if (featuretype == QVariant.Int):
 			record = feature.id(), feature.attributeMap()[sortindex].toInt()
@@ -2382,8 +1827,7 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 
 def mmqgisx_geocode_street_layer(qgis, layername, csvname, addressfield, shapefilename, streetname,
 fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundfile, addlayer):
-
-	layer = mmqgisx_find_layer(layername)
+	
 	if layer == None:
 		return "Address layer not found: " + layername
 
@@ -2654,7 +2098,8 @@ def mmqgisx_text_to_float(progress, layer, attributes, savename, addlayer):
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 	i = 0
-	while layer.dataProvider().nextFeature(feature):
+	features = QGisLayers.features(layer)
+	for feature in features:
 		i+=1
 		progress.setPercentage(float(i) / featurecount * 100)
 		attributes = feature.attributeMap()
@@ -2681,221 +2126,5 @@ def mmqgisx_text_to_float(progress, layer, attributes, savename, addlayer):
 	del outfile
 
 	return None
-
-
-# --------------------------------------------------------
-#    mmqgisx_voronoi - Voronoi diagram creation
-# --------------------------------------------------------
-
-def mmqgisx_voronoi_diagram(qgis, layer, savename, addlayer):
-	#layer = mmqgisx_find_layer(sourcelayer)
-	if layer == None:
-		return "Layer not found"
-
-	if len(savename) <= 0:
-		return "No output filename given"
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), layer.dataProvider().fields(), \
-			QGis.WKBPolygon, layer.dataProvider().crs())
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
-	points = []
-	xmin = 0
-	xmax = 0
-	ymin = 0
-	ymax = 0
-	feature = QgsFeature()
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-
-	while layer.dataProvider().nextFeature(feature):
-		# Re-read by feature ID because nextFeature() doesn't always seem to read attributes
-		layer.featureAtId(feature.id(), feature)
-		geometry = feature.geometry()
-		qgis.mainWindow().statusBar().showMessage("Reading feature " + unicode(feature.id()))
-		# print str(feature.id()) + ": " + str(geometry.wkbType())
-		if geometry.wkbType() == QGis.WKBPoint:
-			points.append( (geometry.asPoint().x(), geometry.asPoint().y(), feature.attributeMap()) )
-			if (len(points) <= 1) or (xmin > geometry.asPoint().x()):
-				xmin = geometry.asPoint().x()
-			if (len(points) <= 1) or (xmax < geometry.asPoint().x()):
-				xmax = geometry.asPoint().x()
-			if (len(points) <= 1) or (ymin > geometry.asPoint().y()):
-				ymin = geometry.asPoint().y()
-			if (len(points) <= 1) or (ymax < geometry.asPoint().y()):
-				ymax = geometry.asPoint().y()
-
-	if (len(points) < 3):
-		return "Too few points to create diagram"
-
-	for center in points:
-	# for center in [ points[17] ]:
-		# print "\nCenter, " + str(center[0]) + ", " + str(center[1])
-		qgis.mainWindow().statusBar().showMessage("Processing point " + \
-			unicode(center[0]) + ", " + unicode(center[1]))
-
-		# Borders are tangents to midpoints between all neighbors
-		tangents = []
-		for neighbor in points:
-			border = mmqgisx_voronoi_line((center[0] + neighbor[0]) / 2.0, (center[1] + neighbor[1]) / 2.0)
-			if ((neighbor[0] != center[0]) or (neighbor[1] != center[1])):
-				tangents.append(border)
-
-		# Add edge intersections to clip to extent of points
-		offset = (xmax - xmin) * 0.01
-		tangents.append(mmqgisx_voronoi_line(xmax + offset, center[1]))
-		tangents.append(mmqgisx_voronoi_line(center[0], ymax + offset))
-		tangents.append(mmqgisx_voronoi_line(xmin - offset, center[1]))
-		tangents.append(mmqgisx_voronoi_line(center[0], ymin - offset))
-		#print "Extent x = " + str(xmax) + " -> " + str(xmin) + ", y = " + str(ymax) + " -> " + str(ymin)
-
-		# Find vector distance and angle to border from center point
-		for scan in range(0, len(tangents)):
-			run = tangents[scan].x - center[0]
-			rise = tangents[scan].y - center[1]
-			tangents[scan].distance = sqrt((run * run) + (rise * rise))
-			if (tangents[scan].distance <= 0):
-				tangents[scan].angle = 0
-			elif (tangents[scan].y >= center[1]):
-				tangents[scan].angle = acos(run / tangents[scan].distance)
-			elif (tangents[scan].y < center[1]):
-				tangents[scan].angle = (2 * pi) - acos(run / tangents[scan].distance)
-			elif (tangents[scan].x > center[0]):
-				tangents[scan].angle = pi / 2.0
-			else:
-				tangents[scan].angle = 3 * pi / 4
-
-			#print "  Tangent, " + str(tangents[scan].x) + ", " + str(tangents[scan].y) + \
-			#	", angle " + str(tangents[scan].angle * 180 / pi) + ", distance " + \
-			#	str(tangents[scan].distance)
-
-
-		# Find the closest line - guaranteed to be a border
-		closest = -1
-		for scan in range(0, len(tangents)):
-			if ((closest == -1) or (tangents[scan].distance < tangents[closest].distance)):
-				closest = scan
-
-		# Use closest as the first border
-		border = mmqgisx_voronoi_line(tangents[closest].x, tangents[closest].y)
-		border.angle = tangents[closest].angle
-		border.distance = tangents[closest].distance
-		borders = [ border ]
-
-		#print "  Border 0) " + str(closest) + " of " + str(len(tangents)) + ", " \
-		#	+ str(border.x) + ", " + str(border.y) \
-		#	+ ", (angle " + str(border.angle * 180 / pi) + ", distance " \
-		#	+ str(border.distance) + ")"
-
-		# Work around the tangents in a CCW circle
-		circling = 1
-		while circling:
-			next = -1
-			scan = 0
-			while (scan < len(tangents)):
-				anglebetween = tangents[scan].angle - borders[len(borders) - 1].angle
-				if (anglebetween < 0):
-					anglebetween += (2 * pi)
-				elif (anglebetween > (2 * pi)):
-					anglebetween -= (2 * pi)
-
-				#print "    Scanning " + str(scan) + " of " + str(len(borders)) + \
-				#	", " + str(tangents[scan].x) + ", " + str(tangents[scan].y) + \
-				#	", angle " + str(tangents[scan].angle * 180 / pi) + \
-				#	", anglebetween " + str(anglebetween * 180 / pi)
-
-				# If border intersects to the left
-				if (anglebetween < pi) and (anglebetween > 0):
-					# A typo here with a reversed slash cost 8/13/2009 debugging
-					tangents[scan].iangle = atan2( (tangents[scan].distance /
-						borders[len(borders) - 1].distance) \
-						- cos(anglebetween), sin(anglebetween))
-					tangents[scan].idistance = borders[len(borders) - 1].distance \
-						/ cos(tangents[scan].iangle)
-
-					tangents[scan].iangle += borders[len(borders) - 1].angle
-
-					# If the rightmost intersection so far, it's a candidate for next border
-					if (next < 0) or (tangents[scan].iangle < tangents[next].iangle):
-						# print "      Take idistance " + str(tangents[scan].idistance)
-						next = scan
-
-				scan += 1
-
-			# iangle/distance are for intersection of border with next border
-			borders[len(borders) - 1].iangle = tangents[next].iangle
-			borders[len(borders) - 1].idistance = tangents[next].idistance
-
-			# Stop circling if back to the beginning
-			if (borders[0].x == tangents[next].x) and (borders[0].y == tangents[next].y):
-				circling = 0
-
-			else:
-				# Add the next border
-				border = mmqgisx_voronoi_line(tangents[next].x, tangents[next].y)
-				border.angle = tangents[next].angle
-				border.distance = tangents[next].distance
-				border.iangle = tangents[next].iangle
-				border.idistance = tangents[next].idistance
-				borders.append(border)
-				#print "  Border " + str(len(borders) - 1) + \
-				#	") " + str(next) + ", " + str(border.x) + \
-				#	", " + str(border.y) + ", angle " + str(border.angle * 180 / pi) +\
-				#	", iangle " + str(border.iangle * 180 / pi) +\
-				#	", idistance " + str(border.idistance) + "\n"
-
-			# Remove the border from the list so not repeated
-			tangents.pop(next)
-			if (len(tangents) <= 0):
-				circling = 0
-
-		if len(borders) >= 3:
-			polygon = []
-			for border in borders:
-				ix = center[0] + (border.idistance * cos(border.iangle))
-				iy = center[1] + (border.idistance * sin(border.iangle))
-				#print "  Node, " + str(ix) + ", " + str(iy) + \
-				#	", angle " + str(border.angle * 180 / pi) + \
-				#	", iangle " + str(border.iangle * 180 / pi) + \
-				#	", idistance " + str(border.idistance) + ", from " \
-				#	+ str(border.x) + ", " + str(border.y)
-				polygon.append(QgsPoint(ix, iy))
-
-			# attributes = { 0:QVariant(center[0]), 1:QVariant(center[1]) }
-
-			geometry = QgsGeometry.fromPolygon([ polygon ])
-			feature = QgsFeature()
-			feature.setGeometry(geometry)
-			feature.setAttributeMap(center[2])
-			outfile.addFeature(feature)
-
-	del outfile
-
-	if addlayer:
-		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-
-	qgis.mainWindow().statusBar().showMessage("Created " + unicode(len(points)) + " polygon Voronoi diagram")
-
-	return None
-
-class mmqgisx_voronoi_line:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.angle = 0
-		self.distance = 0
-
-	def list(self, title):
-		print title + ", " + unicode(self.x) + ", " + unicode(self.y) + \
-			", angle " + unicode(self.angle * 180 / pi) + ", distance " + unicode(self.distance)
-
-	def angleval(self):
-		return self.angle
 
 

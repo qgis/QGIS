@@ -29,7 +29,6 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-import os
 from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 
@@ -61,17 +60,19 @@ class EquivalentNumField(GeoAlgorithm):
         nFeat = vprovider.featureCount()
         nElement = 0
         classes = {}
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for feature in features:
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
-          atMap = inFeat.attributeMap()
+          atMap = feature.attributeMap()
           clazz = atMap[field_index].toString()
           if clazz not in classes:
               classes[clazz] = len(classes.keys())
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for feature in features:
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
-          inGeom = inFeat.geometry()
+          inGeom = features.geometry()
           outFeat.setGeometry( inGeom )
           atMap = inFeat.attributeMap()
           clazz = atMap[field_index].toString()

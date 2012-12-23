@@ -32,7 +32,6 @@ from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.QGisLayers import QGisLayers
-import os
 from PyQt4 import QtGui
 
 
@@ -68,13 +67,13 @@ class AddTableField(GeoAlgorithm):
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        inFeat = QgsFeature()
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(vlayer)                    
+        for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
             nElement += 1
             inGeom = inFeat.geometry()

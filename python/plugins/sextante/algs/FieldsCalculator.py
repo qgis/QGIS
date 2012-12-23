@@ -31,7 +31,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.core.QGisLayers import QGisLayers
-import os
 from PyQt4 import QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
@@ -66,13 +65,13 @@ class FieldsCalculator(GeoAlgorithm):
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        inFeat = QgsFeature()
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(vlayer)                
+        for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
             attrs = inFeat.attributeMap()
             expression = formula

@@ -18,7 +18,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterString import ParameterString
@@ -307,9 +306,9 @@ class mmqgisx_geometry_export_algorithm(GeoAlgorithm):
 		self.name = "Geometry export"
 		self.group = "Vector general tools"
 
-		self.addParameter(ParameterVector(self.LAYERNAME, "Input Layer", ParameterVector.VECTOR_TYPE_ANY))
+		self.addParameter(ParameterVector(self.LAYERNAME, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
 
-		self.addOutput(OutputTable(self.NODEFILENAME, "Node CSV Output File Name"))
+		self.addOutput(OutputTable(self.NODEFILENAME, "Node output file"))
 		self.addOutput(OutputTable(self.ATTRIBUTEFILENAME, "Attribute CSV Output File Name (non-points only)"))
 
 		self.delimiters = ["Comma", "Bar", "Space"]

@@ -24,7 +24,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-import os.path
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -56,11 +55,12 @@ class Explode(GeoAlgorithm):
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature( inFeat ):
+        features = QGisLayers.features(layer)
+        for feature in features:
             nElement += 1
             progress.setPercentage((nElement*100)/nFeat)
-            inGeom = inFeat.geometry()
-            atMap = inFeat.attributeMap()
+            inGeom = feature.geometry()
+            atMap = feature.attributeMap()
             segments = self.extractAsSingleSegments( inGeom )
             outFeat.setAttributeMap( atMap )
             for segment in segments:

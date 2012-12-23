@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.algs.JoinAttributes import JoinAttributes
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -59,16 +60,14 @@ from sextante.algs.ftools.RandomSelectionWithinSubsets import RandomSelectionWit
 from sextante.algs.ftools.SelectByLocation import SelectByLocation
 from sextante.algs.ftools.Union import Union
 from sextante.algs.ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
-from sextante.algs.mmqgisx.MMQGISXAlgorithms import mmqgisx_attribute_export_algorithm,\
-    mmqgisx_attribute_join_algorithm, mmqgisx_delete_columns_algorithm,\
-    mmqgisx_delete_duplicate_geometries_algorithm,\
-    mmqgisx_geocode_google_algorithm, mmqgisx_geometry_convert_algorithm,\
-    mmqgisx_geometry_export_algorithm, mmqgisx_geometry_import_algorithm,\
-    mmqgisx_grid_algorithm, mmqgisx_gridify_algorithm,\
-    mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,\
-    mmqgisx_label_point_algorithm, mmqgisx_merge_algorithm,\
-    mmqgisx_select_algorithm, mmqgisx_sort_algorithm,\
-    mmqgisx_text_to_float_algorithm, mmqgisx_voronoi_algorithm
+from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_algorithm,
+    mmqgisx_delete_duplicate_geometries_algorithm,   
+    mmqgisx_geometry_convert_algorithm,  
+    mmqgisx_grid_algorithm, mmqgisx_gridify_algorithm,
+    mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,
+    mmqgisx_label_point_algorithm, mmqgisx_merge_algorithm,
+    mmqgisx_select_algorithm, mmqgisx_sort_algorithm,
+    mmqgisx_text_to_float_algorithm)
 
 from sextante.algs.EquivalentNumField import EquivalentNumField
 from sextante.core.AlgorithmProvider import AlgorithmProvider
@@ -85,7 +84,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(),
+        self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
                         #FTOOLS
                         SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
@@ -105,13 +104,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ExtentFromLayer(), RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(),
                         #MMQGISX
-                        mmqgisx_attribute_export_algorithm(),
-                        mmqgisx_attribute_join_algorithm(),
+                        #mmqgisx_attribute_export_algorithm(),
+                        #mmqgisx_attribute_join_algorithm(),
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
-                        mmqgisx_geocode_google_algorithm(),
+                        #mmqgisx_geocode_google_algorithm(),
                         mmqgisx_geometry_convert_algorithm(),
-                        mmqgisx_geometry_export_algorithm(),
+                        #mmqgisx_geometry_export_algorithm(),
                         #mmqgisx_geometry_import_algorithm(),
                         mmqgisx_grid_algorithm(),
                         mmqgisx_gridify_algorithm(),
