@@ -179,7 +179,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //bool srcHasNoDataValue( int bandNo ) const;
     //double noDataValue() const;
-    void computeMinMax( int bandNo );
+    void computeMinMax( int bandNo ) const;
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;
 
@@ -294,13 +294,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int mXBlockSize;
     int mYBlockSize;
 
-    QList<bool> mMinMaxComputed;
+    mutable QList<bool> mMinMaxComputed;
 
     // List of estimated min values, index 0 for band 1
-    QList<double> mMinimum;
+    mutable QList<double> mMinimum;
 
     // List of estimated max values, index 0 for band 1
-    QList<double> mMaximum;
+    mutable QList<double> mMaximum;
 
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;
