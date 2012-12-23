@@ -175,8 +175,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if SextanteUtils.isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
-                raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
-        #useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
+                raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")        
         commands = list()
         self.exportedLayers = {}
 

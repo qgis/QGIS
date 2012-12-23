@@ -62,7 +62,7 @@ class Intersection(GeoAlgorithm):
         vproviderA.select( allAttrsA )
         vproviderB = vlayerB.dataProvider()
         allAttrsB = vproviderB.attributeIndexes()
-        vproviderB.select( allAttrsB )
+        vproviderB.select(allAttrsB )
         # check for crs compatibility
         crsA = vproviderA.crs()
         crsB = vproviderB.crs()
@@ -140,7 +140,7 @@ class Intersection(GeoAlgorithm):
                       outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
                       writer.addFeature( outFeat )
                     except:
-                      EATURE_EXCEPT = False
+                      FEATURE_EXCEPT = False
                       continue
                 except:
                   GEOS_EXCEPT = False

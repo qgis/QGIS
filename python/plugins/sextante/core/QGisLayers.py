@@ -52,11 +52,12 @@ class QGisLayers:
     def getVectorLayers(shapetype=-1):
         layers = QGisLayers.iface.legendInterface().layers()
         vector = list()
-        for layer in layers:
-            if layer.type() == layer.VectorLayer:
-                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
-                    uri = unicode(layer.source())
+        for layer in layers:            
+            if layer.type() == layer.VectorLayer:                
+                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:                    
+                    uri = unicode(layer.source())                    
                     if not uri.endswith("csv") and not uri.endswith("dbf"):
+                        
                         vector.append(layer)
         return vector
 
@@ -169,6 +170,53 @@ class QGisLayers:
         else:
             return None
 
+    @staticmethod
+    def features(layer):
+        '''this returns an iterator over features in a vector layer, considering the 
+        selection that might exist in the layer, and the SEXTANTE configuration that 
+        indicates whether to use only selected feature or all of them.
+        This should be used by algorithms instead of calling the QGis API directly,
+        to ensure a consistent behaviour across algorithms'''
+        return Features(layer)
+        
+        
+class Features():
+    
+    def __init__(self, layer):        
+        self.layer = layer
+        self.selection = False; 
+        if SextanteConfig.getSetting(SextanteConfig.USE_SELECTED):
+            self.selected = layer.selectedFeatures()
+            if len(self.selected) > 0:
+                self.selection = True                
+                self.idx = 0;                         
+        
+    def __iter__(self):
+        return self
+     
+    def next(self):
+        if self.selection:
+            if self.idx < len(self.selected):                
+                feature = self.selected[self.idx]
+                self.idx += 1
+                return feature
+            else:
+                raise StopIteration()             
+        else:
+            f = QgsFeature()
+            if self.layer.dataProvider().nextFeature(f):
+                return f
+            else:
+                raise StopIteration()
+                
+    def __len__(self):
+        if self.selection:
+            return int(self.layer.selectedFeatureCount())
+        else:
+            return int(self.layer.dataProvider().featureCount())
+            
+    
+    
 
 
 

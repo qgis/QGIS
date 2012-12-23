@@ -54,7 +54,7 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_THREADS, "Run algorithms in a new thread (still unstable)", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_DEBUG_IN_DIALOG, "Show debug information and commands executed in the execution dialog's Log panel (threaded execution only)", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.KEEP_DIALOG_OPEN, "Keep dialog open after running an algorithm", False))
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external applications", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
