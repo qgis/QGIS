@@ -2095,6 +2095,29 @@ void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
+QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, const QColor& c )
+{
+  QString penStyle;
+  penStyle.append( "PEN(" );
+  penStyle.append( "c:" );
+  penStyle.append( c.name() );
+  penStyle.append( ",w:" );
+  //dxf driver writes ground units as mm? Should probably be changed in ogr
+  penStyle.append( QString::number( width ) );
+  penStyle.append( "mm" );
+  return penStyle;
+}
+
+QString QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( const QColor& fillColor )
+{
+  QString brushStyle;
+  brushStyle.append( "BRUSH(" );
+  brushStyle.append( "fc:" );
+  brushStyle.append( fillColor.name() );
+  brushStyle.append( ")" );
+  return brushStyle;
+}
+
 void QgsSymbolLayerV2Utils::createGeometryElement( QDomDocument &doc, QDomElement &element, QString geomFunc )
 {
   if ( geomFunc.isEmpty() )
