@@ -512,15 +512,11 @@ QStringList QgsStyleV2::symbolsOfGroup( StyleEntity type, int groupid )
   char *query;
   if ( type == SymbolEntity )
   {
-    query = groupid
-            ? sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d", groupid )
-            : sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid IS NULL" );
+    query = sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d", groupid );
   }
   else if ( type == ColorrampEntity )
   {
-    query = groupid
-            ? sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid=%d", groupid )
-            : sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid IS NULL" );
+    query = sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid=%d", groupid );
   }
   else
   {
@@ -734,14 +730,10 @@ bool QgsStyleV2::group( StyleEntity type, QString name, int groupid )
   switch ( type )
   {
     case SymbolEntity:
-      query = groupid
-              ? sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() )
-              : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE name='%q'", name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
       break;
     case ColorrampEntity:
-      query = groupid
-              ? sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() )
-              : sqlite3_mprintf( "UPDATE colorramp SET groupid=NULL WHERE name='%q'", name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
       break;
 
     default:
