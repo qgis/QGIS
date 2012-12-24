@@ -470,7 +470,7 @@ QgsSymbolGroupMap QgsStyleV2::childGroupNames( QString parent )
   // decide the query to be run based on parent group
   if ( parent == "" || parent == QString() )
   {
-    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent IS NULL" );
+    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=0" );
   }
   else
   {
@@ -592,9 +592,7 @@ int QgsStyleV2::addGroup( QString groupName, int parentid )
   if ( !mCurrentDB )
     return 0;
 
-  char *query = parentid == 0
-                ? sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', NULL)", groupName.toUtf8().constData() )
-                : sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d)", groupName.toUtf8().constData(), parentid );
+  char *query = sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d)", groupName.toUtf8().constData(), parentid );
 
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -662,13 +660,9 @@ char* QgsStyleV2::getGroupRemoveQuery( int id )
 
   sqlite3_finalize( ppStmt );
 
-  return parentid
-         ? sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
-                            "UPDATE symgroup SET parent=%d WHERE parent=%d;"
-                            "DELETE FROM symgroup WHERE id=%d", parentid, id, parentid, id, id )
-         : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE groupid=%d;"
-                            "UPDATE symgroup SET parent=NULL WHERE parent=%d;"
-                            "DELETE FROM symgroup WHERE id=%d", id, id, id );
+  return sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
+                          "UPDATE symgroup SET parent=%d WHERE parent=%d;"
+                          "DELETE FROM symgroup WHERE id=%d", parentid, id, parentid, id, id );
 }
 
 void QgsStyleV2::remove( StyleEntity type, int id )
