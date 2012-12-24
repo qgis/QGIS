@@ -176,7 +176,7 @@ class LayerRegistry(QObject):
       # only gdal raster layers
       if layer.type() != layer.RasterLayer:
         return False
-      if layer.usesProvider() and layer.providerKey() != 'gdal':
+      if layer.providerType() != 'gdal':
         return False
       return True
 

@@ -81,7 +81,7 @@ class Dialog(QDialog, Ui_Dialog):
             addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )

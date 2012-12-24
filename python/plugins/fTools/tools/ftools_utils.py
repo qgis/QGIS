@@ -285,7 +285,7 @@ def addShapeToCanvas( shapefile_path ):
     vlayer_new = QgsVectorLayer( shapefile_path, layer_name, "ogr" )
     print layer_name
     if vlayer_new.isValid():
-        QgsMapLayerRegistry.instance().addMapLayer( vlayer_new )
+        QgsMapLayerRegistry.instance().addMapLayers( [vlayer_new] )
         return True
     else:
         return False

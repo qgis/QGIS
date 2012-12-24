@@ -44,7 +44,7 @@ class QGisLayers:
 
         for layer in layers:
             if layer.type() == layer.RasterLayer:
-                if layer.usesProvider() and layer.providerKey() == 'gdal':#only gdal file-based layers
+                if layer.providerType() == 'gdal':#only gdal file-based layers
                     raster.append(layer)
         return raster
 
@@ -52,12 +52,12 @@ class QGisLayers:
     def getVectorLayers(shapetype=-1):
         layers = QGisLayers.iface.legendInterface().layers()
         vector = list()
-        for layer in layers:            
-            if layer.type() == layer.VectorLayer:                
-                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:                    
-                    uri = unicode(layer.source())                    
+        for layer in layers:
+            if layer.type() == layer.VectorLayer:
+                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
+                    uri = unicode(layer.source())
                     if not uri.endswith("csv") and not uri.endswith("dbf"):
-                        
+
                         vector.append(layer)
         return vector
 
@@ -112,7 +112,7 @@ class QGisLayers:
                 else:
                     style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+            QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
         else:
             qgslayer = QgsRasterLayer(layer, name)
             if qgslayer.isValid():
@@ -121,7 +121,7 @@ class QGisLayers:
                 if style == None:
                     style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
                 qgslayer.loadNamedStyle(style)
-                QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+                QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
                 QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)
             else:
                 if prjSetting:
@@ -172,51 +172,51 @@ class QGisLayers:
 
     @staticmethod
     def features(layer):
-        '''this returns an iterator over features in a vector layer, considering the 
-        selection that might exist in the layer, and the SEXTANTE configuration that 
+        '''this returns an iterator over features in a vector layer, considering the
+        selection that might exist in the layer, and the SEXTANTE configuration that
         indicates whether to use only selected feature or all of them.
         This should be used by algorithms instead of calling the QGis API directly,
         to ensure a consistent behaviour across algorithms'''
         return Features(layer)
-        
-        
+
+
 class Features():
-    
-    def __init__(self, layer):        
+
+    def __init__(self, layer):
         self.layer = layer
-        self.selection = False; 
+        self.selection = False;
         if SextanteConfig.getSetting(SextanteConfig.USE_SELECTED):
             self.selected = layer.selectedFeatures()
             if len(self.selected) > 0:
-                self.selection = True                
-                self.idx = 0;                         
-        
+                self.selection = True
+                self.idx = 0;
+
     def __iter__(self):
         return self
-     
+
     def next(self):
         if self.selection:
-            if self.idx < len(self.selected):                
+            if self.idx < len(self.selected):
                 feature = self.selected[self.idx]
                 self.idx += 1
                 return feature
             else:
-                raise StopIteration()             
+                raise StopIteration()
         else:
             f = QgsFeature()
             if self.layer.dataProvider().nextFeature(f):
                 return f
             else:
                 raise StopIteration()
-                
+
     def __len__(self):
         if self.selection:
             return int(self.layer.selectedFeatureCount())
         else:
             return int(self.layer.dataProvider().featureCount())
-            
-    
-    
+
+
+
 
 
 
