@@ -197,14 +197,16 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
 
 QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) const
 {
-    if( mUseCustomDashPattern )
-    {
-        return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color(), &mCustomDashVector );
-    }
-    else
-    {
-        return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color() );
-    }
+  if ( mUseCustomDashPattern )
+  {
+    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor,
+           mPen.color(), mPenJoinStyle,
+           mPenCapStyle, &mCustomDashVector );
+  }
+  else
+  {
+    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color() );
+  }
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element )
