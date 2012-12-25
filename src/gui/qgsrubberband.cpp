@@ -30,6 +30,8 @@
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType )
     : QgsMapCanvasItem( mapCanvas )
     , mWidth( 1 )
+    , mIconSize( 5 )
+    , mIconType( ICON_CIRCLE )
     , mGeometryType( geometryType )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
@@ -41,6 +43,8 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomet
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
     : QgsMapCanvasItem( mapCanvas )
     , mWidth( 1 )
+    , mIconSize( 5 )
+    , mIconType( ICON_CIRCLE )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
@@ -73,6 +77,16 @@ void QgsRubberBand::setColor( const QColor & color )
 void QgsRubberBand::setWidth( int width )
 {
   mWidth = width;
+}
+
+void QgsRubberBand::setIcon( IconType icon )
+{
+  mIconType = icon;
+}
+
+void QgsRubberBand::setIconSize( int iconSize )
+{
+  mIconSize = iconSize;
 }
 
 /*!
@@ -189,7 +203,7 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 
 void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
 {
-  reset( mGeometryType );
+  reset( geom->type() );
   addGeometry( geom, layer );
 }
 
@@ -215,7 +229,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBPoint:
     case QGis::WKBPoint25D:
     {
-      double d = mMapCanvas->extent().width() * 0.005;
       QgsPoint pt;
       if ( layer )
       {
@@ -225,34 +238,24 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         pt = geom->asPoint();
       }
-      addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, idx );
-      addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, idx );
-      addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, idx );
-      addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, idx );
+      addPoint( pt, false, idx );
     }
     break;
 
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
     {
-      double d = mMapCanvas->extent().width() * 0.005;
       QgsMultiPoint mpt = geom->asMultiPoint();
       for ( int i = 0; i < mpt.size(); ++i, ++idx )
       {
         QgsPoint pt = mpt[i];
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false, idx );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false, idx );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false, idx );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false, idx );
+          addPoint( mr->layerToMapCoordinates( layer, pt ), false, idx );
         }
         else
         {
-          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, idx );
-          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, idx );
-          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, idx );
-          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, idx );
+          addPoint( pt, false, idx );
         }
       }
     }
@@ -386,6 +389,8 @@ void QgsRubberBand::paint( QPainter* p )
   if ( mPoints.size() > 0 )
   {
     p->setBrush( mBrush );
+    mPen.setWidth( mWidth );
+    p->setPen( mPen );
 
     for ( int i = 0; i < mPoints.size(); ++i )
     {
@@ -400,20 +405,46 @@ void QgsRubberBand::paint( QPainter* p )
       {
         case QGis::Polygon:
         {
-          mPen.setWidth( mWidth );
-          p->setPen( mPen );
           p->drawPolygon( pts );
         }
         break;
 
         case QGis::Point:
         {
-          mPen.setWidth( 1 );
-          p->setPen( mPen );
           QVector<QPointF>::const_iterator ptIt = pts.constBegin();
           for ( ; ptIt != pts.constEnd(); ++ptIt )
           {
-            p->drawEllipse(( *ptIt ).x() - mWidth / 2, ( *ptIt ).y() - mWidth / 2, mWidth, mWidth );
+            double x = (*ptIt).x();
+            double y = (*ptIt).y();
+
+            qreal s = ( mIconSize - 1 ) / 2;
+
+            switch ( mIconType )
+            {
+              case ICON_NONE:
+                break;
+
+              case ICON_CROSS:
+                p->drawLine( QLineF( x - s, y, x + s, y ) );
+                p->drawLine( QLineF( x, y - s, x, y + s ) );
+                break;
+
+              case ICON_X:
+                p->drawLine( QLineF( x - s, y - s, x + s, y + s ) );
+                p->drawLine( QLineF( x - s, y + s, x + s, y - s ) );
+                break;
+
+              case ICON_BOX:
+                p->drawLine( QLineF( x - s, y - s, x + s, y - s ) );
+                p->drawLine( QLineF( x + s, y - s, x + s, y + s ) );
+                p->drawLine( QLineF( x + s, y + s, x - s, y + s ) );
+                p->drawLine( QLineF( x - s, y + s, x - s, y - s ) );
+                break;
+
+              case ICON_CIRCLE:
+                p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
+                break;
+            }
           }
         }
         break;
@@ -421,8 +452,6 @@ void QgsRubberBand::paint( QPainter* p )
         case QGis::Line:
         default:
         {
-          mPen.setWidth( mWidth );
-          p->setPen( mPen );
           p->drawPolyline( pts );
         }
         break;
@@ -449,7 +478,10 @@ void QgsRubberBand::updateRect()
       QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
-        r.combineExtentWith( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+        qreal s = ( mIconSize - 1 ) / 2;
+        QgsRectangle rect = QgsRectangle( it->x() + mTranslationOffsetX - s, it->y() + mTranslationOffsetY - s,
+                                          it->x() + mTranslationOffsetX + s, it->y() + mTranslationOffsetY + s );
+        r.combineExtentWith( &rect );
       }
     }
     setRect( r );
