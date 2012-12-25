@@ -2095,7 +2095,7 @@ void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
-QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, const QColor& c )
+QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double widthScaleFactor, const QColor& c, const QVector<qreal>* dashPattern )
 {
   QString penStyle;
   penStyle.append( "PEN(" );
@@ -2103,8 +2103,27 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, const QColor& c
   penStyle.append( c.name() );
   penStyle.append( ",w:" );
   //dxf driver writes ground units as mm? Should probably be changed in ogr
-  penStyle.append( QString::number( width ) );
+  penStyle.append( QString::number( width * widthScaleFactor ) );
   penStyle.append( "mm" );
+
+  //dash dot vector
+  if ( dashPattern && dashPattern->size() > 0 )
+  {
+    penStyle.append( ",p:\"" );
+    QVector<qreal>::const_iterator pIt = dashPattern->constBegin();
+    for ( ; pIt != dashPattern->constEnd(); ++pIt )
+    {
+      if ( pIt != dashPattern->constBegin() )
+      {
+        penStyle.append( " " );
+      }
+      penStyle.append( QString::number( *pIt * widthScaleFactor ) );
+      penStyle.append( "mm" );
+    }
+    penStyle.append( "\"" );
+  }
+
+  penStyle.append( ")" );
   return penStyle;
 }
 

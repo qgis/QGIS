@@ -182,7 +182,7 @@ QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) c
   symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
   symbolStyle.append( ";" );
   //pen
-  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth * widthScaleFactor, mBorderColor ) );
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, widthScaleFactor, mBorderColor ) );
   return symbolStyle;
 }
 

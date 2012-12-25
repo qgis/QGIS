@@ -197,36 +197,14 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
 
 QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) const
 {
-  QString symbolStyle;
-
-  //pen
-  symbolStyle.append( "PEN(" );
-  symbolStyle.append( "c:" );
-  symbolStyle.append( mPen.color().name() );
-  symbolStyle.append( ",w:" );
-  //dxf driver writes ground units as mm? Should probably be changed in ogr
-  symbolStyle.append( QString::number( mWidth * widthScaleFactor ) );
-  symbolStyle.append( "mm" );
-
-  //dash dot vector
-  if ( mUseCustomDashPattern && mCustomDashVector.size() > 0 )
-  {
-    symbolStyle.append( ",p:\"" );
-    QVector<qreal>::const_iterator pIt = mCustomDashVector.constBegin();
-    for ( ; pIt != mCustomDashVector.constEnd(); ++pIt )
+    if( mUseCustomDashPattern )
     {
-      if ( pIt != mCustomDashVector.constBegin() )
-      {
-        symbolStyle.append( " " );
-      }
-      symbolStyle.append( QString::number( *pIt * widthScaleFactor ) );
-      symbolStyle.append( "mm" );
+        return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color(), &mCustomDashVector );
     }
-    symbolStyle.append( "\"" );
-  }
-  symbolStyle.append( ")" );
-
-  return symbolStyle;
+    else
+    {
+        return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color() );
+    }
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element )

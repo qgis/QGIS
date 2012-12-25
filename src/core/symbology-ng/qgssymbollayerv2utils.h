@@ -167,7 +167,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Create ogr feature style string for pen
         @param width linewidth in mm
         @param c line color*/
-    static QString ogrFeatureStylePen( double width, const QColor& c );
+    static QString ogrFeatureStylePen( double width, double widthScaleFactor, const QColor& c, const QVector<qreal>* dashPattern = 0 );
     /**Create ogr feature syle string for brush
         @param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor& fillColr );
