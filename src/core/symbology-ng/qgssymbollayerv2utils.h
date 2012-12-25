@@ -170,6 +170,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString ogrFeatureStylePen( double width, double widthScaleFactor, const QColor& c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
+                                       double offset = 0.0,
                                        const QVector<qreal>* dashPattern = 0 );
     /**Create ogr feature syle string for brush
         @param fillColr fill color*/

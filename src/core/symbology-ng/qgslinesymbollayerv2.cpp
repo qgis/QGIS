@@ -201,11 +201,12 @@ QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) c
   {
     return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor,
            mPen.color(), mPenJoinStyle,
-           mPenCapStyle, &mCustomDashVector );
+           mPenCapStyle, mOffset, &mCustomDashVector );
   }
   else
   {
-    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color() );
+    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, widthScaleFactor, mPen.color(), mPenJoinStyle,
+           mPenCapStyle, mOffset );
   }
 }
 

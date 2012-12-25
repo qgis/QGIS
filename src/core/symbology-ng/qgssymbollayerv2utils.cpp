@@ -2098,6 +2098,7 @@ void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &elem
 QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double widthScaleFactor, const QColor& c,
     Qt::PenJoinStyle joinStyle,
     Qt::PenCapStyle capStyle,
+    double offset,
     const QVector<qreal>* dashPattern )
 {
   QString penStyle;
@@ -2127,7 +2128,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double widthSca
   }
 
   //cap
-  penStyle.append( ",cap=" );
+  penStyle.append( ",cap:" );
   switch ( capStyle )
   {
     case Qt::SquareCap:
@@ -2142,7 +2143,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double widthSca
   }
 
   //join
-  penStyle.append( ",j=" );
+  penStyle.append( ",j:" );
   switch ( joinStyle )
   {
     case Qt::BevelJoin:
@@ -2154,6 +2155,14 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double widthSca
     case Qt::MiterJoin:
     default:
       penStyle.append( "m" );
+  }
+
+  //offset
+  if ( !doubleNear( offset, 0.0 ) )
+  {
+    penStyle.append( ",dp:" );
+    penStyle.append( QString::number( offset * widthScaleFactor ) );
+    penStyle.append( "mm" );
   }
 
   penStyle.append( ")" );
