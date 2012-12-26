@@ -350,6 +350,10 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get symbol design
+  // NOTE : Set the parent widget as "this" to notify the Symbol selector
+  //        that, it is being called by Style Manager, so recursive calling
+  //        of style manger and symbol slector can be arrested
+  //        Look Also: editSymbol()
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
   if ( dlg.exec() == 0 )
   {
