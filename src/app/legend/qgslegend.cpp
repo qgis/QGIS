@@ -213,6 +213,7 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
     if ( nameEmpty )
       name = getUniqueGroupName( tr( "group" ), groups() );
     group = new QgsLegendGroup( this, name );
+    if ( parent ) moveItem( group, parent );
     // TODO: warn if parent != NULL or invisibleRootItem ?
   }
 
