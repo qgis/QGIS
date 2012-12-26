@@ -502,15 +502,14 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
   if ( fid > std::numeric_limits<int>::max() )
   {
     QgsDebugMsg( QString( "feature id %1 too large." ).arg( fid ) );
-  }
-
-  OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
-  if ( err != OGRERR_NONE )
-  {
-    QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
-                 .arg( feature.id() )
-                 .arg( err ).arg( CPLGetLastErrorMsg() )
-               );
+    OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
+    if ( err != OGRERR_NONE )
+    {
+      QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
+                   .arg( feature.id() )
+                   .arg( err ).arg( CPLGetLastErrorMsg() )
+                 );
+    }
   }
 
   // attribute handling
