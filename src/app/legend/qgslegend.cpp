@@ -387,12 +387,33 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
   else if ( e->button() == Qt::RightButton )
   {
     QTreeWidgetItem* item = itemAt( e->pos() );
-    if ( !item || item == currentItem() )
+    if ( !item )
     {
-      if ( !item )
-        setCurrentItem( 0 );
-      handleRightClickEvent( item, e->globalPos() );
+      setCurrentItem( 0 );
     }
+    else if ( item != currentItem() )
+    {
+      if ( selectedItems().contains( item ) )
+      {
+        setCurrentItem( item, currentColumn(), QItemSelectionModel::NoUpdate );
+      }
+      else
+      {
+        clearSelection();
+        setCurrentItem( item );
+      }
+    }
+    else
+    {
+      // item is the current layer, but maybe previous selection was none
+      if ( !item->isSelected() )
+      {
+        item->setSelected( true );
+      }
+    }
+    handleRightClickEvent( item, e->globalPos() );
+    e->ignore();
+    return;
   }
   QTreeWidget::mousePressEvent( e );
 }                               // contentsMousePressEvent
