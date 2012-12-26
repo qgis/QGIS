@@ -479,8 +479,9 @@ void QgsRubberBand::updateRect()
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
         qreal s = ( mIconSize - 1 ) / 2;
-        QgsRectangle rect = QgsRectangle( it->x() + mTranslationOffsetX - s, it->y() + mTranslationOffsetY - s,
-                                          it->x() + mTranslationOffsetX + s, it->y() + mTranslationOffsetY + s );
+        qreal p = mWidth;
+        QgsRectangle rect = QgsRectangle( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
+                                          it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p);
         r.combineExtentWith( &rect );
       }
     }
