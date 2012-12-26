@@ -212,7 +212,8 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   {
     if ( nameEmpty )
       name = getUniqueGroupName( tr( "group" ), groups() );
-    group = new QgsLegendGroup( parent, name );
+    group = new QgsLegendGroup( this, name );
+    // TODO: warn if parent != NULL or invisibleRootItem ?
   }
 
   QModelIndex groupIndex = indexFromItem( group );
