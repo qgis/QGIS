@@ -33,7 +33,7 @@
 
 #include <sqlite3.h>
 
-#define STYLE_CURRENT_VERSION  "0"
+#define STYLE_CURRENT_VERSION  "1"
 
 QgsStyleV2 *QgsStyleV2::mDefaultStyle = 0;
 
@@ -1343,30 +1343,47 @@ bool QgsStyleV2::importXML( QString filename )
   }
 
   QString version = docEl.attribute( "version" );
-  if ( version != STYLE_CURRENT_VERSION )
+  if ( version != STYLE_CURRENT_VERSION && version != "0" )
   {
     mErrorString = "Unknown style file version: " + version;
     return false;
   }
 
-  // load symbols
+  QgsSymbolV2Map symbols;
+
   QDomElement symbolsElement = docEl.firstChildElement( "symbols" );
   QDomElement e = symbolsElement.firstChildElement();
-  while ( !e.isNull() )
+
+  if ( version == STYLE_CURRENT_VERSION )
   {
-    if ( e.tagName() == "symbol" )
+    // For the new style, load symbols individualy
+    while ( !e.isNull() )
     {
-      QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
-      if ( symbol )
+      if ( e.tagName() == "symbol" )
       {
-        addSymbol( e.attribute( "name" ), symbol );
+        QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
+        if ( symbol )
+        {
+          symbols.insert( e.attribute( "name" ), symbol );
+        }
       }
+      else
+      {
+        QgsDebugMsg( "unknown tag: " + e.tagName() );
+      }
+      e = e.nextSiblingElement();
     }
-    else
-    {
-      QgsDebugMsg( "unknown tag: " + e.tagName() );
-    }
-    e = e.nextSiblingElement();
+  }
+  else
+  {
+    // for the old version, use the utility function to solve @symbol@layer subsymbols
+    symbols = QgsSymbolLayerV2Utils::loadSymbols( symbolsElement );
+  }
+
+  // save the symbols with proper name
+  for ( QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); it++ )
+  {
+    addSymbol( it.key(), it.value() );
   }
 
   // load color ramps

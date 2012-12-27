@@ -48,3 +48,4 @@ i18n/*.qm
 .idea
 /python/plugins/sextante/resources_rc.py
 /python/plugins/sextante/about/ui_aboutdialogbase.py
+scripts/qgisstyle
