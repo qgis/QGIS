@@ -33,7 +33,7 @@
 
 #include <sqlite3.h>
 
-#define STYLE_CURRENT_VERSION  "0"
+#define STYLE_CURRENT_VERSION  "1"
 
 QgsStyleV2 *QgsStyleV2::mDefaultStyle = 0;
 
