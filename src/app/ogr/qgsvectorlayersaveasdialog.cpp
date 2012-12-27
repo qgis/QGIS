@@ -67,6 +67,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
   mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
   mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
   mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  on_mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 }
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
@@ -204,4 +205,15 @@ int QgsVectorLayerSaveAsDialog::symbologyExport() const
 double QgsVectorLayerSaveAsDialog::scaleDenominator() const
 {
   return mScaleSpinBox->value();
+}
+
+void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )
+{
+  bool scaleEnabled = true;
+  if ( text == tr( "No symbology" ) )
+  {
+    scaleEnabled = false;
+  }
+  mScaleSpinBox->setEnabled( scaleEnabled );
+  mScaleLabel->setEnabled( scaleEnabled );
 }
