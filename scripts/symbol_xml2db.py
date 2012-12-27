@@ -90,7 +90,7 @@ for symbol in symbols:
         symdom.getElementsByTagName( "layer" )[ layerno ].appendChild( symbol )
         c.execute( "UPDATE symbol SET xml=? WHERE name=?", ( symdom.toxml(), parent_name ))
     else:
-        c.execute( "INSERT INTO symbol VALUES (?,?,?,?)", ( None, symbol_name, symbol.toxml(), None ) )
+        c.execute( "INSERT INTO symbol VALUES (?,?,?,?)", ( None, symbol_name, symbol.toxml(), 0 ) )
 conn.commit()
 
 
@@ -98,7 +98,7 @@ conn.commit()
 colorramps = dom.getElementsByTagName( "colorramp" )
 for ramp in colorramps:
     ramp_name = ramp.getAttribute( "name" )
-    c.execute( "INSERT INTO colorramp VALUES (?,?,?,?)", ( None, ramp_name, ramp.toxml(), None ) )
+    c.execute( "INSERT INTO colorramp VALUES (?,?,?,?)", ( None, ramp_name, ramp.toxml(), 0 ) )
 conn.commit()
 
 # Finally close the sqlite cursor

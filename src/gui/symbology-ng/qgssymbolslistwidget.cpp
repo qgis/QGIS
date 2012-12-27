@@ -62,6 +62,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
+  if ( parent )
+  {
+    if ( dynamic_cast<QgsStyleV2ManagerDialog*>( parent->parentWidget() ) )
+    {
+      btnStyle->setVisible( false );
+    }
+  }
   // Set the Style Menu under btnStyle
   QMenu *styleMenu = new QMenu( btnStyle );
   QAction *styleMgrAction = new QAction( "Style Manager", styleMenu );

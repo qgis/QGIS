@@ -299,8 +299,14 @@ bool QgsStyleV2::load( QString filename )
     return false;
   }
 
+  // Make sure there are no Null fields in parenting symbols ang groups
+  char *query = sqlite3_mprintf( "UPDATE symbol SET groupid=0 WHERE groupid IS NULL;"
+                                 "UPDATE colorramp SET groupid=0 WHERE groupid IS NULL;"
+                                 "UPDATE symgroup SET parent=0 WHERE parent IS NULL;");
+  runEmptyQuery( query );
+
   // First create all the main symbols
-  const char *query = "SELECT * FROM symbol";
+  query = sqlite3_mprintf( "SELECT * FROM symbol" );
 
   sqlite3_stmt *ppStmt;
   int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -323,8 +329,8 @@ bool QgsStyleV2::load( QString filename )
 
   sqlite3_finalize( ppStmt );
 
-  const char *rquery = "SELECT * FROM colorramp";
-  nError = sqlite3_prepare_v2( mCurrentDB, rquery, -1, &ppStmt, NULL );
+  query = sqlite3_mprintf( "SELECT * FROM colorramp" );
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
@@ -470,7 +476,7 @@ QgsSymbolGroupMap QgsStyleV2::childGroupNames( QString parent )
   // decide the query to be run based on parent group
   if ( parent == "" || parent == QString() )
   {
-    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent IS NULL" );
+    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=0" );
   }
   else
   {
@@ -512,15 +518,11 @@ QStringList QgsStyleV2::symbolsOfGroup( StyleEntity type, int groupid )
   char *query;
   if ( type == SymbolEntity )
   {
-    query = groupid
-            ? sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d", groupid )
-            : sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid IS NULL" );
+    query = sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d", groupid );
   }
   else if ( type == ColorrampEntity )
   {
-    query = groupid
-            ? sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid=%d", groupid )
-            : sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid IS NULL" );
+    query = sqlite3_mprintf( "SELECT name FROM colorramp WHERE groupid=%d", groupid );
   }
   else
   {
@@ -596,9 +598,7 @@ int QgsStyleV2::addGroup( QString groupName, int parentid )
   if ( !mCurrentDB )
     return 0;
 
-  char *query = parentid == 0
-                ? sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', NULL)", groupName.toUtf8().constData() )
-                : sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d)", groupName.toUtf8().constData(), parentid );
+  char *query = sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d)", groupName.toUtf8().constData(), parentid );
 
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -666,13 +666,9 @@ char* QgsStyleV2::getGroupRemoveQuery( int id )
 
   sqlite3_finalize( ppStmt );
 
-  return parentid
-         ? sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
-                            "UPDATE symgroup SET parent=%d WHERE parent=%d;"
-                            "DELETE FROM symgroup WHERE id=%d", parentid, id, parentid, id, id )
-         : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE groupid=%d;"
-                            "UPDATE symgroup SET parent=NULL WHERE parent=%d;"
-                            "DELETE FROM symgroup WHERE id=%d", id, id, id );
+  return sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
+                          "UPDATE symgroup SET parent=%d WHERE parent=%d;"
+                          "DELETE FROM symgroup WHERE id=%d", parentid, id, parentid, id, id );
 }
 
 void QgsStyleV2::remove( StyleEntity type, int id )
@@ -734,14 +730,10 @@ bool QgsStyleV2::group( StyleEntity type, QString name, int groupid )
   switch ( type )
   {
     case SymbolEntity:
-      query = groupid
-              ? sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() )
-              : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE name='%q'", name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
       break;
     case ColorrampEntity:
-      query = groupid
-              ? sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() )
-              : sqlite3_mprintf( "UPDATE colorramp SET groupid=NULL WHERE name='%q'", name.toUtf8().constData() );
+      query = sqlite3_mprintf( "UPDATE colorramp SET groupid=%d WHERE name='%q'", groupid, name.toUtf8().constData() );
       break;
 
     default:
