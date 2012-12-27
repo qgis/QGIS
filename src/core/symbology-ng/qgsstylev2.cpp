@@ -299,8 +299,14 @@ bool QgsStyleV2::load( QString filename )
     return false;
   }
 
+  // Make sure there are no Null fields in parenting symbols ang groups
+  char *query = sqlite3_mprintf( "UPDATE symbol SET groupid=0 WHERE groupid IS NULL;"
+                                 "UPDATE colorramp SET groupid=0 WHERE groupid IS NULL;"
+                                 "UPDATE symgroup SET parent=0 WHERE parent IS NULL;");
+  runEmptyQuery( query );
+
   // First create all the main symbols
-  const char *query = "SELECT * FROM symbol";
+  query = sqlite3_mprintf( "SELECT * FROM symbol" );
 
   sqlite3_stmt *ppStmt;
   int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -323,8 +329,8 @@ bool QgsStyleV2::load( QString filename )
 
   sqlite3_finalize( ppStmt );
 
-  const char *rquery = "SELECT * FROM colorramp";
-  nError = sqlite3_prepare_v2( mCurrentDB, rquery, -1, &ppStmt, NULL );
+  query = sqlite3_mprintf( "SELECT * FROM colorramp" );
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QDomDocument doc;
