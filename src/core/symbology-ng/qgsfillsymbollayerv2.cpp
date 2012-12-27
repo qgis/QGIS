@@ -175,14 +175,14 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, mOffset );
 }
 
-QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double widthScaleFactor ) const
+QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
 {
   //brush
   QString symbolStyle;
   symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
   symbolStyle.append( ";" );
   //pen
-  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, widthScaleFactor, mBorderColor ) );
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor ) );
   return symbolStyle;
 }
 

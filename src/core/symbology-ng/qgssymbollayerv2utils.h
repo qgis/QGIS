@@ -167,7 +167,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Create ogr feature style string for pen
         @param width linewidth in mm
         @param c line color*/
-    static QString ogrFeatureStylePen( double width, double widthScaleFactor, const QColor& c,
+    static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,

@@ -203,7 +203,8 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /**Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
-    double widthScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     QgsRenderContext renderContext() const;
     void startRender( QgsVectorLayer* vl ) const;
     void stopRender( QgsVectorLayer* vl ) const;

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
-    virtual QString ogrFeatureStyle( double widthScaleFactor ) const { Q_UNUSED( widthScaleFactor ); return QString(); }
+    virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
     virtual QgsStringMap properties() const = 0;
 
