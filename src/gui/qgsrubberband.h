@@ -31,6 +31,18 @@ class QPaintEvent;
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
+
+    /** Icons
+     *  Added in 1.9 */
+    enum IconType
+    {
+      ICON_NONE,
+      ICON_CROSS,
+      ICON_X,
+      ICON_BOX,
+      ICON_CIRCLE
+    };
+
     /**
      * Creates a new RubberBand.
      * @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
@@ -47,8 +59,19 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon );
     ~QgsRubberBand();
 
+    /** Set the color for the rubberband */
     void setColor( const QColor & color );
+
+    /** Set the width of the line. Outline width for polygon. */
     void setWidth( int width );
+
+    /** Set the icon type to highlight point geometries.
+     *  Added in 1.9 */
+    void setIcon( IconType icon );
+
+    /** Set the size of the point icons
+      *  Added in 1.9 */
+    void setIconSize ( int iconSize );
 
     /**
      * Clears all the geometries in this rubberband.
@@ -80,6 +103,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**Sets this rubber band to the geometry of an existing feature.
      This is useful for feature highlighting.
+     In contrast to addGeometry, this method does also change the geometry type of the rubberband.
     @param geom the geometry object
     @param layer the layer containing the feature, used for coord transformation to map
     crs. In case of 0 pointer, the coordinates are not going to be transformed.
@@ -127,7 +151,16 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
+    /** The width of any line within the rubberband. */
     int mWidth;
+
+    /** The size of the icon for points.
+      * Added in 1.9 */
+    int mIconSize;
+
+    /** Icon to be shown.
+     *  Added in 1.9 */
+    IconType mIconType ;
 
     /**Nested lists used for multitypes*/
     QList< QList <QgsPoint> > mPoints;
