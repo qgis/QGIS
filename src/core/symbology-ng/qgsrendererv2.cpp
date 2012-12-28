@@ -88,7 +88,8 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   {
     pts.resize( nPoints );
 
-    for ( unsigned int i = 0; i < nPoints; ++i )
+    QPointF* ptr = pts.data();
+    for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
     {
       x = *(( double * ) wkb );
       wkb += sizeof( double );
@@ -98,19 +99,20 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
       if ( hasZValue ) // ignore Z value
         wkb += sizeof( double );
 
-      pts[i] = QPointF( x, y );
+      *ptr = QPointF( x, y );
     }
   }
 
   //transform the QPolygonF to screen coordinates
-  for ( int i = 0; i < pts.size(); ++i )
+  QPointF* ptr = pts.data();
+  for ( int i = 0; i < pts.size(); ++i, ++ptr )
   {
     if ( ct )
     {
       z = 0;
-      ct->transformInPlace( pts[i].rx(), pts[i].ry(), z );
+      ct->transformInPlace( ptr->rx(), ptr->ry(), z );
     }
-    mtp.transformInPlace( pts[i].rx(), pts[i].ry() );
+    mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
 
@@ -151,12 +153,13 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
     QPolygonF poly( nPoints );
 
     // Extract the points from the WKB and store in a pair of vectors.
-    for ( unsigned int jdx = 0; jdx < nPoints; jdx++ )
+    QPointF* ptr = poly.data();
+    for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
       x = *(( double * ) wkb ); wkb += sizeof( double );
       y = *(( double * ) wkb ); wkb += sizeof( double );
 
-      poly[jdx] = QPointF( x, y );
+      *ptr = QPointF( x, y );
 
       if ( hasZValue )
         wkb += sizeof( double );
@@ -169,14 +172,15 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
     QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
-    for ( int i = 0; i < poly.size(); ++i )
+    ptr = poly.data();
+    for ( int i = 0; i < poly.size(); ++i, ++ptr )
     {
       if ( ct )
       {
         z = 0;
-        ct->transformInPlace( poly[i].rx(), poly[i].ry(), z );
+        ct->transformInPlace( ptr->rx(), ptr->ry(), z );
       }
-      mtp.transformInPlace( poly[i].rx(), poly[i].ry() );
+      mtp.transformInPlace( ptr->rx(), ptr->ry() );
     }
 
     if ( idx == 0 )
