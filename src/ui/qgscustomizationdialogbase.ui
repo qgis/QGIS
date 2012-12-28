@@ -33,9 +33,6 @@
       <attribute name="headerVisible">
        <bool>true</bool>
       </attribute>
-      <attribute name="headerVisible">
-       <bool>true</bool>
-      </attribute>
       <column>
        <property name="text">
         <string notr="true">1</string>
@@ -103,7 +100,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveEdits.png</normaloff>:/images/themes/default/mActionSaveEdits.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
