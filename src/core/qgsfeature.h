@@ -141,7 +141,7 @@ class CORE_EXPORT QgsFeature
     QgsAttributes& attributes() { return mAttributes; }
     void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
     void setAttribute( int field, const QVariant& attr ) { mAttributes[field] = attr; }
-    void initAttributes( int fieldCount ) { mAttributes.resize( fieldCount ); for ( int i = 0;i < fieldCount;++i ) mAttributes[i].clear(); }
+    void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/
     void deleteAttribute( int field );

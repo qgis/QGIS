@@ -158,6 +158,15 @@ void QgsFeature::setValid( bool validity )
   mValid = validity;
 }
 
+void QgsFeature::initAttributes( int fieldCount )
+{
+  mAttributes.resize( fieldCount );
+  QVariant* ptr = mAttributes.data();
+  for ( int i = 0; i < fieldCount; ++i, ++ptr )
+    ptr->clear();
+}
+
+
 bool QgsFeature::setAttribute( const QString& name, QVariant value )
 {
   int fieldIdx = fieldNameIndex( name );
