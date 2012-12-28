@@ -285,6 +285,9 @@
        <height>48</height>
       </size>
      </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
      <property name="flow">
       <enum>QListView::LeftToRight</enum>
      </property>
