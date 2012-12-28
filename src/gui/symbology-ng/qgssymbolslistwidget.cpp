@@ -79,7 +79,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );
   btnStyle->setMenu( styleMenu );
 
-  lblSymbolName->setText( "" );
   populateSymbolView();
 
   if ( mSymbol )
@@ -310,7 +309,6 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
 {
   QString symbolName = index.data( Qt::UserRole ).toString();
-  lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   QgsSymbolV2* s = mStyle->symbol( symbolName );
   // remove all symbol layers from original symbol
