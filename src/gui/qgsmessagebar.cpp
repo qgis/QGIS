@@ -90,6 +90,11 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
     {
       mLayout->removeWidget( mCurrentItem->widget() );
       mCurrentItem->widget()->hide();
+      if ( mCurrentItem->widget()->parent() == this )
+      {
+        delete mCurrentItem->widget();
+      }
+      delete mCurrentItem;
       mCurrentItem = 0;
     }
 
@@ -126,6 +131,10 @@ bool QgsMessageBar::popWidget( QWidget *widget )
     if ( item->widget() == widget )
     {
       mList.removeOne( item );
+      if ( item->widget()->parent() == this )
+      {
+        delete item->widget();
+      }
       delete item;
       return true;
     }
@@ -141,7 +150,6 @@ bool QgsMessageBar::popWidget()
 
   QgsMessageBarItem *item = mCurrentItem;
   popItem( item );
-  delete item;
 
   return true;
 }
