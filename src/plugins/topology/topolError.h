@@ -188,4 +188,10 @@ public:
   TopolErrorDuplicates(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs);
 };
 
+class TopolErrorPseudos : public TopolError
+{
+public:
+  TopolErrorPseudos(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs);
+};
+
 #endif

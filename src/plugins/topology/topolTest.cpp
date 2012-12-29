@@ -25,6 +25,8 @@
 #include <qgsspatialindex.h>
 #include <qgisinterface.h>
 #include <cmath>
+#include <set>
+#include <map>
 
 
 #include "geosFunctions.h"
@@ -50,9 +52,19 @@ topolTest::topolTest(QgisInterface* qgsIface)
   mTestMap["must not have duplicates"].useTolerance = false;
   mTestMap["must not have duplicates"].useSecondLayer = false;
 
+  mTestMap["must not have pseudos"].f = &topolTest::checkPseudos;
+  mTestMap["must not have pseudos"].useTolerance = false;
+  mTestMap["must not have pseudos"].useSecondLayer = false;
+
   // two layer tests
   mTestMap["layers must not intersect"].f = &topolTest::checkIntersections;
-  mTestMap["polygons must contain point"].f = &topolTest::checkPolygonContains;
+  mTestMap["layers must not intersect"].useSecondLayer = true;
+  mTestMap["layers must not intersect"].useTolerance = false;
+
+  mTestMap["polygons must contain feature"].f = &topolTest::checkPolygonContains;
+  mTestMap["polygons must contain feature"].useSecondLayer = true;
+  mTestMap["polygons must contain feature"].useTolerance = false;
+
   mTestMap["points must be covered by segments"].f = &topolTest::checkPointCoveredBySegment;
   mTestMap["features must not be closer than tolerance"].f = &topolTest::checkCloseFeature;
   mTestMap["features must not be closer than tolerance"].useTolerance = true;
@@ -375,6 +387,117 @@ ErrorList topolTest::checkDuplicates(double tolerance, QgsVectorLayer *layer1, Q
 
 }
 
+ErrorList topolTest::checkPseudos(double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2)
+{    
+    int i = 0;
+    ErrorList errorList;
+    QString layerId = layer1->getLayerID();
+    QgsSpatialIndex* index = mLayerIndexes[layerId];
+    if (!index)
+    {
+      mLayerIndexes[layerId] = createIndex(layer1);
+      index = mLayerIndexes[layerId];
+
+      if (!index)
+      {
+        std::cout << "No index for layer " << layerId.toStdString() << "!\n";
+        return errorList;
+      }
+    }
+    else // map was not filled in runtest()
+      fillFeatureMap(layer1);
+
+    if (layer1->geometryType() != QGis::Line)
+      return errorList;
+
+    QList<FeatureLayer>::Iterator it;
+    QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
+
+    qDebug() << mFeatureList1.count();
+
+    QgsPoint startPoint;
+    QgsPoint endPoint;
+
+    std::multimap<QgsPoint,QgsFeatureId,PointComparer> endVerticesMap;
+
+    for (it = mFeatureList1.begin(); it != FeatureListEnd; ++it)
+    {
+      if (!(++i % 100))
+        emit progress(i);
+
+      if (testCancelled())
+        break;
+
+      QgsGeometry* g1 = it->feature.geometry();
+
+      if (!g1)
+      {
+        std::cout << "g2 == NULL in pseudo line test\n" << std::flush;
+        continue;
+      }
+
+      if (!g1->asGeos())
+      {
+        std::cout << "g2->asGeos() == NULL in pseudo line test\n" << std::flush;
+        continue;
+      }
+
+      if(g1->isMultipart())
+      {
+           QgsMultiPolyline lines = g1->asMultiPolyline();
+           for (int m = 0; m < lines.count(); m++)
+           {
+               QgsPolyline line = lines[m];
+               startPoint = line[0];
+               endPoint = line[line.size() - 1];
+
+               endVerticesMap.insert(std::pair<QgsPoint,QgsFeatureId>(startPoint,it->feature.id()));
+               endVerticesMap.insert(std::pair<QgsPoint,QgsFeatureId>(endPoint,it->feature.id()));
+
+           }
+      }
+      else
+      {
+        QgsPolyline polyline = g1->asPolyline();
+        startPoint = polyline[0];
+        endPoint = polyline[polyline.size()-1];
+        endVerticesMap.insert(std::pair<QgsPoint,QgsFeatureId>(startPoint,it->feature.id()));
+        endVerticesMap.insert(std::pair<QgsPoint,QgsFeatureId>(endPoint,it->feature.id()));
+      }
+    }
+
+
+    for(std::multimap<QgsPoint, QgsFeatureId,PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound(pointIt->first))
+    {
+        QgsPoint p = pointIt->first;
+        QgsFeatureId k = pointIt->second;
+
+        int repetitions = endVerticesMap.count(p);
+
+        if(repetitions == 2)
+        {
+            QgsGeometry* conflictGeom = QgsGeometry::fromPoint(p);
+            QgsRectangle bBox = conflictGeom->boundingBox();
+            QgsFeature feat;
+
+            FeatureLayer ftrLayer1;
+            //need to fetch attributes?? being safe side by fetching..
+            layer1->featureAtId(k,feat,true,true);
+            ftrLayer1.feature = feat;
+            ftrLayer1.layer = layer1;
+
+            QList<FeatureLayer> errorFtrLayers;
+            errorFtrLayers << ftrLayer1 << ftrLayer1;
+
+            TopolErrorPseudos* err = new TopolErrorPseudos(bBox, conflictGeom, errorFtrLayers);
+            errorList << err;
+
+        }
+    }
+
+    return errorList;
+}
+
 ErrorList topolTest::checkValid(double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2)
 {
   int i = 0;
@@ -431,6 +554,7 @@ ErrorList topolTest::checkPolygonContains(double tolerance, QgsVectorLayer* laye
   if (layer1->geometryType() != QGis::Polygon)
     return errorList;
   
+  bool contains = false;
   QList<FeatureLayer>::Iterator it;
   QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
   for (it = mFeatureList1.begin(); it != FeatureListEnd; ++it)
@@ -453,6 +577,7 @@ ErrorList topolTest::checkPolygonContains(double tolerance, QgsVectorLayer* laye
 
     for (; cit != crossingIdsEnd; ++cit)
     {
+      contains = false;
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry* g2 = f.geometry();
 
@@ -462,28 +587,34 @@ ErrorList topolTest::checkPolygonContains(double tolerance, QgsVectorLayer* laye
 
       if (!g2)
       {
-	std::cout << "g2 == NULL in contains\n" << std::flush;
+        std::cout << "g2 == NULL in contains\n" << std::flush;
         continue;
       }
 
       if (!g2->asGeos())
       {
-	std::cout << "g2->asGeos() == NULL in contains\n" << std::flush;
+        std::cout << "g2->asGeos() == NULL in contains\n" << std::flush;
         continue;
       }
 
-      if (geosContains(g1, g2))
+      if (geosContains(g1, g2) == true)
       {
-	QList<FeatureLayer> fls;
-	FeatureLayer fl;
-	fl.feature = f;
-	fl.layer = layer2;
-	fls << *it << fl;
-        QgsGeometry* conflict = new QgsGeometry(*g2);
-	TopolErrorInside* err = new TopolErrorInside(bb, conflict, fls);
-
-	errorList << err;
+          contains = true;
+          continue;
       }
+    }
+
+    if(contains == false)
+    {
+        QList<FeatureLayer> fls;
+        FeatureLayer fl;
+        fl.feature = it->feature;
+        fl.layer = layer2;
+        fls << *it << fl;
+        QgsGeometry* conflict = new QgsGeometry(*g1);
+        TopolErrorInside* err = new TopolErrorInside(bb, conflict, fls);
+
+        errorList << err;
     }
   }
 
@@ -753,8 +884,6 @@ ErrorList topolTest::checkIntersections(double tolerance, QgsVectorLayer* layer1
   return errorList;
 }
 
-
-
 void topolTest::fillFeatureMap(QgsVectorLayer* layer)
 {
   layer->select(QgsAttributeList(), QgsRectangle());
@@ -788,7 +917,7 @@ QgsSpatialIndex* topolTest::createIndex(QgsVectorLayer* layer)
     }
 
     if (f.geometry())
-    { 
+    {
       index->insertFeature(f);
       mFeatureMap2[f.id()] = FeatureLayer(layer, f);
     }
@@ -817,6 +946,11 @@ ErrorList topolTest::runTest(QString testName, QgsVectorLayer* layer1, QgsVector
   QString secondLayerId;
   mFeatureList1.clear();
   mFeatureMap2.clear();
+
+  //checking if new features are not
+  //being recognised due to indexing not being upto date
+
+  mLayerIndexes.clear();
   QgsFeature f;
 
   if (layer2)

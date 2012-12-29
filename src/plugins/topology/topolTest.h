@@ -52,6 +52,32 @@ public:
   }
 };
 
+/**
+  helper class to pass as comparator to map,set etc..
+  */
+class PointComparer
+{
+    public:
+        bool operator() (QgsPoint p1, QgsPoint p2)const
+        {
+            if(p1.x() < p2.x())
+            {
+                return true;
+            }
+
+            if(p1.x() == p2.x())
+            {
+                if(p1.y() < p2.y())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+};
+
+
 class topolTest: public QObject
 {
 Q_OBJECT
@@ -138,6 +164,14 @@ public:
    * @param layer2 not used
    */
   ErrorList checkDuplicates(double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2);
+
+  /**
+   * Checks for pseudo nodes
+   * @param tolerance not used
+   * @param layer1 pointer to the first layer
+   * @param layer2 not used
+   */
+  ErrorList checkPseudos(double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2);
 
 
 public slots:

@@ -187,3 +187,9 @@ TopolErrorDuplicates::TopolErrorDuplicates(QgsRectangle theBoundingBox, QgsGeome
   mName = "duplicate geometry";
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
+
+TopolErrorPseudos::TopolErrorPseudos(QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs) : TopolError(theBoundingBox, theConflict, theFeaturePairs)
+{
+  mName = "pseudo node";
+  //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
+}
