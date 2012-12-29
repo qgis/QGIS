@@ -465,7 +465,7 @@ class QgsLegend : public QTreeWidget
     void collapseAll();
     /** toogle update drawing order */
     void toggleDrawingOrderUpdate();
-    void handleItemChange( QTreeWidgetItem* item, int row );
+    void handleItemChange( QTreeWidgetItem* item, int column );
     void handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
