@@ -596,7 +596,6 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     return;
   }
 
-  int fldNo = 0;
   while ( fld )
   {
     QString name = QString::fromUtf8( fld->AttributeFieldName );
@@ -616,7 +615,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
         fieldType = QVariant::Double;
         type = "DOUBLE";
       }
-      attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) );
+      attributeFields.append( QgsField( name, fieldType, type, 0, 0, "" ) );
     }
     fld = fld->Next;
   }
