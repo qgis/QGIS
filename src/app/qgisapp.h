@@ -404,7 +404,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! @note added in 1.6
     void completeInitialization();
 
-    void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void emitCustomSrsValidation( QgsCoordinateReferenceSystem &crs );
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
@@ -533,7 +533,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     //! validate a SRS
-    void validateSrs( QgsCoordinateReferenceSystem *crs );
+    void validateSrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGis Sponsors
     void sponsors();
@@ -1008,7 +1008,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      @note added in version 1.6*/
     void initializationCompleted();
 
-    void customSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load
