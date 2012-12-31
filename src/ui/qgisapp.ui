@@ -164,6 +164,7 @@
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionToggleEditing"/>
+    <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
     <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
@@ -282,6 +283,7 @@
    </attribute>
    <addaction name="mActionAllEdits"/>
    <addaction name="mActionToggleEditing"/>
+   <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
@@ -1938,6 +1940,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="statusTip">
     <string/>
+   </property>
+  </action>
+  <action name="mActionSaveLayerEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.svg</normaloff>:/images/themes/default/mActionSaveAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Layer Edits</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Layer Edits</string>
    </property>
   </action>
  </widget>

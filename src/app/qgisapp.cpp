@@ -949,6 +949,7 @@ void QgisApp::createActions()
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
+  connect( mActionSaveLayerEdits, SIGNAL( triggered() ), this, SLOT( saveActiveLayerEdits() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
   connect( mActionSaveAllEdits, SIGNAL( triggered() ), this, SLOT( saveAllEdits() ) );
   connect( mActionRollbackEdits, SIGNAL( triggered() ), this, SLOT( rollbackEdits() ) );
@@ -1670,6 +1671,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSponsors->setIcon( QgsApplication::getThemeIcon( "/mActionHelpSponsors.png" ) );
   mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
   mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
+  mActionSaveLayerEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
   mActionAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionAllEdits.svg" ) );
   mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
   mActionSaveAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
@@ -5206,6 +5208,11 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   return res;
 }
 
+void QgisApp::saveActiveLayerEdits()
+{
+  saveEdits( activeLayer() );
+}
+
 void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -5362,6 +5369,20 @@ bool QgisApp::verifyEditsActionDialog( QString act, QString upon )
 
 void QgisApp::updateLayerModifiedActions()
 {
+  bool enableSaveLayerEdits = false;
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( vlayer )
+  {
+    QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    if ( dprovider )
+    {
+      enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
+                               && vlayer->isEditable()
+                               && vlayer->isModified() );
+    }
+  }
+  mActionSaveLayerEdits->setEnabled( enableSaveLayerEdits );
+
   mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
   mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
   mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
@@ -7322,6 +7343,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
+    mActionSaveLayerEdits->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
@@ -7413,6 +7435,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
         mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
+        mActionSaveLayerEdits->setEnabled( canChangeAttributes && vlayer->isEditable() && vlayer->isModified() );
         mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
         updateUndoActions();
       }
@@ -7420,6 +7443,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionToggleEditing->setEnabled( false );
         mActionToggleEditing->setChecked( false );
+        mActionSaveLayerEdits->setEnabled( false );
         mUndoWidget->dockContents()->setEnabled( false );
         mActionUndo->setEnabled( false );
         mActionRedo->setEnabled( false );
@@ -7588,6 +7612,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
+    mActionSaveLayerEdits->setEnabled( false );
     mUndoWidget->dockContents()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );

@@ -296,6 +296,8 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionOpenTable();
     virtual QAction *actionToggleEditing();
     /** @note added in 1.9 */
+    virtual QAction *actionSaveActiveLayerEdits();
+    /** @note added in 1.9 */
     virtual QAction *actionAllEdits();
     /** @note added in 1.9 */
     virtual QAction *actionSaveEdits();

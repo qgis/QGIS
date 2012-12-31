@@ -291,6 +291,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     /** @note added in 1.9 */
+    QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
+    /** @note added in 1.9 */
     QAction *actionAllEdits() { return mActionAllEdits; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
     /** @note added in 1.9 */
@@ -791,6 +793,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! starts/stops editing mode of a layer
     bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
+
+    /** Save edits for active vector layer and start new transactions
+     * @note added in 1.9 */
+    void saveActiveLayerEdits();
 
     //! Save edits of a layer
     void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
