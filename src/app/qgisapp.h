@@ -441,6 +441,46 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void removingLayers( QStringList );
 
+    //! starts/stops editing mode of the current layer
+    void toggleEditing();
+
+    //! starts/stops editing mode of a layer
+    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
+
+    /** Save edits for active vector layer and start new transactions
+     * @note added in 1.9 */
+    void saveActiveLayerEdits();
+
+    //! Save edits of a layer
+    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    /** Cancel edits for a layer
+      * @note added in 1.9 */
+    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    //! Save current edits for selected layer(s) and start new transaction(s)
+    void saveEdits();
+
+    /** Save edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void saveAllEdits( bool verifyAction = true );
+
+    /** Rollback current edits for selected layer(s) and start new transaction(s)
+      * @note added in 1.9 */
+    void rollbackEdits();
+
+    /** Rollback edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void rollbackAllEdits( bool verifyAction = true );
+
+    /** Cancel edits for selected layer(s) and toggle off editing
+      * @note added in 1.9 */
+    void cancelEdits();
+
+    /** Cancel all edits for all layers and toggle off editing
+     * @note added in 1.9 */
+    void cancelAllEdits( bool verifyAction = true );
+
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
@@ -787,46 +827,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! refresh map canvas
     void refreshMapCanvas();
-
-    //! starts/stops editing mode of the current layer
-    void toggleEditing();
-
-    //! starts/stops editing mode of a layer
-    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
-
-    /** Save edits for active vector layer and start new transactions
-     * @note added in 1.9 */
-    void saveActiveLayerEdits();
-
-    //! Save edits of a layer
-    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
-
-    /** Cancel edits for a layer
-      * @note added in 1.9 */
-    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
-
-    //! Save current edits for selected layer(s) and start new transaction(s)
-    void saveEdits();
-
-    /** Save edits for all layers and start new transactions
-     * @note added in 1.9 */
-    void saveAllEdits( bool verifyAction = true );
-
-    /** Rollback current edits for selected layer(s) and start new transaction(s)
-      * @note added in 1.9 */
-    void rollbackEdits();
-
-    /** Rollback edits for all layers and start new transactions
-     * @note added in 1.9 */
-    void rollbackAllEdits( bool verifyAction = true );
-
-    /** Cancel edits for selected layer(s) and toggle off editing
-      * @note added in 1.9 */
-    void cancelEdits();
-
-    /** Cancel all edits for all layers and toggle off editing
-     * @note added in 1.9 */
-    void cancelAllEdits( bool verifyAction = true );
 
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
