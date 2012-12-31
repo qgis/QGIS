@@ -192,7 +192,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(polygonLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(polygonLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([polygonLayer])
 
         # add line layer
         lineLayer = QgsVectorLayer(self.fname+"?type=line"+observer + tag + style, basename+" lines", "osm")
@@ -206,7 +206,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(lineLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(lineLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([lineLayer])
 
         # add point layer
         pointLayer = QgsVectorLayer(self.fname+"?type=point"+observer + tag + style, basename+" points", "osm")
@@ -220,7 +220,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(pointLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(pointLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([pointLayer])
 
         # remember layers
         self.polygonLayer=polygonLayer
