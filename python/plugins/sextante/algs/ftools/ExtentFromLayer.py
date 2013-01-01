@@ -23,25 +23,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
-
 from sextante.outputs.OutputVector import OutputVector
 
 class ExtentFromLayer(GeoAlgorithm):
 
     INPUT_LAYER = "INPUT_LAYER"
-    USE_SELECTION = "USE_SELECTION"
     BY_FEATURE = "BY_FEATURE"
 
     OUTPUT = "OUTPUT"
@@ -56,17 +49,13 @@ class ExtentFromLayer(GeoAlgorithm):
         self.group = "Vector general tools"
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterBoolean(self.USE_SELECTION, "Use selection", False))
         self.addParameter(ParameterBoolean(self.BY_FEATURE, "Calculate extent for each feature separately", False))
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
-        useSelection = self.getParameterValue(self.USE_SELECTION)
         byFeature = self.getParameterValue(self.BY_FEATURE)
-
-        output = self.getOutputValue(self.OUTPUT)
 
         fields = {0 : QgsField("MINX", QVariant.Double),
                   1 : QgsField("MINY", QVariant.Double),
@@ -84,7 +73,7 @@ class ExtentFromLayer(GeoAlgorithm):
                      QGis.WKBPolygon, layer.crs())
 
         if byFeature:
-            self.featureExtent(layer, writer, useSelection, progress)
+            self.featureExtent(layer, writer, progress)
         else:
             self.layerExtent(layer, writer, progress)
 
@@ -126,87 +115,47 @@ class ExtentFromLayer(GeoAlgorithm):
                              })
         writer.addFeature(feat)
 
-    def featureExtent(self, layer, writer, useSelection, progress):
+    def featureExtent(self, layer, writer, progress):
         current = 0
-
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
 
         provider = layer.dataProvider()
-        provider.select()
+        provider.select()                
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for inFeat in features:         
+            rect = inFeat.geometry().boundingBox()
+            minx = rect.xMinimum()
+            miny = rect.yMinimum()
+            maxx = rect.xMaximum()
+            maxy = rect.yMaximum()
+            height = rect.height()
+            width = rect.width()
+            cntx = minx + (width / 2.0)
+            cnty = miny + (height / 2.0)
+            area = width * height
+            perim = (2 * width) + (2 * height)
+            rect = [QgsPoint(minx, miny),
+                    QgsPoint(minx, maxy),
+                    QgsPoint(maxx, maxy),
+                    QgsPoint(maxx, miny),
+                    QgsPoint(minx, miny)
+                   ]
 
-        if useSelection:
-            total = 100.0 / float(layer.selectedFeatureCount())
-            for inFeat in layer.selectedFeatures():
-                rect = inFeat.geometry().boundingBox()
-                minx = rect.xMinimum()
-                miny = rect.yMinimum()
-                maxx = rect.xMaximum()
-                maxy = rect.yMaximum()
-                height = rect.height()
-                width = rect.width()
-                cntx = minx + (width / 2.0)
-                cnty = miny + (height / 2.0)
-                area = width * height
-                perim = (2 * width) + (2 * height)
-                rect = [QgsPoint(minx, miny),
-                        QgsPoint(minx, maxy),
-                        QgsPoint(maxx, maxy),
-                        QgsPoint(maxx, miny),
-                        QgsPoint(minx, miny)
-                       ]
-                geometry = QgsGeometry().fromPolygon([rect])
+            geometry = QgsGeometry().fromPolygon([rect])
 
-                outFeat.setGeometry(geometry)
-                outFeat.setAttributeMap({0 : QVariant(minx),
-                                         1 : QVariant(miny),
-                                         2 : QVariant(maxx),
-                                         3 : QVariant(maxy),
-                                         4 : QVariant(cntx),
-                                         5 : QVariant(cnty),
-                                         6 : QVariant(area),
-                                         7 : QVariant(perim),
-                                         8 : QVariant(height),
-                                         9 : QVariant(width)
-                                        })
-                writer.addFeature(outFeat)
-                current += 1
-                progress.setPercentage(int(current * total))
-        else:
-            total = 100.0 / float(provider.featureCount())
-            while provider.nextFeature(inFeat):
-                rect = inFeat.geometry().boundingBox()
-                minx = rect.xMinimum()
-                miny = rect.yMinimum()
-                maxx = rect.xMaximum()
-                maxy = rect.yMaximum()
-                height = rect.height()
-                width = rect.width()
-                cntx = minx + (width / 2.0)
-                cnty = miny + (height / 2.0)
-                area = width * height
-                perim = (2 * width) + (2 * height)
-                rect = [QgsPoint(minx, miny),
-                        QgsPoint(minx, maxy),
-                        QgsPoint(maxx, maxy),
-                        QgsPoint(maxx, miny),
-                        QgsPoint(minx, miny)
-                       ]
-
-                geometry = QgsGeometry().fromPolygon([rect])
-
-                outFeat.setGeometry(geometry)
-                outFeat.setAttributeMap({0 : QVariant(minx),
-                                         1 : QVariant(miny),
-                                         2 : QVariant(maxx),
-                                         3 : QVariant(maxy),
-                                         4 : QVariant(cntx),
-                                         5 : QVariant(cnty),
-                                         6 : QVariant(area),
-                                         7 : QVariant(perim),
-                                         8 : QVariant(height),
-                                         9 : QVariant(width)
-                                        })
-                writer.addFeature(outFeat)
-                current += 1
-                progress.setPercentage(int(current * total))
+            outFeat.setGeometry(geometry)
+            outFeat.setAttributeMap({0 : QVariant(minx),
+                                     1 : QVariant(miny),
+                                     2 : QVariant(maxx),
+                                     3 : QVariant(maxy),
+                                     4 : QVariant(cntx),
+                                     5 : QVariant(cnty),
+                                     6 : QVariant(area),
+                                     7 : QVariant(perim),
+                                     8 : QVariant(height),
+                                     9 : QVariant(width)
+                                    })
+            writer.addFeature(outFeat)
+            current += 1
+            progress.setPercentage(int(current * total))

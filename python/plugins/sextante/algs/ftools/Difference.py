@@ -16,16 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-import os.path
-from PyQt4 import QtGui
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -34,15 +31,15 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 from sextante.algs.ftools import ftools_utils
 from sextante.core.SextanteLog import SextanteLog
-from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+
 
 class Difference(GeoAlgorithm):
 
     INPUT = "INPUT"
     INPUT2 = "INPUT2"
     OUTPUT = "OUTPUT"
-    USE_SELECTED = "USE_SELECTED"
-    USE_SELECTED2 = "USE_SELECTED2"
 
     #===========================================================================
     # def getIcon(self):
@@ -50,10 +47,9 @@ class Difference(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        useSelection = self.getParameterValue(Difference.USE_SELECTED)
-        useSelection2 = self.getParameterValue(Difference.USE_SELECTED2)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT))
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT2))
+        useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
@@ -79,10 +75,8 @@ class Difference(GeoAlgorithm):
         nElement = 0
         # there is selection in input layer
         if useSelection:
-          nFeat = vlayerA.selectedFeatureCount()
-          selectionA = vlayerA.selectedFeatures()
-          # we have selection in overlay layer
-          if useSelection2:
+            nFeat = vlayerA.selectedFeatureCount()
+            selectionA = vlayerA.selectedFeatures()
             selectionB = vlayerB.selectedFeaturesIds()
             for inFeatA in selectionA:
               nElement += 1
@@ -112,71 +106,10 @@ class Difference(GeoAlgorithm):
                 except:
                   FEATURE_EXCEPT = False
                   continue
-          # we have no selection in overlay layer
-          else:
-            for inFeatA in selectionA:
-              nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-              add = True
-              geom = QgsGeometry( inFeatA.geometry() )
-              diff_geom = QgsGeometry( geom )
-              atMap = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
-                vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-                tmpGeom = QgsGeometry( inFeatB.geometry() )
-                try:
-                  if diff_geom.intersects( tmpGeom ):
-                    diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-                except:
-                  GEOS_EXCEPT = False
-                  add = False
-                  break
-              if add:
-                try:
-                  outFeat.setGeometry( diff_geom )
-                  outFeat.setAttributeMap( atMap )
-                  writer.addFeature( outFeat )
-                except:
-                  FEATURE_EXCEPT = False
-                  continue
         # there is no selection in input layer
         else:
-          nFeat = vproviderA.featureCount()
-          vproviderA.rewind()
-          # we have selection in overlay layer
-          if useSelection2:
-            selectionB = vlayerB.selectedFeaturesIds()
-            while vproviderA.nextFeature( inFeatA ):
-              nElement += 1
-              add = True
-              progress.setPercentage(int(nElement/nFeat * 100))
-              geom = QgsGeometry( inFeatA.geometry() )
-              diff_geom = QgsGeometry( geom )
-              atMap = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
-                # now check if id in selection
-                if id in selectionB:
-                  vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-                  tmpGeom = QgsGeometry( inFeatB.geometry() )
-                  try:
-                    if diff_geom.intersects( tmpGeom ):
-                      diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-                  except:
-                    GEOS_EXCEPT = False
-                    add = False
-                    break
-              if add:
-                try:
-                  outFeat.setGeometry( diff_geom )
-                  outFeat.setAttributeMap( atMap )
-                  writer.addFeature( outFeat )
-                except:
-                  FEATURE_EXCEPT = False
-                  continue
-          # we have no selection in overlay layer
-          else:
+            nFeat = vproviderA.featureCount()
+            vproviderA.rewind()          
             while vproviderA.nextFeature( inFeatA ):
               nElement += 1
               add = True
@@ -203,6 +136,7 @@ class Difference(GeoAlgorithm):
                 except:
                   FEATURE_EXCEPT = False
                   continue
+              
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing difference")
@@ -214,6 +148,4 @@ class Difference(GeoAlgorithm):
         self.group = "Vector overlay tools"
         self.addParameter(ParameterVector(Difference.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterVector(Difference.INPUT2, "Difference layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterBoolean(Difference.USE_SELECTED, "Use selected features (input)", False))
-        self.addParameter(ParameterBoolean(Difference.USE_SELECTED2, "Use selected features (difference)", False))
         self.addOutput(OutputVector(Difference.OUTPUT, "Difference"))

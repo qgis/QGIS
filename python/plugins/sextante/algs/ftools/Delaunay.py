@@ -23,22 +23,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-from sets import Set
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.QGisLayers import QGisLayers
-
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.outputs.OutputVector import OutputVector
-
+from sets import Set
 from sextante.algs.ftools import voronoi
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.GeoAlgorithmExecutionException import \
+    GeoAlgorithmExecutionException
+from sextante.core.QGisLayers import QGisLayers
+from sextante.outputs.OutputVector import OutputVector
+from sextante.parameters.ParameterVector import ParameterVector
+
 
 class Delaunay(GeoAlgorithm):
 
@@ -59,8 +54,7 @@ class Delaunay(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Delaunay triangulation"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        output = self.getOutputValue(self.OUTPUT)
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
 
         provider = layer.dataProvider()
         provider.select()
@@ -75,17 +69,16 @@ class Delaunay(GeoAlgorithm):
 
         pts = []
         ptDict = {}
-        ptNdx = -1
-        inFeat = QgsFeature()
+        ptNdx = -1        
         c = voronoi.Context()
-
-        while provider.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for inFeat in features:
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
             x = point.x()
             y = point.y()
             pts.append((x, y))
-            ptNdx +=1
+            ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
 
         if len(pts) < 3:
@@ -107,7 +100,6 @@ class Delaunay(GeoAlgorithm):
             indicies.append(indicies[0])
             polygon = []
             step = 0
-
             for index in indicies:
                 provider.featureAtId(ptDict[ids[index]], inFeat, True)
                 geom = QgsGeometry(inFeat.geometry())

@@ -62,20 +62,20 @@ class JoinAttributes(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(input)
         provider = layer.dataProvider()
         allAttrs = provider.attributeIndexes()
-        provider.select( allAttrs )
+        provider.select(allAttrs)
         join_field1_index = provider.fieldNameIndex(field)
         # Layer 2
         layer2 = QGisLayers.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
         allAttrs = provider2.attributeIndexes()
-        provider2.select( allAttrs )
+        provider2.select(allAttrs)
         fields2 = provider2.fields()
         join_field2_index = provider2.fieldNameIndex(field2)
         
         # Output
         outFields = provider.fields()
-        for (i,f) in fields2.iteritems():
-            f.setName("x_"+f.name())
+        for (i, f) in fields2.iteritems():
+            f.setName("x_" + f.name())
             outFields[len(outFields)] = f
         
         writer = output.getVectorWriter(outFields, provider.geometryType(), provider.crs())
@@ -88,18 +88,19 @@ class JoinAttributes(GeoAlgorithm):
         while provider.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
-            join_value1 = atMap[join_field1_index].toString()        
+            join_value1 = atMap[join_field1_index].toString()       
+            provider2.rewind() 
             while provider2.nextFeature(inFeat2):                
                 atMap2 = inFeat2.attributeMap()
                 join_value2 = atMap2[join_field2_index].toString()        
                 if join_value1 == join_value2:
                     # create the new feature
-                    outFeat.setGeometry( inGeom )
-                    outFeat.setAttributeMap( atMap )
+                    outFeat.setGeometry(inGeom)
+                    outFeat.setAttributeMap(atMap)
                     l = len(provider.fields())
-                    for (i,a) in atMap2.iteritems():
-                        outFeat.addAttribute( l+i, a )
+                    for (i, a) in atMap2.iteritems():
+                        outFeat.addAttribute(l + i, a)
         
-                    writer.addFeature( outFeat )
+                    writer.addFeature(outFeat)
         
         del writer

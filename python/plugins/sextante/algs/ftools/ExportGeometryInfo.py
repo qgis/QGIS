@@ -23,8 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
@@ -108,19 +106,18 @@ class ExportGeometryInfo(GeoAlgorithm):
             mapCRS = QGisLayers.iface.mapCanvas().mapRenderer().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
-
-        inFeat = QgsFeature()
+        
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
-        current = 0
-        total = 100.0 / float(provider.featureCount())
-
-        while layer.nextFeature(inFeat):
+        current = 0        
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for inFeat in features:        
             inGeom = inFeat.geometry()
 
             if method == 1:
-              inGeom.transform(coordTransform)
+                inGeom.transform(coordTransform)
 
             (attr1, attr2) = self.simpleMeasure(inGeom, method, ellips, crs)
 

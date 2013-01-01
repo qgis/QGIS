@@ -84,7 +84,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                      polyProvider.geometryType(), polyProvider.crs())
 
-        spatialIndex = utils.createSpatialIndex(pointProvider)
+        spatialIndex = utils.createSpatialIndex(pointLayer)
 
         pointProvider.rewind()
         pointProvider.select()
@@ -92,16 +92,16 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         allAttrs = polyLayer.pendingAllAttributesList()
         polyLayer.select(allAttrs)
 
-        ftPoly = QgsFeature()
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
         current = 0
-        total = 100.0 / float(polyProvider.featureCount())
         hasIntersections = False
 
-        while polyLayer.nextFeature(ftPoly):
+        features = QGisLayers.features(polyLayer)
+        total = 100.0 / float(len(features))
+        for ftPoly in features:  
             geom = ftPoly.geometry()
             atMap = ftPoly.attributeMap()
 

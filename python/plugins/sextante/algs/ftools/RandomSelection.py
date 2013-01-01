@@ -23,10 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 import random
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -63,7 +61,7 @@ class RandomSelection(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterSelection(self.METHOD, "Method", self.METHODS, 0))
-        self.addParameter(ParameterNumber(self.NUMBER, "Number/persentage of selected features", 1, None, 10))
+        self.addParameter(ParameterNumber(self.NUMBER, "Number/percentage of selected features", 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, "Selection", True))
 
     def processAlgorithm(self, progress):
@@ -77,13 +75,14 @@ class RandomSelection(GeoAlgorithm):
 
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException("Selected number is greater that feature count. Choose lesser value and try again.")
+                raise GeoAlgorithmExecutionException("Selected number is greater than feature count. Choose a lower value and try again.")
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException("Persentage can't be greater than 100. Set corrent value and try again.")
+                raise GeoAlgorithmExecutionException("Persentage can't be greater than 100. Set a different value and try again.")
             value = int(round((value / 100.0000), 4) * featureCount)
 
         selran = random.sample(xrange(0, featureCount), value)
 
         layer.setSelectedFeatures(selran)
         self.setOutputValue(self.OUTPUT, filename)
+            

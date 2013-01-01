@@ -23,21 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 import math
-
-from PyQt4 import QtGui
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterVector import ParameterVector
-
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
-
 from sextante.algs.ftools import FToolsUtils as utils
 
 class NearestNeighbourAnalysis(GeoAlgorithm):
@@ -77,11 +69,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         provider = layer.dataProvider()
-        spatialIndex = utils.createSpatialIndex(provider)
+        spatialIndex = utils.createSpatialIndex(layer)
         provider.rewind()
         provider.select()
-
-        feat = QgsFeature()
+        
         neighbour = QgsFeature()
         distance = QgsDistanceArea()
 
@@ -89,10 +80,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        current = 0
-        total = 100.0 / float(provider.featureCount())
-
-        while provider.nextFeature( feat ):
+        current = 0        
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for feat in features: 
             neighbourID = spatialIndex.nearestNeighbor(feat.geometry().asPoint(), 2)[1]
             provider.featureAtId(neighbourID, neighbour, True)
             sumDist += distance.measureLine(neighbour.geometry().asPoint(), feat.geometry().asPoint())

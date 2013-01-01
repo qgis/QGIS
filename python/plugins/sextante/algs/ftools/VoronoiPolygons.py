@@ -23,10 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 from sets import Set
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -77,7 +75,8 @@ class VoronoiPolygons(GeoAlgorithm):
         ptDict = {}
         ptNdx = -1
 
-        while layer.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for inFeat in features:
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
             x = point.x()-extent.xMinimum()

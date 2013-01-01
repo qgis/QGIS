@@ -23,8 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
@@ -62,14 +60,14 @@ class Centroids(GeoAlgorithm):
                      QGis.WKBPoint, layer.dataProvider().crs())
 
         layer.select(layer.pendingAllAttributesList())
-
-        inFeat = QgsFeature()
+        
         outFeat = QgsFeature()
-
-        total = 100.0 / float(layer.featureCount())
+        
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))    
         current = 0
 
-        while layer.nextFeature(inFeat):
+        for inFeat in features:
             inGeom = inFeat.geometry()
             attrMap = inFeat.attributeMap()
 

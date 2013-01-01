@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.QGisLayers import QGisLayers
 
 __author__ = 'Carson Farmer, Victor Olaya'
 __date__ = 'August 2012'
@@ -329,42 +330,34 @@ def getFieldType(vlayer, fieldName):
             return field.typeName()
 
 # return the number of unique values in field
-def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
-    vprovider = vlayer.dataProvider()
+def getUniqueValuesCount( layer, fieldIndex):
+    vprovider = layer.dataProvider()
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     count = 0
-    values = []
-    if useSelection:
-        selection = vlayer.selectedFeatures()
-        for f in selection:
-            if f.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( f.attributeMap()[ fieldIndex ].toString() )
-                count += 1
-    else:
-        feat = QgsFeature()
-        while vprovider.nextFeature( feat ):
-            if feat.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( feat.attributeMap()[ fieldIndex ].toString() )
-                count += 1
+    values = []    
+    features = QGisLayers.features(layer)
+    for feat in features:
+        if feat.attributeMap()[ fieldIndex ].toString() not in values:
+            values.append( feat.attributeMap()[ fieldIndex ].toString() )
+            count += 1
     return count
 
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
-  outShapes = QStringList()
-  for fileName in inShapes:
-    layerPath = QFileInfo( baseDir + "/" + fileName ).absoluteFilePath()
-    vLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
-    if not vLayer.isValid():
-      continue
-    layerGeometry = vLayer.geometryType()
-    if layerGeometry == QGis.Polygon and geomType == 0:
-      outShapes << fileName
-    elif layerGeometry == QGis.Line and geomType == 1:
-      outShapes << fileName
-    elif layerGeometry == QGis.Point and geomType == 2:
-      outShapes << fileName
+    outShapes = QStringList()
+    for fileName in inShapes:
+        layerPath = QFileInfo( baseDir + "/" + fileName ).absoluteFilePath()
+        vLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+        if not vLayer.isValid():
+            continue
+        layerGeometry = vLayer.geometryType()
+        if layerGeometry == QGis.Polygon and geomType == 0:
+            outShapes << fileName
+        elif layerGeometry == QGis.Line and geomType == 1:
+            outShapes << fileName
+        elif layerGeometry == QGis.Point and geomType == 2:
+            outShapes << fileName
 
-  if outShapes.count() == 0:
-    return None
-
-  return outShapes
+    if outShapes.count() == 0:
+        return None
+    return outShapes

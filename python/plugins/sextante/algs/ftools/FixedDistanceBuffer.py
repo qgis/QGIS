@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -46,7 +43,6 @@ class FixedDistanceBuffer(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
-    USE_SELECTED = "USE_SELECTED"
     DISTANCE = "DISTANCE"
     SEGMENTS = "SEGMENTS"
     DISSOLVE = "DISSOLVE"
@@ -59,9 +55,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Fixed distance buffer"
         self.group = "Vector geometry tools"
-
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use selected features", False))
         self.addParameter(ParameterNumber(self.DISTANCE, "Distance", 0.0, default=10.0))
         self.addParameter(ParameterNumber(self.SEGMENTS, "Segments", 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE, "Dissolve result", False))
@@ -79,5 +73,5 @@ class FixedDistanceBuffer(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      QGis.WKBPolygon, provider.crs())
 
-        buff.buffering(progress, writer, distance, None, useSelection, False,
+        buff.buffering(progress, writer, distance, None, False,
                        layer, dissolve, segments)

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.QGisLayers import QGisLayers
 
 __author__ = 'Carson, Farmer, Victor Olaya'
 __date__ = 'September 2012'
@@ -27,12 +28,13 @@ from PyQt4.QtCore import *
 
 from qgis.core import *
 
-def createSpatialIndex(provider):
-    ft = QgsFeature()
+def createSpatialIndex(layer):
+    provider = layer.provider()    
     idx = QgsSpatialIndex()
     provider.rewind()
     provider.select()
-    while provider.nextFeature(ft):
+    features = QGisLayers.features(layer)
+    for ft in features:    
         idx.insertFeature(ft)
     return idx
 
@@ -100,20 +102,14 @@ def extractPoints( geom ):
 
     return points
 
-def getUniqueValuesCount(layer, fieldIndex, useSelection):
+def getUniqueValuesCount(layer, fieldIndex):
     count = 0
     values = []
     layer.select([fieldIndex], QgsRectangle(), False)
-    if useSelection:
-        selection = layer.selectedFeatures()
-        for f in selection:
-            if f.attributeMap()[fieldIndex].toString() not in values:
-                values.append(f.attributeMap()[fieldIndex].toString())
-                count += 1
-    else:
-        feat = QgsFeature()
-        while layer.nextFeature(feat):
-            if feat.attributeMap()[fieldIndex].toString() not in values:
-                values.append(feat.attributeMap()[fieldIndex].toString())
-                count += 1
+
+    features = QGisLayers.features(layer)
+    for feat in features:
+        if feat.attributeMap()[fieldIndex].toString() not in values:
+            values.append(feat.attributeMap()[fieldIndex].toString())
+            count += 1
     return count

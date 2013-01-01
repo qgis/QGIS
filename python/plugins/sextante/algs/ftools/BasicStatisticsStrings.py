@@ -45,7 +45,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
 
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
-    USE_SELECTION = "USE_SELECTION"
     OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
 
     MIN_LEN = "MIN_LEN"
@@ -67,7 +66,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
-        self.addParameter(ParameterBoolean(self.USE_SELECTION, "Use selection", False))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics for text field"))
 
@@ -82,14 +80,12 @@ class BasicStatisticsStrings(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
-        useSelection = self.getParameterValue(self.USE_SELECTION)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         index = layer.fieldNameIndex(fieldName)
         layer.select([index], QgsRectangle(), False)
 
-        count = 0
         sumValue = 0
         minValue = 0
         maxValue = 0
@@ -100,70 +96,39 @@ class BasicStatisticsStrings(GeoAlgorithm):
         isFirst = True
         values = []
 
-        if useSelection:
-            selection = layer.selectedFeatures()
-            count = layer.selectedFeatureCount()
-            total = 100.0 / float(count)
-            current = 0
+        features = QGisLayers.features(layer)
+        count = len(features)
+        total = 100.0 / float(count)
+        current = 0
+        for ft in features:
+            length = float(len(ft.attributeMap()[index].toString()))
 
-            for f in selection:
-                length = float(len(f.attributeMap()[index].toString()))
-
-                if isFirst:
+            if isFirst:
+                minValue = length
+                maxValue = length
+                isFirst = False
+            else:
+                if length < minValue:
                     minValue = length
+                if length > maxValue:
                     maxValue = length
-                    isFirst = False
-                else:
-                    if length < minValue:
-                        minValue = length
-                    if length > maxValue:
-                        maxValue = length
 
-                if length != 0.00:
-                    countFilled += 1
-                else:
-                    countEmpty += 1
+            if length != 0.00:
+                countFilled += 1
+            else:
+                countEmpty += 1
 
-                values.append(length)
-                sumValue += length
+            values.append(length)
+            sumValue += length
 
-                current += 1
-                progress.setPercentage(int(current * total))
-        else:
-            count = layer.featureCount()
-            total = 100.0 / float(count)
-            current = 0
-
-            ft = QgsFeature()
-            while layer.nextFeature(ft):
-                length = float(len(ft.attributeMap()[index].toString()))
-
-                if isFirst:
-                    minValue = length
-                    maxValue = length
-                    isFirst = False
-                else:
-                    if length < minValue:
-                        minValue = length
-                    if length > maxValue:
-                        maxValue = length
-
-                if length != 0.00:
-                    countFilled += 1
-                else:
-                    countEmpty += 1
-
-                values.append(length)
-                sumValue += length
-
-                current += 1
-                progress.setPercentage(int(current * total))
+            current += 1
+            progress.setPercentage(int(current * total))
 
         n = float(len(values))
         if n > 0:
-          meanValue = sumValue / n
+            meanValue = sumValue / n
 
-        uniqueValues = utils.getUniqueValuesCount(layer, index, useSelection)
+        uniqueValues = utils.getUniqueValuesCount(layer, index)
 
         data = []
         data.append("Minimum length: " + unicode(minValue))

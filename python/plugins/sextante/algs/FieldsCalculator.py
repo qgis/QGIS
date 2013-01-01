@@ -31,7 +31,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.core.QGisLayers import QGisLayers
-from PyQt4 import QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
@@ -40,7 +39,7 @@ class FieldsCalculator(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
     FORMULA = "FORMULA"
-    OUTPUT_LAYER ="OUTPUT_LAYER"
+    OUTPUT_LAYER = "OUTPUT_LAYER"
 
     #===========================================================================
     # def getIcon(self):
@@ -62,20 +61,20 @@ class FieldsCalculator(GeoAlgorithm):
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
+        vprovider.select(allAttrs)
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs())        
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
         features = QGisLayers.features(vlayer)                
         for inFeat in features:
-            progress.setPercentage(int((100 * nElement)/nFeat))
+            progress.setPercentage(int((100 * nElement) / nFeat))
             attrs = inFeat.attributeMap()
             expression = formula
-            for (k,attr) in attrs.iteritems():
+            for (k, attr) in attrs.iteritems():
                 expression = expression.replace(str(fields[k].name()), str(attr.toString()))
             try:
                 result = eval(expression)
@@ -83,11 +82,11 @@ class FieldsCalculator(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
             nElement += 1
             inGeom = inFeat.geometry()
-            outFeat.setGeometry( inGeom )
+            outFeat.setGeometry(inGeom)
             atMap = inFeat.attributeMap()
-            outFeat.setAttributeMap( atMap )
-            outFeat.addAttribute( len(vprovider.fields()), QVariant(result) )
-            writer.addFeature( outFeat )
+            outFeat.setAttributeMap(atMap)
+            outFeat.addAttribute(len(vprovider.fields()), QVariant(result))
+            writer.addFeature(outFeat)
         del writer
 
 

@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -33,12 +30,9 @@ from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteLog import SextanteLog
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterString import ParameterString
-
 from sextante.outputs.OutputVector import OutputVector
-
 from sextante.algs.ftools import FToolsUtils as utils
 
 
@@ -68,8 +62,6 @@ class PointsInPolygon(GeoAlgorithm):
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
 
-        output = self.getOutputValue(self.OUTPUT)
-
         polyProvider = polyLayer.dataProvider()
         pointProvider = pointLayer.dataProvider()
         if polyProvider.crs() != pointProvider.crs():
@@ -81,7 +73,7 @@ class PointsInPolygon(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                      polyProvider.geometryType(), polyProvider.crs())
 
-        spatialIndex = utils.createSpatialIndex(pointProvider)
+        spatialIndex = utils.createSpatialIndex(pointLayer)
 
         pointProvider.rewind()
         pointProvider.select()
@@ -95,10 +87,11 @@ class PointsInPolygon(GeoAlgorithm):
         geom = QgsGeometry()
 
         current = 0
-        total = 100.0 / float(polyProvider.featureCount())
         hasIntersections = False
 
-        while polyLayer.nextFeature(ftPoly):
+        features = QGisLayers.features(polyLayer)
+        total = 100.0 / float(len(features))
+        for ftPoly in features:         
             geom = ftPoly.geometry()
             atMap = ftPoly.attributeMap()
 

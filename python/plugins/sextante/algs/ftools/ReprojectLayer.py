@@ -23,20 +23,14 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.SextanteLog import SextanteLog
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterCrs import ParameterCrs
-
 from sextante.outputs.OutputVector import OutputVector
 
 class ReprojectLayer(GeoAlgorithm):
@@ -64,22 +58,19 @@ class ReprojectLayer(GeoAlgorithm):
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem(int(crsId))
 
-        output = self.getOutputValue(self.OUTPUT)
-
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), targetCrs)
 
         layer.select(layer.pendingAllAttributesList())
 
-        current = 0
-        total = 100.0 / float(layer.featureCount())
-
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
-
-        f = QgsFeature()
+        
         outFeat = QgsFeature()
-        while layer.nextFeature(f):
+        current = 0
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for f in features: 
             geom = f.geometry()
             geom.transform(crsTransform)
             outFeat.setGeometry(geom)

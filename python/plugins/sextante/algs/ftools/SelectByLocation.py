@@ -81,7 +81,7 @@ class SelectByLocation(GeoAlgorithm):
         inputProvider = inputLayer.dataProvider()
         selectProvider = selectLayer.dataProvider()
 
-        index = utils.createSpatialIndex(inputProvider)
+        index = utils.createSpatialIndex(inputLayer)
 
         inputProvider.select()
         selectProvider.select()

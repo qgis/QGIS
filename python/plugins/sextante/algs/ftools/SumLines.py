@@ -70,8 +70,6 @@ class SumLines(GeoAlgorithm):
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
-        output = self.getOutputValue(self.OUTPUT)
-
         polyProvider = polyLayer.dataProvider()
         lineProvider = lineLayer.dataProvider()
         if polyProvider.crs() != lineProvider.crs():
@@ -84,7 +82,7 @@ class SumLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                      polyProvider.geometryType(), polyProvider.crs())
 
-        spatialIndex = utils.createSpatialIndex(lineProvider)
+        spatialIndex = utils.createSpatialIndex(lineLayer)
 
         lineProvider.rewind()
         lineProvider.select()
@@ -100,10 +98,10 @@ class SumLines(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         current = 0
-        total = 100.0 / float(polyProvider.featureCount())
-        hasIntersections = False
-
-        while polyLayer.nextFeature(ftPoly):
+        features = QGisLayers.features(polyLayer)
+        total = 100.0 / float(len(features))
+        hasIntersections = False        
+        for ftPoly in features:
             inGeom = QgsGeometry(ftPoly.geometry())
             atMap = ftPoly.attributeMap()
             count = 0

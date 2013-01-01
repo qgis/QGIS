@@ -185,6 +185,7 @@ class Features():
     def __init__(self, layer):
         self.layer = layer
         self.selection = False;
+        self.layer.dataProvider().rewind()
         if SextanteConfig.getSetting(SextanteConfig.USE_SELECTED):
             self.selected = layer.selectedFeatures()
             if len(self.selected) > 0:

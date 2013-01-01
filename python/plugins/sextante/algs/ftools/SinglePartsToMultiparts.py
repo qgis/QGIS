@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -81,15 +78,17 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         unique = layer.uniqueValues(index)
 
         current = 0
-        total = 100.0 / float(provider.featureCount() * len(unique))
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features) * len(unique))
 
         if not len(unique) == layer.featureCount():
             for i in unique:
-                provider.rewind()
+                #provider.rewind()
                 multi_feature= []
                 first = True
                 layer.select(allAttrs)
-                while layer.nextFeature(inFeat):
+                features = QGisLayers.features(layer)
+                for inFeat in features:
                     atMap = inFeat.attributeMap()
                     idVar = atMap[index]
                     if idVar.toString().trimmed() == i.toString().trimmed():

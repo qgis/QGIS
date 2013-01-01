@@ -23,9 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -57,7 +55,6 @@ class PolygonsToLines(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        output = self.getOutputValue(self.OUTPUT)
 
         provider = layer.dataProvider()
         layer.select(layer.pendingAllAttributesList())
@@ -71,19 +68,16 @@ class PolygonsToLines(GeoAlgorithm):
         outGeom = QgsGeometry()
 
         current = 0
-        total = 100.0 / float(provider.featureCount())
-
-        while layer.nextFeature(inFeat):
-            multi = False
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for inFeat in features:  
             inGeom = inFeat.geometry()
-            if inGeom.isMultipart():
-                multi = True
             atMap = inFeat.attributeMap()
             lineList = self.extractAsLine(inGeom)
             outFeat.setAttributeMap(atMap)
             for h in lineList:
-              outFeat.setGeometry(outGeom.fromPolyline(h))
-              writer.addFeature(outFeat)
+                outFeat.setGeometry(outGeom.fromPolyline(h))
+                writer.addFeature(outFeat)
 
             current += 1
             progress.setPercentage(int(current * total))

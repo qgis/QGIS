@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -68,8 +65,6 @@ class MeanCoords(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
-
-        output = self.getOutputValue(self.OUTPUT)
 
         provider = layer.dataProvider()
         weightIndex = layer.fieldNameIndex(weightField)

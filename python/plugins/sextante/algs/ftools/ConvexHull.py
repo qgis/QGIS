@@ -24,7 +24,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-import os.path
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -44,7 +43,6 @@ class ConvexHull(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
-    USE_SELECTED = "USE_SELECTED"
     METHOD = "METHOD"
     METHODS = ["Create single minimum convex hull", "Create convex hulls based on field"]
 
@@ -53,8 +51,7 @@ class ConvexHull(GeoAlgorithm):
     #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/convex_hull.png")
     #===========================================================================
 
-    def processAlgorithm(self, progress):
-        useSelection = self.getParameterValue(ConvexHull.USE_SELECTED)
+    def processAlgorithm(self, progress):        
         useField = (self.getParameterValue(ConvexHull.METHOD) == 1)
         field = self.getParameterValue(ConvexHull.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
@@ -64,7 +61,7 @@ class ConvexHull(GeoAlgorithm):
         allAttrsA = vproviderA.attributeIndexes()
         vproviderA.select(allAttrsA)
         fields = { 0 : QgsField("ID", QVariant.Int),
-                    1 : QgsField("Area",  QVariant.Double),
+                    1 : QgsField("Area", QVariant.Double),
                     2 : QgsField("Perim", QVariant.Double) }
         writer = self.getOutputFromName(ConvexHull.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vproviderA.crs())
         inFeat = QgsFeature()
@@ -73,112 +70,62 @@ class ConvexHull(GeoAlgorithm):
         outGeom = QgsGeometry()
         nElement = 0
         index = vproviderA.fieldNameIndex(field)
-        # there is selection in input layer
-        if useSelection:
-          nFeat = vlayerA.selectedFeatureCount()
-          selectionA = vlayerA.selectedFeatures()
-          if useField:
-            unique = ftools_utils.getUniqueValues( vproviderA, index )
-            nFeat = nFeat * len( unique )
-            for i in unique:
-              hull = []
-              first = True
-              outID = 0
-              for inFeat in selectionA:
-                atMap = inFeat.attributeMap()
-                idVar = atMap[ index ]
-                if idVar.toString().trimmed() == i.toString().trimmed():
-                  if first:
-                    outID = idVar
-                    first = False
-                  inGeom = QgsGeometry( inFeat.geometry() )
-                  points = ftools_utils.extractPoints( inGeom )
-                  hull.extend( points )
-                nElement += 1
-                progress.setPercentage(int(nElement/nFeat * 100))
-              if len( hull ) >= 3:
-                tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
-                try:
-                  outGeom = tmpGeom.convexHull()
-                  outFeat.setGeometry( outGeom )
-                  (area, perim) = self.simpleMeasure( outGeom )
-                  outFeat.addAttribute( 0, QVariant( outID ) )
-                  outFeat.addAttribute( 1, QVariant( area ) )
-                  outFeat.addAttribute( 2, QVariant( perim ) )
-                  writer.addFeature( outFeat )
-                except:
-                  GEOS_EXCEPT = False
-                  continue
-          else:
+        
+        features = QGisLayers.features(vlayerA)
+        nFeat = len(features)    
+
+        if useField:
+          unique = ftools_utils.getUniqueValues(vproviderA, index)
+          nFeat = nFeat * len(unique)
+          for i in unique:
             hull = []
-            for inFeat in selectionA:
-              inGeom = QgsGeometry( inFeat.geometry() )
-              points = ftools_utils.extractPoints( inGeom )
-              hull.extend( points )
-              nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-            tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
-            try:
-              outGeom = tmpGeom.convexHull()
-              outFeat.setGeometry( outGeom )
-              writer.addFeature( outFeat )
-            except:
-              GEOS_EXCEPT = False
-        # there is no selection in input layer
-        else:
-          rect = vlayerA.extent()
-          nFeat = vproviderA.featureCount()
-          if useField:
-            unique = ftools_utils.getUniqueValues( vproviderA, index )
-            nFeat = nFeat * len( unique )
-            for i in unique:
-              hull = []
-              first = True
-              outID = 0
-              vproviderA.select( allAttrsA )#, rect )
-              #vproviderA.rewind()
-              while vproviderA.nextFeature( inFeat ):
-                atMap = inFeat.attributeMap()
-                idVar = atMap[ index ]
-                if idVar.toString().trimmed() == i.toString().trimmed():
-                  if first:
-                    outID = idVar
-                    first = False
-                  inGeom = QgsGeometry( inFeat.geometry() )
-                  points = ftools_utils.extractPoints( inGeom )
-                  hull.extend( points )
-                nElement += 1
-                progress.setPercentage(int(nElement/nFeat * 100))
-              if len( hull ) >= 3:
-                tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
-                try:
-                  outGeom = tmpGeom.convexHull()
-                  outFeat.setGeometry( outGeom )
-                  (area, perim) = self.simpleMeasure( outGeom )
-                  outFeat.addAttribute( 0, QVariant( outID ) )
-                  outFeat.addAttribute( 1, QVariant( area ) )
-                  outFeat.addAttribute( 2, QVariant( perim ) )
-                  writer.addFeature( outFeat )
-                except:
-                  GEOS_EXCEPT = False
-                  continue
-          else:
-            hull = []
-            #vproviderA.rewind()
+            first = True
+            outID = 0
             vproviderA.select(allAttrsA)
-            while vproviderA.nextFeature( inFeat ):
-              inGeom = QgsGeometry( inFeat.geometry() )
-              points = ftools_utils.extractPoints( inGeom )
-              hull.extend( points )
+            features = QGisLayers.features(vlayerA)
+            for inFeat in features:            
+              atMap = inFeat.attributeMap()
+              idVar = atMap[ index ]
+              if idVar.toString().trimmed() == i.toString().trimmed():
+                if first:
+                  outID = idVar
+                  first = False
+                inGeom = QgsGeometry(inFeat.geometry()) 
+                points = ftools_utils.extractPoints(inGeom)
+                hull.extend(points)
               nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-            tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
-            try:
-              outGeom = tmpGeom.convexHull()
-              outFeat.setGeometry( outGeom )
-              writer.addFeature( outFeat )
-            except:
-              GEOS_EXCEPT = False
+              progress.setPercentage(int(nElement / nFeat * 100))
+            if len(hull) >= 3:
+              tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
+              try:
+                outGeom = tmpGeom.convexHull()
+                outFeat.setGeometry(outGeom)
+                (area, perim) = self.simpleMeasure(outGeom)
+                outFeat.addAttribute(0, QVariant(outID))
+                outFeat.addAttribute(1, QVariant(area))
+                outFeat.addAttribute(2, QVariant(perim))
+                writer.addFeature(outFeat)
+              except:
+                GEOS_EXCEPT = False
+                continue
+        else:
+          hull = []          
+          vproviderA.select(allAttrsA)
+          features = QGisLayers.features(vlayerA)
+          for inFeat in features:          
+            inGeom = QgsGeometry(inFeat.geometry())
+            points = ftools_utils.extractPoints(inGeom)
+            hull.extend(points)
+            nElement += 1
+            progress.setPercentage(int(nElement / nFeat * 100))
+          tmpGeom = QgsGeometry(outGeom.fromMultiPoint(hull))
+          try:
+            outGeom = tmpGeom.convexHull()
+            outFeat.setGeometry(outGeom)
+            writer.addFeature(outFeat)
+          except:
+            GEOS_EXCEPT = False
+        
         del writer
 
         if not GEOS_EXCEPT:
@@ -186,26 +133,26 @@ class ConvexHull(GeoAlgorithm):
         if not FEATURE_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing convex hull")
 
-    def simpleMeasure(self, inGeom ):
+    def simpleMeasure(self, inGeom):
         measure = QgsDistanceArea()
         attr1 = measure.measure(inGeom)
         if inGeom.type() == QGis.Polygon:
-          attr2 = self.perimMeasure( inGeom, measure )
+          attr2 = self.perimMeasure(inGeom, measure)
         else:
           attr2 = attr1
-        return ( attr1, attr2 )
+        return (attr1, attr2)
 
-    def perimMeasure(self, inGeom, measure ):
+    def perimMeasure(self, inGeom, measure):
         value = 0.00
         if inGeom.isMultipart():
           poly = inGeom.asMultiPolygon()
           for k in poly:
             for j in k:
-              value = value + measure.measureLine( j )
+              value = value + measure.measureLine(j)
         else:
           poly = inGeom.asPolygon()
           for k in poly:
-            value = value + measure.measureLine( k )
+            value = value + measure.measureLine(k)
         return value
     
     def defineCharacteristics(self):
@@ -213,7 +160,6 @@ class ConvexHull(GeoAlgorithm):
         self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(ConvexHull.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterTableField(ConvexHull.FIELD, "Field", ConvexHull.INPUT))
-        self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))
-        self.addParameter(ParameterBoolean(ConvexHull.USE_SELECTED, "Use selected features", False))
+        self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))        
         self.addOutput(OutputVector(ConvexHull.OUTPUT, "Convex hull"))
     #=========================================================

@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -57,7 +54,6 @@ class MultipartToSingleparts(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        output = self.getOutputValue(self.OUTPUT)
 
         provider = layer.dataProvider()
         layer.select(layer.pendingAllAttributesList())
@@ -66,15 +62,14 @@ class MultipartToSingleparts(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      geomType, provider.crs())
-
-        inFeat = QgsFeature()
+        
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
         current = 0
-        total = 100.0 / float(provider.featureCount())
-
-        while layer.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
+        for inFeat in features:         
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
 
