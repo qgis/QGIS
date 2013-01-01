@@ -207,7 +207,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
         renderer = self.plugin.canvas.mapRenderer()
         if renderer.hasCrsTransformEnabled():
-          self.coordXform = QgsCoordinateTransform(renderer.destinationSrs(), QgsCoordinateReferenceSystem(4326))
+          self.coordXform = QgsCoordinateTransform(renderer.destinationCrs(), QgsCoordinateReferenceSystem(4326))
         else:
           self.coordXform = None
 
