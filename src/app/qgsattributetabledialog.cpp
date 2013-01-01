@@ -107,9 +107,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
 
+  mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
+  mToggleEditingButton->blockSignals( false );
 
   mSaveEditsButton->setEnabled( canChangeAttributes && mLayer->isEditable() );
   mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
@@ -120,7 +122,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAddFeature->setHidden( !canAddFeatures || mLayer->geometryType() != QGis::NoGeometry );
 
   // info from table to application
-  connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
 
   // info from layer to table
@@ -665,7 +666,13 @@ void QgsAttributeTableDialog::on_mAdvancedSearchButton_clicked()
 
 void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()
 {
-  emit editingToggled( mLayer );
+  if ( !mLayer )
+    return;
+  if ( !QgisApp::instance()->toggleEditing( mLayer ) )
+  {
+    // restore gui state if toggling was canceled or layer commit/rollback failed
+    editingToggled();
+  }
 }
 
 void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
