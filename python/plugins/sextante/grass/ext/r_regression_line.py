@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    v_info.py
+    r_regression_line.py
     ---------------------
     Date                 : December 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -26,11 +26,11 @@ def postProcessResults(alg):
     htmlFile = alg.getOutputFromName('html').value   
     found = False
     f = open(htmlFile, "w")
-    f.write("<h2>v.info</h2>\n")                        
+    f.write("<h2>r.regresion.line</h2>\n")                        
     for line in alg.consoleOutput:
         if found and not line.strip().endswith('exit'):
             f.write(line + "<br>\n")
-        if 'v.info' in line:
+        if 'r.regression.line' in line:
             found = True        
     f.close()
     

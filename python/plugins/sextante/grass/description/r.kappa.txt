@@ -5,4 +5,4 @@ ParameterRaster|classification|Raster layer containing classification result|Fal
 ParameterRaster|reference|Raster layer containing reference classes|False
 ParameterString|title|Title for error matrix and kappa|ACCURACY ASSESSMENT
 ParameterBoolean|-h|No header in the report|False
-OutputFile|output|output file containing error matrix and kappa
+OutputFile|output|Output file containing error matrix and kappa
