@@ -66,6 +66,13 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( vlayer == NULL )
   {
+    if ( mRubberBand )
+    {
+      mRubberBand->reset( QGis::Polygon );
+      delete mRubberBand;
+      mRubberBand = 0;
+      mDragging = false;
+    }
     return;
   }
 
