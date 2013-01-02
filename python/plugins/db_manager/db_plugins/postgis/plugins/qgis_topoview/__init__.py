@@ -92,20 +92,22 @@ def run(item, action, mainwindow):
         prevRenderFlagState = iface.mapCanvas().renderFlag()
         iface.mapCanvas().setRenderFlag( False )
         try:
-                # NOTE: -1 parent is a request to always add to the root
-                #       See http://hub.qgis.org/issues/6879
-                supergroup = legend.addGroup(u'Topology "%s"' % toponame, False, -1)
+                supergroup = legend.addGroup(u'Topology "%s"' % toponame, False)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(supergroup, False)
 
                 provider = db.dbplugin().providerName()
                 uri = db.uri();
 
                 # FACES
                 group = legend.addGroup(u'Faces', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
 
           # face
                 layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
-                                                                'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
-                                                                'geom', 'face_id', u'geom')
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'geom')
                 layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -114,8 +116,8 @@ def run(item, action, mainwindow):
 
           # face_seed
                 layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
-                                                                'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
-                                                                'geom', 'face_id', u'seed')
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'seed')
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -127,6 +129,8 @@ def run(item, action, mainwindow):
 
                 # NODES
                 group = legend.addGroup(u'Nodes', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
 
           # node
                 uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
@@ -148,15 +152,26 @@ def run(item, action, mainwindow):
 
                 # EDGES
                 group = legend.addGroup(u'Edges', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
 
           # edge
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
                 layer = QgsVectorLayer(uri.uri(), u'geom', provider)
+                registry.addMapLayers([layer])
+                legend.setLayerVisible(layer, False)
+                legend.setLayerExpanded(layer, False)
+                legend.moveLayer(layer, group)
+
+          # directed edge
+                uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+                layer = QgsVectorLayer(uri.uri(), u'directed_geom', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
+
 
           # edge labels
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
