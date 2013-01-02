@@ -120,6 +120,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! @note added in 1.4
     static const QStringList svgPaths();
 
+    //! Returns the system environment variables passed to application.
+    //! @note added in 1.9
+    static const QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
+
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();
 
@@ -253,7 +257,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); };
+    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -277,6 +281,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString ABISYM( mLibexecPath );
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
+    static QMap<QString, QString> ABISYM( mSystemEnvVars );
 
     static QString ABISYM( mConfigPath );
 
