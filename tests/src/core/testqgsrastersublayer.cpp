@@ -126,6 +126,7 @@ void TestQgsRasterSubLayer::subLayersList()
     //QVERIFY( mpRasterLayer->isValid() );
     QStringList expected;
     // Sublayer format: NETCDF:"/path/to/landsat2.nc":Band1
+    //                  NETCDF:"c:/path/to/landsat2.nc":Band1
     // File path is delicate on Windows -> compare only sublayers
     expected << "Band1";
     expected << "Band2";
@@ -133,7 +134,8 @@ void TestQgsRasterSubLayer::subLayersList()
     QStringList sublayers;
     foreach ( QString s, mpRasterLayer->subLayers() )
     {
-      sublayers << s.split( ':' ).value( 2 );
+      qDebug() << "sublayer: " << s;
+      sublayers << s.split( ':' ).last();
     }
     qDebug() << "sublayers: " << sublayers.join( "," );
     mReport += QString( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( "<br>" ) );
