@@ -167,7 +167,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                             try:
                                 found = fidsToEliminate.index(selFid)
                             except ValueError: #selFid is not in fidsToEliminate
-                                # check wether the geometry to eliminate and the other geometry intersect
+                                # check whether the geometry to eliminate and the other geometry intersect
                                 selFeat = QgsFeature()
 
                                 if outLayer.featureAtId(selFid, selFeat, True, False):
@@ -190,7 +190,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                                             mergeWithFid = selFid
                                             mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
 
-                    if mergeWithFid: # a successful candidate
+                    if mergeWithFid != None: # a successful candidate
                         try:
                             geomList = geomsToMerge[mergeWithFid]
                         except KeyError:
