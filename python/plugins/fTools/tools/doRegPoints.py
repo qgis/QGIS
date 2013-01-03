@@ -85,7 +85,7 @@ class Dialog(QDialog, Ui_Dialog):
                 crs = mLayer.crs()
             else:
                 boundBox = QgsRectangle(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
-                crs = self.mapCanvas.mapRenderer().destinationSrs()
+                crs = self.mapCanvas.mapRenderer().destinationCrs()
                 print crs.isValid()
                 if not crs.isValid(): crs = None
             self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), crs)
