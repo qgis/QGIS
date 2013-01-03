@@ -2,6 +2,7 @@ SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
+ADD_SUBDIRECTORY(console)
 
 IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
@@ -150,7 +151,7 @@ ADD_CUSTOM_TARGET(pyutils ALL)
 INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
 
 # stage to output to make available when QGIS is run from build directory
-FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
+FOREACH(pyfile ${PY_FILES})
   ADD_CUSTOM_COMMAND(TARGET pyutils
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}"
@@ -158,8 +159,6 @@ FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
     DEPENDS ${pyfile}
   )
 ENDFOREACH(pyfile)
-
-ADD_SUBDIRECTORY(console)
 
 # Byte-compile staged PyQGIS utilities
 IF(WITH_PY_COMPILE)
