@@ -490,24 +490,24 @@
         <file>themes/default/text.png</file>
         <file>themes/default/histogram.png</file>
         <file>themes/default/pie-chart.png</file>
-        <file>console/iconClassConsole.png</file>
-        <file>console/iconSaveConsole.png</file>
-        <file>console/iconHelpConsole.png</file>
-        <file>console/iconSettingsConsole.png</file>
-        <file>console/iconOpenConsole.png</file>
-        <file>console/iconClearConsole.png</file>
-        <file>console/imgHelpDialog.png</file>
-        <file>console/iconSextanteConsole.png</file>
-        <file>console/iconScriptConsole.png</file>
-        <file>console/iconIfaceConsole.png</file>
-        <file>console/iconQtCoreConsole.png</file>
-        <file>console/iconQtGuiConsole.png</file>
-        <file>console/iconRunConsole.png</file>
-        <file>console/iconAboutConsole.png</file>
-        <file>console/iconCodepadConsole.png</file>
-        <file>console/imgHelpConsole.png</file>
-        <file>console/imgHelpMenu.png</file>
-        <file>console/iconHideToolConsole.png</file>
+        <file>themes/default/console/iconClassConsole.png</file>
+        <file>themes/default/console/iconSaveConsole.png</file>
+        <file>themes/default/console/iconHelpConsole.png</file>
+        <file>themes/default/console/iconSettingsConsole.png</file>
+        <file>themes/default/console/iconOpenConsole.png</file>
+        <file>themes/default/console/iconClearConsole.png</file>
+        <file>themes/default/console/imgHelpDialog.png</file>
+        <file>themes/default/console/iconSextanteConsole.png</file>
+        <file>themes/default/console/iconScriptConsole.png</file>
+        <file>themes/default/console/iconIfaceConsole.png</file>
+        <file>themes/default/console/iconQtCoreConsole.png</file>
+        <file>themes/default/console/iconQtGuiConsole.png</file>
+        <file>themes/default/console/iconRunConsole.png</file>
+        <file>themes/default/console/iconAboutConsole.png</file>
+        <file>themes/default/console/iconCodepadConsole.png</file>
+        <file>themes/default/console/imgHelpConsole.png</file>
+        <file>themes/default/console/imgHelpMenu.png</file>
+        <file>themes/default/console/iconHideToolConsole.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
         <file>flags/sw.png</file>
