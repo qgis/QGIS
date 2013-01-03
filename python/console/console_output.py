@@ -24,6 +24,7 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase,
                         QsciLexerPython)
+from qgis.core import QgsApplication
 import sys
 
 class writeOut:
@@ -162,10 +163,10 @@ class EditorOutput(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QIcon(":/images/console/iconRunConsole.png")
-        iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
-        iconClear = QIcon(":/images/console/iconClearConsole.png")
-        iconHideTool = QIcon(":/images/console/iconHideToolConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconPastebin = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
+        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
                                      "Hide/Show Toolbar",
                                      self.hideToolBar)
