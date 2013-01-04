@@ -203,6 +203,16 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
 
   mCaps.clear();
 
+  //test wfs version
+  QString version = capabilitiesDocument.documentElement().attribute( "version" );
+  if ( version != "1.0.0" && version != "1.0" )
+  {
+    mErrorCode = WFSVersionNotSupported;
+    mErrorMessage = tr( "The WFS server does not support WFS version 1.0" );
+    emit gotCapabilities();
+    return;
+  }
+
   // get the <FeatureType> elements
   QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );
   for ( unsigned int i = 0; i < featureTypeList.length(); ++i )
