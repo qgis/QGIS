@@ -212,7 +212,7 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
   {
     // it does not draw the last world if rectangle width is exactly text width
     double width = textWidthMillimeters( mTitleFont, *titlePart ) + 1;
-    double height = fontAscentMillimeters( mTitleFont );
+    double height = fontAscentMillimeters( mTitleFont ) + fontDescentMillimeters( mTitleFont );
 
     double left = halignement == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
 
