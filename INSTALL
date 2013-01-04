@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Tuesday October 23, 2012
+Friday January 04, 2013
 
 
-Last Updated: Tuesday October 23, 2012
-Last Change : Tuesday October 23, 2012
+Last Updated: Friday January 04, 2013
+Last Change : Friday January 04, 2013
 
 
   1. Introduction
@@ -104,13 +104,14 @@ Required build deps:
 - Sqlite3 >= 3.0.0
 - GDAL/OGR >= 1.4.x
 - Qwt >= 5.0
+- expat >= 1.95
 
 Optional dependencies:
 
 - for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
-- for gps plugin - expat >= 1.95 and gpsbabel
+- for gps plugin - gpsbabel
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
 - for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
@@ -539,7 +540,7 @@ To run QGIS just use this command
   ==========================================
 
 This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also who the binary QGIS packages are made (earlier versions used
+is currently also how the binary QGIS packages are made (earlier versions used
 MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
@@ -608,7 +609,9 @@ Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
 
-=== Setting up the Visual Studio project with CMake ===
+
+    4.1.3. Setting up the Visual Studio project with CMake
+    ======================================================
 
 To start a command prompt with an environment that both has the VC++ and the OSGeo4W
 variables create the following batch file (assuming the above packages were
@@ -633,7 +636,6 @@ installed in the default locations):
   
   @cmd
 
-
 Start the batch file and on the command prompt checkout the QGIS source from
 git to the source directory Quantum-GIS:
 
@@ -642,8 +644,8 @@ git to the source directory Quantum-GIS:
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
-Now run cmake-gui and in the Where is the source code: box, browse to
-the top level QGIS directory.
+Now run cmake-gui (still from cmd) and in the Where is the source code:
+box, browse to the top level QGIS directory.
 
 In the Where to build the binaries: box, browse to the 'build' directory you
 created.
@@ -678,7 +680,7 @@ You will also either need to add all the dependency DLLs to the QGIS install
 directory or add their respective directories to your PATH.
 
 
-    4.1.3. Packaging
+    4.1.4. Packaging
     ================
 
 To create a standalone installer there is a perl script named 'creatensis.pl'
@@ -699,7 +701,7 @@ and 'bzip2') is available at:
   http://cygwin.com
 
 
-    4.1.4. Packaging your own build of QGIS
+    4.1.5. Packaging your own build of QGIS
     =======================================
 
 Assuming you have completed the above packaging step, if you want to include
@@ -719,7 +721,7 @@ After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
 
-    4.1.5. Osgeo4w packaging
+    4.1.6. Osgeo4w packaging
     ========================
 
 The actual packaging process is currently not documented, for now please take a
