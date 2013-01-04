@@ -436,6 +436,7 @@ QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayer
 QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }
 QAction *QgisAppInterface::actionToggleEditing() { return qgis->actionToggleEditing(); }
+QAction *QgisAppInterface::actionSaveActiveLayerEdits() { return qgis->actionSaveActiveLayerEdits(); }
 QAction *QgisAppInterface::actionAllEdits() { return qgis->actionAllEdits(); }
 QAction *QgisAppInterface::actionSaveEdits() { return qgis->actionSaveEdits(); }
 QAction *QgisAppInterface::actionSaveAllEdits() { return qgis->actionSaveAllEdits(); }

@@ -139,6 +139,10 @@ class Dialog( QDialog, Ui_Dialog ):
       baseDir = self.leInputDir.text()
       # look for shapes with specified geometry type
       self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+      if self.inputFiles is None:
+        QMessageBox.warning( self, self.tr( "No shapefiles found" ),
+          self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
+        return
       self.progressFiles.setRange( 0, self.inputFiles.count() )
 
     outFile = QFile( self.outFileName )

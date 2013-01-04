@@ -157,9 +157,14 @@ void QgsSymbolsListWidget::populateSymbols( QStringList names )
       continue;
     }
     QStandardItem* item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText( "" ); //set the text to nothing and show in label when clicked rather
+    item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
+    item->setText( names[i] );
+    item->setToolTip( names[i] );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    // Set font to 10points to show reasonable text
+    QFont itemFont = item->font();
+    itemFont.setPointSize( 10 );
+    item->setFont( itemFont );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
     item->setIcon( icon );

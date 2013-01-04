@@ -283,7 +283,7 @@ void QgsCoordinateReferenceSystem::validate()
 
   // try to validate using custom validation routines
   if ( mCustomSrsValidation )
-    mCustomSrsValidation( this );
+    mCustomSrsValidation( *this );
 
   if ( !mIsValidFlag )
   {

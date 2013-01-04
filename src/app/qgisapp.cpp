@@ -344,12 +344,12 @@ static QgsMessageOutput *messageOutputViewer_()
     return new QgsMessageOutputConsole();
 }
 
-static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
+static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
   QgisApp::instance()->emitCustomSrsValidation( srs );
 }
 
-void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem* srs )
+void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 {
   emit customSrsValidation( srs );
 }
@@ -361,7 +361,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem* srs )
  * - use project's CRS
  * - use predefined global CRS
  */
-void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
+void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
@@ -372,9 +372,10 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
     //it in the ctor of the layer projection selector
 
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
-    mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not specified
+    mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
     if ( authid.isNull() )
       authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
+
     QgsCoordinateReferenceSystem defaultCrs;
     if ( defaultCrs.createFromOgcWmsCrs( authid ) )
     {
@@ -389,7 +390,7 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
       authid = mySelector->selectedAuthId();
-      srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
+      srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
     //QApplication::restoreOverrideCursor();
@@ -402,12 +403,12 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
     authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
     QgsDebugMsg( "Layer srs set from project: " + authid );
     QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to project CRS" ) );
-    srs->createFromOgcWmsCrs( authid );
+    srs.createFromOgcWmsCrs( authid );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
-    srs->createFromOgcWmsCrs( authid );
+    srs.createFromOgcWmsCrs( authid );
     QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ) );
   }
 }
@@ -566,8 +567,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsMessageLog::logMessage( tr( "QGIS starting..." ) );
 
   // set QGIS specific srs validation
-  connect( this, SIGNAL( customSrsValidation( QgsCoordinateReferenceSystem * ) ),
-           this, SLOT( validateSrs( QgsCoordinateReferenceSystem * ) ) );
+  connect( this, SIGNAL( customSrsValidation( QgsCoordinateReferenceSystem& ) ),
+           this, SLOT( validateSrs( QgsCoordinateReferenceSystem& ) ) );
   QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
 
   // set graphical message output
@@ -948,6 +949,7 @@ void QgisApp::createActions()
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
+  connect( mActionSaveLayerEdits, SIGNAL( triggered() ), this, SLOT( saveActiveLayerEdits() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
   connect( mActionSaveAllEdits, SIGNAL( triggered() ), this, SLOT( saveAllEdits() ) );
   connect( mActionRollbackEdits, SIGNAL( triggered() ), this, SLOT( rollbackEdits() ) );
@@ -1091,8 +1093,8 @@ void QgisApp::showPythonDialog()
     return;
 
   bool res = mPythonUtils->runStringUnsafe(
-               "import qgis.console\n"
-               "qgis.console.show_console()\n", false );
+               "import console\n"
+               "console.show_console()\n", false );
 
   if ( !res )
   {
@@ -1656,6 +1658,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( "/mActionProjectProperties.png" ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.png" ) );
+  mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( "console/iconRunConsole.png" ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( "/mActionCheckQgisVersion.png" ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
   mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
@@ -1669,6 +1672,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSponsors->setIcon( QgsApplication::getThemeIcon( "/mActionHelpSponsors.png" ) );
   mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
   mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
+  mActionSaveLayerEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
   mActionAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionAllEdits.svg" ) );
   mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
   mActionSaveAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
@@ -5205,6 +5209,11 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   return res;
 }
 
+void QgisApp::saveActiveLayerEdits()
+{
+  saveEdits( activeLayer() );
+}
+
 void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -5361,6 +5370,20 @@ bool QgisApp::verifyEditsActionDialog( QString act, QString upon )
 
 void QgisApp::updateLayerModifiedActions()
 {
+  bool enableSaveLayerEdits = false;
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( vlayer )
+  {
+    QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    if ( dprovider )
+    {
+      enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
+                               && vlayer->isEditable()
+                               && vlayer->isModified() );
+    }
+  }
+  mActionSaveLayerEdits->setEnabled( enableSaveLayerEdits );
+
   mActionSaveEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
   mActionRollbackEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable( true ) );
   mActionCancelEdits->setEnabled( mMapLegend && mMapLegend->selectedLayersEditable() );
@@ -7020,6 +7043,7 @@ void QgisApp::markDirty()
   // notify the project that there was a change
   QgsProject::instance()->dirty( true );
 }
+
 //changed from layerWasAdded to layersWereAdded in 1.8
 void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 {
@@ -7320,6 +7344,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
+    mActionSaveLayerEdits->setEnabled( false );
     mActionLayerSaveAs->setEnabled( false );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
@@ -7411,6 +7436,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
         mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
+        mActionSaveLayerEdits->setEnabled( canChangeAttributes && vlayer->isEditable() && vlayer->isModified() );
         mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
         updateUndoActions();
       }
@@ -7418,6 +7444,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionToggleEditing->setEnabled( false );
         mActionToggleEditing->setChecked( false );
+        mActionSaveLayerEdits->setEnabled( false );
         mUndoWidget->dockContents()->setEnabled( false );
         mActionUndo->setEnabled( false );
         mActionRedo->setEnabled( false );
@@ -7586,6 +7613,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
+    mActionSaveLayerEdits->setEnabled( false );
     mUndoWidget->dockContents()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );

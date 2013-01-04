@@ -95,6 +95,8 @@ int CPL_STDCALL progressCallback( double dfComplete,
 QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
     : QgsRasterDataProvider( uri )
     , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
 {
   setError( error );
 }
@@ -103,13 +105,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
     , mUpdate( update )
-    , mValid( true )
+    , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
 {
-  QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
-
-  mValid = false;
-  mGdalBaseDataset = 0;
-  mGdalDataset = 0;
+  QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -123,7 +123,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
     return;
   }
 
-  mGdalDataset = NULL;
+  mGdalDataset = 0;
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
@@ -196,7 +196,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QgsDebugMsg( "QgsGdalProvider: deconstructing." );
+  QgsDebugMsg( "entering." );
   if ( mGdalBaseDataset )
   {
     GDALDereferenceDataset( mGdalBaseDataset );
@@ -2414,10 +2414,7 @@ QGISEXTERN QgsGdalProvider * create(
     return new QgsGdalProvider( uri, error );
   }
 
-  QString tmpStr = "create options:";
-  foreach ( QString option, createOptions )
-    tmpStr += " " + option;
-  QgsDebugMsg( tmpStr );
+  QgsDebugMsg( "create options: " + createOptions.join( " " ) );
 
   //create dataset
   CPLErrorReset();
@@ -2427,6 +2424,7 @@ QGISEXTERN QgsGdalProvider * create(
   if ( dataset == NULL )
   {
     QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsDebugMsg( error.summary() );
     return new QgsGdalProvider( uri, error );
   }
 
@@ -2439,17 +2437,25 @@ QGISEXTERN QgsGdalProvider * create(
 
 bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
 {
-  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
-  if ( rasterBand == NULL )
+  if ( !mGdalDataset )
   {
     return false;
   }
-  return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( !rasterBand )
+  {
+    return false;
+  }
+  return GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None;
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 {
-  if ( !mGdalDataset ) return false;
+  if ( !mGdalDataset )
+  {
+    return false;
+  }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
   CPLErrorReset();

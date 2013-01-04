@@ -2305,7 +2305,6 @@ void QgsSymbolLayerV2Utils::saveProperties( QgsStringMap props, QDomDocument& do
   }
 }
 
-// XXX Not used by QgStyleV2 anymore, But renderers use it still
 QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
 {
   // go through symbols one-by-one and load them

@@ -215,7 +215,7 @@ class Dialog(QDialog, Ui_Dialog):
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         if not crs.isValid(): crs = None
         fields = { 0 : QgsField("ID", QVariant.Int) }
         check = QFile(self.shapefileName)

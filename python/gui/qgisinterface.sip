@@ -344,6 +344,8 @@ class QgisInterface : QObject
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionToggleEditing() = 0;
     /** @note added in 1.9 */
+    virtual QAction *actionSaveActiveLayerEdits() = 0;
+    /** @note added in 1.9 */
     virtual QAction *actionAllEdits() = 0;
     /** @note added in 1.9 */
     virtual QAction *actionSaveEdits() = 0;

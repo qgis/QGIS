@@ -42,7 +42,7 @@ typedef void *OGRSpatialReferenceH;
 #endif
 
 class QgsCoordinateReferenceSystem;
-typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem* );
+typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
 
 /** \ingroup core
  * Class for storing a coordinate reference system (CRS)

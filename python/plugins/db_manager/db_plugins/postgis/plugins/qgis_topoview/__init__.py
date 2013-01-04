@@ -92,26 +92,49 @@ def run(item, action, mainwindow):
         prevRenderFlagState = iface.mapCanvas().renderFlag()
         iface.mapCanvas().setRenderFlag( False )
         try:
-                # NOTE: -1 parent is an attempt to always add to the root, but
-                #       it is currently broken: http://hub.qgis.org/issues/6879
-                group = legend.addGroup(u'%s topology' % toponame, False, -1)
+                supergroup = legend.addGroup(u'Topology "%s"' % toponame, False)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(supergroup, False)
 
                 provider = db.dbplugin().providerName()
                 uri = db.uri();
 
+                # FACES
+                group = legend.addGroup(u'Faces', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
+
           # face
                 layer = db.toSqlLayer(u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
-                                                                'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
-                                                                'geom', 'face_id', u'%s.face' % toponame)
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'geom')
                 layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
 
+          # face_seed
+                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
+                                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
+                                       'geom', 'face_id', u'seed')
+                layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
+                registry.addMapLayers([layer])
+                legend.setLayerVisible(layer, False)
+                legend.setLayerExpanded(layer, False)
+                legend.moveLayer(layer, group)
+
+          # TODO: add polygon0, polygon1 and polygon2 ?
+
+
+                # NODES
+                group = legend.addGroup(u'Nodes', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
+
           # node
                 uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.nodes' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'geom', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -120,25 +143,39 @@ def run(item, action, mainwindow):
 
           # node labels
                 uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.node label' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'node_id', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
 
+                # EDGES
+                group = legend.addGroup(u'Edges', False, supergroup)
+                # should not be needed: http://hub.qgis.org/issues/6938
+                legend.setGroupVisible(group, False)
+
           # edge
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.edge' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'geom', provider)
+                registry.addMapLayers([layer])
+                legend.setLayerVisible(layer, False)
+                legend.setLayerExpanded(layer, False)
+                legend.moveLayer(layer, group)
+
+          # directed edge
+                uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
+                layer = QgsVectorLayer(uri.uri(), u'directed_geom', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
 
+
           # edge labels
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.edge label' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'edge_id', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -147,7 +184,7 @@ def run(item, action, mainwindow):
 
           # face_left
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.face_left' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'face_left', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -156,7 +193,7 @@ def run(item, action, mainwindow):
 
           # face_right
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.face_right' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'face_right', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -165,7 +202,7 @@ def run(item, action, mainwindow):
 
           # next_left
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.next_left' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'next_left', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
@@ -174,24 +211,12 @@ def run(item, action, mainwindow):
 
           # next_right
                 uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
-                layer = QgsVectorLayer(uri.uri(), u'%s.next_right' % toponame, provider)
+                layer = QgsVectorLayer(uri.uri(), u'next_right', provider)
                 layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
                 registry.addMapLayers([layer])
                 legend.setLayerVisible(layer, False)
                 legend.setLayerExpanded(layer, False)
                 legend.moveLayer(layer, group)
-
-          # face_seed
-                layer = db.toSqlLayer(u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
-                                                                'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame)),
-                                                                'geom', 'face_id', u'%s.face_seed' % toponame)
-                layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
-                registry.addMapLayers([layer])
-                legend.setLayerVisible(layer, False)
-                legend.setLayerExpanded(layer, False)
-                legend.moveLayer(layer, group)
-
-          # TODO: add polygon0, polygon1 and polygon2 ?
 
         finally:
                 # restore canvas render flag

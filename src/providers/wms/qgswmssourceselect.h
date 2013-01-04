@@ -133,6 +133,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Selected CRS
     QString mCRS;
 
+    //! Default CRS
+    QString mDefaultCRS;
+
     //! Common CRSs for selected layers
     QSet<QString> mCRSs;
 

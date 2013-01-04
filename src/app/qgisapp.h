@@ -291,6 +291,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     /** @note added in 1.9 */
+    QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
+    /** @note added in 1.9 */
     QAction *actionAllEdits() { return mActionAllEdits; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
     /** @note added in 1.9 */
@@ -404,7 +406,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! @note added in 1.6
     void completeInitialization();
 
-    void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void emitCustomSrsValidation( QgsCoordinateReferenceSystem &crs );
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
@@ -438,6 +440,46 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
        in 1.8.
     */
     void removingLayers( QStringList );
+
+    //! starts/stops editing mode of the current layer
+    void toggleEditing();
+
+    //! starts/stops editing mode of a layer
+    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
+
+    /** Save edits for active vector layer and start new transactions
+     * @note added in 1.9 */
+    void saveActiveLayerEdits();
+
+    //! Save edits of a layer
+    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    /** Cancel edits for a layer
+      * @note added in 1.9 */
+    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
+
+    //! Save current edits for selected layer(s) and start new transaction(s)
+    void saveEdits();
+
+    /** Save edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void saveAllEdits( bool verifyAction = true );
+
+    /** Rollback current edits for selected layer(s) and start new transaction(s)
+      * @note added in 1.9 */
+    void rollbackEdits();
+
+    /** Rollback edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void rollbackAllEdits( bool verifyAction = true );
+
+    /** Cancel edits for selected layer(s) and toggle off editing
+      * @note added in 1.9 */
+    void cancelEdits();
+
+    /** Cancel all edits for all layers and toggle off editing
+     * @note added in 1.9 */
+    void cancelAllEdits( bool verifyAction = true );
 
     void updateUndoActions();
 
@@ -533,7 +575,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     //! validate a SRS
-    void validateSrs( QgsCoordinateReferenceSystem *crs );
+    void validateSrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGis Sponsors
     void sponsors();
@@ -786,42 +828,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! refresh map canvas
     void refreshMapCanvas();
 
-    //! starts/stops editing mode of the current layer
-    void toggleEditing();
-
-    //! starts/stops editing mode of a layer
-    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
-
-    //! Save edits of a layer
-    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
-
-    /** Cancel edits for a layer
-      * @note added in 1.9 */
-    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
-
-    //! Save current edits for selected layer(s) and start new transaction(s)
-    void saveEdits();
-
-    /** Save edits for all layers and start new transactions
-     * @note added in 1.9 */
-    void saveAllEdits( bool verifyAction = true );
-
-    /** Rollback current edits for selected layer(s) and start new transaction(s)
-      * @note added in 1.9 */
-    void rollbackEdits();
-
-    /** Rollback edits for all layers and start new transactions
-     * @note added in 1.9 */
-    void rollbackAllEdits( bool verifyAction = true );
-
-    /** Cancel edits for selected layer(s) and toggle off editing
-      * @note added in 1.9 */
-    void cancelEdits();
-
-    /** Cancel all edits for all layers and toggle off editing
-     * @note added in 1.9 */
-    void cancelAllEdits( bool verifyAction = true );
-
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
     bool verifyEditsActionDialog( QString act, QString upon );
@@ -1008,7 +1014,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      @note added in version 1.6*/
     void initializationCompleted();
 
-    void customSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load

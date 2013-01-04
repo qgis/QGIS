@@ -415,6 +415,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
   QgsMapLayer *lyr = layer();
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
+  QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
   QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
   // zoom to layer extent
@@ -468,6 +469,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       {
         theMenu.addAction( toggleEditingAction );
         toggleEditingAction->setChecked( vlayer->isEditable() );
+      }
+      if ( saveLayerEditsAction && vlayer->isModified() )
+      {
+        theMenu.addAction( saveLayerEditsAction );
       }
     }
 

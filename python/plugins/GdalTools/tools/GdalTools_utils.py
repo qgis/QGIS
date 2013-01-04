@@ -164,7 +164,7 @@ class LayerRegistry(QObject):
        self.emit( SIGNAL( "layersChanged" ) )
 
     def removeLayer(self, layerId):
-       LayerRegistry.layers = filter( lambda x: x.getLayerID() != layerId, LayerRegistry.layers)
+       LayerRegistry.layers = filter( lambda x: x.id() != layerId, LayerRegistry.layers)
        self.emit( SIGNAL( "layersChanged" ) )
 
     def removeAllLayers(self):

@@ -183,6 +183,15 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
     mMapCanvas->setCurrentLayer( layer );
   }
 
+  blockSignals( true ); // or itemChanged() emitted
+  foreach ( QgsLegendLayer *ll, legendLayers() )
+  {
+    QFont itemFont = ll->font( 0 );
+    itemFont.setUnderline( ll->layer() == layer );
+    ll->setFont( 0, itemFont );
+  }
+  blockSignals( false );
+
   emit currentLayerChanged( layer );
 }
 
@@ -385,6 +394,10 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
   {
     mMousePressedFlag = true;
     mDropTarget = itemAt( e->pos() );
+    if ( !mDropTarget )
+    {
+      setCurrentItem( 0 );
+    }
   }
   else if ( e->button() == Qt::RightButton )
   {

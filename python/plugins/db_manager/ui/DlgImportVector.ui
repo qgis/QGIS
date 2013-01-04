@@ -189,7 +189,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Append data into table</string>
+         <string>Append data to table</string>
         </property>
        </widget>
       </item>

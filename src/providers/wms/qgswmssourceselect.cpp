@@ -59,6 +59,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mCurrentTileset( 0 )
+    , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
 {
   setupUi( this );
 
@@ -117,7 +118,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
       QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
       if ( currentRefSys.isValid() )
       {
-        mCRS = currentRefSys.authid();
+        mDefaultCRS = mCRS = currentRefSys.authid();
       }
     }
 
@@ -408,6 +409,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   {
     lstLayers->expandItem( lstLayers->topLevelItem( 0 ) );
   }
+
+  on_lstLayers_itemSelectionChanged();
 
   return true;
 }
@@ -741,7 +744,6 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   mCurrentSelection = lstLayers->selectedItems();
   lstLayers->blockSignals( false );
 
-
   // selected layers with styles
   QStringList layers;
   QStringList styles;
@@ -801,7 +803,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == GEO_EPSG_CRS_AUTHID )
+      if ( *it == mDefaultCRS )
         defaultCRS = *it;
     }
 
@@ -813,7 +815,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     }
 
   }
-  else if ( mCRSs.isEmpty() )
+  else if ( layers.isEmpty() || mCRSs.isEmpty() )
   {
     mCRS = "";
     labelCoordRefSys->setText( "" );

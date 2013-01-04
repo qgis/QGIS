@@ -168,7 +168,7 @@ class OsmDatabaseManager:
         key=dbFileName.toLatin1().data()
 
         # remove map layers that belong to dbFileName database
-        if key in self.lineLayers.keys() and layer.id()==self.lineLayers[key].getLayerID():
+        if key in self.lineLayers.keys() and layer.id()==self.lineLayers[key].id():
             del self.lineLayers[key]
 
         elif key in self.pointLayers.keys() and layer.id()==self.pointLayers[key].id():
@@ -176,14 +176,14 @@ class OsmDatabaseManager:
             if key in self.lineLayers.keys():
                 if self.lineLayers[key]:
                     lineLayID=self.lineLayers[key].id()
-                    self.mapReg.removeMapLayer(lineLayID,True)
+                    self.mapReg.removeMapLayers([lineLayID],True)
 
         elif key in self.polygonLayers.keys() and layer.id()==self.polygonLayers[key].id():
             del self.polygonLayers[key]
             if key in self.pointLayers.keys():
                 if self.pointLayers[key]:
                     pointLayID=self.pointLayers[key].id()
-                    self.mapReg.removeMapLayer(pointLayID,True)
+                    self.mapReg.removeMapLayers([pointLayID],True)
 
         if key in self.dbConns.keys():
             del self.dbConns[key]
@@ -202,7 +202,7 @@ class OsmDatabaseManager:
                 continue
 
             if layer.type()==QgsMapLayer.VectorLayer and layer.dataProvider().name()=="osm":
-                QgsMapLayerRegistry.instance().removeMapLayer(layer.id(),True)
+                QgsMapLayerRegistry.instance().removeMapLayers([layer.id()],True)
 
         self.dbConns={}    # map dbFileName->sqlite3ConnectionObject
         self.pointLayers={}
