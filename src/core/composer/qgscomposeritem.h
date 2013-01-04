@@ -213,6 +213,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double fontDescentMillimeters( const QFont& font ) const;
+
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
 
