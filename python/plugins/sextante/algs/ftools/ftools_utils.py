@@ -96,7 +96,7 @@ def writeVectorLayerToShape( vlayer, outputPath, encoding ):
     if not mCodec:
         return False
     #Here we should check that the output path is valid
-    QgsVectorFileWriter.writeAsShapefile( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), False )
+    QgsVectorFileWriter.writeAsVectorFormat( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), "ESRI Shapefile", False )
     return True
 
 # For use with memory provider/layer, converts QGis vector type definition to simple string

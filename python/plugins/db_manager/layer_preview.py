@@ -105,14 +105,14 @@ class LayerPreview(QgsMapCanvas):
       if not vl.isValid():
         self.setLayerSet( [] )
       else:
-        newLayerId = vl.id() if hasattr(vl, 'id') else vl.getLayerID()
+        newLayerId = vl.id() if hasattr(vl, 'id') else vl.id()
         self.setLayerSet( [ QgsMapCanvasLayer(vl) ] )
         QgsMapLayerRegistry.instance().addMapLayers([vl], False)
         self.zoomToFullExtent()
 
     # remove old layer (if any) and set new
     if self.currentLayerId:
-      QgsMapLayerRegistry.instance().removeMapLayer(self.currentLayerId, False)
+      QgsMapLayerRegistry.instance().removeMapLayers([self.currentLayerId], False)
     self.currentLayerId = newLayerId
 
     self.setRenderFlag(True)

@@ -41,8 +41,7 @@ class QgisInterface(QObject):
         self.canvas = canvas
         self.testRaster = QgsRasterLayer('data/raster', "raster")
         self.testVector = QgsVectorLayer('data/vector', "vector", 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.testRaster)
-        QgsMapLayerRegistry.instance().addMapLayer(self.testVector)
+        QgsMapLayerRegistry.instance().addMapLayers([self.testRaster,self.testVector])
 
         self.statusBar = type('FakeStatusBar', (),
         {'showMessage' : lambda _, m: None

@@ -32,7 +32,7 @@ class CrsSelectionDialog(QDialog):
 
     def __init__(self):
         QDialog.__init__(self)
-        self.epsg = None
+        self.authid = None
         layout = QVBoxLayout()
         self.selector = QgsProjectionSelector(self)
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
@@ -44,9 +44,9 @@ class CrsSelectionDialog(QDialog):
         self.connect(buttonBox, SIGNAL("rejected()"), self.cancelPressed)
 
     def okPressed(self):
-        self.epsg = self.selector.selectedEpsg()
+        self.authid = self.selector.selectedAuthId()
         self.close()
 
     def cancelPressed(self):
-        self.epsg = None
+        self.authid = None
         self.close()
