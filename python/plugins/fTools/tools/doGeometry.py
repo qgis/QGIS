@@ -992,7 +992,7 @@ class geometryThread( QThread ):
       if calcType == 2:
         measure.setSourceCrs( crs )
         measure.setEllipsoid( ellips )
-        measure.setProjectionsEnabled( True )
+        measure.setEllipsoidalMode( True )
 
       attr1 = measure.measure( inGeom )
       if inGeom.type() == QGis.Polygon:
@@ -1174,6 +1174,7 @@ class geometryThread( QThread ):
         else:
           index2 = len( fieldKeys ) + 1
         newFields.append( field )
+    # FIXME: addAttributes was deprecated and removed
     vprovider.addAttributes( newFields )
     vlayer.updateFieldMap()
     return ( index1, index2 )

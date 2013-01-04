@@ -109,7 +109,7 @@ class Dialog(QDialog, Ui_Dialog):
                       .arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
               if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer([self.vlayer])
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 

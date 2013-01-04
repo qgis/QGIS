@@ -30,7 +30,7 @@ class CrsSelectionPanel(QtGui.QWidget):
 
     def __init__(self, default):
         super(CrsSelectionPanel, self).__init__(None)
-        self.epsg = default
+        self.authid = default
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -48,12 +48,12 @@ class CrsSelectionPanel(QtGui.QWidget):
     def showSelectionDialog(self):
         dialog = CrsSelectionDialog()
         dialog.exec_()
-        if dialog.epsg:
-            self.epsg = str(dialog.epsg)
+        if dialog.authid:
+            self.authid = str(dialog.authid)
             self.setText()
 
     def setText(self):
-        self.text.setText("EPSG:" + str(self.epsg))
+        self.text.setText(str(self.authid))
 
     def getValue(self):
-        return self.epsg
+        return self.authid
