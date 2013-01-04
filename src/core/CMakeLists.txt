@@ -78,6 +78,7 @@ SET(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
+  qgsnetworkreplyparser.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
@@ -286,6 +287,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprenderer.h
   qgsmessageoutput.h
   qgsmessagelog.h
+  qgsnetworkreplyparser.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -375,6 +377,7 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmessageoutput.h
   qgsmimedatautils.h
+  qgsnetworkreplyparser.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
