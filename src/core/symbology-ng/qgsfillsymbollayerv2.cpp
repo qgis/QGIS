@@ -290,6 +290,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   mOutlineWidth = 0.3;
   mAngle = angle;
   setDefaultSvgParams();
+  mSvgPattern = 0;
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
@@ -300,11 +301,13 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   mAngle = angle;
   setSubSymbol( new QgsLineSymbolV2() );
   setDefaultSvgParams();
+  mSvgPattern = 0;
 }
 
 QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 {
   delete mOutline;
+  delete mSvgPattern;
 }
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
@@ -382,22 +385,52 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
-  int size = context.outputPixelSize( mPatternWidth );
-  const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
-                               context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-  QTransform brushTransform;
-  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  if ( !doubleNear( context.alpha(), 1.0 ) )
+  delete mSvgPattern;
+  mSvgPattern = 0;
+  double size = context.outputPixelSize( mPatternWidth );
+
+  //don't render pattern if symbol size is below one or above 10,000 pixels
+  if (( int )size < 1.0 || 10000.0 < size )
   {
-    QImage transparentImage = patternImage.copy();
-    QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
-    mBrush.setTextureImage( transparentImage );
+    mSvgPattern = new QImage();
+    mBrush.setTextureImage( *mSvgPattern );
   }
   else
   {
-    mBrush.setTextureImage( patternImage );
+    bool fitsInCache = true;
+    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+                                 context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+
+    if ( !fitsInCache )
+    {
+      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+                                    context.renderContext().scaleFactor(), 1.0 );
+      double hwRatio = 1.0;
+      if ( patternPict.width() > 0 )
+      {
+        hwRatio = ( double )patternPict.height() / ( double )patternPict.width();
+      }
+      mSvgPattern = new QImage(( int )size, ( int )( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
+      mSvgPattern->fill( 0 ); // transparent background
+
+      QPainter p( mSvgPattern );
+      p.drawPicture( QPointF( size / 2, size * hwRatio / 2 ), patternPict );
+    }
+
+    QTransform brushTransform;
+    brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
+    if ( !doubleNear( context.alpha(), 1.0 ) )
+    {
+      QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
+      QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+      mBrush.setTextureImage( transparentImage );
+    }
+    else
+    {
+      mBrush.setTextureImage( fitsInCache ? patternImage : *mSvgPattern );
+    }
+    mBrush.setTransform( brushTransform );
   }
-  mBrush.setTransform( brushTransform );
 
   if ( mOutline )
   {

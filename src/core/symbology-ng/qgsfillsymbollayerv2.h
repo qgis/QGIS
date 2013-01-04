@@ -152,6 +152,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QString mSvgFilePath;
     /**SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
+    /** SVG pattern image
+     * @note added in 1.9 */
+    QImage* mSvgPattern;
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory

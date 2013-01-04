@@ -558,7 +558,8 @@ class QgsSvgListModel : public QAbstractListModel
           bool fillParam, outlineParam, outlineWidthParam;
           QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
-          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
+          bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
           pixmap = QPixmap::fromImage( img );
           QPixmapCache::insert( entry, pixmap );
         }

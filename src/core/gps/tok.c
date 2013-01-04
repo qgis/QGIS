@@ -34,6 +34,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
+#include <locale.h>
 
 #define NMEA_TOKS_COMPARE   (1)
 #define NMEA_TOKS_PERCENT   (2)
@@ -86,7 +87,10 @@ double nmea_atof( const char *str, int str_sz )
   {
     memcpy( &buff[0], str, str_sz );
     buff[str_sz] = '\0';
+    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+    setlocale( LC_NUMERIC, "C" );
     res = strtod( &buff[0], &tmp_ptr );
+    setlocale( LC_NUMERIC, oldlocale );
   }
 
   return res;

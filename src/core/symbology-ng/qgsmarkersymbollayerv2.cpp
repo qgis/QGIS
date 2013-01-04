@@ -637,55 +637,79 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     return;
   }
 
+  double size = context.outputLineWidth( mSize );
+  //don't render symbols with size below one or above 10,000 pixels
+  if (( int )size < 1 || 10000.0 < size )
+  {
+    return;
+  }
+
   p->save();
   QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
   if ( mAngle )
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
-  int size = ( int )( context.outputLineWidth( mSize ) );
-  if ( size < 1 ) //don't render symbols with size below one pixel
-  {
-    return;
-  }
-
   bool rotated = !doubleNear( mAngle, 0 );
   bool drawOnScreen = doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 );
   if ( rotated )
     p->rotate( mAngle );
 
+  bool fitsInCache = true;
+  bool usePict = true;
+  double hwRatio = 1.0;
   if ( drawOnScreen && !rotated )
   {
+    usePict = false;
     const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
-                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-    //consider transparency
-    if ( !doubleNear( context.alpha(), 1.0 ) )
+                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+    if ( fitsInCache && img.width() > 1 )
     {
-      QImage transparentImage = img.copy();
-      QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
-      p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
-    }
-    else
-    {
-      p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+      //consider transparency
+      if ( !doubleNear( context.alpha(), 1.0 ) )
+      {
+        QImage transparentImage = img.copy();
+        QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+        p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
+        hwRatio = ( double )transparentImage.height() / ( double )transparentImage.width();
+      }
+      else
+      {
+        p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+        hwRatio = ( double )img.height() / ( double )img.width();
+      }
     }
   }
-  else
+
+  if ( usePict || !fitsInCache )
   {
     p->setOpacity( context.alpha() );
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-    p->drawPicture( 0, 0, pct );
+
+    if ( pct.width() > 1 )
+    {
+      p->drawPicture( 0, 0, pct );
+      hwRatio = ( double )pct.height() / ( double )pct.width();
+    }
   }
 
   if ( context.selected() )
   {
     QPen pen( context.selectionColor() );
-    pen.setWidth( context.outputLineWidth( 1.0 ) );
+    double penWidth = context.outputLineWidth( 1.0 );
+    if ( penWidth > size / 20 )
+    {
+      // keep the pen width from covering symbol
+      penWidth = size / 20;
+    }
+    double penOffset = penWidth / 2;
+    pen.setWidth( penWidth );
     p->setPen( pen );
     p->setBrush( Qt::NoBrush );
-    double sizePixel = context.outputLineWidth( mSize );
-    p->drawRect( QRectF( -sizePixel / 2.0, -sizePixel / 2.0, sizePixel, sizePixel ) );
+    double wSize = size + penOffset;
+    double hSize = size * hwRatio + penOffset;
+    p->drawRect( QRectF( -wSize / 2.0, -hSize / 2.0, wSize, hSize ) );
   }
 
   p->restore();

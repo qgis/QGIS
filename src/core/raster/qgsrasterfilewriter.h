@@ -139,6 +139,7 @@ class CORE_EXPORT QgsRasterFileWriter
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
 
     QString partFileName( int fileIndex );
+    QString vrtFileName();
 
     Mode mMode;
     QString mOutputUrl;

@@ -65,7 +65,7 @@ class QgsWFSCapabilities : public QObject
       QList<FeatureType> featureTypes;
     };
 
-    enum ErrorCode { NoError, NetworkError, XmlError, ServerExceptionError };
+    enum ErrorCode { NoError, NetworkError, XmlError, ServerExceptionError, WFSVersionNotSupported };
     ErrorCode errorCode() { return mErrorCode; }
     QString errorMessage() { return mErrorMessage; }
 

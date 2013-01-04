@@ -24,6 +24,7 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase,
                         QsciLexerPython)
+from qgis.core import QgsApplication
 import sys
 
 class writeOut:
@@ -37,7 +38,9 @@ class writeOut:
 
     def write(self, m):
         if self.style == "traceback":
-            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            # Show errors in red
+            pos = self.outputArea.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
+            self.outputArea.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
             self.outputArea.append(m)
             self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
@@ -162,10 +165,10 @@ class EditorOutput(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QIcon(":/images/console/iconRunConsole.png")
-        iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
-        iconClear = QIcon(":/images/console/iconClearConsole.png")
-        iconHideTool = QIcon(":/images/console/iconHideToolConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconPastebin = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
+        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
                                      "Hide/Show Toolbar",
                                      self.hideToolBar)

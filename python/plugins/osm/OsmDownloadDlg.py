@@ -90,7 +90,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         # check whether the extent needs to be projected back to WGS84
         mapRenderer = plugin.canvas.mapRenderer()
         if mapRenderer.hasCrsTransformEnabled():
-          crsMap=mapRenderer.destinationSrs()
+          crsMap=mapRenderer.destinationCrs()
           crsWgs84=QgsCoordinateReferenceSystem(4326)
           xform=QgsCoordinateTransform(crsMap, crsWgs84)
           currentExtent=xform.transformBoundingBox(currentExtent)
