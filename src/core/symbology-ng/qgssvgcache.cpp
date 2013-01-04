@@ -445,7 +445,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   for ( ; entryIt != entries.end(); ++entryIt )
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
-    if ( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
+    if ( cacheEntry->file == file && doubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->outline == outline &&
          cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor )
     {
       currentEntry = cacheEntry;

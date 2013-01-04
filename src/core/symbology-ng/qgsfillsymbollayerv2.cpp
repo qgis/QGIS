@@ -385,10 +385,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
-  if ( mSvgPattern )
-  {
-    delete mSvgPattern;
-  }
+  delete mSvgPattern;
   mSvgPattern = 0;
   double size = context.outputPixelSize( mPatternWidth );
 
