@@ -127,6 +127,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mRemoveCustomVarBtn_clicked();
 
+    /** Slot to filter out current environment variables not specific to QGIS
+     * @note added in QGIS 1.9
+     */
+    void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
+
     /* Let the user add a path to the list of search paths
      * used for finding user Plugin libs.
      * @note added in QGIS 1.7

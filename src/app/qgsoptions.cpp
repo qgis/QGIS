@@ -121,7 +121,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mCustomVariablesTable->setEnabled( false );
   }
   QStringList customVarsList = settings.value( "qgis/customEnvVars", "" ).toStringList();
-  mCustomVariablesTable->clearContents();
   foreach ( const QString &varStr, customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
@@ -155,7 +154,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mCurrentVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
   QStringList currentVarsList = QProcess::systemEnvironment();
-  mCurrentVariablesTable->clearContents();
 
   foreach ( const QString &varStr, currentVarsList )
   {
@@ -1366,6 +1364,28 @@ void QgsOptions::on_mAddCustomVarBtn_clicked()
 void QgsOptions::on_mRemoveCustomVarBtn_clicked()
 {
   mCustomVariablesTable->removeRow( mCustomVariablesTable->currentRow() );
+}
+
+void QgsOptions::on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
+{
+  for ( int i = mCurrentVariablesTable->rowCount() - 1; i >= 0; --i )
+  {
+    if ( qgisSpecific )
+    {
+      QString itmTxt = mCurrentVariablesTable->item( i, 0 )->text();
+      if ( !itmTxt.startsWith( "QGIS", Qt::CaseInsensitive ) )
+        mCurrentVariablesTable->hideRow( i );
+    }
+    else
+    {
+      mCurrentVariablesTable->showRow( i );
+    }
+  }
+  if ( mCurrentVariablesTable->rowCount() > 0 )
+  {
+    mCurrentVariablesTable->sortByColumn( 0, Qt::AscendingOrder );
+    mCurrentVariablesTable->resizeColumnToContents( 0 );
+  }
 }
 
 void QgsOptions::on_mBtnAddPluginPath_clicked()

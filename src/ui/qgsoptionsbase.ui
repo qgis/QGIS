@@ -1133,6 +1133,13 @@
                    </column>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QCheckBox" name="mCurrentVariablesQGISChxBx">
+                   <property name="text">
+                    <string>Show only QGIS-specific variables</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -1751,7 +1758,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>771</width>
+            <width>554</width>
             <height>717</height>
            </rect>
           </property>
@@ -2111,8 +2118,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>786</width>
-            <height>588</height>
+            <width>307</width>
+            <height>96</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -2192,7 +2199,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>771</width>
+            <width>583</width>
             <height>618</height>
            </rect>
           </property>
@@ -2568,8 +2575,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>786</width>
-            <height>588</height>
+            <width>618</width>
+            <height>417</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2755,8 +2762,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>786</width>
-            <height>588</height>
+            <width>525</width>
+            <height>571</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2852,7 +2859,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>771</width>
+            <width>491</width>
             <height>598</height>
            </rect>
           </property>
@@ -3094,15 +3101,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
