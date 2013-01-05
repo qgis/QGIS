@@ -1010,9 +1010,15 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         }
         else
         {
+          const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( childDef );
+
+          //show attribute alias if available
+          QString myFieldName = vl->attributeDisplayName( fieldDef->idx() );
           QLabel * mypLabel = new QLabel( myContainer );
           gbLayout->addWidget( mypLabel, index, 0 );
-          mypLabel->setText( childDef->name() );
+          mypLabel->setText( myFieldName );
+
+          // add editor widget
           gbLayout->addWidget( editor, index, 1 );
         }
 
