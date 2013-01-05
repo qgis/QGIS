@@ -3970,6 +3970,23 @@ bool QgsVectorLayer::commitChanges()
     }
   }
 
+  // collect new feature ids that weren't deleted again and forget still
+  // pending updates for deleted features
+  QHash<QgsFeatureId, int> addedFeaturesIdx;
+  for ( int i = 0; i < mAddedFeatures.size(); i++ )
+  {
+    const QgsFeature &f = mAddedFeatures.at( i );
+    if ( !mDeletedFeatureIds.remove( f.id() ) )
+    {
+      addedFeaturesIdx.insert( f.id(), i );
+    }
+    else
+    {
+      mChangedAttributeValues.remove( f.id() );
+      mChangedGeometries.remove( f.id() );
+    }
+  }
+
   //
   // remap changed and attributes of added features
   //
@@ -3977,7 +3994,7 @@ bool QgsVectorLayer::commitChanges()
   if ( attributesChanged )
   {
     // map updates field indexes to names
-    QMap<int, QString> src;
+    QHash<int, QString> src;
     for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
     {
       src[ it.key()] = it.value().name();
@@ -3987,7 +4004,7 @@ bool QgsVectorLayer::commitChanges()
     const QgsFieldMap &pFields = mDataProvider->fields();
 
     // map provider table names to field indexes
-    QMap<QString, int> dst;
+    QHash<QString, int> dst;
     for ( QgsFieldMap::const_iterator it = pFields.begin(); it != pFields.end(); it++ )
     {
       dst[ it.value().name()] = it.key();
@@ -4019,8 +4036,8 @@ bool QgsVectorLayer::commitChanges()
     }
 
     // map updated fields to provider fields
-    QMap<int, int> remap;
-    for ( QMap<int, QString>::const_iterator it = src.begin(); it != src.end(); it++ )
+    QHash<int, int> remap;
+    for ( QHash<int, QString>::const_iterator it = src.begin(); it != src.end(); it++ )
     {
       if ( dst.contains( it.value() ) )
       {
@@ -4060,7 +4077,7 @@ bool QgsVectorLayer::commitChanges()
     QgsFieldMap attributes;
 
     // update private field map
-    for ( QMap<int, int>::iterator it = remap.begin(); it != remap.end(); it++ )
+    for ( QHash<int, int>::iterator it = remap.begin(); it != remap.end(); it++ )
       attributes[ it.value()] = mUpdatedFields[ it.key()];
 
     mUpdatedFields = attributes;
@@ -4089,20 +4106,41 @@ bool QgsVectorLayer::commitChanges()
     }
 
     //
+    // delete features
+    //
+    if ( mDeletedFeatureIds.size() > 0 )
+    {
+      if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
+      {
+        mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
+        foreach ( const QgsFeatureId &id, mDeletedFeatureIds )
+        {
+          mChangedAttributeValues.remove( id );
+          mChangedGeometries.remove( id );
+        }
+
+        emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
+
+        mDeletedFeatureIds.clear();
+      }
+      else
+      {
+        mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
+        success = false;
+      }
+    }
+
+    //
     //  add features
     //
     if ( mAddedFeatures.size() > 0 )
     {
-      for ( int i = 0; i < mAddedFeatures.size(); i++ )
+      foreach ( int i, addedFeaturesIdx.values() )
       {
         QgsFeature &f = mAddedFeatures[i];
 
-        if ( mDeletedFeatureIds.contains( f.id() ) )
+        if ( mDeletedFeatureIds.remove( f.id() ) )
         {
-          mDeletedFeatureIds.remove( f.id() );
-
-          if ( mChangedGeometries.contains( f.id() ) )
-            mChangedGeometries.remove( f.id() );
 
           mAddedFeatures.removeAt( i-- );
           continue;
@@ -4170,31 +4208,6 @@ bool QgsVectorLayer::commitChanges()
     else
     {
       mCommitErrors << tr( "ERROR: %n geometries not changed.", "not changed geometries count", mChangedGeometries.size() );
-      success = false;
-    }
-  }
-
-  //
-  // delete features
-  //
-  if ( mDeletedFeatureIds.size() > 0 )
-  {
-    if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
-      for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
-      {
-        mChangedAttributeValues.remove( *it );
-        mChangedGeometries.remove( *it );
-      }
-
-      emit committedFeaturesRemoved( id(), mDeletedFeatureIds );
-
-      mDeletedFeatureIds.clear();
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
       success = false;
     }
   }
