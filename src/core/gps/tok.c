@@ -85,9 +85,10 @@ double nmea_atof( const char *str, int str_sz )
 
   if ( str_sz < NMEA_CONVSTR_BUF )
   {
+    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+
     memcpy( &buff[0], str, str_sz );
     buff[str_sz] = '\0';
-    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
     setlocale( LC_NUMERIC, "C" );
     res = strtod( &buff[0], &tmp_ptr );
     setlocale( LC_NUMERIC, oldlocale );
