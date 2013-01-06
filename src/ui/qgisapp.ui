@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -288,6 +288,7 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionMoveFeature"/>
+   <addaction name="mActionRotateFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -1966,6 +1967,17 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Save Layer Edits</string>
+   </property>
+  </action>
+  <action name="mActionRotateFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rotate Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Feature(s)</string>
    </property>
   </action>
  </widget>

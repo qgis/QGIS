@@ -69,6 +69,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovevertex.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
@@ -226,6 +227,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmovevertex.h
   qgsmaptooloffsetcurve.h
   qgsmaptoolreshape.h
+  qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselectfreehand.h

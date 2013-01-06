@@ -240,6 +240,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionAddFeature() { return mActionAddFeature; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
+    QAction *actionRotateFeature() { return mActionRotateFeature;}
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddPart() { return mActionAddPart; }
@@ -964,6 +965,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void showHideLabels();
     //! Activates the move label tool
     void moveLabel();
+    //! Activates rotate feature tool
+    void rotateFeature();
     //! Activates rotate label tool
     void rotateLabel();
     //! Activates label property tool
@@ -1173,6 +1176,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;
         QgsMapTool* mMoveLabel;
+        QgsMapTool* mRotateFeature;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;
     } mMapTools;

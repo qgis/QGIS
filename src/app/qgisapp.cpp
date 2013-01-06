@@ -226,6 +226,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
+#include "qgsmaptoolrotatefeature.h"
 #include "qgsmaptoolmovevertex.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptoolpan.h"
@@ -747,6 +748,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mPinLabels;
   delete mMapTools.mShowHideLabels;
   delete mMapTools.mMoveLabel;
+  delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
   delete mMapTools.mOffsetCurve;
@@ -883,6 +885,8 @@ void QgisApp::createActions()
   connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
   connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
+  connect( mActionRotateFeature, SIGNAL( triggered() ), this, SLOT( rotateFeature() ) );
+
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
   connect( mActionSplitFeatures, SIGNAL( triggered() ), this, SLOT( splitFeatures() ) );
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
@@ -1142,6 +1146,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureAngle );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionMoveFeature );
+  mMapToolGroup->addAction( mActionRotateFeature );
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   mMapToolGroup->addAction( mActionOffsetCurve );
@@ -1696,6 +1701,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.png" ) );
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ) );
   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.png" ) );
+  //mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
@@ -1885,6 +1891,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mAddFeature->setAction( mActionAddFeature );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
+  mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas);
+  mMapTools.mRotateFeature->setAction(mActionRotateFeature);
   //need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
   ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
@@ -1928,6 +1936,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
   mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
+
   mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
   mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
@@ -4590,6 +4599,11 @@ void QgisApp::showHideLabels()
 void QgisApp::moveLabel()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveLabel );
+}
+
+void QgisApp::rotateFeature()
+{
+  mMapCanvas->setMapTool( mMapTools.mRotateFeature );
 }
 
 void QgisApp::rotateLabel()
@@ -7396,6 +7410,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionFeatureAction->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
@@ -7538,6 +7553,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( true );
         mActionDeletePart->setEnabled( true );
         mActionMoveFeature->setEnabled( true );
+        mActionRotateFeature->setEnabled( true );
         mActionNodeTool->setEnabled( true );
       }
       else
@@ -7545,6 +7561,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( false );
         mActionDeletePart->setEnabled( false );
         mActionMoveFeature->setEnabled( false );
+        mActionRotateFeature->setEnabled( false );
         mActionOffsetCurve->setEnabled( false );
         mActionNodeTool->setEnabled( false );
       }
@@ -7669,6 +7686,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
