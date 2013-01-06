@@ -49,8 +49,6 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
 
     static const int sFeatureQueueSize;
 
-    //! Whether to use mFeatureQueue
-    bool mUseQueue;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H

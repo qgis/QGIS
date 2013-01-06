@@ -32,7 +32,6 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
     , mFeatureQueueSize( sFeatureQueueSize )
-    , mUseQueue( true )
 {
   mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
 
@@ -45,7 +44,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
   else if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
     whereClause = P->whereClause( request.filterFid() );
-    mUseQueue = false; // queue not necessary
   }
 
   if ( !P->mSqlWhereClause.isEmpty() )
@@ -79,12 +77,12 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mClosed )
     return false;
 
+#if 0
+  // featureAtId used to have some special checks - necessary?
   if ( !mUseQueue )
   {
     QgsPostgresResult queryResult = P->mConnectionRO->PQexec( QString( "FETCH FORWARD 1 FROM %1" ).arg( mCursorName ) );
 
-    /*
-    // TODO: really needed?
     int rows = queryResult.PQntuples();
     if ( rows == 0 )
     {
@@ -95,7 +93,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
     else if ( rows != 1 )
     {
       QgsMessageLog::logMessage( tr( "found %1 features instead of just one." ).arg( rows ), tr( "PostGIS" ) );
-    }*/
+    }
 
     bool gotit = getFeature( queryResult, 0, feature );
 
@@ -103,6 +101,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
     feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
     return gotit;
   }
+#endif
 
   if ( mFeatureQueue.empty() )
   {
@@ -141,8 +140,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mFeatureQueue.empty() )
   {
     QgsDebugMsg( QString( "Finished after %1 features" ).arg( mFetched ) );
-    P->mConnectionRO->closeCursor( mCursorName );
-    mClosed = true;
+
     if ( P->mFeaturesCounted < mFetched )
     {
       QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( P->mFeaturesCounted ).arg( mFetched ) );
@@ -179,8 +177,9 @@ bool QgsPostgresFeatureIterator::rewind()
     return false;
 
   // move cursor to first record
-  P->mConnectionRO->PQexecNR( QString( "move 0 in %1" ).arg( mCursorName ) );
+  P->mConnectionRO->PQexecNR( QString( "move absolute 0 in %1" ).arg( mCursorName ) );
   mFeatureQueue.empty();
+  mFetched = 0;
 
   return true;
 }
@@ -197,6 +196,7 @@ bool QgsPostgresFeatureIterator::close()
     mFeatureQueue.dequeue();
   }
 
+  mClosed = true;
   return true;
 }
 
