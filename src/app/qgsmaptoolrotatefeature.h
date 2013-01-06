@@ -61,7 +61,7 @@ class QgsMapToolRotateFeature: public QgsMapToolEdit
     QgsRubberBand* mRubberBand;
 
     /**Id of moved feature*/
-    QgsFeatureIds mMovedFeatures;
+    QgsFeatureIds mRotatedFeatures;
     double mRotation;
 
     QPoint mStPoint;

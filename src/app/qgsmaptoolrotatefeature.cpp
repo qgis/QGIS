@@ -33,6 +33,7 @@
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 )
 {
   mRotation = 0;
+  mAnchorPoint = 0;
 }
 
 QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
@@ -92,7 +93,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
   }
   else
   {
-    mMovedFeatures = vlayer->selectedFeaturesIds();
+    mRotatedFeatures = vlayer->selectedFeaturesIds();
 
     mRubberBand = createRubberBand();
     for ( int i = 0; i < vlayer->selectedFeatureCount(); i++ )
@@ -143,7 +144,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
   }
 
   int i = 0;
-  foreach ( QgsFeatureId id, mMovedFeatures )
+  foreach ( QgsFeatureId id, mRotatedFeatures )
   {
     QgsFeature feat;
     vlayer->featureAtId( id, feat );
