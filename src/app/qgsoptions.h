@@ -51,6 +51,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QString theme();
 
   public slots:
+    /** Slot to update whether list widget has a scrollbar
+     * @note added in QGIS 1.9
+     */
+    void on_mOptionsSplitter_splitterMoved( int pos, int index );
     void on_cbxProjectDefaultNew_toggled( bool checked );
     void on_pbnProjectDefaultSetCurrent_clicked();
     void on_pbnProjectDefaultReset_clicked();
@@ -189,10 +193,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_pbnExportScales_clicked();
 
-    /** Auto slot executed when the active page in the main widget stack is changed
-     * @note added in 2.0
+    /** Auto slot executed when the active item in the option section list widget is changed
+     * @note added in 1.9
      */
-    void on_tabWidget_currentChanged( int theTab );
+    void on_mOptionsListWidget_currentRowChanged( int theIndx );
 
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
@@ -216,6 +220,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * @note added in QGIS 1.9
      */
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
+
+  protected:
+    void showEvent( QShowEvent * e );
+
 };
 
 #endif // #ifndef QGSOPTIONS_H

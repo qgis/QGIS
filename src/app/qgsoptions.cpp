@@ -703,15 +703,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
   } //default is central point
 
+  // restore window and widget geometry/state
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
+  mOptionsSplitter->restoreState( settings.value( "/Windows/Options/splitState" ).toByteArray() );
+
+  int currentIndx = settings.value( "/Windows/Options/row" ).toInt();
+  mOptionsListWidget->setCurrentRow( currentIndx );
+  mOptionsStackedWidget->setCurrentIndex( currentIndx );
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
-  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
-  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
-  tabWidget->setCurrentIndex( currentTab );
-  on_tabWidget_currentChanged( currentTab );
+  // update option section frame state
+  on_mOptionsListWidget_currentRowChanged( currentIndx );
 }
 
 //! Destructor
@@ -719,7 +723,25 @@ QgsOptions::~QgsOptions()
 {
   QSettings settings;
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
+  settings.setValue( "/Windows/Options/splitState", mOptionsSplitter->saveState() );
+  settings.setValue( "/Windows/Options/row",  mOptionsListWidget->currentRow() );
+}
+
+void QgsOptions::showEvent( QShowEvent * e )
+{
+  Q_UNUSED( e );
+  on_mOptionsSplitter_splitterMoved( 0, 0 );
+}
+
+void QgsOptions::on_mOptionsSplitter_splitterMoved( int pos, int index )
+{
+  Q_UNUSED( pos );
+  Q_UNUSED( index );
+  // when list widget is collapsed, show vert scrollbar to hide text, making view icon-only, like a toolbar
+  // mOptionsListWidget has 32px wide icons with minimum width for widget at 58
+  bool iconOnly = mOptionsListWidget->width() <= 60;
+  mOptionsListWidget->setVerticalScrollBarPolicy( iconOnly ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAsNeeded );
+  mOptionsListWidget->setWordWrap( !iconOnly );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -1479,10 +1501,10 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
-void QgsOptions::on_tabWidget_currentChanged( int theTab )
+void QgsOptions::on_mOptionsListWidget_currentRowChanged( int theIndx )
 {
   // load gdal driver list when gdal tab is first opened
-  if ( theTab == 1 && ! mLoadedGdalDriverList )
+  if ( theIndx == 2 && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
   }
