@@ -25,6 +25,7 @@
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
+#include <QProcess>
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
@@ -50,6 +51,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
+QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
@@ -151,6 +153,19 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+
+  // store system environment variables passed to application, before they are adjusted
+  QMap<QString, QString> systemEnvVarMap;
+  foreach ( const QString &varStr, QProcess::systemEnvironment() )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    systemEnvVarMap.insert( varStrName, varStrValue );
+  }
+  ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user

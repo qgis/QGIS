@@ -569,6 +569,51 @@ int main( int argc, char *argv[] )
 
   QSettings mySettings;
 
+  // custom environment variables
+  QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
+  bool useCustomVars = mySettings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  if ( useCustomVars )
+  {
+    QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
+    if ( !customVarsList.isEmpty() )
+    {
+      foreach ( const QString &varStr, customVarsList )
+      {
+        int pos = varStr.indexOf( QLatin1Char( '|' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarApply = varStr.left( pos );
+        QString varStrNameValue = varStr.mid( pos + 1 );
+        pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarName = varStrNameValue.left( pos );
+        QString envVarValue = varStrNameValue.mid( pos + 1 );
+
+        if ( systemEnvVars.contains( envVarName ) )
+        {
+          if ( envVarApply == "prepend" )
+          {
+            envVarValue += systemEnvVars.value( envVarName );
+          }
+          else if ( envVarApply == "append" )
+          {
+            envVarValue = systemEnvVars.value( envVarName ) + envVarValue;
+          }
+        }
+
+        if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset" )
+        {
+          unsetenv( envVarName.toUtf8().constData() );
+        }
+        else
+        {
+          setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined" ? 0 : 1 );
+        }
+      }
+    }
+  }
+
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
   QString style = mySettings.value( "/qgis/style" ).toString();
