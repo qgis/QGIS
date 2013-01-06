@@ -142,6 +142,7 @@
         <file>themes/default/mActionReshape.png</file>
         <file>themes/default/mActionRollbackAllEdits.svg</file>
         <file>themes/default/mActionRollbackEdits.svg</file>
+        <file>themes/default/mActionRotateFeature.png</file>
         <file>themes/default/mActionRotateLabel.png</file>
         <file>themes/default/mActionRotateLabel.svg</file>
         <file>themes/default/mActionRotatePointSymbols.png</file>

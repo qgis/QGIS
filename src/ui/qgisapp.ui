@@ -1970,15 +1970,19 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Rotate Feature(s)</string>
-   </property>
-   <property name="toolTip">
-    <string>Rotate Feature(s)</string>
-   </property>
+  <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+     </property>
+     <property name="text">
+      <string>Rotate Feature(s)</string>
+     </property>
+     <property name="toolTip">
+      <string>Rotate Feature(s)</string>
+     </property>
   </action>
  </widget>
  <resources>
