@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsmaptoolmovefeature.h  -  map tool for translating features by mouse drag
+    qgsmaptoolrotatefeature.h  -  map tool for rotating features by mouse drag
     ---------------------
-    begin                : Juli 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+    begin                : January 2013
+    copyright            : (C) 2013 by Vinayan Parameswaran
+    email                : vinayan123 at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

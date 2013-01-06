@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsmaptoolrotatefeature.cpp  -  map tool for rotating features by mouse drag
+    ---------------------
+    begin                : January 2012
+    copyright            : (C) 2012 by Vinayan Parameswaran
+    email                : vinayan123 at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsmaptoolrotatefeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -33,7 +48,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
       mAnchorPoint->setCenter(toMapCoordinates(e->pos()));
       mStartPointMapCoords = toMapCoordinates(e->pos());
       mStPoint = e->pos();
-    return;
+      return;
   }
   if ( mRubberBand )
   {
@@ -41,9 +56,11 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
     double YDistance = mStPoint.y() - e->pos().y();
     mRotation = atan2(YDistance, XDistance) * (180/PI);
 
+    mStPoint = toCanvasCoordinates(mStartPointMapCoords);
     double offsetX = mStPoint.x() - mRubberBand->x();
     double offsetY = mStPoint.y() - mRubberBand->y();
-    mRubberBand->setTransform(QTransform().translate(offsetX, offsetY).rotate(mRotation).translate(-1 * offsetX, -1 * offsetY));
+
+    mRubberBand->setTransform(QTransform().translate(offsetX,offsetY).rotate(mRotation).translate(-1 * offsetX, -1 * offsetY));
     mRubberBand->update();
   }
 }
@@ -101,7 +118,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  //calculations for affine transformation..
+  //calculations for affine transformation
   double angle = -1 * mRotation * (PI/180);
   QgsPoint anchorPoint = mStartPointMapCoords;
   double a = cos(angle);
