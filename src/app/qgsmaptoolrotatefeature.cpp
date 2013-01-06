@@ -43,24 +43,26 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
 
 void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 {
-  if( mCtrl == true )
+  if ( mCtrl == true )
   {
-      mAnchorPoint->setCenter(toMapCoordinates(e->pos()));
-      mStartPointMapCoords = toMapCoordinates(e->pos());
-      mStPoint = e->pos();
-      return;
+    mAnchorPoint->setCenter( toMapCoordinates( e->pos() ) );
+    mStartPointMapCoords = toMapCoordinates( e->pos() );
+    mStPoint = e->pos();
+    return;
+
+
   }
   if ( mRubberBand )
   {
     double XDistance = mStPoint.x() - e->pos().x();
     double YDistance = mStPoint.y() - e->pos().y();
-    mRotation = atan2(YDistance, XDistance) * (180/PI);
+    mRotation = atan2( YDistance, XDistance ) * ( 180 / PI );
 
-    mStPoint = toCanvasCoordinates(mStartPointMapCoords);
+    mStPoint = toCanvasCoordinates( mStartPointMapCoords );
     double offsetX = mStPoint.x() - mRubberBand->x();
     double offsetY = mStPoint.y() - mRubberBand->y();
 
-    mRubberBand->setTransform(QTransform().translate(offsetX,offsetY).rotate(mRotation).translate(-1 * offsetX, -1 * offsetY));
+    mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
     mRubberBand->update();
   }
 }
@@ -68,7 +70,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
 {
   mRotation = 0;
-  if( mCtrl == true )
+  if ( mCtrl == true )
   {
     return;
   }
@@ -119,44 +121,44 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
   }
 
   //calculations for affine transformation
-  double angle = -1 * mRotation * (PI/180);
+  double angle = -1 * mRotation * ( PI / 180 );
   QgsPoint anchorPoint = mStartPointMapCoords;
-  double a = cos(angle);
-  double b = -1 * sin(angle);
-  double c = anchorPoint.x() - cos(angle) * anchorPoint.x() + sin(angle) * anchorPoint.y();
-  double d = sin(angle);
-  double ee = cos(angle);
-  double f = anchorPoint.y() - sin(angle) * anchorPoint.x() - cos(angle) * anchorPoint.y();
+  double a = cos( angle );
+  double b = -1 * sin( angle );
+  double c = anchorPoint.x() - cos( angle ) * anchorPoint.x() + sin( angle ) * anchorPoint.y();
+  double d = sin( angle );
+  double ee = cos( angle );
+  double f = anchorPoint.y() - sin( angle ) * anchorPoint.x() - cos( angle ) * anchorPoint.y();
 
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 
   int start;
-  if ( vlayer->geometryType()==2)
+  if ( vlayer->geometryType() == 2 )
   {
-    start=1;
+    start = 1;
   }
   else
   {
-    start=0;
+    start = 0;
   }
 
   int i = 0;
   foreach ( QgsFeatureId id, mMovedFeatures )
   {
     QgsFeature feat;
-    vlayer->featureAtId(id,feat);
+    vlayer->featureAtId( id, feat );
     QgsGeometry* geom = feat.geometry();
     i = start;
 
-    QgsPoint vertex = geom->vertexAt(i);
-    while ( vertex != QgsPoint(0,0))
+    QgsPoint vertex = geom->vertexAt( i );
+    while ( vertex != QgsPoint( 0, 0 ) )
     {
-        double newX = a * vertex.x() + b * vertex.y() + c;
-        double newY = d * vertex.x() + ee * vertex.y() + f;
+      double newX = a * vertex.x() + b * vertex.y() + c;
+      double newY = d * vertex.x() + ee * vertex.y() + f;
 
-        vlayer->moveVertex(newX,newY,id,i);
-        i = i + 1;
-        vertex = geom->vertexAt(i);
+      vlayer->moveVertex( newX, newY, id, i );
+      i = i + 1;
+      vertex = geom->vertexAt( i );
     }
 
   }
@@ -164,7 +166,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
   double anchorX = a * anchorPoint.x() + b * anchorPoint.y() + c;
   double anchorY = d * anchorPoint.x() + ee * anchorPoint.y() + f;
 
-  mAnchorPoint->setCenter(QgsPoint(anchorX,anchorY));
+  mAnchorPoint->setCenter( QgsPoint( anchorX, anchorY ) );
 
   delete mRubberBand;
   mRubberBand = 0;
@@ -192,9 +194,9 @@ void QgsMapToolRotateFeature::resetAnchor()
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
     mStartPointMapCoords = bound.center();
 
-    mAnchorPoint->setCenter(mStartPointMapCoords);
+    mAnchorPoint->setCenter( mStartPointMapCoords );
 
-    mStPoint = toCanvasCoordinates(mStartPointMapCoords);
+    mStPoint = toCanvasCoordinates( mStartPointMapCoords );
   }
 
 }
@@ -205,14 +207,14 @@ void QgsMapToolRotateFeature::keyPressEvent( QKeyEvent* e )
   if ( e->key() == Qt::Key_Control )
   {
     mCtrl = true;
-    mCanvas->viewport()->setMouseTracking(true);
+    mCanvas->viewport()->setMouseTracking( true );
     return;
   }
 
-  if (e->key() == Qt::Key_Escape)
-    {
-      this->resetAnchor();
-    }
+  if ( e->key() == Qt::Key_Escape )
+  {
+    this->resetAnchor();
+  }
 }
 
 void QgsMapToolRotateFeature::keyReleaseEvent( QKeyEvent* e )
@@ -220,7 +222,7 @@ void QgsMapToolRotateFeature::keyReleaseEvent( QKeyEvent* e )
   if ( e->key() == Qt::Key_Control )
   {
     mCtrl = false;
-    mCanvas->viewport()->setMouseTracking(false);
+    mCanvas->viewport()->setMouseTracking( false );
 
     return;
   }
@@ -254,12 +256,12 @@ void QgsMapToolRotateFeature::activate()
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
     mStartPointMapCoords = bound.center();
 
-    mAnchorPoint = new QgsVertexMarker(mCanvas);
+    mAnchorPoint = new QgsVertexMarker( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
-    mAnchorPoint->setCenter(mStartPointMapCoords);
+    mAnchorPoint->setCenter( mStartPointMapCoords );
     mAnchorPoint->acceptTouchEvents();
 
-    mStPoint = toCanvasCoordinates(mStartPointMapCoords);
+    mStPoint = toCanvasCoordinates( mStartPointMapCoords );
     mCtrl = false;
 
     QgsMapTool::activate();
