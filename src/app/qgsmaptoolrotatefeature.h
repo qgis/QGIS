@@ -40,7 +40,6 @@ class QgsMapToolRotateFeature: public QgsMapToolEdit
     void keyReleaseEvent( QKeyEvent* e );
 
 
-
     //! to reset the rotation anchor to selectionbound center
     void resetAnchor();
     //! called when map tool is being deactivated
@@ -49,11 +48,10 @@ class QgsMapToolRotateFeature: public QgsMapToolEdit
     void activate();
 
 
-
   private:
 
-    QgsGeometry rotateGeometry(QgsGeometry geom, QgsPoint point, double angle);
-    QgsPoint rotatePoint(QgsPoint point, double angle);
+    QgsGeometry rotateGeometry( QgsGeometry geom, QgsPoint point, double angle );
+    QgsPoint rotatePoint( QgsPoint point, double angle );
 
     /**Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
