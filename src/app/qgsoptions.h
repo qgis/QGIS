@@ -117,6 +117,21 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     /**Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
+    /** Slot to add a custom environment variable to the app
+     * @note added in QGIS 1.9
+     */
+    void on_mAddCustomVarBtn_clicked();
+
+    /** Slot to remove a custom environment variable from the app
+     * @note added in QGIS 1.9
+     */
+    void on_mRemoveCustomVarBtn_clicked();
+
+    /** Slot to filter out current environment variables not specific to QGIS
+     * @note added in QGIS 1.9
+     */
+    void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
+
     /* Let the user add a path to the list of search paths
      * used for finding user Plugin libs.
      * @note added in QGIS 1.7
@@ -197,6 +212,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
+    /** Generate table row for custom environment variables
+     * @note added in QGIS 1.9
+     */
+    void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
 };
 
 #endif // #ifndef QGSOPTIONS_H
