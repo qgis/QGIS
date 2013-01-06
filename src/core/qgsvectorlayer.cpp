@@ -2513,16 +2513,13 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
         if ( mDataProvider )
         {
-          //use default value where possible (primary key issue), otherwise the value from the original (split) feature
           QgsAttributeMap newAttributes = select_it->attributeMap();
-          QVariant defaultValue;
-          foreach ( int j, newAttributes.keys() )
+
+          // overwrite primary key field with default values
+          foreach ( int idx, pendingPkAttributesList() )
           {
-            defaultValue = mDataProvider->defaultValue( j );
-            if ( !defaultValue.isNull() )
-            {
-              newAttributes.insert( j, defaultValue );
-            }
+	    if( newAttributes.contains( idx ) )
+              newAttributes.insert( idx, mDataProvider->defaultValue( idx ) );
           }
 
           newFeature.setAttributeMap( newAttributes );
@@ -3888,6 +3885,21 @@ const QgsFieldMap &QgsVectorLayer::pendingFields() const
 QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 {
   return mUpdatedFields.keys();
+}
+
+QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
+{
+  QgsAttributeList pkAttributesList;
+
+  foreach ( int idx, mDataProvider->pkAttributeIndexes() )
+  {
+    if ( !mUpdatedFields.contains( idx ) )
+      continue;
+
+    pkAttributesList << idx;
+  }
+
+  return pkAttributesList;
 }
 
 int QgsVectorLayer::pendingFeatureCount()
@@ -5789,6 +5801,18 @@ QString QgsVectorLayer::metadata()
 
     myMetadata += "<tr><td>";
     myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
+    myMetadata += "</td></tr>";
+  }
+
+  QgsAttributeList pkAttrList = pendingPkAttributesList();
+  if ( !pkAttrList.isEmpty() )
+  {
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "Primary key attributes: " );
+    foreach( int idx, pkAttrList )
+    {
+      myMetadata += pendingFields()[ idx ].name() + " ";
+    }
     myMetadata += "</td></tr>";
   }
 

@@ -632,6 +632,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
 
+    /** returns list of attribute making up the primary key
+     * @note added in 2.0
+     */
+    QgsAttributeList pendingPkAttributesList();
+
     /** returns feature count after commit */
     int pendingFeatureCount();
 

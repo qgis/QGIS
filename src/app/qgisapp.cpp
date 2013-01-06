@@ -147,7 +147,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
-#include "qgspastetransformations.h"
+// #include "qgspastetransformations.h"
 #include "qgspluginitem.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
@@ -4964,11 +4964,13 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   QHash<int, int> remap;
   const QgsFieldMap &fields = clipboard()->fields();
+  QgsAttributeList pkAttrList = pasteVectorLayer->pendingPkAttributesList();
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
   {
     int dst = pasteVectorLayer->fieldNameIndex( it->name() );
-    if ( dst < 0 )
+    if ( dst < 0 || pkAttrList.contains( dst ) )
     {
+      // skip primary key attributes
       continue;
     }
     remap.insert( it.key(), dst );
@@ -5064,6 +5066,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
   }
 }
 
+#if 0
 void QgisApp::pasteTransformations()
 {
   QgsPasteTransformations *pt = new QgsPasteTransformations();
@@ -5072,7 +5075,7 @@ void QgisApp::pasteTransformations()
 
   pt->exec();
 }
-
+#endif
 
 void QgisApp::refreshMapCanvas()
 {
