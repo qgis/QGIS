@@ -22,18 +22,51 @@
 #include "qgsapplication.h"
 
 #include <QMessageBox>
+#include <QProgressDialog>
 
 QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
+    , mColumnTypeThread( 0 )
 {
   mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()
 {
+  stop();
+}
+
+void QgsPGConnectionItem::stop()
+{
+  if ( mColumnTypeThread )
+  {
+    mColumnTypeThread->stop();
+    mColumnTypeThread->wait();
+    delete mColumnTypeThread;
+    mColumnTypeThread = 0;
+  }
+}
+
+void QgsPGConnectionItem::refresh()
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  stop();
+
+  foreach ( QgsDataItem *child, mChildren )
+  {
+    deleteChildItem( child );
+  }
+
+  foreach ( QgsDataItem *item, createChildren() )
+  {
+    addChildItem( item, true );
+  }
+
+  QApplication::restoreOverrideCursor();
 }
 
 QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
@@ -41,6 +74,8 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
   QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+
+  mSchemaMap.clear();
 
   mConn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
   if ( !mConn )
@@ -62,7 +97,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return children;
   }
 
-  QgsGeomColumnTypeThread *columnTypeThread = 0;
+  stop();
 
   foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
@@ -76,17 +111,17 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
     if ( QgsPostgresConn::wkbTypeFromPostgis( layerProperty.type ) == QGis::WKBUnknown )
     {
-      if ( !columnTypeThread )
+      if ( !mColumnTypeThread )
       {
         QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), true /* readonly */ );
         if ( conn )
         {
-          columnTypeThread = new QgsGeomColumnTypeThread( conn, true /* use estimated metadata */ );
+          mColumnTypeThread = new QgsGeomColumnTypeThread( conn, true /* use estimated metadata */ );
 
-          connect( columnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
+          connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
                    this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
           connect( this, SIGNAL( addGeometryColumn( QgsPostgresLayerProperty ) ),
-                   columnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
+                   mColumnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
         }
       }
 
@@ -98,8 +133,8 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     schemaItem->addLayer( layerProperty );
   }
 
-  if ( columnTypeThread )
-    columnTypeThread->start();
+  if ( mColumnTypeThread )
+    mColumnTypeThread->start();
 
   return children;
 }
@@ -186,6 +221,11 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   qApp->setOverrideCursor( Qt::WaitCursor );
 
+  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, 0 );
+  progress->setWindowTitle( tr( "Import layer" ) );
+  progress->setWindowModality( Qt::WindowModal );
+  progress->show();
+
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
@@ -207,7 +247,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsDebugMsg( "URI " + uri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "postgres", &srcLayer->crs(), false, &importError );
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "postgres", &srcLayer->crs(), false, &importError, false, 0, progress );
       if ( err == QgsVectorLayerImport::NoError )
         importResults.append( tr( "%1: OK!" ).arg( u.name ) );
       else
@@ -224,6 +264,8 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     delete srcLayer;
   }
+
+  delete progress;
 
   qApp->restoreOverrideCursor();
 
