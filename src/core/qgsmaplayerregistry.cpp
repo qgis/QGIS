@@ -57,6 +57,19 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
   return mMapLayers.value( theLayerId );
 }
 
+QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( QString layerName )
+{
+  QList<QgsMapLayer *> myResultList;
+  foreach ( QgsMapLayer* layer, mMapLayers )
+  {
+    if ( layer->name() == layerName )
+    {
+      myResultList << layer;
+    }
+  }
+  return myResultList;
+}
+
 //introduced in 1.8
 QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   QList<QgsMapLayer *> theMapLayers,
