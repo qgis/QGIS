@@ -51,10 +51,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QString theme();
 
   public slots:
-    /** Slot to update whether list widget has a scrollbar
-     * @note added in QGIS 1.9
-     */
-    void on_mOptionsSplitter_splitterMoved( int pos, int index );
     void on_cbxProjectDefaultNew_toggled( bool checked );
     void on_pbnProjectDefaultSetCurrent_clicked();
     void on_pbnProjectDefaultReset_clicked();
@@ -198,6 +194,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mOptionsListWidget_currentRowChanged( int theIndx );
 
+    /** Slot to update widget of vertical tabs
+     * @note added in QGIS 1.9
+     */
+    void updateVerticalTabs();
+
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
      */
@@ -223,7 +224,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
   protected:
     void showEvent( QShowEvent * e );
-
+    void resizeEvent( QResizeEvent * e );
 };
 
 #endif // #ifndef QGSOPTIONS_H

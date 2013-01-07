@@ -19,9 +19,6 @@
   <property name="windowTitle">
    <string>Options</string>
   </property>
-  <property name="sizeGripEnabled">
-   <bool>true</bool>
-  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -222,14 +219,12 @@
         <widget class="QLabel" name="mOptionsTitleLabel">
          <property name="font">
           <font>
-           <pointsize>-1</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">font-weight:bold;
-font-size: 14px;</string>
+          <string notr="true">font-weight:bold;</string>
          </property>
          <property name="text">
           <string>General</string>

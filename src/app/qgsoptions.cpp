@@ -41,6 +41,7 @@
 #include <QLocale>
 #include <QProcess>
 #include <QToolBar>
+#include <QScrollBar>
 #include <QSize>
 #include <QStyleFactory>
 #include <QMessageBox>
@@ -68,6 +69,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     QDialog( parent, fl )
 {
   setupUi( this );
+
+  connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
 
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -730,17 +733,33 @@ QgsOptions::~QgsOptions()
 void QgsOptions::showEvent( QShowEvent * e )
 {
   Q_UNUSED( e );
-  on_mOptionsSplitter_splitterMoved( 0, 0 );
+  updateVerticalTabs();
 }
 
-void QgsOptions::on_mOptionsSplitter_splitterMoved( int pos, int index )
+void QgsOptions::resizeEvent( QResizeEvent * e )
 {
-  Q_UNUSED( pos );
-  Q_UNUSED( index );
-  // when list widget is collapsed, show vert scrollbar to hide text, making view icon-only, like a toolbar
-  // mOptionsListWidget has 32px wide icons with minimum width for widget at 58
-  bool iconOnly = mOptionsListWidget->width() <= 60;
-  mOptionsListWidget->setVerticalScrollBarPolicy( iconOnly ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAsNeeded );
+  Q_UNUSED( e );
+  if ( mOptionsListWidget->isVisible() )
+    updateVerticalTabs();
+}
+
+void QgsOptions::updateVerticalTabs()
+{
+  // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
+  // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
+  int iconWidth = mOptionsListWidget->iconSize().width();
+  int snapToIconWidth = iconWidth + 32;
+  QList<int> splitSizes = mOptionsSplitter->sizes();
+  bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
+
+  int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
+  mOptionsListWidget->setMinimumWidth( newWidth );
+  if ( iconOnly )
+  {
+    splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
+    splitSizes[0] = newWidth;
+    mOptionsSplitter->setSizes( splitSizes );
+  }
   mOptionsListWidget->setWordWrap( !iconOnly );
 }
 
