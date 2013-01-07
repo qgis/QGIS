@@ -39,7 +39,9 @@
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
+#include <QProcess>
 #include <QToolBar>
+#include <QScrollBar>
 #include <QSize>
 #include <QStyleFactory>
 #include <QMessageBox>
@@ -67,6 +69,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     QDialog( parent, fl )
 {
   setupUi( this );
+
+  connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
 
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -109,6 +113,97 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
   spinBoxIdentifyValue->setMinimum( 0.01 );
   spinBoxIdentifyValue->setValue( identifyValue );
+
+  // custom environment variables
+  bool useCustomVars = settings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  mCustomVariablesChkBx->setChecked( useCustomVars );
+  if ( !useCustomVars )
+  {
+    mAddCustomVarBtn->setEnabled( false );
+    mRemoveCustomVarBtn->setEnabled( false );
+    mCustomVariablesTable->setEnabled( false );
+  }
+  QStringList customVarsList = settings.value( "qgis/customEnvVars", "" ).toStringList();
+  foreach ( const QString &varStr, customVarsList )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '|' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrApply = varStr.left( pos );
+    QString varStrNameValue = varStr.mid( pos + 1 );
+    pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStrNameValue.left( pos );
+    QString varStrValue = varStrNameValue.mid( pos + 1 );
+
+    addCustomEnvVarRow( varStrName, varStrValue, varStrApply );
+  }
+  QFontMetrics fmCustomVar( mCustomVariablesTable->horizontalHeader()->font() );
+  int fmCustomVarH = fmCustomVar.height() + 2;
+  mCustomVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
+
+  mCustomVariablesTable->setColumnWidth( 0, 120 );
+  if ( mCustomVariablesTable->rowCount() > 0 )
+  {
+    mCustomVariablesTable->resizeColumnToContents( 1 );
+  }
+  else
+  {
+    mCustomVariablesTable->setColumnWidth( 1, 120 );
+  }
+
+  // current environment variables
+  mCurrentVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
+  QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
+  QStringList currentVarsList = QProcess::systemEnvironment();
+
+  foreach ( const QString &varStr, currentVarsList )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QStringList varStrItms;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    varStrItms << varStrName << varStrValue;
+
+    // check if different than system variable
+    QString sysVarVal = QString( "" );
+    bool sysVarMissing = !sysVarsMap.contains( varStrName );
+    if ( sysVarMissing )
+      sysVarVal = tr( "not present" );
+
+    if ( !sysVarMissing && sysVarsMap.value( varStrName ) != varStrValue )
+      sysVarVal = sysVarsMap.value( varStrName );
+
+    if ( !sysVarVal.isEmpty() )
+      sysVarVal = tr( "System value: %1" ).arg( sysVarVal );
+
+    int rowCnt = mCurrentVariablesTable->rowCount();
+    mCurrentVariablesTable->insertRow( rowCnt );
+
+    QFont fItm;
+    for ( int i = 0; i < varStrItms.size(); ++i )
+    {
+      QTableWidgetItem* varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
+      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                            | Qt::ItemIsEditable | Qt::ItemIsDragEnabled );
+      fItm = varNameItm->font();
+      if ( !sysVarVal.isEmpty() )
+      {
+        fItm.setBold( true );
+        varNameItm->setFont( fItm );
+        varNameItm->setToolTip( sysVarVal );
+      }
+      mCurrentVariablesTable->setItem( rowCnt, i, varNameItm );
+    }
+    fItm.setBold( true );
+    QFontMetrics fmRow( fItm );
+    mCurrentVariablesTable->setRowHeight( rowCnt, fmRow.height() + 6 );
+  }
+  if ( mCurrentVariablesTable->rowCount() > 0 )
+    mCurrentVariablesTable->resizeColumnToContents( 0 );
 
   //local directories to search when loading c++ plugins
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
@@ -611,15 +706,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
   } //default is central point
 
+  // restore window and widget geometry/state
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
+  mOptionsSplitter->restoreState( settings.value( "/Windows/Options/splitState" ).toByteArray() );
+
+  int currentIndx = settings.value( "/Windows/Options/row" ).toInt();
+  mOptionsListWidget->setCurrentRow( currentIndx );
+  mOptionsStackedWidget->setCurrentIndex( currentIndx );
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
-  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
-  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
-  tabWidget->setCurrentIndex( currentTab );
-  on_tabWidget_currentChanged( currentTab );
+  // update option section frame state
+  on_mOptionsListWidget_currentRowChanged( currentIndx );
 }
 
 //! Destructor
@@ -627,7 +726,41 @@ QgsOptions::~QgsOptions()
 {
   QSettings settings;
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
+  settings.setValue( "/Windows/Options/splitState", mOptionsSplitter->saveState() );
+  settings.setValue( "/Windows/Options/row",  mOptionsListWidget->currentRow() );
+}
+
+void QgsOptions::showEvent( QShowEvent * e )
+{
+  Q_UNUSED( e );
+  updateVerticalTabs();
+}
+
+void QgsOptions::resizeEvent( QResizeEvent * e )
+{
+  Q_UNUSED( e );
+  if ( mOptionsListWidget->isVisible() )
+    updateVerticalTabs();
+}
+
+void QgsOptions::updateVerticalTabs()
+{
+  // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
+  // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
+  int iconWidth = mOptionsListWidget->iconSize().width();
+  int snapToIconWidth = iconWidth + 32;
+  QList<int> splitSizes = mOptionsSplitter->sizes();
+  bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
+
+  int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
+  mOptionsListWidget->setMinimumWidth( newWidth );
+  if ( iconOnly )
+  {
+    splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
+    splitSizes[0] = newWidth;
+    mOptionsSplitter->setSizes( splitSizes );
+  }
+  mOptionsListWidget->setWordWrap( !iconOnly );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -780,6 +913,23 @@ QString QgsOptions::theme()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+
+  // custom environment variables
+  settings.setValue( "qgis/customEnvVarsUse", QVariant( mCustomVariablesChkBx->isChecked() ) );
+  QStringList customVars;
+  for ( int i = 0; i < mCustomVariablesTable->rowCount(); ++i )
+  {
+    if ( mCustomVariablesTable->item( i, 1 )->text().isEmpty() )
+      continue;
+    QComboBox* varApplyCmbBx = qobject_cast<QComboBox*>( mCustomVariablesTable->cellWidget( i, 0 ) );
+    QString customVar = varApplyCmbBx->itemData( varApplyCmbBx->currentIndex() ).toString();
+    customVar += "|";
+    customVar += mCustomVariablesTable->item( i, 1 )->text();
+    customVar += "=";
+    customVar += mCustomVariablesTable->item( i, 2 )->text();
+    customVars << customVar;
+  }
+  settings.setValue( "qgis/customEnvVars", QVariant( customVars ) );
 
   //search directories for user plugins
   QString myPaths;
@@ -1211,6 +1361,74 @@ QStringList QgsOptions::i18nList()
   return myList;
 }
 
+void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString varApply )
+{
+  int rowCnt = mCustomVariablesTable->rowCount();
+  mCustomVariablesTable->insertRow( rowCnt );
+
+  QComboBox* varApplyCmbBx = new QComboBox( this );
+  varApplyCmbBx->addItem( tr( "Overwrite" ), QVariant( "overwrite" ) );
+  varApplyCmbBx->addItem( tr( "If Undefined" ), QVariant( "undefined" ) );
+  varApplyCmbBx->addItem( tr( "Unset" ), QVariant( "unset" ) );
+  varApplyCmbBx->addItem( tr( "Prepend" ), QVariant( "prepend" ) );
+  varApplyCmbBx->addItem( tr( "Append" ), QVariant( "append" ) );
+  varApplyCmbBx->setCurrentIndex( varApply.isEmpty() ? 0 : varApplyCmbBx->findData( QVariant( varApply ) ) );
+
+  QFont cbf = varApplyCmbBx->font();
+  QFontMetrics cbfm = QFontMetrics( cbf );
+  cbf.setPointSize( cbf.pointSize() - 2 );
+  varApplyCmbBx->setFont( cbf );
+  mCustomVariablesTable->setCellWidget( rowCnt, 0, varApplyCmbBx );
+
+  Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                           | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+
+  QTableWidgetItem* varNameItm = new QTableWidgetItem( varName );
+  varNameItm->setFlags( itmFlags );
+  mCustomVariablesTable->setItem( rowCnt, 1, varNameItm );
+
+  QTableWidgetItem* varValueItm = new QTableWidgetItem( varVal );
+  varNameItm->setFlags( itmFlags );
+  mCustomVariablesTable->setItem( rowCnt, 2, varValueItm );
+
+  mCustomVariablesTable->setRowHeight( rowCnt, cbfm.height() + 8 );
+}
+
+void QgsOptions::on_mAddCustomVarBtn_clicked()
+{
+  addCustomEnvVarRow( QString( "" ), QString( "" ) );
+  mCustomVariablesTable->setFocus();
+  mCustomVariablesTable->setCurrentCell( mCustomVariablesTable->rowCount() - 1, 1 );
+  mCustomVariablesTable->edit( mCustomVariablesTable->currentIndex() );
+}
+
+void QgsOptions::on_mRemoveCustomVarBtn_clicked()
+{
+  mCustomVariablesTable->removeRow( mCustomVariablesTable->currentRow() );
+}
+
+void QgsOptions::on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
+{
+  for ( int i = mCurrentVariablesTable->rowCount() - 1; i >= 0; --i )
+  {
+    if ( qgisSpecific )
+    {
+      QString itmTxt = mCurrentVariablesTable->item( i, 0 )->text();
+      if ( !itmTxt.startsWith( "QGIS", Qt::CaseInsensitive ) )
+        mCurrentVariablesTable->hideRow( i );
+    }
+    else
+    {
+      mCurrentVariablesTable->showRow( i );
+    }
+  }
+  if ( mCurrentVariablesTable->rowCount() > 0 )
+  {
+    mCurrentVariablesTable->sortByColumn( 0, Qt::AscendingOrder );
+    mCurrentVariablesTable->resizeColumnToContents( 0 );
+  }
+}
+
 void QgsOptions::on_mBtnAddPluginPath_clicked()
 {
   QString myDir = QFileDialog::getExistingDirectory(
@@ -1302,10 +1520,10 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
-void QgsOptions::on_tabWidget_currentChanged( int theTab )
+void QgsOptions::on_mOptionsListWidget_currentRowChanged( int theIndx )
 {
   // load gdal driver list when gdal tab is first opened
-  if ( theTab == 1 && ! mLoadedGdalDriverList )
+  if ( theIndx == 2 && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
   }

@@ -24,6 +24,12 @@ bool QgsAttributeTableIdColumnPair::operator<( const QgsAttributeTableIdColumnPa
   //QVariant thinks gid is a string!
   QVariant::Type columnType = mItem.type();
 
+  if ( mItem.isNull() )
+    return 1;
+
+  if ( b.mItem.isNull() )
+    return 0;
+
   switch ( columnType )
   {
     case QVariant::Int:

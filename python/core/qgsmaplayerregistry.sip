@@ -22,6 +22,9 @@ class QgsMapLayerRegistry : QObject
     //! Retrieve a pointer to a loaded layer by id
     QgsMapLayer *mapLayer( QString theLayerId );
 
+    //! Retrieve all layers using their name
+    QList<QgsMapLayer *> mapLayersByName( QString layerName );
+
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
     QMap<QString, QgsMapLayer*> & mapLayers();
 

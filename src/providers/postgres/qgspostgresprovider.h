@@ -205,6 +205,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList attributeIndexes();
 
+    QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
+
     /**Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
@@ -445,7 +447,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       long    layerId;
     };
 
-    TopoLayerInfo mTopoLayerInfo; 
+    TopoLayerInfo mTopoLayerInfo;
 
     bool getTopoLayerInfo();
 

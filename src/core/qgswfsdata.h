@@ -35,6 +35,14 @@ class CORE_EXPORT QgsWFSData: public QObject
 {
     Q_OBJECT
   public:
+    /** Constructor.
+       @param uri request uri
+       @param extent the extent of the WFS layer
+       @param features the features of the layer
+       @param idMap
+       @param geometryAttribute
+       @param thematicAttributes
+       @param wkbType */
     QgsWFSData(
       const QString& uri,
       QgsRectangle* extent,
@@ -46,11 +54,7 @@ class CORE_EXPORT QgsWFSData: public QObject
     ~QgsWFSData();
 
     /**Does the Http GET request to the wfs server
-       @param query string (to define the requested typename)
-       @param extent the extent of the WFS layer
-       @param srs the reference system of the layer
-       @param features the features of the layer
-    @return 0 in case of success*/
+       @return 0 in case of success */
     int getWFSData();
 
   private slots:
@@ -108,7 +112,9 @@ class CORE_EXPORT QgsWFSData: public QObject
        @return 0 in case of success*/
     int readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const;
     /**Reads attribute as string
-      @return attribute value or an empty string if no such attribute*/
+       @param attributeName
+       @param attr
+       @return attribute value or an empty string if no such attribute*/
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
     /**Creates a rectangle from a coordinate string.
      @return 0 in case of success*/
