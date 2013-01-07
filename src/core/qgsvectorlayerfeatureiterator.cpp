@@ -108,7 +108,6 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
     return true;
   }
 
-  mClosed = true;
   return false;
 }
 
@@ -137,8 +136,7 @@ bool QgsVectorLayerFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  if ( mRequest.filterType() != QgsFeatureRequest::FilterFid )
-    mProviderIterator.close();
+  mProviderIterator.close();
 
   mClosed = true;
   return true;

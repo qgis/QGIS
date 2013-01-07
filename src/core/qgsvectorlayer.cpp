@@ -180,6 +180,9 @@ QgsVectorLayer::~QgsVectorLayer()
 {
   QgsDebugMsg( "entered." );
 
+  if (!mLayerIterator.isClosed())
+    mLayerIterator.close();
+
   emit layerDeleted();
 
   mValid = false;
@@ -1662,64 +1665,6 @@ void QgsVectorLayer::addJoinedAttributes( QgsFeature& f, bool all )
 
 void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, bool fetchGeometries, bool useIntersect )
 {
-#if 0
-  if ( !mDataProvider )
-    return;
-
-  mFetching        = true;
-  mFetchRect       = rect;
-  mFetchAttributes = attributes;
-  mFetchGeometry   = fetchGeometries;
-  mFetchConsidered = mEditBuffer ? mEditBuffer->mDeletedFeatureIds : QSet<QgsFeatureId>();
-  QgsAttributeList targetJoinFieldList;
-
-  if ( mEditBuffer )
-  {
-    mFetchAddedFeaturesIt = mEditBuffer->mAddedFeatures.begin();
-    mFetchChangedGeomIt = mEditBuffer->mChangedGeometries.begin();
-  }
-
-  //look in the normal features of the provider
-  if ( mFetchAttributes.size() > 0 )
-  {
-    if ( mEditBuffer || mJoinBuffer->containsJoins() )
-    {
-      QgsAttributeList joinFields;
-
-      mJoinBuffer->select( mFetchAttributes, joinFields, mUpdatedFields );
-      QgsAttributeList::const_iterator joinFieldIt = joinFields.constBegin();
-      for ( ; joinFieldIt != joinFields.constEnd(); ++joinFieldIt )
-      {
-        if ( !mFetchAttributes.contains( *joinFieldIt ) )
-        {
-          mFetchAttributes.append( *joinFieldIt );
-        }
-      }
-
-      //detect which fields are from the provider
-      mFetchProvAttributes.clear();
-      const QgsFields& provFields = mDataProvider->fields();
-      for ( QgsAttributeList::iterator it = mFetchAttributes.begin(); it != mFetchAttributes.end(); it++ )
-      {
-        if ( *it < provFields.count() )
-        {
-          mFetchProvAttributes << *it;
-        }
-      }
-
-      mProviderIterator = mDataProvider->select( mFetchProvAttributes, rect, fetchGeometries, useIntersect );
-    }
-    else
-    {
-      mProviderIterator = mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
-    }
-  }
-  else //we don't need any attributes at all
-  {
-    mProviderIterator = mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
-  }
-#endif
-
   QgsFeatureRequest request;
   if ( !rect.isEmpty() )
     request.setFilterRect( rect );
@@ -1730,27 +1675,13 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   if ( attributes != pendingAllAttributesList() )
     request.setSubsetOfAttributes( attributes );
 
+  if (!mLayerIterator.isClosed())
+    mLayerIterator.close();
+
   mLayerIterator = getFeatures( request );
 }
 
 
-#if 0
-void QgsVectorLayer::select( const QgsFeatureRequest& request )
-{
-  mLayerIterator = getFeatures( request );
-
-/*
-  QgsAttributeList attrs;
-  if ( !( request.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
-    attrs = request.subsetOfAttributes();
-  else
-    attrs = pendingAllAttributesList();
-  bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
-  bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
-  select( attrs, request.filterRect(), fetchGeom, exactIntersect );
-*/
-}
-#endif
 
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )

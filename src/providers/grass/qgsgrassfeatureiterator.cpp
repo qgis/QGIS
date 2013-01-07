@@ -209,6 +209,7 @@ bool QgsGrassFeatureIterator::close()
 
   free( mSelection );
 
+  mClosed = true;
   return true;
 }
 

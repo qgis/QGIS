@@ -106,6 +106,8 @@ bool QgsSpatiaLiteFeatureIterator::close()
     sqlite3_finalize( sqliteStatement );
     sqliteStatement = NULL;
   }
+
+  mClosed = true;
   return true;
 }
 

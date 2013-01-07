@@ -62,6 +62,9 @@ bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
+  if ( mClosed )
+    return false;
+
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     return readFid( feature );

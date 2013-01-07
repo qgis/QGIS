@@ -47,6 +47,9 @@ bool QgsMemoryFeatureIterator::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
+  if ( mClosed )
+    return false;
+
   if ( mUsingFeatureIdList )
     return nextFeatureUsingList( feature );
   else
