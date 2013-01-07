@@ -58,8 +58,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mCurrentTileset( 0 )
     , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
+    , mCurrentTileset( 0 )
 {
   setupUi( this );
 

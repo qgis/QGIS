@@ -3330,11 +3330,12 @@ bool QgisApp::addProject( QString projectFile )
 
   if ( ! QgsProject::instance()->read( projectFile ) )
   {
+    QApplication::restoreOverrideCursor();
+
     QMessageBox::critical( this,
                            tr( "Unable to open project" ),
                            QgsProject::instance()->error() );
 
-    QApplication::restoreOverrideCursor();
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
