@@ -752,7 +752,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
   if ( item->data( 0, Qt::UserRole ) == "field" )
   {
-    int idx = *mLayer->dataProvider()->fieldNameMap().find( item->text( 0 ) );
+    int idx = *( mLayer->dataProvider()->fieldNameMap() ).find( item->text( 0 ) );
     widgetDef = new QgsAttributeEditorField( item->text( 0 ), idx, parent );
   }
   else
