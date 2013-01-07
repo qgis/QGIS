@@ -3387,7 +3387,9 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
   }
   else if ( elem.tagName() == "attributeEditorField" )
   {
-    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+    QString name = elem.attribute( "name" );
+    int idx = *( dataProvider()->fieldNameMap() ).find( name );
+    newElement = new QgsAttributeEditorField( name, idx, parent );
   }
 
   return newElement;
