@@ -556,6 +556,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
   int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
   pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //set the default color for canvas background
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
@@ -854,48 +856,6 @@ void QgsOptions::on_pbnTemplateFolderBrowse_pressed( )
 void QgsOptions::on_pbnTemplateFolderReset_pressed( )
 {
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
-}
-
-
-void QgsOptions::on_pbnSelectionColor_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
-#endif
-
-  if ( color.isValid() )
-  {
-    pbnSelectionColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_pbnCanvasColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnCanvasColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_pbnMeasureColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnMeasureColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnMeasureColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_mLineColorToolButton_clicked()
-{
-  QColor color = QColorDialog::getColor( mLineColorToolButton->color(), this );
-  if ( color.isValid() )
-  {
-    mLineColorToolButton->setColor( color );
-  }
 }
 
 void QgsOptions::themeChanged( const QString &newThemeName )

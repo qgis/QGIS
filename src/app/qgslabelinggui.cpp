@@ -48,11 +48,11 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mRefFont = lblFontPreview->font();
   mPreviewSize = 24;
 
-  connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
+  connect( btnTextColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeTextColor( const QColor& ) ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
   connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
-  connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
+  connect( btnBufferColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeBufferColor( const QColor& ) ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mBufferJoinStyleComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
@@ -661,13 +661,9 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mAlwaysShowAttributeComboBox, s, QgsPalLayerSettings::AlwaysShow );
 }
 
-void QgsLabelingGui::changeTextColor()
+void QgsLabelingGui::changeTextColor( const QColor &color )
 {
-  QColor color = QColorDialog::getColor( btnTextColor->color(), this );
-  if ( !color.isValid() )
-    return;
-
-  btnTextColor->setColor( color );
+  Q_UNUSED( color )
   updatePreview();
 }
 
@@ -940,13 +936,9 @@ void QgsLabelingGui::updateUi()
   offlineOptions->setEnabled( offline );
 }
 
-void QgsLabelingGui::changeBufferColor()
+void QgsLabelingGui::changeBufferColor( const QColor &color )
 {
-  QColor color = QColorDialog::getColor( btnBufferColor->color(), this );
-  if ( !color.isValid() )
-    return;
-
-  btnBufferColor->setColor( color );
+  Q_UNUSED( color )
   updatePreview();
 }
 
@@ -1143,13 +1135,8 @@ void QgsLabelingGui::on_mPreviewTextBtn_clicked()
   updatePreview();
 }
 
-void QgsLabelingGui::on_mPreviewBackgroundBtn_clicked()
+void QgsLabelingGui::on_mPreviewBackgroundBtn_colorChanged( const QColor &color )
 {
-  QColor color = QColorDialog::getColor( mPreviewBackgroundBtn->color(), this );
-  if ( !color.isValid() )
-    return;
-
-  mPreviewBackgroundBtn->setColor( color );
   setPreviewBackground( color );
 }
 

@@ -73,16 +73,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void showProjectionsTab();
 
-    /*!
-     * Slot to select the map selection color
-     */
-    void on_pbnSelectionColor_clicked();
-
-    /*!
-     * Slot to select the map selection color
-     */
-    void on_pbnCanvasColor_clicked();
-
     /*! Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones
      * @note added in QGIS 2.0

@@ -109,6 +109,10 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( "Left" ) );
   mValiComboBox->setCurrentIndex( mValiComboBox->findText( "Bottom" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Font color" ) );
+  mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mBufferColorButton->setColorDialogTitle( tr( "Buffer color" ) );
+  mBufferColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   disableGuiElements();
 
@@ -326,32 +330,14 @@ void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
   }
 }
 
-void QgsLabelPropertyDialog::on_mFontColorButton_clicked()
+void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor &color )
 {
-#if QT_VERSION >= 0x040500
-  QColor c = QColorDialog::getColor( mFontColorButton->color(), 0, tr( "Font color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor c = QColorDialog::getColor( mFontColorButton->color() );
-#endif
-  if ( c.isValid() )
-  {
-    mFontColorButton->setColor( c );
-    insertChangedValue( QgsPalLayerSettings::Color, c.name() );
-  }
+  insertChangedValue( QgsPalLayerSettings::Color, color.name() );
 }
 
-void QgsLabelPropertyDialog::on_mBufferColorButton_clicked()
+void QgsLabelPropertyDialog::on_mBufferColorButton_colorChanged( const QColor &color )
 {
-#if QT_VERSION >= 0x040500
-  QColor c = QColorDialog::getColor( mBufferColorButton->color(), 0, tr( "Buffer color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor c = QColorDialog::getColor( mBufferColorButton->color() );
-#endif
-  if ( c.isValid() )
-  {
-    mFontColorButton->setColor( c );
-    insertChangedValue( QgsPalLayerSettings::BufferColor, c.name() );
-  }
+  insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
 }
 
 void QgsLabelPropertyDialog::on_mHaliComboBox_currentIndexChanged( const QString& text )

@@ -435,15 +435,8 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridColorButton_clicked()
+void QgsCompositionWidget::on_mGridColorButton_colorChanged( const QColor &newColor )
 {
-  QColor newColor = QColorDialog::getColor( mGridColorButton->color() );
-  if ( !newColor.isValid() )
-  {
-    return ; //dialog canceled by user
-  }
-  mGridColorButton->setColor( newColor );
-
   if ( mComposition )
   {
     QPen pen = mComposition->gridPen();

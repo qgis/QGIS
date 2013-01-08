@@ -34,8 +34,8 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   setupUi( this );
   QgsDebugMsg( "entered." );
 
-  QObject::connect( btnMinValue, SIGNAL( clicked() ), this, SLOT( selectMinimumColor() ) );
-  QObject::connect( btnMaxValue, SIGNAL( clicked() ), this, SLOT( selectMaximumColor() ) );
+  QObject::connect( btnMinValue, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectMinimumColor( const QColor& ) ) );
+  QObject::connect( btnMaxValue, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectMaximumColor( const QColor& ) ) );
 
   //find out the numerical fields of mVectorLayer
   const QgsFields & fields = mVectorLayer->pendingFields();
@@ -175,23 +175,15 @@ void QgsContinuousColorDialog::apply()
   renderer->setDrawPolygonOutline( drawOutline );
 }
 
-void QgsContinuousColorDialog::selectMinimumColor()
+void QgsContinuousColorDialog::selectMinimumColor( const QColor& color )
 {
-  QColor mincolor = QColorDialog::getColor( btnMinValue->color(), this );
-  if ( mincolor.isValid() )
-  {
-    btnMinValue->setColor( mincolor );
-  }
+  Q_UNUSED( color )
   activateWindow();
 }
 
-void QgsContinuousColorDialog::selectMaximumColor()
+void QgsContinuousColorDialog::selectMaximumColor( const QColor& color )
 {
-  QColor maxcolor = QColorDialog::getColor( btnMaxValue->color(), this );
-  if ( maxcolor.isValid() )
-  {
-    btnMaxValue->setColor( maxcolor );
-  }
+  Q_UNUSED( color )
   activateWindow();
 }
 

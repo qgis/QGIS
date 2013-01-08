@@ -53,7 +53,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
     void on_mOffsetYSpinBox_valueChanged( double d );
-    void on_mGridColorButton_clicked();
+    void on_mGridColorButton_colorChanged( const QColor &newColor );
     void on_mGridStyleComboBox_currentIndexChanged( const QString& text );
     void on_mPenWidthSpinBox_valueChanged( double d );
     void on_mSelectionToleranceSpinBox_valueChanged( double d );

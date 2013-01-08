@@ -44,6 +44,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   setupUi( this );
 
+
+  mBackgroundColorButton->setColorDialogTitle(  tr( "Background color" ) );
+  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mDiagramPenColorButton->setColorDialogTitle( tr( "Pen color" ) );
+  mDiagramPenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
   mValueLineEdit->setValidator( new QDoubleValidator( mValueLineEdit ) );
   mMinimumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMinimumDiagramScaleLineEdit ) );
   mMaximumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMaximumDiagramScaleLineEdit ) );
@@ -386,19 +392,6 @@ void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
   }
 }
 
-void QgsDiagramProperties::on_mBackgroundColorButton_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color(), 0, tr( "Background color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mBackgroundColorButton->setColor( newColor );
-  }
-}
-
 void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
 {
   //get maximum value from provider (ignoring not-commited edits)
@@ -409,19 +402,6 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     {
       mValueLineEdit->setText( provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toString() );
     }
-  }
-}
-
-void QgsDiagramProperties::on_mDiagramPenColorButton_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color(), 0, tr( "Pen color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mDiagramPenColorButton->setColor( newColor );
   }
 }
 
