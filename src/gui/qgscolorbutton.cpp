@@ -31,14 +31,30 @@
   by Qt Designer to do the same thing.
 */
 
-QgsColorButton::QgsColorButton( QWidget *parent )
+QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::ColorDialogOptions cdo )
     : QToolButton( parent )
+    , mColorDialogTitle( cdt )
+    , mColorDialogOptions( cdo )
 {
   setToolButtonStyle( Qt::ToolButtonTextOnly ); // decrease default button height
+  connect( this, SIGNAL( clicked() ), this, SLOT( onButtonClicked() ) );
 }
 
 QgsColorButton::~QgsColorButton()
 {}
+
+void QgsColorButton::onButtonClicked()
+{
+#if QT_VERSION >= 0x040500
+  QColor newColor = QColorDialog::getColor( color(), 0, mColorDialogTitle, mColorDialogOptions );
+#else
+  QColor newColor = QColorDialog::getColor( color() );
+#endif
+  if ( newColor.isValid() )
+  {
+    setColor( newColor );
+  }
+}
 
 /*!
   Paints button in response to a paint event.
@@ -62,10 +78,41 @@ void QgsColorButton::paintEvent( QPaintEvent *e )
 
 void QgsColorButton::setColor( const QColor &color )
 {
+  QColor oldColor = mColor;
+
   mColor = color;
   update();
+
+  if ( oldColor != mColor )
+  {
+    emit( colorChanged( mColor ) );
+  }
 }
 
+QColor QgsColorButton::color() const
+{
+  return mColor;
+}
+
+void QgsColorButton::setColorDialogOptions( QColorDialog::ColorDialogOptions cdo )
+{
+  mColorDialogOptions = cdo;
+}
+
+QColorDialog::ColorDialogOptions QgsColorButton::colorDialogOptions()
+{
+  return mColorDialogOptions;
+}
+
+void QgsColorButton::setColorDialogTitle( QString cdt )
+{
+  mColorDialogTitle = cdt;
+}
+
+QString QgsColorButton::colorDialogTitle()
+{
+  return mColorDialogTitle;
+}
 
 //////////////////
 
