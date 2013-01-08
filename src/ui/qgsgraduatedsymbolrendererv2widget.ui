@@ -45,7 +45,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>

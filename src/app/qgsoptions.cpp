@@ -490,6 +490,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
+
+  mLiveColorDialogsChkBx->setChecked( settings.value( "/qgis/live_color_dialogs", false ).toBool() );
+
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
@@ -1084,6 +1087,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
+
+  settings.setValue( "/qgis/live_color_dialogs", mLiveColorDialogsChkBx->isChecked() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );

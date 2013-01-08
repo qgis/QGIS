@@ -251,6 +251,12 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
     mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
   }
+  else
+  {
+    // default color
+    // TODO: remove after moving to persistent PAL settings?
+    btnBufferColor->setColor( Qt::white );
+  }
 
   bool formattedNumbers = lyr.formatNumbers;
   bool plusSign = lyr.plusSign;
@@ -360,6 +366,7 @@ void QgsLabelingGui::collapseSample( bool collapse )
 void QgsLabelingGui::apply()
 {
   writeSettingsToLayer();
+  QgisApp::instance()->markDirty();
   // trigger refresh
   if ( mMapCanvas )
   {

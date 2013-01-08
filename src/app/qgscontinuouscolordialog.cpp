@@ -178,13 +178,11 @@ void QgsContinuousColorDialog::apply()
 void QgsContinuousColorDialog::selectMinimumColor( const QColor& color )
 {
   Q_UNUSED( color )
-  activateWindow();
 }
 
 void QgsContinuousColorDialog::selectMaximumColor( const QColor& color )
 {
   Q_UNUSED( color )
-  activateWindow();
 }
 
 void QgsContinuousColorDialog::on_cb_polygonOutline_clicked()

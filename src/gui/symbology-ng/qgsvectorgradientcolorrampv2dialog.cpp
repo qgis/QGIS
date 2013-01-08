@@ -17,21 +17,26 @@
 
 #include "qgsvectorcolorrampv2.h"
 #include "qgsdialog.h"
+#include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QPainter>
+#include <QSettings>
 #include <QTableWidget>
 #include <QTextEdit>
 
 QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp )
+    : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
 {
   setupUi( this );
+#ifdef Q_WS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
 
-  connect( btnColor1, SIGNAL( clicked() ), this, SLOT( setColor1() ) );
-  connect( btnColor2, SIGNAL( clicked() ), this, SLOT( setColor2() ) );
+  connect( btnColor1, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor1( const QColor& ) ) );
+  connect( btnColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
 
   // handle stops
   updateStops();
@@ -207,34 +212,14 @@ void QgsVectorGradientColorRampV2Dialog::updatePreview()
   btnColor2->setColor( mRamp->color2() );
 }
 
-void QgsVectorGradientColorRampV2Dialog::setColor1()
+void QgsVectorGradientColorRampV2Dialog::setColor1( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mRamp->color1(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor color = QColorDialog::getColor( mRamp->color1(), this );
-#endif
-  if ( !color.isValid() )
-    return;
   mRamp->setColor1( color );
   updatePreview();
 }
 
-void QgsVectorGradientColorRampV2Dialog::setColor2()
+void QgsVectorGradientColorRampV2Dialog::setColor2( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mRamp->color2(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor color = QColorDialog::getColor( mRamp->color2(), this );
-#endif
-  if ( !color.isValid() )
-    return;
   mRamp->setColor2( color );
   updatePreview();
 }
@@ -252,7 +237,7 @@ void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QC
   p.setPen( Qt::NoPen );
   p.setRenderHint( QPainter::Antialiasing );
   p.setBrush( color );
-  p.drawRoundedRect( rect, 4, 4 );
+  p.drawRoundedRect( rect, 2, 2 );
   p.end();
 
   item->setIcon( 0, QIcon( pixmap ) );
@@ -260,18 +245,32 @@ void QgsVectorGradientColorRampV2Dialog::setStopColor( QTreeWidgetItem* item, QC
   item->setText( 0, color.name() );
 }
 
+void QgsVectorGradientColorRampV2Dialog::setItemStopColor( const QColor& newColor )
+{
+  if ( mCurrentItem )
+  {
+    setStopColor( mCurrentItem, newColor );
+    updatePreview();
+  }
+}
+
 void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* item, int column )
 {
   if ( column == 0 )
   {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-    // FIXME need to also check max QT_VERSION when Qt bug fixed
-    QColor color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-    QColor color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this );
-#endif
+    QColor color;
+
+    QSettings settings;
+    if ( settings.value( "/qgis/live_color_dialogs", false ).toBool() )
+    {
+      mCurrentItem = item;
+      color = QgsColorDialog::getLiveColor( item->data( 0, StopColorRole ).value<QColor>(), this, "setItemStopColor( const QColor& )", this );
+      mCurrentItem = 0;
+    }
+    else
+    {
+      color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this );
+    }
     if ( !color.isValid() )
       return;
     setStopColor( item, color );
@@ -310,19 +309,19 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
 
 void QgsVectorGradientColorRampV2Dialog::addStop()
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // also Qt 4.7 Mac Cocoa bug: calling QInputDialog::getInt after QColorDialog::getColor will freeze app
-  // workaround: call QColorDialog::getColor below instead of here,
-  // but not needed at this time because of the other Qt bug
-  // FIXME need to also check max QT_VERSION when Qt bug(s) fixed
-  QColor color = QColorDialog::getColor( QColor(), this, "", QColorDialog::DontUseNativeDialog );
-#else
+// Native Mac dialog works only for Qt Carbon
+// Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+// Qt 4.7 Mac Cocoa bug: calling QInputDialog::getInt after QColorDialog::getColor will freeze app
+// workaround: call QColorDialog::getColor below instead of here,
+// but not needed at this time because of the other Qt bug
+// FIXME need to also check max QT_VERSION when Qt bug(s) fixed
+#ifndef Q_WS_MAC
   QColor color = QColorDialog::getColor( QColor(), this );
-#endif
+
   if ( !color.isValid() )
     return;
+  activateWindow();
+#endif
 
   bool ok;
   double val = 50.0;
@@ -341,10 +340,19 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 #endif
   if ( !ok )
     return;
+  activateWindow();
 
   double key = val / 100.0;
   QStringList lst;
   lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
+
+#ifdef Q_WS_MAC
+  QColor color = QColorDialog::getColor( QColor(), this );
+
+  if ( !color.isValid() )
+    return;
+  activateWindow();
+#endif
 
   QTreeWidgetItem* item = new QTreeWidgetItem( lst );
 

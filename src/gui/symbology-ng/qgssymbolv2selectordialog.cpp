@@ -142,6 +142,9 @@ class SymbolLayerItem : public QStandardItem
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
     : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
 {
+#ifdef Q_WS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
   mStyle = style;
   mSymbol = symbol;
   mPresentWidget = NULL;

@@ -252,14 +252,12 @@ void QgsSingleSymbolDialog::selectOutlineColor( const QColor& color )
 {
   Q_UNUSED( color )
   emit settingsChanged();
-  activateWindow();
 }
 
 void QgsSingleSymbolDialog::selectFillColor( const QColor& color )
 {
   Q_UNUSED( color )
   emit settingsChanged();
-  activateWindow();
 }
 
 //should this method have a different name?

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
-    <height>505</height>
+    <width>383</width>
+    <height>532</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,12 +84,6 @@
         </item>
         <item>
          <widget class="QgsColorButton" name="mCircleColorButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -194,12 +188,6 @@
         </item>
         <item>
          <widget class="QgsColorButton" name="mLabelColorButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string/>
           </property>
@@ -236,7 +224,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>

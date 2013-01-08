@@ -1,6 +1,12 @@
 
+/** \ingroup gui
+ * \class QgsColorButton
+ * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
+ * Offers live updates to button from color chooser dialog
+ * @note inherited base class moved from QToolButton to QPushButton in QGIS 1.9
+ */
 
-class QgsColorButton : QToolButton
+class QgsColorButton: QPushButton
 {
 %TypeHeaderCode
 #include <qgscolorbutton.h>
@@ -15,7 +21,7 @@ class QgsColorButton : QToolButton
      * @param cdo Options for the color chooser dialog
      * @note changed in 1.9
      */
-    QgsColorButton( QWidget *parent = 0, QString cdt = "Select Color", QColorDialog::ColorDialogOptions cdo = 0 );
+    QgsColorButton( QWidget *parent = 0, QString cdt = "", QColorDialog::ColorDialogOptions cdo = 0 );
     ~QgsColorButton();
 
     /**
@@ -65,11 +71,20 @@ class QgsColorButton : QToolButton
      */
     QString colorDialogTitle();
 
-  protected:
-    void paintEvent( QPaintEvent *e );
+    /**
+     * Whether the button accepts live updates from QColorDialog.
+     *
+     * @note added in 1.9
+     */
+    bool acceptLiveUpdates();
 
-  public slots:
-    void onButtonClicked();
+    /**
+     * Sets whether the button accepts live updates from QColorDialog.
+     * Live updates may cause changes that are not undoable on QColorDialog cancel.
+     *
+     * @note added in 1.9
+     */
+    void setAcceptLiveUpdates( bool accept );
 
   signals:
     /**
@@ -80,19 +95,9 @@ class QgsColorButton : QToolButton
      * @note added in 1.9
      */
     void colorChanged( const QColor &color );
-};
 
-
-class QgsColorButtonV2 : QPushButton
-{
-%TypeHeaderCode
-#include <qgscolorbutton.h>
-%End
-
-  public:
-    QgsColorButtonV2( QWidget* parent = 0 );
-    QgsColorButtonV2( QString text, QWidget* parent = 0 );
-
-    void setColor( const QColor &color );
-    QColor color() const;
+  protected:
+    void changeEvent( QEvent* e );
+    void paintEvent( QPaintEvent* e );
+    static const QPixmap& transpBkgrd();
 };

@@ -6,15 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>337</width>
+    <width>372</width>
     <height>620</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Single Symbol</string>
@@ -32,9 +26,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>335</width>
-        <height>618</height>
+        <y>-37</y>
+        <width>358</width>
+        <height>640</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
@@ -200,18 +194,21 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>32</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>32</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -275,18 +272,21 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>32</width>
+              <width>80</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>32</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -412,7 +412,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>

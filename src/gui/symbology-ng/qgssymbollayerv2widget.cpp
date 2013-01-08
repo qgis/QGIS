@@ -52,7 +52,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   setupUi( this );
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
-  connect( btnChangeColor, SIGNAL( clicked() ), this, SLOT( colorChanged() ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
   connect( cboPenStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( cboCapStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
@@ -83,6 +83,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   // set values
   spinWidth->setValue( mLayer->width() );
   btnChangeColor->setColor( mLayer->color() );
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinOffset->setValue( mLayer->offset() );
   cboPenStyle->blockSignals( true );
   cboJoinStyle->blockSignals( true );
@@ -117,20 +118,9 @@ void QgsSimpleLineSymbolLayerV2Widget::penWidthChanged()
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
+void QgsSimpleLineSymbolLayerV2Widget::colorChanged( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setColor( color );
-  btnChangeColor->setColor( mLayer->color() );
   updatePatternIcon();
   emit changed();
 }
@@ -241,8 +231,8 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   }
 
   connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setName() ) );
-  connect( btnChangeColorBorder, SIGNAL( clicked() ), this, SLOT( setColorBorder() ) );
-  connect( btnChangeColorFill, SIGNAL( clicked() ), this, SLOT( setColorFill() ) );
+  connect( btnChangeColorBorder, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorBorder( const QColor& ) ) );
+  connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorFill( const QColor& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -268,7 +258,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
     }
   }
   btnChangeColorBorder->setColor( mLayer->borderColor() );
+  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColorFill->setColor( mLayer->color() );
+  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
 
@@ -299,37 +291,15 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setName()
   emit changed();
 }
 
-void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
+void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
-#else
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel );
-#endif
-  if ( !borderColor.isValid() )
-    return;
-  mLayer->setBorderColor( borderColor );
-  btnChangeColorBorder->setColor( mLayer->borderColor() );
+  mLayer->setBorderColor( color );
   emit changed();
 }
 
-void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
+void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setColor( color );
-  btnChangeColorFill->setColor( mLayer->color() );
   emit changed();
 }
 
@@ -379,9 +349,9 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVec
 
   setupUi( this );
 
-  connect( btnChangeColor, SIGNAL( clicked() ), this, SLOT( setColor() ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( cboFillStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setBrushStyle() ) );
-  connect( btnChangeBorderColor, SIGNAL( clicked() ), this, SLOT( setBorderColor() ) );
+  connect( btnChangeBorderColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setBorderColor( const QColor& ) ) );
   connect( spinBorderWidth, SIGNAL( valueChanged( double ) ), this, SLOT( borderWidthChanged() ) );
   connect( cboBorderStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( borderStyleChanged() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
@@ -398,8 +368,10 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   // set values
   btnChangeColor->setColor( mLayer->color() );
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   cboFillStyle->setBrushStyle( mLayer->brushStyle() );
   btnChangeBorderColor->setColor( mLayer->borderColor() );
+  btnChangeBorderColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
   spinBorderWidth->setValue( mLayer->borderWidth() );
   spinOffsetX->blockSignals( true );
@@ -422,37 +394,15 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-void QgsSimpleFillSymbolLayerV2Widget::setColor()
+void QgsSimpleFillSymbolLayerV2Widget::setColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setColor( color );
-  btnChangeColor->setColor( mLayer->color() );
   emit changed();
 }
 
-void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
+void QgsSimpleFillSymbolLayerV2Widget::setBorderColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setBorderColor( color );
-  btnChangeBorderColor->setColor( mLayer->borderColor() );
   emit changed();
 }
 
@@ -936,34 +886,26 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_editingFinished()
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_colorChanged( const QColor& color )
 {
   if ( !mLayer )
   {
     return;
   }
-  QColor c = QColorDialog::getColor( mLayer->fillColor() );
-  if ( c.isValid() )
-  {
-    mLayer->setFillColor( c );
-    mChangeColorButton->setColor( c );
-    emit changed();
-  }
+
+  mLayer->setFillColor( color );
+  emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_clicked()
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_colorChanged( const QColor& color )
 {
   if ( !mLayer )
   {
     return;
   }
-  QColor c = QColorDialog::getColor( mLayer->outlineColor() );
-  if ( c.isValid() )
-  {
-    mLayer->setOutlineColor( c );
-    mChangeBorderColorButton->setColor( c );
-    emit changed();
-  }
+
+  mLayer->setOutlineColor( color );
+  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( double d )
@@ -1011,7 +953,7 @@ QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( cons
 
   setupUi( this );
 
-  connect( btnChangeColor, SIGNAL( clicked() ), this, SLOT( colorChanged() ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
 }
 
@@ -1037,20 +979,9 @@ QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
+void QgsLineDecorationSymbolLayerV2Widget::colorChanged( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setColor( color );
-  btnChangeColor->setColor( mLayer->color() );
   emit changed();
 }
 
@@ -1241,34 +1172,26 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui()
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_clicked()
+void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QColor& color )
 {
   if ( !mLayer )
   {
     return;
   }
-  QColor c = QColorDialog::getColor( mLayer->svgFillColor() );
-  if ( c.isValid() )
-  {
-    mLayer->setSvgFillColor( c );
-    mChangeColorButton->setColor( c );
-    emit changed();
-  }
+
+  mLayer->setSvgFillColor( color );
+  emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mChangeBorderColorButton_clicked()
+void QgsSVGFillSymbolLayerWidget::on_mChangeBorderColorButton_colorChanged( const QColor& color )
 {
   if ( !mLayer )
   {
     return;
   }
-  QColor c = QColorDialog::getColor( mLayer->svgOutlineColor() );
-  if ( c.isValid() )
-  {
-    mLayer->setSvgOutlineColor( c );
-    mChangeBorderColorButton->setColor( c );
-    emit changed();
-  }
+
+  mLayer->setSvgOutlineColor( color );
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::on_mBorderWidthSpinBox_valueChanged( double d )
@@ -1377,18 +1300,15 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
+void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_colorChanged( const QColor& color )
 {
-  if ( mLayer )
+  if ( !mLayer )
   {
-    QColor c = QColorDialog::getColor( mLayer->color() );
-    if ( c.isValid() )
-    {
-      mLayer->setColor( c );
-      mColorPushButton->setColor( c );
-      emit changed();
-    }
+    return;
   }
+
+  mLayer->setColor( color );
+  emit changed();
 }
 
 void QgsLinePatternFillSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
@@ -1545,7 +1465,7 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
-  connect( btnColor, SIGNAL( clicked() ), this, SLOT( setColor() ) );
+  connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -1596,20 +1516,9 @@ void QgsFontMarkerSymbolLayerV2Widget::setFontFamily( const QFont& font )
   emit changed();
 }
 
-void QgsFontMarkerSymbolLayerV2Widget::setColor()
+void QgsFontMarkerSymbolLayerV2Widget::setColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
-#endif
-  if ( !color.isValid() )
-    return;
   mLayer->setColor( color );
-  btnColor->setColor( mLayer->color() );
   emit changed();
 }
 

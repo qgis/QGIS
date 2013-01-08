@@ -16,15 +16,20 @@
 #define QGSCOLORBUTTON_H
 
 #include <QColorDialog>
-#include <QToolButton>
 #include <QPushButton>
+#include <QTemporaryFile>
+
 
 /** \ingroup gui
+ * \class QgsColorButton
  * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
+ * Offers live updates to button from color chooser dialog
+ * @note inherited base class moved from QToolButton to QPushButton in QGIS 1.9
  */
-class GUI_EXPORT QgsColorButton: public QToolButton
+
+class GUI_EXPORT QgsColorButton: public QPushButton
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     /**
@@ -35,7 +40,7 @@ class GUI_EXPORT QgsColorButton: public QToolButton
      * @param cdo Options for the color chooser dialog
      * @note changed in 1.9
      */
-    QgsColorButton( QWidget *parent = 0, QString cdt = tr( "Select Color" ), QColorDialog::ColorDialogOptions cdo = 0 );
+    QgsColorButton( QWidget *parent = 0, QString cdt = "", QColorDialog::ColorDialogOptions cdo = 0 );
     ~QgsColorButton();
 
     /**
@@ -85,11 +90,20 @@ class GUI_EXPORT QgsColorButton: public QToolButton
      */
     QString colorDialogTitle();
 
-  protected:
-    void paintEvent( QPaintEvent *e );
+    /**
+     * Whether the button accepts live updates from QColorDialog.
+     *
+     * @note added in 1.9
+     */
+    bool acceptLiveUpdates() { return mAcceptLiveUpdates; }
 
-  public slots:
-    void onButtonClicked();
+    /**
+     * Sets whether the button accepts live updates from QColorDialog.
+     * Live updates may cause changes that are not undoable on QColorDialog cancel.
+     *
+     * @note added in 1.9
+     */
+    void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
   signals:
     /**
@@ -101,24 +115,34 @@ class GUI_EXPORT QgsColorButton: public QToolButton
      */
     void colorChanged( const QColor &color );
 
+  protected:
+    void changeEvent( QEvent* e );
+    void paintEvent( QPaintEvent* e );
+    static const QPixmap& transpBkgrd();
+
   private:
     QString mColorDialogTitle;
     QColor mColor;
     QColorDialog::ColorDialogOptions mColorDialogOptions;
-};
+    bool mAcceptLiveUpdates;
+    QTemporaryFile mTempPNG;
 
+  private slots:
+    void onButtonClicked();
 
-class GUI_EXPORT QgsColorButtonV2 : public QPushButton
-{
-  public:
-    QgsColorButtonV2( QWidget* parent = 0 );
-    QgsColorButtonV2( QString text, QWidget* parent = 0 );
+    /**
+     * Sets the background pixmap for the button based upon set color and transparency.
+     *
+     * @note added in 1.9
+     */
+    void setButtonBackground();
 
-    void setColor( const QColor &color );
-    QColor color() const { return mColor; }
-
-  private:
-    QColor mColor;
+    /**
+     * Sets color for button, if valid.
+     *
+     * @note added in 1.9
+     */
+    void setValidColor( const QColor& newColor );
 };
 
 #endif

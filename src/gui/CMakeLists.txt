@@ -50,6 +50,7 @@ qgsattributeeditor.cpp
 qgslegendinterface.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
+qgscolordialog.cpp
 qgscomposerview.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
@@ -156,6 +157,7 @@ attributetable/qgsattributetabledelegate.h
 
 qgsattributeeditor.h
 qgscharacterselectdialog.h
+qgscolordialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -205,6 +207,7 @@ SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
 qgscharacterselectdialog.h
+qgscolordialog.h
 qgscursors.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h

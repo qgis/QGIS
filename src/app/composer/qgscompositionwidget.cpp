@@ -64,6 +64,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     //grid pen color
     mGridColorButton->setColor( mComposition->gridPen().color() );
+    mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+    mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
     mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
