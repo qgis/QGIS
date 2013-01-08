@@ -113,6 +113,8 @@ ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
 
+qgscolorbutton.h
+
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h
 raster/qgsmultibandcolorrendererwidget.h
@@ -203,7 +205,6 @@ SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
 qgscharacterselectdialog.h
-qgscolorbutton.h
 qgscursors.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h
