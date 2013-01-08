@@ -498,7 +498,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
-      theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+      theMenu.addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     //show number of features in legend if requested
     QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );

@@ -132,8 +132,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
-  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( !mManagerMode )
