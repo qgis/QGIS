@@ -42,7 +42,11 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     }
     mFrameWidthSpinBox->setValue( mItem->frameBorderWidth() );
     mFrameColorButton->setColor( mItem->frameColor() );
+    mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
+    mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
     mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
+    mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+    mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     const QgsMarkerSymbolV2* symbol = mItem->markerSymbol();
     if ( symbol )
@@ -102,23 +106,14 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
   }
 }
 
-void QgsAnnotationWidget::on_mFrameColorButton_clicked()
+void QgsAnnotationWidget::on_mFrameColorButton_colorChanged( const QColor &color )
 {
   if ( !mItem )
   {
     return;
   }
 
-#if QT_VERSION >= 0x040500
-  QColor c = QColorDialog::getColor( mFrameColorButton->color(), 0, tr( "Select frame color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor c = QColorDialog::getColor( mFrameColorButton->color() );
-#endif
-  if ( c.isValid() )
-  {
-    mFrameColorButton->setColor( c );
-    mItem->setFrameColor( c );
-  }
+  mItem->setFrameColor( color );
 }
 
 void QgsAnnotationWidget::updateCenterIcon()
@@ -131,24 +126,13 @@ void QgsAnnotationWidget::updateCenterIcon()
   mMapMarkerButton->setIcon( icon );
 }
 
-void QgsAnnotationWidget::on_mBackgroundColorButton_clicked()
+void QgsAnnotationWidget::on_mBackgroundColorButton_colorChanged( const QColor &color )
 {
   if ( !mItem )
   {
     return;
   }
 
-  QColor bgColor;
-#if QT_VERSION >= 0x040500
-  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor(), 0, tr( "Select background color" ), QColorDialog::ShowAlphaChannel );
-#else
-  bgColor = QColorDialog::getColor( mItem->frameBackgroundColor() );
-#endif
-
-  if ( bgColor.isValid() )
-  {
-    mItem->setFrameBackgroundColor( bgColor );
-    mBackgroundColorButton->setColor( bgColor );
-  }
+  mItem->setFrameBackgroundColor( color );
 }
 
