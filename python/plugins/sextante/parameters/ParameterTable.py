@@ -43,8 +43,11 @@ class ParameterTable(ParameterDataObject):
                 return False
         if isinstance(obj, QgsVectorLayer):
             source = unicode(obj.source())
-            if source.endswith("dbf") or source.endswith("csv"):
+            if source.lower().endswith("dbf") or source.lower().endswith("csv"):
                 self.value = source
+                return True
+            elif source.endswith("shp"):
+                self.value = source[:-4] + "dbf"
                 return True
             else:
                 return False

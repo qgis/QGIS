@@ -56,8 +56,7 @@ class QGisLayers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
                     uri = unicode(layer.source())
-                    if not uri.endswith("csv") and not uri.endswith("dbf"):
-
+                    if not uri.lower().endswith("csv") and not uri.lower().endswith("dbf"):
                         vector.append(layer)
         return vector
 
@@ -72,11 +71,11 @@ class QGisLayers:
     def getTables():
         layers = QGisLayers.iface.legendInterface().layers()
         tables = list()
-        for layer in layers:
+        for layer in layers:            
             if layer.type() == layer.VectorLayer :
                 uri = unicode(layer.source())
-                if uri.endswith("csv") or uri.endswith("dbf"):
-                    tables.append(layer)
+                if uri.lower().endswith("csv") or uri.lower().endswith("dbf") or uri.lower().endswith("shp"):
+                    tables.append(layer)                
         return tables
 
     @staticmethod
