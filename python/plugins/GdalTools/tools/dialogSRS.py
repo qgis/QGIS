@@ -45,7 +45,7 @@ class GdalToolsSRSDialog(QDialog):
       self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
 
   def authid(self):
-      return str(self.selector.selectedAuthId()
+      return str(self.selector.selectedAuthId())
 
   def proj4string(self):
       return self.selector.selectedProj4String()

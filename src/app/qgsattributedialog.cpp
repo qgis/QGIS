@@ -348,19 +348,23 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
                     .arg( vl->id() )
                     .arg(( unsigned long ) vl );
 
-    QString feature = QString( "_qgis_feature_%1 = wrapinstance( %2, qgis.core.QgsFeature )" )
-                      .arg( mFeature->id() )
+    // Generate the unique ID of this feature.  We used to use feature ID but some providers
+    // return a ID that is an invalid python variable when we have new unsaved features.
+    QDateTime dt = QDateTime::currentDateTime();
+    QString featurevarname = QString( "_qgis_feature_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
+    QString feature = QString( "%1 = wrapinstance( %2, qgis.core.QgsFeature )" )
+                      .arg( featurevarname )
                       .arg(( unsigned long ) mFeature );
 
     QgsPythonRunner::run( form );
     QgsPythonRunner::run( feature );
     QgsPythonRunner::run( layer );
 
-    QString expr = QString( "%1(_qgis_featureform_%2, _qgis_layer_%3, _qgis_feature_%4)" )
+    QString expr = QString( "%1(_qgis_featureform_%2, _qgis_layer_%3, %4)" )
                    .arg( vl->editFormInit() )
                    .arg( mFormNr )
                    .arg( vl->id() )
-                   .arg( mFeature->id() );
+                   .arg( featurevarname );
 
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgsPythonRunner::run( expr );
