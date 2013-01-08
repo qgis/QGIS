@@ -288,7 +288,6 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionMoveFeature"/>
-   <addaction name="mActionRotateFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -307,6 +306,7 @@
    </attribute>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
+   <addaction name="mActionRotateFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
