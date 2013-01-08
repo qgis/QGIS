@@ -27,6 +27,7 @@
 #include <limits>
 #include <math.h>
 #include "qgsvertexmarker.h"
+#include "qgsmessagebar.h"
 
 #define PI 3.14159265
 
@@ -34,6 +35,7 @@ QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas ): QgsMap
 {
   mRotation = 0;
   mAnchorPoint = 0;
+  mCtrl = false;
 }
 
 QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
@@ -46,6 +48,10 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 {
   if ( mCtrl == true )
   {
+    if ( !mAnchorPoint )
+    {
+      return;
+    }
     mAnchorPoint->setCenter( toMapCoordinates( e->pos() ) );
     mStartPointMapCoords = toMapCoordinates( e->pos() );
     mStPoint = e->pos();
@@ -87,9 +93,64 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
     return;
   }
 
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
+  double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapRenderer() );
+  QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+                           layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
+
   if ( vlayer->selectedFeatureCount() == 0 )
   {
-    return;
+    vlayer->select( QgsAttributeList(), selectRect, true );
+
+    //find the closest feature
+    QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
+    if ( !pointGeometry )
+    {
+      return;
+    }
+
+    double minDistance = std::numeric_limits<double>::max();
+
+    QgsFeature cf;
+    QgsFeature f;
+    while ( vlayer->nextFeature( f ) )
+    {
+      if ( f.geometry() )
+      {
+        double currentDistance = pointGeometry->distance( *f.geometry() );
+        if ( currentDistance < minDistance )
+        {
+          minDistance = currentDistance;
+          cf = f;
+        }
+      }
+
+    }
+
+    delete pointGeometry;
+
+    if ( minDistance == std::numeric_limits<double>::max() )
+    {
+      return;
+    }
+
+    QgsRectangle bound = cf.geometry()->boundingBox();
+    mStartPointMapCoords = bound.center();
+
+    if ( !mAnchorPoint )
+    {
+      mAnchorPoint = new QgsVertexMarker( mCanvas );
+    }
+    mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
+    mAnchorPoint->setCenter( mStartPointMapCoords );
+
+    mStPoint = toCanvasCoordinates( mStartPointMapCoords );
+
+    mRotatedFeatures.clear();
+    mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
+
+    mRubberBand = createRubberBand();
+    mRubberBand->setToGeometry( cf.geometry(), vlayer );
   }
   else
   {
@@ -260,10 +321,8 @@ void QgsMapToolRotateFeature::activate()
     mAnchorPoint = new QgsVertexMarker( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mStartPointMapCoords );
-    mAnchorPoint->acceptTouchEvents();
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
-    mCtrl = false;
 
     QgsMapTool::activate();
   }
