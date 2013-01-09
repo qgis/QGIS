@@ -599,7 +599,7 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
 
   QString key = "/Oracle/connections/" + theConnName;
 
-  QString service = settings.value( key + "/service" ).toString();
+  QString database = settings.value( key + "/database" ).toString();
 
   QString host = settings.value( key + "/host" ).toString();
   QString port = settings.value( key + "/port" ).toString();
@@ -623,7 +623,7 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
   }
 
   QgsDataSourceURI uri;
-  uri.setConnection( host, port, QString::null, username, password );
+  uri.setConnection( host, port, database, username, password );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   return uri;
@@ -641,7 +641,7 @@ bool QgsOracleConn::allowGeometrylessTables( QString theConnName )
   return settings.value( "/Oracle/connections/" + theConnName + "/allowGeometrylessTables", false ).toBool();
 }
 
-QString QgsOracleConn::databaseName( QString serviceName, QString host, QString port )
+QString QgsOracleConn::databaseName( QString database, QString host, QString port )
 {
   QString db;
 
@@ -654,14 +654,14 @@ QString QgsOracleConn::databaseName( QString serviceName, QString host, QString 
       db += QString( ":%1" ).arg( port );
     }
 
-    if ( !serviceName.isEmpty() )
+    if ( !database.isEmpty() )
     {
-      db += "/" + serviceName;
+      db += "/" + database;
     }
   }
-  else if ( !serviceName.isEmpty() )
+  else if ( !database.isEmpty() )
   {
-    db = serviceName;
+    db = database;
   }
 
   return db;

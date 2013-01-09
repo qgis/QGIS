@@ -149,7 +149,7 @@ class QgsOracleConn : public QThread
     static bool userTablesOnly( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
-    static QString databaseName( QString serviceName, QString host, QString port );
+    static QString databaseName( QString database, QString host, QString port );
 
     operator QSqlDatabase() { return mDatabase; }
 

@@ -45,6 +45,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     }
     txtPort->setText( port );
     cb_userTablesOnly->setChecked( settings.value( key + "/userTablesOnly", false ).toBool() );
+    cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
@@ -117,10 +118,11 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : "" );
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/userTablesOnly", cb_userTablesOnly->isChecked() );
+  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
+  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() ? "true" : "false" );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );

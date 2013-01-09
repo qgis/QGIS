@@ -480,8 +480,10 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
     el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
     el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    el.setAttribute( "userTablesOnly", settings.value( path + "/userTablesOnly", "0" ).toString() );
+    el.setAttribute( "geometryColumnsOnly", settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
+    el.setAttribute( "allowGeometrylessTables", settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
 
     el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
 
@@ -918,8 +920,10 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     settings.setValue( "/host", child.attribute( "host" ) );
     settings.setValue( "/port", child.attribute( "port" ) );
     settings.setValue( "/database", child.attribute( "database" ) );
-    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
     settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
+    settings.setValue( "/userTablesOnly", child.attribute( "userTablesOnly" ) );
+    settings.setValue( "/geometryColumnsOnly", child.attribute( "geometryColumnsOnly" ) );
+    settings.setValue( "/allowGeometrylessTables", child.attribute( "allowGeometrylessTables" ) );
     settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
     settings.setValue( "/username", child.attribute( "username" ) );
     settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
