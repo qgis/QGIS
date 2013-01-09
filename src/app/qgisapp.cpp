@@ -382,7 +382,7 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
-    bool waiting = QApplication::overrideCursor()->shape() == Qt::WaitCursor;
+    bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
     if ( waiting )
       QApplication::setOverrideCursor( Qt::ArrowCursor );
 
