@@ -1284,6 +1284,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //!flag to indicate that the previous screen mode was 'maximised'
     bool mPrevScreenModeMaximized;
 
+    /** Flag to indicate an edits save/rollback for active layer is in progress
+     * @note added in QGIS 1.9
+     */
+    bool mSaveRollbackInProgress;
+
     QgsPythonUtils* mPythonUtils;
 
     static QgisApp *smInstance;
