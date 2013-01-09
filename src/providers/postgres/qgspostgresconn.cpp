@@ -309,7 +309,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   for ( int i = 0; i < 3; i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
-    QgsPostgresGeometryColumnType columnType;
+    QgsPostgresGeometryColumnType columnType = sctGeometry;
 
     if ( i == 0 )
     {

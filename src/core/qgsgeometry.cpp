@@ -582,7 +582,6 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   {
     return 0;
   }
-  return 0;
 }
 
 bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )

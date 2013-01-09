@@ -411,7 +411,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   bool ok = false;
   QDomDocument gDoc( "task" );
   QString err;
-  int line, column;
+  int line = -1, column = -1;
 
   if ( codec )
   {
@@ -3621,7 +3621,7 @@ void QgsGrassModuleField::updateFields()
 
   std::vector<QgsField> fields = mLayerInput->currentFields();
 
-  for ( int i = 0; i < fields.size(); i++ )
+  for ( unsigned int i = 0; i < fields.size(); i++ )
   {
     if ( mType.contains( fields[i].typeName() ) )
     {

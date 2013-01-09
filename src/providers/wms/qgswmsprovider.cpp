@@ -3191,7 +3191,6 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
     return true;
   }
-  return false; // should not be reached
 }
 
 
