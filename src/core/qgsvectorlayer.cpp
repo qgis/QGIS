@@ -2415,7 +2415,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[geometryType()] );
+  mapLayerNode.setAttribute( "geometry", QGis::vectorGeometryType( geometryType() ) );
 
   // add provider node
   if ( mDataProvider )
@@ -4297,7 +4297,7 @@ QString QgsVectorLayer::metadata()
   }
   else
   {
-    QString typeString( QGis::qgisVectorGeometryType[geometryType()] );
+    QString typeString( QGis::vectorGeometryType( geometryType() ) );
 
     myMetadata += "<tr><td>";
     myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );

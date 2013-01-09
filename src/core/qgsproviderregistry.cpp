@@ -526,10 +526,10 @@ const QgsProviderMetadata* QgsProviderRegistry::providerMetadata( const QString&
 }
 
 
-/*
+#if 0
 QgsDataProvider *
 QgsProviderRegistry::openVector( QString const & dataSource, QString const & providerKey )
 {
-    return getProvider( providerKey, dataSource );
+  return getProvider( providerKey, dataSource );
 } // QgsProviderRegistry::openVector
-*/
+#endif

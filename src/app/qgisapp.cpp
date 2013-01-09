@@ -381,9 +381,9 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
-    // why is this: it overrides the default cursor in the splitter in the dialog
-    // commenting it now till somebody tells us why it is necessary :-)
-    //QApplication::setOverrideCursor( Qt::ArrowCursor );
+    bool waiting = QApplication::overrideCursor()->shape() == Qt::WaitCursor;
+    if ( waiting )
+      QApplication::setOverrideCursor( Qt::ArrowCursor );
 
     if ( mySelector->exec() )
     {
@@ -392,7 +392,8 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
       srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
-    //QApplication::restoreOverrideCursor();
+    if ( waiting )
+      QApplication::restoreOverrideCursor();
 
     delete mySelector;
   }
@@ -943,6 +944,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
+  connect( mActionAddOracleLayer, SIGNAL( triggered() ), this, SLOT( addOracleLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
@@ -1030,19 +1032,24 @@ void QgisApp::createActions()
 
 #ifndef HAVE_SPATIALITE
   delete mActionNewSpatialiteLayer;
-  mActionNewSpatialiteLayer = NULL;
+  mActionNewSpatialiteLayer = 0;
   delete mActionAddSpatiaLiteLayer;
-  mActionAddSpatiaLiteLayer = NULL;
+  mActionAddSpatiaLiteLayer = 0;
 #endif
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
-  mActionAddPgLayer = NULL;
+  mActionAddPgLayer = 0;
 #endif
 
 #ifndef HAVE_MSSQL
   delete mActionAddMssqlLayer;
-  mActionAddMssqlLayer = NULL;
+  mActionAddMssqlLayer = 0;
+#endif
+
+#ifndef HAVE_ORACLE
+  delete mActionAddOracleLayer;
+  mActionAddOracleLayer = 0;
 #endif
 
 }
@@ -1624,6 +1631,9 @@ void QgisApp::setTheme( QString theThemeName )
 #endif
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
+#endif
+#ifdef HAVE_ORACLE
+  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.png" ) );
 #endif
   mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ) );
   mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.png" ) );
@@ -2798,11 +2808,9 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   }
 }
 
-#ifndef HAVE_POSTGRESQL
-void QgisApp::addDatabaseLayer() {}
-#else
 void QgisApp::addDatabaseLayer()
 {
+#ifdef HAVE_POSTGRESQL
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2821,8 +2829,8 @@ void QgisApp::addDatabaseLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   pgs->exec();
   delete pgs;
-} // QgisApp::addDatabaseLayer()
 #endif
+} // QgisApp::addDatabaseLayer()
 
 void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
 {
@@ -2891,11 +2899,9 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 }
 
 
-#ifndef HAVE_SPATIALITE
-void QgisApp::addSpatiaLiteLayer() {}
-#else
 void QgisApp::addSpatiaLiteLayer()
 {
+#ifdef HAVE_SPATIALITE
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2912,15 +2918,12 @@ void QgisApp::addSpatiaLiteLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-
-} // QgisApp::addSpatiaLiteLayer()
 #endif
+} // QgisApp::addSpatiaLiteLayer()
 
-#ifndef HAVE_MSSQL
-void QgisApp::addMssqlLayer() {}
-#else
 void QgisApp::addMssqlLayer()
 {
+#ifdef HAVE_MSSQL
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2937,9 +2940,30 @@ void QgisApp::addMssqlLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-
-} // QgisApp::addMssqlLayer()
 #endif
+} // QgisApp::addMssqlLayer()
+
+void QgisApp::addOracleLayer()
+{
+#ifdef HAVE_ORACLE
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // show the Oracle dialog
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "oracle" ), this ) );
+  if ( !dbs )
+  {
+    QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
+    return;
+  }
+  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  dbs->exec();
+  delete dbs;
+#endif
+} // QgisApp::addOracleLayer()
 
 void QgisApp::addWmsLayer()
 {

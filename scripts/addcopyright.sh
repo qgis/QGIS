@@ -18,7 +18,16 @@
 
 set -e
 
-for i in $(<files); do
+if [ $# -gt 0 ]; then
+	FILES="$@"
+elif [ -f files ]; then
+	FILES=$(<files)
+else
+	echo no files
+	exit 1
+fi
+
+for i in $FILES; do
 	echo $i >&2
 	author=
 	authordate=

@@ -623,9 +623,6 @@ class CORE_EXPORT QgsGeometry
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
-
-
-    static int refcount;
 }; // class QgsGeometry
 
 #endif

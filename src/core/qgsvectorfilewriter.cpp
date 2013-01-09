@@ -496,7 +496,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     QgsGeometry *geom = feature.geometry();
 
     // turn single geoemetry to multi geometry if needed
-    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::flatType( mWkbType ) )
+    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::singleType( mWkbType ) )
     {
       geom->convertToMultiType();
     }

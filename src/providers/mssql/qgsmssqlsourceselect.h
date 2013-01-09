@@ -33,7 +33,6 @@ class QPushButton;
 class QStringList;
 class QgsGeomColumnTypeThread;
 class QgisApp;
-class QgsPgSourceSelect;
 
 class QgsMssqlSourceSelectDelegate : public QItemDelegate
 {
