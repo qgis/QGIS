@@ -94,6 +94,9 @@ class CORE_EXPORT QgsVectorLayerImport
     /** flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
+    /** create index */
+    bool createSpatialIndex();
+
     /** contains error value */
     ImportError mError;
     QString mErrorMessage;

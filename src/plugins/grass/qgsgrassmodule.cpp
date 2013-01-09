@@ -3621,7 +3621,7 @@ void QgsGrassModuleField::updateFields()
 
   std::vector<QgsField> fields = mLayerInput->currentFields();
 
-  for ( unsigned int i = 0; i < fields.size(); i++ )
+  for ( int i = 0; i < fields.size(); i++ )
   {
     if ( mType.contains( fields[i].typeName() ) )
     {

@@ -50,28 +50,6 @@ const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
 const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 #endif
 
-const char* QGis::qgisVectorGeometryType[] =
-{
-  "Point",
-  "Line",
-  "Polygon",
-  "Unknown geometry",
-  "No geometry",
-};
-
-// description strings for feature types
-const char* QGis::qgisFeatureTypes[] =
-{
-  "Null",
-  "WKBPoint",
-  "WKBLineString",
-  "WKBPolygon",
-  "WKBMultiPoint",
-  "WKBMultiLineString",
-  "WKBMultiPolygon"
-};
-
-
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 
 // description strings for units

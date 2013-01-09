@@ -202,6 +202,7 @@
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconMssql.png</file>
+        <file>themes/default/mIconOracle.png</file>
         <file>themes/default/mIconNext.png</file>
         <file>themes/default/mIconNoPyramid.png</file>
         <file>themes/default/mIconOws.png</file>
@@ -433,10 +434,12 @@
         <file>themes/gis/mIconRaster.png</file>
         <file>themes/gis/mIconPostgis.png</file>
         <file>themes/gis/mIconMssql.png</file>
+        <file>themes/gis/mIconOracle.png</file>
         <file>themes/gis/mIconConnect.png</file>
         <file>themes/gis/mIconDbSchema.png</file>
         <file>themes/gis/mActionTouch.png</file>
         <file>themes/default/mActionAddMssqlLayer.png</file>
+        <file>themes/default/mActionAddOracleLayer.png</file>
         <file>themes/default/mActionTouch.png</file>
         <file>themes/default/mActionTouch2.png</file>
         <file>themes/classic/mActionTouch.png</file>

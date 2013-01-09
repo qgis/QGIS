@@ -594,8 +594,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSpatiaLiteLayer();
     //#endif
     //#ifdef HAVE_MSSQL
-    //! Add a SpatiaLite layer to the map
+    //! Add a MSSQL layer to the map
     void addMssqlLayer();
+    //#endif
+    //#ifdef HAVE_ORACLE
+    //! Add a Oracle layer to the map
+    void addOracleLayer();
     //#endif
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();

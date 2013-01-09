@@ -265,6 +265,7 @@
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
+   <addaction name="mActionAddOracleLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
@@ -1186,6 +1187,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+M</string>
+   </property>
+  </action>
+  <action name="mActionAddOracleLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.png</normaloff>:/images/themes/default/mActionAddOracleLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Oracle Spatial Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">
