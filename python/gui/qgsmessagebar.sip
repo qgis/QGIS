@@ -3,6 +3,13 @@ class QgsMessageBar: QFrame
 %TypeHeaderCode
 #include <qgsmessagebar.h>
 %End
+  public:
+    enum MessageLevel
+    {
+      INFO    = 0,
+      WARNING = 1,
+      CRITICAL   = 2
+    };
 
   public:
     QgsMessageBar( QWidget *parent = 0 );
@@ -11,9 +18,9 @@ class QgsMessageBar: QFrame
     /*! display a widget on the bar after hiding the currently visible one
      *  and putting it in a stack
      * @param widget widget to add
-     * @param level is 0 for information, 1 for warning, 2 for critical
+     * @param level is INFO, WARNING or CRITICAL
      */
-    void pushWidget( QWidget *widget /Transfer/, int level = 0 );
+    void pushWidget( QWidget *widget /Transfer/, MessageLevel level = INFO );
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar

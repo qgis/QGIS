@@ -3427,7 +3427,7 @@ bool QgisApp::addProject( QString projectFile )
         macroMsg->layout()->addWidget( btnEnableMacros );
 
         // display the macros notification widget
-        mInfoBar->pushWidget( macroMsg, 1 );
+        mInfoBar->pushWidget( macroMsg, QgsMessageBar::WARNING );
       }
     }
   }
@@ -5754,7 +5754,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   // display errors in message bar after duplication of layers
   foreach ( QWidget * msgBar, msgBars )
   {
-    mInfoBar->pushWidget( msgBar, 1 );
+    mInfoBar->pushWidget( msgBar, QgsMessageBar::WARNING );
   }
 
 }
