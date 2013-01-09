@@ -113,7 +113,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
