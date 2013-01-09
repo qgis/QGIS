@@ -560,6 +560,14 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        myWidget = cw;
+        break;
+      }
+
+
       QPushButton *pb = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
@@ -739,11 +747,13 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( widget );
   if ( cw )
   {
-    text = cw->selectedDate().toString();
+    text = cw->selectedDate().toString( Qt::ISODate );
   }
 
   le = widget->findChild<QLineEdit *>();
-  if ( le )
+  // QCalendarWidget has a internal QLineEdit which returns the date
+  // so we need to skip this if we have a QCalendarWidget
+  if ( !cw && le )
   {
     text = le->text();
   }
@@ -941,6 +951,13 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        cw->setSelectedDate( value.toDate() );
+        break;
+      }
+
       QLineEdit* le = qobject_cast<QLineEdit*>( editor );
       if ( !le )
       {
