@@ -341,6 +341,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   bool widthConversionOk, heightConversionOk;
   mPageWidth = compositionElem.attribute( "paperWidth" ).toDouble( &widthConversionOk );
   mPageHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
+  emit paperSizeChanged();
   int numPages = compositionElem.attribute( "numPages", "1" ).toInt();
 
   if ( widthConversionOk && heightConversionOk )
@@ -435,7 +436,6 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
   // read atlas parameters
   QDomElement atlasElem = importDoc.documentElement().firstChildElement( "Atlas" );
   atlasComposition().readXML( atlasElem, importDoc );
-
   return true;
 }
 
