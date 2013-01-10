@@ -4029,7 +4029,12 @@ void QgisApp::labeling()
   QgsMapLayer* layer = activeLayer();
   if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning( this, tr( "Labeling" ), tr( "Please select a vector layer first." ) );
+    QWidget* msg = QgsMessageBar::createMessage(
+                     tr( "Labeling: " ),
+                     tr( "Please select a vector layer first." ) ,
+                     QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                     mInfoBar );
+    mInfoBar->pushWidget( msg, 1, 4 );
     return;
   }
 
