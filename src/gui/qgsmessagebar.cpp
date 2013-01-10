@@ -22,7 +22,9 @@
 #include <QPalette>
 #include <QStackedWidget>
 #include <QLabel>
+#include <QProgressBar>
 #include <QToolButton>
+#include <QTimer>
 #include <QGridLayout>
 #include <QMenu>
 
@@ -41,11 +43,28 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->setContentsMargins( 9, 1, 9, 1 );
   setLayout( mLayout );
 
+  mCountProgress = new QProgressBar( this );
+
+  mCountProgress->setStyleSheet( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
+                                 " border-radius: 2px; background: rgba(0, 0, 0, 0); }"
+                                 "QProgressBar::chunk { background-color: rgba(0, 0, 0, 50%); width: 5px; }" );
+  mCountProgress->setObjectName( "mCountdown" );
+  mCountProgress->setToolTip( tr( "Countdown" ) );
+  mCountProgress->setMinimumWidth( 25 );
+  mCountProgress->setMaximumWidth( 25 );
+  mCountProgress->setMinimumHeight( 10 );
+  mCountProgress->setMaximumHeight( 10 );
+  mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+  mCountProgress->setTextVisible( false );
+  mCountProgress->setRange( 0, 5 );
+  mCountProgress->setHidden( true );
+  mLayout->addWidget( mCountProgress, 0, 0, 1, 1 );
+
   mItemCount = new QLabel( this );
   mItemCount->setObjectName( "mItemCount" );
   mItemCount->setToolTip( tr( "Remaining messages" ) );
   mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-  mLayout->addWidget( mItemCount, 0, 1, 1, 1 );
+  mLayout->addWidget( mItemCount, 0, 2, 1, 1 );
 
   mCloseMenu = new QMenu( this );
   mCloseMenu->setObjectName( "mCloseMenu" );
@@ -64,7 +83,11 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mCloseBtn->setMenu( mCloseMenu );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
-  mLayout->addWidget( mCloseBtn, 0, 2, 1, 1 );
+  mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
+
+  mCountdownTimer = new QTimer( this );
+  mCountdownTimer->setInterval( 1000 );
+  connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
 
   connect( this, SIGNAL( widgetAdded( QWidget* ) ), this, SLOT( updateItemCount() ) );
   connect( this, SIGNAL( widgetRemoved( QWidget* ) ), this, SLOT( updateItemCount() ) );
@@ -148,6 +171,8 @@ bool QgsMessageBar::popWidget()
   if ( !mCurrentItem )
     return false;
 
+  resetCountdown();
+
   QgsMessageBarItem *item = mCurrentItem;
   popItem( item );
 
@@ -186,8 +211,16 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   }
 
   mCurrentItem = item;
-  mLayout->addWidget( item->widget(), 0, 0, 1, 1 );
+  mLayout->addWidget( item->widget(), 0, 1, 1, 1 );
   mCurrentItem->widget()->show();
+
+  if ( item->duration() > 0 )
+  {
+    mCountProgress->setRange( 0, item->duration() );
+    mCountProgress->setValue( item->duration() );
+    mCountProgress->setVisible( true );
+    mCountdownTimer->start();
+  }
 
   setStyleSheet( item->styleSheet() );
   show();
@@ -195,8 +228,10 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   emit widgetAdded( item->widget() );
 }
 
-void QgsMessageBar::pushWidget( QWidget *widget, int level )
+void QgsMessageBar::pushWidget( QWidget *widget, int level, int duration )
 {
+  resetCountdown();
+
   QString stylesheet;
   if ( level >= 2 )
   {
@@ -215,10 +250,10 @@ void QgsMessageBar::pushWidget( QWidget *widget, int level )
   }
   stylesheet += "QLabel#mMsgTitle { font-weight: bold; } "
                 "QLabel#mItemCount { font-style: italic; }";
-  pushWidget( widget, stylesheet );
+  pushWidget( widget, stylesheet, duration );
 }
 
-void QgsMessageBar::pushWidget( QWidget *widget, const QString &styleSheet )
+void QgsMessageBar::pushWidget( QWidget *widget, const QString &styleSheet, int duration )
 {
   if ( !widget )
     return;
@@ -226,7 +261,7 @@ void QgsMessageBar::pushWidget( QWidget *widget, const QString &styleSheet )
   // avoid duplicated widget
   popWidget( widget );
 
-  pushItem( new QgsMessageBarItem( widget, styleSheet ) );
+  pushItem( new QgsMessageBarItem( widget, styleSheet, duration ) );
 }
 
 QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent )
@@ -257,6 +292,31 @@ QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text
   layout->addWidget( lblText );
 
   return widget;
+}
+
+void QgsMessageBar::updateCountdown()
+{
+  if ( !mCountdownTimer->isActive() )
+  {
+    resetCountdown();
+    return;
+  }
+  if ( mCountProgress->value() < 2 )
+  {
+    popWidget();
+  }
+  else
+  {
+    mCountProgress->setValue( mCountProgress->value() - 1 );
+  }
+}
+
+void QgsMessageBar::resetCountdown()
+{
+  if ( mCountdownTimer->isActive() )
+    mCountdownTimer->stop();
+
+  mCountProgress->setVisible( false );
 }
 
 void QgsMessageBar::updateItemCount()

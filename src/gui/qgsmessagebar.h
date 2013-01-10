@@ -28,9 +28,11 @@
 class QWidget;
 class QGridLayout;
 class QMenu;
+class QProgressBar;
 class QToolButton;
 class QLabel;
 class QAction;
+class QTimer;
 
 /** \ingroup gui
  * A bar for displaying non-blocking messages to the user.
@@ -48,8 +50,9 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      *  and putting it in a stack
      * @param widget widget to add
      * @param level is 0 for information, 1 for warning, 2 for critical
+     * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    void pushWidget( QWidget *widget, int level = 0 );
+    void pushWidget( QWidget *widget, int level = 0, int duration = 0 );
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
@@ -90,20 +93,21 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     class QgsMessageBarItem
     {
       public:
-        QgsMessageBarItem( QWidget *widget, const QString &styleSheet ):
-            mWidget( widget ), mStyleSheet( styleSheet ) {}
+        QgsMessageBarItem( QWidget *widget, const QString &styleSheet, int duration = 0 ):
+            mWidget( widget ), mStyleSheet( styleSheet ), mDuration( duration ) {}
         ~QgsMessageBarItem() {}
 
         QWidget* widget() const { return mWidget; }
         QString styleSheet() const { return mStyleSheet; }
+        int duration() const { return mDuration; }
 
       private:
         QWidget *mWidget;
         QString mStyleSheet;
+        int mDuration; // 0 value indicates no timeout duration
     };
 
-    //! display a widget on the bar
-    void pushWidget( QWidget *widget, const QString &styleSheet );
+    void pushWidget( QWidget *widget, const QString &styleSheet, int duration = 0 );
 
     void popItem( QgsMessageBarItem *item );
     void pushItem( QgsMessageBarItem *item );
@@ -115,10 +119,16 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     QGridLayout *mLayout;
     QLabel *mItemCount;
     QAction *mActionCloseAll;
+    QTimer *mCountdownTimer;
+    QProgressBar *mCountProgress;
 
   private slots:
     //! updates count of items in widget list
     void updateItemCount();
+
+    //! updates the countdown for widgets that have a timeout duration
+    void updateCountdown();
+    void resetCountdown();
 };
 
 #endif
