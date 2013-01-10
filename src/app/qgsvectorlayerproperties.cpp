@@ -449,6 +449,7 @@ void QgsVectorLayerProperties::apply()
     if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
     {
       layer->dataProvider()->setEncoding( cboProviderEncoding->currentText() );
+      layer->updateFieldMap();
     }
   }
 
