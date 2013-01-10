@@ -375,7 +375,7 @@ class GrassAlgorithm(GeoAlgorithm):
         if not GrassUtils.projectionSet:  
             from sextante.core.Sextante import Sextante     
             qgis = Sextante.getInterface()
-            proj4 = qgis.mapCanvas().mapRenderer().getDestinationCrs().toProj4()
+            proj4 = qgis.mapCanvas().mapRenderer().destinationCrs().toProj4()
             command = "g.proj"
             command +=" -c"
             command +=" proj4=\""+proj4+"\""
