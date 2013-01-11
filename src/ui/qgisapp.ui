@@ -154,6 +154,7 @@
     <addaction name="mActionAddPgLayer"/>
     <addaction name="mActionAddSpatiaLiteLayer"/>
     <addaction name="mActionAddMssqlLayer"/>
+    <addaction name="mActionAddOracleLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
     <addaction name="mActionAddWcsLayer"/>
