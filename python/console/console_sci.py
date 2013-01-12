@@ -31,7 +31,7 @@ import os
 import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
-                "from qgis.utils import iface"]
+                  "from qgis.utils import iface"]
 _historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
@@ -128,10 +128,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         selCmdLenght = self.text(line).length()
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
-        if command == "iface":
-            # import QgisInterface class
-            self.append('from qgis.utils import iface')
-        elif command == "sextante":
+        if command == "sextante":
             # import Sextante class
             self.append('import sextante')
         elif command == "qtCore":
