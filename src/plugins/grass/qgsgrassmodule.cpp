@@ -411,7 +411,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   bool ok = false;
   QDomDocument gDoc( "task" );
   QString err;
-  int line, column;
+  int line = -1, column = -1;
 
   if ( codec )
   {

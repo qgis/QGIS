@@ -56,14 +56,13 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 

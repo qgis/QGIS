@@ -251,6 +251,13 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
 void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
+
+  if ( !vlayer )
+  {
+    notifyNotVectorLayer();
+    return;
+  }
+
   QgsPoint layerCoords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
 
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );

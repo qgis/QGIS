@@ -417,14 +417,23 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::CheckBox:
     {
       QCheckBox *cb = 0;
+      QGroupBox *gb = 0;
       if ( editor )
+      {
+        gb = qobject_cast<QGroupBox *>( editor );
         cb = qobject_cast<QCheckBox*>( editor );
+      }
       else
         cb = new QCheckBox( parent );
 
       if ( cb )
       {
         myWidget = cb;
+        break;
+      }
+      else if ( gb )
+      {
+        myWidget = gb;
         break;
       }
     }
@@ -560,6 +569,14 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        myWidget = cw;
+        break;
+      }
+
+
       QPushButton *pb = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
@@ -736,14 +753,23 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     text = ckb->isChecked() ? states.first : states.second;
   }
 
+  QGroupBox *gb = qobject_cast<QGroupBox *>( widget );
+  if ( gb )
+  {
+    QPair<QString, QString> states = vl->checkedState( idx );
+    text = gb->isChecked() ? states.first : states.second;
+  }
+
   QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( widget );
   if ( cw )
   {
-    text = cw->selectedDate().toString();
+    text = cw->selectedDate().toString( Qt::ISODate );
   }
 
   le = widget->findChild<QLineEdit *>();
-  if ( le )
+  // QCalendarWidget and QGroupBox have an internal QLineEdit which returns the year
+  // part of the date so we need to skip this if we have a QCalendarWidget
+  if ( !cw && !gb && le )
   {
     text = le->text();
   }
@@ -888,6 +914,14 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
     case QgsVectorLayer::CheckBox:
     {
+      QGroupBox *gb = qobject_cast<QGroupBox *>( editor );
+      if ( gb )
+      {
+        QPair<QString, QString> states = vl->checkedState( idx );
+        gb->setChecked( value == states.first );
+        break;
+      }
+
       QCheckBox *cb = qobject_cast<QCheckBox *>( editor );
       if ( cb )
       {
@@ -941,6 +975,13 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        cw->setSelectedDate( value.toDate() );
+        break;
+      }
+
       QLineEdit* le = qobject_cast<QLineEdit*>( editor );
       if ( !le )
       {

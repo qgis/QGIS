@@ -240,6 +240,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionAddFeature() { return mActionAddFeature; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
+    QAction *actionRotateFeature() { return mActionRotateFeature;}
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddPart() { return mActionAddPart; }
@@ -594,8 +595,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSpatiaLiteLayer();
     //#endif
     //#ifdef HAVE_MSSQL
-    //! Add a SpatiaLite layer to the map
+    //! Add a MSSQL layer to the map
     void addMssqlLayer();
+    //#endif
+    //#ifdef HAVE_ORACLE
+    //! Add a Oracle layer to the map
+    void addOracleLayer();
     //#endif
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();
@@ -960,6 +965,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void showHideLabels();
     //! Activates the move label tool
     void moveLabel();
+    //! Activates rotate feature tool
+    void rotateFeature();
     //! Activates rotate label tool
     void rotateLabel();
     //! Activates label property tool
@@ -1169,6 +1176,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;
         QgsMapTool* mMoveLabel;
+        QgsMapTool* mRotateFeature;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;
     } mMapTools;
@@ -1279,6 +1287,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //!flag to indicate that the previous screen mode was 'maximised'
     bool mPrevScreenModeMaximized;
+
+    /** Flag to indicate an edits save/rollback for active layer is in progress
+     * @note added in QGIS 1.9
+     */
+    bool mSaveRollbackInProgress;
 
     QgsPythonUtils* mPythonUtils;
 

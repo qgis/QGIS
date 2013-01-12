@@ -226,6 +226,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
+#include "qgsmaptoolrotatefeature.h"
 #include "qgsmaptoolmovevertex.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptoolpan.h"
@@ -382,9 +383,9 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
-    // why is this: it overrides the default cursor in the splitter in the dialog
-    // commenting it now till somebody tells us why it is necessary :-)
-    //QApplication::setOverrideCursor( Qt::ArrowCursor );
+    bool waiting = QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::WaitCursor;
+    if ( waiting )
+      QApplication::setOverrideCursor( Qt::ArrowCursor );
 
     if ( mySelector->exec() )
     {
@@ -393,7 +394,8 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
       srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
-    //QApplication::restoreOverrideCursor();
+    if ( waiting )
+      QApplication::restoreOverrideCursor();
 
     delete mySelector;
   }
@@ -514,6 +516,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateRecentProjectPaths();
   updateProjectFromTemplates();
   legendLayerSelectionChanged();
+  mSaveRollbackInProgress = false;
   activateDeactivateLayerRelatedActions( NULL );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
@@ -745,6 +748,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mPinLabels;
   delete mMapTools.mShowHideLabels;
   delete mMapTools.mMoveLabel;
+  delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
   delete mMapTools.mOffsetCurve;
@@ -881,6 +885,8 @@ void QgisApp::createActions()
   connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
   connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
+  connect( mActionRotateFeature, SIGNAL( triggered() ), this, SLOT( rotateFeature() ) );
+
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
   connect( mActionSplitFeatures, SIGNAL( triggered() ), this, SLOT( splitFeatures() ) );
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
@@ -944,6 +950,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
+  connect( mActionAddOracleLayer, SIGNAL( triggered() ), this, SLOT( addOracleLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
@@ -1047,19 +1054,24 @@ void QgisApp::createActions()
 
 #ifndef HAVE_SPATIALITE
   delete mActionNewSpatialiteLayer;
-  mActionNewSpatialiteLayer = NULL;
+  mActionNewSpatialiteLayer = 0;
   delete mActionAddSpatiaLiteLayer;
-  mActionAddSpatiaLiteLayer = NULL;
+  mActionAddSpatiaLiteLayer = 0;
 #endif
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
-  mActionAddPgLayer = NULL;
+  mActionAddPgLayer = 0;
 #endif
 
 #ifndef HAVE_MSSQL
   delete mActionAddMssqlLayer;
-  mActionAddMssqlLayer = NULL;
+  mActionAddMssqlLayer = 0;
+#endif
+
+#ifndef HAVE_ORACLE
+  delete mActionAddOracleLayer;
+  mActionAddOracleLayer = 0;
 #endif
 
 }
@@ -1134,6 +1146,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureAngle );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionMoveFeature );
+  mMapToolGroup->addAction( mActionRotateFeature );
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   mMapToolGroup->addAction( mActionOffsetCurve );
@@ -1646,6 +1659,9 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
+#ifdef HAVE_ORACLE
+  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.png" ) );
+#endif
   mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ) );
   mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.png" ) );
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
@@ -1685,6 +1701,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionEditPaste.png" ) );
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ) );
   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.png" ) );
+  mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
@@ -1874,6 +1891,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mAddFeature->setAction( mActionAddFeature );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
+  mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
+  mMapTools.mRotateFeature->setAction( mActionRotateFeature );
   //need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
   ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
@@ -1917,6 +1936,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
   mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
+
   mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
   mMapTools.mRotateLabel->setAction( mActionRotateLabel );
   mMapTools.mChangeLabelProperties = new QgsMapToolChangeLabelProperties( mMapCanvas );
@@ -2826,11 +2846,9 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   }
 }
 
-#ifndef HAVE_POSTGRESQL
-void QgisApp::addDatabaseLayer() {}
-#else
 void QgisApp::addDatabaseLayer()
 {
+#ifdef HAVE_POSTGRESQL
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2849,8 +2867,8 @@ void QgisApp::addDatabaseLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   pgs->exec();
   delete pgs;
-} // QgisApp::addDatabaseLayer()
 #endif
+} // QgisApp::addDatabaseLayer()
 
 void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
 {
@@ -2919,11 +2937,9 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 }
 
 
-#ifndef HAVE_SPATIALITE
-void QgisApp::addSpatiaLiteLayer() {}
-#else
 void QgisApp::addSpatiaLiteLayer()
 {
+#ifdef HAVE_SPATIALITE
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2940,15 +2956,12 @@ void QgisApp::addSpatiaLiteLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-
-} // QgisApp::addSpatiaLiteLayer()
 #endif
+} // QgisApp::addSpatiaLiteLayer()
 
-#ifndef HAVE_MSSQL
-void QgisApp::addMssqlLayer() {}
-#else
 void QgisApp::addMssqlLayer()
 {
+#ifdef HAVE_MSSQL
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2965,9 +2978,30 @@ void QgisApp::addMssqlLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-
-} // QgisApp::addMssqlLayer()
 #endif
+} // QgisApp::addMssqlLayer()
+
+void QgisApp::addOracleLayer()
+{
+#ifdef HAVE_ORACLE
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // show the Oracle dialog
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "oracle" ), this ) );
+  if ( !dbs )
+  {
+    QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
+    return;
+  }
+  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  dbs->exec();
+  delete dbs;
+#endif
+} // QgisApp::addOracleLayer()
 
 void QgisApp::addWmsLayer()
 {
@@ -3388,7 +3422,7 @@ bool QgisApp::addProject( QString projectFile )
       {
         // create the notification widget for macros
 
-        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning:" ),
+        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning" ),
                             tr( "project macros have been disabled." ),
                             QgsApplication::getThemeIcon( "/mIconWarn.png" ),
                             mInfoBar );
@@ -3403,7 +3437,7 @@ bool QgisApp::addProject( QString projectFile )
         macroMsg->layout()->addWidget( btnEnableMacros );
 
         // display the macros notification widget
-        mInfoBar->pushWidget( macroMsg, 1 );
+        mInfoBar->pushWidget( macroMsg, QgsMessageBar::WARNING );
       }
     }
   }
@@ -4005,7 +4039,10 @@ void QgisApp::labeling()
   QgsMapLayer* layer = activeLayer();
   if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning( this, tr( "Labeling" ), tr( "Please select a vector layer first." ) );
+    messageBar()->pushMessage( tr( "Labeling Options" ),
+                               tr( "Please select a vector layer first" ),
+                               QgsMessageBar::INFO,
+                               5 );
     return;
   }
 
@@ -4560,6 +4597,11 @@ void QgisApp::showHideLabels()
 void QgisApp::moveLabel()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveLabel );
+}
+
+void QgisApp::rotateFeature()
+{
+  mMapCanvas->setMapTool( mMapTools.mRotateFeature );
 }
 
 void QgisApp::rotateLabel()
@@ -5224,8 +5266,12 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
     return;
 
+  if ( vlayer == activeLayer() )
+    mSaveRollbackInProgress = true;
+
   if ( !vlayer->commitChanges() )
   {
+    mSaveRollbackInProgress = false;
     QMessageBox::information( 0,
                               tr( "Error" ),
                               tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
@@ -5246,8 +5292,12 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( !vlayer || !vlayer->isEditable() )
     return;
 
+  if ( vlayer == activeLayer() && leaveEditable )
+    mSaveRollbackInProgress = true;
+
   if ( !vlayer->rollBack() )
   {
+    mSaveRollbackInProgress = false;
     QMessageBox::information( 0,
                               tr( "Error" ),
                               tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
@@ -5730,7 +5780,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   // display errors in message bar after duplication of layers
   foreach ( QWidget * msgBar, msgBars )
   {
-    mInfoBar->pushWidget( msgBar, 1 );
+    mInfoBar->pushWidget( msgBar, QgsMessageBar::WARNING );
   }
 
 }
@@ -7285,6 +7335,7 @@ void QgisApp::layerEditStateChanged()
   if ( layer && layer == activeLayer() )
   {
     activateDeactivateLayerRelatedActions( layer );
+    mSaveRollbackInProgress = false;
   }
 }
 
@@ -7357,6 +7408,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionFeatureAction->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
@@ -7425,7 +7477,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
 
-    if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
+    if ( !vlayer->isEditable() && mMapCanvas->mapTool()
+         && mMapCanvas->mapTool()->isEditTool() && !mSaveRollbackInProgress )
     {
       mMapCanvas->setMapTool( mNonEditMapTool );
     }
@@ -7498,6 +7551,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( true );
         mActionDeletePart->setEnabled( true );
         mActionMoveFeature->setEnabled( true );
+        mActionRotateFeature->setEnabled( true );
         mActionNodeTool->setEnabled( true );
       }
       else
@@ -7505,6 +7559,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( false );
         mActionDeletePart->setEnabled( false );
         mActionMoveFeature->setEnabled( false );
+        mActionRotateFeature->setEnabled( false );
         mActionOffsetCurve->setEnabled( false );
         mActionNodeTool->setEnabled( false );
       }
@@ -7629,6 +7684,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );

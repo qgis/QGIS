@@ -24,6 +24,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
+#include "qgsdatasourceuri.h"
+
+#include <QProgressDialog>
 
 #include <QProgressDialog>
 
@@ -176,6 +179,17 @@ bool QgsVectorLayerImport::flushBuffer()
   return true;
 }
 
+bool QgsVectorLayerImport::createSpatialIndex()
+{
+  if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
+  {
+    return mProvider->createSpatialIndex();
+  }
+  else
+  {
+    return true;
+  }
+}
 
 QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
@@ -383,6 +397,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
   int errors = writer->errorCount();
+
+  if ( !writer->createSpatialIndex() )
+  {
+    if ( writer->hasError() && errorMessage )
+    {
+      *errorMessage += "\n" + writer->errorMessage();
+    }
+  }
 
   delete writer;
 

@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmaptooledit.h"
+#include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
@@ -119,4 +121,20 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   return 0;
 }
 
+void QgsMapToolEdit::notifyNotVectorLayer()
+{
+  QgisApp::instance()->messageBar()->pushMessage(
+    tr( "No active vector layer" ),
+    tr( "Choose a vector layer in the legend" ),
+    QgsMessageBar::INFO,
+    5 );
+}
 
+void QgsMapToolEdit::notifyNotEditableLayer()
+{
+  QgisApp::instance()->messageBar()->pushMessage(
+    tr( "Layer not editable" ),
+    tr( "Use 'Toggle Editing' to make it editable" ),
+    QgsMessageBar::INFO,
+    5 );
+}

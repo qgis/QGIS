@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -154,6 +154,7 @@
     <addaction name="mActionAddPgLayer"/>
     <addaction name="mActionAddSpatiaLiteLayer"/>
     <addaction name="mActionAddMssqlLayer"/>
+    <addaction name="mActionAddOracleLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
     <addaction name="mActionAddWcsLayer"/>
@@ -265,6 +266,7 @@
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
+   <addaction name="mActionAddOracleLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
@@ -304,6 +306,7 @@
    </attribute>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
+   <addaction name="mActionRotateFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
@@ -1188,6 +1191,18 @@
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
+  <action name="mActionAddOracleLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.png</normaloff>:/images/themes/default/mActionAddOracleLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Oracle Spatial Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
   <action name="mActionAddWmsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1953,6 +1968,21 @@ Acts on currently active editable layer</string>
    <property name="toolTip">
     <string>Save Layer Edits</string>
    </property>
+  </action>
+  <action name="mActionRotateFeature">
+  <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+     </property>
+     <property name="text">
+      <string>Rotate Feature(s)</string>
+     </property>
+     <property name="toolTip">
+      <string>Rotate Feature(s)</string>
+     </property>
   </action>
  </widget>
  <resources>

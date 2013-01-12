@@ -582,7 +582,6 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   {
     return 0;
   }
-  return 0;
 }
 
 bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )
@@ -1229,7 +1228,7 @@ GEOSGeometry* QgsGeometry::asGeos()
 QGis::WkbType QgsGeometry::wkbType()
 {
   unsigned char *geom = asWkb(); // ensure that wkb representation exists
-  if ( geom )
+  if ( geom && wkbSize() >= 5 )
   {
     unsigned int wkbType;
     memcpy( &wkbType, ( geom + 1 ), sizeof( wkbType ) );
@@ -1250,18 +1249,29 @@ QGis::GeometryType QgsGeometry::type()
     exportGeosToWkb();
   }
 
-  QGis::WkbType type = wkbType();
-  if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D ||
-       type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
-    return QGis::Point;
-  if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D ||
-       type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
-    return QGis::Line;
-  if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D ||
-       type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
-    return QGis::Polygon;
+  switch ( wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      return QGis::Point;
 
-  return QGis::UnknownGeometry;
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+      return QGis::Line;
+
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+      return QGis::Polygon;
+
+    default:
+      return QGis::UnknownGeometry;
+  }
 }
 
 bool QgsGeometry::isMultipart()
@@ -4426,7 +4436,7 @@ QgsRectangle QgsGeometry::boundingBox()
     }
 
     default:
-      QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
+      QgsDebugMsg( QString( "Unknown WkbType %1 ENCOUNTERED" ).arg( wkbType ) );
       return QgsRectangle( 0, 0, 0, 0 );
       break;
 
