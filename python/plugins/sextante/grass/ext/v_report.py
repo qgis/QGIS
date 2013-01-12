@@ -22,15 +22,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from sextante.grass.ext import HtmlReportPostProcessor
+
 def postProcessResults(alg):    
-    htmlFile = alg.getOutputFromName('html').value   
-    found = False
-    f = open(htmlFile, "w")
-    f.write("<h2>v.report</h2>\n")                        
-    for line in alg.consoleOutput:
-        if found and not line.strip().endswith('exit'):
-            f.write(line + "<br>\n")
-        if 'v.report' in line:
-            found = True        
-    f.close()
+    HtmlReportPostProcessor.postProcessResults(alg)
     

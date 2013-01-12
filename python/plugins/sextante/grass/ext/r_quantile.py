@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    r_regression_line.py
+    r_quantile.py
     ---------------------
     Date                 : December 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -26,5 +26,4 @@ from sextante.grass.ext import HtmlReportPostProcessor
 
 def postProcessResults(alg):    
     HtmlReportPostProcessor.postProcessResults(alg)
-    
     
