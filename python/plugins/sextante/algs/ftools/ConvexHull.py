@@ -24,19 +24,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 from sextante.algs.ftools import ftools_utils
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterSelection import ParameterSelection
-from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 class ConvexHull(GeoAlgorithm):
 

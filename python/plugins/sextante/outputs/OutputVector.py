@@ -57,7 +57,7 @@ class OutputVector(Output):
                         to a QgsVectorFileWriter constructor
         @param crs      the crs of the layer to create
 
-        @return writer  instance of the vectoe writer class
+        @return writer  instance of the vector writer class
         '''
 
         if self.encoding is None:

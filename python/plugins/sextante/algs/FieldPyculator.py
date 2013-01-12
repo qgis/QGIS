@@ -31,10 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.core.QGisLayers import QGisLayers
-import os
-from PyQt4 import QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.parameters.ParameterBoolean import ParameterBoolean
 import sys
 
 

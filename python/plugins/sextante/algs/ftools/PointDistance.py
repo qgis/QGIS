@@ -104,7 +104,6 @@ class PointDistance(GeoAlgorithm):
         else:
             self.writer.writerow(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
 
-        inProvider = inLayer.dataProvider()
         targetProvider = targetLayer.dataProvider()
         targetProvider.select()
 

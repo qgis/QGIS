@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -33,11 +30,8 @@ from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteLog import SextanteLog
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-
 from sextante.outputs.OutputVector import OutputVector
 
 class SimplifyGeometries(GeoAlgorithm):

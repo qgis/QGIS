@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
