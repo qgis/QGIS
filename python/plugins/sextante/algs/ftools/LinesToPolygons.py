@@ -47,7 +47,7 @@ class LinesToPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         provider = layer.dataProvider()
         layer.select(layer.pendingAllAttributesList())
@@ -57,10 +57,10 @@ class LinesToPolygons(GeoAlgorithm):
 
         outFeat = QgsFeature()
 
-        current = 0        
+        current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:         
+        for inFeat in features:
             outGeomList = []
             if inFeat.geometry().isMultipart():
                 outGeomList = inFeat.geometry().asMultiPolyline()

@@ -47,7 +47,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     current = 0
     features = QGisLayers.features(layer)
     total = 100.0 / float(len(features))
-    
+
     # with dissolve
     if dissolve:
         first = True
@@ -57,7 +57,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 value = atMap[field].toDouble()[0]
             else:
                 value = distance
-    
+
             inGeom = QgsGeometry(inFeat.geometry())
             try:
                 outGeom = inGeom.buffer(float(value), segments)
@@ -73,7 +73,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
             except:
                 GEOS_EXCEPT = False
                 continue
-    
+
             current += 1
             progress.setPercentage(int(current * total))
         try:
@@ -89,7 +89,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 value = atMap[field].toDouble()[0]
             else:
                 value = distance
-    
+
             inGeom = QgsGeometry(inFeat.geometry())
             try:
                 outGeom = inGeom.buffer(float(value), segments)
@@ -103,10 +103,10 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
             except:
                 GEOS_EXCEPT = False
                 continue
-    
+
             current += 1
             progress.setPercentage(int(current * total))
-    
+
     del writer
 
     if not GEOS_EXCEPT:

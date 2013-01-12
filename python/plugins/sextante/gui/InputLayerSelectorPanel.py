@@ -56,7 +56,7 @@ class InputLayerSelectorPanel(QtGui.QWidget):
             path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
         else:
             path = ""
-            
+
         filename = QtGui.QFileDialog.getOpenFileName(self, "All files", path, "*.*")
         if filename:
             self.text.addItem(filename, filename)

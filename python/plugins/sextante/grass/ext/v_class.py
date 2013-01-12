@@ -24,6 +24,5 @@ __revision__ = '$Format:%H$'
 
 from sextante.grass.ext import HtmlReportPostProcessor
 
-def postProcessResults(alg):    
+def postProcessResults(alg):
     HtmlReportPostProcessor.postProcessResults(alg)
-    

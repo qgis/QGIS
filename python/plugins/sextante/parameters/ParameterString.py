@@ -26,7 +26,7 @@ __revision__ = '$Format:%H$'
 from sextante.parameters.Parameter import Parameter
 
 class ParameterString(Parameter):
-    
+
     NEWLINE = "\n"
     ESCAPED_NEWLINE = "\\n"
 

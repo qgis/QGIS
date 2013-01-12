@@ -30,21 +30,21 @@ from PyQt4.QtCore import *
 class SextanteTableWriter:
 
     def __init__(self, fileName, encoding, fields):
-        self.fileName = fileName        
+        self.fileName = fileName
         self.writer = None
 
         if encoding is None:
             settings = QSettings()
             encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
-        
+
         if fileName.endswith("csv"):
-            fileName += ".csv"                
+            fileName += ".csv"
             file = open(fileName, "w")
             file.write(";".join(field.name() for field in fields))
             file.write("\n")
             file.close()
 
-    def addFeature(self, values):                    
+    def addFeature(self, values):
         file = open(self.fileName, "a")
         file.write(";".join([value.toString() for value in values]))
         file.write("\n")

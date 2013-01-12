@@ -51,7 +51,7 @@ class ExtractNodes(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         provider = layer.dataProvider()
         layer.select(layer.pendingAllAttributesList())
@@ -66,7 +66,7 @@ class ExtractNodes(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features: 
+        for inFeat in features:
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
 

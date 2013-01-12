@@ -39,7 +39,7 @@ class ParameterNumber(Parameter):
         except:
             self.default = default
             self.isInteger = False
-        self.min = minValue                
+        self.min = minValue
         self.max = maxValue
         self.value = None
 
@@ -51,9 +51,9 @@ class ParameterNumber(Parameter):
             if (float(n) - int(float(n)) == 0):
                 value = int(float(n))
             else:
-                value = float(n)            
+                value = float(n)
             if self.min is not None:
-                if value < self.min:                    
+                if value < self.min:
                     return False
             if self.max is not None:
                 if value > self.max:

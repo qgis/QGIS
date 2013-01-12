@@ -120,10 +120,10 @@ class ExtentFromLayer(GeoAlgorithm):
         outFeat = QgsFeature()
 
         provider = layer.dataProvider()
-        provider.select()                
+        provider.select()
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:         
+        for inFeat in features:
             rect = inFeat.geometry().boundingBox()
             minx = rect.xMinimum()
             miny = rect.yMinimum()

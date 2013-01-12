@@ -48,7 +48,7 @@ class Dissolve(GeoAlgorithm):
     #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/dissolve.png")
     #===========================================================================
 
-    def processAlgorithm(self, progress):        
+    def processAlgorithm(self, progress):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
@@ -125,7 +125,7 @@ class Dissolve(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Dissolve"
         self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(Dissolve.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))        
+        self.addParameter(ParameterVector(Dissolve.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL, "Dissolve all (do not use field)", True))
         self.addParameter(ParameterTableField(Dissolve.FIELD, "Unique ID field",Dissolve.INPUT ))
         self.addOutput(OutputVector(Dissolve.OUTPUT, "Dissolved"))

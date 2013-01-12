@@ -65,12 +65,12 @@ class ReprojectLayer(GeoAlgorithm):
 
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
-        
+
         outFeat = QgsFeature()
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for f in features: 
+        for f in features:
             geom = f.geometry()
             geom.transform(crsTransform)
             outFeat.setGeometry(geom)

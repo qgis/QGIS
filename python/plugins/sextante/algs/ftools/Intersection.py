@@ -111,7 +111,7 @@ class Intersection(GeoAlgorithm):
 
         else:
             nFeat = vproviderA.featureCount()
-            vproviderA.rewind()          
+            vproviderA.rewind()
             while vproviderA.nextFeature( inFeatA ):
               nElement += 1
               progress.setPercentage(int(nElement/nFeat * 100))
@@ -139,7 +139,7 @@ class Intersection(GeoAlgorithm):
                 except:
                   GEOS_EXCEPT = False
                   break
-              
+
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")

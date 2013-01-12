@@ -53,7 +53,7 @@ class FieldsPyculator(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Advanced Python field calculator"
         self.group = "Vector table tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))        
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
         self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
@@ -63,7 +63,7 @@ class FieldsPyculator(GeoAlgorithm):
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD_NAME)
         code = self.getParameterValue(self.FORMULA)
-        globalExpression = self.getParameterValue(self.GLOBAL)        
+        globalExpression = self.getParameterValue(self.GLOBAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = layer.dataProvider()
@@ -108,13 +108,13 @@ class FieldsPyculator(GeoAlgorithm):
                                  "Field code block can't be executed! %s \n %s"
                                  (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
-        #run              
+        #run
         if need_attrs:
             attr_ind = vprovider.attributeIndexes()
         else:
             attr_ind = []
         vprovider.select(attr_ind, QgsRectangle(), True)
-    
+
         features = QGisLayers.features(layer)
         nFeatures = len(features)
         nElement = 1
@@ -122,26 +122,26 @@ class FieldsPyculator(GeoAlgorithm):
             progress.setPercentage(int((100 * nElement)/nFeatures))
             attrMap = feat.attributeMap()
             feat_id = feat.id()
-    
+
             #add needed vars
             if need_id:
                 new_ns['__id'] = feat_id
-    
+
             if need_geom:
                 geom = feat.geometry()
                 new_ns['__geom'] = geom
-    
+
             if need_attrs:
                 attr = []
                 for num,a in attrMap.iteritems():
                     attr.append(self.Qvar2py(a))
                 new_ns['__attr'] = attr
-    
+
             #clear old result
             if new_ns.has_key(self.RESULT_VAR_NAME):
                 del new_ns[self.RESULT_VAR_NAME]
-    
-    
+
+
             #exec
             #try:
             exec bytecode in new_ns
@@ -154,21 +154,21 @@ class FieldsPyculator(GeoAlgorithm):
             #            unicode(sys.exc_info()[1]),
             #            unicode(feat_id)))
             #===============================================================
-    
+
             #check result
             if not new_ns.has_key(self.RESULT_VAR_NAME):
                 raise GeoAlgorithmExecutionException("FieldPyculator code execute error\n" +
                         "Field code block does not return '%s1' variable! Please declare this variable in your code!" %
                         self.RESULT_VAR_NAME)
-    
-    
+
+
             #write feature
             nElement += 1
             outFeat.setGeometry( feat.geometry() )
             outFeat.setAttributeMap( attrMap )
             outFeat.addAttribute(len(vprovider.fields()), QVariant(new_ns[self.RESULT_VAR_NAME]))
             writer.addFeature(outFeat)
-    
+
         del writer
 
 

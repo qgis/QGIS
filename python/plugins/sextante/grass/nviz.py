@@ -53,12 +53,12 @@ class nviz(GeoAlgorithm):
         self.addParameter(ParameterMultipleInput(nviz.VECTOR, "Vector layers", ParameterMultipleInput.TYPE_VECTOR_ANY, True))
         self.addParameter(ParameterExtent(nviz.GRASS_REGION_EXTENT_PARAMETER, "GRASS region extent"))
         self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize (leave 0 for default)", 0, None, 0.0))
-        
+
     def processAlgorithm(self, progress):
         commands = []
         vector = self.getParameterValue(self.VECTOR);
         elevation = self.getParameterValue(self.ELEVATION);
-        
+
         region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(",")
         command = "g.region "
@@ -68,11 +68,11 @@ class nviz(GeoAlgorithm):
         command +=" w=" + str(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command +=" res=" + str(cellsize);            
+            command +=" res=" + str(cellsize);
         else:
             command +=" res=" + str(self.getDefaultCellsize())
         commands.append(command)
-        
+
         command = "nviz"
         if vector:
             layers = vector.split(";")
@@ -116,7 +116,7 @@ class nviz(GeoAlgorithm):
         command +=" out=" + destFilename;
         command +=" --overwrite -o"
         return command, destFilename
-    
+
     def getDefaultCellsize(self):
         cellsize = 0
         for param in self.parameters:

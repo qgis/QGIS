@@ -109,7 +109,7 @@ class Difference(GeoAlgorithm):
         # there is no selection in input layer
         else:
             nFeat = vproviderA.featureCount()
-            vproviderA.rewind()          
+            vproviderA.rewind()
             while vproviderA.nextFeature( inFeatA ):
               nElement += 1
               add = True
@@ -136,7 +136,7 @@ class Difference(GeoAlgorithm):
                 except:
                   FEATURE_EXCEPT = False
                   continue
-              
+
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing difference")

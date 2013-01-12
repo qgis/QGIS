@@ -61,8 +61,8 @@ from sextante.algs.ftools.SelectByLocation import SelectByLocation
 from sextante.algs.ftools.Union import Union
 from sextante.algs.ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
 from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_algorithm,
-    mmqgisx_delete_duplicate_geometries_algorithm,   
-    mmqgisx_geometry_convert_algorithm,  
+    mmqgisx_delete_duplicate_geometries_algorithm,
+    mmqgisx_geometry_convert_algorithm,
     mmqgisx_grid_algorithm, mmqgisx_gridify_algorithm,
     mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,
     mmqgisx_label_point_algorithm, mmqgisx_merge_algorithm,
@@ -95,7 +95,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
-                        MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(), 
+                        MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
                         LinesToPolygons(), ExtractNodes(),
                         # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),

@@ -85,4 +85,4 @@ class RandomSelection(GeoAlgorithm):
 
         layer.setSelectedFeatures(selran)
         self.setOutputValue(self.OUTPUT, filename)
-            
+

@@ -54,7 +54,7 @@ class Delaunay(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, "Delaunay triangulation"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         provider = layer.dataProvider()
         provider.select()
@@ -69,7 +69,7 @@ class Delaunay(GeoAlgorithm):
 
         pts = []
         ptDict = {}
-        ptNdx = -1        
+        ptNdx = -1
         c = voronoi.Context()
         features = QGisLayers.features(layer)
         for inFeat in features:

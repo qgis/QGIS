@@ -51,13 +51,13 @@ class SimplifyGeometries(GeoAlgorithm):
         self.group = "Vector geometry tools"
 
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterNumber(self.TOLERANCE, "Tolerance", 0.0, 10000000.0, 1.0))        
+        self.addParameter(ParameterNumber(self.TOLERANCE, "Tolerance", 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
-        tolerance =self.getParameterValue(self.TOLERANCE)        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        tolerance =self.getParameterValue(self.TOLERANCE)
 
         pointsBefore = 0
         pointsAfter = 0
@@ -68,22 +68,22 @@ class SimplifyGeometries(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), provider.crs())
 
-        current = 0        
+        current = 0
         selection = QGisLayers.features(layer)
-        total =  100.0 / float(len(selection))            
+        total =  100.0 / float(len(selection))
         for f in selection:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributeMap()            
+            attrMap = f.attributeMap()
             pointsBefore += self.geomVertexCount(featGeometry)
             newGeometry = featGeometry.simplify(tolerance)
-            pointsAfter += self.geomVertexCount(newGeometry)            
+            pointsAfter += self.geomVertexCount(newGeometry)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributeMap(attrMap)
             writer.addFeature(feature)
             current += 1
             progress.setPercentage(int(current * total))
-    
+
         del writer
 
         SextanteLog.addToLog(SextanteLog.LOG_INFO, "Simplify: Input geometries have been simplified from"

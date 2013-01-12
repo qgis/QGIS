@@ -71,11 +71,11 @@ class QGisLayers:
     def getTables():
         layers = QGisLayers.iface.legendInterface().layers()
         tables = list()
-        for layer in layers:            
+        for layer in layers:
             if layer.type() == layer.VectorLayer :
                 uri = unicode(layer.source())
                 if uri.lower().endswith("csv") or uri.lower().endswith("dbf") or uri.lower().endswith("shp"):
-                    tables.append(layer)                
+                    tables.append(layer)
         return tables
 
     @staticmethod

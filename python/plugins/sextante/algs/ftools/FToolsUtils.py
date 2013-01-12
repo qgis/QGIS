@@ -29,12 +29,12 @@ from PyQt4.QtCore import *
 from qgis.core import *
 
 def createSpatialIndex(layer):
-    provider = layer.provider()    
+    provider = layer.provider()
     idx = QgsSpatialIndex()
     provider.rewind()
     provider.select()
     features = QGisLayers.features(layer)
-    for ft in features:    
+    for ft in features:
         idx.insertFeature(ft)
     return idx
 

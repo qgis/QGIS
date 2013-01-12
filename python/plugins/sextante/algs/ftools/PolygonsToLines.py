@@ -70,7 +70,7 @@ class PolygonsToLines(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:  
+        for inFeat in features:
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
             lineList = self.extractAsLine(inGeom)

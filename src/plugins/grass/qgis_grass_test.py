@@ -28,9 +28,9 @@
 """
 ***************************************************************************
  GRASS Direct test - to be run in GRASS shell
- 
+
  - collects list of raster layers
- - exports GRASS layers on low resolution to temporary GeoTIFFs 
+ - exports GRASS layers on low resolution to temporary GeoTIFFs
  - runs GRASS modules in standard and direct mode and compares results
  - writes out report
 ***************************************************************************
@@ -52,7 +52,7 @@ class Test:
       print "QGIS_PREFIX_PATH environment variable not set."
       sys.exit ( 1 )
 
-    self.size = 10 
+    self.size = 10
     self.reportStr = ""
     pass
 
@@ -82,14 +82,14 @@ class Test:
     print "%s rasters found, using first %s" % ( len( rasters), max_rasters )
     rasters = rasters[0:1]
 
-    print "Exporting rasters" 
+    print "Exporting rasters"
     for raster in rasters:
       print raster
       output = "%s/%s.tif" % ( files_dir, raster )
       self.srun( ["g.region", "rast=%s" % raster, "cols=%s" % self.size, "rows=%s" % self.size ] )
       self.srun( ["r.out.gdal", "input=%s" % raster, "output=%s" % output] )
 
-    # run modules 
+    # run modules
     count = 0
     for module in self.modules():
       for raster in rasters:
@@ -98,20 +98,20 @@ class Test:
         # --- native ---
         self.srun( ["g.region", "rast=%s" % raster, "cols=%s" % self.size, "rows=%s" % self.size ] )
         output = "qgistest1"
-        # clean old 
+        # clean old
         self.srun( ["g.remove", "-f", "rast=%s" % output ] )
         # substitute rasters
         native_args = module.replace("R1",raster).replace("RO1",output).split(" ");
         (code, out, err) = self.run( native_args )
         if code != 0:
           self.report( "Native failed: %s" % " ".join(native_args) )
-        # export           
+        # export
         native_output_file = "%s/%s-%s-native.tif" % ( files_dir, module_name, raster )
         self.srun( ["r.out.gdal", "input=%s" % output, "output=%s" % native_output_file] )
         self.srun( ["g.remove", "-f", "rast=%s" % output ] )
 
         # --- direct ---
-        direct_input_file = "%s/%s.tif" % ( files_dir, raster ) 
+        direct_input_file = "%s/%s.tif" % ( files_dir, raster )
         direct_output_file = "%s/%s-%s-direct.tif" % ( files_dir, module_name, raster )
 
         # substitute rasters
@@ -147,9 +147,9 @@ class Test:
         (code, out, err) = self.run( direct_args, env )
         print "code = %s" % code
         if code != 0:
-          self.report( "Direct failed: %s\n%s\n%s" % (" ".join(direct_args), out, err) ) 
-        # TODO: compare native x direct output 
-    
+          self.report( "Direct failed: %s\n%s\n%s" % (" ".join(direct_args), out, err) )
+        # TODO: compare native x direct output
+
   def run( self, args, env=None, input = None, exit_on_error = False ):
     cmd = " ".join(args)
     print cmd
@@ -160,7 +160,7 @@ class Test:
     if p.returncode != 0 and exit_on_error:
       msg = "Failed:\n" + str(com[0]) + "\n" + str(com[1])
       raise Exception( msg )
-      
+
     return (p.returncode, com[0], com[1] ) # return stdout
 
   # simple run

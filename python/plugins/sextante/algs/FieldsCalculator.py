@@ -64,12 +64,12 @@ class FieldsCalculator(GeoAlgorithm):
         vprovider.select(allAttrs)
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs())        
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        features = QGisLayers.features(vlayer)                
+        features = QGisLayers.features(vlayer)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement) / nFeat))
             attrs = inFeat.attributeMap()
