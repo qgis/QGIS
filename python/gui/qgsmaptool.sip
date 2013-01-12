@@ -28,7 +28,7 @@ class QgsMapTool : QObject
 %End
 
   public:
-    
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -118,5 +118,5 @@ class QgsMapTool : QObject
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoordinates( const QgsPoint& point );
 
-   
+
 };

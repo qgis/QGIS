@@ -20,7 +20,7 @@ class QgsGraphDirector : QObject
     sipClass = NULL;
 %End
 
-    
+
   signals:
     void buildProgress( int, int ) const;
     void buildMessage( QString ) const;
@@ -43,9 +43,9 @@ class QgsGraphDirector : QObject
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,
                             QVector< QgsPoint> &tiedPoints /Out/ );
-    
+
     void addProperter( QgsArcProperter* prop /Transfer/ ) ;
-    
+
     /**
      * return Director name
      */

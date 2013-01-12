@@ -4,7 +4,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 %TypeHeaderCode
 #include <qgsrasterformatsaveoptionswidget.h>
 %End
- 
+
   public:
 
     enum Type
