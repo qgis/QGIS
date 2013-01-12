@@ -30,6 +30,11 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
+
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  itemPropertiesWidget->showBackgroundGroup( false );
+  itemPropertiesWidget->showFrameGroup( false );
+
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
