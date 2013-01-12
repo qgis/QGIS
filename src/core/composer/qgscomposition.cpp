@@ -868,6 +868,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
     QgsComposerShape* newShape = new QgsComposerShape( this );
     newShape->readXML( currentComposerShapeElem, doc );
+    //new shapes should default to symbol v2
+    newShape->setUseSymbolV2( true );
     if ( pos )
     {
       if ( pasteInPlace )

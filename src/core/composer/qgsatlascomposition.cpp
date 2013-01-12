@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgscomposerlabel.h"
+#include "qgscomposershape.h"
 #include "qgspaperitem.h"
 #include "qgsmaplayerregistry.h"
 
@@ -373,6 +374,14 @@ void QgsAtlasComposition::prepareForFeature( int featureI )
   for ( QList<QgsComposerLabel*>::iterator lit = labels.begin(); lit != labels.end(); ++lit )
   {
     ( *lit )->setExpressionContext( &mCurrentFeature, mCoverageLayer );
+  }
+
+  // update shapes (in case they use data defined symbology with atlas properties)
+  QList<QgsComposerShape*> shapes;
+  mComposition->composerItems( shapes );
+  for ( QList<QgsComposerShape*>::iterator lit = shapes.begin(); lit != shapes.end(); ++lit )
+  {
+    ( *lit )->update();
   }
 
   // update page background (in case it uses data defined symbology with atlas properties)

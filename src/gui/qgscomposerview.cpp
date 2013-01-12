@@ -399,6 +399,8 @@ void QgsComposerView::addShape( Tool currentTool )
   {
     QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
     composerShape->setShapeType( shape );
+    //new shapes use symbol v2 by default
+    composerShape->setUseSymbolV2( true );
     composition()->addComposerShape( composerShape );
     removeRubberBand();
     emit actionFinished();
