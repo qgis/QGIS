@@ -43,16 +43,23 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     Q_OBJECT
 
   public:
+    enum MessageLevel
+    {
+      INFO = 0,
+      WARNING = 1,
+      CRITICAL = 2
+    };
+
     QgsMessageBar( QWidget *parent = 0 );
     ~QgsMessageBar();
 
     /*! display a widget on the bar after hiding the currently visible one
      *  and putting it in a stack
      * @param widget widget to add
-     * @param level is 0 for information, 1 for warning, 2 for critical
+     * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    void pushWidget( QWidget *widget, int level = 0, int duration = 0 );
+    void pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar

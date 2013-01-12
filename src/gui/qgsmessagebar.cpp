@@ -228,22 +228,22 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   emit widgetAdded( item->widget() );
 }
 
-void QgsMessageBar::pushWidget( QWidget *widget, int level, int duration )
+void QgsMessageBar::pushWidget( QWidget *widget, MessageLevel level, int duration )
 {
   resetCountdown();
 
   QString stylesheet;
-  if ( level >= 2 )
+  if ( level >= CRITICAL )
   {
     stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
                  "QLabel { color: white; } ";
   }
-  else if ( level == 1 )
+  else if ( level == WARNING )
   {
     stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
                  "QLabel { color: black; } ";
   }
-  else if ( level <= 0 )
+  else if ( level <= INFO )
   {
     stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
                  "QLabel { color: #2554a1; } ";
