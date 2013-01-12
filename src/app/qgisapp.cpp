@@ -1891,8 +1891,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mAddFeature->setAction( mActionAddFeature );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
-  mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas);
-  mMapTools.mRotateFeature->setAction(mActionRotateFeature);
+  mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
+  mMapTools.mRotateFeature->setAction( mActionRotateFeature );
   //need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
   ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
@@ -3422,7 +3422,7 @@ bool QgisApp::addProject( QString projectFile )
       {
         // create the notification widget for macros
 
-        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning:" ),
+        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning" ),
                             tr( "project macros have been disabled." ),
                             QgsApplication::getThemeIcon( "/mIconWarn.png" ),
                             mInfoBar );
@@ -4039,12 +4039,10 @@ void QgisApp::labeling()
   QgsMapLayer* layer = activeLayer();
   if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QWidget* msg = QgsMessageBar::createMessage(
-                     tr( "Labeling Options: " ),
-                     tr( "Please select a vector layer first." ) ,
-                     QgsApplication::getThemeIcon( "/mIconInfo.png" ),
-                     mInfoBar );
-    mInfoBar->pushWidget( msg, QgsMessageBar::WARNING, 5 );
+    messageBar()->pushMessage( tr( "Labeling Options" ),
+                               tr( "Please select a vector layer first" ),
+                               QgsMessageBar::INFO,
+                               5 );
     return;
   }
 

@@ -15,7 +15,6 @@
 
 #include "qgsmaptooledit.h"
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
@@ -124,20 +123,18 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
 
 void QgsMapToolEdit::notifyNotVectorLayer()
 {
-  QWidget* msg = QgsMessageBar::createMessage(
-                   QObject::tr( "No active vector layer: " ),
-                   QObject::tr( "Choose a vector layer in the legend" ) ,
-                   QgsApplication::getThemeIcon( "/mIconInfo.png" ),
-                   QgisApp::instance()->messageBar() );
-  QgisApp::instance()->messageBar()->pushWidget( msg, QgsMessageBar::WARNING, 5 );
+  QgisApp::instance()->messageBar()->pushMessage(
+    tr( "No active vector layer" ),
+    tr( "Choose a vector layer in the legend" ),
+    QgsMessageBar::INFO,
+    5 );
 }
 
 void QgsMapToolEdit::notifyNotEditableLayer()
 {
-  QWidget* msg = QgsMessageBar::createMessage(
-                   QObject::tr( "Layer not editable: " ),
-                   QObject::tr( "Use 'Toggle Editing' to make it editable" ) ,
-                   QgsApplication::getThemeIcon( "/mIconInfo.png" ),
-                   QgisApp::instance()->messageBar() );
-  QgisApp::instance()->messageBar()->pushWidget( msg, QgsMessageBar::WARNING, 5 );
+  QgisApp::instance()->messageBar()->pushMessage(
+    tr( "Layer not editable" ),
+    tr( "Use 'Toggle Editing' to make it editable" ),
+    QgsMessageBar::INFO,
+    5 );
 }

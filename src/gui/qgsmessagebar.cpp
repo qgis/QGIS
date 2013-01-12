@@ -280,7 +280,12 @@ QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text
 
   if ( !title.isEmpty() )
   {
-    QLabel *lblTitle = new QLabel( title, widget );
+    // add ':' to end of title
+    QString t = title.trimmed();
+    if ( !t.endsWith( ":" ) )
+      t += ":";
+
+    QLabel *lblTitle = new QLabel( t, widget );
     lblTitle->setObjectName( "mMsgTitle" );
     layout->addWidget( lblTitle );
   }
@@ -292,6 +297,25 @@ QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text
   layout->addWidget( lblText );
 
   return widget;
+}
+
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, MessageLevel level, int duration )
+{
+  QString msgIcon( "/mIconInfo.png" );
+  switch ( level )
+  {
+    case QgsMessageBar::CRITICAL:
+      msgIcon = QString( "/mIconCritical.png" );
+      break;
+    case QgsMessageBar::WARNING:
+      msgIcon = QString( "/mIconWarn.png" );
+      break;
+    default:
+      break;
+  }
+
+  QWidget *msg = QgsMessageBar::createMessage( title, text, QgsApplication::getThemeIcon( msgIcon ), this );
+  pushWidget( msg, level, duration );
 }
 
 void QgsMessageBar::updateCountdown()
