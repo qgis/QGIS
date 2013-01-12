@@ -89,6 +89,13 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    notifyNotVectorLayer();
+    return;
+  }
+
+  if ( !vlayer->isEditable() )
+  {
+    notifyNotEditableLayer();
     return;
   }
 
@@ -170,6 +177,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
 
 void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
 {
+  Q_UNUSED( e );
   if ( !mRubberBand )
   {
     return;
@@ -301,9 +309,6 @@ void QgsMapToolRotateFeature::activate()
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
     return;
   }
 
