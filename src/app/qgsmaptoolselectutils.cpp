@@ -16,6 +16,9 @@ email                : jpalmer at linz dot govt dot nz
 #include <limits>
 
 #include "qgsmaptoolselectutils.h"
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
@@ -35,10 +38,12 @@ QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canv
   if ( !canvas->currentLayer()
        || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
   {
-    QMessageBox::warning( canvas, QObject::tr( "No active vector layer" ),
-                          QObject::tr( "To select features, you must choose a "
-                                       "vector layer by clicking on its name in the legend"
-                                     ) );
+    QWidget* msg = QgsMessageBar::createMessage(
+                     QObject::tr( "No active vector layer: " ),
+                     QObject::tr( "To select features, choose a vector layer in the legend" ) ,
+                     QgsApplication::getThemeIcon( "/mIconInfo.png" ),
+                     QgisApp::instance()->messageBar() );
+    QgisApp::instance()->messageBar()->pushWidget( msg, QgsMessageBar::WARNING, 5 );
   }
   return vlayer;
 }

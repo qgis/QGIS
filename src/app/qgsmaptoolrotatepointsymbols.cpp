@@ -78,10 +78,17 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   mActiveLayer = currentVectorLayer();
   if ( !mActiveLayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
-  if ( mActiveLayer->geometryType() != QGis::Point || !mActiveLayer->isEditable() )
+  if ( !mActiveLayer->isEditable() )
+  {
+    notifyNotEditableLayer();
+    return;
+  }
+
+  if ( mActiveLayer->geometryType() != QGis::Point )
   {
     return;
   }

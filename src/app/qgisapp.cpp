@@ -4040,11 +4040,11 @@ void QgisApp::labeling()
   if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
     QWidget* msg = QgsMessageBar::createMessage(
-                     tr( "Labeling: " ),
+                     tr( "Labeling Options: " ),
                      tr( "Please select a vector layer first." ) ,
-                     QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                     QgsApplication::getThemeIcon( "/mIconInfo.png" ),
                      mInfoBar );
-    mInfoBar->pushWidget( msg, QgsMessageBar::WARNING, 4 );
+    mInfoBar->pushWidget( msg, QgsMessageBar::WARNING, 5 );
     return;
   }
 
