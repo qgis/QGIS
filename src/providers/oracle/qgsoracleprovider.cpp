@@ -1235,7 +1235,10 @@ bool QgsOracleProvider::determinePrimaryKey()
 
         if ( idx >= 0 )
         {
-          if ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong )
+          const QgsField &fld = mAttributeFields[idx];
+          if ( fld.type() == QVariant::Int ||
+               fld.type() == QVariant::LongLong ||
+               ( fld.type() == QVariant::Double && fld.precision() == 0 ) )
           {
             if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
             {
