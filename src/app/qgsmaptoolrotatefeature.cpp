@@ -27,7 +27,6 @@
 #include <limits>
 #include <math.h>
 #include "qgsvertexmarker.h"
-#include "qgsmessagebar.h"
 
 #define PI 3.14159265
 
@@ -135,7 +134,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
     }
 
     QgsRectangle bound = cf.geometry()->boundingBox();
-    mStartPointMapCoords = bound.center();
+    mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
     if ( !mAnchorPoint )
     {
@@ -184,7 +183,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
 
   //calculations for affine transformation
   double angle = -1 * mRotation * ( PI / 180 );
-  QgsPoint anchorPoint = mStartPointMapCoords;
+  QgsPoint anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
   double a = cos( angle );
   double b = -1 * sin( angle );
   double c = anchorPoint.x() - cos( angle ) * anchorPoint.x() + sin( angle ) * anchorPoint.y();
@@ -254,7 +253,7 @@ void QgsMapToolRotateFeature::resetAnchor()
   {
 
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
-    mStartPointMapCoords = bound.center();
+    mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
     mAnchorPoint->setCenter( mStartPointMapCoords );
 
@@ -316,7 +315,7 @@ void QgsMapToolRotateFeature::activate()
   {
 
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
-    mStartPointMapCoords = bound.center();
+    mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
     mAnchorPoint = new QgsVertexMarker( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
