@@ -515,6 +515,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateRecentProjectPaths();
   updateProjectFromTemplates();
   legendLayerSelectionChanged();
+  mSaveRollbackInProgress = false;
   activateDeactivateLayerRelatedActions( NULL );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
@@ -5253,8 +5254,12 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
     return;
 
+  if ( vlayer == activeLayer() )
+    mSaveRollbackInProgress = true;
+
   if ( !vlayer->commitChanges() )
   {
+    mSaveRollbackInProgress = false;
     QMessageBox::information( 0,
                               tr( "Error" ),
                               tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
@@ -5275,8 +5280,12 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( !vlayer || !vlayer->isEditable() )
     return;
 
+  if ( vlayer == activeLayer() && leaveEditable )
+    mSaveRollbackInProgress = true;
+
   if ( !vlayer->rollBack() )
   {
+    mSaveRollbackInProgress = false;
     QMessageBox::information( 0,
                               tr( "Error" ),
                               tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
@@ -7314,6 +7323,7 @@ void QgisApp::layerEditStateChanged()
   if ( layer && layer == activeLayer() )
   {
     activateDeactivateLayerRelatedActions( layer );
+    mSaveRollbackInProgress = false;
   }
 }
 
@@ -7454,7 +7464,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
 
-    if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
+    if ( !vlayer->isEditable() && mMapCanvas->mapTool()
+         && mMapCanvas->mapTool()->isEditTool() && !mSaveRollbackInProgress )
     {
       mMapCanvas->setMapTool( mNonEditMapTool );
     }
