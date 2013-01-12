@@ -30,7 +30,8 @@ import sys
 import os
 import code
 
-_init_commands = ["from qgis.core import *", "import qgis.utils"]
+_init_commands = ["from qgis.core import *", "import qgis.utils",
+                "from qgis.utils import iface"]
 _historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):

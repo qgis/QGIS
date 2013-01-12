@@ -125,7 +125,8 @@ class EditorOutput(QsciScintilla):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "## To access Quantum GIS environment from this console\n"
-                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
+                                             "## iface object (instance of QgisInterface class). \n"
+                                             "## Type help(iface) for more info and list of methods.\n\n")
         initText = self.setText(txtInit)
 
     def refreshLexerProperties(self):
