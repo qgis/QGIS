@@ -80,6 +80,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
     "QToolButton::menu-indicator { subcontrol-position: right bottom; subcontrol-origin: padding; bottom: 6px; }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
+  mCloseBtn->setIconSize( QSize( 18, 18 ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mCloseBtn->setMenu( mCloseMenu );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
