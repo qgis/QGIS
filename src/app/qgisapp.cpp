@@ -488,7 +488,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mInfoBar = new QgsMessageBar( centralWidget );
   mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
-  mInfoBarTimeout = settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  mMessageTimeout = settings.value( "/qgis/messageTimeout", 5 ).toInt();
 
   //set the focus to the map canvas
   mMapCanvas->setFocus();
