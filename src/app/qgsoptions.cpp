@@ -462,7 +462,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
   blockSignals( false );
 
-  mInfoBarTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
+  mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
@@ -1080,8 +1080,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/fontFamily", fontFamily );
   QgisApp::instance()->setAppStyleSheet();
 
-  settings.setValue( "/qgis/messageTimeout", mInfoBarTimeoutSpnBx->value() );
-  QgisApp::instance()->setMessageTimeout( mInfoBarTimeoutSpnBx->value() );
+  settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
+  QgisApp::instance()->setMessageTimeout( mMessageTimeoutSpnBx->value() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );

@@ -468,7 +468,7 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_28">
                     <item>
-                     <widget class="QLabel" name="mInfoBarTimeoutLabel">
+                     <widget class="QLabel" name="mMessageTimeoutLabel">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -494,7 +494,7 @@
                      </spacer>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mInfoBarTimeoutSpnBx">
+                     <widget class="QSpinBox" name="mMessageTimeoutSpnBx">
                       <property name="suffix">
                        <string> s</string>
                       </property>
