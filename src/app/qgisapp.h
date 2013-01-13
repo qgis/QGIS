@@ -1304,6 +1304,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUndoWidget* mUndoWidget;
 
     QgsBrowserDockWidget* mBrowserWidget;
+    QgsBrowserDockWidget* mBrowserWidget2;
 
     QgsSnappingDialog* mSnappingDialog;
 

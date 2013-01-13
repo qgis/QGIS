@@ -525,12 +525,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
 
-  mBrowserWidget = new QgsBrowserDockWidget( this );
+  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), this );
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
 
-  // create the GPS tool on starting QGIS - this is like the Browser
+  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), this );
+  mBrowserWidget2->setObjectName( "Browser2" );
+  addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
+  mBrowserWidget2->hide();
+
+  // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
   //create the dock widget
   mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );

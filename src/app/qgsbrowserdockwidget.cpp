@@ -213,12 +213,12 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     }
 
 };
-QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
+QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
 {
   setupUi( this );
 
-  setWindowTitle( tr( "Browser" ) );
+  setWindowTitle( name );
 
   mBrowserView = new QgsBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
