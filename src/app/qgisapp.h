@@ -1341,6 +1341,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
+    int mInfoBarTimeout;
 
     //! timeout for timed messages
     int mMessageTimeout;
