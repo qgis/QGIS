@@ -27,6 +27,7 @@
 #include <QTimer>
 #include <QGridLayout>
 #include <QMenu>
+#include <QMouseEvent>
 
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
@@ -45,15 +46,14 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
 
   mCountProgress = new QProgressBar( this );
 
-  mCountProgress->setStyleSheet( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
-                                 " border-radius: 2px; background: rgba(0, 0, 0, 0); }"
-                                 "QProgressBar::chunk { background-color: rgba(0, 0, 0, 50%); width: 5px; }" );
+  mCountStyleSheet = QString( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
+                              " border-radius: 2px; background: rgba(0, 0, 0, 0);"
+                              " image: url(:/images/themes/default/%1) }"
+                              "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
+
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
   mCountProgress->setObjectName( "mCountdown" );
-  mCountProgress->setToolTip( tr( "Countdown" ) );
-  mCountProgress->setMinimumWidth( 25 );
-  mCountProgress->setMaximumWidth( 25 );
-  mCountProgress->setMinimumHeight( 10 );
-  mCountProgress->setMaximumHeight( 10 );
+  mCountProgress->setFixedSize( 25, 14 );
   mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   mCountProgress->setTextVisible( false );
   mCountProgress->setRange( 0, 5 );
@@ -98,6 +98,25 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
 
 QgsMessageBar::~QgsMessageBar()
 {
+}
+
+void QgsMessageBar::mousePressEvent( QMouseEvent * e )
+{
+  // stop/start mCountdownTimer
+  QProgressBar *pb = static_cast<QProgressBar *>( childAt( e->pos() ) );
+  if ( pb && pb->objectName() == QString( "mCountdown" ) && e->button() == Qt::LeftButton )
+  {
+    if ( mCountdownTimer->isActive() )
+    {
+      mCountdownTimer->stop();
+      pb->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
+    }
+    else
+    {
+      mCountdownTimer->start();
+      pb->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+    }
+  }
 }
 
 void QgsMessageBar::popItem( QgsMessageBarItem *item )
@@ -340,6 +359,7 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
   mCountProgress->setVisible( false );
 }
 

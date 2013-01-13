@@ -488,6 +488,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mInfoBar = new QgsMessageBar( centralWidget );
   mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+  mInfoBarTimeout = settings.value( "/qgis/messageTimeout", 5 ).toInt();
 
   //set the focus to the map canvas
   mMapCanvas->setFocus();
@@ -4042,7 +4043,7 @@ void QgisApp::labeling()
     messageBar()->pushMessage( tr( "Labeling Options" ),
                                tr( "Please select a vector layer first" ),
                                QgsMessageBar::INFO,
-                               5 );
+                               messageTimeout() );
     return;
   }
 

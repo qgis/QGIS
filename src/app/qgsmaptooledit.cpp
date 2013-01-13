@@ -127,7 +127,7 @@ void QgsMapToolEdit::notifyNotVectorLayer()
     tr( "No active vector layer" ),
     tr( "Choose a vector layer in the legend" ),
     QgsMessageBar::INFO,
-    5 );
+    QgisApp::instance()->messageTimeout() );
 }
 
 void QgsMapToolEdit::notifyNotEditableLayer()
@@ -136,5 +136,5 @@ void QgsMapToolEdit::notifyNotEditableLayer()
     tr( "Layer not editable" ),
     tr( "Use 'Toggle Editing' to make it editable" ),
     QgsMessageBar::INFO,
-    5 );
+    QgisApp::instance()->messageTimeout() );
 }

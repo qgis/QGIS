@@ -225,6 +225,8 @@
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconSymbology.png</file>
         <file>themes/default/mIconTableLayer.png</file>
+        <file>themes/default/mIconTimerPause.png</file>
+        <file>themes/default/mIconTimerContinue.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconVectorLayer.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
