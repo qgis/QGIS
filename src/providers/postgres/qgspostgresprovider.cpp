@@ -623,7 +623,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   if ( mFeatureQueue.empty() )
   {
     QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( cursorName );
-    QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 3 );
+    QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
     if ( mConnectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
       QgsMessageLog::logMessage( tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( cursorName ).arg( mConnectionRO->PQerrorMessage() ), tr( "PostGIS" ) );

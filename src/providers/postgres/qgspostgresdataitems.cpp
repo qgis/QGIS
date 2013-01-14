@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
+#include "qgsmessageoutput.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -271,14 +272,16 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   if ( hasError )
   {
-    QMessageBox::warning( 0, tr( "Import to PostGIS database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to PostGIS database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
+    output->showMessage();
   }
   else
   {
     QMessageBox::information( 0, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
+    refresh();
   }
-
-  refresh();
 
   return true;
 }

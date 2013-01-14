@@ -28,7 +28,7 @@ class QgsOracleColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsOracleColumnTypeThread( QgsOracleConn *conn, bool useEstimatedMetaData );
+    QgsOracleColumnTypeThread( QString connName, bool useEstimatedMetaData );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -38,13 +38,12 @@ class QgsOracleColumnTypeThread : public QThread
     void setLayerType( QgsOracleLayerProperty layerProperty );
 
   public slots:
-    void addGeometryColumn( QgsOracleLayerProperty layerProperty );
     void stop();
 
   private:
     QgsOracleColumnTypeThread() {}
 
-    QgsOracleConn *mConn;
+    QString mName;
     bool mUseEstimatedMetadata;
     bool mStopped;
     QList<QgsOracleLayerProperty> layerProperties;
