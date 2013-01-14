@@ -136,16 +136,27 @@ static QString qOraWarn( OCIError *err, int *errorCode = 0 );
 #ifndef Q_CC_SUN
 static // for some reason, Sun CC can't use qOraWarning when it's declared static
 #endif
-void qOraWarningAt( const char* msg, OCIError *err, const char *function, int line );
+void qOraWarningAt( const char* msg, OCIError *err, const char *file, const char *function, int line );
 static QSqlError qMakeError( const QString& errString, QSqlError::ErrorType type, OCIError *err );
 
 #ifndef _MSC_VER
-#define qOraWarning(msg,err) qOraWarningAt(msg,err,__PRETTY_FUNCTION__,__LINE__)
+#define qOraWarning(msg,err) qOraWarningAt(msg,err,__PRETTY_FUNCTION__,__FILE__,__LINE__)
 #define OCI_VERIFY(x) do { oci_verify(__PRETTY_FUNCTION__, __FILE__, __LINE__, x, #x); } while(0)
+#define OCI_VERIFY_E(e,x) do { oci_verify(e,__PRETTY_FUNCTION__, __FILE__, __LINE__, x, #x); } while(0)
 #else
-#define qOraWarning(msg,err) qOraWarningAt(msg,err,__FUNCTION__,__LINE__)
+#define qOraWarning(msg,err) qOraWarningAt(msg,err,__FUNCTION__,__FILE__,__LINE__)
 #define OCI_VERIFY(x) do { oci_verify(__FUNCTION__, __FILE__, __LINE__, x, #x); } while(0)
+#define OCI_VERIFY_E(e,x) do { oci_verify(e,__FUNCTION__, __FILE__, __LINE__, x, #x); } while(0)
 #endif
+
+void oci_verify( OCIError *err, const char *function, const char *file, int line, int result, const char *expression )
+{
+  if ( result == OCI_SUCCESS || result == OCI_SUCCESS_WITH_INFO )
+    return;
+
+  qWarning( "%s:%d (%s) OCI error %s = %d [%s]", file, line, function, expression, result, qPrintable( qOraWarn( err ) ) );
+  throw result;
+}
 
 void oci_verify( const char *function, const char *file, int line, int result, const char *expression )
 {
@@ -508,30 +519,30 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
         {
           if ( !geometryObj )
           {
-            OCI_VERIFY( OCIObjectNew( env, err, svc, OCI_TYPECODE_OBJECT, geometryTDO, ( dvoid * ) 0, OCI_DURATION_SESSION, 1, ( dvoid ** ) &geometryObj ) );
+            OCI_VERIFY_E( err, OCIObjectNew( env, err, svc, OCI_TYPECODE_OBJECT, geometryTDO, ( dvoid * ) 0, OCI_DURATION_SESSION, 1, ( dvoid ** ) &geometryObj ) );
             if ( !geometryObj )
             {
               throw OCI_ERROR;
             }
 
-            OCI_VERIFY( OCIObjectGetInd( env, err, geometryObj, ( void ** ) &geometryInd ) );
+            OCI_VERIFY_E( err, OCIObjectGetInd( env, err, geometryObj, ( void ** ) &geometryInd ) );
             if ( !geometryInd )
             {
               throw OCI_ERROR;
             }
           }
 
-          OCI_VERIFY( OCIBindByPos( sql, hbnd, err, pos + 1, 0, 0, SQLT_NTY, indPtr, 0, 0, 0, 0, OCI_DEFAULT ) );
-          OCI_VERIFY( OCIBindObject( *hbnd, err, geometryTDO, ( dvoid ** )&geometryObj, 0, ( dvoid ** ) &geometryInd, 0 ) );
+          OCI_VERIFY_E( err, OCIBindByPos( sql, hbnd, err, pos + 1, 0, 0, SQLT_NTY, indPtr, 0, 0, 0, 0, OCI_DEFAULT ) );
+          OCI_VERIFY_E( err, OCIBindObject( *hbnd, err, geometryTDO, ( dvoid ** )&geometryObj, 0, ( dvoid ** ) &geometryInd, 0 ) );
 
           const QOCISpatialGeometry &g = qvariant_cast<QOCISpatialGeometry>( val );
 
           int n;
-          OCI_VERIFY( OCICollSize( env, err, geometryObj->elem_info, &n ) );
-          OCI_VERIFY( OCICollTrim( env, err, n, geometryObj->elem_info ) );
+          OCI_VERIFY_E( err, OCICollSize( env, err, geometryObj->elem_info, &n ) );
+          OCI_VERIFY_E( err, OCICollTrim( env, err, n, geometryObj->elem_info ) );
 
-          OCI_VERIFY( OCICollSize( env, err, geometryObj->ordinates, &n ) );
-          OCI_VERIFY( OCICollTrim( env, err, n, geometryObj->ordinates ) );
+          OCI_VERIFY_E( err, OCICollSize( env, err, geometryObj->ordinates, &n ) );
+          OCI_VERIFY_E( err, OCICollTrim( env, err, n, geometryObj->ordinates ) );
 
           if ( g.isNull )
           {
@@ -543,8 +554,8 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
             geometryInd->gtype   = g.gtype < 0 ? OCI_IND_NULL : OCI_IND_NOTNULL;
             geometryInd->srid    = g.srid  < 0 ? OCI_IND_NULL : OCI_IND_NOTNULL;
 
-            OCI_VERIFY( OCINumberFromInt( err, &g.gtype, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->gtype ) );
-            OCI_VERIFY( OCINumberFromInt( err, &g.srid, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->srid ) );
+            OCI_VERIFY_E( err, OCINumberFromInt( err, &g.gtype, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->gtype ) );
+            OCI_VERIFY_E( err, OCINumberFromInt( err, &g.srid, sizeof( int ), OCI_NUMBER_SIGNED, &geometryObj->srid ) );
 
             if ( SDO_GTYPE_TT( g.gtype ) == gtPoint )
             {
@@ -555,9 +566,9 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
               geometryInd->elem_info     = OCI_IND_NULL;
               geometryInd->ordinates     = OCI_IND_NULL;
 
-              OCI_VERIFY( OCINumberFromReal( err, &g.x, sizeof( double ), &geometryObj->point.x ) );
-              OCI_VERIFY( OCINumberFromReal( err, &g.y, sizeof( double ), &geometryObj->point.y ) );
-              OCI_VERIFY( OCINumberFromReal( err, &g.z, sizeof( double ), &geometryObj->point.z ) );
+              OCI_VERIFY_E( err, OCINumberFromReal( err, &g.x, sizeof( double ), &geometryObj->point.x ) );
+              OCI_VERIFY_E( err, OCINumberFromReal( err, &g.y, sizeof( double ), &geometryObj->point.y ) );
+              OCI_VERIFY_E( err, OCINumberFromReal( err, &g.z, sizeof( double ), &geometryObj->point.z ) );
             }
             else
             {
@@ -568,15 +579,15 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
               foreach ( int e, g.eleminfo )
               {
                 OCINumber n;
-                OCI_VERIFY( OCINumberFromInt( err, &e, sizeof( int ), OCI_NUMBER_SIGNED, &n ) );
-                OCI_VERIFY( OCICollAppend( env, err, &n, 0, geometryObj->elem_info ) );
+                OCI_VERIFY_E( err, OCINumberFromInt( err, &e, sizeof( int ), OCI_NUMBER_SIGNED, &n ) );
+                OCI_VERIFY_E( err, OCICollAppend( env, err, &n, 0, geometryObj->elem_info ) );
               }
 
               foreach ( double o, g.ordinates )
               {
                 OCINumber n;
-                OCI_VERIFY( OCINumberFromReal( err, &o, sizeof( double ), &n ) );
-                OCI_VERIFY( OCICollAppend( env, err, &n, 0, geometryObj->ordinates ) );
+                OCI_VERIFY_E( err, OCINumberFromReal( err, &o, sizeof( double ), &n ) );
+                OCI_VERIFY_E( err, OCICollAppend( env, err, &n, 0, geometryObj->ordinates ) );
               }
             }
           }
@@ -792,10 +803,10 @@ OCIType *QOCISpatialDriverPrivate::tdo( QString type )
   try
   {
     OCI_VERIFY( OCIHandleAlloc( env, ( void** ) & dschp, OCI_HTYPE_DESCRIBE, 0, 0 ) );
-    OCI_VERIFY( OCIDescribeAny( svc, err, ( dvoid * ) type.utf16(), type.length() * sizeof( QChar ), OCI_OTYPE_NAME, OCI_DEFAULT, OCI_PTYPE_TYPE, dschp ) );
-    OCI_VERIFY( OCIAttrGet( dschp, OCI_HTYPE_DESCRIBE, &paramp, 0, OCI_ATTR_PARAM, err ) );
-    OCI_VERIFY( OCIAttrGet( paramp, OCI_DTYPE_PARAM, &type_ref, 0, OCI_ATTR_REF_TDO, err ) );
-    OCI_VERIFY( OCIObjectPin( env, err, type_ref, 0, OCI_PIN_ANY, OCI_DURATION_SESSION, OCI_LOCK_NONE, ( dvoid ** ) &tdo ) );
+    OCI_VERIFY_E( err, OCIDescribeAny( svc, err, ( dvoid * ) type.utf16(), type.length() * sizeof( QChar ), OCI_OTYPE_NAME, OCI_DEFAULT, OCI_PTYPE_TYPE, dschp ) );
+    OCI_VERIFY_E( err, OCIAttrGet( dschp, OCI_HTYPE_DESCRIBE, &paramp, 0, OCI_ATTR_PARAM, err ) );
+    OCI_VERIFY_E( err, OCIAttrGet( paramp, OCI_DTYPE_PARAM, &type_ref, 0, OCI_ATTR_REF_TDO, err ) );
+    OCI_VERIFY_E( err, OCIObjectPin( env, err, type_ref, 0, OCI_PIN_ANY, OCI_DURATION_SESSION, OCI_LOCK_NONE, ( dvoid ** ) &tdo ) );
   }
   catch ( int r )
   {
@@ -838,16 +849,9 @@ QString qOraWarn( OCIError *err, int *errorCode )
   return QString( reinterpret_cast<const QChar *>( errbuf ) );
 }
 
-void qOraWarningAt( const char* msg, OCIError *err, const char *function, int line )
+void qOraWarningAt( const char* msg, OCIError *err, const char *function, const char *file, int line )
 {
-#ifdef QOCISPATIAL_DEBUG
-  qWarning( "%s: %s %s at %d", function, msg, qPrintable( qOraWarn( err ) ), line );
-#else
-  Q_UNUSED( msg );
-  Q_UNUSED( err );
-  Q_UNUSED( function );
-  Q_UNUSED( line );
-#endif
+  qWarning( "%s: %d: (%s) %s [%s]", file, line, function, msg, qPrintable( qOraWarn( err ) ) );
 }
 
 static int qOraErrorNumber( OCIError *err )
@@ -1148,9 +1152,7 @@ class QOCISpatialCols
     bool getValue( OCINumber *num, int &value );
     bool getValue( OCINumber *num, double &value );
     bool getArraySize( OCIColl *coll, int &nSize );
-    bool getArrayItem( OCIArray *coll, int elem, unsigned int &item );
     bool getArrayItem( OCIArray *coll, int elem, int &item );
-    bool getArrayItem( OCIArray *coll, int elem, double &item );
     bool getElemInfoElem( int elem, int nElems, int nOrds, int &startOffset, int &endOffset, int &etype, int &interpretation );
     static int byteorder() { static char littleEndian = htonl( 1 ) != 1; return littleEndian; }
 
@@ -2287,46 +2289,27 @@ bool QOCISpatialCols::getArraySize( OCIColl *coll, int &nSize )
   return false;
 }
 
-bool QOCISpatialCols::getArrayItem( OCIArray *coll, int elem, unsigned int &item )
-{
-  OCINumber *num;
-  boolean exists;
-
-  if ( OCICollGetElem( d->env, d->err, coll, elem, &exists, ( dvoid ** ) &num, 0 ) != OCI_SUCCESS || !exists )
-  {
-    qOraWarning( "Couldn't not get collection item: ", d->err );
-    return false;
-  }
-
-  return getValue( num, item );
-}
-
 bool QOCISpatialCols::getArrayItem( OCIArray *coll, int elem, int &item )
 {
   OCINumber *num;
   boolean exists;
 
-  if ( OCICollGetElem( d->env, d->err, coll, elem, &exists, ( dvoid ** ) &num, 0 ) != OCI_SUCCESS || !exists )
+  try
   {
-    qOraWarning( "Couldn't not get collection item: ", d->err );
+    OCI_VERIFY_E( d->err, OCICollGetElem( d->env, d->err, coll, elem, &exists, ( dvoid ** ) &num, 0 ) );
+
+    if ( !exists )
+    {
+      qWarning( "item %d does not exists.", elem );
+      throw OCI_ERROR;
+    }
+
+    return getValue( num, item );
+  }
+  catch ( int )
+  {
     return false;
   }
-
-  return getValue( num, item );
-}
-
-bool QOCISpatialCols::getArrayItem( OCIArray *coll, int elem, double &item )
-{
-  OCINumber *num;
-  boolean exists;
-
-  if ( OCICollGetElem( d->env, d->err, coll, elem, &exists, ( dvoid ** ) &num, 0 ) != OCI_SUCCESS || !exists )
-  {
-    qOraWarning( "Couldn't not get collection item: ", d->err );
-    return false;
-  }
-
-  return getValue( num, item );
 }
 
 bool QOCISpatialCols::getElemInfoElem( int iElem, int nElems, int nOrds,
@@ -2353,34 +2336,6 @@ bool QOCISpatialCols::getElemInfoElem( int iElem, int nElems, int nOrds,
 
   return true;
 }
-
-#ifdef QOCISPATIAL_DEBUG
-void QOCISpatialCols::dumpArrays( int nElems, int nOrds )
-{
-  qDebug() << "got geometry: sdo_elem_info =" << nElems;
-
-  for ( int i = 0; i < nElems; i++ )
-  {
-    int item;
-    if ( getArrayItem( d->sdoobj->elem_info, i, item ) )
-      qWarning( " %d: %d", i, item );
-    else
-      qWarning( " %d: -", i );
-  }
-
-
-  qDebug() << "sdo_ordinates =" << nOrds;
-
-  for ( int i = 0; i < nOrds; i++ )
-  {
-    double item;
-    if ( getArrayItem( d->sdoobj->ordinates, i, item ) )
-      qWarning( " %d: %lf", i, item );
-    else
-      qWarning( " %d: -", i );
-  }
-}
-#endif
 
 bool QOCISpatialCols::convertToWkb( QVariant &v )
 {
@@ -2445,10 +2400,6 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     qWarning() << "could not determine ordinate array size";
     return false;
   }
-
-#ifdef QOCISPATIAL_DEBUG
-  dumpArrays( nElems, nOrds );
-#endif
 
   Q_ASSERT( nElems % 3 == 0 );
   Q_ASSERT( nOrds % nDims == 0 );
@@ -2519,6 +2470,47 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     return false;
   }
 
+  QVector<double> ordinates( nOrds );
+  boolean exists;
+
+  try
+  {
+#if 0
+    // TODO figure this out - quicker, but occasionally crashes
+    QVector<OCINumber*> numbers( nOrds, 0 );
+    uword nords = nOrds;
+    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->ordinates, 0, &exists, ( void** ) numbers.data(), 0, &nords ) );
+    if ( !exists )
+    {
+      qWarning() << "ordinate array does not exists";
+      throw OCI_ERROR;
+    }
+    OCI_VERIFY_E( d->err, OCINumberToRealArray( d->err, ( const OCINumber ** ) numbers.data(), nOrds, sizeof( double ), ordinates.data() ) );
+#else
+    for ( int i = 0; i < nOrds; i++ )
+    {
+      OCINumber *num;
+
+      OCI_VERIFY_E( d->err, OCICollGetElem( d->env, d->err, d->sdoobj->ordinates, i, &exists, ( dvoid ** ) &num, 0 ) );
+
+      if ( !exists )
+      {
+        qWarning( "item %d does not exists.", i );
+        throw OCI_ERROR;
+      }
+
+      if ( !getValue( num, ordinates[i] ) )
+      {
+        throw OCI_ERROR;
+      }
+    }
+#endif
+  }
+  catch ( int )
+  {
+    return false;
+  }
+
   if ( iType == gtPoint || iType == gtMultiPoint )
   {
     int nPoints = 0;
@@ -2585,14 +2577,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
           *ptr.iPtr++  = nDims == 2 ? WKBPoint : WKBPoint25D;
         }
 
-        double item;
-        if ( !getArrayItem( d->sdoobj->ordinates, j, item ) )
-        {
-          qWarning() << "cannot read ordinate" << j;
-          return false;
-        }
-
-        *ptr.dPtr++ = item;
+        Q_ASSERT( j < nOrds );
+        *ptr.dPtr++ = ordinates[ j ];
       }
     }
 
@@ -2645,7 +2631,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     }
 
     int iLine = 0;
-    for ( int i = 0; i < nElems; i++ )
+    for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
       if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
@@ -2663,13 +2649,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
 
       for ( int j = startOffset; j < endOffset; j++ )
       {
-        double item;
-        if ( !getArrayItem( d->sdoobj->ordinates, j, item ) )
-        {
-          qWarning() << "cannot read ordinate" << j;
-          return false;
-        }
-        *ptr.dPtr++ = item;
+        Q_ASSERT( j < nOrds );
+        *ptr.dPtr++ = ordinates[ j ];
       }
     }
 
@@ -2766,13 +2747,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
         *ptr.iPtr++ = ( endOffset - startOffset ) / nDims;
         for ( int j = startOffset; j < endOffset; j++ )
         {
-          double item;
-          if ( !getArrayItem( d->sdoobj->ordinates, j, item ) )
-          {
-            qWarning() << "cannot read ordinate" << j;
-            return false;
-          }
-          *ptr.dPtr++ = item;
+          Q_ASSERT( j < nOrds );
+          *ptr.dPtr++ = ordinates[ j ];
         }
       }
       else if ( etype % 1000 == 3 && n == 3 )
@@ -2784,17 +2760,18 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
         *ptr.iPtr++ = 1;
         *ptr.iPtr++ = 5;
 
-        double x0, y0, x1, y1;
+        Q_ASSERT( startOffset + nDims + 1 < nOrds );
 
-        if ( startOffset + nDims + 1 >= endOffset ||
-             !getArrayItem( d->sdoobj->ordinates, startOffset + 0, x0 ) ||
-             !getArrayItem( d->sdoobj->ordinates, startOffset + 1, y0 ) ||
-             !getArrayItem( d->sdoobj->ordinates, startOffset + nDims + 0, x1 ) ||
-             !getArrayItem( d->sdoobj->ordinates, startOffset + nDims + 1, y1 ) )
+        if ( startOffset + nDims + 1 >= endOffset )
         {
           qWarning() << "less ordinates than expected";
           return false;
         }
+
+        double x0 = ordinates[ startOffset + 0 ];
+        double y0 = ordinates[ startOffset + 1 ];
+        double x1 = ordinates[ startOffset + nDims + 0 ];
+        double y1 = ordinates[ startOffset + nDims + 1 ];
 
         *ptr.dPtr++ = x0;
         *ptr.dPtr++ = y0;
@@ -2907,7 +2884,7 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
       case QVariant::ByteArray:
         if ( fld.oraType == SQLT_NTY && fld.oraTypeName == "SDO_GEOMETRY" )
         {
-          qDebug() << "SQLT_NTY SOD_GEOMETRY";
+          qDebug() << "SQLT_NTY SDO_GEOMETRY";
           convertToWkb( v[ index+i ] );
         }
         else
