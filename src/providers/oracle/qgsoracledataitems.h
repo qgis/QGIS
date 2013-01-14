@@ -63,8 +63,6 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     virtual bool acceptDrop() { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
 
-    QgsOracleConn *connection() const { return mConn; }
-
     void refresh();
 
   signals:
@@ -73,12 +71,15 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+    void refreshConnection();
 
     void setLayerType( QgsOracleLayerProperty layerProperty );
 
+    void threadStarted();
+    void threadFinished();
+
   private:
     void stop();
-    QgsOracleConn *mConn;
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
     QgsOracleColumnTypeThread *mColumnTypeThread;
 };

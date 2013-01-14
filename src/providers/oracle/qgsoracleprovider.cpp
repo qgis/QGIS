@@ -46,8 +46,8 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
     , mPrimaryKeyType( pktUnknown )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
-    , mSpatialIndex( QString::null )
     , mFidCounter( 0 )
+    , mSpatialIndex( QString::null )
 {
   static int geomMetaType = -1;
   if ( geomMetaType < 0 )
@@ -669,7 +669,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
       }
       else
       {
-        QgsDebugMsg( QString( "key values for fid %1 not found. " ).arg( fid ) );
+        QgsDebugMsg( QString( "key values for fid %1 not found." ).arg( fid ) );
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
         {
           QgsDebugMsgLevel( QString( "addBindValue pk NULL" ).arg( fid ), 4 );
@@ -1465,7 +1465,7 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
     QSqlQuery qry( *mConnection );
     if ( !exec( qry, QString( "SELECT %1" ).arg( defaultValue ) ) || !qry.next() )
     {
-      throw OracleException( qry );
+      throw OracleException( tr( "Evaluation of default value failed" ), qry );
     }
 
     return qry.value( 0 ).toString();
@@ -1496,8 +1496,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     // Prepare the INSERT statement
@@ -1602,11 +1601,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     QgsDebugMsgLevel( QString( "SQL prepare: %1" ).arg( insert ), 4 );
     if ( !qry.prepare( insert ) )
     {
-      QgsMessageLog::logMessage( tr( "Could not prepare insert statement.\nSQL: %1\nERROR: %2" )
-                                 .arg( qry.lastQuery() )
-                                 .arg( qry.lastError().text() ),
-                                 tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not prepare insert statement" ), qry );
     }
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
@@ -1647,7 +1642,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       }
 
       if ( !qry.exec() )
-        throw OracleException( qry );
+        throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), qry );
 
       if ( mPrimaryKeyType == pktRowId )
       {
@@ -1660,8 +1655,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
 
     // update feature ids
@@ -1722,8 +1716,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds & id )
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
@@ -1732,9 +1725,8 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds & id )
                     .arg( mQuery ).arg( whereClause( *it ) );
       QgsDebugMsg( "delete sql: " + sql );
 
-      //send DELETE statement and do error handling
       if ( !exec( qry, sql ) )
-        throw OracleException( qry );
+        throw OracleException( tr( "Deletion of feature %1 failed" ).arg( *it ), qry );
 
       QVariant v = mFidToKey[ *it ];
       mFidToKey.remove( *it );
@@ -1745,8 +1737,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds & id )
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
 
     mFeaturesCounted -= id.size();
@@ -1777,8 +1768,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
@@ -1807,7 +1797,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       QgsDebugMsg( sql );
 
       if ( !exec( qry, sql ) )
-        throw OracleException( qry );
+        throw OracleException( tr( "Adding attribute %1 failed" ).arg( iter->name() ), qry );
 
       if ( !iter->comment().isEmpty() )
       {
@@ -1816,7 +1806,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
               .arg( quotedIdentifier( iter->name() ) )
               .arg( quotedValue( iter->comment() ) );
         if ( !exec( qry, sql ) )
-          throw OracleException( qry );
+          throw OracleException( tr( "Setting comment on %1 failed" ).arg( iter->name() ), qry );
       }
 
       qry.finish();
@@ -1824,8 +1814,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
   }
   catch ( OracleException &e )
@@ -1855,8 +1844,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     qry.finish();
@@ -1873,7 +1861,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 
       //send sql statement and do error handling
       if ( !exec( qry, sql ) )
-        throw OracleException( qry );
+        throw OracleException( tr( "Dropping column %1 failed" ).arg( field_it->name() ), qry );
 
       //delete the attribute from mAttributeFields
       mAttributeFields.remove( *iter );
@@ -1882,8 +1870,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
   }
   catch ( OracleException &e )
@@ -1915,8 +1902,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     // cycle through the features
@@ -1964,7 +1950,9 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
       if ( !exec( qry, sql ) )
-        throw OracleException( qry );
+      {
+        throw OracleException( tr( "Update of feature %1 failed" ).arg( fid ), qry );
+      }
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
@@ -1991,8 +1979,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
   }
   catch ( OracleException &e )
@@ -2177,8 +2164,7 @@ bool QgsOracleProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     QString update = QString( "UPDATE %1 SET %2=? WHERE %3" )
@@ -2188,11 +2174,7 @@ bool QgsOracleProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QgsDebugMsgLevel( QString( "SQL prepare: %1" ).arg( update ), 4 );
     if ( !qry.prepare( update ) )
     {
-      QgsMessageLog::logMessage( tr( "Could not prepare update statement.\nSQL: %1\nERROR: %2" )
-                                 .arg( qry.lastQuery() )
-                                 .arg( qry.lastError().text() ),
-                                 tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not prepare update statement." ), qry );
     }
 
     for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
@@ -2203,15 +2185,14 @@ bool QgsOracleProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       appendPkParams( iter.key(), qry );
 
       if ( !qry.exec() )
-        throw OracleException( qry );
+        throw OracleException( tr( "Update of feature %1 failed" ).arg( iter.key() ), qry );
     }
 
     qry.finish();
 
     if ( !db.commit() )
     {
-      QgsMessageLog::logMessage( tr( "Could not commit transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not commit transaction" ), db );
     }
   }
   catch ( OracleException &e )
@@ -2412,7 +2393,7 @@ bool QgsOracleProvider::getGeometryDetails()
 
   if ( !ownerName.isEmpty() )
   {
-    if ( exec( qry, QString( "SELECT srid FROM all_sdo_geom_metadata WHERE owner=%1 AND table_name=%2 AND column_name=%3" )
+    if ( exec( qry, QString( "SELECT srid FROM mdsys.all_sdo_geom_metadata WHERE owner=%1 AND table_name=%2 AND column_name=%3" )
                .arg( quotedValue( ownerName ) )
                .arg( quotedValue( tableName ) )
                .arg( quotedValue( geomCol ) ) ) )
@@ -2562,14 +2543,47 @@ bool QgsOracleProvider::createSpatialIndex()
   {
     // TODO: make precision configurable
     QgsRectangle r( extent() );
-    exec( qry, QString( "UPDATE user_sdo_geom_metadata SET diminfo=mdsys.sdo_dim_array("
-                        "mdsys.sdo_dim_element('X', %1, %2, 0.001),"
-                        "mdsys.sdo_dim_element('Y', %3, %4, 0.001)"
-                        ") WHERE table_name=%5 AND column_name=%6" )
-          .arg( r.xMinimum(), 0, 'f', 16 ).arg( r.xMaximum(), 0, 'f', 16 )
-          .arg( r.yMinimum(), 0, 'f', 16 ).arg( r.yMaximum(), 0, 'f', 16 )
-          .arg( quotedValue( mTableName ) )
-          .arg( quotedValue( mGeometryColumn ) ) );
+    if ( !exec( qry, QString( "UPDATE mdsys.user_sdo_geom_metadata SET diminfo=mdsys.sdo_dim_array("
+                              "mdsys.sdo_dim_element('X', %1, %2, 0.001),"
+                              "mdsys.sdo_dim_element('Y', %3, %4, 0.001)"
+                              ") WHERE table_name=%5 AND column_name=%6" )
+                .arg( r.xMinimum(), 0, 'f', 16 ).arg( r.xMaximum(), 0, 'f', 16 )
+                .arg( r.yMinimum(), 0, 'f', 16 ).arg( r.yMaximum(), 0, 'f', 16 )
+                .arg( quotedValue( mTableName ) )
+                .arg( quotedValue( mGeometryColumn ) ) )
+       )
+    {
+      QgsMessageLog::logMessage( tr( "Could not update metadata for %1.%2.\nSQL:%1\nError: %2" )
+                                 .arg( mTableName )
+                                 .arg( mGeometryColumn )
+                                 .arg( qry.lastQuery() )
+                                 .arg( qry.lastError().text() ),
+                                 tr( "Oracle" ) );
+      return false;
+    }
+
+    if ( qry.numRowsAffected() == 0 )
+    {
+      if ( !exec( qry, QString( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (%1,%2,%3,mdsys.sdo_dim_array("
+                                "mdsys.sdo_dim_element('X', %4, %5, 0.001),"
+                                "mdsys.sdo_dim_element('Y', %6, %7, 0.001)"
+                                "))" )
+                  .arg( quotedValue( mTableName ) )
+                  .arg( quotedValue( mGeometryColumn ) )
+                  .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) )
+                  .arg( r.xMinimum(), 0, 'f', 16 ).arg( r.xMaximum(), 0, 'f', 16 )
+                  .arg( r.yMinimum(), 0, 'f', 16 ).arg( r.yMaximum(), 0, 'f', 16 )
+                ) )
+      {
+        QgsMessageLog::logMessage( tr( "Could not insert metadata for %1.%2.\nSQL:%3\nError: %4" )
+                                   .arg( quotedValue( mTableName ) )
+                                   .arg( quotedValue( mGeometryColumn ) )
+                                   .arg( qry.lastQuery() )
+                                   .arg( qry.lastError().text() ),
+                                   tr( "Oracle" ) );
+        return false;
+      }
+    }
   }
   else
   {
@@ -2750,12 +2764,12 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
   QSqlDatabase db( *conn );
   QSqlQuery qry( db );
+  bool created = false;
   try
   {
     if ( !db.transaction() )
     {
-      QgsMessageLog::logMessage( tr( "Could not start transaction" ), tr( "Oracle" ) );
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not start transaction" ), db );
     }
 
     if ( !exec( qry, QString( "SELECT 1 FROM all_tables WHERE owner=%1 AND table_name=%2" )
@@ -2763,16 +2777,25 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
                 .arg( quotedValue( tableName ) )
               ) )
     {
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not determine table existence." ), qry );
     }
 
     bool exists = qry.next();
 
-    if ( exists && overwrite )
+    if ( exists )
     {
-      // delete the table if exists, then re-create it
-      if ( !exec( qry, QString( "DROP TABLE %1" ).arg( ownerTableName ) ) )
-        throw OracleException( qry );
+      if ( overwrite )
+      {
+        // delete the table if exists, then re-create it
+        if ( !exec( qry, QString( "DROP TABLE %1" ).arg( ownerTableName ) ) )
+        {
+          throw OracleException( tr( "Table %1 could not be dropped." ).arg( ownerTableName ), qry );
+        }
+      }
+      else
+      {
+        throw OracleException( tr( "Table %1 already exists." ).arg( ownerTableName ), qry );
+      }
     }
 
     QString sql = QString( "CREATE TABLE %1(" ).arg( ownerTableName );
@@ -2790,22 +2813,18 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
     if ( !exec( qry, sql ) )
     {
-      throw OracleException( qry );
+      throw OracleException( tr( "Table creation failed." ), qry );
     }
 
-    QStringList parts = srs->authid().split( ":" );
-    if ( parts.size() != 2 )
-    {
-      throw OracleException( qry );
-    }
+    created = true;
 
     // TODO: make precision configurable
     QString diminfo;
     if ( srs->geographicFlag() )
     {
       diminfo = "mdsys.sdo_dim_array("
-                "mdsys.sdo_dim_element('Longitude', -180, 180, 0.00001),"
-                "mdsys.sdo_dim_element('Latitude', -90, 90, 0.00001)"
+                "mdsys.sdo_dim_element('Longitude', -180, 180, 0.001),"
+                "mdsys.sdo_dim_element('Latitude', -90, 90, 0.001)"
                 ")";
     }
     else
@@ -2816,13 +2835,68 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
                 ")";
     }
 
-    if ( !exec( qry, QString( "INSERT INTO user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (%1,%2,%3,%4)" )
+    int srid = 0;
+    QStringList parts = srs->authid().split( ":" );
+    if ( parts.size() == 2 )
+    {
+      if ( !exec( qry, QString( "SELECT srid FROM mdsys.cs_srs WHERE auth_name=%1 AND auth_srid=%2" )
+                  .arg( quotedValue( parts[0] ) )
+                  .arg( quotedValue( parts[1] ) ) ) )
+      {
+        throw OracleException( tr( "Could not lookup authid %1:%2" ).arg( parts[0] ).arg( parts[1] ), qry );
+      }
+
+      if ( qry.next() )
+      {
+        srid = qry.value( 0 ).toInt();
+      }
+    }
+
+    if ( srid == 0 )
+    {
+      QgsDebugMsg( QString( "%1:%2 not found in mdsys.cs_srs - trying WKT" ).arg( parts[0] ).arg( parts[1] ) );
+
+      QString wkt = srs->toWkt();
+      if ( !exec( qry, QString( "SELECT srid FROM mdsys.cs_srs WHERE wktext=%1" ).arg( quotedValue( wkt ) ) ) )
+      {
+        throw OracleException( tr( "Could not lookup WKT." ), qry );
+      }
+
+      if ( qry.next() )
+      {
+        srid = qry.value( 0 ).toInt();
+      }
+      else
+      {
+        if ( !exec( qry, "SELECT max(srid)+1 FROM sdo_coord_ref_system" ) || !qry.next() )
+        {
+          throw OracleException( tr( "Could not determine new srid." ), qry );
+        }
+
+        srid = qry.value( 0 ).toInt();
+
+        QString sql;
+
+        if ( !exec( qry, QString( "INSERT"
+                                  " INTO sdo_coord_ref_system(srid,coord_ref_sys_name,coord_ref_sys_kind,legacy_wktext,is_valid,is_legacy,information_source)"
+                                  " VALUES (%1,%2,%3,%4,'TRUE','TRUE','GDAL/OGR via Quantum GIS')" )
+                    .arg( srid )
+                    .arg( quotedValue( srs->description() ) )
+                    .arg( quotedValue( srs->geographicFlag() ? "GEOGRAPHIC2D" : "PROJECTED" ) )
+                    .arg( quotedValue( wkt ) ) ) )
+        {
+          throw OracleException( tr( "CRS not found and could not be created." ), qry );
+        }
+      }
+    }
+
+    if ( !exec( qry, QString( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (%1,%2,%3,%4)" )
                 .arg( quotedValue( tableName.toUpper() ) )
                 .arg( quotedValue( geometryColumn.toUpper() ) )
-                .arg( parts[1].toInt() )
+                .arg( srid )
                 .arg( diminfo ) ) )
     {
-      throw OracleException( qry );
+      throw OracleException( tr( "Could not insert metadata." ), qry );
     }
 
     if ( !db.commit() )
@@ -2840,6 +2914,16 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
     if ( db.rollback() )
     {
       QgsMessageLog::logMessage( tr( "Could not rollback transaction" ), tr( "Oracle" ) );
+    }
+
+    if ( created )
+    {
+      if ( !exec( qry, QString( "DROP TABLE %1" ).arg( ownerTableName ) ) )
+      {
+        QgsMessageLog::logMessage( tr( "Drop created table %1 failed.\nSQL:%2\nError: %3" )
+                                   .arg( qry.lastQuery() )
+                                   .arg( qry.lastError().text() ) , tr( "Oracle" ) );
+      }
     }
 
     conn->disconnect();
@@ -2972,7 +3056,36 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 QgsCoordinateReferenceSystem QgsOracleProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( mSrid ) );
+
+  QSqlQuery qry( *mConnection );
+
+  if ( exec( qry, QString( "SELECT auth_name,auth_srid,wktext FROM mdsys.cs_srs WHERE srid=%1" ).arg( mSrid ) ) )
+  {
+    if ( qry.next() )
+    {
+      if ( qry.value( 0 ).toString() == "EPSG" || qry.value( 0 ).isNull() )
+      {
+        srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( qry.value( 1 ).toString() ) );
+      }
+      else
+      {
+        srs.createFromWkt( qry.value( 2 ).toString() );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Oracle SRID %1 not found." ).arg( mSrid ), tr( "Oracle" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Lookup of Oracle SRID %1 failed.\nSQL:%2\nError:%3" )
+                               .arg( mSrid )
+                               .arg( mQry.lastQuery() )
+                               .arg( mQry.lastError().text() ),
+                               tr( "Oracle" ) );
+  }
+
   return srs;
 }
 
@@ -3119,7 +3232,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
     dropTable = QString( "ALTER TABLE %1 DROP COLUMN %2" )
                 .arg( QgsOracleConn::quotedIdentifier( tableName ) )
                 .arg( QgsOracleConn::quotedIdentifier( geometryCol ) );
-    cleanView = QString( "DELETE FROM user_sdo_geom_metadata WHERE table_name=%1 AND column_name=%2" )
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=%1 AND column_name=%2" )
                 .arg( QgsOracleConn::quotedValue( tableName ) )
                 .arg( QgsOracleConn::quotedValue( geometryCol ) );
   }
@@ -3128,7 +3241,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
     // drop the table
     dropTable = QString( "DROP TABLE %1" )
                 .arg( QgsOracleConn::quotedIdentifier( tableName ) );
-    cleanView = QString( "DELETE FROM user_sdo_geom_metadata WHERE table_name=%1" )
+    cleanView = QString( "DELETE FROM mdsys.user_sdo_geom_metadata WHERE table_name=%1" )
                 .arg( QgsOracleConn::quotedValue( tableName ) );
   }
 

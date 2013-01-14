@@ -147,7 +147,9 @@ class QgsOracleConn : public QThread
     static void setSelectedConnection( QString theConnName );
     static QgsDataSourceURI connUri( QString theConnName );
     static bool userTablesOnly( QString theConnName );
+    static bool geometryColumnsOnly( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
+    static bool estimatedMetadata( QString theConnName );
     static void deleteConnection( QString theConnName );
     static QString databaseName( QString database, QString host, QString port );
 

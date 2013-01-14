@@ -85,7 +85,6 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     void connectionsChanged();
-    void addGeometryColumn( QgsOracleLayerProperty );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

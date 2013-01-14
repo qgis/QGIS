@@ -462,71 +462,20 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
   mConnInfo = uri.connectionInfo();
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri.connectionInfo() );
-  if ( conn )
-  {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    mIsConnected = true;
-    mTablesTreeDelegate->setConn( QgsOracleConn::connectDb( uri.connectionInfo() ) );
+  mIsConnected = true;
+  mTablesTreeDelegate->setConn( QgsOracleConn::connectDb( uri.connectionInfo() ) );
 
-    bool userTablesOnly = QgsOracleConn::userTablesOnly( cmbConnections->currentText() );
-    bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
+  mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata );
 
-    QVector<QgsOracleLayerProperty> layers;
-    if ( conn->supportedLayers( layers, userTablesOnly, allowGeometrylessTables ) )
-    {
-      // Add the supported layers to the table
-      foreach ( QgsOracleLayerProperty layer, layers )
-      {
-        if ( !layer.geometryColName.isNull() )
-        {
-          if ( layer.types.contains( QGis::WKBUnknown ) || layer.srids.isEmpty() )
-          {
-            addSearchGeometryColumn( layer );
-          }
-        }
-        else
-        {
-          QgsDebugMsg( QString( "adding table %1.%2" ).arg( layer.ownerName ).arg( layer.tableName ) );
-          layer.types.clear();
-          layer.srids.clear();
-          mTableModel.addTableEntry( layer );
-        }
-      }
+  connect( mColumnTypeThread, SIGNAL( setLayerType( QgsOracleLayerProperty ) ),
+           this, SLOT( setLayerType( QgsOracleLayerProperty ) ) );
+  connect( mColumnTypeThread, SIGNAL( finished() ),
+           this, SLOT( columnThreadFinished() ) );
 
-      if ( mColumnTypeThread )
-      {
-        btnConnect->setText( tr( "Stop" ) );
-        mColumnTypeThread->start();
-      }
-    }
-
-    //if we have only one owner item, expand it by default
-    int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
-    if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
-    {
-      //expand all the toplevel items
-      for ( int i = 0; i < numTopLevelItems; ++i )
-      {
-        mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
-      }
-    }
-
-    conn->disconnect();
-
-    if ( !mColumnTypeThread )
-    {
-      finishList();
-    }
-  }
-  else
-  {
-    // Let user know we couldn't initialise the Oracle provider
-    QMessageBox::warning( this,
-                          tr( "Oracle Locator Provider" ),
-                          tr( "Could not open the Oracle Locator Provider" ) );
-  }
+  btnConnect->setText( tr( "Stop" ) );
+  mColumnTypeThread->start();
 }
 
 void QgsOracleSourceSelect::finishList()
@@ -599,29 +548,6 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
 
   delete gb;
   delete vlayer;
-}
-
-void QgsOracleSourceSelect::addSearchGeometryColumn( QgsOracleLayerProperty layerProperty )
-{
-  // store the column details and do the query in a thread
-  if ( !mColumnTypeThread )
-  {
-    QgsOracleConn *conn = QgsOracleConn::connectDb( mConnInfo );
-    if ( conn )
-    {
-
-      mColumnTypeThread = new QgsOracleColumnTypeThread( conn, mUseEstimatedMetadata );
-
-      connect( mColumnTypeThread, SIGNAL( setLayerType( QgsOracleLayerProperty ) ),
-               this, SLOT( setLayerType( QgsOracleLayerProperty ) ) );
-      connect( this, SIGNAL( addGeometryColumn( QgsOracleLayerProperty ) ),
-               mColumnTypeThread, SLOT( addGeometryColumn( QgsOracleLayerProperty ) ) );
-      connect( mColumnTypeThread, SIGNAL( finished() ),
-               this, SLOT( columnThreadFinished() ) );
-    }
-  }
-
-  emit addGeometryColumn( layerProperty );
 }
 
 QString QgsOracleSourceSelect::fullDescription( QString owner, QString table, QString column, QString type )
