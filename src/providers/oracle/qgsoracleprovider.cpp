@@ -169,7 +169,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
       QString delim;
       foreach ( int idx, mPrimaryKeyAttrs )
       {
-        Q_ASSERT( mAttributeFields.contains( mPrimaryKeyAttrs[idx] ) );
+        Q_ASSERT( mAttributeFields.contains( idx ) );
         key += delim + mAttributeFields[ idx ].name();
         delim = ",";
       }
@@ -479,7 +479,7 @@ bool QgsOracleProvider::getFeature( bool fetchGeometry,
     }
 
     feature.setFeatureId( fid );
-    QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
+    QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 5 );
 
     // iterate attributes
     foreach ( int idx, fetchAttributes )
@@ -1203,7 +1203,8 @@ bool QgsOracleProvider::determinePrimaryKey()
 
       if ( isInt &&
            it->type() != QVariant::Int &&
-           it->type() != QVariant::LongLong )
+           it->type() != QVariant::LongLong &&
+           !( it->type() == QVariant::Double && it->precision() == 0 ) )
         isInt = false;
 
       mPrimaryKeyAttrs << it.key();
@@ -2839,7 +2840,8 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
     QStringList parts = srs->authid().split( ":" );
     if ( parts.size() == 2 )
     {
-      if ( !exec( qry, QString( "SELECT srid FROM mdsys.cs_srs WHERE auth_name=%1 AND auth_srid=%2" )
+      // apparently some EPSG codes don't have the auth_name setup in cs_srs
+      if ( !exec( qry, QString( "SELECT srid FROM mdsys.cs_srs WHERE coalesce(auth_name,'EPSG')=%1 AND auth_srid=%2" )
                   .arg( quotedValue( parts[0] ) )
                   .arg( quotedValue( parts[1] ) ) ) )
       {
@@ -3059,11 +3061,12 @@ QgsCoordinateReferenceSystem QgsOracleProvider::crs()
 
   QSqlQuery qry( *mConnection );
 
-  if ( exec( qry, QString( "SELECT auth_name,auth_srid,wktext FROM mdsys.cs_srs WHERE srid=%1" ).arg( mSrid ) ) )
+  // apparently some EPSG codes don't have the auth_name setup in cs_srs
+  if ( exec( qry, QString( "SELECT coalesce(auth_name,'EPSG'),auth_srid,wktext FROM mdsys.cs_srs WHERE srid=%1" ).arg( mSrid ) ) )
   {
     if ( qry.next() )
     {
-      if ( qry.value( 0 ).toString() == "EPSG" || qry.value( 0 ).isNull() )
+      if ( qry.value( 0 ).toString() == "EPSG" )
       {
         srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( qry.value( 1 ).toString() ) );
       }

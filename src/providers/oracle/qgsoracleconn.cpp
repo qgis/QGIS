@@ -67,6 +67,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
 
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
+  mDatabase.setConnectOptions( "OCI_ATTR_PREFETCH_ROWS=1000" );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
 
