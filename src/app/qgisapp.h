@@ -400,7 +400,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Get timeout for timed messages: default of 5 seconds
      * @note added in 1.9 */
-    int messageTimeout() { return mMessageTimeout; }
+    int messageTimeout();
 
 #ifdef Q_OS_WIN
     //! ugly hack
@@ -542,11 +542,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! layer selection changed
     void legendLayerSelectionChanged( void );
-
-    /** Set timeout for timed messages
-     * @param t timeout in seconds
-     * @note added in 1.9 */
-    void setMessageTimeout( int t ) { mMessageTimeout = t; }
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent * event );
@@ -1341,9 +1336,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
-
-    //! timeout for timed messages
-    int mMessageTimeout;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

@@ -1081,7 +1081,6 @@ void QgsOptions::saveOptions()
   QgisApp::instance()->setAppStyleSheet();
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
-  QgisApp::instance()->setMessageTimeout( mMessageTimeoutSpnBx->value() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );

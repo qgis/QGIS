@@ -353,6 +353,10 @@ class QgisAppInterface : public QgisInterface
      * @note added in 1.9 */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout();
+
   signals:
     void currentThemeChanged( QString );
 

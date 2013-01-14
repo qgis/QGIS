@@ -485,3 +485,8 @@ QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
 {
   return qgis->editableLayers( modified );
 }
+
+int QgisAppInterface::messageTimeout()
+{
+  return qgis->messageTimeout();
+}

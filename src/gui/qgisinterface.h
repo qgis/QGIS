@@ -446,6 +446,10 @@ class GUI_EXPORT QgisInterface : public QObject
      * @note added in 1.9 */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout() = 0;
+
   signals:
     /** Emited whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
