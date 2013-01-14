@@ -104,6 +104,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // read the current browser and set it
   QSettings settings;
+  // mOptionsListWidget width is fixed to takes up less space in QtDesigner
+  // revert it now unless the splitter's state hasn't been saved yet
+  mOptionsListWidget->setMaximumWidth(
+    settings.value( "/Windows/Options/splitState" ).isNull() ? 150 : 16777215 );
+
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
@@ -444,7 +449,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
-  blockSignals( true );
+  // TODO: move all stylesheet options blockSignals to separate method when implementing app stylesheet
+  spinFontSize->blockSignals( true );
+  mFontFamilyRadioQt->blockSignals( true );
+  mFontFamilyRadioCustom->blockSignals( true );
+  mFontFamilyComboBox->blockSignals( true );
+
   spinFontSize->setValue( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
   QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
   bool isQtDefault = ( fontFamily == QString( "QtDefault" ) );
@@ -460,7 +470,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
     delete tempFont;
   }
-  blockSignals( false );
+  spinFontSize->blockSignals( false );
+  mFontFamilyRadioQt->blockSignals( false );
+  mFontFamilyRadioCustom->blockSignals( false );
+  mFontFamilyComboBox->blockSignals( false );
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
@@ -718,9 +731,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
-
-  // update option section frame state
-  on_mOptionsListWidget_currentRowChanged( currentIndx );
 }
 
 //! Destructor
@@ -735,6 +745,7 @@ QgsOptions::~QgsOptions()
 void QgsOptions::showEvent( QShowEvent * e )
 {
   Q_UNUSED( e );
+  on_mOptionsStackedWidget_currentChanged( -1 );
   updateVerticalTabs();
 }
 
@@ -746,6 +757,8 @@ void QgsOptions::paintEvent( QPaintEvent * e )
 
 void QgsOptions::updateVerticalTabs()
 {
+  if ( mOptionsListWidget->maximumWidth() != 16777215 )
+    mOptionsListWidget->setMaximumWidth( 16777215 );
   // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
   // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
   // Note: called on splitter resize and dialog paint event, so only update when necessary
@@ -1539,10 +1552,12 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
-void QgsOptions::on_mOptionsListWidget_currentRowChanged( int theIndx )
+void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
+  Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( theIndx == 2 && ! mLoadedGdalDriverList )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPage_02" )
+       && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
   }
