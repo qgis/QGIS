@@ -117,6 +117,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     /**Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
+    /** Slot to enable custom environment variables table and buttons
+     * @note added in QGIS 1.9
+     */
+    void on_mCustomVariablesChkBx_toggled( bool chkd );
+
     /** Slot to add a custom environment variable to the app
      * @note added in QGIS 1.9
      */

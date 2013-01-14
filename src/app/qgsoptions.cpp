@@ -1365,6 +1365,13 @@ QStringList QgsOptions::i18nList()
   return myList;
 }
 
+void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
+{
+  mAddCustomVarBtn->setEnabled( chkd );
+  mRemoveCustomVarBtn->setEnabled( chkd );
+  mCustomVariablesTable->setEnabled( chkd );
+}
+
 void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString varApply )
 {
   int rowCnt = mCustomVariablesTable->rowCount();
