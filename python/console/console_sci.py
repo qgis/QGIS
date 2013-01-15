@@ -40,6 +40,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         super(PythonEdit,self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
+        self.parent = parent
+        
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
@@ -500,17 +502,14 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## History saved successfully ##")
+                self.parent.callWidgetMessageBar('History saved successfully')
             elif cmd == '_clear':
                 self.clearHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## History cleared successfully ##")
+                self.parent.callWidgetMessageBar('History cleared successfully')
             elif cmd == '_clearAll':
                 self.history = QStringList()
                 self.clearHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## Session and file history cleared successfully ##")
+                self.parent.callWidgetMessageBar('Session and file history cleared successfully')
             elif cmd == '_pyqgis':
                 webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':

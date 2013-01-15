@@ -340,6 +340,7 @@ class PythonConsoleWidget(QWidget):
                         sF.write('\n')
                     sF.write(s)
             sF.close()
+            self.callWidgetMessageBar('Script was correctly saved.')
 
     def openHelp(self):
         self.helpDlg.show()
@@ -351,6 +352,9 @@ class PythonConsoleWidget(QWidget):
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()
+        
+    def callWidgetMessageBar(self, text):
+        self.textEditOut.widgetMessageBar(iface, text)
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
