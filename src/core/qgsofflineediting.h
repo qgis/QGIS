@@ -29,7 +29,7 @@ class QgsMapLayer;
 class QgsVectorLayer;
 struct sqlite3;
 
-class QgsOfflineEditing : public QObject
+class CORE_EXPORT QgsOfflineEditing : public QObject
 {
     Q_OBJECT
 
