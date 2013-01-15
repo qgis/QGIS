@@ -137,7 +137,7 @@ class EditorOutput(QsciScintilla):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "## To access Quantum GIS environment from this console\n"
-                                             "## use iface object (instance of QgisInterface class). \n"
+                                             "## use iface object (instance of QgisInterface class).\n"
                                              "## Type help(iface) for more info and list of methods.\n\n")
         initText = self.setText(txtInit)
 
@@ -277,10 +277,11 @@ class EditorOutput(QsciScintilla):
                              link = i.replace('<a href="',"").strip()
             if link:
                 QApplication.clipboard().setText(link)
-                self.parent.callWidgetMessageBar('URL copied to clipboard')
+                self.parent.callWidgetMessageBar('URL copied to clipboard.')
         except urllib2.URLError, e:
             self.parent.callWidgetMessageBar('Connection error: ' + str(e.args))
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
+        msg = QCoreApplication.translate('PythonConsole', text)
+        self.infoBar.pushMessage(msg, QgsMessageBar.INFO, timeout)

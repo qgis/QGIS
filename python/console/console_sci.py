@@ -502,14 +502,14 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
-                self.parent.callWidgetMessageBar('History saved successfully')
+                self.parent.callWidgetMessageBar('History saved successfully.')
             elif cmd == '_clear':
                 self.clearHistoryFile()
-                self.parent.callWidgetMessageBar('History cleared successfully')
+                self.parent.callWidgetMessageBar('History cleared successfully.')
             elif cmd == '_clearAll':
                 self.history = QStringList()
                 self.clearHistoryFile()
-                self.parent.callWidgetMessageBar('Session and file history cleared successfully')
+                self.parent.callWidgetMessageBar('Session and file history cleared successfully.')
             elif cmd == '_pyqgis':
                 webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':
