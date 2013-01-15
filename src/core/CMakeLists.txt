@@ -80,6 +80,7 @@ SET(QGIS_CORE_SRCS
   qgsmessagelog.cpp
   qgsnetworkreplyparser.cpp
   qgscredentials.cpp
+  qgsofflineediting.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
   qgspalgeometry.cpp
@@ -267,7 +268,7 @@ IF (WITH_INTERNAL_SPATIALITE)
     SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
   ENDIF(MSVC)
 
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
+  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite spatialite/headers)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
@@ -288,6 +289,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmessageoutput.h
   qgsmessagelog.h
   qgsnetworkreplyparser.h
+  qgsofflineediting.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -379,6 +381,7 @@ SET(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgsnetworkreplyparser.h
   qgscredentials.h
+  qgsofflineediting.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h
