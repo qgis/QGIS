@@ -738,31 +738,39 @@ void QgsOptions::showEvent( QShowEvent * e )
   updateVerticalTabs();
 }
 
-void QgsOptions::resizeEvent( QResizeEvent * e )
+void QgsOptions::paintEvent( QPaintEvent * e )
 {
   Q_UNUSED( e );
-  if ( mOptionsListWidget->isVisible() )
-    updateVerticalTabs();
+  QTimer::singleShot( 0, this, SLOT( updateVerticalTabs() ) );
 }
 
 void QgsOptions::updateVerticalTabs()
 {
   // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
   // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
+  // Note: called on splitter resize and dialog paint event, so only update when necessary
   int iconWidth = mOptionsListWidget->iconSize().width();
   int snapToIconWidth = iconWidth + 32;
+
   QList<int> splitSizes = mOptionsSplitter->sizes();
   bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
 
   int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
-  mOptionsListWidget->setMinimumWidth( newWidth );
-  if ( iconOnly )
+  bool diffWidth = mOptionsListWidget->minimumWidth() != newWidth;
+
+  if ( diffWidth )
+    mOptionsListWidget->setMinimumWidth( newWidth );
+
+  if ( iconOnly && ( diffWidth || mOptionsListWidget->width() != newWidth ) )
   {
     splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
     splitSizes[0] = newWidth;
     mOptionsSplitter->setSizes( splitSizes );
   }
-  mOptionsListWidget->setWordWrap( !iconOnly );
+  if ( mOptionsListWidget->wordWrap() && iconOnly )
+    mOptionsListWidget->setWordWrap( false );
+  if ( !mOptionsListWidget->wordWrap() && !iconOnly )
+    mOptionsListWidget->setWordWrap( true );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )

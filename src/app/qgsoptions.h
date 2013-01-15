@@ -229,7 +229,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
   protected:
     void showEvent( QShowEvent * e );
-    void resizeEvent( QResizeEvent * e );
+    void paintEvent( QPaintEvent * e );
 };
 
 #endif // #ifndef QGSOPTIONS_H
