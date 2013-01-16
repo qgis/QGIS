@@ -1106,8 +1106,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
-                <height>537</height>
+                <width>704</width>
+                <height>624</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1130,6 +1130,9 @@
                       <width>0</width>
                       <height>120</height>
                      </size>
+                    </property>
+                    <property name="editTriggers">
+                     <set>QAbstractItemView::AllEditTriggers</set>
                     </property>
                     <property name="selectionMode">
                      <enum>QAbstractItemView::SingleSelection</enum>
@@ -1212,6 +1215,15 @@
                     <layout class="QVBoxLayout" name="verticalLayout_8">
                      <item>
                       <widget class="QTableWidget" name="mCurrentVariablesTable">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>120</height>
+                        </size>
+                       </property>
+                       <property name="editTriggers">
+                        <set>QAbstractItemView::AllEditTriggers</set>
+                       </property>
                        <property name="dragEnabled">
                         <bool>true</bool>
                        </property>
@@ -1325,7 +1337,14 @@
                    </widget>
                   </item>
                   <item row="1" column="0" colspan="4">
-                   <widget class="QListWidget" name="mListPluginPaths"/>
+                   <widget class="QListWidget" name="mListPluginPaths">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>120</height>
+                     </size>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
