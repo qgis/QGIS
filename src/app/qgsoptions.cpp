@@ -140,7 +140,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     addCustomEnvVarRow( varStrName, varStrValue, varStrApply );
   }
   QFontMetrics fmCustomVar( mCustomVariablesTable->horizontalHeader()->font() );
-  int fmCustomVarH = fmCustomVar.height() + 2;
+  int fmCustomVarH = fmCustomVar.height() + 8;
   mCustomVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
 
   mCustomVariablesTable->setColumnWidth( 0, 120 );
