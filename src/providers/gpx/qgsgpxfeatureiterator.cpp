@@ -13,6 +13,11 @@
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXProvider* p, const QgsFeatureRequest& request )
   : QgsAbstractFeatureIterator( request ), P( p )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   rewind();
 }
 
@@ -50,6 +55,9 @@ bool QgsGPXFeatureIterator::close()
 
   // nothing to do
 
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
+
   mClosed = true;
   return true;
 }
@@ -67,7 +75,9 @@ bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    return readFid( feature );
+    bool res = readFid( feature );
+    close();
+    return res;
   }
 
 
@@ -111,6 +121,7 @@ bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
     }
   }
 
+  close();
   return false;
 }
 

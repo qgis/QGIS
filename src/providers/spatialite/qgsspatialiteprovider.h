@@ -33,6 +33,8 @@ extern "C"
 class QgsFeature;
 class QgsField;
 
+class QgsSpatiaLiteFeatureIterator;
+
 #include "qgsdatasourceuri.h"
 
 /**
@@ -508,4 +510,5 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     SqliteHandles *handle;
 
     friend class QgsSpatiaLiteFeatureIterator;
+    QgsSpatiaLiteFeatureIterator* mActiveIterator;
 };

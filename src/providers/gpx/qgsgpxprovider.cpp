@@ -66,6 +66,7 @@ const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 QgsGPXProvider::QgsGPXProvider( QString uri ) :
     QgsVectorDataProvider( uri )
+  , mActiveIterator( 0 )
 {
   // assume that it won't work
   mValid = false;
@@ -110,6 +111,9 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
 
 QgsGPXProvider::~QgsGPXProvider()
 {
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   QgsGPSData::releaseData( mFileName );
 }
 

@@ -73,6 +73,7 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mActiveIterator( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
 
@@ -256,6 +257,10 @@ void QgsGrassProvider::update( void )
 QgsGrassProvider::~QgsGrassProvider()
 {
   QgsDebugMsg( "entered." );
+
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   closeLayer( mLayerId );
 }
 

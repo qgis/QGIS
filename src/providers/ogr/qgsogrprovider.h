@@ -23,6 +23,8 @@ email                : sherman at mrcc.com
 class QgsField;
 class QgsVectorLayerImport;
 
+class QgsOgrFeatureIterator;
+
 #include <ogr_api.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
@@ -317,4 +319,5 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool syncToDisc();
 
     friend class QgsOgrFeatureIterator;
+    QgsOgrFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
 };

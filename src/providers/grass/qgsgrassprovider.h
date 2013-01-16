@@ -18,6 +18,9 @@
 
 class QgsFeature;
 class QgsField;
+
+class QgsGrassFeatureIterator;
+
 #include <QDateTime>
 
 #include "qgsvectordataprovider.h"
@@ -638,6 +641,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static  std::vector<GMAP> mMaps;     // Map
 
     friend class QgsGrassFeatureIterator;
+    QgsGrassFeatureIterator* mActiveIterator;
 };
 
 #endif // QGSGRASSPROVIDER_H

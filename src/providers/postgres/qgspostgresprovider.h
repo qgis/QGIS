@@ -28,6 +28,8 @@ class QgsFeature;
 class QgsField;
 class QgsGeometry;
 
+class QgsPostgresFeatureIterator;
+
 #include "qgsdatasourceuri.h"
 
 /**
@@ -467,6 +469,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
 
     friend class QgsPostgresFeatureIterator;
+    QgsPostgresFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
 };
 
 #endif

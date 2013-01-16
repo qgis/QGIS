@@ -108,6 +108,7 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
     return true;
   }
 
+  close();
   return false;
 }
 

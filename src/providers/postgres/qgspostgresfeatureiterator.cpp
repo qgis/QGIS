@@ -33,6 +33,11 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     : QgsAbstractFeatureIterator( request ), P( p )
     , mFeatureQueueSize( sFeatureQueueSize )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
 
   QString whereClause;
@@ -140,6 +145,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mFeatureQueue.empty() )
   {
     QgsDebugMsg( QString( "Finished after %1 features" ).arg( mFetched ) );
+    close();
 
     if ( P->mFeaturesCounted < mFetched )
     {
@@ -195,6 +201,9 @@ bool QgsPostgresFeatureIterator::close()
   {
     mFeatureQueue.dequeue();
   }
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

@@ -21,6 +21,11 @@ extern "C"
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   // check if outdated and update if necessary
   P->ensureUpdated();
 
@@ -127,10 +132,16 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
   QgsDebugMsgLevel( "entered.", 3 );
 
   if ( P->isEdited() || P->isFrozen() || !P->mValid )
+  {
+    close();
     return false;
+  }
 
   if ( P->mCidxFieldIndex < 0 || mNextCidx >= P->mCidxFieldNumCats )
+  {
+    close();
     return false; // No features, no features in this layer
+  }
 
   bool filterById = mRequest.filterType() == QgsFeatureRequest::FilterFid;
 
@@ -154,7 +165,10 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
     break;
   }
   if ( !found )
+  {
+    close();
     return false; // No more features
+  }
 #if QGISDEBUG > 3
   QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
 #endif
@@ -208,6 +222,9 @@ bool QgsGrassFeatureIterator::close()
   Vect_destroy_list( mList );
 
   free( mSelection );
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

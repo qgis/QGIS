@@ -9,6 +9,11 @@
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p ), mSelectRectGeom( NULL )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( request.filterRect() );
@@ -85,6 +90,9 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     feature = P->mFeatures[*mFeatureIdListIterator];
     mFeatureIdListIterator++;
   }
+  else
+    close();
+
   return hasFeature;
 }
 
@@ -131,6 +139,8 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     feature.setValid( true );
     feature.setFields( &P->mFields ); // allow name-based attribute lookups
   }
+  else
+    close();
 
   return hasFeature;
 }
@@ -155,6 +165,9 @@ bool QgsMemoryFeatureIterator::close()
 
   delete mSelectRectGeom;
   mSelectRectGeom = NULL;
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

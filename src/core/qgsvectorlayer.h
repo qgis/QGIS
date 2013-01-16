@@ -1084,7 +1084,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     //annotation form for this layer
     QString mAnnotationForm;
 
-    QgsFeatureIterator mLayerIterator; // temporary
+    QgsFeatureIterator mLayerIterator; // temporary: to support old API
     friend class QgsVectorLayerFeatureIterator;
 #if 0
     bool mFetching;

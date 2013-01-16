@@ -21,6 +21,8 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsSpatialIndex;
 
+class QgsMemoryFeatureIterator;
+
 class QgsMemoryProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
@@ -167,4 +169,5 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsSpatialIndex* mSpatialIndex;
 
     friend class QgsMemoryFeatureIterator;
+    QgsMemoryFeatureIterator* mActiveIterator;
 };

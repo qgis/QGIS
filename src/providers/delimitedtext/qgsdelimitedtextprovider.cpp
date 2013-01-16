@@ -148,6 +148,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mShowInvalidLines( false )
     , mCrs()
     , mWkbType( QGis::WKBUnknown )
+    , mActiveIterator( 0 )
 {
   QUrl url = QUrl::fromEncoded( uri.toAscii() );
 
@@ -449,6 +450,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   if ( mFile )
     mFile->close();
   delete mFile;

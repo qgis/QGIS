@@ -28,6 +28,11 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteProvide
     , P( p )
     , sqliteStatement( NULL )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   QString whereClause;
 
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !P->mGeometryColumn.isNull() )
@@ -75,6 +80,7 @@ bool QgsSpatiaLiteFeatureIterator::nextFeature( QgsFeature& feature )
   if ( sqliteStatement == NULL )
   {
     QgsDebugMsg( "Invalid current SQLite statement" );
+    close();
     return false;
   }
 
@@ -82,6 +88,7 @@ bool QgsSpatiaLiteFeatureIterator::nextFeature( QgsFeature& feature )
   {
     sqlite3_finalize( sqliteStatement );
     sqliteStatement = NULL;
+    close();
     return false;
   }
 
@@ -106,6 +113,9 @@ bool QgsSpatiaLiteFeatureIterator::close()
     sqlite3_finalize( sqliteStatement );
     sqliteStatement = NULL;
   }
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

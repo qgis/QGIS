@@ -51,6 +51,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , mConnectionRO( 0 )
     , mConnectionRW( 0 )
     , mFidCounter( 0 )
+    , mActiveIterator( 0 )
 {
   mProviderId = sProviderIds++;
 
@@ -211,6 +212,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   disconnectDb();
 
   QgsDebugMsg( "deconstructing." );

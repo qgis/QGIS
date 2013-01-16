@@ -9,6 +9,11 @@
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   rewind();
 }
 
@@ -93,6 +98,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   // loaded, display them now.
   P->handleInvalidLines();
 
+  close();
   return false;
 }
 
@@ -116,6 +122,9 @@ bool QgsDelimitedTextFeatureIterator::close()
 {
   if ( mClosed )
     return false;
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

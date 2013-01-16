@@ -201,6 +201,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
+    , mActiveIterator( 0 )
 {
   QgsCPLErrorHandler handler;
 
@@ -345,6 +346,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   if ( ogrLayer != ogrOrigLayer )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );

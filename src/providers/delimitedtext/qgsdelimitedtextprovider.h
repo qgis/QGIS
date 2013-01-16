@@ -219,4 +219,5 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
 
     friend class QgsDelimitedTextFeatureIterator;
+    QgsDelimitedTextFeatureIterator* mActiveIterator;
 };

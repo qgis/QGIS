@@ -19,6 +19,11 @@
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
 {
+  // make sure that only one iterator is active
+  if ( P->mActiveIterator )
+    P->mActiveIterator->close();
+  P->mActiveIterator = this;
+
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
 
@@ -85,24 +90,24 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    // make sure that only one next feature call returns a valid feature!
-    if ( mFeatureFetched )
-      return false;
-
     OGRFeatureH fet = OGR_L_GetFeature( P->ogrLayer, FID_TO_NUMBER( mRequest.filterFid() ) );
     if ( !fet )
+    {
+      close();
       return false;
+    }
 
     // skip features without geometry
     if ( !OGR_F_GetGeometryRef( fet ) && !P->mFetchFeaturesWithoutGeom )
     {
       OGR_F_Destroy( fet );
+      close();
       return false;
     }
 
     readFeature( fet, feature );
     feature.setValid( true );
-    mFeatureFetched = true;
+    close(); // the feature has been read: we have finished here
     return true;
   }
 
@@ -148,9 +153,7 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   QgsDebugMsg( "Feature is null" );
 
-  // probably should reset reading here
-  rewind();
-
+  close();
   return false;
 }
 
@@ -176,6 +179,9 @@ bool QgsOgrFeatureIterator::close()
     OGR_G_DestroyGeometry( mSelectionRectangle );
     mSelectionRectangle = 0;
   }
+
+  // tell provider that this iterator is not active anymore
+  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

@@ -28,6 +28,7 @@ class QFile;
 class QDomDocument;
 class QgsGPSData;
 
+class QgsGPXFeatureIterator;
 
 /**
 \class QgsGPXProvider
@@ -171,4 +172,5 @@ class QgsGPXProvider : public QgsVectorDataProvider
     wkbPoint mWKBpt;
 
     friend class QgsGPXFeatureIterator;
+    QgsGPXFeatureIterator* mActiveIterator;
 };
