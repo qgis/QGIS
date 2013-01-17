@@ -277,11 +277,12 @@ class EditorOutput(QsciScintilla):
                              link = i.replace('<a href="',"").strip()
             if link:
                 QApplication.clipboard().setText(link)
-                self.parent.callWidgetMessageBar('URL copied to clipboard.')
+                msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
+                self.parent.callWidgetMessageBar(msgText)
         except urllib2.URLError, e:
-            self.parent.callWidgetMessageBar('Connection error: ' + str(e.args))
+            msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
+            self.parent.callWidgetMessageBar(msgText + str(e.args))
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        msg = QCoreApplication.translate('PythonConsole', text)
-        self.infoBar.pushMessage(msg, QgsMessageBar.INFO, timeout)
+        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
