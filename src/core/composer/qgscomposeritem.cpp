@@ -503,8 +503,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
-  //double diffX = snappedPosition.x() - mouseMoveStartPos.x();
-  //double diffY = snappedPosition.y() - mouseMoveStartPos.y();
+
   double diffX = 0;
   double diffY = 0;
 
@@ -566,6 +565,10 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
       QPointF upperLeftPoint( originalItem->transform().dx() + moveX, originalItem->transform().dy() + moveY );
       QPointF snappedLeftPoint = mComposition->snapPointToGrid( upperLeftPoint );
 
+      //align item
+      double alignX = 0;
+      double alignY = 0;
+      snappedLeftPoint = mComposition->alignItem( dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY, moveX, moveY );
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
 

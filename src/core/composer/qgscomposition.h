@@ -236,6 +236,19 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
+    /**Snaps item position to align with other items (left / middle / right or top / middle / bottom
+    @param itemRectangle current item rectangle
+    @param alignX x-coordinate of align or -1 if not aligned to x
+    @param alignY y-coordinate of align or -1 if not aligned to y
+    @param dx item shift in x direction
+    @param dy item shift in y direction
+    @return new upper left point after the align*/
+    QPointF alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx = 0, double dy = 0 );
+
+    //helper functions
+    /**Returns the nearest double*/
+    double nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value );
+
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text

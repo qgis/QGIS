@@ -976,6 +976,150 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
   return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
 }
 
+QPointF QgsComposition::alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx, double dy )
+{
+  if ( !item )
+  {
+    return QPointF();
+  }
+
+  double left = item->transform().dx() + dx;
+  double right = left + item->rect().width();
+  double midH = ( left + right ) / 2.0;
+  double top = item->transform().dy() + dy;
+  double bottom = top + item->rect().height();
+  double midV = ( top + bottom ) / 2.0;
+
+  QMap<double, const QgsComposerItem* > xAlignCoordinates;
+  QMap<double, const QgsComposerItem* > yAlignCoordinates;
+
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    if ( item )
+    {
+      if ( !currentItem || currentItem == item || currentItem->type() == QgsComposerItem::ComposerPaper )
+      {
+        continue;
+      }
+      xAlignCoordinates.insert( currentItem->transform().dx(), currentItem );
+      xAlignCoordinates.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
+      xAlignCoordinates.insert( currentItem->transform().dx() + currentItem->rect().width() / 2.0, currentItem );
+      yAlignCoordinates.insert( currentItem->rect().top(), currentItem );
+      yAlignCoordinates.insert( currentItem->rect().center().y(), currentItem );
+      yAlignCoordinates.insert( currentItem->rect().bottom(), currentItem );
+    }
+  }
+
+  //find nearest matches x
+  double xItemLeft = left; //new left coordinate of the item
+  double xAlignCoord = 0;
+  double smallestDiffX = DBL_MAX;
+  double currentX = 0;
+  double currentDiffX = 0;
+
+  currentX = nearestItem( xAlignCoordinates, left );
+  currentDiffX = abs( left - currentX );
+  if ( currentDiffX < smallestDiffX )
+  {
+    xItemLeft = currentX;
+    xAlignCoord = currentX;
+    smallestDiffX = currentDiffX;
+  }
+
+  currentX = nearestItem( xAlignCoordinates, midH );
+  currentDiffX = abs( midH - currentX );
+  if ( currentDiffX < smallestDiffX )
+  {
+    xItemLeft = currentX - ( right - left ) / 2.0;
+    xAlignCoord = currentX;
+    smallestDiffX = currentDiffX;
+  }
+
+  currentX = nearestItem( xAlignCoordinates, right );
+  currentDiffX = abs( right - currentX );
+  if ( currentDiffX < smallestDiffX )
+  {
+    xItemLeft = currentX - ( right - left );
+    xAlignCoord = currentX;
+    smallestDiffX = currentDiffX;
+  }
+
+  //find nearest matches y
+  double yItemTop = top; //new top coordinate of the item
+  double yAlignCoord = 0;
+  double smallestDiffY = DBL_MAX;
+  double currentY = 0;
+  double currentDiffY = 0;
+
+  currentY = nearestItem( yAlignCoordinates, top );
+  currentDiffY = abs( top - currentY );
+  if ( currentDiffY < smallestDiffY )
+  {
+    yItemTop = currentY;
+    yAlignCoord = currentY;
+    smallestDiffY = currentDiffY;
+  }
+
+  currentY = nearestItem( yAlignCoordinates, midV );
+  currentDiffY = abs( midV - currentY );
+  if ( currentDiffY < smallestDiffY )
+  {
+    yItemTop = currentY - ( bottom - top ) / 2.0;
+    yAlignCoord = currentY;
+    smallestDiffY = currentDiffY;
+  }
+
+  currentY = nearestItem( yAlignCoordinates, bottom );
+  currentDiffY = abs( bottom - currentY );
+  if ( currentDiffY < smallestDiffY )
+  {
+    yItemTop = currentY - ( bottom - top );
+    yAlignCoord = currentY;
+    smallestDiffY = currentDiffY;
+  }
+
+  double xCoord = ( smallestDiffX < 5 ) ? xItemLeft : item->transform().dx() + dx;
+  alignX = ( smallestDiffX < 5 ) ? xAlignCoord : -1;
+  double yCoord = ( smallestDiffY < 5 ) ? yItemTop : item->transform().dy() + dy;
+  alignY = ( smallestDiffY < 5 ) ? yAlignCoord : -1;
+  return QPointF( xCoord, yCoord );
+}
+
+double QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value )
+{
+  QMap< double, const QgsComposerItem* >::const_iterator it = coords.lowerBound( value );
+  if ( it == coords.constBegin() ) //value smaller than first map value
+  {
+    return it.key();
+  }
+  else if ( it == coords.constEnd() ) //value larger than last map value
+  {
+    --it;
+    return it.key();
+  }
+  else
+  {
+    //get smaller value and larger value and return the closer one
+    double upperVal = it.key();
+    --it;
+    double lowerVal = it.key();
+
+    double lowerDiff = value - lowerVal;
+    double upperDiff = upperVal - value;
+    if ( lowerDiff < upperDiff )
+    {
+      return lowerVal;
+    }
+    else
+    {
+      return upperVal;
+    }
+  }
+}
+
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
