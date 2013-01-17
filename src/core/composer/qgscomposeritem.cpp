@@ -17,6 +17,7 @@
 #include <QWidget>
 #include <QDomNode>
 #include <QFile>
+#include <QGraphicsLineItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
@@ -42,6 +43,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , QGraphicsRectItem( 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
     , mFrame( false )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
@@ -55,6 +58,8 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
     , mFrame( false )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
@@ -90,6 +95,7 @@ QgsComposerItem::~QgsComposerItem()
   }
 
   delete mBoundingResizeRectangle;
+  deleteAlignItems();
 }
 
 void QgsComposerItem::setSelected( bool s )
@@ -336,6 +342,8 @@ void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
     delete mBoundingResizeRectangle;
     mBoundingResizeRectangle = 0;
   }
+  deleteAlignItems();
+
   //create and show bounding rectangle
   mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
   scene()->addItem( mBoundingResizeRectangle );
@@ -384,6 +392,8 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   beginItemCommand( tr( "Change item position" ) );
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
   endItemCommand();
+
+  deleteAlignItems();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;
@@ -569,6 +579,26 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
       double alignX = 0;
       double alignY = 0;
       snappedLeftPoint = mComposition->alignItem( dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY, moveX, moveY );
+      if ( alignX != -1 )
+      {
+        QGraphicsLineItem* item = hAlignSnapItem();
+        item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
+        item->show();
+      }
+      else
+      {
+        deleteHAlignSnapItem();
+      }
+      if ( alignY != -1 )
+      {
+        QGraphicsLineItem* item = vAlignSnapItem();
+        item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+        item->show();
+      }
+      else
+      {
+        deleteVAlignSnapItem();
+      }
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
 
@@ -1095,6 +1125,54 @@ void QgsComposerItem::rotate( double angle, double& x, double& y ) const
   yRot = x * sin( rotToRad ) + y * cos( rotToRad );
   x = xRot;
   y = yRot;
+}
+
+QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
+{
+  if ( !mHAlignSnapItem )
+  {
+    mHAlignSnapItem = new QGraphicsLineItem( 0 );
+    mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    scene()->addItem( mHAlignSnapItem );
+  }
+  return mHAlignSnapItem;
+}
+
+QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
+{
+  if ( !mVAlignSnapItem )
+  {
+    mVAlignSnapItem = new QGraphicsLineItem( 0 );
+    mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    scene()->addItem( mVAlignSnapItem );
+  }
+  return mVAlignSnapItem;
+}
+
+void QgsComposerItem::deleteHAlignSnapItem()
+{
+  if ( mHAlignSnapItem )
+  {
+    scene()->removeItem( mHAlignSnapItem );
+    delete mHAlignSnapItem;
+    mHAlignSnapItem = 0;
+  }
+}
+
+void QgsComposerItem::deleteVAlignSnapItem()
+{
+  if ( mVAlignSnapItem )
+  {
+    scene()->removeItem( mVAlignSnapItem );
+    delete mVAlignSnapItem;
+    mVAlignSnapItem = 0;
+  }
+}
+
+void QgsComposerItem::deleteAlignItems()
+{
+  deleteHAlignSnapItem();
+  deleteVAlignSnapItem();
 }
 
 void QgsComposerItem::repaint()

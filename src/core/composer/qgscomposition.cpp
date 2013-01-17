@@ -1006,10 +1006,10 @@ QPointF QgsComposition::alignItem( const QgsComposerItem* item, double& alignX, 
       }
       xAlignCoordinates.insert( currentItem->transform().dx(), currentItem );
       xAlignCoordinates.insert( currentItem->transform().dx() + currentItem->rect().width(), currentItem );
-      xAlignCoordinates.insert( currentItem->transform().dx() + currentItem->rect().width() / 2.0, currentItem );
-      yAlignCoordinates.insert( currentItem->rect().top(), currentItem );
-      yAlignCoordinates.insert( currentItem->rect().center().y(), currentItem );
-      yAlignCoordinates.insert( currentItem->rect().bottom(), currentItem );
+      xAlignCoordinates.insert( currentItem->transform().dx() + currentItem->rect().center().x(), currentItem );
+      yAlignCoordinates.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
+      yAlignCoordinates.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
+      yAlignCoordinates.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
     }
   }
 
