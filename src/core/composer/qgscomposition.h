@@ -245,10 +245,6 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     @return new upper left point after the align*/
     QPointF alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx = 0, double dy = 0 );
 
-    //helper functions
-    /**Returns the nearest double*/
-    double nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value );
-
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
@@ -383,6 +379,15 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void deleteAndRemoveMultiFrames();
 
     static QString encodeStringForXML( const QString& str );
+
+    //helper functions for item align
+    void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX,
+                                  QMap< double, const QgsComposerItem* >& alignCoordsY, const QgsComposerItem* excludeItem );
+
+    static void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
+                                  double itemCoordOffset, double& itemCoord, double& alignCoord );
+
+    static double nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value );
 
   signals:
     void paperSizeChanged();
