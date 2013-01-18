@@ -245,6 +245,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     @return new upper left point after the align*/
     QPointF alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx = 0, double dy = 0 );
 
+    /**Snaps position to align with the boundaries of other items
+    @param pos position to snap
+    @param alignX snapped x coordinate or -1 if not snapped
+    @param alignY snapped y coordinate or -1 if not snapped
+    @return snapped position or original position if no snap*/
+    QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
+
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
@@ -387,7 +394,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     static void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
                                   double itemCoordOffset, double& itemCoord, double& alignCoord );
 
-    static double nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value );
+    /**Find nearest item in coordinate map to a double.
+        @return true if item found, false if coords is empty*/
+    static bool nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue );
 
   signals:
     void paperSizeChanged();

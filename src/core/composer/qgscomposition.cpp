@@ -1019,6 +1019,45 @@ QPointF QgsComposition::alignItem( const QgsComposerItem* item, double& alignX, 
   return QPointF( xCoord, yCoord );
 }
 
+QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY )
+{
+  QMap<double, const QgsComposerItem* > xAlignCoordinates;
+  QMap<double, const QgsComposerItem* > yAlignCoordinates;
+  collectAlignCoordinates( xAlignCoordinates, yAlignCoordinates, excludeItem );
+
+  double nearestX = pos.x();
+  double nearestY = pos.y();
+  if ( !nearestItem( xAlignCoordinates, pos.x(), nearestX )
+       || !nearestItem( yAlignCoordinates, pos.y(), nearestY ) )
+  {
+    alignX = -1;
+    alignY = -1;
+    return pos;
+  }
+
+  QPointF result( pos.x(), pos.y() );
+  if ( abs( nearestX - pos.x() ) < 5 )
+  {
+    result.setX( nearestX );
+    alignX = nearestX;
+  }
+  else
+  {
+    alignX = -1;
+  }
+
+  if ( abs( nearestY - pos.y() ) < 5 )
+  {
+    result.setY( nearestY );
+    alignY = nearestY;
+  }
+  else
+  {
+    alignY = -1;
+  }
+  return result;
+}
+
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
@@ -1707,7 +1746,12 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
 void QgsComposition::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
                                        double itemCoordOffset, double& itemCoord, double& alignCoord )
 {
-  double currentCoord = nearestItem( alignCoords, checkCoord );
+  double currentCoord = 0;
+  if ( !nearestItem( alignCoords, checkCoord, currentCoord ) )
+  {
+    return;
+  }
+
   double currentDiff = abs( checkCoord - currentCoord );
   if ( currentDiff < smallestDiff )
   {
@@ -1717,17 +1761,24 @@ void QgsComposition::checkNearestItem( double checkCoord, const QMap< double, co
   }
 }
 
-double QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value )
+bool QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& coords, double value, double& nearestValue )
 {
+  if ( coords.size() < 1 )
+  {
+    return false;
+  }
+
   QMap< double, const QgsComposerItem* >::const_iterator it = coords.lowerBound( value );
   if ( it == coords.constBegin() ) //value smaller than first map value
   {
-    return it.key();
+    nearestValue = it.key();
+    return true;
   }
   else if ( it == coords.constEnd() ) //value larger than last map value
   {
     --it;
-    return it.key();
+    nearestValue = it.key();
+    return true;
   }
   else
   {
@@ -1740,11 +1791,13 @@ double QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >
     double upperDiff = upperVal - value;
     if ( lowerDiff < upperDiff )
     {
-      return lowerVal;
+      nearestValue = lowerVal;
+      return true;
     }
     else
     {
-      return upperVal;
+      nearestValue = upperVal;
+      return true;
     }
   }
 }

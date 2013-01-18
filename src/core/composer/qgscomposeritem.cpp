@@ -514,6 +514,35 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
 
+  //snap to grid and align to other items
+  if ( mCurrentMouseMoveAction != QgsComposerItem::MoveItem )
+  {
+    double alignX = 0;
+    double alignY = 0;
+    snappedPosition = mComposition->alignPos( snappedPosition, dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY );
+    if ( alignX != -1 )
+    {
+      QGraphicsLineItem* item = hAlignSnapItem();
+      item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
+      item->show();
+    }
+    else
+    {
+      deleteHAlignSnapItem();
+    }
+
+    if ( alignY != -1 )
+    {
+      QGraphicsLineItem* item = vAlignSnapItem();
+      item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+      item->show();
+    }
+    else
+    {
+      deleteVAlignSnapItem();
+    }
+  }
+
   double diffX = 0;
   double diffY = 0;
 
@@ -575,29 +604,35 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
       QPointF upperLeftPoint( originalItem->transform().dx() + moveX, originalItem->transform().dy() + moveY );
       QPointF snappedLeftPoint = mComposition->snapPointToGrid( upperLeftPoint );
 
-      //align item
-      double alignX = 0;
-      double alignY = 0;
-      snappedLeftPoint = mComposition->alignItem( dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY, moveX, moveY );
-      if ( alignX != -1 )
+      if ( snappedLeftPoint != upperLeftPoint ) //don't do align snap if grid snap has been done
       {
-        QGraphicsLineItem* item = hAlignSnapItem();
-        item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
-        item->show();
+        deleteAlignItems();
       }
-      else
+      else //align item
       {
-        deleteHAlignSnapItem();
-      }
-      if ( alignY != -1 )
-      {
-        QGraphicsLineItem* item = vAlignSnapItem();
-        item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
-        item->show();
-      }
-      else
-      {
-        deleteVAlignSnapItem();
+        double alignX = 0;
+        double alignY = 0;
+        snappedLeftPoint = mComposition->alignItem( dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY, moveX, moveY );
+        if ( alignX != -1 )
+        {
+          QGraphicsLineItem* item = hAlignSnapItem();
+          item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
+          item->show();
+        }
+        else
+        {
+          deleteHAlignSnapItem();
+        }
+        if ( alignY != -1 )
+        {
+          QGraphicsLineItem* item = vAlignSnapItem();
+          item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+          item->show();
+        }
+        else
+        {
+          deleteVAlignSnapItem();
+        }
       }
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
