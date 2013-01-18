@@ -515,7 +515,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
 
   //snap to grid and align to other items
-  if ( mCurrentMouseMoveAction != QgsComposerItem::MoveItem )
+  if ( mComposition->alignmentSnap() && mCurrentMouseMoveAction != QgsComposerItem::MoveItem )
   {
     double alignX = 0;
     double alignY = 0;
@@ -608,7 +608,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
       {
         deleteAlignItems();
       }
-      else //align item
+      else if ( mComposition->alignmentSnap() ) //align item
       {
         double alignX = 0;
         double alignY = 0;

@@ -49,8 +49,8 @@
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
-    mAtlasComposition( this )
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
+    mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -61,8 +61,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ),
-    mAtlasComposition( this )
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ),
+    mAlignmentSnapTolerance( 2 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   loadSettings();
 }
@@ -303,6 +303,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
+  compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
+  compositionElem.setAttribute( "alignmentSnapTolerance", mAlignmentSnapTolerance );
+
   //save items except paper items and frame items (they are saved with the corresponding multiframe)
   QList<QGraphicsItem*> itemList = items();
   QList<QGraphicsItem*>::const_iterator itemIt = itemList.constBegin();
@@ -365,8 +368,11 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
-  mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
 
+  mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
+  mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
+
+  mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
   updatePaperItems();
@@ -1036,7 +1042,7 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
   }
 
   QPointF result( pos.x(), pos.y() );
-  if ( abs( nearestX - pos.x() ) < 5 )
+  if ( abs( nearestX - pos.x() ) < mAlignmentSnapTolerance )
   {
     result.setX( nearestX );
     alignX = nearestX;
@@ -1046,7 +1052,7 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
     alignX = -1;
   }
 
-  if ( abs( nearestY - pos.y() ) < 5 )
+  if ( abs( nearestY - pos.y() ) < mAlignmentSnapTolerance )
   {
     result.setY( nearestY );
     alignY = nearestY;
@@ -1744,7 +1750,7 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
 }
 
 void QgsComposition::checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
-                                       double itemCoordOffset, double& itemCoord, double& alignCoord )
+                                       double itemCoordOffset, double& itemCoord, double& alignCoord ) const
 {
   double currentCoord = 0;
   if ( !nearestItem( alignCoords, checkCoord, currentCoord ) )
@@ -1753,7 +1759,7 @@ void QgsComposition::checkNearestItem( double checkCoord, const QMap< double, co
   }
 
   double currentDiff = abs( checkCoord - currentCoord );
-  if ( currentDiff < smallestDiff )
+  if ( currentDiff < mAlignmentSnapTolerance )
   {
     itemCoord = currentCoord + itemCoordOffset;
     alignCoord = currentCoord;

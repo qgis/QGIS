@@ -115,6 +115,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
+    void setAlignmentSnap( bool s ) { mAlignmentSnap = s; }
+    bool alignmentSnap() const { return mAlignmentSnap; }
+
+    void setAlignmentSnapTolerance( double t ) { mAlignmentSnapTolerance = t; }
+    double alignmentSnapTolerance() const { return mAlignmentSnapTolerance; }
+
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack() { return &mUndoStack; }
 
@@ -358,6 +364,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QPen mGridPen;
     GridStyle mGridStyle;
 
+    /**Parameters for alignment snap*/
+    bool mAlignmentSnap;
+    double mAlignmentSnapTolerance;
+
     QUndoStack mUndoStack;
 
     QgsComposerItemCommand* mActiveItemCommand;
@@ -391,8 +401,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void collectAlignCoordinates( QMap< double, const QgsComposerItem* >& alignCoordsX,
                                   QMap< double, const QgsComposerItem* >& alignCoordsY, const QgsComposerItem* excludeItem );
 
-    static void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
-                                  double itemCoordOffset, double& itemCoord, double& alignCoord );
+    void checkNearestItem( double checkCoord, const QMap< double, const QgsComposerItem* >& alignCoords, double& smallestDiff,
+                           double itemCoordOffset, double& itemCoord, double& alignCoord ) const;
 
     /**Find nearest item in coordinate map to a double.
         @return true if item found, false if coords is empty*/
