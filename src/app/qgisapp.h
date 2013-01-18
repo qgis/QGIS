@@ -456,12 +456,18 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 1.9 */
     void saveActiveLayerEdits();
 
-    //! Save edits of a layer
-    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true );
+    /** Save edits of a layer
+     * @param leaveEditable leave the layer in editing mode when done (added in QGIS 1.9)
+     * @param triggerRepaint send layer signal to repaint canvas when done (added in QGIS 1.9)
+     */
+    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /** Cancel edits for a layer
-      * @note added in 1.9 */
-    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true );
+      * @param leaveEditable leave the layer in editing mode when done
+      * @param triggerRepaint send layer signal to repaint canvas when done
+      * @note added in 1.9
+      */
+    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     //! Save current edits for selected layer(s) and start new transaction(s)
     void saveEdits();
@@ -839,7 +845,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Dialog for verification of action on many edits
      * @note added in 1.9 */
-    bool verifyEditsActionDialog( QString act, QString upon );
+    bool verifyEditsActionDialog( const QString& act, const QString& upon );
 
     /** Update gui actions/menus when layers are modified
      * @note added in 1.9 */

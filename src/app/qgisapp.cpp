@@ -5271,10 +5271,10 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
 void QgisApp::saveActiveLayerEdits()
 {
-  saveEdits( activeLayer() );
+  saveEdits( activeLayer(), true, true );
 }
 
-void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
+void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
@@ -5297,10 +5297,13 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
   {
     vlayer->startEditing();
   }
-  vlayer->triggerRepaint();
+  if ( triggerRepaint )
+  {
+    vlayer->triggerRepaint();
+  }
 }
 
-void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
+void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() )
@@ -5326,7 +5329,10 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
   {
     vlayer->startEditing();
   }
-  vlayer->triggerRepaint();
+  if ( triggerRepaint )
+  {
+    vlayer->triggerRepaint();
+  }
 }
 
 void QgisApp::saveEdits()
@@ -5336,8 +5342,9 @@ void QgisApp::saveEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    saveEdits( layer );
+    saveEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5354,8 +5361,9 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers( true ) )
   {
-    saveEdits( layer );
+    saveEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5366,8 +5374,9 @@ void QgisApp::rollbackEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    cancelEdits( layer );
+    cancelEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5384,8 +5393,9 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers( true ) )
   {
-    cancelEdits( layer );
+    cancelEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5396,8 +5406,9 @@ void QgisApp::cancelEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    cancelEdits( layer, false );
+    cancelEdits( layer, false, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5414,12 +5425,13 @@ void QgisApp::cancelAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers() )
   {
-    cancelEdits( layer, false );
+    cancelEdits( layer, false, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
-bool QgisApp::verifyEditsActionDialog( QString act, QString upon )
+bool QgisApp::verifyEditsActionDialog( const QString& act, const QString& upon )
 {
   bool res = false;
   switch ( QMessageBox::information( 0,
