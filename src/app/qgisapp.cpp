@@ -5234,14 +5234,15 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         break;
 
       case QMessageBox::Discard:
+        mMapCanvas->freeze( true );
         if ( !vlayer->rollBack() )
         {
           QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
           res = false;
         }
+        mMapCanvas->freeze( false );
 
-        // canvas refreshes handled in QgsUndoWidget::indexChanged
-        //vlayer->triggerRepaint();
+        vlayer->triggerRepaint();
         break;
 
       default:
@@ -5250,7 +5251,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   }
   else //layer not modified
   {
+    mMapCanvas->freeze( true );
     vlayer->rollBack();
+    mMapCanvas->freeze( false );
     res = true;
     vlayer->triggerRepaint();
   }
@@ -5306,6 +5309,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( vlayer == activeLayer() && leaveEditable )
     mSaveRollbackInProgress = true;
 
+  mMapCanvas->freeze( true );
   if ( !vlayer->rollBack() )
   {
     mSaveRollbackInProgress = false;
@@ -5316,6 +5320,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
                               .arg( vlayer->name() )
                               .arg( vlayer->commitErrors().join( "\n  " ) ) );
   }
+  mMapCanvas->freeze( false );
 
   if ( leaveEditable )
   {
