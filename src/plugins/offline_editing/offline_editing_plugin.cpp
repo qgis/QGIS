@@ -47,7 +47,6 @@ QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterfac
 QgsOfflineEditingPlugin::~QgsOfflineEditingPlugin()
 {
   delete mOfflineEditing;
-  delete mProgressDialog;
 }
 
 void QgsOfflineEditingPlugin::initGui()
