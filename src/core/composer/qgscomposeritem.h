@@ -24,6 +24,7 @@
 class QWidget;
 class QDomDocument;
 class QDomElement;
+class QGraphicsLineItem;
 
 class QqsComposition;
 
@@ -265,6 +266,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Rectangle used during move and resize actions*/
     QGraphicsRectItem* mBoundingResizeRectangle;
+    QGraphicsLineItem* mHAlignSnapItem;
+    QGraphicsLineItem* mVAlignSnapItem;
 
     /**True if item fram needs to be painted*/
     bool mFrame;
@@ -344,6 +347,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
         @param x in/out: x coordinate before / after the rotation
         @param y in/out: y cooreinate before / after the rotation*/
     void rotate( double angle, double& x, double& y ) const;
+
+    /**Return horizontal align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* hAlignSnapItem();
+    void deleteHAlignSnapItem();
+    /**Return vertical align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* vAlignSnapItem();
+    void deleteVAlignSnapItem();
+    void deleteAlignItems();
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/
