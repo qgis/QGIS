@@ -40,6 +40,7 @@ QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterfac
     , mActionConvertProject( NULL )
     , mActionSynchronize( NULL )
     , mOfflineEditing( NULL )
+    , mProgressDialog( NULL )
 {
 }
 
