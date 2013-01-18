@@ -166,7 +166,18 @@ class GdalToolsBasePluginWidget:
         return
 
       # if check version fails, disable the widget then hide both it and its enabler checkbox
-      if ver != None:
+      # new check for gdal 1.10, must update all widgets for this and then remove previous check
+      if ver != None and isinstance(ver, int):
+        gdalVerNum = Utils.GdalConfig.versionNum()
+        if ver > gdalVerNum:
+          wdgt.setVisible(False)
+          if isinstance(chk, QWidget):
+            chk.setVisible(False)
+            chk.setChecked(False)
+          sgnls = None
+          chk = False
+
+      elif ver != None:
         if not isinstance(ver, Utils.Version):
           ver = Utils.Version(ver)
         gdalVer = Utils.GdalConfig.version()

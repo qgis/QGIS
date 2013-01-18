@@ -500,6 +500,10 @@ class GdalConfig:
   def version(self):
       return Version(gdal.VersionInfo("RELEASE_NAME"))
 
+  @classmethod
+  def versionNum(self):
+      return int(gdal.VersionInfo("VERSION_NUM"))
+
   # store the supported rasters info
   supportedRasters = None
 
@@ -845,6 +849,7 @@ def setMacOSXDefaultEnvironment():
   qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
   # path to the GDAL framework when installed as external framework
+  # TODO adjust this for gdal 1.10
   gdal_bin_path = u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3]
 
   if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone
