@@ -297,6 +297,30 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   mComposerScaleBar->update();
 }
 
+void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->fontPen().color();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
+  disconnectUpdateSignal();
+  QPen newPen( newColor );
+  mComposerScaleBar->setFontPen( newPen );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
 void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
 {
   if ( !mComposerScaleBar )
@@ -336,7 +360,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar stroke color changed" ) );
   disconnectUpdateSignal();
   QPen newPen( newColor );
   mComposerScaleBar->setPen( newPen );
