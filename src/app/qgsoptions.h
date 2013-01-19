@@ -21,6 +21,7 @@
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
 #include "qgisapp.h"
+#include "qgisappstylesheet.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>
@@ -75,11 +76,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
-    /*!
-    * Slot to temporarily apply settings to app stylesheet
-    * @note added in QGIS 2.0
-    */
-    void updateAppStyleSheet();
 
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox
@@ -91,6 +87,27 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * true.
      */
     bool newVisible();
+
+    /** Slot to select the default font point size for app
+     * @note added in QGIS 1.9
+     */
+    void on_spinFontSize_valueChanged( int fontSize );
+
+    /** Slot to set font family for app to Qt default
+     * @note added in QGIS 1.9
+     */
+    void on_mFontFamilyRadioQt_released();
+
+    /** Slot to set font family for app to custom choice
+     * @note added in QGIS 1.9
+     */
+    void on_mFontFamilyRadioCustom_released();
+
+    /** Slot to select custom font family choice for app
+     * @note added in QGIS 1.9
+     */
+    void on_mFontFamilyComboBox_currentFontChanged( const QFont& font );
+
     /*!
      * Slot to select the default map selection color
      */
@@ -230,6 +247,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
   protected:
     void showEvent( QShowEvent * e );
     void paintEvent( QPaintEvent * e );
+
+    QgisAppStyleSheet* mStyleSheetBuilder;
+    QMap<QString, QVariant> mStyleSheetNewOpts;
+    QMap<QString, QVariant> mStyleSheetOldOpts;
 };
 
 #endif // #ifndef QGSOPTIONS_H

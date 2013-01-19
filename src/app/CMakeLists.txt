@@ -2,6 +2,7 @@ SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
+  qgisappstylesheet.cpp
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -167,6 +168,7 @@ ENDIF (ANDROID)
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
+  qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h

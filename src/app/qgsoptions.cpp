@@ -20,6 +20,7 @@
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgisappstylesheet.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -70,6 +71,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 {
   setupUi( this );
 
+  // stylesheet setup
+  mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
+  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
+  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
+
   connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
 
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -79,11 +85,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-
-  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyRadioQt, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyRadioCustom, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyComboBox, SIGNAL( currentFontChanged( const QFont& ) ), this, SLOT( updateAppStyleSheet() ) );
 
 #ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
@@ -449,17 +450,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
-  // TODO: move all stylesheet options blockSignals to separate method when implementing app stylesheet
   spinFontSize->blockSignals( true );
   mFontFamilyRadioQt->blockSignals( true );
   mFontFamilyRadioCustom->blockSignals( true );
   mFontFamilyComboBox->blockSignals( true );
 
-  spinFontSize->setValue( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
-  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
-  bool isQtDefault = ( fontFamily == QString( "QtDefault" ) );
+  spinFontSize->setValue( mStyleSheetNewOpts.value( "fontPointSize" ).toInt() );
+  QString fontFamily = mStyleSheetNewOpts.value( "fontFamily" ).toString();
+  bool isQtDefault = ( fontFamily == mStyleSheetBuilder->defaultFont().family() );
   mFontFamilyRadioQt->setChecked( isQtDefault );
   mFontFamilyRadioCustom->setChecked( !isQtDefault );
+  mFontFamilyComboBox->setEnabled( !isQtDefault );
   if ( !isQtDefault )
   {
     QFont *tempFont = new QFont( fontFamily );
@@ -470,6 +471,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
     delete tempFont;
   }
+
   spinFontSize->blockSignals( false );
   mFontFamilyRadioQt->blockSignals( false );
   mFontFamilyRadioCustom->blockSignals( false );
@@ -890,25 +892,6 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
-void QgsOptions::updateAppStyleSheet()
-{
-  int fontSize = spinFontSize->value();
-
-  QString family = QString( "" ); // use default Qt font family
-  if ( mFontFamilyRadioCustom->isChecked() )
-  {
-    family = QString( " \"%1\";" ).arg( mFontFamilyComboBox->currentFont().family() );
-  }
-
-  QString stylesheet = QString( "font: %1pt%2" ).arg( fontSize ).arg( family );
-  QgisApp::instance()->setStyleSheet( stylesheet );
-
-  foreach ( QgsComposer* c, QgisApp::instance()->printComposers() )
-  {
-    c->setAppStyleSheet();
-  }
-}
-
 void QgsOptions::toggleEnableBackbuffer( int state )
 {
 #ifdef Q_WS_X11
@@ -1091,16 +1074,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
-  // application stylesheet settings
-  settings.setValue( "/fontPointSize", spinFontSize->value() );
-  QString fontFamily = QString( "QtDefault" );
-  if ( mFontFamilyRadioCustom->isChecked() )
-  {
-    fontFamily = mFontFamilyComboBox->currentFont().family();
-  }
-  settings.setValue( "/fontFamily", fontFamily );
-  QgisApp::instance()->setAppStyleSheet();
-
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
 
   // rasters settings
@@ -1255,11 +1228,55 @@ void QgsOptions::saveOptions()
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
     saveGdalDriverList();
+
+  // save app stylesheet last (in case reset becomes necessary)
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
+  }
 }
 
 void QgsOptions::rejectOptions()
 {
-  QgisApp::instance()->setAppStyleSheet();
+  // don't reset stylesheet if we don't have to
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetOldOpts );
+  }
+}
+
+void QgsOptions::on_spinFontSize_valueChanged( int fontSize )
+{
+  mStyleSheetNewOpts.insert( "fontPointSize", fontSize );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mFontFamilyRadioQt_released()
+{
+  if ( mStyleSheetNewOpts.value( "fontFamily" ).toString() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", mStyleSheetBuilder->defaultFont().family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyRadioCustom_released()
+{
+  if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", mFontFamilyComboBox->currentFont().family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
+{
+  if ( mFontFamilyRadioCustom->isChecked()
+       && mStyleSheetNewOpts.value( "fontFamily" ).toString() != font.family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", font.family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
 }
 
 void QgsOptions::on_pbnSelectProjection_clicked()

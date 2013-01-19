@@ -97,6 +97,7 @@
 
 #include "qgisapp.h"
 #include "qgisappinterface.h"
+#include "qgisappstylesheet.h"
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
@@ -464,7 +465,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setAppStyleSheet();
+
+  // set up stylesheet builder and apply saved or default style options
+  mStyleSheetBuilder = new QgisAppStyleSheet( this );
+  connect( mStyleSheetBuilder, SIGNAL( appStyleSheetChanged( const QString& ) ),
+           this, SLOT( setAppStyleSheet( const QString& ) ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
 
   QWidget *centralWidget = this->centralWidget();
   QGridLayout *centralLayout = new QGridLayout( centralWidget );
@@ -717,6 +723,7 @@ QgisApp::~QgisApp()
 {
   delete mInternalClipboard;
   delete mQgisInterface;
+  delete mStyleSheetBuilder;
 
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
@@ -838,6 +845,11 @@ bool QgisApp::event( QEvent * event )
   return done;
 }
 
+QgisAppStyleSheet* QgisApp::styleSheetBuilder()
+{
+  Q_ASSERT( mStyleSheetBuilder );
+  return mStyleSheetBuilder;
+}
 
 // restore any application settings stored in QSettings
 void QgisApp::readSettings()
@@ -1175,50 +1187,14 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
 }
 
-void QgisApp::setFontSize( int fontSize )
+void QgisApp::setAppStyleSheet( const QString& stylesheet )
 {
-  if ( fontSize < 4 || 99 < fontSize ) // defaults for Options spinbox
-  {
-    return;
-  }
-  QSettings settings;
-  settings.setValue( "/fontPointSize", fontSize );
-  setAppStyleSheet();
-}
-
-void QgisApp::setFontFamily( const QString& fontFamily )
-{
-  QSettings settings;
-  settings.setValue( "/fontFamily", fontFamily );
-  setAppStyleSheet();
-}
-
-void QgisApp::setAppStyleSheet()
-{
-  QSettings settings;
-  int fontSize = settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt();
-
-  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
-
-  QString family = QString( "" ); // use default Qt font family
-  if ( fontFamily != "QtDefault" )
-  {
-    QFont *tempFont = new QFont( fontFamily );
-    // is exact family match returned from system?
-    if ( tempFont->family() == fontFamily )
-    {
-      family = QString( " \"%1\";" ).arg( fontFamily );
-    }
-    delete tempFont;
-  }
-
-  QString stylesheet = QString( "font: %1pt%2\n" ).arg( fontSize ).arg( family );
   setStyleSheet( stylesheet );
 
   // cascade styles to any current project composers
   foreach ( QgsComposer *c, mPrintComposers )
   {
-    c->setAppStyleSheet();
+    c->setStyleSheet( stylesheet );
   }
 }
 

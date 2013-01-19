@@ -88,7 +88,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   QSettings settings;
-  setAppStyleSheet();
+  setStyleSheet( QgisApp::instance()->styleSheet() );
 
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
@@ -394,18 +394,6 @@ void QgsComposer::setIconSizes( int size )
   }
 }
 
-void QgsComposer::setFontSize( int fontSize )
-{
-  //Convenience method for backwards compatibility
-  //Should set directly for QgisApp instead
-  QgisApp::instance()->setFontSize( fontSize );
-}
-
-void QgsComposer::setAppStyleSheet()
-{
-  setStyleSheet( QgisApp::instance()->styleSheet() );
-}
-
 void QgsComposer::connectSlots()
 {
   connect( mView, SIGNAL( selectedItemChanged( QgsComposerItem* ) ), this, SLOT( showItemOptions( QgsComposerItem* ) ) );
@@ -705,8 +693,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       {
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
         mComposition->beginPrintAsPDF( printer, outputFileName );
-	// set the correct resolution
-	mComposition->beginPrint( printer );
+        // set the correct resolution
+        mComposition->beginPrint( printer );
         painter.begin( &printer );
         mComposition->doPrint( printer, painter );
         painter.end();

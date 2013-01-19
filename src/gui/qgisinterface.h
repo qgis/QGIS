@@ -35,6 +35,7 @@ class QgsFeature;
 class QgsMessageBar;
 
 #include <QObject>
+#include <QFont>
 #include <QPair>
 #include <map>
 
@@ -77,17 +78,6 @@ class GUI_EXPORT QgisInterface : public QObject
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
-    /** Set the app font size
-     * @param fontSize point size of font
-     * @note added in 2.0
-     */
-    virtual void setFontSize( int fontSize ) = 0;
-
-    /** Set the app font family
-     * @param fontFamily family of font (not including any style)
-     * @note added in 2.0
-     */
-    virtual void setFontFamily( QString fontFamily ) = 0;
 
     //! Zoom to full extent of map layers
     virtual void zoomFull() = 0;
@@ -175,6 +165,27 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
     virtual QList<QgsComposerView*> activeComposers() = 0;
+
+    /** Return changeable options built from settings and/or defaults
+     * @note (added in 1.9)
+     */
+    virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
+
+    /** Generate stylesheet
+     * @param opts generated default option values, or a changed copy of them
+     * @note added in 1.9
+     */
+    virtual void buildStyleSheet( const QMap<QString, QVariant>& opts ) = 0;
+
+    /** Save changed default option keys/values to user settings
+      * @note added in 1.9
+      */
+    virtual void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) = 0;
+
+    /** Get reference font for initial qApp (may not be same as QgisApp)
+     * @note added in 1.9
+     */
+    virtual QFont defaultStyleSheetFont() = 0;
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu( QString name, QAction* action ) = 0;

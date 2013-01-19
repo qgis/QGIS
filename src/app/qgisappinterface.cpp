@@ -23,6 +23,7 @@
 #include <QAbstractButton>
 
 #include "qgisappinterface.h"
+#include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgsmaplayer.h"
@@ -65,16 +66,6 @@ QgisAppInterface::~QgisAppInterface()
 QgsLegendInterface* QgisAppInterface::legendInterface()
 {
   return &legendIface;
-}
-
-void QgisAppInterface::setFontSize( int fontSize )
-{
-  qgis->setFontSize( fontSize );
-}
-
-void QgisAppInterface::setFontFamily( QString fontFamily )
-{
-  qgis->setFontFamily( fontFamily );
 }
 
 void QgisAppInterface::zoomFull()
@@ -297,6 +288,26 @@ QList<QgsComposerView*> QgisAppInterface::activeComposers()
     }
   }
   return composerViewList;
+}
+
+QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
+{
+  return qgis->styleSheetBuilder()->defaultOptions();
+}
+
+void QgisAppInterface::buildStyleSheet( const QMap<QString, QVariant>& opts )
+{
+  qgis->styleSheetBuilder()->buildStyleSheet( opts );
+}
+
+void QgisAppInterface::saveStyleSheetOptions( const QMap<QString, QVariant>& opts )
+{
+  qgis->styleSheetBuilder()->saveToSettings( opts );
+}
+
+QFont QgisAppInterface::defaultStyleSheetFont()
+{
+  return qgis->styleSheetBuilder()->defaultFont();
 }
 
 void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget )

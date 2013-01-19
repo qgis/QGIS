@@ -37,6 +37,7 @@ class QTcpSocket;
 class QValidator;
 
 class QgisAppInterface;
+class QgisAppStyleSheet;
 class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
@@ -175,13 +176,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
-    void setFontSize( int fontSize );
-    //! Set app font family
-    //! @note added in 2.0
-    void setFontFamily( const QString& fontFamily );
-    //! Set app stylesheet from settings
-    //! @note added in 2.0
-    void setAppStyleSheet();
+
+    //! Get stylesheet builder object for app and print composers
+    //! @note added in 1.9
+    QgisAppStyleSheet* styleSheetBuilder();
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -535,6 +533,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project was read
     void readProject( const QDomDocument & );
+
+    //! Set app stylesheet from settings
+    //! @note added in 1.9
+    void setAppStyleSheet( const QString& stylesheet );
 
     //! request credentials for network manager
     void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
@@ -1106,6 +1108,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
 
+    QgisAppStyleSheet* mStyleSheetBuilder;
+
     // actions for menus and toolbars -----------------
 
 #ifdef Q_WS_MAC
@@ -1353,11 +1357,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
-//TODO find a better default fontsize maybe using DPI detection or so
-#define QGIS_DEFAULT_FONTSIZE 8
 #else
 #define QGIS_ICON_SIZE 24
-#define QGIS_DEFAULT_FONTSIZE qApp->font().pointSize()
 #endif
 
 #endif
