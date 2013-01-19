@@ -21046,13 +21046,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="135"/>
         <source>Update existing field</source>
-        <translation>Champ de mise à jour existant</translation>
+        <translation>Mise à jour d'un champ existant</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Only update selected features</source>
         <translation variants="yes">
-            <lengthvariant>Seulement mettre à jour les entités sélectionnées</lengthvariant>
+            <lengthvariant>Mise à jour des entités sélectionnées uniquement</lengthvariant>
             <lengthvariant>Mise à jour des entités sélectionnées</lengthvariant>
         </translation>
     </message>
