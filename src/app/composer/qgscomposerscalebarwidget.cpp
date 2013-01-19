@@ -304,7 +304,7 @@ void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
     return;
   }
 
-  QColor oldColor = mComposerScaleBar->fontPen().color();
+  QColor oldColor = mComposerScaleBar->fontColor();
   QColor newColor = QColorDialog::getColor( oldColor, 0 );
 
   if ( !newColor.isValid() ) //user canceled the dialog
@@ -314,8 +314,7 @@ void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
 
   mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
   disconnectUpdateSignal();
-  QPen newPen( newColor );
-  mComposerScaleBar->setFontPen( newPen );
+  mComposerScaleBar->setFontColor( newColor );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();

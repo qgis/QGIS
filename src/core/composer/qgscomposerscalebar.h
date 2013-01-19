@@ -75,8 +75,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     QFont font() const;
 
-    QPen fontPen()const {return mFontPen;}
-    void setFontPen( const QPen& pen ) {mFontPen = pen;}
+    QColor fontColor() const {return mFontColor;}
+    void setFontColor( const QColor& c ) {mFontColor = c;}
 
     void setFont( const QFont& font );
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString mUnitLabeling;
     /**Font*/
     QFont mFont;
-    QPen mFontPen;
+    QColor mFontColor;
     /**Outline*/
     QPen mPen;
     /**Fill*/
