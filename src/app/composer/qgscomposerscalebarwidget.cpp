@@ -204,7 +204,7 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line width" ), QgsComposerMergeCommand::ScaleBarLineWidth );
   disconnectUpdateSignal();
-  QPen newPen( QColor( 0, 0, 0 ) );
+  QPen newPen( mComposerScaleBar->pen().color() );
   newPen.setWidthF( d );
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
@@ -316,6 +316,30 @@ void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
   disconnectUpdateSignal();
   QBrush newBrush( newColor );
   mComposerScaleBar->setBrush( newBrush );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->pen().color();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
+  disconnectUpdateSignal();
+  QPen newPen( newColor );
+  mComposerScaleBar->setPen( newBrush );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
