@@ -43,7 +43,8 @@ void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
 
   p->save();
-  p->setPen( p->pen() );
+  p->setPen( mScaleBar->pen() );
+
 
   QList<QPair<double, double> > segmentInfo;
   mScaleBar->segmentPositions( segmentInfo );

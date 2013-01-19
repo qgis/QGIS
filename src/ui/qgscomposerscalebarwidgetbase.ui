@@ -35,9 +35,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-138</y>
+        <y>0</y>
         <width>415</width>
-        <height>636</height>
+        <height>552</height>
        </rect>
       </property>
       <attribute name="label">
@@ -270,10 +270,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mFontColorButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+          <widget class="QPushButton" name="mFontColorPushButton">
            <property name="text">
             <string>Font color...</string>
            </property>

@@ -78,7 +78,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
-      p->setPen( QColor( 0, 0, 0 ) );
+      p->setPen( mScaleBar->fontColor() );//THIS SEEMS USELESS ?
       mScaleBar->drawText( p, segmentIt->first - mScaleBar->textWidthMillimeters( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->boxContentSpace(), currentNumericLabel, mScaleBar->font() );
     }
 
@@ -93,7 +93,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   if ( !segmentInfo.isEmpty() )
   {
     currentNumericLabel = QString::number( currentLabelNumber / mScaleBar->numMapUnitsPerScaleBarUnit() );
-    p->setPen( QColor( 0, 0, 0 ) );
+    p->setPen( mScaleBar->fontColor() );//THIS SEEMS USELESS ?
     mScaleBar->drawText( p, segmentInfo.last().first + mScaleBar->segmentMillimeters() - mScaleBar->textWidthMillimeters( mScaleBar->font(), currentNumericLabel ) / 2 + xOffset, mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->boxContentSpace(), currentNumericLabel + " " + mScaleBar->unitLabeling(), mScaleBar->font() );
   }
 
