@@ -43,6 +43,10 @@ class QgsLegendInterface : QObject
     //! @note added in 1.5
     virtual bool isGroupVisible( int groupIndex ) = 0;
 
+    //! Check if a layer is expanded
+    //! @note added in 2.0
+    virtual bool isLayerExpanded( QgsMapLayer * ml ) = 0;
+
     //! Check if a layer is visible
     //! @note added in 1.5
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;

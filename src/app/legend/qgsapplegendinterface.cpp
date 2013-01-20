@@ -167,6 +167,11 @@ bool QgsAppLegendInterface::isGroupVisible( int groupIndex )
   return ( Qt::Checked == getItem( groupIndex )->checkState( 0 ) );
 }
 
+bool QgsAppLegendInterface::isLayerExpanded( QgsMapLayer * ml )
+{
+  return mLegend->layerIsExpanded( ml );
+}
+
 bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )
 {
   return ( Qt::Checked == mLegend->layerCheckState( ml ) );
