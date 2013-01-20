@@ -40,7 +40,7 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
     , mUnits( MapUnits )
-    , mFontColor( QColor( 255, 0, 0 ) )//TODO : set to 0,0,0
+    , mFontColor( QColor( 0, 0, 0 ) )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -228,7 +228,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setStyle( Qt::SolidPattern );
 
   mFont.setPointSizeF( 12.0 );
-  mFontColor = QColor( 255, 0, 0 );//TODO : set to 0,0,0
+  mFontColor = QColor( 0, 0, 0 );
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
