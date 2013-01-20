@@ -221,6 +221,9 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
+    /**Returns a layers expanded state*/
+    bool layerIsExpanded( QgsMapLayer * layer );
+
     /**Add group from other project file. Returns a pointer to the new group in case of success or 0 in case of error*/
     QgsLegendGroup* addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
 
