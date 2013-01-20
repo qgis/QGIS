@@ -61,7 +61,6 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 
   drawBackground( painter );
-  painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
