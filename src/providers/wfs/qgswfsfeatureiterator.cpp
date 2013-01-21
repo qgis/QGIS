@@ -68,7 +68,12 @@ bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
 
 bool QgsWFSFeatureIterator::rewind()
 {
-  return false;
+  if ( !mProvider )
+  {
+    return false;
+  }
+
+  mFeatureIterator = mSelectedFeatures.constBegin();
 }
 
 bool QgsWFSFeatureIterator::close()
