@@ -362,6 +362,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
   mComposerScaleBar->beginCommand( tr( "Scalebar stroke color changed" ) );
   disconnectUpdateSignal();
   QPen newPen( newColor );
+  newPen.setWidthF( mComposerScaleBar->pen().widthF() );
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
   connectUpdateSignal();
