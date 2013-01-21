@@ -12,6 +12,12 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const Qg
     return;
   }
 
+  if ( mProvider->mActiveIterator )
+  {
+    mProvider->mActiveIterator->close();
+  }
+  mProvider->mActiveIterator = this;
+
   switch ( request.filterType() )
   {
     case QgsFeatureRequest::FilterRect:
@@ -67,5 +73,11 @@ bool QgsWFSFeatureIterator::rewind()
 
 bool QgsWFSFeatureIterator::close()
 {
-  return false;
+  if ( !mProvider )
+  {
+    return false;
+  }
+  mProvider->mActiveIterator = 0;
+  mProvider = 0;
+  return true;
 }

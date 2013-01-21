@@ -50,6 +50,7 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
     : QgsVectorDataProvider( uri ),
     mNetworkRequestFinished( true ),
+    mActiveIterator( 0 ),
     mRequestEncoding( QgsWFSProvider::GET ),
     mUseIntersect( false ),
     mWKBType( QGis::WKBUnknown ),
@@ -123,6 +124,10 @@ QgsWFSProvider::~QgsWFSProvider()
 {
   deleteData();
   delete mSpatialIndex;
+  if ( mActiveIterator )
+  {
+    mActiveIterator->close();
+  }
 }
 
 void QgsWFSProvider::reloadData()
