@@ -41,7 +41,6 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         self.setupUi(self)
         QtCore.QObject.connect(self.toolOut, QtCore.SIGNAL("clicked()"), self.outFile)
         QtCore.QObject.connect(self.inShape, QtCore.SIGNAL("currentIndexChanged(QString)"), self.update)
-        QtCore.QObject.connect(self.writeShapefileCheck, QtCore.SIGNAL("stateChanged(int)"), self.on_writeShapefileCheck_stateChanged)
         self.setWindowTitle(self.tr("Eliminate sliver polygons"))
         self.buttonOk = self.buttonBox_2.button(QtGui.QDialogButtonBox.Ok)
         # populate layer list
@@ -53,18 +52,10 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         if len(layers) > 0:
             self.update(layers[0])
 
-        self.on_writeShapefileCheck_stateChanged(self.writeShapefileCheck.checkState())
-
     def update(self, inputLayer):
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         selFeatures = changedLayer.selectedFeatureCount()
         self.selected.setText( self.tr("Selected features: %1").arg(selFeatures))
-
-    def on_writeShapefileCheck_stateChanged(self, newState):
-        doEnable = (newState == 2)
-        self.outShape.setEnabled(doEnable)
-        self.toolOut.setEnabled(doEnable)
-        self.addToCanvasCheck.setEnabled(doEnable)
 
     def accept(self):
         self.buttonOk.setEnabled(False)
@@ -72,24 +63,23 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         if self.inShape.currentText() == "":
             QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("No input shapefile specified"))
         else:
+            outFileName = self.outShape.text()
 
-            if self.writeShapefileCheck.isChecked():
-                outFileName = self.outShape.text()
-
-                if outFileName == "":
-                    QtGui.MessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
-                else:
-                    outFile = QtCore.QFile(outFileName)
-
-                    if outFile.exists():
-                        if not QgsVectorFileWriter.deleteShapeFile(outFileName):
-                            QtGui.QMessageBox.warning(self, self.tr("Delete error"),
-                                self.tr("Can't delete file %1").arg(outFileName))
-                            return
-
-                    outFileName = unicode(outFileName)
+            if outFileName == "":
+                QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
+                self.buttonOk.setEnabled(True)
+                return None
             else:
-                outFileName = None
+                outFile = QtCore.QFile(outFileName)
+
+                if outFile.exists():
+                    if not QgsVectorFileWriter.deleteShapeFile(outFileName):
+                        QtGui.QMessageBox.warning(self, self.tr("Delete error"),
+                            self.tr("Can't delete file %1").arg(outFileName))
+                        self.buttonOk.setEnabled(True)
+                        return None
+
+                outFileName = unicode(outFileName)
 
             inLayer = ftools_utils.getVectorLayerByName(unicode(self.inShape.currentText()))
 
@@ -109,13 +99,23 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         self.outShape.clear()
         (outFileName, self.encoding) = ftools_utils.saveDialog(self)
         if outFileName is None or self.encoding is None:
-          return
+            return None
         self.outShape.setText(outFileName)
 
-    def eliminate(self, inLayer, boundary, progressBar, outFileName = None):
+    def saveChanges(self, outLayer):
+        if outLayer.commitChanges():
+            return True
+        else:
+            msg = ""
+            for aStrm in outLayer.commitErrors():
+                msg = msg + "\n" + aStrm
+            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Commit error:\n %1").arg(msg))
+            outLayer.rollBack()
+            return False
+
+    def eliminate(self, inLayer, boundary, progressBar, outFileName):
         # keep references to the features to eliminate
         fidsToEliminate = inLayer.selectedFeaturesIds()
-        fidsToProcess = inLayer.selectedFeaturesIds()
 
         if outFileName: # user wants a new shape file to be created as result
             provider = inLayer.dataProvider()
@@ -128,12 +128,20 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             outLayer = QgsVectorLayer(outFileName, QtCore.QFileInfo(outFileName).completeBaseName(), "ogr")
 
         else:
-            outLayer = inLayer
-            outLayer.removeSelection(False)
+            QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
+            return None
 
+        # delete features to be eliminated in outLayer
+        outLayer.setSelectedFeatures(fidsToEliminate)
         outLayer.startEditing()
-        doCommit = True
 
+        if outLayer.deleteSelectedFeatures():
+            if self.saveChanges(outLayer):
+                outLayer.startEditing()
+        else:
+            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not delete features"))
+            return None
+        
         # ANALYZE
         start = 20.00
         progressBar.setValue(start)
@@ -144,103 +152,92 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
 
         # we go through the list and see if we find any polygons we can merge the selected with
         # if we have no success with some we merge and then restart the whole story
-        while (lastLen != len(fidsToProcess)): #check if we made any progress
-            lastLen = len(fidsToProcess)
-            fidsNotEliminated = []
-            fidsToDelete = []
+        while (lastLen != inLayer.selectedFeatureCount()): #check if we made any progress
+            lastLen = inLayer.selectedFeatureCount()
+            fidsToDeselect = []
 
             #iterate over the polygons to eliminate
-            for fid in fidsToProcess:
+            for fid2Eliminate in inLayer.selectedFeaturesIds():
                 feat = QgsFeature()
 
-                if outLayer.featureAtId(fid, feat, True, False):
-                    geom = feat.geometry()
-                    bbox = geom.boundingBox()
+                if inLayer.featureAtId(fid2Eliminate, feat, True, False):
+                    geom2Eliminate = feat.geometry()
+                    bbox = geom2Eliminate.boundingBox()
                     outLayer.select(bbox, False) # make a new selection
                     mergeWithFid = None
                     mergeWithGeom = None
                     max = 0
 
                     for selFid in outLayer.selectedFeaturesIds():
-                        if fid != selFid:
-                            #check if this feature is to be eliminated, too
-                            try:
-                                found = fidsToEliminate.index(selFid)
-                            except ValueError: #selFid is not in fidsToEliminate
-                                # check whether the geometry to eliminate and the other geometry intersect
-                                selFeat = QgsFeature()
+                        selFeat = QgsFeature()
 
-                                if outLayer.featureAtId(selFid, selFeat, True, False):
-                                    selGeom = selFeat.geometry()
+                        if outLayer.featureAtId(selFid, selFeat, True, False):
+                            selGeom = selFeat.geometry()
 
-                                    if geom.intersects(selGeom): # we have a candidate
-                                        iGeom = geom.intersection(selGeom)
+                            if geom2Eliminate.intersects(selGeom): # we have a candidate
+                                iGeom = geom2Eliminate.intersection(selGeom)
 
-                                        if boundary:
-                                            selValue = iGeom.length()
-                                        else:
-                                            # we need a common boundary
-                                            if 0 < iGeom.length():
-                                                selValue = selGeom.area()
-                                            else:
-                                                selValue = 0
+                                if boundary:
+                                    selValue = iGeom.length()
+                                else:
+                                    # we need a common boundary
+                                    if 0 < iGeom.length():
+                                        selValue = selGeom.area()
+                                    else:
+                                        selValue = 0
 
-                                        if selValue > max:
-                                            max = selValue
-                                            mergeWithFid = selFid
-                                            mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
-
+                                if selValue > max:
+                                    max = selValue
+                                    mergeWithFid = selFid
+                                    mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
+                    
                     if mergeWithFid != None: # a successful candidate
-                        try:
-                            geomList = geomsToMerge[mergeWithFid]
-                        except KeyError:
-                            geomList = [mergeWithGeom]
+                        newGeom = mergeWithGeom.combine(geom2Eliminate)
 
-                        geomList.append(QgsGeometry(geom)) # deep copy of the geom
-                        geomsToMerge[mergeWithFid] = geomList
-                        fidsToDelete.append(fid)
+                        if outLayer.changeGeometry(mergeWithFid, newGeom):
+                            # write change back to disc
+                            if self.saveChanges(outLayer):
+                                outLayer.startEditing()
+                            else:
+                                return None
 
+                            # mark feature as eliminated in inLayer
+                            fidsToDeselect.append(fid2Eliminate)
+                        else:
+                            QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
+                                self.tr("Could not replace geometry of feature with id %1").arg( mergeWithFid ))
+                            return None                            
+                        
                         start = start + add
                         progressBar.setValue(start)
-                    else:
-                        fidsNotEliminated.append(fid)
+            # end for fid2Eliminate
 
-            # PROCESS
-            for aFid in geomsToMerge.iterkeys():
-                geomList = geomsToMerge[aFid]
+            # deselect features that are already eliminated in inLayer
+            for aFid in fidsToDeselect:
+                inLayer.deselect(aFid, False)
+                
+        #end while
 
-                if len(geomList) > 1:
-                    for i in range(len(geomList)):
-                        aGeom = geomList[i]
+        if inLayer.selectedFeatureCount() > 0:
+            # copy all features that could not be eliminated to outLayer
+            if outLayer.addFeatures(inLayer.selectedFeatures()):
+                # inform user
+                fidList = QtCore.QString()
 
-                        if i == 0:
-                            newGeom = aGeom
-                        else:
-                            newGeom = newGeom.combine(aGeom)
+                for fid in inLayer.selectedFeaturesIds():
+                    if not fidList.isEmpty():
+                        fidList.append(", ")
 
-                    # replace geometry in outLayer
-                    if not outLayer.changeGeometry(aFid, newGeom):
-                        QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
-                            self.tr("Could not replace geometry of feature with id %1").arg( aFid ))
-                        doCommit = False
-                        break
+                    fidList.append(str(fid))
 
-            # delete eliminated features
-            for aFid in fidsToDelete:
-                if not outLayer.deleteFeature(aFid):
-                    QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
-                        self.tr("Could not delete feature with id %1").arg( aFid ))
-                    doCommit = False
-                    break
-            # prepare array for the next loop
-            fidsToProcess = fidsNotEliminated
+                QtGui.QMessageBox.information(self, self.tr("Eliminate"),
+                        self.tr("Could not eliminate features with these ids:\n%1").arg(fidList))
+            else:        
+                QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
 
-        # SAVE CHANGES
-        if doCommit:
-            if not outLayer.commitChanges():
-                QtGui.QMessageBox.warning(self, self.tr("Commit error"), self.tr("Commit error"))
-        else:
-            outLayer.rollBack()
+        # stop editing outLayer and commit any pending changes
+        if not self.saveChanges(outLayer):
+            return None
 
         if outFileName:
             if self.addToCanvasCheck.isChecked():
@@ -248,18 +245,5 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             else:
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
                     self.tr("Created output shapefile:\n%1").arg(outFileName))
-
-        # inform user
-        if len(fidsNotEliminated) > 0:
-            fidList = QtCore.QString()
-
-            for fid in fidsNotEliminated:
-                if not fidList.isEmpty():
-                    fidList.append(", ")
-
-                fidList.append(str(fid))
-
-            QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                    self.tr("Could not eliminate features with these ids:\n%1").arg(fidList))
 
         self.iface.mapCanvas().refresh()
