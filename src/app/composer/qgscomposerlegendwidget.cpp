@@ -23,6 +23,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include <QFontDialog>
+#include <QColorDialog>
 
 #include "qgsapplegendinterface.h"
 #include "qgisapp.h"
@@ -335,6 +336,27 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
       mLegend->endCommand();
     }
   }
+}
+
+void QgsComposerLegendWidget::on_mFontColorPushButton_clicked()
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  QColor oldColor = mLegend->fontColor();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend font color changed" ) );
+  mLegend->setFontColor( newColor );
+  mLegend->update();
+  mLegend->endCommand();
 }
 
 void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )

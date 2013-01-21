@@ -43,6 +43,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mComposerMap( 0 )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
+    , mFontColor( QColor( 0, 0, 0 ) )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -206,7 +207,7 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
   {
@@ -241,7 +242,7 @@ QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, Q
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   QStringList lines = splitStringForWrapping( groupItem->text() );
   for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
@@ -269,7 +270,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   QStringList lines = splitStringForWrapping( layerItem->text() );
   for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
@@ -377,7 +378,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
     }
   }
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
 
@@ -727,6 +728,12 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
+  //font color
+  QDomElement colorElem = doc.createElement( "fontColor" );
+  colorElem.setAttribute( "red", mFontColor.red() );
+  colorElem.setAttribute( "green", mFontColor.green() );
+  colorElem.setAttribute( "blue", mFontColor.blue() );
+  composerLegendElem.appendChild( colorElem );
 
   if ( mComposerMap )
   {
@@ -777,6 +784,21 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   if ( !itemFontString.isEmpty() )
   {
     mItemFont.fromString( itemFontString );
+  }
+
+  //font color
+  QDomNodeList fontColorList = itemElem.elementsByTagName( "fontColor" );
+  if ( fontColorList.size() > 0 )
+  {
+    QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+    int red = fontColorElem.attribute( "red", "0" ).toInt();
+    int green = fontColorElem.attribute( "green", "0" ).toInt();
+    int blue = fontColorElem.attribute( "blue", "0" ).toInt();
+    mFontColor = QColor( red, green, blue );
+  }
+  else
+  {
+    mFontColor = QColor( 0, 0, 0 );
   }
 
   //spaces

@@ -72,6 +72,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QFont itemFont() const;
     void setItemFont( const QFont& f );
 
+    QColor fontColor() const {return mFontColor;}
+    void setFontColor( const QColor& c ) {mFontColor = c;}
+
     double boxSpace() const {return mBoxSpace;}
     void setBoxSpace( double s ) {mBoxSpace = s;}
 
@@ -141,6 +144,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QFont mGroupFont;
     QFont mLayerFont;
     QFont mItemFont;
+    QColor mFontColor;
 
     /**Space between item box and contents*/
     double mBoxSpace;
