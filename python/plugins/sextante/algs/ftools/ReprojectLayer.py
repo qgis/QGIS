@@ -56,7 +56,7 @@ class ReprojectLayer(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
-        targetCrs = QgsCoordinateReferenceSystem(int(crsId))
+        targetCrs = QgsCoordinateReferenceSystem(crsId)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), targetCrs)

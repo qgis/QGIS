@@ -30,7 +30,6 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.QGisLayers import QGisLayers
-import os
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -93,9 +92,13 @@ class SaveSelectedFeatures(GeoAlgorithm):
         writer = output.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs() )
 
         #Now we take the selected features and add them to the output layer
-        selection = vectorLayer.selectedFeatures()
-        for feat in selection:
+        features = QGisLayers.features(vectorLayer)
+        total = len(features)
+        i = 0
+        for feat in features:
             writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(total))
+            i += 1
         del writer
 
         #There is nothing more to do here. We do not have to open the layer that we have created.

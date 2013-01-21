@@ -249,12 +249,11 @@ def getFieldList( vlayer ):
     return myFields
 
 # Convinience function to create a spatial index for input QgsVectorDataProvider
-def createIndex( provider ):
+def createIndex( features ):
     feat = QgsFeature()
     index = QgsSpatialIndex()
-    provider.rewind()
-    while provider.nextFeature( feat ):
-        index.insertFeature( feat )
+    for feature in features:
+        index.insertFeature( feature )
     return index
 
 # Convinience function to add a vector layer to canvas based on input shapefile path ( as string )

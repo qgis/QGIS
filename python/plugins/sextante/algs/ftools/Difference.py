@@ -48,8 +48,7 @@ class Difference(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT))
-        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT2))
-        useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
+        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT2))        
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
@@ -65,77 +64,43 @@ class Difference(GeoAlgorithm):
         if not crsA.isValid() or not crsB.isValid():
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Difference. Invalid CRS. Results might be unexpected")
         else:
-            if not crsA != crsB:
+            if crsA != crsB:
                 SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Difference. Non-matching CRSs. Results might be unexpected")
         writer = self.getOutputFromName(Difference.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = ftools_utils.createIndex( vproviderB )
+        index = ftools_utils.createIndex( QGisLayers.features(vlayerB) )
         nElement = 0
-        # there is selection in input layer
-        if useSelection:
-            nFeat = vlayerA.selectedFeatureCount()
-            selectionA = vlayerA.selectedFeatures()
-            selectionB = vlayerB.selectedFeaturesIds()
-            for inFeatA in selectionA:
-              nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-              add = True
-              geom = QgsGeometry( inFeatA.geometry() )
-              diff_geom = QgsGeometry( geom )
-              atMap = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
-                # is intersect feature in selection
-                if id in selectionB:
-                  vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-                  tmpGeom = QgsGeometry( inFeatB.geometry() )
-                  try:
-                    if diff_geom.intersects( tmpGeom ):
-                      diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-                  except:
-                    GEOS_EXCEPT = False
-                    add = False
-                    break
-              if add:
-                try:
-                  outFeat.setGeometry( diff_geom )
-                  outFeat.setAttributeMap( atMap )
-                  writer.addFeature( outFeat )
-                except:
-                  FEATURE_EXCEPT = False
-                  continue
-        # there is no selection in input layer
-        else:
-            nFeat = vproviderA.featureCount()
-            vproviderA.rewind()          
-            while vproviderA.nextFeature( inFeatA ):
-              nElement += 1
-              add = True
-              progress.setPercentage(int(nElement/nFeat * 100))
-              geom = QgsGeometry( inFeatA.geometry() )
-              diff_geom = QgsGeometry( geom )
-              atMap = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
+        selectionA = QGisLayers.features(vlayerA)   
+        nFeat = len(selectionA)         
+        for inFeatA in selectionA:
+            nElement += 1
+            progress.setPercentage(nElement/float(nFeat) * 100)
+            add = True
+            geom = QgsGeometry( inFeatA.geometry() )
+            diff_geom = QgsGeometry( geom )
+            atMap = inFeatA.attributeMap()
+            intersects = index.intersects( geom.boundingBox() )
+            for id in intersects:                
                 vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
-                  if diff_geom.intersects( tmpGeom ):
-                    diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                    if diff_geom.intersects( tmpGeom ):
+                        diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
                 except:
-                  GEOS_EXCEPT = False
-                  add = False
-                  break
-              if add:
+                    GEOS_EXCEPT = False
+                    add = False
+                    break
+            if add:
                 try:
-                  outFeat.setGeometry( diff_geom )
-                  outFeat.setAttributeMap( atMap )
-                  writer.addFeature( outFeat )
+                    outFeat.setGeometry( diff_geom )
+                    outFeat.setAttributeMap( atMap )
+                    writer.addFeature( outFeat )
                 except:
-                  FEATURE_EXCEPT = False
-                  continue
+                    FEATURE_EXCEPT = False
+                    continue
+
               
         del writer
         if not GEOS_EXCEPT:

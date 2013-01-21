@@ -73,15 +73,17 @@ class   Union(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = ftools_utils.createIndex( vproviderB )
-        indexB = ftools_utils.createIndex( vproviderA )
-        nFeat = vproviderA.featureCount() * vproviderB.featureCount()
+        indexA = ftools_utils.createIndex( QGisLayers.features(vlayerB)  )
+        indexB = ftools_utils.createIndex( QGisLayers.features(vlayerA)  )
+        nFeat = vproviderA.featureCount() + vproviderB.featureCount()
         vproviderA.rewind()
         count = 0
         nElement = 0
 
-        while vproviderA.nextFeature( inFeatA ):
-          progress.setPercentage(int(nElement/nFeat * 100))
+        featuresA = QGisLayers.features(vlayerA)
+        nFeat = len(featuresA)
+        for inFeatA in featuresA:
+          progress.setPercentage(nElement/float(nFeat) * 50)
           nElement += 1
           found = False
           geom = QgsGeometry( inFeatA.geometry() )
@@ -165,55 +167,58 @@ class   Union(GeoAlgorithm):
         length = len( vproviderA.fields().values() )
         vproviderB.rewind()
 
-        while vproviderB.nextFeature( inFeatA ):
-          add = False
-          geom = QgsGeometry( inFeatA.geometry() )
-          diff_geom = QgsGeometry( geom )
-          atMap = inFeatA.attributeMap().values()
-          atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
-          intersects = indexB.intersects( geom.boundingBox() )
+        featuresA = QGisLayers.features(vlayerB)        
+        nFeat = len(featuresA)
+        for inFeatA in featuresA:
+            progress.setPercentage(nElement/float(nFeat) * 100)        
+            add = False
+            geom = QgsGeometry( inFeatA.geometry() )
+            diff_geom = QgsGeometry( geom )
+            atMap = inFeatA.attributeMap().values()
+            atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
+            intersects = indexB.intersects( geom.boundingBox() )
 
-          if len(intersects) < 1:
-            try:
-              outFeat.setGeometry( geom )
-              outFeat.setAttributeMap( atMap )
-              writer.addFeature( outFeat )
-            except Exception, err:
-              FEATURE_EXCEPT = False
-          else:
-            for id in intersects:
-              vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
-              atMapB = inFeatB.attributeMap()
-              tmpGeom = QgsGeometry( inFeatB.geometry() )
-
-              try:
-                if diff_geom.intersects( tmpGeom ):
-                  add = True
-                  diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-                else:
-                  # this only happends if the bounding box
-                  # intersects, but the geometry doesn't
-                  outFeat.setGeometry( diff_geom )
-                  outFeat.setAttributeMap( atMap )
-                  writer.addFeature( outFeat )
-              except Exception, err:
-                add = False
-                GEOS_EXCEPT = False
+            if len(intersects) < 1:
+                try:
+                    outFeat.setGeometry( geom )
+                    outFeat.setAttributeMap( atMap )
+                    writer.addFeature( outFeat )
+                except Exception, err:
+                    FEATURE_EXCEPT = False
+            else:
+                for id in intersects:
+                    vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
+                    atMapB = inFeatB.attributeMap()
+                    tmpGeom = QgsGeometry( inFeatB.geometry() )
+                    try:
+                        if diff_geom.intersects( tmpGeom ):
+                            add = True
+                            diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                        else:
+                            # this only happends if the bounding box
+                            # intersects, but the geometry doesn't
+                            outFeat.setGeometry( diff_geom )
+                            outFeat.setAttributeMap( atMap )
+                            writer.addFeature( outFeat )
+                    except Exception, err:
+                        add = False
+                        GEOS_EXCEPT = False
 
             if add:
-              try:
-                outFeat.setGeometry( diff_geom )
-                outFeat.setAttributeMap( atMapB )
-                writer.addFeature( outFeat )
-              except Exception, err:
-                FEATURE_EXCEPT = False
-          progress.setPercentage(int(nElement/nFeat * 100))
-          nElement += 1
-          del writer
-          if not GEOS_EXCEPT:
-              SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")
-          if not FEATURE_EXCEPT:
-              SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing interesection")
+                try:
+                    outFeat.setGeometry( diff_geom )
+                    outFeat.setAttributeMap( atMapB )
+                    writer.addFeature( outFeat )
+                except Exception, err:
+                    FEATURE_EXCEPT = False   
+            nElement += 1       
+
+          
+        del writer
+        if not GEOS_EXCEPT:
+            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")
+        if not FEATURE_EXCEPT:
+            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing interesection")
 
     def defineCharacteristics(self):
         self.name = "Union"

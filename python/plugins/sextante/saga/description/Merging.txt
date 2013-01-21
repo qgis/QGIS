@@ -1,4 +1,4 @@
-Merging
+Merging|Merge raster layers
 grid_tools
 DontResample
 ParameterMultipleInput|GRIDS|Grids to Merge|3|False

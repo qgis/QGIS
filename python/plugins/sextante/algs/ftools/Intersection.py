@@ -46,7 +46,6 @@ class Intersection(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
         GEOS_EXCEPT = True
@@ -73,73 +72,38 @@ class Intersection(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = ftools_utils.createIndex( vproviderB )
+        index = ftools_utils.createIndex(QGisLayers.features(vlayerB))
         nElement = 0
-        # there is selection in input layer
-        if useSelection:
-            nFeat = vlayerA.selectedFeatureCount()
-            selectionA = vlayerA.selectedFeatures()
-            selectionB = vlayerB.selectedFeaturesIds()
-            for inFeatA in selectionA:
-              nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-              geom = QgsGeometry( inFeatA.geometry() )
-              atMapA = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
-                if id in selectionB:
-                  vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-                  tmpGeom = QgsGeometry( inFeatB.geometry() )
-                  try:
-                    if geom.intersects( tmpGeom ):
-                      atMapB = inFeatB.attributeMap()
-                      int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                      if int_geom.wkbType() == 7:
-                        int_com = geom.combine( tmpGeom )
-                        int_sym = geom.symDifference( tmpGeom )
-                        int_geom = QgsGeometry( int_com.difference( int_sym ) )
-                      try:
-                        outFeat.setGeometry( int_geom )
-                        outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                        writer.addFeature( outFeat )
-                      except:
-                        FEATURE_EXCEPT = False
-                        continue
-                  except:
-                    GEOS_EXCEPT = False
-                    break
-
-        else:
-            nFeat = vproviderA.featureCount()
-            vproviderA.rewind()          
-            while vproviderA.nextFeature( inFeatA ):
-              nElement += 1
-              progress.setPercentage(int(nElement/nFeat * 100))
-              geom = QgsGeometry( inFeatA.geometry() )
-              atMapA = inFeatA.attributeMap()
-              intersects = index.intersects( geom.boundingBox() )
-              for id in intersects:
+        selectionA = QGisLayers.features(vlayerA)
+        nFeat = len(selectionA)        
+        for inFeatA in selectionA:
+            nElement += 1
+            progress.setPercentage(nElement/float(nFeat) * 100)
+            geom = QgsGeometry( inFeatA.geometry() )
+            atMapA = inFeatA.attributeMap()
+            intersects = index.intersects( geom.boundingBox() )
+            for id in intersects:
                 vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
-                  if geom.intersects( tmpGeom ):
-                    atMapB = inFeatB.attributeMap()
-                    int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                    if int_geom.wkbType() == 7:
-                      int_com = geom.combine( tmpGeom )
-                      int_sym = geom.symDifference( tmpGeom )
-                      int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                    if geom.intersects( tmpGeom ):
+                        atMapB = inFeatB.attributeMap()
+                        int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
+                        if int_geom.wkbType() == 7:
+                            int_com = geom.combine( tmpGeom )
+                            int_sym = geom.symDifference( tmpGeom )
+                            int_geom = QgsGeometry( int_com.difference( int_sym ) )
                     try:
-                      outFeat.setGeometry( int_geom )
-                      outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                      writer.addFeature( outFeat )
+                        outFeat.setGeometry( int_geom )
+                        outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                        writer.addFeature( outFeat )
                     except:
-                      FEATURE_EXCEPT = False
-                      continue
+                        FEATURE_EXCEPT = False
+                        continue
                 except:
-                  GEOS_EXCEPT = False
-                  break
-              
+                    GEOS_EXCEPT = False
+                    break
+
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")
