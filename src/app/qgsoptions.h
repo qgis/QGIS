@@ -194,10 +194,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_pbnExportScales_clicked();
 
-    /** Auto slot executed when the active item in the option section list widget is changed
+    /** Auto slot executed when the active page in the option section widget is changed
      * @note added in 1.9
      */
-    void on_mOptionsListWidget_currentRowChanged( int theIndx );
+    void on_mOptionsStackedWidget_currentChanged( int theIndx );
 
     /** Slot to update widget of vertical tabs
      * @note added in QGIS 1.9
