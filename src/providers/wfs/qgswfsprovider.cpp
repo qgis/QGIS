@@ -275,7 +275,7 @@ bool QgsWFSProvider::isValid()
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( ! request.flags() & QgsFeatureRequest::NoGeometry )
+  if ( !( request.flags() & QgsFeatureRequest::NoGeometry ) )
   {
     QgsRectangle rect = request.filterRect();
     if ( !rect.isEmpty() )
