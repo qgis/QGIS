@@ -485,10 +485,6 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     int blue = fillColorElem.attribute( "blue", "0" ).toInt();
     mBrush.setColor(QColor( red, green, blue ));
   }
-  else
-  {
-    mBrush.setColor(QColor( 0, 0, 0 ));
-  }
   //pen color
   QDomNodeList penColorList = itemElem.elementsByTagName( "penColor" );
   if ( penColorList.size() > 0 )
@@ -499,10 +495,6 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     int blue = penColorElem.attribute( "blue", "0" ).toInt();
     mPen.setColor(QColor( red, green, blue ));
   }
-  else
-  {
-    mPen.setColor(QColor( 0, 0, 0 ));
-  }
   //font color
   QDomNodeList fontColorList = itemElem.elementsByTagName( "fontColor" );
   if ( fontColorList.size() > 0 )
@@ -512,10 +504,6 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     int green = fontColorElem.attribute( "green", "0" ).toInt();
     int blue = fontColorElem.attribute( "blue", "0" ).toInt();
     mFontColor = QColor( red, green, blue );
-  }
-  else
-  {
-    mFontColor = QColor( 0, 0, 0 );
   }
 
 

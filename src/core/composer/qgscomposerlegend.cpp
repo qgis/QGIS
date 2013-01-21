@@ -796,10 +796,6 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
     int blue = fontColorElem.attribute( "blue", "0" ).toInt();
     mFontColor = QColor( red, green, blue );
   }
-  else
-  {
-    mFontColor = QColor( 0, 0, 0 );
-  }
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
