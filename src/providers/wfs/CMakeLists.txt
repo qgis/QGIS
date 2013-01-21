@@ -7,6 +7,7 @@ SET(WFS_SRCS
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
   qgswfsdata.cpp
+  qgswfsfeatureiterator.cpp
   qgswfssourceselect.cpp
   qgswfsutils.cpp
 )

@@ -186,6 +186,8 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
+    QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
+    mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsWFSData::featureMember );
   }
   else if ( localName == mTypeName )
@@ -277,7 +279,8 @@ void QgsWFSData::endElement( const XML_Char* el )
           var = QVariant( mStringCash );
           break;
       }
-      mCurrentFeature->addAttribute( att_it.value().first, QVariant( mStringCash ) );
+
+      mCurrentFeature->setAttribute( att_it.value().first, QVariant( mStringCash ) );
     }
   }
   else if ( localName == mGeometryAttribute )

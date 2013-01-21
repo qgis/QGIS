@@ -25,6 +25,7 @@
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgswfsdata.h"
+#include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
 #include "qgsspatialindex.h"
 #include "qgslogger.h"
@@ -164,15 +165,16 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
 
   //and the attributes
   const QgsAttributes& attributes = f->attributes();
+  feature.setAttributes( attributes );
   for ( QgsAttributeList::const_iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
   {
-    feature.addAttribute( *it, attributes[*it] );
+    feature.setAttribute( *it, attributes[*it] );
   }
 
   //id and valid
   feature.setValid( true );
   feature.setFeatureId( f->id() );
-  feature.setFieldMap( &mFields ); // allow name-based attribute lookups
+  feature.setFields( &mFields ); // allow name-based attribute lookups
 }
 
 bool QgsWFSProvider::featureAtId( QgsFeatureId featureId,
@@ -246,7 +248,7 @@ long QgsWFSProvider::featureCount() const
   return mFeatureCount;
 }
 
-const QgsFieldMap & QgsWFSProvider::fields() const
+const QgsFields& QgsWFSProvider::fields() const
 {
   return mFields;
 }
@@ -269,6 +271,79 @@ QgsRectangle QgsWFSProvider::extent()
 bool QgsWFSProvider::isValid()
 {
   return mValid;
+}
+
+QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request )
+{
+  if ( ! request.flags() & QgsFeatureRequest::NoGeometry )
+  {
+    QgsRectangle rect = request.filterRect();
+    if ( !rect.isEmpty() )
+    {
+      QString dsURI = dataSourceUri();
+      //first time through, initialize GetRenderedOnly args
+      //ctor cannot initialize because layer object not available then
+      if ( ! mInitGro )
+      { //did user check "Cache Features" in WFS layer source selection?
+        if ( dsURI.contains( "BBOX" ) )
+        { //no: initialize incremental getFeature
+          if ( initGetRenderedOnly( rect ) )
+          {
+            mGetRenderedOnly = true;
+          }
+          else
+          { //initialization failed;
+            QgsDebugMsg( QString( "GetRenderedOnly initialization failed; incorrect operation may occur\n%1" )
+                         .arg( dataSourceUri() ) );
+            QMessageBox( QMessageBox::Warning, "Non-Cached layer initialization failed!",
+                         QString( "Incorrect operation may occur:\n%1" ).arg( dataSourceUri() ) );
+          }
+        }
+        mInitGro = true;
+      }
+
+      if ( mGetRenderedOnly )
+      { //"Cache Features" was not selected for this layer
+        //has rendered extent expanded beyond last-retrieved WFS extent?
+        //NB: "intersect" instead of "contains" tolerates rounding errors;
+        //    avoids unnecessary second fetch on zoom-in/zoom-out sequences
+        QgsRectangle olap( rect );
+        olap = olap.intersect( &mGetExtent );
+        if ( doubleNear( rect.width(), olap.width() ) && doubleNear( rect.height(), olap.height() ) )
+        { //difference between canvas and layer extents is within rounding error: do not re-fetch
+          QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: no fetch required" ).arg( mLayer->name() ) );
+        }
+        else
+        { //combined old and new extents might speed up local panning & zooming
+          mGetExtent.combineExtentWith( &rect );
+          //but see if the combination is useless or too big
+          double pArea = mGetExtent.width() * mGetExtent.height();
+          double cArea = rect.width() * rect.height();
+          if ( olap.isEmpty() || pArea > ( cArea * 4.0 ) )
+          { //new canvas extent does not overlap or combining old and new extents would
+            //fetch > 4 times the area to be rendered; get only what will be rendered
+            mGetExtent = rect;
+          }
+          QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: fetching extent %2" )
+                       .arg( mLayer->name(), mGetExtent.asWktCoordinates() ) );
+          dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
+                                 QString( "BBOX=%1,%2,%3,%4" )
+                                 .arg( mGetExtent.xMinimum(), 0, 'f' )
+                                 .arg( mGetExtent.yMinimum(), 0, 'f' )
+                                 .arg( mGetExtent.xMaximum(), 0, 'f' )
+                                 .arg( mGetExtent.yMaximum(), 0, 'f' ) );
+          //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
+          //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
+          //      Else one criterion must be abandoned and the user warned.  [WBC 111221]
+          setDataSourceUri( dsURI );
+          reloadData();
+          mLayer->updateExtents();
+        }
+      }
+    }
+
+  }
+  return QgsFeatureIterator( new QgsWFSFeatureIterator( this, request ) );
 }
 
 void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
@@ -399,21 +474,23 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
     QDomElement featureElem = transactionDoc.createElementNS( mWfsNamespace, tname );
 
     //add thematic attributes
-    QgsAttributeMap featureAttributes = featureIt->attributeMap();
-    QgsFieldMap::const_iterator fieldIt = mFields.constBegin();
-    for ( ; fieldIt != mFields.constEnd(); ++fieldIt )
+    const QgsFields* fields = featureIt->fields();
+    if ( !fields )
     {
-      QgsAttributeMap::const_iterator valueIt = featureAttributes.find( fieldIt.key() );
-      if ( valueIt != featureAttributes.constEnd() )
+      continue;
+    }
+
+    QgsAttributes featureAttributes = featureIt->attributes();
+    int nAttrs = featureAttributes.size();
+    for ( int i = 0; i < nAttrs; ++i )
+    {
+      const QVariant& value = featureAttributes.at( i );
+      if ( value.isValid() && !value.isNull() )
       {
-        QVariant fieldValue = valueIt.value();
-        if ( fieldValue.isValid() && !fieldValue.isNull() )
-        {
-          QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fieldIt.value().name() );
-          QDomText fieldText = transactionDoc.createTextNode( fieldValue.toString() );
-          fieldElem.appendChild( fieldText );
-          featureElem.appendChild( fieldElem );
-        }
+        QDomElement fieldElem = transactionDoc.createElementNS( mWfsNamespace, fields->field( i ).name() );
+        QDomText fieldText = transactionDoc.createTextNode( value.toString() );
+        fieldElem.appendChild( fieldText );
+        featureElem.appendChild( fieldElem );
       }
     }
 
@@ -633,8 +710,6 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     return false;
   }
 
-  const QgsFieldMap& fieldMap = fields();
-
   //create <Transaction> xml
   QDomDocument transactionDoc;
   QDomElement transactionElem = createTransactionElement( transactionDoc );
@@ -656,14 +731,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
     {
-      QString fieldName;
-      QgsFieldMap::const_iterator fieldIt = fieldMap.find( attMapIt.key() );
-      if ( fieldIt == fieldMap.constEnd() )
-      {
-        continue;
-      }
-      fieldName = fieldIt.value().name();
-
+      QString fieldName = mFields.at( attMapIt.key() ).name();
       QDomElement propertyElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Property" );
 
       QDomElement nameElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Name" );
@@ -730,7 +798,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 }
 
 int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAttribute,
-    QgsFieldMap& fields, QGis::WkbType& geomType )
+    QgsFields& fields, QGis::WkbType& geomType )
 //NB: also called from QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked() to build filters.
 //    a temporary provider object is constructed with a null URI, which bypasses much provider
 //    instantiation logic: refresh(), getFeature(), etc.  therefore, many provider class members
@@ -759,9 +827,9 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
 
   //allows fast searchings with attribute name. Also needed is attribute Index and type infos
   QMap<QString, QPair<int, QgsField> > thematicAttributes;
-  for ( QgsFieldMap::const_iterator it = mFields.begin(); it != mFields.end(); ++it )
+  for ( int i = 0; i < mFields.count(); ++i )
   {
-    thematicAttributes.insert( it.value().name(), qMakePair( it.key(), it.value() ) );
+    thematicAttributes.insert( mFields.at( i ).name(), qMakePair( i, mFields.at( i ) ) );
   }
 
   QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
@@ -843,7 +911,7 @@ int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryA
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
+int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType )
 {
   if ( !mNetworkRequestFinished )
   {
@@ -887,7 +955,7 @@ void QgsWFSProvider::networkRequestFinished()
   mNetworkRequestFinished = true;
 }
 
-int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
+int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType )
 {
   //first look in the schema file
   QString noExtension = uri;
@@ -928,7 +996,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
   return 0;
 }
 
-int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
+int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType )
 {
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( "http://www.w3.org/2001/XMLSchema", "schema" );
@@ -1027,7 +1095,7 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
       {
         attributeType = QVariant::LongLong;
       }
-      fields[fields.size()] = QgsField( name, attributeType, type );
+      fields.append( QgsField( name, attributeType, type ) );
     }
   }
   if ( !foundGeometryAttribute )
@@ -1281,11 +1349,11 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
         {
           if ( numeric )
           {
-            f->addAttribute( attr++, QVariant( currentAttributeElement.text().toDouble() ) );
+            f->setAttribute( attr++, QVariant( currentAttributeElement.text().toDouble() ) );
           }
           else
           {
-            f->addAttribute( attr++, QVariant( currentAttributeElement.text() ) );
+            f->setAttribute( attr++, QVariant( currentAttributeElement.text() ) );
           }
         }
         else //a geometry attribute
