@@ -455,8 +455,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mFontFamilyRadioCustom->blockSignals( true );
   mFontFamilyComboBox->blockSignals( true );
 
-  spinFontSize->setValue( mStyleSheetNewOpts.value( "fontPointSize" ).toInt() );
-  QString fontFamily = mStyleSheetNewOpts.value( "fontFamily" ).toString();
+  spinFontSize->setValue( mStyleSheetOldOpts.value( "fontPointSize" ).toInt() );
+  QString fontFamily = mStyleSheetOldOpts.value( "fontFamily" ).toString();
   bool isQtDefault = ( fontFamily == mStyleSheetBuilder->defaultFont().family() );
   mFontFamilyRadioQt->setChecked( isQtDefault );
   mFontFamilyRadioCustom->setChecked( !isQtDefault );
@@ -476,6 +476,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mFontFamilyRadioQt->blockSignals( false );
   mFontFamilyRadioCustom->blockSignals( false );
   mFontFamilyComboBox->blockSignals( false );
+
+  // custom group boxes
+  mCustomGroupBoxChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxCustom" ).toBool() );
+  mBoldGroupBoxTitleChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxBoldTitle" ).toBool() );
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
@@ -1247,7 +1251,7 @@ void QgsOptions::rejectOptions()
 
 void QgsOptions::on_spinFontSize_valueChanged( int fontSize )
 {
-  mStyleSheetNewOpts.insert( "fontPointSize", fontSize );
+  mStyleSheetNewOpts.insert( "fontPointSize", QVariant( fontSize ) );
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
@@ -1255,7 +1259,7 @@ void QgsOptions::on_mFontFamilyRadioQt_released()
 {
   if ( mStyleSheetNewOpts.value( "fontFamily" ).toString() != mStyleSheetBuilder->defaultFont().family() )
   {
-    mStyleSheetNewOpts.insert( "fontFamily", mStyleSheetBuilder->defaultFont().family() );
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( mStyleSheetBuilder->defaultFont().family() ) );
     mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
   }
 }
@@ -1264,7 +1268,7 @@ void QgsOptions::on_mFontFamilyRadioCustom_released()
 {
   if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
   {
-    mStyleSheetNewOpts.insert( "fontFamily", mFontFamilyComboBox->currentFont().family() );
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( mFontFamilyComboBox->currentFont().family() ) );
     mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
   }
 }
@@ -1274,9 +1278,21 @@ void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
   if ( mFontFamilyRadioCustom->isChecked()
        && mStyleSheetNewOpts.value( "fontFamily" ).toString() != font.family() )
   {
-    mStyleSheetNewOpts.insert( "fontFamily", font.family() );
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( font.family() ) );
     mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
   }
+}
+
+void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
+{
+  mStyleSheetNewOpts.insert( "groupBoxCustom", QVariant( chkd ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
+{
+  mStyleSheetNewOpts.insert( "groupBoxBoldTitle", QVariant( chkd ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
 void QgsOptions::on_pbnSelectProjection_clicked()

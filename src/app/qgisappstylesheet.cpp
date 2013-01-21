@@ -87,7 +87,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   mDefaultFont = qApp->font(); // save before it is changed in any way
 
   // the following default values, before insertion in opts, can be
-  // configured using the platform(s) and window server(s) defined in the
+  // configured using the platforms and window servers defined in the
   // constructor to set reasonable non-Qt defaults for the app stylesheet
   QSettings settings;
   // handle move from old QSettings group (/) to new (/qgis/stylesheet)
@@ -130,7 +130,13 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( "fontFamily", QVariant( fontFamily ) );
 
-  settings.endGroup();
+  bool gbxCustom = false;
+  opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
+
+  bool gbxBoldTitle = false;
+  opts.insert( "groupBoxBoldTitle", settings.value( "groupBoxBoldTitle", QVariant( gbxBoldTitle ) ) );
+
+  settings.endGroup(); // "qgis/stylesheet"
 
   return opts;
 }
@@ -139,6 +145,8 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
 {
   QString ss = QString( "" );
 
+
+  // QgisApp-wide font
   QString fontSize = opts.value( "fontPointSize" ).toString();
   QgsDebugMsg( QString( "fontPointSize: %1" ).arg( fontSize ) );
   if ( fontSize.isEmpty() ) { return; }
@@ -148,6 +156,46 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   if ( fontFamily.isEmpty() ) { return; }
 
   ss += QString( "* { font: %1pt \"%2\"} " ).arg( fontSize ).arg( fontFamily );
+
+  // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
+  // TODO: test on/adjust for Windows
+  bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
+  QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
+  bool gbxBoldTitle = opts.value( "groupBoxBoldTitle" ).toBool();
+  QgsDebugMsg( QString( "groupBoxBoldTitle: %1" ).arg( gbxBoldTitle ) );
+  if ( gbxCustom || gbxBoldTitle )
+  {
+    ss += "QGroupBox{";
+    if ( gbxBoldTitle )
+    {
+      // doesn't work for QGroupBox::title
+      ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacWS ? 25 : 60 );
+      ss += "font-weight: bold;";
+    }
+    if ( gbxCustom )
+    {
+      ss += QString( "background-color: rgba(%1,%1,%1,90%);" ).arg( mMacWS ? 225 : 235 );
+      ss += "border: 1px solid #c0c0c0;";
+      ss += "border-radius: 5px;";
+      ss += "margin-top: 2.5ex;";
+      ss += QString( "margin-bottom: %1ex;" ).arg( mMacWS ? 1.5 : 1 );
+    }
+    ss += "} ";
+    if ( gbxCustom )
+    {
+      ss += "QGroupBox:flat{";
+      ss += "background-color: rgba(0,0,0,0);";
+      ss += "border: rgba(0,0,0,0);";
+      ss += "} ";
+
+      ss += "QGroupBox::title{";
+      ss += "subcontrol-origin: margin;";
+      ss += "subcontrol-position: top left;";
+      ss += "margin-left: 6px;";
+      ss += "background-color: rgba(0,0,0,0);";
+      ss += "} ";
+    }
+  }
 
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
@@ -165,5 +213,5 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant>& opts )
     settings.setValue( QString( opt.key() ), opt.value() );
     ++opt;
   }
-  settings.endGroup();
+  settings.endGroup(); // "qgis/stylesheet"
 }

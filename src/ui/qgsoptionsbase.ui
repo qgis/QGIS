@@ -267,7 +267,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>654</width>
-                <height>522</height>
+                <height>529</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -521,18 +521,43 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="cbxHideSplash">
-                    <property name="text">
-                     <string>Hide splash screen at startup</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxShowTips">
-                    <property name="text">
-                     <string>Show tips at start up</string>
-                    </property>
-                   </widget>
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="0" column="1" rowspan="2">
+                     <widget class="Line" name="line_2">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
+                      <property name="text">
+                       <string>Use custom group boxes</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbxShowTips">
+                      <property name="text">
+                       <string>Show tips at start up</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <widget class="QCheckBox" name="mBoldGroupBoxTitleChkBx">
+                      <property name="text">
+                       <string>Bold group box titles</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbxHideSplash">
+                      <property name="text">
+                       <string>Hide splash screen at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -1884,8 +1909,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>498</width>
+                <height>332</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2123,7 +2148,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
+                <width>556</width>
                 <height>718</height>
                </rect>
               </property>
@@ -3413,7 +3438,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
+                <width>521</width>
                 <height>650</height>
                </rect>
               </property>

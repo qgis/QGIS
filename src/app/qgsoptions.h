@@ -108,6 +108,16 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mFontFamilyComboBox_currentFontChanged( const QFont& font );
 
+    /** Slot to set whether to use custom group boxes
+     * @note added in QGIS 1.9
+     */
+    void on_mCustomGroupBoxChkBx_clicked( bool chkd );
+
+    /** Slot to set whether to bold group box titles
+     * @note added in QGIS 1.9
+     */
+    void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
+
     /*!
      * Slot to select the default map selection color
      */
