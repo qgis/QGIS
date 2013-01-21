@@ -31,13 +31,17 @@ from PyQt4.QtCore import *
 class OutputTable(Output):
 
     def getFileFilter(self,alg):
-        exts = alg.provider.getSupportedOutputTableExtensions()
+        exts = ['csv']
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
 
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputTableExtensions()[0]
+    
+    def getCompatibleFileName(self, alg):
+        #TODO!!!
+        return self.value
     
     def getTableWriter(self, fields):
         '''Returns a suitable writer to which records can be added as a

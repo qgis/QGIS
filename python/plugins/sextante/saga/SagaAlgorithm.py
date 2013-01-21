@@ -275,23 +275,29 @@ class SagaAlgorithm(GeoAlgorithm):
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.value
-                if not filename.endswith(".tif"):
-                    filename += ".tif"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)#filename = out.value
+                #===============================================================
+                # if not filename.endswith(".tif"):
+                #    filename += ".tif"
+                #    out.value = filename
+                #===============================================================
                 filename = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
-                filename = out.value
-                if not filename.endswith(".shp"):
-                    filename += ".shp"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)#out.value
+                #===============================================================
+                # if not filename.endswith(".shp"):
+                #    filename += ".shp"
+                #    out.value = filename
+                #===============================================================
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputTable):
-                filename = out.value
-                if not filename.endswith(".dbf"):
-                    filename += ".dbf"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)#out.value
+                #===============================================================
+                # if not filename.endswith(".dbf"):
+                #    filename += ".dbf"
+                #    out.value = filename
+                #===============================================================
                 command+=(" -" + out.name + " \"" + filename + "\"");
 
         commands.append(command)
@@ -299,7 +305,7 @@ class SagaAlgorithm(GeoAlgorithm):
         #3:Export resulting raster layers
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.value
+                filename = out.getCompatibleFileName(self)
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 if SextanteUtils.isWindows():
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gdal.GdalUtils import GdalUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,6 +38,32 @@ class QGisLayers:
     ALL_TYPES = -1
     iface = None;
 
+    @staticmethod
+    def getSupportedOutputVectorLayerExtensions():
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        exts = ["shp"]#shp is the default, should be the first
+        for extension in formats.keys():
+            extension = unicode(extension)
+            extension = extension[extension.find('*.') + 2:]
+            extension = extension[:extension.find(" ")]
+            if extension.lower() != "shp":
+                exts.append(extension)
+        return exts
+    
+    @staticmethod
+    def getSupportedOutputRasterLayerExtensions():   
+        allexts = ["tif"]
+        for exts in GdalUtils.getSupportedRasters().values():
+            for ext in exts:
+                if ext not in allexts:
+                    allexts.append(ext)
+        return allexts             
+    
+    @staticmethod
+    def getSupportedOutputTableExtensions():        
+        exts = ["dbf, csv"]        
+        return exts
+                
     @staticmethod
     def getRasterLayers():
         layers = QGisLayers.iface.legendInterface().layers()

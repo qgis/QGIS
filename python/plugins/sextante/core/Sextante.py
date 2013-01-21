@@ -257,7 +257,7 @@ class Sextante:
             alghelp(algOrName)
             return
 
-        alg = alg.getCopy()#copy.deepcopy(alg)
+        alg = alg.getCopy()
         if isinstance(args, dict):
             # set params by name
             for name, value in args.items():
@@ -306,7 +306,7 @@ class Sextante:
             def finish():
                 QApplication.restoreOverrideCursor()
                 if onFinish is not None:
-                    onFinish(alg)
+                    onFinish(alg, SilentProgress())
                 progress.close()
             def error(msg):
                 QApplication.restoreOverrideCursor()
@@ -325,9 +325,10 @@ class Sextante:
             algEx.start()
             algEx.wait()
         else:
-            ret = UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
+            progress = SilentProgress()
+            ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
             if onFinish is not None and ret:
-                onFinish(alg)
+                onFinish(alg, progress)
             QApplication.restoreOverrideCursor()
         return alg
 

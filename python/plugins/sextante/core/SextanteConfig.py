@@ -43,6 +43,8 @@ class SextanteConfig():
     USE_THREADS = "USE_THREADS"
     SHOW_DEBUG_IN_DIALOG = "SHOW_DEBUG_IN_DIALOG"
     RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
+    PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
+    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"  
 
     settings = {}
     settingIcons= {}
@@ -65,7 +67,11 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.PRE_EXECUTION_SCRIPT,"Pre-execution script",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.POST_EXECUTION_SCRIPT,"Post-execution script",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RECENT_ALGORITHMS,"Recent algs","", hidden=True))
+        
 
     @staticmethod
     def setGroupIcon(group, icon):

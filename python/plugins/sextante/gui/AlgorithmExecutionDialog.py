@@ -286,8 +286,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def finish(self):
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)        
+        SextantePostprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo("Algorithm %s finished" % self.alg.name)
         QApplication.restoreOverrideCursor()

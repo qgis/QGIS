@@ -100,5 +100,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
 
-    def getSupportedOutputVectorLayerExtensions(self):
-        return ["shp", "sqlite"]
+    #===========================================================================
+    # def getSupportedOutputVectorLayerExtensions(self):
+    #    return ["shp", "sqlite"]
+    #===========================================================================
