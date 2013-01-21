@@ -100,7 +100,7 @@ class SumLines(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(polyLayer)
         total = 100.0 / float(len(features))
-        hasIntersections = False        
+        hasIntersections = False
         for ftPoly in features:
             inGeom = QgsGeometry(ftPoly.geometry())
             atMap = ftPoly.attributeMap()

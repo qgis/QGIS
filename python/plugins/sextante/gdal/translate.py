@@ -68,7 +68,7 @@ class translate(GeoAlgorithm):
         self.addOutput(OutputRaster(translate.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        
+
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(translate.OUTSIZE))
         outsizePerc = str(self.getParameterValue(translate.OUTSIZE_PERC))
@@ -78,7 +78,7 @@ class translate(GeoAlgorithm):
         srs = str(self.getParameterValue(translate.SRS))
         sds = str(self.getParameterValue(translate.SDS))
         extra = str(self.getParameterValue(translate.EXTRA))
-        
+
         commands = ["gdal_translate"]
         commands.append("-of")
         commands.append(GdalUtils.getFormatShortNameFromFilename(out))
@@ -86,7 +86,7 @@ class translate(GeoAlgorithm):
             outsizeStr = "-outsize "+outsize+"% "+outsize+"%"
         else:
             outsizeStr = "-outsize "+outsize+" "+outsize
-        commands.append(outsizeStr) 
+        commands.append(outsizeStr)
         commands.append("-a_nodata "+noData)
         if expand != "none":
             commands.append("-expand "+expand)

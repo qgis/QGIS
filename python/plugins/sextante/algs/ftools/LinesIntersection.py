@@ -63,7 +63,7 @@ class LinesIntersection(GeoAlgorithm):
         layerB = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_B))
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
-        
+
         providerA = layerA.dataProvider()
         providerB = layerB.dataProvider()
 

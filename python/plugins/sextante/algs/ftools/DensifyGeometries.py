@@ -40,7 +40,7 @@ from sextante.outputs.OutputVector import OutputVector
 class DensifyGeometries(GeoAlgorithm):
 
     INPUT = "INPUT"
-    VERTICES = "VERTICES"    
+    VERTICES = "VERTICES"
     OUTPUT = "OUTPUT"
 
     #def getIcon(self):
@@ -51,13 +51,13 @@ class DensifyGeometries(GeoAlgorithm):
         self.group = "Vector geometry tools"
 
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))        
+        self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
-        vertices = self.getParameterValue(self.VERTICES)        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        vertices = self.getParameterValue(self.VERTICES)
 
         isPolygon = layer.geometryType() == QGis.Polygon
 

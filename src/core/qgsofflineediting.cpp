@@ -16,15 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "offline_editing.h"
-#include "offline_editing_progress_dialog.h"
 
 #include <qgsapplication.h>
 #include <qgsdatasourceuri.h>
 #include <qgsgeometry.h>
-#include <qgslegendinterface.h>
 #include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
+#include <qgsofflineediting.h>
 #include <qgsproject.h>
 #include <qgsvectordataprovider.h>
 
@@ -50,9 +48,8 @@ extern "C"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
 
-QgsOfflineEditing::QgsOfflineEditing( QgsOfflineEditingProgressDialog* progressDialog )
+QgsOfflineEditing::QgsOfflineEditing()
 {
-  mProgressDialog = progressDialog;
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
 
@@ -85,19 +82,18 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       // create logging tables
       createLoggingTables( db );
 
-      mProgressDialog->setTitle( "Converting to offline project" );
-      mProgressDialog->show();
+      emit progressStarted();
 
       // copy selected vector layers to SpatiaLite
       for ( int i = 0; i < layerIds.count(); i++ )
       {
-        mProgressDialog->setCurrentLayer( i + 1, layerIds.count() );
+        emit layerProgressUpdated( i + 1, layerIds.count() );
 
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
         copyVectorLayer( qobject_cast<QgsVectorLayer*>( layer ), db, dbPath );
       }
 
-      mProgressDialog->hide();
+      emit progressStopped();
 
       sqlite3_close( db );
 
@@ -135,9 +131,8 @@ bool QgsOfflineEditing::isOfflineProject()
   return !QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty();
 }
 
-void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
+void QgsOfflineEditing::synchronize()
 {
-  Q_UNUSED( legendInterface );
   // open logging db
   sqlite3* db = openLoggingDb();
   if ( db == NULL )
@@ -145,8 +140,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
     return;
   }
 
-  mProgressDialog->setTitle( "Synchronizing to remote layers" );
-  mProgressDialog->show();
+  emit progressStarted();
 
   // restore and sync remote layers
   QList<QgsMapLayer*> offlineLayers;
@@ -164,7 +158,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
   {
     QgsMapLayer* layer = offlineLayers[l];
 
-    mProgressDialog->setCurrentLayer( l + 1, offlineLayers.count() );
+    emit layerProgressUpdated( l + 1, offlineLayers.count() );
 
     QString remoteSource = layer->customProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, "" ).toString();
     QString remoteProvider = layer->customProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, "" ).toString();
@@ -246,7 +240,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
     }
   }
 
-  mProgressDialog->hide();
+  emit progressStopped();
 
   sqlite3_close( db );
 }
@@ -517,7 +511,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
       layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
 
-      mProgressDialog->setupProgressBar( tr( "%v / %m features copied" ), layer->featureCount() );
+      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->featureCount() );
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
@@ -538,11 +532,11 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
         newLayer->addFeature( f, false );
 
-        mProgressDialog->setProgressValue( featureCount++ );
+        emit progressUpdated( featureCount++ );
       }
       if ( newLayer->commitChanges() )
       {
-        mProgressDialog->setupProgressBar( tr( "%v / %m features processed" ), layer->featureCount() );
+        emit progressModeSet( QgsOfflineEditing::ProcessFeatures, layer->featureCount() );
         featureCount = 1;
 
         // update feature id lookup
@@ -560,7 +554,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         {
           addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( i ) );
 
-          mProgressDialog->setProgressValue( featureCount++ );
+          emit progressUpdated( featureCount++ );
         }
         sqlExec( db, "COMMIT" );
       }
@@ -592,7 +586,7 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlit
     typeNameLookup[ nativeType.mType ] = nativeType.mTypeName;
   }
 
-  mProgressDialog->setupProgressBar( tr( "%v / %m fields added" ), fields.size() );
+  emit progressModeSet( QgsOfflineEditing::AddFields, fields.size() );
 
   for ( int i = 0; i < fields.size(); i++ )
   {
@@ -609,7 +603,7 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlit
       showWarning( QString( "Could not add attribute '%1' of type %2" ).arg( field.name() ).arg( field.type() ) );
     }
 
-    mProgressDialog->setProgressValue( i + 1 );
+    emit progressUpdated( i + 1 );
   }
 }
 
@@ -630,7 +624,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   }
 
   // copy features to remote layer
-  mProgressDialog->setupProgressBar( tr( "%v / %m features added" ), features.size() );
+  emit progressModeSet( QgsOfflineEditing::AddFeatures, features.size() );
 
   int i = 1;
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
@@ -650,7 +644,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
 
     remoteLayer->addFeature( f, false );
 
-    mProgressDialog->setProgressValue( i++ );
+    emit progressUpdated( i++ );
   }
 }
 
@@ -659,7 +653,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer* remoteLayer, sqlit
   QString sql = QString( "SELECT \"fid\" FROM 'log_removed_features' WHERE \"layer_id\" = %1" ).arg( layerId );
   QgsFeatureIds values = sqlQueryFeaturesRemoved( db, sql );
 
-  mProgressDialog->setupProgressBar( tr( "%v / %m features removed" ), values.size() );
+  emit progressModeSet( QgsOfflineEditing::RemoveFeatures, values.size() );
 
   int i = 1;
   for ( QgsFeatureIds::const_iterator it = values.begin(); it != values.end(); ++it )
@@ -667,7 +661,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer* remoteLayer, sqlit
     QgsFeatureId fid = remoteFid( db, layerId, *it );
     remoteLayer->deleteFeature( fid );
 
-    mProgressDialog->setProgressValue( i++ );
+    emit progressUpdated( i++ );
   }
 }
 
@@ -676,7 +670,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
   QString sql = QString( "SELECT \"fid\", \"attr\", \"value\" FROM 'log_feature_updates' WHERE \"layer_id\" = %1 AND \"commit_no\" = %2 " ).arg( layerId ).arg( commitNo );
   AttributeValueChanges values = sqlQueryAttributeValueChanges( db, sql );
 
-  mProgressDialog->setupProgressBar( tr( "%v / %m feature updates" ), values.size() );
+  emit progressModeSet( QgsOfflineEditing::UpdateFeatures, values.size() );
 
   QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
 
@@ -686,7 +680,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
 
     remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value, false );
 
-    mProgressDialog->setProgressValue( i + 1 );
+    emit progressUpdated( i + 1 );
   }
 }
 
@@ -695,14 +689,14 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
   QString sql = QString( "SELECT \"fid\", \"geom_wkt\" FROM 'log_geometry_updates' WHERE \"layer_id\" = %1 AND \"commit_no\" = %2" ).arg( layerId ).arg( commitNo );
   GeometryChanges values = sqlQueryGeometryChanges( db, sql );
 
-  mProgressDialog->setupProgressBar( tr( "%v / %m feature geometry updates" ), values.size() );
+  emit progressModeSet( QgsOfflineEditing::UpdateGeometries, values.size() );
 
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) );
 
-    mProgressDialog->setProgressValue( i + 1 );
+    emit progressUpdated( i + 1 );
   }
 }
 
@@ -716,7 +710,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
   QgsFeature f;
   remoteLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
 
-  mProgressDialog->setupProgressBar( tr( "%v / %m features processed" ), remoteLayer->featureCount() );
+  emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 
   int i = 1;
   while ( remoteLayer->nextFeature( f ) )
@@ -726,7 +720,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
       newRemoteFids[ f.id()] = true;
     }
 
-    mProgressDialog->setProgressValue( i++ );
+    emit progressUpdated( i++ );
   }
 
   // get local added fids

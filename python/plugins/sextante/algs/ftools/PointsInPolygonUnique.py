@@ -100,7 +100,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
 
         features = QGisLayers.features(polyLayer)
         total = 100.0 / float(len(features))
-        for ftPoly in features:  
+        for ftPoly in features:
             geom = ftPoly.geometry()
             atMap = ftPoly.attributeMap()
 

@@ -255,7 +255,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         params = self.model.parameters
         for param in params:
             if isinstance(param, ParameterExtent):
-                extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))                    
+                extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
         return extents
 
     def getNumbers(self):
@@ -412,10 +412,10 @@ class ModelerParametersDialog(QtGui.QDialog):
             item = QtGui.QComboBox()
             item.setEditable(True)
             extents = self.getExtents()
-            if self.canUseAutoExtent(): 
+            if self.canUseAutoExtent():
                 item.addItem(self.USE_MIN_COVERING_EXTENT, None)
             for ex in extents:
-                item.addItem(ex.name(), ex)            
+                item.addItem(ex.name(), ex)
             if not self.canUseAutoExtent():
                 item.setEditText(str(param.default))
         elif isinstance(param, ParameterFile):
@@ -438,7 +438,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 return True
             if isinstance(param, ParameterMultipleInput):
                 return True
-            
+
     def setTableContent(self):
         params = self.alg.parameters
         outputs = self.alg.outputs

@@ -55,10 +55,10 @@ class mmqgisx_attribute_export_algorithm(GeoAlgorithm):
 	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_attribute_export.png")
 	#===========================================================================
 
-	def processAlgorithm(self, progress):		
+	def processAlgorithm(self, progress):
 
 		outfilename = self.getOutputValue(self.OUTFILENAME)
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		if self.getParameterValue(self.FIELDDELIMITER) == 1:
 			field_delimiter = "|"
@@ -94,10 +94,10 @@ class mmqgisx_attribute_join_algorithm(GeoAlgorithm):
 		self.addParameter(ParameterVector(self.LAYERNAME, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
 		self.addParameter(ParameterTableField(self.JOINATTRIBUTE,
 			"Layer attribute field", mmqgisx_attribute_join_algorithm.LAYERNAME))
-		
+
 		self.addParameter(ParameterTable(self.INFILENAME, "Table to join", False))
 		self.addParameter(ParameterTableField(self.JOINFIELD, "Table field", self.INFILENAME))
-		
+
 
 		self.addOutput(OutputVector(self.OUTFILENAME, "Output"))
 		self.addOutput(OutputTable(self.NOTFOUNDNAME, "Not Found CSV Output List"))
@@ -148,7 +148,7 @@ class mmqgisx_delete_columns_algorithm(GeoAlgorithm):
 
 	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		column = self.getParameterValue(self.COLUMN)
 		savename = self.getOutputValue(self.SAVENAME)
@@ -181,7 +181,7 @@ class mmqgisx_delete_duplicate_geometries_algorithm(GeoAlgorithm):
 		from sextante.core.Sextante import Sextante
 		qgis = Sextante.getInterface()
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		savename = self.getOutputValue(self.SAVENAME)
 
@@ -266,7 +266,7 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
 
 	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 		savename = self.getOutputValue(self.SAVENAME)
 
 		index = self.getParameterValue(self.NEWTYPE)
@@ -422,7 +422,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 		self.addParameter(ParameterSelection(self.GRIDTYPE, "Grid type",
 			self.gridtype_options, default = 0))
 		self.addOutput(OutputVector(self.SAVENAME, "Output"))
-		
+
 	#===========================================================================
 	# def getIcon(self):
 	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_grid.png")
@@ -469,7 +469,7 @@ class mmqgisx_gridify_algorithm(GeoAlgorithm):
 
 	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 		hspacing = self.getParameterValue(self.HSPACING)
 		vspacing = self.getParameterValue(self.VSPACING)
 		savename = self.getOutputValue(self.SAVENAME)
@@ -581,7 +581,7 @@ class mmqgisx_label_point_algorithm(GeoAlgorithm):
 	#===========================================================================
 
 	def processAlgorithm(self, progress):
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		labelattribute = self.getParameterValue(self.LABELATTRIBUTE)
 
@@ -648,12 +648,12 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_attribute_export.png")
 	#===========================================================================
 
-	def processAlgorithm(self, progress):		
+	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		attribute = self.getParameterValue(self.ATTRIBUTE)
-		comparison = self.comparisons [ self.getParameterValue(self.COMPARISON) ]		
+		comparison = self.comparisons [ self.getParameterValue(self.COMPARISON) ]
 		comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 		savename = self.getOutputValue(self.SAVENAME)
 
@@ -686,7 +686,7 @@ class mmqgisx_sort_algorithm(GeoAlgorithm):
 
 	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
+		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
 
 		attribute = self.getParameterValue(self.ATTRIBUTE)
 		direction = self.directions [ self.getParameterValue(self.DIRECTION) ]

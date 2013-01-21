@@ -39,7 +39,7 @@ from sextante.outputs.OutputVector import OutputVector
 
 class DensifyGeometriesInterval(GeoAlgorithm):
 
-    INPUT = "INPUT"    
+    INPUT = "INPUT"
     INTERVAL = "INTERVAL"
     OUTPUT = "OUTPUT"
 
@@ -47,14 +47,14 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.name = "Densify geometries given an interval"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))        
-        self.addParameter(ParameterNumber(self.INTERVAL, "Interval between Vertices to add", 1, 10000000, 1))        
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterNumber(self.INTERVAL, "Interval between Vertices to add", 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
 
     def processAlgorithm(self, progress):
-        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))        
-        interval = self.getParameterValue(self.INTERVAL)        
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
@@ -64,11 +64,11 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), provider.crs())
 
-        
+
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
         current = 0
-        for f in features:        
+        for f in features:
             featGeometry = QgsGeometry(f.geometry())
             attrMap = f.attributeMap()
             newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
@@ -109,7 +109,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                 points = geometry.asPolyline()
                 output = self.densify(points, interval)
                 return QgsGeometry.fromPolyline(output)
-    
+
     def densify(self, polyline, interval):
         output = []
         for i in xrange(len(polyline) - 1):
@@ -117,7 +117,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
             p2 = polyline[i + 1]
             output.append(p1)
             # calculate necessary number of points between p1 and p2
-            pointsNumber = sqrt(p1.sqrDist(p2)) / interval 
+            pointsNumber = sqrt(p1.sqrDist(p2)) / interval
             if pointsNumber > 1:
                 multiplier = 1.0 / float(pointsNumber)
             else:

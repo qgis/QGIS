@@ -1,4 +1,4 @@
-/** QgsQuickPrint is a convenience class to quickly print a 
+/** QgsQuickPrint is a convenience class to quickly print a
     preformatted map to pdf.
     */
 class QgsQuickPrint : QObject

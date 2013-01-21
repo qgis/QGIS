@@ -65,7 +65,7 @@ class QgsRasterBlock
     bool convert( QGis::DataType destDataType );
     QImage image() const;
     bool setImage( const QImage * image );
-  
+
     static bool valueInRange( double value, const QList<QgsRasterBlock::Range> &rangeList );
 
 };

@@ -72,7 +72,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         spatialIndex = utils.createSpatialIndex(layer)
         provider.rewind()
         provider.select()
-        
+
         neighbour = QgsFeature()
         distance = QgsDistanceArea()
 
@@ -80,10 +80,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        current = 0        
+        current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for feat in features: 
+        for feat in features:
             neighbourID = spatialIndex.nearestNeighbor(feat.geometry().asPoint(), 2)[1]
             provider.featureAtId(neighbourID, neighbour, True)
             sumDist += distance.measureLine(neighbour.geometry().asPoint(), feat.geometry().asPoint())

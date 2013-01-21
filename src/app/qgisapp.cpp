@@ -97,6 +97,7 @@
 
 #include "qgisapp.h"
 #include "qgisappinterface.h"
+#include "qgisappstylesheet.h"
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
@@ -464,7 +465,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setAppStyleSheet();
+
+  // set up stylesheet builder and apply saved or default style options
+  mStyleSheetBuilder = new QgisAppStyleSheet( this );
+  connect( mStyleSheetBuilder, SIGNAL( appStyleSheetChanged( const QString& ) ),
+           this, SLOT( setAppStyleSheet( const QString& ) ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
 
   QWidget *centralWidget = this->centralWidget();
   QGridLayout *centralLayout = new QGridLayout( centralWidget );
@@ -525,12 +531,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
 
-  mBrowserWidget = new QgsBrowserDockWidget( this );
+  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), this );
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
 
-  // create the GPS tool on starting QGIS - this is like the Browser
+  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), this );
+  mBrowserWidget2->setObjectName( "Browser2" );
+  addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
+  mBrowserWidget2->hide();
+
+  // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
   //create the dock widget
   mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
@@ -712,6 +723,7 @@ QgisApp::~QgisApp()
 {
   delete mInternalClipboard;
   delete mQgisInterface;
+  delete mStyleSheetBuilder;
 
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
@@ -833,6 +845,11 @@ bool QgisApp::event( QEvent * event )
   return done;
 }
 
+QgisAppStyleSheet* QgisApp::styleSheetBuilder()
+{
+  Q_ASSERT( mStyleSheetBuilder );
+  return mStyleSheetBuilder;
+}
 
 // restore any application settings stored in QSettings
 void QgisApp::readSettings()
@@ -1170,51 +1187,21 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
 }
 
-void QgisApp::setFontSize( int fontSize )
+void QgisApp::setAppStyleSheet( const QString& stylesheet )
 {
-  if ( fontSize < 4 || 99 < fontSize ) // defaults for Options spinbox
-  {
-    return;
-  }
-  QSettings settings;
-  settings.setValue( "/fontPointSize", fontSize );
-  setAppStyleSheet();
-}
-
-void QgisApp::setFontFamily( const QString& fontFamily )
-{
-  QSettings settings;
-  settings.setValue( "/fontFamily", fontFamily );
-  setAppStyleSheet();
-}
-
-void QgisApp::setAppStyleSheet()
-{
-  QSettings settings;
-  int fontSize = settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt();
-
-  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
-
-  QString family = QString( "" ); // use default Qt font family
-  if ( fontFamily != "QtDefault" )
-  {
-    QFont *tempFont = new QFont( fontFamily );
-    // is exact family match returned from system?
-    if ( tempFont->family() == fontFamily )
-    {
-      family = QString( " \"%1\";" ).arg( fontFamily );
-    }
-    delete tempFont;
-  }
-
-  QString stylesheet = QString( "font: %1pt%2\n" ).arg( fontSize ).arg( family );
   setStyleSheet( stylesheet );
 
   // cascade styles to any current project composers
   foreach ( QgsComposer *c, mPrintComposers )
   {
-    c->setAppStyleSheet();
+    c->setStyleSheet( stylesheet );
   }
+}
+
+int QgisApp::messageTimeout()
+{
+  QSettings settings;
+  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
 }
 
 void QgisApp::createMenus()
@@ -4042,7 +4029,7 @@ void QgisApp::labeling()
     messageBar()->pushMessage( tr( "Labeling Options" ),
                                tr( "Please select a vector layer first" ),
                                QgsMessageBar::INFO,
-                               5 );
+                               messageTimeout() );
     return;
   }
 
@@ -5223,14 +5210,15 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         break;
 
       case QMessageBox::Discard:
+        mMapCanvas->freeze( true );
         if ( !vlayer->rollBack() )
         {
           QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
           res = false;
         }
+        mMapCanvas->freeze( false );
 
-        // canvas refreshes handled in QgsUndoWidget::indexChanged
-        //vlayer->triggerRepaint();
+        vlayer->triggerRepaint();
         break;
 
       default:
@@ -5239,7 +5227,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   }
   else //layer not modified
   {
+    mMapCanvas->freeze( true );
     vlayer->rollBack();
+    mMapCanvas->freeze( false );
     res = true;
     vlayer->triggerRepaint();
   }
@@ -5257,10 +5247,10 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
 void QgisApp::saveActiveLayerEdits()
 {
-  saveEdits( activeLayer() );
+  saveEdits( activeLayer(), true, true );
 }
 
-void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
+void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
@@ -5283,10 +5273,13 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable )
   {
     vlayer->startEditing();
   }
-  vlayer->triggerRepaint();
+  if ( triggerRepaint )
+  {
+    vlayer->triggerRepaint();
+  }
 }
 
-void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
+void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() )
@@ -5295,6 +5288,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
   if ( vlayer == activeLayer() && leaveEditable )
     mSaveRollbackInProgress = true;
 
+  mMapCanvas->freeze( true );
   if ( !vlayer->rollBack() )
   {
     mSaveRollbackInProgress = false;
@@ -5305,12 +5299,16 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable )
                               .arg( vlayer->name() )
                               .arg( vlayer->commitErrors().join( "\n  " ) ) );
   }
+  mMapCanvas->freeze( false );
 
   if ( leaveEditable )
   {
     vlayer->startEditing();
   }
-  vlayer->triggerRepaint();
+  if ( triggerRepaint )
+  {
+    vlayer->triggerRepaint();
+  }
 }
 
 void QgisApp::saveEdits()
@@ -5320,8 +5318,9 @@ void QgisApp::saveEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    saveEdits( layer );
+    saveEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5338,8 +5337,9 @@ void QgisApp::saveAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers( true ) )
   {
-    saveEdits( layer );
+    saveEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5350,8 +5350,9 @@ void QgisApp::rollbackEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    cancelEdits( layer );
+    cancelEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5368,8 +5369,9 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers( true ) )
   {
-    cancelEdits( layer );
+    cancelEdits( layer, true, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5380,8 +5382,9 @@ void QgisApp::cancelEdits()
 
   foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
-    cancelEdits( layer, false );
+    cancelEdits( layer, false, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -5398,12 +5401,13 @@ void QgisApp::cancelAllEdits( bool verifyAction )
 
   foreach ( QgsMapLayer * layer, editableLayers() )
   {
-    cancelEdits( layer, false );
+    cancelEdits( layer, false, false );
   }
+  mMapCanvas->refresh();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
-bool QgisApp::verifyEditsActionDialog( QString act, QString upon )
+bool QgisApp::verifyEditsActionDialog( const QString& act, const QString& upon )
 {
   bool res = false;
   switch ( QMessageBox::information( 0,

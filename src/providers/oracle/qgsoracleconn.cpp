@@ -67,6 +67,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
 
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
+  mDatabase.setConnectOptions( "OCI_ATTR_PREFETCH_ROWS=1000" );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
 
@@ -173,7 +174,7 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
   return cols;
 }
 
-bool QgsOracleConn::tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables )
+bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bool allowGeometrylessTables )
 {
   QgsDebugMsg( "Entering." );
 
@@ -181,25 +182,28 @@ bool QgsOracleConn::tableInfo( bool geometryTablesOnly, bool userTablesOnly, boo
 
   QString sql, delim;
 
-  sql = QString( "SELECT c.owner,c.table_name,c.column_name,%1,t.table_name AS isview"
-                 " FROM %2 c"
-                 " LEFT OUTER JOIN all_tables t ON c.owner=t.owner AND c.table_name=t.table_name%3" )
-        .arg( geometryTablesOnly ? "c.srid" : "NULL AS srid" )
-        .arg( geometryTablesOnly ? "all_sdo_geom_metadata" : "all_tab_columns" )
-        .arg( geometryTablesOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY' AND c.data_type_owner='MDSYS'" );
+  QString
+  prefix( userTablesOnly ? "user" : "all" ),
+  owner( userTablesOnly ? "user AS owner" : "c.owner" );
+
+  sql = QString( "SELECT %1,c.table_name,c.column_name,%2,t.table_name AS isview"
+                 " FROM %3_%4 c"
+                 " LEFT OUTER JOIN %3_tables t ON c.table_name=t.table_name%5%6" )
+        .arg( owner )
+        .arg( geometryColumnsOnly ? "c.srid" : "NULL AS srid" )
+        .arg( prefix )
+        .arg( geometryColumnsOnly ? "sdo_geom_metadata" : "tab_columns" )
+        .arg( userTablesOnly ? "" : " AND c.owner=t.owner" )
+        .arg( geometryColumnsOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY' AND c.data_type_owner='MDSYS'" );
 
   if ( allowGeometrylessTables )
   {
-    sql += " UNION SELECT owner,table_name,NULL AS column_name,NULL AS srid,table_name AS isview FROM all_tables"
-           " UNION SELECT owner,view_name,NULL AS column_name,NULL AS srid,NULL AS isview FROM all_views";
+    sql += QString( " UNION SELECT %1,table_name,NULL AS column_name,NULL AS srid,table_name AS isview FROM %2_tables c"
+                    " UNION SELECT %1,view_name,NULL AS column_name,NULL AS srid,NULL AS isview FROM %2_views c" )
+           .arg( owner ).arg( prefix );
   }
 
   sql = "SELECT * FROM (" + sql + ")";
-
-  if ( userTablesOnly )
-  {
-    sql += " WHERE owner=user";
-  }
 
   sql += " ORDER BY owner,isview,table_name,column_name";
 
@@ -220,6 +224,12 @@ bool QgsOracleConn::tableInfo( bool geometryTablesOnly, bool userTablesOnly, boo
     layerProperty.types           = QList<QGis::WkbType>() << QGis::WKBUnknown; // detect
     layerProperty.isView          = qry.value( 4 ).isNull();
     layerProperty.pkCols.clear();
+
+    if ( allowGeometrylessTables )
+    {
+      layerProperty.types << QGis::WKBNoGeometry;
+      layerProperty.srids << 0;
+    }
 
     mLayersSupported << layerProperty;
   }
@@ -313,7 +323,11 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata )
 {
+  if ( layerProperty.geometryColName.isEmpty() )
+    return;
+
   QgsDebugMsg( "entering: " + layerProperty.toString() );
+
   QString table;
   QString where;
 
@@ -569,7 +583,7 @@ void QgsOracleConn::deleteConnection( QString theConnName )
   settings.remove( key + "/database" );
   settings.remove( key + "/username" );
   settings.remove( key + "/password" );
-  settings.remove( key + "/publicOnly" );
+  settings.remove( key + "/userTablesOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
   settings.remove( key + "/allowGeometrylessTables" );
   settings.remove( key + "/estimatedMetadata" );
@@ -635,10 +649,22 @@ bool QgsOracleConn::userTablesOnly( QString theConnName )
   return settings.value( "/Oracle/connections/" + theConnName + "/userTablesOnly", false ).toBool();
 }
 
+bool QgsOracleConn::geometryColumnsOnly( QString theConnName )
+{
+  QSettings settings;
+  return settings.value( "/Oracle/connections/" + theConnName + "/geometryColumnsOnly", false ).toBool();
+}
+
 bool QgsOracleConn::allowGeometrylessTables( QString theConnName )
 {
   QSettings settings;
   return settings.value( "/Oracle/connections/" + theConnName + "/allowGeometrylessTables", false ).toBool();
+}
+
+bool QgsOracleConn::estimatedMetadata( QString theConnName )
+{
+  QSettings settings;
+  return settings.value( "/Oracle/connections/" + theConnName + "/estimatedMetadata", false ).toBool();
 }
 
 QString QgsOracleConn::databaseName( QString database, QString host, QString port )

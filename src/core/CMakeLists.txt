@@ -80,6 +80,7 @@ SET(QGIS_CORE_SRCS
   qgsmessagelog.cpp
   qgsnetworkreplyparser.cpp
   qgscredentials.cpp
+  qgsofflineediting.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
   qgspalgeometry.cpp
@@ -267,7 +268,9 @@ IF (WITH_INTERNAL_SPATIALITE)
     SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
   ENDIF(MSVC)
 
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
+  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite spatialite/headers)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
@@ -288,6 +291,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmessageoutput.h
   qgsmessagelog.h
   qgsnetworkreplyparser.h
+  qgsofflineediting.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -379,6 +383,7 @@ SET(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgsnetworkreplyparser.h
   qgscredentials.h
+  qgsofflineediting.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h
@@ -604,7 +609,7 @@ IF (WITH_INTERNAL_SPATIALITE)
     TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
   ENDIF (UNIX AND NOT ANDROID)
 ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY} ${SPATIALITE_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 # install

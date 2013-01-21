@@ -93,7 +93,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         index = layer.fieldNameIndex(fieldName)
         layer.select([index], QgsRectangle(), False)
-        
+
         cvValue = 0
         minValue = 0
         maxValue = 0
@@ -104,12 +104,12 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         isFirst = True
         values = []
-                        
+
         features = QGisLayers.features(layer)
         count = len(features)
         total = 100.0 / float(count)
         current = 0
-        for ft in features:    
+        for ft in features:
             value = float(ft.attributeMap()[index].toDouble()[0])
 
             if isFirst:

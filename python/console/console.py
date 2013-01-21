@@ -167,16 +167,6 @@ class PythonConsoleWidget(QWidget):
         self.loadSextanteButton.setIconVisibleInMenu(True)
         self.loadSextanteButton.setToolTip(loadSextanteBt)
         self.loadSextanteButton.setText(loadSextanteBt)
-        ## Import QgisInterface class
-        loadIfaceBt = QCoreApplication.translate("PythonConsole", "Import QgisInterface class")
-        self.loadIfaceButton = QAction(parent)
-        self.loadIfaceButton.setCheckable(False)
-        self.loadIfaceButton.setEnabled(True)
-        self.loadIfaceButton.setIcon(QgsApplication.getThemeIcon("console/iconIfaceConsole.png"))
-        self.loadIfaceButton.setMenuRole(QAction.PreferencesRole)
-        self.loadIfaceButton.setIconVisibleInMenu(True)
-        self.loadIfaceButton.setToolTip(loadIfaceBt)
-        self.loadIfaceButton.setText(loadIfaceBt)
         ## Import QtCore class
         loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore class")
         self.loadQtCoreButton = QAction(parent)
@@ -246,7 +236,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.runButton)
         ## Menu Import Class
         self.classMenu = QMenu(self)
-        self.classMenu.addAction(self.loadIfaceButton)
         self.classMenu.addAction(self.loadSextanteButton)
         self.classMenu.addAction(self.loadQtCoreButton)
         self.classMenu.addAction(self.loadQtGuiButton)
@@ -293,7 +282,6 @@ class PythonConsoleWidget(QWidget):
 
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
-        self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
         self.loadQtCoreButton.triggered.connect(self.qtCore)
         self.loadQtGuiButton.triggered.connect(self.qtGui)
@@ -306,9 +294,6 @@ class PythonConsoleWidget(QWidget):
 
     def sextante(self):
        self.edit.commandConsole('sextante')
-
-    def iface(self):
-       self.edit.commandConsole('iface')
 
     def qtCore(self):
        self.edit.commandConsole('qtCore')
@@ -355,6 +340,7 @@ class PythonConsoleWidget(QWidget):
                         sF.write('\n')
                     sF.write(s)
             sF.close()
+            self.callWidgetMessageBar('Script was correctly saved.')
 
     def openHelp(self):
         self.helpDlg.show()
@@ -366,6 +352,9 @@ class PythonConsoleWidget(QWidget):
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()
+        
+    def callWidgetMessageBar(self, text):
+        self.textEditOut.widgetMessageBar(iface, text)
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)

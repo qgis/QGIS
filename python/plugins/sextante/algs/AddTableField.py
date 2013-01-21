@@ -67,12 +67,12 @@ class AddTableField(GeoAlgorithm):
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        features = QGisLayers.features(vlayer)                    
+        features = QGisLayers.features(vlayer)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
             nElement += 1

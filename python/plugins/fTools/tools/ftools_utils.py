@@ -343,7 +343,7 @@ def dirDialog( parent ):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     folders = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ) ) )
+    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ).absolutePath() ) )
     return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name

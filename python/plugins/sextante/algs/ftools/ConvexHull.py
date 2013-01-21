@@ -48,7 +48,7 @@ class ConvexHull(GeoAlgorithm):
     #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/convex_hull.png")
     #===========================================================================
 
-    def processAlgorithm(self, progress):        
+    def processAlgorithm(self, progress):
         useField = (self.getParameterValue(ConvexHull.METHOD) == 1)
         field = self.getParameterValue(ConvexHull.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
@@ -67,9 +67,9 @@ class ConvexHull(GeoAlgorithm):
         outGeom = QgsGeometry()
         nElement = 0
         index = vproviderA.fieldNameIndex(field)
-        
+
         features = QGisLayers.features(vlayerA)
-        nFeat = len(features)    
+        nFeat = len(features)
 
         if useField:
           unique = ftools_utils.getUniqueValues(vproviderA, index)
@@ -80,14 +80,14 @@ class ConvexHull(GeoAlgorithm):
             outID = 0
             vproviderA.select(allAttrsA)
             features = QGisLayers.features(vlayerA)
-            for inFeat in features:            
+            for inFeat in features:
               atMap = inFeat.attributeMap()
               idVar = atMap[ index ]
               if idVar.toString().trimmed() == i.toString().trimmed():
                 if first:
                   outID = idVar
                   first = False
-                inGeom = QgsGeometry(inFeat.geometry()) 
+                inGeom = QgsGeometry(inFeat.geometry())
                 points = ftools_utils.extractPoints(inGeom)
                 hull.extend(points)
               nElement += 1
@@ -106,10 +106,10 @@ class ConvexHull(GeoAlgorithm):
                 GEOS_EXCEPT = False
                 continue
         else:
-          hull = []          
+          hull = []
           vproviderA.select(allAttrsA)
           features = QGisLayers.features(vlayerA)
-          for inFeat in features:          
+          for inFeat in features:
             inGeom = QgsGeometry(inFeat.geometry())
             points = ftools_utils.extractPoints(inGeom)
             hull.extend(points)
@@ -122,7 +122,7 @@ class ConvexHull(GeoAlgorithm):
             writer.addFeature(outFeat)
           except:
             GEOS_EXCEPT = False
-        
+
         del writer
 
         if not GEOS_EXCEPT:
@@ -151,12 +151,12 @@ class ConvexHull(GeoAlgorithm):
           for k in poly:
             value = value + measure.measureLine(k)
         return value
-    
+
     def defineCharacteristics(self):
         self.name = "Convex hull"
         self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(ConvexHull.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterTableField(ConvexHull.FIELD, "Field", ConvexHull.INPUT))
-        self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))        
+        self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))
         self.addOutput(OutputVector(ConvexHull.OUTPUT, "Convex hull"))
     #=========================================================

@@ -206,18 +206,18 @@ def mmqgisx_attribute_export(progress, outfilename, layer, attribute_names, fiel
 	i = 0
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
-	while layer.dataProvider().nextFeature(feature):		
+	while layer.dataProvider().nextFeature(feature):
 		progress.setPercentage(float(i) / feature_count * 100)
 		attributes = feature.attributeMap()
 
 		row = []
 		for column in attribute_indices:
-			row.append(unicode(attributes[column].toString()).encode("iso-8859-1"))		
+			row.append(unicode(attributes[column].toString()).encode("iso-8859-1"))
 
 		writer.writerow(row)
 		i+=1
 
-	del writer	
+	del writer
 
 	return None
 
@@ -421,7 +421,7 @@ def mmqgisx_delete_columns(progress, layer, columns, savename, addlayer):
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 
-	# Write the features with modified attributes	
+	# Write the features with modified attributes
 	featurecount = layer.dataProvider().featureCount();
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
@@ -665,14 +665,14 @@ def mmqgisx_geometry_convert(progress, layer, newtype, splitnodes, savename, add
 
 	# Iterate through each feature in the source layer
 	feature_count = layer.dataProvider().featureCount()
-	
+
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 	features = QGisLayers.features(layer)
 	i = 0
 	for feature in features:
-		i += 1		
-		progress.setPercentage(float(i) / feature_count * 100)		
+		i += 1
+		progress.setPercentage(float(i) / feature_count * 100)
 
 		if (feature.geometry().wkbType() == QGis.WKBPoint) or \
 		   (feature.geometry().wkbType() == QGis.WKBPoint25D):
@@ -950,7 +950,7 @@ def mmqgisx_geometry_import_from_csv(progress, node_filename, long_colname, lat_
 
 		if reading and (len(row) > long_col) and (len(row) > lat_col) and (len(row) > shapeid_col) \
 				and mmqgisx_is_float(row[long_col]) and mmqgisx_is_float(row[lat_col]):
-			node_count += 1			
+			node_count += 1
 			point = QgsPoint(float(row[long_col]), float(row[lat_col]))
 		else:
 			point = False
@@ -1213,8 +1213,8 @@ def mmqgisx_gridify_layer(progress, layer, hspacing, vspacing, savename, addlaye
 	layer.dataProvider().rewind()
 
 	features = QGisLayers.features(layer)
-	for feature in features:		
-		progress.setPercentage(float(feature_number) / feature_count * 100)		
+	for feature in features:
+		progress.setPercentage(float(feature_number) / feature_count * 100)
 		geometry = feature.geometry()
 
 		if geometry.wkbType() == QGis.WKBPoint:
@@ -1365,16 +1365,16 @@ def mmqgisx_hub_distance(progress, sourcelayer, hubslayer, nameattributename, un
 
 
 	# Create array of hubs in memory
-	hubs = []	
+	hubs = []
 	hubslayer.dataProvider().select(hubslayer.dataProvider().attributeIndexes())
 	hubslayer.dataProvider().rewind()
 	features = QGisLayers.features(hubslayer)
-	for feature in features:		
+	for feature in features:
 		hubs.append(mmqgisx_hub(feature.geometry().boundingBox().center(), \
 				feature.attributeMap()[nameindex].toString()))
 
 	del hubslayer
-	
+
 	featureCount = sourcelayer.dataProvider().featureCount()
 
 	# Scan source points, find nearest hub, and write to output file
@@ -1430,10 +1430,10 @@ def mmqgisx_hub_distance(progress, sourcelayer, hubslayer, nameattributename, un
 		outfile.addFeature(outfeature)
 
 		writecount += 1
-		progress.setPercentage(float(writecount) / featureCount * 100)				
+		progress.setPercentage(float(writecount) / featureCount * 100)
 
 	del outfile
-	
+
 	return None
 
 # --------------------------------------------------------
@@ -1491,14 +1491,14 @@ def mmqgisx_hub_lines(progress, hublayer, hubattr, spokelayer, spokeattr, savena
 		i += 1
 		spokex = spokepoint.geometry().boundingBox().center().x()
 		spokey = spokepoint.geometry().boundingBox().center().y()
-		spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())		
+		spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())
 		progress.setPercentage(float(i) / len(spokepoints) * 100)
 		# Scan hub points to find first matching hub
 		hubpoint = QgsFeature()
 		hublayer.dataProvider().select(hublayer.dataProvider().attributeIndexes())
 		hublayer.dataProvider().rewind()
 		hubpoints = QGisLayers.features(hublayer)
-		for hubpoint in hubpoints:		
+		for hubpoint in hubpoints:
 			hubid = unicode(hubpoint.attributeMap()[hubindex].toString())
 			if hubid == spokeid:
 				hubx = hubpoint.geometry().boundingBox().center().x()
@@ -1565,7 +1565,7 @@ def mmqgisx_label_point(progress, layer, labelattributename, savename, addlayer)
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 	# Build dictionary of items, averaging center for multi-feature items
-	features = {}	
+	features = {}
 	readcount = 0
 	feature_count = layer.featureCount()
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
@@ -1605,7 +1605,7 @@ def mmqgisx_label_point(progress, layer, labelattributename, savename, addlayer)
 			return "Failure writing feature to shapefile"
 
 		writecount += 1
-		progress.setPercentage(float(writecount) / len(features) * 100)				
+		progress.setPercentage(float(writecount) / len(features) * 100)
 
 	del outfile
 
@@ -1664,11 +1664,11 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 
 	# Copy layer features to output file
 	featurecount = 0
-	for layer in layers:		
+	for layer in layers:
 		layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 		layer.dataProvider().rewind()
 		idx = {}
-		for dindex, dfield in fields.iteritems():				
+		for dindex, dfield in fields.iteritems():
 			for sindex, sfield in layer.dataProvider().fields().iteritems():
 				if (sfield.name() == dfield.name()) and (sfield.type() == dfield.type()):
 					idx[dindex] = sindex
@@ -1676,11 +1676,11 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 		for feature in features:
 			sattributes = feature.attributeMap()
 			dattributes = {}
-			for dindex, dfield in fields.iteritems():				
+			for dindex, dfield in fields.iteritems():
 				if (dindex in idx):
 					dattributes[dindex] = sattributes[idx[dindex]]
 				else:
-					dattributes[dindex] = QVariant(dfield.type())			
+					dattributes[dindex] = QVariant(dfield.type())
 			feature.setAttributeMap(dattributes)
 			outfile.addFeature(feature)
 			featurecount += 1
@@ -1694,8 +1694,8 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 #    mmqgisx_select - Select features by attribute
 # ----------------------------------------------------------
 
-def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, comparisonname, savename, addlayer):	
-		
+def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, comparisonname, savename, addlayer):
+
 	selectindex = layer.dataProvider().fieldNameIndex(selectattributename)
 	if selectindex < 0:
 		return "Invalid select field name: " + selectattributename
@@ -1756,11 +1756,11 @@ def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, compar
 		if (match):
 			outfile.addFeature(feature)
 			writecount += 1
-			
+
 		progress.setPercentage(float(readcount) / totalcount * 100)
 
 	del outfile
-	
+
 	return None
 
 # --------------------------------------------------------
@@ -1789,7 +1789,7 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 	if (outfile.hasError() != QgsVectorFileWriter.NoError):
 		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
-	table = []	
+	table = []
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 	features = QGisLayers.features(layer)
@@ -1817,7 +1817,7 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 		progress.setPercentage(float(writecount)/len(table) * 100)
 
 	del outfile
-	
+
 	return None
 
 # --------------------------------------------------------
@@ -1827,7 +1827,7 @@ def mmqgisx_sort(progress, layer, sortattributename, savename, direction, addlay
 
 def mmqgisx_geocode_street_layer(qgis, layername, csvname, addressfield, shapefilename, streetname,
 fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundfile, addlayer):
-	
+
 	if layer == None:
 		return "Address layer not found: " + layername
 

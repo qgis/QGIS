@@ -65,7 +65,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        method = self.getParameterValue(self.METHOD)        
+        method = self.getParameterValue(self.METHOD)
 
         provider = layer.dataProvider()
         geometryType = layer.geometryType()
@@ -105,14 +105,14 @@ class ExportGeometryInfo(GeoAlgorithm):
             mapCRS = QGisLayers.iface.mapCanvas().mapRenderer().destinationCrs()
             layCRS = layer.crs()
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
-        
+
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
-        current = 0        
+        current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:        
+        for inFeat in features:
             inGeom = inFeat.geometry()
 
             if method == 1:

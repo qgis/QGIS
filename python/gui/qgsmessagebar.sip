@@ -62,4 +62,7 @@ class QgsMessageBar: QFrame
      *  @return true if all items were removed, false otherwise
      */
     bool clearWidgets();
+
+  protected:
+    void mousePressEvent( QMouseEvent * e );
 };

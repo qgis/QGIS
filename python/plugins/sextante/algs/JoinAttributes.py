@@ -35,7 +35,7 @@ from sextante.core.QGisLayers import QGisLayers
 
 
 class JoinAttributes(GeoAlgorithm):
-    
+
     OUTPUT_LAYER = "OUTPUT_LAYER"
     INPUT_LAYER = "INPUT_LAYER"
     INPUT_LAYER_2 = "INPUT_LAYER_2"
@@ -56,8 +56,8 @@ class JoinAttributes(GeoAlgorithm):
         input2 = self.getParameterValue(self.INPUT_LAYER_2)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         field = self.getParameterValue(self.TABLE_FIELD)
-        field2 = self.getParameterValue(self.TABLE_FIELD_2)                
-        
+        field2 = self.getParameterValue(self.TABLE_FIELD_2)
+
         # Layer 1
         layer = QGisLayers.getObjectFromUri(input)
         provider = layer.dataProvider()
@@ -71,28 +71,28 @@ class JoinAttributes(GeoAlgorithm):
         provider2.select(allAttrs)
         fields2 = provider2.fields()
         join_field2_index = provider2.fieldNameIndex(field2)
-        
+
         # Output
         outFields = provider.fields()
         for (i, f) in fields2.iteritems():
             f.setName("x_" + f.name())
             outFields[len(outFields)] = f
-        
+
         writer = output.getVectorWriter(outFields, provider.geometryType(), provider.crs())
-        
+
         inFeat = QgsFeature()
         inFeat2 = QgsFeature()
         outFeat = QgsFeature()
-        
+
         # Create output vector layer with additional attribute
         while provider.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
-            join_value1 = atMap[join_field1_index].toString()       
-            provider2.rewind() 
-            while provider2.nextFeature(inFeat2):                
+            join_value1 = atMap[join_field1_index].toString()
+            provider2.rewind()
+            while provider2.nextFeature(inFeat2):
                 atMap2 = inFeat2.attributeMap()
-                join_value2 = atMap2[join_field2_index].toString()        
+                join_value2 = atMap2[join_field2_index].toString()
                 if join_value1 == join_value2:
                     # create the new feature
                     outFeat.setGeometry(inGeom)
@@ -100,7 +100,7 @@ class JoinAttributes(GeoAlgorithm):
                     l = len(provider.fields())
                     for (i, a) in atMap2.iteritems():
                         outFeat.addAttribute(l + i, a)
-        
+
                     writer.addFeature(outFeat)
-        
+
         del writer

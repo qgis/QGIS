@@ -347,7 +347,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             aap = self.algParameters[iAlg][param.name]
             if aap == None:
                 if isinstance(param, ParameterExtent):
-                    value = self.getValueFromAlgorithmAndParameter(aap)                    
+                    value = self.getValueFromAlgorithmAndParameter(aap)
                     if value is None:
                         value = self.getMinCoveringExtent()
                     if not param.setValue(value):
@@ -365,7 +365,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 value = ";".join(layerslist)
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
-           
+
             else:
                 value = self.getValueFromAlgorithmAndParameter(aap)
                 if not param.setValue(value):
@@ -417,14 +417,14 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.ymin = min(self.ymin, layer.extent().yMinimum())
             self.ymax = max(self.ymax, layer.extent().yMaximum())
 
-            
+
     def getSafeNameForOutput(self, ialg, out):
         return out.name +"_ALG" + str(ialg)
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
         if aap is None:
-            return None        
+            return None
         if float(aap.alg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
                 for key in self.paramValues.keys():
                     if aap.param == key:

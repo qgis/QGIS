@@ -334,7 +334,7 @@ def getUniqueValuesCount( layer, fieldIndex):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     count = 0
-    values = []    
+    values = []
     features = QGisLayers.features(layer)
     for feat in features:
         if feat.attributeMap()[ fieldIndex ].toString() not in values:

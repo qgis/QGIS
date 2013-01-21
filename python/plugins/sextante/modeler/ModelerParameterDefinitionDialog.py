@@ -95,8 +95,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
-            if self.param is not None:                
-                self.yesNoCombo.setCurrentIndex(0 if self.param.value else 1)                
+            if self.param is not None:
+                self.yesNoCombo.setCurrentIndex(0 if self.param.value else 1)
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
@@ -110,7 +110,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                     if self.param is not None:
                         if self.param.parent == param.name:
                             self.parentCombo.setCurrentIndex(idx)
-                    idx += 1                 
+                    idx += 1
             self.horizontalLayout2.addWidget(self.parentCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER \
@@ -119,8 +119,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
-            if self.param is not None:                
-                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)  
+            if self.param is not None:
+                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE \
@@ -129,8 +129,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
-            if self.param is not None:                
-                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)        
+            if self.param is not None:
+                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR \
@@ -138,7 +138,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Required"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
-            self.yesNoCombo.addItem("No")            
+            self.yesNoCombo.addItem("No")
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.horizontalLayout3.addWidget(QtGui.QLabel("Shape type"))
             self.shapetypeCombo = QtGui.QComboBox()
@@ -146,8 +146,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.shapetypeCombo.addItem("Point")
             self.shapetypeCombo.addItem("Line")
             self.shapetypeCombo.addItem("Polygon")
-            if self.param is not None:                
-                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)  
+            if self.param is not None:
+                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)
                 self.shapetypeCombo.setCurrentIndex(self.param.shapetype + 1)
             self.horizontalLayout3.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
@@ -167,8 +167,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.datatypeCombo.addItem("Vector (polygon)")
             self.datatypeCombo.addItem("Raster")
             self.datatypeCombo.addItem("Table")
-            if self.param is not None:                
-                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)  
+            if self.param is not None:
+                self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)
                 self.datatypeCombo.setCurrentIndex(self.param.datatype + 1)
             self.horizontalLayout3.addWidget(self.datatypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
@@ -184,7 +184,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout3.addWidget(QtGui.QLabel("Default value"))
             self.defaultTextBox = QtGui.QLineEdit()
             self.defaultTextBox.setText("0")
-            if self.param is not None:                
+            if self.param is not None:
                 self.defaultTextBox.setText(self.param.default)
             self.horizontalLayout3.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout3)
@@ -192,8 +192,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                     or isinstance(self.param, ParameterString):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Default value"))
             self.defaultTextBox = QtGui.QLineEdit()
-            if self.param is not None:                
-                self.defaultTextBox.setText(self.param.default)                  
+            if self.param is not None:
+                self.defaultTextBox.setText(self.param.default)
                 self.minTextBox.setText(self.param.min if self.param.min is not None else "")
                 self.maxTextBox.setText(self.param.max if self.param.max is not None else "")
             self.horizontalLayout2.addWidget(self.defaultTextBox)

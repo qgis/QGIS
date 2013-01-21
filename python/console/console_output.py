@@ -25,6 +25,7 @@ from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase,
                         QsciLexerPython)
 from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 import sys
 
 class writeOut:
@@ -71,6 +72,17 @@ class EditorOutput(QsciScintilla):
         super(EditorOutput,self).__init__(parent)
         self.parent = parent
         self.edit = self.parent.edit
+
+        # Creates layout for message bar
+        self.layout = QGridLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.layout.addItem(spacerItem, 1, 0, 1, 1)
+        # messageBar instance
+        self.infoBar = QgsMessageBar()
+        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.infoBar.setSizePolicy(sizePolicy)
+        self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # Enable non-ascii chars for editor
         self.setUtf8(True)
@@ -125,7 +137,7 @@ class EditorOutput(QsciScintilla):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "## To access Quantum GIS environment from this console\n"
-                                             "## iface object (instance of QgisInterface class). \n"
+                                             "## use iface object (instance of QgisInterface class). \n"
                                              "## Type help(iface) for more info and list of methods.\n\n")
         initText = self.setText(txtInit)
 
@@ -265,7 +277,10 @@ class EditorOutput(QsciScintilla):
                              link = i.replace('<a href="',"").strip()
             if link:
                 QApplication.clipboard().setText(link)
-                print "## URL copied to clipboard ##"
+                self.parent.callWidgetMessageBar('URL copied to clipboard')
         except urllib2.URLError, e:
-            print "## Connection error ##"
-            print "## " + str(e.args) + " ##"
+            self.parent.callWidgetMessageBar('Connection error: ' + str(e.args))
+
+    def widgetMessageBar(self, iface, text):
+        timeout = iface.messageTimeout()
+        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)

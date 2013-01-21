@@ -101,6 +101,9 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     bool clearWidgets();
 
+  protected:
+    void mousePressEvent( QMouseEvent * e );
+
   private:
     class QgsMessageBarItem
     {
@@ -133,6 +136,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     QAction *mActionCloseAll;
     QTimer *mCountdownTimer;
     QProgressBar *mCountProgress;
+    QString mCountStyleSheet;
 
   private slots:
     //! updates count of items in widget list

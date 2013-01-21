@@ -20,6 +20,7 @@
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgisappstylesheet.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -70,6 +71,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 {
   setupUi( this );
 
+  // stylesheet setup
+  mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
+  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
+  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
+
   connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
 
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -79,11 +85,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-
-  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyRadioQt, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyRadioCustom, SIGNAL( released() ), this, SLOT( updateAppStyleSheet() ) );
-  connect( mFontFamilyComboBox, SIGNAL( currentFontChanged( const QFont& ) ), this, SLOT( updateAppStyleSheet() ) );
 
 #ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
@@ -104,6 +105,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // read the current browser and set it
   QSettings settings;
+  // mOptionsListWidget width is fixed to takes up less space in QtDesigner
+  // revert it now unless the splitter's state hasn't been saved yet
+  mOptionsListWidget->setMaximumWidth(
+    settings.value( "/Windows/Options/splitState" ).isNull() ? 150 : 16777215 );
+
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
@@ -140,7 +146,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     addCustomEnvVarRow( varStrName, varStrValue, varStrApply );
   }
   QFontMetrics fmCustomVar( mCustomVariablesTable->horizontalHeader()->font() );
-  int fmCustomVarH = fmCustomVar.height() + 2;
+  int fmCustomVarH = fmCustomVar.height() + 8;
   mCustomVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
 
   mCustomVariablesTable->setColumnWidth( 0, 120 );
@@ -444,12 +450,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
-  blockSignals( true );
-  spinFontSize->setValue( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
-  QString fontFamily = settings.value( "/fontFamily", QVariant( "QtDefault" ) ).toString();
-  bool isQtDefault = ( fontFamily == QString( "QtDefault" ) );
+  spinFontSize->blockSignals( true );
+  mFontFamilyRadioQt->blockSignals( true );
+  mFontFamilyRadioCustom->blockSignals( true );
+  mFontFamilyComboBox->blockSignals( true );
+
+  spinFontSize->setValue( mStyleSheetNewOpts.value( "fontPointSize" ).toInt() );
+  QString fontFamily = mStyleSheetNewOpts.value( "fontFamily" ).toString();
+  bool isQtDefault = ( fontFamily == mStyleSheetBuilder->defaultFont().family() );
   mFontFamilyRadioQt->setChecked( isQtDefault );
   mFontFamilyRadioCustom->setChecked( !isQtDefault );
+  mFontFamilyComboBox->setEnabled( !isQtDefault );
   if ( !isQtDefault )
   {
     QFont *tempFont = new QFont( fontFamily );
@@ -460,7 +471,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
     delete tempFont;
   }
-  blockSignals( false );
+
+  spinFontSize->blockSignals( false );
+  mFontFamilyRadioQt->blockSignals( false );
+  mFontFamilyRadioCustom->blockSignals( false );
+  mFontFamilyComboBox->blockSignals( false );
+
+  mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
@@ -716,9 +733,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
-
-  // update option section frame state
-  on_mOptionsListWidget_currentRowChanged( currentIndx );
 }
 
 //! Destructor
@@ -733,34 +747,45 @@ QgsOptions::~QgsOptions()
 void QgsOptions::showEvent( QShowEvent * e )
 {
   Q_UNUSED( e );
+  on_mOptionsStackedWidget_currentChanged( -1 );
   updateVerticalTabs();
 }
 
-void QgsOptions::resizeEvent( QResizeEvent * e )
+void QgsOptions::paintEvent( QPaintEvent * e )
 {
   Q_UNUSED( e );
-  if ( mOptionsListWidget->isVisible() )
-    updateVerticalTabs();
+  QTimer::singleShot( 0, this, SLOT( updateVerticalTabs() ) );
 }
 
 void QgsOptions::updateVerticalTabs()
 {
+  if ( mOptionsListWidget->maximumWidth() != 16777215 )
+    mOptionsListWidget->setMaximumWidth( 16777215 );
   // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
   // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
+  // Note: called on splitter resize and dialog paint event, so only update when necessary
   int iconWidth = mOptionsListWidget->iconSize().width();
   int snapToIconWidth = iconWidth + 32;
+
   QList<int> splitSizes = mOptionsSplitter->sizes();
   bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
 
   int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
-  mOptionsListWidget->setMinimumWidth( newWidth );
-  if ( iconOnly )
+  bool diffWidth = mOptionsListWidget->minimumWidth() != newWidth;
+
+  if ( diffWidth )
+    mOptionsListWidget->setMinimumWidth( newWidth );
+
+  if ( iconOnly && ( diffWidth || mOptionsListWidget->width() != newWidth ) )
   {
     splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
     splitSizes[0] = newWidth;
     mOptionsSplitter->setSizes( splitSizes );
   }
-  mOptionsListWidget->setWordWrap( !iconOnly );
+  if ( mOptionsListWidget->wordWrap() && iconOnly )
+    mOptionsListWidget->setWordWrap( false );
+  if ( !mOptionsListWidget->wordWrap() && !iconOnly )
+    mOptionsListWidget->setWordWrap( true );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -865,25 +890,6 @@ void QgsOptions::themeChanged( const QString &newThemeName )
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
-}
-
-void QgsOptions::updateAppStyleSheet()
-{
-  int fontSize = spinFontSize->value();
-
-  QString family = QString( "" ); // use default Qt font family
-  if ( mFontFamilyRadioCustom->isChecked() )
-  {
-    family = QString( " \"%1\";" ).arg( mFontFamilyComboBox->currentFont().family() );
-  }
-
-  QString stylesheet = QString( "font: %1pt%2" ).arg( fontSize ).arg( family );
-  QgisApp::instance()->setStyleSheet( stylesheet );
-
-  foreach ( QgsComposer* c, QgisApp::instance()->printComposers() )
-  {
-    c->setAppStyleSheet();
-  }
 }
 
 void QgsOptions::toggleEnableBackbuffer( int state )
@@ -1068,15 +1074,7 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
-  // application stylesheet settings
-  settings.setValue( "/fontPointSize", spinFontSize->value() );
-  QString fontFamily = QString( "QtDefault" );
-  if ( mFontFamilyRadioCustom->isChecked() )
-  {
-    fontFamily = mFontFamilyComboBox->currentFont().family();
-  }
-  settings.setValue( "/fontFamily", fontFamily );
-  QgisApp::instance()->setAppStyleSheet();
+  settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );
@@ -1230,11 +1228,55 @@ void QgsOptions::saveOptions()
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
     saveGdalDriverList();
+
+  // save app stylesheet last (in case reset becomes necessary)
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
+  }
 }
 
 void QgsOptions::rejectOptions()
 {
-  QgisApp::instance()->setAppStyleSheet();
+  // don't reset stylesheet if we don't have to
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetOldOpts );
+  }
+}
+
+void QgsOptions::on_spinFontSize_valueChanged( int fontSize )
+{
+  mStyleSheetNewOpts.insert( "fontPointSize", fontSize );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mFontFamilyRadioQt_released()
+{
+  if ( mStyleSheetNewOpts.value( "fontFamily" ).toString() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", mStyleSheetBuilder->defaultFont().family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyRadioCustom_released()
+{
+  if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", mFontFamilyComboBox->currentFont().family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
+{
+  if ( mFontFamilyRadioCustom->isChecked()
+       && mStyleSheetNewOpts.value( "fontFamily" ).toString() != font.family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", font.family() );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
 }
 
 void QgsOptions::on_pbnSelectProjection_clicked()
@@ -1359,6 +1401,13 @@ QStringList QgsOptions::i18nList()
     myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
   }
   return myList;
+}
+
+void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
+{
+  mAddCustomVarBtn->setEnabled( chkd );
+  mRemoveCustomVarBtn->setEnabled( chkd );
+  mCustomVariablesTable->setEnabled( chkd );
 }
 
 void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString varApply )
@@ -1520,10 +1569,12 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
-void QgsOptions::on_mOptionsListWidget_currentRowChanged( int theIndx )
+void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
+  Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( theIndx == 2 && ! mLoadedGdalDriverList )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPage_02" )
+       && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
   }

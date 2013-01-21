@@ -191,7 +191,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 value.append(options[index])
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
-            return param.setValue(widget.getValue())                    
+            return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
                 return param.setValue(unicode(widget.toPlainText()))
@@ -301,7 +301,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         #self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        self.setInfo(msg, True)        
+        self.setInfo(msg, True)
         if not keepOpen:
             QMessageBox.critical(self, "Error", msg)
             self.close()

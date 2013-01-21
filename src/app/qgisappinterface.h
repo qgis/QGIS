@@ -50,17 +50,6 @@ class QgisAppInterface : public QgisInterface
     QgsLegendInterface* legendInterface();
 
     /* Exposed functions */
-    /** Set the app font size
-     * @param fontSize point size of font
-     * @note added in 2.0
-     */
-    void setFontSize( int fontSize );
-
-    /** Set the app font family
-     * @param fontFamily family of font (not including any style)
-     * @note added in 2.0
-     */
-    void setFontFamily( QString fontFamily );
 
     //! Zoom map to full extent
     void zoomFull();
@@ -135,6 +124,27 @@ class QgisAppInterface : public QgisInterface
     QgsMessageBar * messageBar();
 
     QList<QgsComposerView*> activeComposers();
+
+    /** Return changeable options built from settings and/or defaults
+     * @note (added in 1.9)
+     */
+    QMap<QString, QVariant> defaultStyleSheetOptions();
+
+    /** Generate stylesheet
+     * @param opts generated default option values, or a changed copy of them
+     * @note added in 1.9
+     */
+    void buildStyleSheet( const QMap<QString, QVariant>& opts );
+
+    /** Save changed default option keys/values to user settings
+      * @note added in 1.9
+      */
+    void saveStyleSheetOptions( const QMap<QString, QVariant>& opts );
+
+    /** Get reference font for initial qApp (may not be same as QgisApp)
+     * @note added in 1.9
+     */
+    QFont defaultStyleSheetFont();
 
     /** Add action to the plugins menu */
     void addPluginToMenu( QString name, QAction* action );
@@ -352,6 +362,10 @@ class QgisAppInterface : public QgisInterface
      * @returns list of layers in legend order, or empty list
      * @note added in 1.9 */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout();
 
   signals:
     void currentThemeChanged( QString );

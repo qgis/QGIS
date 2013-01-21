@@ -57,6 +57,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mGridStyleComboBox_currentIndexChanged( const QString& text );
     void on_mPenWidthSpinBox_valueChanged( double d );
     void on_mSelectionToleranceSpinBox_valueChanged( double d );
+    void on_mAlignmentSnapCheckBox_stateChanged( int state );
+    void on_mAlignmentToleranceSpinBox_valueChanged( double d );
 
     /**Sets GUI elements to width/height from composition*/
     void displayCompositionWidthHeight();

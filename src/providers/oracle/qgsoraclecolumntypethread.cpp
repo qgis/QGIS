@@ -16,20 +16,16 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclecolumntypethread.h"
+#include "qgslogger.h"
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QgsOracleConn *conn, bool useEstimatedMetaData )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata )
     : QThread()
-    , mConn( conn )
-    , mUseEstimatedMetadata( useEstimatedMetaData )
+    , mName( name )
+    , mUseEstimatedMetadata( useEstimatedMetadata )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
-}
-
-void QgsOracleColumnTypeThread::addGeometryColumn( QgsOracleLayerProperty layerProperty )
-{
-  layerProperties << layerProperty;
 }
 
 void QgsOracleColumnTypeThread::stop()
@@ -39,16 +35,32 @@ void QgsOracleColumnTypeThread::stop()
 
 void QgsOracleColumnTypeThread::run()
 {
-  if ( !mConn )
+  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( uri.connectionInfo() );
+  if ( !conn )
+  {
+    QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
     return;
+  }
 
   mStopped = false;
+
+  QgsDebugMsg( "retrieving supported layers - connection " + mName );
+  QVector<QgsOracleLayerProperty> layerProperties;
+  if ( !conn->supportedLayers( layerProperties,
+                               QgsOracleConn::geometryColumnsOnly( mName ),
+                               QgsOracleConn::userTablesOnly( mName ),
+                               QgsOracleConn::allowGeometrylessTables( mName ) ) ||
+       layerProperties.isEmpty() )
+  {
+    return;
+  }
 
   foreach ( QgsOracleLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {
-      mConn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
+      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
     }
 
     if ( mStopped )
@@ -61,6 +73,5 @@ void QgsOracleColumnTypeThread::run()
     emit setLayerType( layerProperty );
   }
 
-  mConn->disconnect();
-  mConn = 0;
+  conn->disconnect();
 }

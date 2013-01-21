@@ -62,14 +62,14 @@ class MultipartToSingleparts(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      geomType, provider.crs())
-        
+
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:         
+        for inFeat in features:
             inGeom = inFeat.geometry()
             atMap = inFeat.attributeMap()
 

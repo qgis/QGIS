@@ -56,7 +56,7 @@ class FileSelectionPanel(QtGui.QWidget):
             path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
         else:
             path = ""
-        
+
         if self.isFolder:
             folder = QtGui.QFileDialog.getExistingDirectory (self, "Select folder", path)
             if folder:

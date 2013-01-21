@@ -2531,7 +2531,7 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
-      QgsFree( pszFormattedXML );
+      CPLFree( pszFormattedXML );
   }
   return message;
 }

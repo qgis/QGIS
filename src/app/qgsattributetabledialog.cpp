@@ -121,9 +121,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
   mAddFeature->setHidden( !canAddFeatures || mLayer->geometryType() != QGis::NoGeometry );
 
-  // info from table to application
-  connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
-
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
@@ -677,7 +674,7 @@ void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()
 
 void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
 {
-  emit saveEdits( mLayer );
+  QgisApp::instance()->saveEdits( mLayer, true, true );
 }
 
 void QgsAttributeTableDialog::editingToggled()

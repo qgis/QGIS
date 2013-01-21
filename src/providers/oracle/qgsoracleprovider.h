@@ -381,8 +381,19 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     struct OracleException
     {
-      OracleException( const QSqlQuery &q )
-          : mWhat( tr( "Oracle-Error: %1\nSQL: %2\n" ).arg( q.lastError().text() ).arg( q.lastQuery() ) )
+      OracleException( QString msg, const QSqlQuery &q )
+          : mWhat( tr( "Oracle error: %1\nSQL: %2\nError: %3" )
+                   .arg( msg )
+                   .arg( q.lastError().text() )
+                   .arg( q.lastQuery() )
+                 )
+      {}
+
+      OracleException( QString msg, const QSqlDatabase &q )
+          : mWhat( tr( "Oracle error: %1\nError: %2" )
+                   .arg( msg )
+                   .arg( q.lastError().text() )
+                 )
       {}
 
       OracleException( const OracleException &e )

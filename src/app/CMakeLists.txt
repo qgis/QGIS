@@ -2,6 +2,7 @@ SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
+  qgisappstylesheet.cpp
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -167,6 +168,7 @@ ENDIF (ANDROID)
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
+  qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h
@@ -500,10 +502,6 @@ ENDIF(APPLE)
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
-
-IF (SPATIALITE_FOUND)
-  TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
-ENDIF (SPATIALITE_FOUND)
 
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
