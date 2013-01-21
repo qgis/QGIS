@@ -50,7 +50,7 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
   p->save();
   p->setFont( mScaleBar->font() );
-  p->setPen( QColor( 0, 0, 0 ) );
+  p->setPen( QPen(mScaleBar->fontColor()) );
   mScaleBar->drawText( p, mScaleBar->pen().widthF() + mScaleBar->boxContentSpace(), mScaleBar->boxContentSpace() + mScaleBar->fontAscentMillimeters( mScaleBar->font() ), scaleText(), mScaleBar->font() );
 
   p->restore();
