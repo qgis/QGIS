@@ -49,18 +49,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
     /**
      * Gets the feature at the given feature ID.
      * @param featureId of the feature to be returned

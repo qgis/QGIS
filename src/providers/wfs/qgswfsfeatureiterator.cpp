@@ -40,7 +40,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const Qg
 
 QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
 {
-
+  close();
 }
 
 bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
@@ -61,7 +61,17 @@ bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
     return false;
   }
   QgsFeature* fet =  it.value();
-  mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ), mRequest.subsetOfAttributes() );
+
+  QgsAttributeList attributes;
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    attributes = mRequest.subsetOfAttributes();
+  }
+  else
+  {
+    attributes = mProvider->attributeIndexes();
+  }
+  mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ), attributes );
   ++mFeatureIterator;
   return true;
 }
