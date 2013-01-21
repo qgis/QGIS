@@ -33,6 +33,8 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
     mTextDocument = mItem->document();
     mTextEdit->setDocument( mTextDocument );
   }
+  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   setCurrentFontPropertiesToGui();
 
   QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applyTextToItem() ) );
@@ -100,18 +102,9 @@ void QgsTextAnnotationDialog::changeCurrentFormat()
   mTextEdit->setTextColor( mFontColorButton->color() );
 }
 
-void QgsTextAnnotationDialog::on_mFontColorButton_clicked()
+void QgsTextAnnotationDialog::on_mFontColorButton_colorChanged( const QColor& color )
 {
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mFontColorButton->color(), 0, tr( "Select font color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mFontColorButton->color() );
-#endif
-  if ( !newColor.isValid() )
-  {
-    return; //dialog canceled
-  }
-  mFontColorButton->setColor( newColor );
+  Q_UNUSED( color )
   changeCurrentFormat();
 }
 

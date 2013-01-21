@@ -38,9 +38,7 @@ class QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBas
     void on_mTransparencySlider_valueChanged( int value );
     void on_mAddCategoryPushButton_clicked();
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
-    void on_mBackgroundColorButton_clicked();
     void on_mFindMaximumValueButton_clicked();
-    void on_mDiagramPenColorButton_clicked();
     void on_mDisplayDiagramsGroupBox_toggled( bool checked );
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();

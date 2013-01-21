@@ -91,25 +91,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * true.
      */
     bool newVisible();
-    /*!
-     * Slot to select the default map selection color
-     */
-    void on_pbnSelectionColor_clicked();
-
-    /*!
-     * Slot to select the default measure tool color
-     */
-    void on_pbnMeasureColor_clicked();
-
-    /*!
-     * Slot to select the default map selection color
-     */
-    void on_pbnCanvasColor_clicked();
-
-    /*!
-     * Slot to select the color of the digitizing rubber band
-     */
-    void on_mLineColorToolButton_clicked();
 
     /**Add a new URL to exclude from Proxy*/
     void on_mAddUrlPushButton_clicked();
