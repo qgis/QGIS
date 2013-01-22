@@ -786,12 +786,9 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
                         "). Problems may occur." );
 
     QgsProjectFileTransform styleFile( myDocument, fileVersion );
-
-    styleFile.dump();
-
+    // styleFile.dump();
     styleFile.updateRevision( thisVersion );
-
-    styleFile.dump();
+    // styleFile.dump();
   }
 
   // now get the layer node out and pass it over to the layer
