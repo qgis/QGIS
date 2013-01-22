@@ -728,12 +728,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
-  //font color
-  QDomElement colorElem = doc.createElement( "fontColor" );
-  colorElem.setAttribute( "red", mFontColor.red() );
-  colorElem.setAttribute( "green", mFontColor.green() );
-  colorElem.setAttribute( "blue", mFontColor.blue() );
-  composerLegendElem.appendChild( colorElem );
+  composerLegendElem.setAttribute( "fontColor", mFontColor.name() );
 
   if ( mComposerMap )
   {
@@ -787,15 +782,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   }
 
   //font color
-  QDomNodeList fontColorList = itemElem.elementsByTagName( "fontColor" );
-  if ( fontColorList.size() > 0 )
-  {
-    QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
-    int red = fontColorElem.attribute( "red", "0" ).toInt();
-    int green = fontColorElem.attribute( "green", "0" ).toInt();
-    int blue = fontColorElem.attribute( "blue", "0" ).toInt();
-    mFontColor = QColor( red, green, blue );
-  }
+  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
