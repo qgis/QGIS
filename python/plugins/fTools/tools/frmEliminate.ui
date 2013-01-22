@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>243</height>
+    <width>436</width>
+    <height>302</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,13 +54,6 @@
    </item>
    <item row="6" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="writeShapefileCheck">
-       <property name="text">
-        <string>Save to new file</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QLineEdit" name="outShape">
        <property name="readOnly">
