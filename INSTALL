@@ -652,6 +652,8 @@ created.
 
 Adjust the path to bison and flex so that the shortened C:/Progra~1 is used 
 rather than C:/Program Files.
+Notice that C:/Progra~1 is a shortcut to "C:\Program Files" and not to "C:\Program Files (x86)".
+You may need to move flex and bison to "C:\Program Files" if they are in "C:\Program Files (x86)".
 
 Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
 bindings are placed into the output directory when you run the INSTALL target.

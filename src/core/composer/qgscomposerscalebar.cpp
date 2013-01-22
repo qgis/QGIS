@@ -40,6 +40,7 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
     , mUnits( MapUnits )
+    , mFontColor( QColor( 0, 0, 0 ) )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -60,7 +61,6 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 
   drawBackground( painter );
-  painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
@@ -228,6 +228,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setStyle( Qt::SolidPattern );
 
   mFont.setPointSizeF( 12.0 );
+  mFontColor = QColor( 0, 0, 0 );
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
@@ -424,11 +425,24 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
 
   //fill color
   QColor brushColor = mBrush.color();
-  QDomElement colorElem = doc.createElement( "BrushColor" );
-  colorElem.setAttribute( "red", brushColor.red() );
-  colorElem.setAttribute( "green", brushColor.green() );
-  colorElem.setAttribute( "blue", brushColor.blue() );
-  composerScaleBarElem.appendChild( colorElem );
+  QDomElement brushColorElem = doc.createElement( "brushColor" );
+  brushColorElem.setAttribute( "red", brushColor.red() );
+  brushColorElem.setAttribute( "green", brushColor.green() );
+  brushColorElem.setAttribute( "blue", brushColor.blue() );
+  composerScaleBarElem.appendChild( brushColorElem );
+  //stroke color
+  QColor penColor = mPen.color();
+  QDomElement penColorElem = doc.createElement( "penColor" );
+  penColorElem.setAttribute( "red", penColor.red() );
+  penColorElem.setAttribute( "green", penColor.green() );
+  penColorElem.setAttribute( "blue", penColor.blue() );
+  composerScaleBarElem.appendChild( penColorElem );
+  //font color
+  QDomElement fontColorElem = doc.createElement( "fontColor" );
+  fontColorElem.setAttribute( "red", mFontColor.red() );
+  fontColorElem.setAttribute( "green", mFontColor.green() );
+  fontColorElem.setAttribute( "blue", mFontColor.blue() );
+  composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
   composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
@@ -459,6 +473,40 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   {
     mFont.fromString( fontString );
   }
+
+  //colors
+  //fill color
+  QDomNodeList fillColorList = itemElem.elementsByTagName( "brushColor" );
+  if ( fillColorList.size() > 0 )
+  {
+    QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+    int red = fillColorElem.attribute( "red", "0" ).toInt();
+    int green = fillColorElem.attribute( "green", "0" ).toInt();
+    int blue = fillColorElem.attribute( "blue", "0" ).toInt();
+    mBrush.setColor(QColor( red, green, blue ));
+  }
+  //pen color
+  QDomNodeList penColorList = itemElem.elementsByTagName( "penColor" );
+  if ( penColorList.size() > 0 )
+  {
+    QDomElement penColorElem = penColorList.at( 0 ).toElement();
+    int red = penColorElem.attribute( "red", "0" ).toInt();
+    int green = penColorElem.attribute( "green", "0" ).toInt();
+    int blue = penColorElem.attribute( "blue", "0" ).toInt();
+    mPen.setColor(QColor( red, green, blue ));
+  }
+  //font color
+  QDomNodeList fontColorList = itemElem.elementsByTagName( "fontColor" );
+  if ( fontColorList.size() > 0 )
+  {
+    QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+    int red = fontColorElem.attribute( "red", "0" ).toInt();
+    int green = fontColorElem.attribute( "green", "0" ).toInt();
+    int blue = fontColorElem.attribute( "blue", "0" ).toInt();
+    mFontColor = QColor( red, green, blue );
+  }
+
+
 
   //style
   delete mStyle;
