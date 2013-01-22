@@ -22,12 +22,12 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from ui_console_settings import Ui_SettingsDialog
+from ui_console_settings import Ui_SettingsDialogPythonConsole
 
-class optionsDialog(QDialog, Ui_SettingsDialog):
+class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Settings Python Console"))
+        self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
         #self.iface = iface
         self.parent = parent
         self.setupUi(self)
