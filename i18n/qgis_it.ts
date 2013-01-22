@@ -6470,28 +6470,67 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Esegui comando</translation>
     </message>
     <message>
-        <source>Are you sure you want to completely
-delete the command history ?</source>
-        <translation>Sei sicuro di voler concellare completamente
-la cronologia dei comandi ?</translation>
+        <source>Session and file history cleared successfully.</source>
+        <translation>Storia dei comandi cancellata completamente.</translation>
     </message>
     <message>
-        <source>## History saved successfully ##</source>
-        <translation>## Storia comandi salvata con successo ##</translation>
+        <source>History saved successfully.</source>
+        <translation>Storia comandi salvata con successo.</translation>
     </message>
     <message>
-        <source>## History cleared successfully ##</source>
-        <translation>## Storia comandi cancellata con successo ##</translation>
+        <source>History cleared successfully.</source>
+        <translation>Storia comandi cancellata con successo.</translation>
+    </message>
+    <message>
+        <source>Script was correctly saved.</source>
+        <translation>File salvato correttamente.</translation>
+    </message>
+    <message>
+        <source>URL copied to clipboard.</source>
+        <translation>URL copiata nella clipboard</translation>
+    </message>
+    <message>
+        <source>Connection error: </source>
+        <translation>Errore di connessione: </translation>
     </message>
     <message>
         <source>## To access Quantum GIS environment from this console
-## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.
+## use iface object (instance of QgisInterface class).
+## Type help(iface) for more info and list of methods.
 
 </source>
         <translation>## Per accedere all&apos;ambiente Quantum GIS da questa console
-## usa l&apos;oggetto qgis.utils.iface (istanza della classe QgisInterface). Consulta l&apos;aiuto per ottenere più informazioni.
+## usa l&apos;oggetto iface (istanza della classe QgisInterface). 
+## Digita help(iface) per ottenere più informazioni.
 
 </translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialogPythonConsole</name>
+    <message>
+        <source>Settings Python Console</source>
+        <translation>Impostazioni Python Console</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="200"/>
+        <source>Font</source>
+        <translation>Carattere</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="201"/>
+        <source>Size</source>
+        <translation>Dimensione</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="203"/>
+        <source>Browse</source>
+        <translation>Sfoglia</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="206"/>
+        <source>Using preloaded API file</source>
+        <translation>Usare il file delle API preinstallato</translation>
     </message>
 </context>
 <context>
