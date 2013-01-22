@@ -2279,15 +2279,12 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    if ( !rasterRendererElem.isNull() )
+    QString rendererType = rasterRendererElem.attribute( "type" );
+    QgsRasterRendererRegistryEntry rendererEntry;
+    if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
     {
-      QString rendererType = rasterRendererElem.attribute( "type" );
-      QgsRasterRendererRegistryEntry rendererEntry;
-      if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
-      {
-        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
-        mPipe.set( renderer );
-      }
+      QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+      mPipe.set( renderer );
     }
   }
 
