@@ -27,25 +27,26 @@ from PyQt4.Qsci import (QsciScintilla,
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 import sys
+import socket
 
 class writeOut:
-    def __init__(self, edit, out=None, style=None):
+    def __init__(self, shellOut, out=None, style=None):
         """
         This class allow to write stdout and stderr
         """
-        self.outputArea = edit
+        self.sO = shellOut
         self.out = None
         self.style = style
 
     def write(self, m):
         if self.style == "traceback":
             # Show errors in red
-            pos = self.outputArea.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
-            self.outputArea.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
-            self.outputArea.append(m)
-            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
+            self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
+            self.sO.append(m)
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
-            self.outputArea.append(m)
+            self.sO.append(m)
         self.move_cursor_to_end()
 
         if self.out:
@@ -54,24 +55,23 @@ class writeOut:
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
         line, index = self.get_end_pos()
-        self.outputArea.setCursorPosition(line, index)
-        self.outputArea.ensureCursorVisible()
-        self.outputArea.ensureLineVisible(line)
+        self.sO.setCursorPosition(line, index)
+        self.sO.ensureCursorVisible()
+        self.sO.ensureLineVisible(line)
 
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
-        line = self.outputArea.lines() - 1
-        return (line, self.outputArea.text(line).length())
+        line = self.sO.lines() - 1
+        return (line, self.sO.text(line).length())
 
     def flush(self):
         pass
 
-class EditorOutput(QsciScintilla):
+class ShellOutputScintilla(QsciScintilla):
     def __init__(self, parent=None):
-        #QsciScintilla.__init__(self, parent)
-        super(EditorOutput,self).__init__(parent)
+        super(ShellOutputScintilla,self).__init__(parent)
         self.parent = parent
-        self.edit = self.parent.edit
+        self.shell = self.parent.shell
 
         # Creates layout for message bar
         self.layout = QGridLayout(self)
@@ -102,6 +102,9 @@ class EditorOutput(QsciScintilla):
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
+        self.setMarginWidth(0, 0)
+        self.setMarginWidth(1, 0)
+        self.setMarginWidth(2, 0)
         #fm = QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
@@ -113,21 +116,11 @@ class EditorOutput(QsciScintilla):
 
         self.setMinimumHeight(120)
 
-        # Folding
-        #self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
-        #self.setFoldMarginColors(QColor("#99CC66"),QColor("#333300"))
-        #self.setWrapMode(QsciScintilla.WrapCharacter)
-
-        ## Edge Mode
-        #self.setEdgeMode(QsciScintilla.EdgeLine)
-        #self.setEdgeColumn(80)
-        #self.setEdgeColor(QColor("#FF0000"))
-
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
-        self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
-        self.runShortcut.activated.connect(self.enteredSelected)
+        #self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
+        #self.runShortcut.activated.connect(self.enteredSelected)
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
         self.copyShortcut.activated.connect(self.copy)
@@ -135,10 +128,14 @@ class EditorOutput(QsciScintilla):
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):
-        txtInit = QCoreApplication.translate("PythonConsole",
-                                             "## To access Quantum GIS environment from this console\n"
-                                             "## use iface object (instance of QgisInterface class).\n"
-                                             "## Type help(iface) for more info and list of methods.\n\n")
+#        txtInit = QCoreApplication.translate("PythonConsole",
+#                                             "## To access Quantum GIS environment from this console\n"
+#                                             "## use iface object (instance of QgisInterface class).\n"
+#                                             "## Type help(iface) for more info and list of methods.\n\n")
+#        initText = self.setText(txtInit)
+        txtInit = QCoreApplication.translate("PythonConsole", 
+                                             "Python %1 on %2\n"
+                                             "## Type help(iface) for more info and list of methods.\n").arg(sys.version,  socket.gethostname())
         initText = self.setText(txtInit)
 
     def refreshLexerProperties(self):
@@ -165,26 +162,28 @@ class EditorOutput(QsciScintilla):
 
         self.setLexer(self.lexer)
 
-    def getTextFromEditor(self):
-        text = self.text()
-        textList = text.split("\n")
-        return textList
+#    def getTextFromEditor(self):
+#        text = self.text()
+#        textList = text.split("\n")
+#        return textList
 
     def clearConsole(self):
         #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
         self.insertInitText()
-        self.edit.setFocus()
+        self.shell.setFocus()
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
-        iconPastebin = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
                                      "Hide/Show Toolbar",
                                      self.hideToolBar)
+        menu.addSeparator()
+        showEditorAction = menu.addAction("Show Editor",
+                                     self.showEditor)
         menu.addSeparator()
         runAction = menu.addAction(iconRun,
                                    "Enter Selected",
@@ -197,9 +196,6 @@ class EditorOutput(QsciScintilla):
         copyAction = menu.addAction("Copy",
                                     self.copy,
                                     QKeySequence.Copy)
-        pastebinAction = menu.addAction(iconPastebin,
-                                        "Share on codepad",
-                                        self.pastebin)
         menu.addSeparator()
         selectAllAction = menu.addAction("Select All",
                                          self.selectAll,
@@ -207,21 +203,31 @@ class EditorOutput(QsciScintilla):
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
-        pastebinAction.setEnabled(False)
         selectAllAction.setEnabled(False)
+        showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
-            pastebinAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
+        if self.parent.tabEditorWidget.isVisible():
+            showEditorAction.setEnabled(False)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def hideToolBar(self):
         tB = self.parent.toolBar
         tB.hide() if tB.isVisible() else tB.show()
-        self.edit.setFocus()
+        self.shell.setFocus()
+        
+    def showEditor(self):
+        Ed = self.parent.tabEditorWidget
+        if not Ed.isVisible(): 
+            Ed.show()
+            self.parent.openFileButton.setEnabled(True)
+            self.parent.saveFileButton.setEnabled(True)
+            self.parent.saveAsFileButton.setEnabled(True)
+        self.shell.setFocus()
 
     def copy(self):
         """Copy text to clipboard... or keyboard interrupt"""
@@ -234,55 +240,22 @@ class EditorOutput(QsciScintilla):
 
     def enteredSelected(self):
         cmd = self.selectedText()
-        self.edit.insertFromDropPaste(cmd)
-        self.edit.entered()
+        self.shell.insertFromDropPaste(cmd)
+        self.shell.entered()
 
     def keyPressEvent(self, e):
         # empty text indicates possible shortcut key sequence so stay in output
         txt = e.text()
         if txt.length() and txt >= " ":
-            self.edit.append(txt)
-            self.edit.move_cursor_to_end()
-            self.edit.setFocus()
+            self.shell.append(txt)
+            self.shell.move_cursor_to_end()
+            self.shell.setFocus()
             e.ignore()
         else:
             # possible shortcut key sequence, accept it
             e.accept()
 
-    def pastebin(self):
-        import urllib2, urllib
-        listText = self.selectedText().split('\n')
-        getCmd = []
-        for strLine in listText:
-            if strLine != "":
-            #if s[0:3] in (">>>", "..."):
-                # filter for special command (_save,_clear) and comment
-                if strLine[4] != "_" and strLine[:2] != "##":
-                    strLine.replace(">>> ", "").replace("... ", "")
-                    getCmd.append(unicode(strLine))
-        pasteText= u"\n".join(getCmd)
-        url = 'http://codepad.org'
-        values = {'lang' : 'Python',
-                  'code' : pasteText,
-                  'submit':'Submit'}
-        try:
-            response = urllib2.urlopen(url, urllib.urlencode(values))
-            url = response.read()
-            for href in url.split("</a>"):
-                if "Link:" in href:
-                    ind=href.index('Link:')
-                    found = href[ind+5:]
-                    for i in found.split('">'):
-                        if '<a href=' in i:
-                             link = i.replace('<a href="',"").strip()
-            if link:
-                QApplication.clipboard().setText(link)
-                msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-                self.parent.callWidgetMessageBar(msgText)
-        except urllib2.URLError, e:
-            msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.callWidgetMessageBar(msgText + str(e.args))
-
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
+        self.infoBar.pushMessage('Console', text, QgsMessageBar.INFO, timeout)
+        

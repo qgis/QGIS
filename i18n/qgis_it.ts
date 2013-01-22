@@ -7313,15 +7313,23 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation type="obsolete">Errore di connessione: </translation>
     </message>
     <message>
-        <source>## To access Quantum GIS environment from this console
-## use iface object (instance of QgisInterface class).
+        <source>Click on button to restore all tabs from last session.</source>
+        <translation>Clicca sul bottone per riaprire le schede della sessione precedente.</translation>
+    </message>
+    <message>
+        <source>Restore tabs</source>
+        <translation>Riprisitna schede</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <source>Python %1 on %2
 ## Type help(iface) for more info and list of methods.
-
 </source>
-        <translation type="obsolete">## Per accedere all&apos;ambiente Quantum GIS da questa console
-## usa l&apos;oggetto iface (istanza della classe QgisInterface). 
+        <translation>Python %1 on %2
 ## Digita help(iface) per ottenere più informazioni.
-
 </translation>
     </message>
 </context>
