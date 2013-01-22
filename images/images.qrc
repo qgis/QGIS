@@ -352,6 +352,7 @@
         <file>themes/gis/mActionNewComposer.png</file>
         <file>themes/gis/mActionNewVectorLayer.png</file>
         <file>themes/gis/mActionNodeTool.png</file>
+        <file>themes/gis/mActionOffsetCurve.png</file>
         <file>themes/gis/mActionOpenTable.png</file>
         <file>themes/gis/mActionPan.png</file>
         <file>themes/gis/mActionPanToSelected.png</file>
@@ -364,6 +365,7 @@
         <file>themes/gis/mActionReshape.png</file>
         <file>themes/gis/mActionRollbackAllEdits.svg</file>
         <file>themes/gis/mActionRollbackEdits.svg</file>
+        <file>themes/gis/mActionRotateFeature.png</file>
         <file>themes/gis/mActionRotateLabel.png</file>
         <file>themes/gis/mActionRotateLabel.svg</file>
         <file>themes/gis/mActionSaveAsPDF.png</file>
