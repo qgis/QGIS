@@ -84,6 +84,8 @@ bool QgsWFSFeatureIterator::rewind()
   }
 
   mFeatureIterator = mSelectedFeatures.constBegin();
+
+  return true;
 }
 
 bool QgsWFSFeatureIterator::close()
