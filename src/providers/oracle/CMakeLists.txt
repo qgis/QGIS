@@ -11,6 +11,7 @@ SET(ORACLE_SRCS
   qgsoraclenewconnection.cpp
   qgsoracletablemodel.cpp
   qgsoraclecolumntypethread.cpp
+  qgsoraclefeatureiterator.cpp
 )
 
 SET(ORACLE_MOC_HDRS

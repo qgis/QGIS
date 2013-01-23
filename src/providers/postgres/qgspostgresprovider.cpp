@@ -1601,7 +1601,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       if ( i == flist.size() )
       {
-        if ( attributevec[idx] == defVal )
+        if ( v == defVal )
         {
           if ( defVal.isNull() )
           {
