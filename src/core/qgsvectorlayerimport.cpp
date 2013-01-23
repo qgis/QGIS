@@ -28,8 +28,6 @@
 
 #include <QProgressDialog>
 
-#include <QProgressDialog>
-
 #define FEATURE_BUFFER_SIZE 200
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
@@ -223,6 +221,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     // This means we shouldn't transform, use source CRS as output (if defined)
     outputCRS = &layer->crs();
   }
+
 
   bool overwrite = false;
   bool forceSinglePartGeom = false;

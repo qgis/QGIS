@@ -32,9 +32,7 @@
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
-
-#include "qgsdatasourceuri.h"
-#include "ocispatial/wkbptr.h"
+class QgsOracleFeatureIterator;
 
 /**
   \class QgsOracleProvider
@@ -53,7 +51,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -84,38 +82,6 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * its projection an empty srs will be returned
      */
     virtual QgsCoordinateReferenceSystem crs();
-
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
-    /**
-      * Gets the feature at the given feature ID.
-      * @param featureId id of the feature
-      * @param feature feature which will receive the data
-      * @param fetchGeoemtry if true, geometry will be fetched from the provider
-      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-      * @return True when feature was found, otherwise false
-      */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -170,7 +136,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFieldMap &fields() const;
+    const QgsFields &fields() const;
 
     /**
      * Return a short comment for the data that this provider is
@@ -198,8 +164,6 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**Returns true if layer is valid
     */
     bool isValid();
-
-    QgsAttributeList attributeIndexes();
 
     QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
 
@@ -289,18 +253,14 @@ class QgsOracleProvider : public QgsVectorDataProvider
     */
     QString description() const;
 
+    /**
+     * Query the provider for features specified in request.
+     */
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+
     static bool exec( QSqlQuery &qry, QString sql );
 
   private:
-    bool openQuery( QString alias,
-                    const QgsAttributeList &fetchAttributes,
-                    bool fetchGeometry,
-                    QString whereClause );
-
-    bool getFeature( bool fetchGeometry,
-                     QgsFeature &feature,
-                     const QgsAttributeList &fetchAttributes );
-
     QString whereClause( QgsFeatureId featureId ) const;
     QString pkParamWhereClause() const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
@@ -318,8 +278,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /** convert a QgsField to work with Oracle */
     static bool convertField( QgsField &field );
 
-    QgsFieldMap mAttributeFields;
-    QMap<int, QVariant> mDefaultValues;
+    QgsFields mAttributeFields;  //! List of fields
+    QVariantList mDefaultValues; //! List of default values
     QString mDataComment;
 
     //! Data source URI struct for this layer
@@ -427,12 +387,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
     QgsFeatureId mFidCounter;                //! next feature id if map is used
     QgsOracleConn *mConnection;
-    QSqlQuery mQry;
-    bool mFetchGeomRequested;                //! geometry was requested
-    bool mIntersectResult;                   //! need to intersect the results (Oracle Locator only)
-    bool mHasSpatial;                        //! Oracle Spatial is installed
+
     QString mSpatialIndex;                   //! name of spatial index of geometry column
-    QgsRectangle mIntersectRect;             //! rectangle to intersect with (if any)
+    bool mHasSpatial;                        //! Oracle Spatial is installed
+
+    friend QgsOracleFeatureIterator;
 };
 
 #endif
