@@ -107,6 +107,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
+	-D WITH_ORACLE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
@@ -281,6 +282,12 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
+	"apps/%PACKAGENAME%/plugins/oracleprovider.dll" ^
+        apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
+	>>%LOG% 2>&1
+if errorlevel 1 goto error
+
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
@@ -301,6 +308,7 @@ if exist %PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-serv
 if exist %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2
+if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1

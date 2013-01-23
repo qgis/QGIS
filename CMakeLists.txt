@@ -70,6 +70,11 @@ IF (WITH_SPATIALITE)
   ENDIF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_SPATIALITE)
 
+SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+IF(WITH_ORACLE)
+  SET(HAVE_ORACLE TRUE)
+ENDIF(WITH_ORACLE)
+
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 IF (WITH_BINDINGS)

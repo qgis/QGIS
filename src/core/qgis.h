@@ -67,24 +67,47 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
+    static WkbType singleType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBMultiPoint:         return WKBPoint;
+        case WKBMultiLineString:    return WKBLineString;
+        case WKBMultiPolygon:       return WKBPolygon;
+        case WKBMultiPoint25D:      return WKBPoint25D;
+        case WKBMultiLineString25D: return WKBLineString25D;
+        case WKBMultiPolygon25D:    return WKBPolygon25D;
+        default:                    return type;
+      }
+    }
+
     static WkbType flatType( WkbType type )
     {
       switch ( type )
       {
-        case WKBMultiPoint:
-          return WKBPoint;
-        case WKBMultiLineString:
-          return WKBLineString;
-        case WKBMultiPolygon:
-          return WKBPolygon;
-        case WKBMultiPoint25D:
-          return WKBPoint25D;
-        case WKBMultiLineString25D:
-          return WKBLineString25D;
-        case WKBMultiPolygon25D:
-          return WKBPolygon25D;
-        default:
-          return type;
+        case WKBPoint25D:           return WKBPoint;
+        case WKBLineString25D:      return WKBLineString;
+        case WKBPolygon25D:         return WKBPolygon;
+        case WKBMultiPoint25D:      return WKBMultiPoint;
+        case WKBMultiLineString25D: return WKBMultiLineString;
+        case WKBMultiPolygon25D:    return WKBMultiPolygon;
+        default:                    return type;
+      }
+    }
+
+    static int wkbDimensions( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBUnknown:            return 0;
+        case WKBNoGeometry:         return 0;
+        case WKBPoint25D:           return 3;
+        case WKBLineString25D:      return 3;
+        case WKBPolygon25D:         return 3;
+        case WKBMultiPoint25D:      return 3;
+        case WKBMultiLineString25D: return 3;
+        case WKBMultiPolygon25D:    return 3;
+        default:                    return 2;
       }
     }
 
@@ -97,13 +120,41 @@ class CORE_EXPORT QGis
       NoGeometry
     };
 
-    // String representation of geometry types (set in qgis.cpp)
-    //! @note not available in python bindings
-    static const char *qgisVectorGeometryType[];
+    //! description strings for geometry types
+    static const char *vectorGeometryType( GeometryType type )
+    {
+      switch ( type )
+      {
+        case Point:           return "Point";
+        case Line:            return "Line";
+        case Polygon:         return "Polygon";
+        case UnknownGeometry: return "Unknown geometry";
+        case NoGeometry:      return "No geometry";
+        default:              return "Invalid type";
+      }
+    }
 
     //! description strings for feature types
-    //! @note not available in python bindings
-    static const char *qgisFeatureTypes[];
+    static const char *featureType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBUnknown:            return "WKBUnknown";
+        case WKBPoint:              return "WKBPoint";
+        case WKBLineString:         return "WKBLineString";
+        case WKBPolygon:            return "WKBPolygon";
+        case WKBMultiPoint:         return "WKBMultiLineString";
+        case WKBMultiPolygon:       return "WKBMultiPolygon";
+        case WKBNoGeometry:         return "WKBNoGeometry";
+        case WKBPoint25D:           return "WKBPoint25D";
+        case WKBLineString25D:      return "WKBLineString25D";
+        case WKBPolygon25D:         return "WKBPolygon25D";
+        case WKBMultiPoint25D:      return "WKBMultiPoint25D";
+        case WKBMultiLineString25D: return "WKBMultiLineString25D";
+        case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
+        default:                    return "invalid wkbtype";
+      }
+    }
 
     /** Raster data types.
      *  This is modified and extended copy of GDALDataType.

@@ -29,6 +29,11 @@ if ! type -p colordiff >/dev/null; then
 	}
 fi
 
+if [ "$1" = "-c" ]; then
+	echo "Cleaning..."
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+fi
+
 set -e
 
 # determine changed files

@@ -16,7 +16,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -71,6 +71,10 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
+ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
+	CMAKE_OPTS += -D WITH_ORACLE=TRUE
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
@@ -107,6 +111,7 @@ endif
 define gentemplate
 $(2): $(1)
 	sed \
+		-e "s/{DEB_BUILD_GNU_TYPE}/$(DEB_BUILD_GNU_TYPE)/g" \
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@

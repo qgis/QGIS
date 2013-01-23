@@ -24,6 +24,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
+#include "qgsdatasourceuri.h"
+
+#include <QProgressDialog>
 
 #define FEATURE_BUFFER_SIZE 200
 
@@ -45,8 +48,10 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     QGis::WkbType geometryType,
     const QgsCoordinateReferenceSystem* crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options,
+    QProgressDialog *progress )
     : mErrorCount( 0 )
+    , mProgress( progress )
 {
   mProvider = NULL;
 
@@ -83,7 +88,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   QgsDebugMsg( "Created empty layer" );
 
   QgsVectorDataProvider *vectorProvider = ( QgsVectorDataProvider* ) pReg->provider( providerKey, uri );
-  if ( !vectorProvider || !vectorProvider->isValid() )
+  if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
@@ -173,6 +178,17 @@ bool QgsVectorLayerImport::flushBuffer()
   return true;
 }
 
+bool QgsVectorLayerImport::createSpatialIndex()
+{
+  if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
+  {
+    return mProvider->createSpatialIndex();
+  }
+  else
+  {
+    return true;
+  }
+}
 
 QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
@@ -182,7 +198,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    bool onlySelected,
                                    QString *errorMessage,
                                    bool skipAttributeCreation,
-                                   QMap<QString, QVariant> *options )
+                                   QMap<QString, QVariant> *options,
+                                   QProgressDialog *progress )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
@@ -204,6 +221,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     // This means we shouldn't transform, use source CRS as output (if defined)
     outputCRS = &layer->crs();
   }
+
 
   bool overwrite = false;
   bool forceSinglePartGeom = false;
@@ -255,7 +273,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -298,9 +316,23 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     *errorMessage = QObject::tr( "Feature write errors:" );
   }
 
+  if ( progress )
+  {
+    progress->setRange( 0, layer->featureCount() );
+  }
+
   // write all features
   while ( layer->nextFeature( fet ) )
   {
+    if ( progress && progress->wasCanceled() )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage += "\n" + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+      }
+      break;
+    }
+
     if ( writer->errorCount() > 1000 )
     {
       if ( errorMessage )
@@ -348,6 +380,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       }
     }
     n++;
+
+    if ( progress )
+    {
+      progress->setValue( n );
+    }
   }
 
   // flush the buffer to be sure that all features are written
@@ -359,6 +396,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
   int errors = writer->errorCount();
+
+  if ( !writer->createSpatialIndex() )
+  {
+    if ( writer->hasError() && errorMessage )
+    {
+      *errorMessage += "\n" + writer->errorMessage();
+    }
+  }
 
   delete writer;
 

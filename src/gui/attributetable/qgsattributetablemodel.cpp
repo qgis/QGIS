@@ -138,7 +138,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
 {
-  QgsDebugMsgLevel( QString( "feature %1 added (%2, rows %3, ids %4)" ).arg( fid ).arg( newOperation ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
+  QgsDebugMsgLevel( QString( "feature %1 added (%2, rows %3, ids %4)" ).arg( fid ).arg( newOperation ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
 
   int n = mRowIdMap.size();
   if ( newOperation )
@@ -655,6 +655,7 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
+  f.initAttributes( mAttributes.size() );
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
