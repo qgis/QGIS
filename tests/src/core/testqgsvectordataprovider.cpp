@@ -218,7 +218,7 @@ void TestQgsVectorDataProvider::featureAtId()
 
   QVERIFY( fi.nextFeature( feature ) );
   QVERIFY( feature.isValid() );
-  qDebug( "FID: %d", feature.id() );
+  qDebug( "FID: %lld", feature.id() );
   QVERIFY( feature.id() == 4 );
 
   // further invocations are not valid

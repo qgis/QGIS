@@ -655,6 +655,7 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
+  f.initAttributes( mAttributes.size() );
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
