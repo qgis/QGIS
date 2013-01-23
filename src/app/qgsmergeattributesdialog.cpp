@@ -84,6 +84,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   //create combo boxes and insert attribute names
   const QgsFields& fields = mVectorLayer->pendingFields();
+  QgsAttributeList pkAttrList = mVectorLayer->pendingPkAttributesList();
 
   int col = 0;
   for ( int idx = 0; idx < fields.count(); ++idx )
@@ -94,7 +95,12 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
     mTableWidget->setColumnCount( col + 1 );
 
-    mTableWidget->setCellWidget( 0, col, createMergeComboBox( fields[idx].type() ) );
+    QComboBox *cb = createMergeComboBox( fields[idx].type() );
+    if ( pkAttrList.contains( idx ) )
+    {
+      cb->setCurrentIndex( cb->findText( tr( "Skip attribute" ) ) );
+    }
+    mTableWidget->setCellWidget( 0, col, cb );
 
     QTableWidgetItem *item = new QTableWidgetItem( fields[idx].name() );
     item->setData( Qt::UserRole, idx );
@@ -133,14 +139,14 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   }
 }
 
-QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
+QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
 {
-  QComboBox* newComboBox = new QComboBox();
+  QComboBox *newComboBox = new QComboBox();
   //add items for feature
   QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
   for ( ; f_it != mFeatureList.constEnd(); ++f_it )
   {
-    newComboBox->addItem( tr( "feature %1" ).arg( f_it->id() ) );
+    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ) );
   }
 
   if ( columnType == QVariant::Double || columnType == QVariant::Int )
@@ -181,7 +187,7 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
 void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
   Q_UNUSED( text );
-  QComboBox* senderComboBox = qobject_cast<QComboBox *>( sender() );
+  QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {
     return;

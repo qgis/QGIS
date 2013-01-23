@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.parameters.ParameterCrs import ParameterCrs
-from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,12 +23,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
-
+from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -60,6 +57,7 @@ class ModelerParametersDialog(QtGui.QDialog):
 
     ENTER_NAME = "[Enter name if this is a final result]"
     NOT_SELECTED = "[Not selected]"
+    USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
 
     def __init__(self, alg, model, algIndex = None):
         QtGui.QDialog.__init__(self)
@@ -414,9 +412,12 @@ class ModelerParametersDialog(QtGui.QDialog):
             item = QtGui.QComboBox()
             item.setEditable(True)
             extents = self.getExtents()
+            if self.canUseAutoExtent():
+                item.addItem(self.USE_MIN_COVERING_EXTENT, None)
             for ex in extents:
                 item.addItem(ex.name(), ex)
-            item.setEditText(str(param.default))
+            if not self.canUseAutoExtent():
+                item.setEditText(str(param.default))
         elif isinstance(param, ParameterFile):
             item = QtGui.QComboBox()
             item.setEditable(True)
@@ -430,6 +431,13 @@ class ModelerParametersDialog(QtGui.QDialog):
             except:
                 pass
         return item
+
+    def canUseAutoExtent(self):
+        for param in self.alg.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector)):
+                return True
+            if isinstance(param, ParameterMultipleInput):
+                return True
 
     def setTableContent(self):
         params = self.alg.parameters
@@ -549,7 +557,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 return False
         for output in outputs:
             if output.hidden:
-               self.outputs[output.name] = None
+                self.outputs[output.name] = None
             else:
                 name= unicode(self.valueItems[output.name].text())
                 if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
@@ -570,12 +578,6 @@ class ModelerParametersDialog(QtGui.QDialog):
         else:
             value = widget.itemData(widget.currentIndex()).toPyObject()
             self.params[param.name] = value
-        return True
-
-        if widget.currentIndex() < 0:
-            return False
-        value = widget.itemData(widget.currentIndex()).toPyObject()
-        self.params[param.name] = value
         return True
 
     def setParamBooleanValue(self, param, widget):

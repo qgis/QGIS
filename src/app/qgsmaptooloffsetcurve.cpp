@@ -43,10 +43,16 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
   mGeometryModified = false;
   mForceCopy = false;
 
+  if ( !mCanvas )
+  {
+    return;
+  }
+
   //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
-  if ( !mCanvas || !layer )
+  if ( !layer )
   {
+    notifyNotVectorLayer();
     return;
   }
 

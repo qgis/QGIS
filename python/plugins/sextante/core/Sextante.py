@@ -40,15 +40,12 @@ from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
-from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
+from sextante.algs.QGISAlgorithmProvider import QGISAlgorithmProvider
 from sextante.parameters.ParameterSelection import ParameterSelection
-from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 from sextante.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-#from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
@@ -116,12 +113,9 @@ class Sextante:
     @staticmethod
     def initialize():
         #add the basic providers
-        Sextante.addProvider(SextanteAlgorithmProvider())
-        Sextante.addProvider(MMQGISXAlgorithmProvider())
-        Sextante.addProvider(FToolsAlgorithmProvider())
+        Sextante.addProvider(QGISAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalOgrAlgorithmProvider())
-        #Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
@@ -263,7 +257,7 @@ class Sextante:
             alghelp(algOrName)
             return
 
-        alg = alg.getCopy()#copy.deepcopy(alg)
+        alg = alg.getCopy()
         if isinstance(args, dict):
             # set params by name
             for name, value in args.items():
@@ -312,7 +306,7 @@ class Sextante:
             def finish():
                 QApplication.restoreOverrideCursor()
                 if onFinish is not None:
-                    onFinish(alg)
+                    onFinish(alg, SilentProgress())
                 progress.close()
             def error(msg):
                 QApplication.restoreOverrideCursor()
@@ -331,9 +325,10 @@ class Sextante:
             algEx.start()
             algEx.wait()
         else:
-            ret = UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
+            progress = SilentProgress()
+            ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
             if onFinish is not None and ret:
-                onFinish(alg)
+                onFinish(alg, progress)
             QApplication.restoreOverrideCursor()
         return alg
 

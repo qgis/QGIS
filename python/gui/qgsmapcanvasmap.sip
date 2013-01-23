@@ -13,18 +13,18 @@ class QgsMapCanvasMap : QGraphicsRectItem
 %End
 
 %ConvertToSubClassCode
-	if (dynamic_cast<QgsMapCanvasMap*>(sipCpp) != NULL)
-	{
-		sipClass = sipClass_QgsMapCanvasMap;
-	}
-  else 
+    if (dynamic_cast<QgsMapCanvasMap*>(sipCpp) != NULL)
+    {
+        sipClass = sipClass_QgsMapCanvasMap;
+    }
+  else
   {
     sipClass = NULL;
   }
 %End
 
   public:
-    
+
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas* canvas /TransferThis/ );
 
@@ -41,9 +41,6 @@ class QgsMapCanvasMap : QGraphicsRectItem
     void setBackgroundColor( const QColor& color );
 
     void setPanningOffset( const QPoint& point );
-
-    //! @deprecated Please use paintDevice() function which is also save in case QImage is used
-    QPixmap& pixmap() /Deprecated/;
 
     QPaintDevice& paintDevice();
 

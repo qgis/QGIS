@@ -190,7 +190,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
   mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
 
   connect( mToggleEditingButton, SIGNAL( clicked() ), this, SIGNAL( toggleEditing() ) );
@@ -751,7 +751,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
   if ( item->data( 0, Qt::UserRole ) == "field" )
   {
-    int idx = *mLayer->dataProvider()->fieldNameMap().find( item->text( 0 ) );
+    int idx = *( mLayer->dataProvider()->fieldNameMap() ).find( item->text( 0 ) );
     widgetDef = new QgsAttributeEditorField( item->text( 0 ), idx, parent );
   }
   else

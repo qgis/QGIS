@@ -46,7 +46,7 @@ class QgsSvgCache : QObject
     ~QgsSvgCache();
 
     const QImage& svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor );
+                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
     const QPicture& svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 

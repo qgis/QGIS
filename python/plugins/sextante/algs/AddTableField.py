@@ -32,7 +32,6 @@ from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.QGisLayers import QGisLayers
-import os
 from PyQt4 import QtGui
 
 
@@ -45,12 +44,14 @@ class AddTableField(GeoAlgorithm):
     TYPE_NAMES = ["Integer", "Float", "String"]
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Add field to attributes table"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
@@ -67,12 +68,12 @@ class AddTableField(GeoAlgorithm):
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(vlayer)
+        for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
             nElement += 1
             inGeom = inFeat.geometry()

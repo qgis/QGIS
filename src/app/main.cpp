@@ -200,8 +200,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(linux) && ! defined(ANDROID)
-      fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+#if defined(linux) && !defined(ANDROID)
+      write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
@@ -568,6 +568,60 @@ int main( int argc, char *argv[] )
 #endif
 
   QSettings mySettings;
+
+  // custom environment variables
+  QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
+  bool useCustomVars = mySettings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  if ( useCustomVars )
+  {
+    QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
+    if ( !customVarsList.isEmpty() )
+    {
+      foreach ( const QString &varStr, customVarsList )
+      {
+        int pos = varStr.indexOf( QLatin1Char( '|' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarApply = varStr.left( pos );
+        QString varStrNameValue = varStr.mid( pos + 1 );
+        pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarName = varStrNameValue.left( pos );
+        QString envVarValue = varStrNameValue.mid( pos + 1 );
+
+        if ( systemEnvVars.contains( envVarName ) )
+        {
+          if ( envVarApply == "prepend" )
+          {
+            envVarValue += systemEnvVars.value( envVarName );
+          }
+          else if ( envVarApply == "append" )
+          {
+            envVarValue = systemEnvVars.value( envVarName ) + envVarValue;
+          }
+        }
+
+        if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset" )
+        {
+#ifdef Q_WS_WIN
+          putenv( envVarName.toUtf8().constData() );
+#else
+          unsetenv( envVarName.toUtf8().constData() );
+#endif
+        }
+        else
+        {
+#ifdef Q_WS_WIN
+	  if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
+            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+#else
+          setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined" ? 0 : 1 );
+#endif
+        }
+      }
+    }
+  }
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.

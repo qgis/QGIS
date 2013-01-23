@@ -17,18 +17,12 @@ class QgsDistanceArea
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
-    void setProjectionsEnabled( bool flag ) /Deprecated/;
 
     //! returns projections enabled flag
     bool ellipsoidalEnabled() const;
-    bool hasCrsTransformEnabled() /Deprecated/;
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
-
-    //! sets source spatial reference system (by EpsgCrsId)
-    // @deprecated use setSourceAuthid()
-    void setSourceEpsgCrsId( long epsgId ) /Deprecated/;
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );

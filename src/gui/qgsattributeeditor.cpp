@@ -26,6 +26,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgslogger.h>
 
+#include <QScrollArea>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -416,14 +417,23 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::CheckBox:
     {
       QCheckBox *cb = 0;
+      QGroupBox *gb = 0;
       if ( editor )
+      {
+        gb = qobject_cast<QGroupBox *>( editor );
         cb = qobject_cast<QCheckBox*>( editor );
+      }
       else
         cb = new QCheckBox( parent );
 
       if ( cb )
       {
         myWidget = cb;
+        break;
+      }
+      else if ( gb )
+      {
+        myWidget = gb;
         break;
       }
     }
@@ -496,6 +506,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
       if ( cb )
       {
+        if ( cb->isEditable() )
+          cb->setValidator( new QgsFieldValidator( cb, field ) );
         myWidget = cb;
       }
 
@@ -516,19 +528,34 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           relay = new QgsStringRelay( myWidget );
         }
 
+        const char* rSlot = SLOT( changeText( QString ) );
+        const char* rSig = SIGNAL( textChanged( QString ) );
+        const char* wSlot = SLOT( setText( QString ) );
+        const char* wSig = SIGNAL( textChanged( QString ) );
+        if ( te || pte )
+        {
+          rSlot = SLOT( changeText() );
+          wSig = SIGNAL( textChanged() );
+        }
+        if ( pte )
+        {
+          wSlot = SLOT( setPlainText( QString ) );
+        }
         if ( cb && cb->isEditable() )
         {
-          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setEditText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( editTextChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
+          wSlot = SLOT( setEditText( QString ) );
+          wSig = SIGNAL( editTextChanged( QString ) );
         }
-        else
-        {
-          synchronized =  connect( relay, SIGNAL( textChanged( QString ) ), myWidget, SLOT( setText( QString ) ) );
-          synchronized &= connect( myWidget, SIGNAL( textChanged( QString ) ), relay, SLOT( changeText( QString ) ) );
-        }
+
+        synchronized =  connect( relay, rSig, myWidget, wSlot );
+        synchronized &= connect( myWidget, wSig, relay, rSlot );
+
+        // store list of proxies in relay
+        relay->appendProxy( myWidget );
 
         if ( !cb || cb->isEditable() )
         {
+          myWidget->setProperty( "QgisAttrEditSlot", QVariant( QByteArray( wSlot ) ) );
           myWidget->setProperty( "QgisAttrEditProxy", QVariant( QMetaType::QObjectStar, &relay ) );
         }
       }
@@ -542,6 +569,14 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        myWidget = cw;
+        break;
+      }
+
+
       QPushButton *pb = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
@@ -718,14 +753,23 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     text = ckb->isChecked() ? states.first : states.second;
   }
 
+  QGroupBox *gb = qobject_cast<QGroupBox *>( widget );
+  if ( gb )
+  {
+    QPair<QString, QString> states = vl->checkedState( idx );
+    text = gb->isChecked() ? states.first : states.second;
+  }
+
   QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( widget );
   if ( cw )
   {
-    text = cw->selectedDate().toString();
+    text = cw->selectedDate().toString( Qt::ISODate );
   }
 
   le = widget->findChild<QLineEdit *>();
-  if ( le )
+  // QCalendarWidget and QGroupBox have an internal QLineEdit which returns the year
+  // part of the date so we need to skip this if we have a QCalendarWidget
+  if ( !cw && !gb && le )
   {
     text = le->text();
   }
@@ -870,6 +914,14 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
     case QgsVectorLayer::CheckBox:
     {
+      QGroupBox *gb = qobject_cast<QGroupBox *>( editor );
+      if ( gb )
+      {
+        QPair<QString, QString> states = vl->checkedState( idx );
+        gb->setChecked( value == states.first );
+        break;
+      }
+
       QCheckBox *cb = qobject_cast<QCheckBox *>( editor );
       if ( cb )
       {
@@ -888,9 +940,10 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
       QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
-      if ( !le && !te && !pte )
+      if ( !le && ! cb && !te && !pte )
         return false;
 
       QString text;
@@ -910,6 +963,8 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       if ( le )
         le->setText( text );
+      if ( cb && cb->isEditable() )
+        cb->setEditText( text );
       if ( te )
         te->setHtml( text );
       if ( pte )
@@ -920,6 +975,13 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
+      QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
+      if ( cw )
+      {
+        cw->setSelectedDate( value.toDate() );
+        break;
+      }
+
       QLineEdit* le = qobject_cast<QLineEdit*>( editor );
       if ( !le )
       {
@@ -967,13 +1029,23 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         QGroupBox* groupBox = new QGroupBox( parent );
         groupBox->setTitle( container->name() );
         myContainer = groupBox;
+        newWidget = myContainer;
       }
       else
       {
-        myContainer = new QWidget( parent );
+        QScrollArea *scrollArea = new QScrollArea( parent );
+
+        myContainer = new QWidget( scrollArea );
+
+        scrollArea->setWidget( myContainer );
+        scrollArea->setWidgetResizable( true );
+        scrollArea->setFrameShape( QFrame::NoFrame );
+
+        newWidget = scrollArea;
       }
 
       QGridLayout* gbLayout = new QGridLayout( myContainer );
+      myContainer->setLayout( gbLayout );
 
       int index = 0;
 
@@ -990,9 +1062,15 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
         }
         else
         {
+          const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( childDef );
+
+          //show attribute alias if available
+          QString myFieldName = vl->attributeDisplayName( fieldDef->idx() );
           QLabel * mypLabel = new QLabel( myContainer );
           gbLayout->addWidget( mypLabel, index, 0 );
-          mypLabel->setText( childDef->name() );
+          mypLabel->setText( myFieldName );
+
+          // add editor widget
           gbLayout->addWidget( editor, index, 1 );
         }
 
@@ -1000,7 +1078,6 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
       }
       gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index , 0 );
 
-      newWidget = myContainer;
       break;
     }
 
@@ -1010,4 +1087,42 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
   }
 
   return newWidget;
+}
+
+void QgsStringRelay::changeText()
+{
+  QObject* sObj = QObject::sender();
+  QTextEdit *te = qobject_cast<QTextEdit *>( sObj );
+  QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( sObj );
+
+  if ( te )
+    changeText( te->toPlainText() );
+  if ( pte )
+    changeText( pte->toPlainText() );
+}
+
+void QgsStringRelay::changeText( QString str )
+{
+  QObject* sObj = QObject::sender();
+  const char* sSlot = sObj->property( "QgisAttrEditSlot" ).toByteArray().constData();
+
+  // disconnect widget being edited from relay's signal
+  disconnect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
+
+  // block all proxies' signals
+  QList<bool> oldBlockSigs;
+  for ( int i = 0; i < mProxyList.size(); ++i )
+  {
+    oldBlockSigs << ( mProxyList[i] )->blockSignals( true );
+  }
+
+  // update all proxies not being edited without creating cyclical signals/slots
+  emit textChanged( str );
+
+  // reconnect widget being edited and reset blockSignals state
+  connect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
+  for ( int i = 0; i < mProxyList.size(); ++i )
+  {
+    ( mProxyList[i] )->blockSignals( oldBlockSigs[i] );
+  }
 }

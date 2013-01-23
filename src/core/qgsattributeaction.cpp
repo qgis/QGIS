@@ -45,34 +45,6 @@ void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QS
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
-                                   int defaultValueIndex, void ( *executePython )( const QString & ) )
-{
-  if ( index < 0 || index >= size() )
-    return;
-
-  const QgsAction &action = at( index );
-  if ( !action.runable() )
-    return;
-
-  // A couple of extra options for running the action may be
-  // useful. For example,
-  // - run the action inside a terminal (on unix)
-  // - capture the stdout from the process and display in a dialog
-  //   box
-  //
-  // The capture stdout one is partially implemented. It just needs
-  // the UI and the code in this function to select on the
-  // action.capture() return value.
-
-  QString expandedAction = expandAction( action.action(), attributes, defaultValueIndex );
-  if ( expandedAction.isEmpty() )
-    return;
-
-  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
-  runAction( newAction, executePython );
-}
-
 void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;

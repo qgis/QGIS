@@ -128,7 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -215,7 +215,7 @@ class Dialog(QDialog, Ui_Dialog):
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         if not crs.isValid(): crs = None
         fields = { 0 : QgsField("ID", QVariant.Int) }
         check = QFile(self.shapefileName)

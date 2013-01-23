@@ -120,7 +120,7 @@ class Dialog(QDialog, Ui_Dialog):
             fileInfo = QFileInfo( self.outShape.text() )
             layerName = fileInfo.completeBaseName()
             layer = QgsVectorLayer(self.outShape.text(), layerName, "ogr")
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            QgsMapLayerRegistry.instance().addMapLayers([layer])
             self.populateLayers()
 
         self.restoreGui()

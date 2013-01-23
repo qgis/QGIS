@@ -29,7 +29,6 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-import os
 from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 
@@ -39,8 +38,10 @@ class EquivalentNumField(GeoAlgorithm):
     OUTPUT = "OUTPUT"
     FIELD = "FIELD"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD)
@@ -59,17 +60,19 @@ class EquivalentNumField(GeoAlgorithm):
         nFeat = vprovider.featureCount()
         nElement = 0
         classes = {}
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for feature in features:
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
-          atMap = inFeat.attributeMap()
+          atMap = feature.attributeMap()
           clazz = atMap[field_index].toString()
           if clazz not in classes:
               classes[clazz] = len(classes.keys())
-        while vprovider.nextFeature(inFeat):
+        features = QGisLayers.features(layer)
+        for feature in features:
           progress.setPercentage(int((100 * nElement)/nFeat))
           nElement += 1
-          inGeom = inFeat.geometry()
+          inGeom = features.geometry()
           outFeat.setGeometry( inGeom )
           atMap = inFeat.attributeMap()
           clazz = atMap[field_index].toString()
@@ -80,7 +83,7 @@ class EquivalentNumField(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Create equivalent numerical field"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterTableField(self.FIELD, "Class field", self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))

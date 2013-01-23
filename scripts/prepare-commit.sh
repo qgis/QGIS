@@ -29,6 +29,11 @@ if ! type -p colordiff >/dev/null; then
 	}
 fi
 
+if [ "$1" = "-c" ]; then
+	echo "Cleaning..."
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+fi
+
 set -e
 
 # determine changed files
@@ -68,6 +73,15 @@ for f in $MODIFIED; do
 
         *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
                 ;;
+
+	*.py)
+		perl -i.prepare -pe "s/[\t ]+$//;" $f
+		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
+			# no difference found
+			rm $f.prepare
+		fi
+		continue
+		;;
 
         *)
                 continue

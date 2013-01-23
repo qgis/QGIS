@@ -1435,12 +1435,12 @@ bool QgsPostgresProvider::getTopoLayerInfo( )
 void QgsPostgresProvider::dropOrphanedTopoGeoms( )
 {
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
-                         "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )"  )
-                .arg( quotedIdentifier(mTopoLayerInfo.topologyName) )
+                         "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )" )
+                .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
                 .arg( mTopoLayerInfo.layerId )
-                .arg( quotedIdentifier(mGeometryColumn) )
-                .arg( quotedIdentifier(mSchemaName) )
-                .arg( quotedIdentifier(mTableName) )
+                .arg( quotedIdentifier( mGeometryColumn ) )
+                .arg( quotedIdentifier( mSchemaName ) )
+                .arg( quotedIdentifier( mTableName ) )
                 ;
 
   QgsDebugMsg( "TopoGeom orphans cleanup query: " + sql );
@@ -2739,7 +2739,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
 
-  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType()] ) );
+  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );
   QgsDebugMsg( QString( "Spatial column type is %1" ).arg( QgsPostgresConn::displayStringForGeomType( mSpatialColType ) ) );
 
   return mValid;
@@ -2850,7 +2850,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     QString pk = primaryKey = "id";
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      if ( fields[fldIdx].name() == pk )
+      if ( fields[fldIdx].name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );

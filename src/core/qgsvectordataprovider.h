@@ -118,12 +118,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                                bool useIntersect = false );
 
     /**
-     * This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
-     */
-    Q_DECL_DEPRECATED virtual long updateFeatureCount();
-
-    /**
      * Get feature type.
      * @return int representing the feature type
      */
@@ -207,14 +201,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**
-     * Add new attributes
-     * @param attributes map of attributes name as key and type as value
-     * @return true in case of success and false in case of failure
-     * @deprecated
-     */
-    Q_DECL_DEPRECATED virtual bool addAttributes( const QMap<QString, QString> &attributes );
-
-    /**
      * Deletes existing attributes
      * @param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
@@ -287,6 +273,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QgsAttributeList attributeIndexes();
 
     /**
+     * Return list of indexes of fields that make up the primary key
+     * @note added in 2.0
+     */
+    virtual QgsAttributeList pkAttributeIndexes() { return QgsAttributeList(); }
+
+    /**
      * Set whether provider should also return features that don't have
      * associated geometry. false by default
      */
@@ -315,12 +307,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note added in 1.2
      */
     const QList< NativeType > &nativeTypes() const;
-
-    /**
-     * Returns the names of the supported types
-     * @deprecated use nativeTypes()
-     */
-    Q_DECL_DEPRECATED const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)

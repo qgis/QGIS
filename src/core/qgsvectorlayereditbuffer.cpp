@@ -326,6 +326,32 @@ bool QgsVectorLayerEditBuffer::commitChanges(QStringList& commitErrors)
     }
 
     //
+    // delete features
+    //
+    if ( !mDeletedFeatureIds.isEmpty() )
+    {
+      if (( cap & QgsVectorDataProvider::DeleteFeatures ) && provider->deleteFeatures( mDeletedFeatureIds ) )
+      {
+        commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
+        // TODO[MD]: we should not need this here
+        for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
+        {
+          mChangedAttributeValues.remove( *it );
+          mChangedGeometries.remove( *it );
+        }
+
+        emit committedFeaturesRemoved( L->id(), mDeletedFeatureIds );
+
+        mDeletedFeatureIds.clear();
+      }
+      else
+      {
+        commitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
+        success = false;
+      }
+    }
+
+    //
     //  add features
     //
     if ( !mAddedFeatures.isEmpty() )
@@ -383,31 +409,6 @@ bool QgsVectorLayerEditBuffer::commitChanges(QStringList& commitErrors)
     else
     {
       commitErrors << tr( "ERROR: %n geometries not changed.", "not changed geometries count", mChangedGeometries.size() );
-      success = false;
-    }
-  }
-
-  //
-  // delete features
-  //
-  if ( !mDeletedFeatureIds.isEmpty() )
-  {
-    if (( cap & QgsVectorDataProvider::DeleteFeatures ) && provider->deleteFeatures( mDeletedFeatureIds ) )
-    {
-      commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
-      for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
-      {
-        mChangedAttributeValues.remove( *it );
-        mChangedGeometries.remove( *it );
-      }
-
-      emit committedFeaturesRemoved( L->id(), mDeletedFeatureIds );
-
-      mDeletedFeatureIds.clear();
-    }
-    else
-    {
-      commitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
       success = false;
     }
   }

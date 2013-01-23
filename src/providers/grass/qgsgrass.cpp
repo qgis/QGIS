@@ -1268,7 +1268,7 @@ QString GRASS_LIB_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QStr
         opt = "vect";
         break;
       default:
-        QgsDebugMsg( "unexpected type:" + type );
+        QgsDebugMsg( QString( "unexpected type:%1" ).arg( type ) );
         return "";
     }
     arguments.append( opt + "=" +  map + "@" + mapset );

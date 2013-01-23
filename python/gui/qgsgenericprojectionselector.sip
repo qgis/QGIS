@@ -27,14 +27,9 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     long selectedCrsId();
     QString selectedAuthId();
 
-    long selectedEpsg() /Deprecated/;
-    QString selectedProj4String() /Deprecated/;
-
     void setSelectedCrsName( QString theName );
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( QString authId );
-
-    void setSelectedEpsg( long theID ) /Deprecated/;
 
     /**
      * \brief filters this dialog by the given CRSs

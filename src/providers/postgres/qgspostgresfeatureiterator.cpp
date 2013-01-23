@@ -111,7 +111,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mFeatureQueue.empty() )
   {
     QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( mCursorName );
-    QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 3 );
+    QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
     if ( P->mConnectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
       QgsMessageLog::logMessage( QObject::tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( mCursorName ).arg( P->mConnectionRO->PQerrorMessage() ), QObject::tr( "PostGIS" ) );
@@ -379,7 +379,6 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       else
       {
         feature.setGeometryAndOwnership( 0, 0 );
-        QgsMessageLog::logMessage( QObject::tr( "Couldn't get the feature geometry in binary form" ), QObject::tr( "PostGIS" ) );
       }
 
       col++;

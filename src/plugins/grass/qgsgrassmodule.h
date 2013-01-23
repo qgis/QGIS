@@ -60,7 +60,6 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
         Description(): direct( true ) {}
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
         Description( const Description & desc ) { label = desc.label; direct =  desc.direct; }
-        Description( Description & desc ) { label = desc.label; direct =  desc.direct; }
     };
 
     //! Constructor

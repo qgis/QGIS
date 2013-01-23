@@ -113,6 +113,12 @@ void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
   mLegend->setLayerVisible( ml, visible );
 }
 
+void QgsAppLegendInterface::setLayerExpanded( QgsMapLayer * ml, bool expand )
+{
+  QgsLegendLayer * item = mLegend->findLegendLayer( ml );
+  if ( item ) item->setExpanded( expand );
+}
+
 QStringList QgsAppLegendInterface::groups()
 {
   return mLegend->groups();

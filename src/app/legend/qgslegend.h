@@ -122,6 +122,11 @@ class QgsLegend : public QTreeWidget
       * @returns list of layers, else an empty list */
     QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false );
 
+    /** Returns true if layer selection has any editable vector layers
+     * @param modified return true of any of layers is also modified
+     * @note added in 1.9 */
+    bool selectedLayersEditable( bool modified = false );
+
     /*!Returns all layers loaded in QgsMapCanvas in drawing order
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> layers();
@@ -460,7 +465,7 @@ class QgsLegend : public QTreeWidget
     void collapseAll();
     /** toogle update drawing order */
     void toggleDrawingOrderUpdate();
-    void handleItemChange( QTreeWidgetItem* item, int row );
+    void handleItemChange( QTreeWidgetItem* item, int column );
     void handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );

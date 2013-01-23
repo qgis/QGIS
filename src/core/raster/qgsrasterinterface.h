@@ -96,15 +96,7 @@ class CORE_EXPORT QgsRasterInterface
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QGis::DataType srcDataType( int bandNo ) { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
-
-#if 0
-    {
-      Q_UNUSED( bandNo );
-      QgsDebugMsg( "Entered" );
-      return UnknownDataType;
-    }
-#endif
+    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
 
     /**
      * Get the extent of the interface.

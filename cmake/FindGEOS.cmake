@@ -12,7 +12,7 @@
 #    GEOS_INCLUDE_DIR
 #    GEOS_LIBRARY
 #
- 
+
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacPlistMacros.cmake)
 
 IF(WIN32)
@@ -24,21 +24,21 @@ IF(WIN32)
 
   IF (MSVC)
     FIND_PATH(GEOS_INCLUDE_DIR geos_c.h $ENV{LIB_DIR}/include $ENV{INCLUDE})
-    FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i PATHS 
+    FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i geos_c PATHS
       "$ENV{LIB_DIR}/lib"
       $ENV{LIB}
       )
     IF (GEOS_LIBRARY)
        SET (
-         GEOS_LIBRARY 
-         GEOS_LIBRARY;odbc32;odbccp32 
+         GEOS_LIBRARY
+         GEOS_LIBRARY;odbc32;odbccp32
          CACHE STRING INTERNAL)
     ENDIF (GEOS_LIBRARY)
   ENDIF (MSVC)
-  
+
 ELSE(WIN32)
 
- IF(UNIX) 
+ IF(UNIX)
 
     # try to use framework on mac
     # want clean framework path, not unix compatibility path
@@ -80,7 +80,7 @@ ELSE(WIN32)
       #MESSAGE("DBG GEOS_CONFIG ${GEOS_CONFIG}")
 
       IF (GEOS_CONFIG)
-      
+
         EXEC_PROGRAM(${GEOS_CONFIG}
             ARGS --version
             OUTPUT_VARIABLE GEOS_VERSION)
@@ -90,20 +90,20 @@ ELSE(WIN32)
         IF (GEOS_VERSION_MAJOR LESS 3)
           MESSAGE (FATAL_ERROR "GEOS version is too old (${GEOS_VERSION}). Use 3.0.0 or higher.")
         ENDIF (GEOS_VERSION_MAJOR LESS 3)
-     
+
         # set INCLUDE_DIR to prefix+include
         EXEC_PROGRAM(${GEOS_CONFIG}
             ARGS --prefix
             OUTPUT_VARIABLE GEOS_PREFIX)
 
-        FIND_PATH(GEOS_INCLUDE_DIR 
-            geos_c.h 
+        FIND_PATH(GEOS_INCLUDE_DIR
+            geos_c.h
             ${GEOS_PREFIX}/include
-            /usr/local/include 
-            /usr/include 
+            /usr/local/include
+            /usr/include
             )
 
-        ## extract link dirs for rpath  
+        ## extract link dirs for rpath
         EXEC_PROGRAM(${GEOS_CONFIG}
             ARGS --libs
             OUTPUT_VARIABLE GEOS_CONFIG_LIBS )
@@ -111,13 +111,13 @@ ELSE(WIN32)
         ## split off the link dirs (for rpath)
         ## use regular expression to match wildcard equivalent "-L*<endchar>"
         ## with <endchar> is a space or a semicolon
-        STRING(REGEX MATCHALL "[-][L]([^ ;])+" 
-            GEOS_LINK_DIRECTORIES_WITH_PREFIX 
+        STRING(REGEX MATCHALL "[-][L]([^ ;])+"
+            GEOS_LINK_DIRECTORIES_WITH_PREFIX
             "${GEOS_CONFIG_LIBS}" )
         #MESSAGE("DBG  GEOS_LINK_DIRECTORIES_WITH_PREFIX=${GEOS_LINK_DIRECTORIES_WITH_PREFIX}")
 
         ## remove prefix -L because we need the pure directory for LINK_DIRECTORIES
-      
+
         IF (GEOS_LINK_DIRECTORIES_WITH_PREFIX)
           STRING(REGEX REPLACE "[-][L]" "" GEOS_LINK_DIRECTORIES ${GEOS_LINK_DIRECTORIES_WITH_PREFIX} )
         ENDIF (GEOS_LINK_DIRECTORIES_WITH_PREFIX)
@@ -126,15 +126,15 @@ ELSE(WIN32)
         ## split off the name
         ## use regular expression to match wildcard equivalent "-l*<endchar>"
         ## with <endchar> is a space or a semicolon
-        #STRING(REGEX MATCHALL "[-][l]([^ ;])+" 
-        #  GEOS_LIB_NAME_WITH_PREFIX 
+        #STRING(REGEX MATCHALL "[-][l]([^ ;])+"
+        #  GEOS_LIB_NAME_WITH_PREFIX
         #  "${GEOS_CONFIG_LIBS}" )
         #MESSAGE("DBG  GEOS_CONFIG_LIBS=${GEOS_CONFIG_LIBS}")
         #MESSAGE("DBG  GEOS_LIB_NAME_WITH_PREFIX=${GEOS_LIB_NAME_WITH_PREFIX}")
         SET(GEOS_LIB_NAME_WITH_PREFIX -lgeos_c CACHE STRING INTERNAL)
 
         ## remove prefix -l because we need the pure name
-      
+
         IF (GEOS_LIB_NAME_WITH_PREFIX)
           STRING(REGEX REPLACE "[-][l]" "" GEOS_LIB_NAME ${GEOS_LIB_NAME_WITH_PREFIX} )
         ENDIF (GEOS_LIB_NAME_WITH_PREFIX)
@@ -151,7 +151,7 @@ ELSE(WIN32)
           SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.so CACHE STRING INTERNAL)
         ENDIF (APPLE)
         #MESSAGE("DBG  GEOS_LIBRARY=${GEOS_LIBRARY}")
-      
+
       ELSE(GEOS_CONFIG)
         MESSAGE("FindGEOS.cmake: geos-config not found. Please set it manually. GEOS_CONFIG=${GEOS_CONFIG}")
       ENDIF(GEOS_CONFIG)

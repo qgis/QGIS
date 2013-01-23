@@ -105,7 +105,7 @@ class AlgorithmProvider():
         #return ["shp"]
 
     def getSupportedOutputTableExtensions(self):
-        return ["dbf"]
+        return ["csv"]
 
     def supportsNonFileBasedOutput(self):
         return False

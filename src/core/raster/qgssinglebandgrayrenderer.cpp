@@ -38,6 +38,7 @@ QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
   renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setGradient( mGradient );
   if ( mContrastEnhancement )
   {
     renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );

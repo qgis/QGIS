@@ -102,6 +102,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mVertexMarkerOnlyForSelection( false )
     , mCache( new QgsVectorLayerCache(this) )
     , mEditBuffer( 0 )
+    , mEditorLayout( GeneratedLayout )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
@@ -1543,11 +1544,6 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   return true;
 }
 
-long QgsVectorLayer::updateFeatureCount() const
-{
-  return -1;
-}
-
 void QgsVectorLayer::updateExtents()
 {
   mValidExtent = false;
@@ -2415,7 +2411,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[geometryType()] );
+  mapLayerNode.setAttribute( "geometry", QGis::vectorGeometryType( geometryType() ) );
 
   // add provider node
   if ( mDataProvider )
@@ -2526,28 +2522,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
-
-    // tab display
-    QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
-    if ( editorLayoutNode.isNull() )
-    {
-      mEditorLayout = GeneratedLayout;
-    }
-    else
-    {
-      if ( editorLayoutNode.toElement().text() == "uifilelayout" )
-      {
-        mEditorLayout = UiFileLayout;
-      }
-      else if ( editorLayoutNode.toElement().text() == "tablayout" )
-      {
-        mEditorLayout = TabLayout;
-      }
-      else
-      {
-        mEditorLayout = GeneratedLayout;
-      }
-    }
 
     // Test if labeling is on or off
     QDomNode labelnode = node.namedItem( "label" );
@@ -2728,6 +2702,27 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+  // tab display
+  QDomNode editorLayoutNode = node.namedItem( "editorlayout" );
+  if ( editorLayoutNode.isNull() )
+  {
+    mEditorLayout = GeneratedLayout;
+  }
+  else
+  {
+    if ( editorLayoutNode.toElement().text() == "uifilelayout" )
+    {
+      mEditorLayout = UiFileLayout;
+    }
+    else if ( editorLayoutNode.toElement().text() == "tablayout" )
+    {
+      mEditorLayout = TabLayout;
+    }
+    else
+    {
+      mEditorLayout = GeneratedLayout;
+    }
+  }
 
   //Attributes excluded from WMS and WFS
   mExcludeAttributesWMS.clear();
@@ -2788,7 +2783,9 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
   }
   else if ( elem.tagName() == "attributeEditorField" )
   {
-    newElement = new QgsAttributeEditorField( elem.attribute( "name" ), elem.attribute( "idx" ).toInt(), parent );
+    QString name = elem.attribute( "name" );
+    int idx = *( dataProvider()->fieldNameMap() ).find( name );
+    newElement = new QgsAttributeEditorField( name, idx, parent );
   }
 
   return newElement;
@@ -2843,26 +2840,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
-
-    // tab display
-    QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
-    switch ( mEditorLayout )
-    {
-      case UiFileLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
-        break;
-
-      case TabLayout:
-        editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
-        break;
-
-      case GeneratedLayout:
-      default:
-        editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
-        break;
-    }
-
-    node.appendChild( editorLayoutElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3005,6 +2982,26 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
   afField.appendChild( afText );
   node.appendChild( afField );
+
+  // tab display
+  QDomElement editorLayoutElem  = doc.createElement( "editorlayout" );
+  switch ( mEditorLayout )
+  {
+    case UiFileLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "uifilelayout" ) );
+      break;
+
+    case TabLayout:
+      editorLayoutElem.appendChild( doc.createTextNode( "tablayout" ) );
+      break;
+
+    case GeneratedLayout:
+    default:
+      editorLayoutElem.appendChild( doc.createTextNode( "generatedlayout" ) );
+      break;
+  }
+
+  node.appendChild( editorLayoutElem );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
@@ -3156,17 +3153,6 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   return mEditBuffer->addAttribute( field );
 }
 
-bool QgsVectorLayer::addAttribute( QString name, QString type )
-{
-  const QList< QgsVectorDataProvider::NativeType > &types = mDataProvider->nativeTypes();
-
-  int i;
-  for ( i = 0; i < types.size() && types[i].mTypeName != type; i++ )
-    ;
-
-  return i < types.size() && addAttribute( QgsField( name, types[i].mType, type ) );
-}
-
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 {
   if ( attIndex < 0 || attIndex >= pendingFields().count() )
@@ -3238,6 +3224,21 @@ QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
   for ( int i = 0; i < mUpdatedFields.count(); ++i )
     lst.append( i );
   return lst;
+}
+
+QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
+{
+  QgsAttributeList pkAttributesList;
+
+  QgsAttributeList providerIndexes = mDataProvider->pkAttributeIndexes();
+  for ( int i = 0; i < mUpdatedFields.count(); ++i )
+  {
+    if ( mUpdatedFields.fieldOrigin( i ) == QgsFields::OriginProvider &&
+         providerIndexes.contains( mUpdatedFields.fieldOriginIndex( i ) ) )
+      pkAttributesList << i;
+  }
+
+  return pkAttributesList;
 }
 
 int QgsVectorLayer::pendingFeatureCount()
@@ -4297,10 +4298,22 @@ QString QgsVectorLayer::metadata()
   }
   else
   {
-    QString typeString( QGis::qgisVectorGeometryType[geometryType()] );
+    QString typeString( QGis::vectorGeometryType( geometryType() ) );
 
     myMetadata += "<tr><td>";
     myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
+    myMetadata += "</td></tr>";
+  }
+
+  QgsAttributeList pkAttrList = pendingPkAttributesList();
+  if ( !pkAttrList.isEmpty() )
+  {
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "Primary key attributes: " );
+    foreach( int idx, pkAttrList )
+    {
+      myMetadata += pendingFields()[ idx ].name() + " ";
+    }
     myMetadata += "</td></tr>";
   }
 

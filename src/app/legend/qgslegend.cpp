@@ -183,6 +183,15 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
     mMapCanvas->setCurrentLayer( layer );
   }
 
+  blockSignals( true ); // or itemChanged() emitted
+  foreach ( QgsLegendLayer *ll, legendLayers() )
+  {
+    QFont itemFont = ll->font( 0 );
+    itemFont.setUnderline( ll->layer() == layer );
+    ll->setFont( 0, itemFont );
+  }
+  blockSignals( false );
+
   emit currentLayerChanged( layer );
 }
 
@@ -212,7 +221,9 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   {
     if ( nameEmpty )
       name = getUniqueGroupName( tr( "group" ), groups() );
-    group = new QgsLegendGroup( parent, name );
+    group = new QgsLegendGroup( this, name );
+    if ( parent ) moveItem( group, parent );
+    // TODO: warn if parent != NULL or invisibleRootItem ?
   }
 
   QModelIndex groupIndex = indexFromItem( group );
@@ -383,16 +394,41 @@ void QgsLegend::mousePressEvent( QMouseEvent * e )
   {
     mMousePressedFlag = true;
     mDropTarget = itemAt( e->pos() );
+    if ( !mDropTarget )
+    {
+      setCurrentItem( 0 );
+    }
   }
   else if ( e->button() == Qt::RightButton )
   {
     QTreeWidgetItem* item = itemAt( e->pos() );
-    if ( !item || item == currentItem() )
+    if ( !item )
     {
-      if ( !item )
-        setCurrentItem( 0 );
-      handleRightClickEvent( item, e->globalPos() );
+      setCurrentItem( 0 );
     }
+    else if ( item != currentItem() )
+    {
+      if ( selectedItems().contains( item ) )
+      {
+        setCurrentItem( item, currentColumn(), QItemSelectionModel::NoUpdate );
+      }
+      else
+      {
+        clearSelection();
+        setCurrentItem( item );
+      }
+    }
+    else
+    {
+      // item is the current layer, but maybe previous selection was none
+      if ( !item->isSelected() )
+      {
+        item->setSelected( true );
+      }
+    }
+    handleRightClickEvent( item, e->globalPos() );
+    e->ignore();
+    return;
   }
   QTreeWidget::mousePressEvent( e );
 }                               // contentsMousePressEvent
@@ -1122,6 +1158,25 @@ QList<QgsMapLayer *> QgsLegend::selectedLayers( bool inDrawOrder )
   }
 
   return layers;
+}
+
+bool QgsLegend::selectedLayersEditable( bool modified )
+{
+  bool hasEditable = false;
+  foreach ( QgsMapLayer * layer, selectedLayers() )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( layer );
+    if ( !vl )
+    {
+      continue;
+    }
+    if ( vl->isEditable() && ( !modified || ( modified && vl->isModified() ) ) )
+    {
+      hasEditable = true;
+      break;
+    }
+  }
+  return hasEditable;
 }
 
 QList<QgsLegendLayer *> QgsLegend::legendLayers()

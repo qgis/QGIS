@@ -411,7 +411,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   bool ok = false;
   QDomDocument gDoc( "task" );
   QString err;
-  int line, column;
+  int line = -1, column = -1;
 
   if ( codec )
   {
@@ -2246,12 +2246,12 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   else
   {
     QgsDebugMsg( "\n\n\n\n**************************" );
-    QgsDebugMsg( "isOutput = " + isOutput() );
-    QgsDebugMsg( "mOutputType = " + mOutputType );
+    QgsDebugMsg( QString( "isOutput = %1" ).arg( isOutput() ) );
+    QgsDebugMsg( QString( "mOutputType = %1" ).arg( mOutputType ) );
     if ( isOutput() && mOutputType == Raster )
       mUsesRegion = true;
   }
-  QgsDebugMsg( "mUsesRegion = " + mUsesRegion );
+  QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
 }
 
 void QgsGrassModuleOption::addLineEdit()

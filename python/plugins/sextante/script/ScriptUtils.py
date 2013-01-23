@@ -37,7 +37,7 @@ class ScriptUtils:
     def scriptsFolder():
         folder = SextanteConfig.getSetting(ScriptUtils.SCRIPTS_FOLDER)
         if folder == None:
-            folder = SextanteUtils.userFolder() + os.sep + "scripts"
+            folder = unicode(os.path.join(SextanteUtils.userFolder(), "scripts"))
         mkdir(folder)
 
-        return folder
+        return os.path.abspath(folder)

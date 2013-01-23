@@ -104,7 +104,7 @@ def writeVectorLayerToShape( vlayer, outputPath, encoding ):
     if not mCodec:
         return False
     #Here we should check that the output path is valid
-    QgsVectorFileWriter.writeAsShapefile( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), False )
+    QgsVectorFileWriter.writeAsVectorFormat( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), "ESRI Shapefile", False )
     return True
 
 # For use with memory provider/layer, converts QGis vector type definition to simple string
@@ -285,7 +285,7 @@ def addShapeToCanvas( shapefile_path ):
     vlayer_new = QgsVectorLayer( shapefile_path, layer_name, "ogr" )
     print layer_name
     if vlayer_new.isValid():
-        QgsMapLayerRegistry.instance().addMapLayer( vlayer_new )
+        QgsMapLayerRegistry.instance().addMapLayers( [vlayer_new] )
         return True
     else:
         return False
@@ -343,7 +343,7 @@ def dirDialog( parent ):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     folders = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ) ) )
+    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ).absolutePath() ) )
     return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name

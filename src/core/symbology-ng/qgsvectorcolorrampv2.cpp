@@ -91,6 +91,22 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   return r;
 }
 
+double QgsVectorGradientColorRampV2::value( int index ) const
+{
+  if ( index <= 0 )
+  {
+    return 0;
+  }
+  else if ( index >= mStops.size() + 1 )
+  {
+    return 1;
+  }
+  else
+  {
+    return mStops[index-1].offset;
+  }
+}
+
 QColor QgsVectorGradientColorRampV2::color( double value ) const
 {
   if ( mStops.isEmpty() )
@@ -232,6 +248,12 @@ QgsVectorColorRampV2* QgsVectorRandomColorRampV2::create( const QgsStringMap& pr
   return new QgsVectorRandomColorRampV2( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }
 
+double QgsVectorRandomColorRampV2::value( int index ) const
+{
+  if ( mColors.size() < 1 ) return 0;
+  return index / mColors.size() - 1;
+}
+
 QColor QgsVectorRandomColorRampV2::color( double value ) const
 {
   int colorCnt = mColors.count();
@@ -310,6 +332,12 @@ QStringList QgsVectorColorBrewerColorRampV2::listSchemeNames()
 QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeName )
 {
   return QgsColorBrewerPalette::listSchemeVariants( schemeName );
+}
+
+double QgsVectorColorBrewerColorRampV2::value( int index ) const
+{
+  if ( mPalette.size() < 1 ) return 0;
+  return index / mPalette.size() - 1;
 }
 
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const

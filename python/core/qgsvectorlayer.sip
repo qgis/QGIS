@@ -277,11 +277,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual long featureCount() const;
 
-    /** This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
-     */
-    virtual long updateFeatureCount() const /Deprecated/;
-
     /**
      * Set the string (typically sql) used to define a subset of the layer
      * @param subset The subset string. This may be the where clause of a sql statement
@@ -380,7 +375,6 @@ class QgsVectorLayer : QgsMapLayer
        5 if several features are selected,
        6 if selected geometry not found*/
     int addPart( const QList<QgsPoint>& ring );
-    int addIsland( const QList<QgsPoint>& ring ) /Deprecated/;
 
     /**Translates feature by dx, dy
        @param featureId id of the feature to translate
@@ -510,11 +504,6 @@ class QgsVectorLayer : QgsMapLayer
         returns true if the field was added
       @note added in version 1.2 */
     bool addAttribute( const QgsField &field );
-
-    /** add an attribute field (but does not commit it)
-      returns true if the field was added
-      @deprecated */
-    bool addAttribute( QString name, QString type ) /Deprecated/;
 
     /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/

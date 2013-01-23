@@ -175,7 +175,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         self.marker.setGeom(e)
 
         rect = mc.extent()
-        rect.expand( 0.25, e )
+        rect.scale( 0.5, e )
 
       else:
         self.marker.reset()
@@ -186,7 +186,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
           return
 
         rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
-        rect.expand(1.05)
+        rect.scale( 1.05 )
 
       # Set the extent to our new rectangle
       mc.setExtent(rect)

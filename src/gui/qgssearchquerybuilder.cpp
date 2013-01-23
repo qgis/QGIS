@@ -73,14 +73,11 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  QRegExp reQuote( "[A-Za-z_][A-Za-z0-9_]*" );
   const QgsFields& fields = mLayer->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields[idx].name();
     mFieldMap[fieldName] = idx;
-    if ( !reQuote.exactMatch( fieldName ) ) // quote if necessary
-      fieldName = QgsExpression::quotedColumnRef( fieldName );
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
@@ -313,7 +310,7 @@ void QgsSearchQueryBuilder::setSearchString( QString searchString )
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( "\"" + mModelFields->data( index ).toString() + "\"" );
+  txtSQL->insertPlainText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )

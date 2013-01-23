@@ -50,8 +50,8 @@ class warp(GeoAlgorithm):
         self.name = "Warp (reproject)"
         self.group = "[GDAL] Projections"
         self.addParameter(ParameterRaster(warp.INPUT, "Input layer", False))
-        self.addParameter(ParameterCrs(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "4326"))
-        self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "4326"))
+        self.addParameter(ParameterCrs(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "EPSG:4326"))
+        self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "EPSG:4326"))
         self.addParameter(ParameterSelection(warp.METHOD, "Resampling method", warp.METHOD_OPTIONS))
         self.addOutput(OutputRaster(warp.OUTPUT, "Output layer"))
 
@@ -60,9 +60,9 @@ class warp(GeoAlgorithm):
         self.crs = QgsCoordinateReferenceSystem(int(srs))
         commands = ["gdalwarp"]
         commands.append("-s_srs")
-        commands.append("EPSG:" + str(self.getParameterValue(warp.SOURCE_SRS)))
+        commands.append(str(self.getParameterValue(warp.SOURCE_SRS)))
         commands.append("-t_srs")
-        commands.append("EPSG:" + str(srs))
+        commands.append(str(srs))
         commands.append("-r")
         commands.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
         commands.append("-of")

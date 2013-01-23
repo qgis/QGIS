@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4 import QtGui, QtCore
 
 class InputLayerSelectorPanel(QtGui.QWidget):
@@ -44,10 +45,23 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, "All files", "", "*.*")
+        # find the file dialog's working directory
+        settings = QtCore.QSettings()
+        text = str(self.text.currentText())
+        if os.path.isdir(text):
+            path = text
+        elif os.path.isdir( os.path.dirname(text) ):
+            path = os.path.dirname(text)
+        elif settings.contains("/SextanteQGIS/LastInputPath"):
+            path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
+        else:
+            path = ""
+
+        filename = QtGui.QFileDialog.getOpenFileName(self, "All files", path, "*.*")
         if filename:
             self.text.addItem(filename, filename)
             self.text.setCurrentIndex(self.text.count() - 1)
+            settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(str(filename)))
 
     def getValue(self):
         return self.text.itemData(self.text.currentIndex()).toPyObject()

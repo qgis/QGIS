@@ -122,10 +122,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsMapRenderer* mapRenderer();
 
-    //! Accessor for the canvas pixmap
-    //! @deprecated use canvasPaintDevice()
-    Q_DECL_DEPRECATED QPixmap& canvasPixmap();
-
     //! Accessor for the canvas paint device
     QPaintDevice &canvasPaintDevice();
 

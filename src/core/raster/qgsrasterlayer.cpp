@@ -193,8 +193,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  // TODO fix this - provider is not deleted!
-  //delete mDataProvider; // deleted by pipe
+  // Note: provider and other interfaces are owned and deleted by pipe
 }
 
 //////////////////////////////////////////////////////////
@@ -1103,34 +1102,6 @@ QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 }
 
 /**
- * This is an overloaded version of the legendAsPixmap( bool ) assumes false for the legend name flag.
- * @return a pixmap representing a legend image
- */
-QPixmap QgsRasterLayer::legendAsPixmap()
-{
-  return QPixmap();
-}
-
-/**
- * @param theWithNameFlag - boolean flag whether to overlay the legend name in the text
- * @return a pixmap representing a legend image
- */
-QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
-{
-  Q_UNUSED( theWithNameFlag );
-  return QPixmap();
-}                               //end of legendAsPixmap function
-
-/**
- * \param theLabelCount number of vertical labels to display
- * @return a pixmap representing a legend image
- */
-QPixmap QgsRasterLayer::legendAsPixmap( int )
-{
-  return QPixmap();
-}//end of getDetailedLegend
-
-/**
  * @param theBand the band number for which to get the maximum pixel value
  * @return the maximum pixel value
  */
@@ -1519,11 +1490,6 @@ void QgsRasterLayer::resetNoDataValue()
 }
 #endif
 
-void QgsRasterLayer::setBlueBandName( QString const & theBandName )
-{
-  mBlueBandName = validateBandName( theBandName );
-}
-
 void QgsRasterLayer::init()
 {
   // keep this until mGeoTransform occurences are removed!
@@ -1577,13 +1543,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   }
   QgsDebugMsg( "Data provider created" );
 
+  // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
+  mPipe.set( mDataProvider );
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
     appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey ).arg( mDataSource ) ) );
     return;
   }
-  mPipe.set( mDataProvider );
 
   if ( provider == "gdal" )
   {
@@ -1769,16 +1736,6 @@ void QgsRasterLayer::closeDataProvider()
   mContrastEnhancementList.clear();
 }
 
-void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm )
-{
-  //legacy method
-}
-
-void QgsRasterLayer::setColorShadingAlgorithm( QString )
-{
-  //legacy method
-}
-
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
   setContrastEnhancementAlgorithm( theAlgorithm, ContrastEnhancementMinMax, QgsRectangle(), SAMPLE_SIZE, theGenerateLookupTableFlag );
@@ -1928,7 +1885,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
   else if ( mDrawingStyle == MultiBandColor )
   {
-    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
+    if ( QgsRasterBlock::typeSize( dataProvider()->srcDataType( 1 ) ) == 1 )
     {
       myKey = "multiBandSingleByte";
       myDefault = "NoEnhancement";
@@ -2054,16 +2011,6 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   }
 }
 
-void QgsRasterLayer::setGrayBandName( QString const & )
-{
-  //legacy method
-}
-
-void QgsRasterLayer::setGreenBandName( QString const & )
-{
-  //legacy method
-}
-
 void QgsRasterLayer::setLayerOrder( QStringList const & layers )
 {
   QgsDebugMsg( "entered." );
@@ -2085,30 +2032,12 @@ void QgsRasterLayer::setMaximumValue( unsigned int theBand, double theValue, boo
   }
 }
 
-void QgsRasterLayer::setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag )
-{
-  if ( theBand != tr( "Not Set" ) )
-  {
-    setMaximumValue( bandNumber( theBand ), theValue, theGenerateLookupTableFlag );
-  }
-}
-
 void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
 {
   //legacy method
 }
 
 void QgsRasterLayer::setMinimumMaximumUsingDataset()
-{
-  //legacy method
-}
-
-void QgsRasterLayer::setMinimumValue( unsigned int, double, bool )
-{
-  //legacy method
-}
-
-void QgsRasterLayer::setMinimumValue( QString, double, bool )
 {
   //legacy method
 }
@@ -2134,16 +2063,6 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
 }
 #endif
 
-void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* )
-{
-  //legacy method
-}
-
-void QgsRasterLayer::setRedBandName( QString const & )
-{
-  //legacy method
-}
-
 void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
 {
 
@@ -2153,11 +2072,6 @@ void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
     mDataProvider->setSubLayerVisibility( name, vis );
   }
 
-}
-
-void QgsRasterLayer::setTransparentBandName( QString const & )
-{
-  //legacy method
 }
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
@@ -2202,59 +2116,6 @@ QStringList QgsRasterLayer::subLayers() const
   return mDataProvider->subLayers();
 }
 
-
-void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
-{
-  //deprecated, use previewAsPixmap() instead
-  if ( !theQPixmap )
-    return;
-
-  theQPixmap->fill( );  //defaults to white
-
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-
-  double myMapUnitsPerPixel;
-  double myX = 0.0;
-  double myY = 0.0;
-  QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >=  theQPixmap->width() / theQPixmap->height() )
-  {
-    myMapUnitsPerPixel = myExtent.width() / theQPixmap->width();
-    myY = ( theQPixmap->height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
-  }
-  else
-  {
-    myMapUnitsPerPixel = myExtent.height() / theQPixmap->height();
-    myX = ( theQPixmap->width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
-  }
-
-  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
-  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
-
-  //myRasterViewPort->topLeftPoint = QgsPoint( 0, 0 );
-  myRasterViewPort->topLeftPoint = QgsPoint( myX, myY );
-
-  //myRasterViewPort->bottomRightPoint = QgsPoint( theQPixmap->width(), theQPixmap->height() );
-
-  myRasterViewPort->bottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
-  myRasterViewPort->drawableAreaXDim = theQPixmap->width();
-  myRasterViewPort->drawableAreaYDim = theQPixmap->height();
-  //myRasterViewPort->drawableAreaXDim = myPixelWidth;
-  //myRasterViewPort->drawableAreaYDim = myPixelHeight;
-
-  myRasterViewPort->mDrawnExtent = myExtent;
-  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
-
-  QPainter * myQPainter = new QPainter( theQPixmap );
-  draw( myQPainter, myRasterViewPort, myMapToPixel );
-  delete myRasterViewPort;
-  delete myMapToPixel;
-  myQPainter->end();
-  delete myQPainter;
-}
 
 QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
 {
@@ -2392,15 +2253,12 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    if ( !rasterRendererElem.isNull() )
+    QString rendererType = rasterRendererElem.attribute( "type" );
+    QgsRasterRendererRegistryEntry rendererEntry;
+    if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
     {
-      QString rendererType = rasterRendererElem.attribute( "type" );
-      QgsRasterRendererRegistryEntry rendererEntry;
-      if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
-      {
-        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
-        mPipe.set( renderer );
-      }
+      QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+      mPipe.set( renderer );
     }
   }
 
@@ -2815,11 +2673,6 @@ bool QgsRasterLayer::update()
     emit dataChanged();
   }
   return mValid;
-}
-
-bool QgsRasterLayer::usesProvider()
-{
-  return !mProviderKey.isEmpty();
 }
 
 QString QgsRasterLayer::validateBandName( QString const & theBandName )

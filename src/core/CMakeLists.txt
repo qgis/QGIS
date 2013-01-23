@@ -80,7 +80,9 @@ SET(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
+  qgsnetworkreplyparser.cpp
   qgscredentials.cpp
+  qgsofflineediting.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
   qgspalgeometry.cpp
@@ -117,6 +119,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
+  qgswfsdata.cpp
 
   qgsnetworkaccessmanager.cpp
 
@@ -271,7 +274,9 @@ IF (WITH_INTERNAL_SPATIALITE)
     SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
   ENDIF(MSVC)
 
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
+  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite spatialite/headers)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
@@ -291,6 +296,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaprenderer.h
   qgsmessageoutput.h
   qgsmessagelog.h
+  qgsnetworkreplyparser.h
+  qgsofflineediting.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -299,6 +306,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgswfsdata.h
   qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
@@ -382,7 +390,9 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmessageoutput.h
   qgsmimedatautils.h
+  qgsnetworkreplyparser.h
   qgscredentials.h
+  qgsofflineediting.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h
@@ -416,6 +426,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerimport.h
   qgsvectorlayerundocommand.h
   qgsvectoroverlay.h
+  qgswfsdata.h
   qgstolerance.h
 
   diagram/qgsdiagram.h
@@ -598,6 +609,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}
   ${SPATIALINDEX_LIBRARY}
+  ${EXPAT_LIBRARY}
 )
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -611,7 +623,7 @@ IF (WITH_INTERNAL_SPATIALITE)
     TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
   ENDIF (UNIX AND NOT ANDROID)
 ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY} ${SPATIALITE_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 # install

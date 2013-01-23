@@ -30,7 +30,8 @@ import sys
 import os
 import code
 
-_init_commands = ["from qgis.core import *", "import qgis.utils"]
+_init_commands = ["from qgis.core import *", "import qgis.utils",
+                  "from qgis.utils import iface"]
 _historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
@@ -39,6 +40,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         super(PythonEdit,self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
+        self.parent = parent
+        
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
@@ -127,10 +130,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         selCmdLenght = self.text(line).length()
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
-        if command == "iface":
-            # import QgisInterface class
-            self.append('from qgis.utils import iface')
-        elif command == "sextante":
+        if command == "sextante":
             # import Sextante class
             self.append('import sextante')
         elif command == "qtCore":
@@ -502,21 +502,20 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## History saved successfully ##")
+                msgText = QCoreApplication.translate('PythonConsole', 'History saved successfully.')
             elif cmd == '_clear':
                 self.clearHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## History cleared successfully ##")
+                msgText = QCoreApplication.translate('PythonConsole', 'History cleared successfully.')
             elif cmd == '_clearAll':
                 self.history = QStringList()
                 self.clearHistoryFile()
-                print QCoreApplication.translate("PythonConsole",
-                                                 "## Session and file history cleared successfully ##")
+                msgText = QCoreApplication.translate('PythonConsole', 'Session and file history cleared successfully.')
             elif cmd == '_pyqgis':
                 webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':
                 webbrowser.open( "http://www.qgis.org/api/" )
+            if msgText:
+                self.parent.callWidgetMessageBar(msgText)
 
             self.displayPrompt(False)
         else:

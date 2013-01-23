@@ -98,13 +98,6 @@ void QgsDistanceArea::setSourceCrs( long srsid )
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
-void QgsDistanceArea::setSourceEpsgCrsId( long epsgId )
-{
-  QgsCoordinateReferenceSystem srcCRS;
-  srcCRS.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgId ) );
-  mCoordTransform->setSourceCrs( srcCRS );
-}
-
 void QgsDistanceArea::setSourceAuthId( QString authId )
 {
   QgsCoordinateReferenceSystem srcCRS;

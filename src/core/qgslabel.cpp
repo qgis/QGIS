@@ -515,11 +515,6 @@ QgsLabelAttributes *QgsLabel::labelAttributes( void )
 {
   return mLabelAttributes;
 }
-// @note this will be deprecated use attributes rather
-QgsLabelAttributes *QgsLabel::layerAttributes( void )
-{
-  return mLabelAttributes;
-}
 
 void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature )
 {

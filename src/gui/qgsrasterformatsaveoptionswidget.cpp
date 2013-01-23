@@ -267,7 +267,11 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   textEdit->setText( message );
   dlg->layout()->addWidget( textEdit );
   dlg->resize( 600, 400 );
+#ifdef Q_WS_MAC
+  dlg->exec(); //modal
+#else
   dlg->show(); //non modal
+#endif
 }
 
 QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool reportOK )

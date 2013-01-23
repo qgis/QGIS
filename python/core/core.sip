@@ -44,6 +44,7 @@
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
 %Include qgsnetworkaccessmanager.sip
+%Include qgsofflineediting.sip
 %Include qgsoverlayobject.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip

@@ -271,7 +271,6 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
     int addPart( const QList<QgsPoint> &points );
-    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint> &points ) { return addPart( points ); }
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -623,9 +622,6 @@ class CORE_EXPORT QgsGeometry
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
-
-
-    static int refcount;
 }; // class QgsGeometry
 
 #endif

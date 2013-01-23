@@ -45,23 +45,11 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     //! Retrieve a pointer to a loaded layer by id
     QgsMapLayer *mapLayer( QString theLayerId );
 
+    //! Retrieve a pointer to a loaded layer by name
+    QList<QgsMapLayer *> mapLayersByName( QString layerName );
+
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
     QMap<QString, QgsMapLayer*> & mapLayers();
-
-    /** Add a layer to the map of loaded layers
-       @returns NULL if unable to add layer, otherwise pointer to newly added layer
-       @note
-
-       As a side-effect QgsProject is made dirty.
-
-       Emits signal that layer has been added only if theEmitSignal is true (by default).
-
-       Not emitting signal is useful when you want to use registry for layers
-       on a different canvas and don't want them added to the main canvas automatically.
-
-       @note This method is deprecated since QGIS 1.8, you should use addMapLayers rather.
-    */
-    Q_DECL_DEPRECATED QgsMapLayer *addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = true );
 
     /** Add a list of layers to the map of loaded layers
        @returns QList<QgsMapLayer *> - a list of the map layers that were added
@@ -79,18 +67,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
                                        bool theEmitSignal = true );
 
-
-    /** Remove a layer from qgis
-       @note As a side-effect QgsProject is made dirty. Any canvases using that layer will need to remove it
-
-       If theEmitSignal is true (by default), a layerWillBeRemoved( QString theId )
-       signal will be emitted indicating to any listeners that the layer is being removed.
-
-       The layer being removed is deleted as well as the registry
-       table entry.
-       @note This method is deprecated since QGIS 1.8, you should use removeMapLayers rather.
-    */
-    Q_DECL_DEPRECATED void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
 
     /** Remove a set of layers from qgis
        @note As a side-effect QgsProject is made dirty.

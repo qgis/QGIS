@@ -103,9 +103,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
-    /**This function is deprecated*/
-    Q_DECL_DEPRECATED void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
-
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent

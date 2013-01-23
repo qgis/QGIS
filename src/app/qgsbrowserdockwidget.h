@@ -29,7 +29,7 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
 
   signals:
 

@@ -94,6 +94,10 @@ class OTBAlgorithm(GeoAlgorithm):
                     if param.name == "-elev.dem.geoid":
                         param.default = OTBUtils.otbGeoidPath()
                     self.addParameter(param)
+                elif line.startswith("*Parameter"):
+                    param = ParameterFactory.getFromString(line[1:])
+                    param.isAdvanced = True
+                    self.addParameter(param)
                 elif line.startswith("Extent"):
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
                     self.hasROI = True

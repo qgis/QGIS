@@ -249,7 +249,9 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
-    virtual bool create( const QString& format, int nBands,
+    static QgsRasterDataProvider* create( const QString &providerKey,
+                         const QString &uri,
+                         const QString& format, int nBands,
                          QGis::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,

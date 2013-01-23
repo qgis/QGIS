@@ -912,7 +912,7 @@ class TestQgsVectorLayer(TestCase):
     def test_join(self):
       
         joinLayer = createJoinLayer()
-        QgsMapLayerRegistry.instance().addMapLayer(joinLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([joinLayer])
       
         layer = createLayerWithOnePoint()
         

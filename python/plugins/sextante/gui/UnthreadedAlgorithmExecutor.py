@@ -84,7 +84,7 @@ class UnthreadedAlgorithmExecutor:
             progress.setText("Executing iteration " + str(i) + "/" + str(len(filelist)) + "...")
             progress.setPercentage((i * 100) / len(filelist))
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                SextantePostprocessing.handleAlgorithmResults(alg, False)
+                SextantePostprocessing.handleAlgorithmResults(alg, progress, False)
                 i+=1
             else:
                 return False;

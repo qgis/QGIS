@@ -24,6 +24,7 @@
 class QWidget;
 class QDomDocument;
 class QDomElement;
+class QGraphicsLineItem;
 
 class QqsComposition;
 
@@ -160,23 +161,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @return boolean - true if there is a frame around this item, otherwise false.
-     * @note deprecated since 1.8 don't use!
-     * @see hasFrame
-     */
-    Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
-    /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
      * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
-    /** Set whether this item has a frame drawn around it or not.
-     * @returns void
-     * @note deprecated since 1.8 don't use!
-     * @see setFrameEnabled
-     */
-    Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
+
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @returns nothing
@@ -223,6 +213,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
+
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double fontDescentMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
@@ -273,6 +266,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Rectangle used during move and resize actions*/
     QGraphicsRectItem* mBoundingResizeRectangle;
+    QGraphicsLineItem* mHAlignSnapItem;
+    QGraphicsLineItem* mVAlignSnapItem;
 
     /**True if item fram needs to be painted*/
     bool mFrame;
@@ -352,6 +347,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
         @param x in/out: x coordinate before / after the rotation
         @param y in/out: y cooreinate before / after the rotation*/
     void rotate( double angle, double& x, double& y ) const;
+
+    /**Return horizontal align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* hAlignSnapItem();
+    void deleteHAlignSnapItem();
+    /**Return vertical align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* vAlignSnapItem();
+    void deleteVAlignSnapItem();
+    void deleteAlignItems();
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/

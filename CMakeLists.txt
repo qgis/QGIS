@@ -70,6 +70,11 @@ IF (WITH_SPATIALITE)
   ENDIF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_SPATIALITE)
 
+SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+IF(WITH_ORACLE)
+  SET(HAVE_ORACLE TRUE)
+ENDIF(WITH_ORACLE)
+
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 IF (WITH_BINDINGS)
@@ -82,6 +87,10 @@ IF (WITH_BINDINGS)
   SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
   # concatenate QScintilla2 API files
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
+  # path to custom Python framework on Mac
+  IF (APPLE)
+    SET (PYTHON_CUSTOM_FRAMEWORK "" CACHE PATH "Path to custom Python.framework on Mac. (should not have to specify other Python options)")
+  ENDIF (APPLE)
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it
@@ -157,7 +166,7 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 FIND_PACKAGE(Proj)
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
-FIND_PACKAGE(Expat)
+FIND_PACKAGE(Expat REQUIRED)
 FIND_PACKAGE(Spatialindex REQUIRED)
 FIND_PACKAGE(Qwt REQUIRED)
 

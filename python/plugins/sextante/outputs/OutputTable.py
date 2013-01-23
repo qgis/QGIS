@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.SextanteTableWriter import SextanteTableWriter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,13 +26,35 @@ __revision__ = '$Format:%H$'
 
 from sextante.outputs.Output import Output
 
+from PyQt4.QtCore import *
+
 class OutputTable(Output):
 
     def getFileFilter(self,alg):
-        exts = alg.provider.getSupportedOutputTableExtensions()
+        exts = ['csv']
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
 
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputTableExtensions()[0]
+
+    def getCompatibleFileName(self, alg):
+        #TODO!!!
+        return self.value
+
+    def getTableWriter(self, fields):
+        '''Returns a suitable writer to which records can be added as a
+        result of the algorithm. Use this to transparently handle output
+        values instead of creating your own method.
+
+        @param fields   a dict of int-QgsField
+
+        @return writer  instance of the table writer class
+        '''
+
+        if self.encoding is None:
+            settings = QSettings()
+            self.encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+
+        return SextanteTableWriter(self.value, self.encoding, fields)        

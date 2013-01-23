@@ -418,6 +418,8 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
   QgsMapLayer *lyr = layer();
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
+  QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
+  QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
   // zoom to layer extent
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
@@ -471,6 +473,15 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
         theMenu.addAction( toggleEditingAction );
         toggleEditingAction->setChecked( vlayer->isEditable() );
       }
+      if ( saveLayerEditsAction && vlayer->isModified() )
+      {
+        theMenu.addAction( saveLayerEditsAction );
+      }
+    }
+
+    if ( allEditsAction->isEnabled() )
+    {
+      theMenu.addAction( allEditsAction );
     }
 
     // disable duplication of memory layers
@@ -490,7 +501,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
-      theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+      theMenu.addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     //show number of features in legend if requested
     QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
@@ -609,9 +620,6 @@ QString QgsLegendLayer::layerName()
 
 void QgsLegendLayer::updateAfterLayerModification()
 {
-  QgisApp::instance()->actionSaveAllEdits()->setEnabled(
-    QgisApp::instance()->unsavedEditableLayers().count() > 0 );
-
   double widthScale = 1.0;
   QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
   if ( canvas && canvas->map() )

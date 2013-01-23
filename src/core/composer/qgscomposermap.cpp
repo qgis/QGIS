@@ -115,11 +115,6 @@ QgsComposerMap::~QgsComposerMap()
   delete mGridLineSymbol;
 }
 
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
-{
-  draw( painter, extent, QSizeF( size.width(), size.height() ), dpi );
-}
-
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
 void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale )

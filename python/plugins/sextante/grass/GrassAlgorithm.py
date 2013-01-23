@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -128,10 +129,10 @@ class GrassAlgorithm(GeoAlgorithm):
                     param.isAdvanced = True
                     self.addParameter(param)
                 else:
-                    output = OutputFactory.getFromString(line)                    
-                    self.addOutput(output);                   
+                    output = OutputFactory.getFromString(line)
+                    self.addOutput(output);
                     if isinstance(output, OutputRaster):
-                        hasRasterOutput = True                                                        
+                        hasRasterOutput = True
                 line = lines.readline().strip("\n").strip()
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + self.descriptionFile + "\n" + line)
@@ -195,7 +196,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjection(value, commands)
+                    self.setSessionProjectionFromLayer(value, commands)
                     commands.append(self.exportRasterLayer(value))
             if isinstance(param, ParameterVector):
                 if param.value == None:
@@ -204,7 +205,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if value in self.exportedLayers.keys():
                     continue
                 else:
-                    self.setSessionProjection(value, commands)
+                    self.setSessionProjectionFromLayer(value, commands)
                     commands.append(self.exportVectorLayer(value))
             if isinstance(param, ParameterTable):
                 pass
@@ -219,15 +220,17 @@ class GrassAlgorithm(GeoAlgorithm):
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(layer, commands)
+                            self.setSessionProjectionFromLayer(layer, commands)
                             commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
-                            self.setSessionProjection(layer, commands)
+                            self.setSessionProjectionFromLayer(layer, commands)
                             commands.append(self.exportVectorLayer(layer))
+
+        self.setSessionProjectionFromProject(commands)
 
         region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(",")
@@ -238,10 +241,10 @@ class GrassAlgorithm(GeoAlgorithm):
         command +=" w=" + str(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command +=" res=" + str(cellsize);            
+            command +=" res=" + str(cellsize);
         else:
             command +=" res=" + str(self.getDefaultCellsize())
-            
+
         commands.append(command)
 
         #2: set parameters and outputs
@@ -270,7 +273,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 idx = int(param.value)
                 command+=(" " + param.name + "=" + str(param.options[idx]));
             elif isinstance(param, ParameterSelection):
-                command+=(" " + param.name + "=" + str(param.value));                                
+                command+=(" " + param.name + "=" + str(param.value));
             else:
                 command+=(" " + param.name + "=" + str(param.value));
 
@@ -320,9 +323,9 @@ class GrassAlgorithm(GeoAlgorithm):
             progress.setCommand(line)
             loglines.append(line)
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_COMMANDS):
-            SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)                
-        self.consoleOutput = GrassUtils.executeGrass(commands, progress, outputCommands);        
-        self.postProcessResults();        
+            SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        self.consoleOutput = GrassUtils.executeGrass(commands, progress, outputCommands);
+        self.postProcessResults();
         # if the session has been created outside of this algorithm, add the new GRASS layers to it
         # otherwise finish the session
         if existingSession:
@@ -330,14 +333,14 @@ class GrassAlgorithm(GeoAlgorithm):
         else:
             GrassUtils.endGrassSession()
 
-    def postProcessResults(self):        
+    def postProcessResults(self):
         name = self.commandLineName().replace('.','_')[len('grass:'):]
-        try:            
+        try:
             module = importlib.import_module('sextante.grass.ext.' + name)
-        except ImportError:                
+        except ImportError:
             return
-        if hasattr(module, 'postProcessResults'):                            
-            func = getattr(module,'postProcessResults')            
+        if hasattr(module, 'postProcessResults'):
+            func = getattr(module,'postProcessResults')
             func(self)
 
     def exportVectorLayer(self, orgFilename):
@@ -368,8 +371,18 @@ class GrassAlgorithm(GeoAlgorithm):
         command +=" --overwrite -o"
         return command
 
+    def setSessionProjectionFromProject(self, commands):
+        if not GrassUtils.projectionSet:
+            from sextante.core.Sextante import Sextante
+            qgis = Sextante.getInterface()
+            proj4 = qgis.mapCanvas().mapRenderer().destinationCrs().toProj4()
+            command = "g.proj"
+            command +=" -c"
+            command +=" proj4=\""+proj4+"\""
+            commands.append(command)
+            GrassUtils.projectionSet = True
 
-    def setSessionProjection(self, layer, commands):
+    def setSessionProjectionFromLayer(self, layer, commands):
         if not GrassUtils.projectionSet:
             qGisLayer = QGisLayers.getObjectFromUri(layer)
             if qGisLayer:
@@ -398,14 +411,14 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
-    
+
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.','_')[len('grass:'):]
-        try:            
+        try:
             module = importlib.import_module('sextante.grass.ext.' + name)
-        except ImportError:                
+        except ImportError:
             return
-        if hasattr(module, 'checkParameterValuesBeforeExecuting'):                            
-            func = getattr(module,'checkParameterValuesBeforeExecuting')            
+        if hasattr(module, 'checkParameterValuesBeforeExecuting'):
+            func = getattr(module,'checkParameterValuesBeforeExecuting')
             return func(self)
 

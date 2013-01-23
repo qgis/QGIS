@@ -29,7 +29,7 @@ class QgsMapCanvas : QGraphicsView
 %TypeHeaderCode
 #include <qgsmapcanvas.h>
 %End
- 
+
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapCanvas*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMapCanvas;
@@ -58,10 +58,6 @@ class QgsMapCanvas : QGraphicsView
     QgsMapCanvasMap* map();
 
     QgsMapRenderer* mapRenderer() /Transfer/;
-
-    //! Accessor for the canvas pixmap
-    // @deprecated use canvasPaintDevice()
-    QPixmap& canvasPixmap() /Deprecated/;
 
     //! Accessor for the canvas paint device
     QPaintDevice &canvasPaintDevice();

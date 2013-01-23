@@ -90,7 +90,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Append data into file</string>
+         <string>Append data to file</string>
         </property>
        </widget>
       </item>

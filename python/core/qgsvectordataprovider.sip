@@ -61,12 +61,6 @@ class QgsVectorDataProvider : QgsDataProvider
                                bool useIntersect = false ) /Deprecated/;
 
     /**
-     * This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
-     */
-    virtual long updateFeatureCount() /Deprecated/;
-
-    /**
      * Get feature type.
      * @return int representing the feature type
      */
@@ -150,14 +144,6 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**
-     * Add new attributes
-     * @param attributes map of attributes name as key and type as value
-     * @return true in case of success and false in case of failure
-     * @deprecated
-     */
-    virtual bool addAttributes( const QMap<QString, QString> &attributes ) /Deprecated/;
-
-    /**
      * Deletes existing attributes
      * @param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
@@ -178,7 +164,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
+     * @param geometry_map   A std::map containing the feature IDs to change the geometries of.
      *                       the second map parameter being the new geometries themselves
      * @return               true in case of success and false in case of failure
      */
@@ -242,15 +228,15 @@ class QgsVectorDataProvider : QgsDataProvider
 
     struct NativeType
     {
-	NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
 
-        QString mTypeDesc;
-        QString mTypeName;
-        QVariant::Type mType;
-        int mMinLen;
-        int mMaxLen;
-        int mMinPrec;
-        int mMaxPrec;
+      QString mTypeDesc;
+      QString mTypeName;
+      QVariant::Type mType;
+      int mMinLen;
+      int mMaxLen;
+      int mMinPrec;
+      int mMaxPrec;
     };
 
     /**
@@ -258,12 +244,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * @note added in 1.2
      */
     const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
-
-    /**
-     * Returns the names of the supported types
-     * @deprecated use nativeTypes()
-     */
-    const QMap<QString,QVariant::Type> &supportedNativeTypes() const /Deprecated/;
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)

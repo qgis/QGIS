@@ -584,13 +584,6 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
   return *mCRS;
 }
 
-const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
-{
-  // This will be dropped in QGIS 2.0 due to conflicting name
-  // Please use crs() in the future
-  return *mCRS;
-}
-
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;
@@ -793,12 +786,9 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
                         "). Problems may occur." );
 
     QgsProjectFileTransform styleFile( myDocument, fileVersion );
-
-    styleFile.dump();
-
+    // styleFile.dump();
     styleFile.updateRevision( thisVersion );
-
-    styleFile.dump();
+    // styleFile.dump();
   }
 
   // now get the layer node out and pass it over to the layer

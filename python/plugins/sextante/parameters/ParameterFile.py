@@ -52,7 +52,7 @@ class ParameterFile(Parameter):
         if len(tokens) == 4:
             return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True), tokens[3] == str(True))
         else:
-            return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True)) 
+            return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True))
 
     def getAsScriptCode(self):
         if self.isFolder:

@@ -92,17 +92,24 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
+QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
+    : QgsRasterDataProvider( uri )
+    , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
+{
+  setError( error );
+}
 
-QgsGdalProvider::QgsGdalProvider( QString const & uri )
+QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
-    , mValid( true )
+    , mUpdate( update )
+    , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
 {
-  QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
-
-  mValid = false;
-  mGdalBaseDataset = 0;
-  mGdalDataset = 0;
+  QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -116,7 +123,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     return;
   }
 
-  mGdalDataset = NULL;
+  mGdalDataset = 0;
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
@@ -126,24 +133,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       setDataSourceUri( vsiPrefix + uri );
     QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
-  else
-  {
-    // TODO: this constructor is also called for new rasters, in that case GDAL prints error:
-    // "ERROR 4: `pok.tif' does not exist in the file system, and is not recognised as a supported dataset name."
-    // To avoid this message, we test first if the file exists at all.
-    // This should be done better adding static create() method or something like that
-    if ( !QFile::exists( uri ) )
-    {
-      QString msg = QString( "File does not exist: %1" ).arg( dataSourceUri() );
-      appendError( ERR( msg ) );
-      return;
-    }
-  }
 
   QString gdalUri = dataSourceUri();
 
   CPLErrorReset();
-  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
 
   if ( !mGdalBaseDataset )
   {
@@ -202,7 +196,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QgsDebugMsg( "QgsGdalProvider: deconstructing." );
+  QgsDebugMsg( "entering." );
   if ( mGdalBaseDataset )
   {
     GDALDereferenceDataset( mGdalBaseDataset );
@@ -302,21 +296,23 @@ QString QgsGdalProvider::metadata()
   myMetadata += "</p>\n";
 
   //just use the first band
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
-  if ( GDALGetOverviewCount( myGdalBand ) > 0 )
+  if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    int myOverviewInt;
-    for ( myOverviewInt = 0;
-          myOverviewInt < GDALGetOverviewCount( myGdalBand );
-          myOverviewInt++ )
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
+    if ( GDALGetOverviewCount( myGdalBand ) > 0 )
     {
-      GDALRasterBandH myOverview;
-      myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
-      myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
-      myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      int myOverviewInt;
+      for ( myOverviewInt = 0;
+            myOverviewInt < GDALGetOverviewCount( myGdalBand );
+            myOverviewInt++ )
+      {
+        GDALRasterBandH myOverview;
+        myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
+        myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
+        myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      }
     }
   }
-  myMetadata += "</p>\n";
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -1475,7 +1471,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -1517,7 +1513,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -2395,61 +2391,71 @@ char** papszFromStringList( const QStringList& list )
   return papszRetList;
 }
 
+#if 0
 bool QgsGdalProvider::create( const QString& format, int nBands,
                               QGis::DataType type,
                               int width, int height, double* geoTransform,
                               const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
+#endif
+QGISEXTERN QgsGdalProvider * create(
+  const QString &uri,
+  const QString& format, int nBands,
+  QGis::DataType type,
+  int width, int height, double* geoTransform,
+  const QgsCoordinateReferenceSystem& crs,
+  QStringList createOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( !driver )
   {
-    return false;
+    QgsError error( "Cannot load GDAL driver " + format, "GDAL provider" );
+    return new QgsGdalProvider( uri, error );
   }
 
-  QString tmpStr = "create options:";
-  foreach ( QString option, createOptions )
-    tmpStr += " " + option;
-  QgsDebugMsg( tmpStr );
+  QgsDebugMsg( "create options: " + createOptions.join( " " ) );
 
   //create dataset
+  CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  GDALDatasetH dataset = GDALCreate( driver, uri.toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
-    return false;
+    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsDebugMsg( error.summary() );
+    return new QgsGdalProvider( uri, error );
   }
 
-  mGeoTransform[0] = geoTransform[0];
-  mGeoTransform[1] = geoTransform[1];
-  mGeoTransform[2] = geoTransform[2];
-  mGeoTransform[3] = geoTransform[3];
-  mGeoTransform[4] = geoTransform[4];
-  mGeoTransform[5] = geoTransform[5];
-
-  GDALSetGeoTransform( dataset, mGeoTransform );
+  GDALSetGeoTransform( dataset, geoTransform );
   GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
+  GDALClose( dataset );
 
-  mGdalBaseDataset = dataset;
-  initBaseDataset();
-  return mValid;
+  return new QgsGdalProvider( uri, true );
 }
 
 bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
 {
-  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
-  if ( rasterBand == NULL )
+  if ( !mGdalDataset )
   {
     return false;
   }
-  return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( !rasterBand )
+  {
+    return false;
+  }
+  return GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None;
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 {
-  if ( !mGdalDataset ) return false;
+  if ( !mGdalDataset )
+  {
+    return false;
+  }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
   CPLErrorReset();
@@ -2525,7 +2531,7 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
-      QgsFree( pszFormattedXML );
+      CPLFree( pszFormattedXML );
   }
   return message;
 }

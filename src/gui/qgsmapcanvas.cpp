@@ -1294,31 +1294,6 @@ bool QgsMapCanvas::isFrozen()
 } // freeze
 
 
-QPixmap& QgsMapCanvas::canvasPixmap()
-{
-  QPixmap *pixmap = dynamic_cast<QPixmap *>( &canvasPaintDevice() );
-  if ( pixmap )
-  {
-    return *pixmap;
-  }
-
-  qWarning( "QgsMapCanvas::canvasPixmap() deprecated - returning static pixmap instance - use QgsMapCanvas::paintDevice()" );
-
-  static QPixmap staticPixmap;
-
-  QImage *image = dynamic_cast<QImage *>( &mMap->paintDevice() );
-  if ( image )
-  {
-    staticPixmap = QPixmap::fromImage( *image );
-  }
-  else
-  {
-    staticPixmap = QPixmap( canvasPaintDevice().width(), canvasPaintDevice().height() );
-  }
-
-  return staticPixmap;
-} // canvasPixmap
-
 QPaintDevice &QgsMapCanvas::canvasPaintDevice()
 {
   return mMap->paintDevice();

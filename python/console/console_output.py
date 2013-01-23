@@ -24,6 +24,8 @@ from PyQt4.QtGui import *
 from PyQt4.Qsci import (QsciScintilla,
                         QsciScintillaBase,
                         QsciLexerPython)
+from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 import sys
 
 class writeOut:
@@ -37,7 +39,9 @@ class writeOut:
 
     def write(self, m):
         if self.style == "traceback":
-            self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
+            # Show errors in red
+            pos = self.outputArea.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
+            self.outputArea.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
             self.outputArea.append(m)
             self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
@@ -68,6 +72,17 @@ class EditorOutput(QsciScintilla):
         super(EditorOutput,self).__init__(parent)
         self.parent = parent
         self.edit = self.parent.edit
+
+        # Creates layout for message bar
+        self.layout = QGridLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.layout.addItem(spacerItem, 1, 0, 1, 1)
+        # messageBar instance
+        self.infoBar = QgsMessageBar()
+        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.infoBar.setSizePolicy(sizePolicy)
+        self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # Enable non-ascii chars for editor
         self.setUtf8(True)
@@ -122,7 +137,8 @@ class EditorOutput(QsciScintilla):
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
                                              "## To access Quantum GIS environment from this console\n"
-                                             "## use qgis.utils.iface object (instance of QgisInterface class). Read help for more info.\n\n")
+                                             "## use iface object (instance of QgisInterface class).\n"
+                                             "## Type help(iface) for more info and list of methods.\n\n")
         initText = self.setText(txtInit)
 
     def refreshLexerProperties(self):
@@ -162,10 +178,10 @@ class EditorOutput(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QIcon(":/images/console/iconRunConsole.png")
-        iconPastebin = QIcon(":/images/console/iconCodepadConsole.png")
-        iconClear = QIcon(":/images/console/iconClearConsole.png")
-        iconHideTool = QIcon(":/images/console/iconHideToolConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconPastebin = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
+        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
                                      "Hide/Show Toolbar",
                                      self.hideToolBar)
@@ -261,7 +277,12 @@ class EditorOutput(QsciScintilla):
                              link = i.replace('<a href="',"").strip()
             if link:
                 QApplication.clipboard().setText(link)
-                print "## URL copied to clipboard ##"
+                msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
+                self.parent.callWidgetMessageBar(msgText)
         except urllib2.URLError, e:
-            print "## Connection error ##"
-            print "## " + str(e.args) + " ##"
+            msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
+            self.parent.callWidgetMessageBar(msgText + str(e.args))
+
+    def widgetMessageBar(self, iface, text):
+        timeout = iface.messageTimeout()
+        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)

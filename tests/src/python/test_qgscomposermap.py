@@ -51,7 +51,7 @@ class TestQgsComposerMap(TestCase):
         mRasterLayer.setRenderer(rasterRenderer)
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsMapLayerRegistry.instance().addMapLayer(mRasterLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([mRasterLayer])
 
         # create composition with composer map
         self.mMapRenderer = QgsMapRenderer()
@@ -151,10 +151,14 @@ class TestQgsComposerMap(TestCase):
         myMessage = 'old: %s new: %s'  % (oldId, newId)
         assert oldId != newId, myMessage
 
-    @expectedFailure
     def testZebraStyle(self):
         self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
+        myRectangle = QgsRectangle(785462.375, 3341423.125,
+                                   789262.375, 3343323.125)
+        self.mComposerMap.setNewExtent( myRectangle )
         self.mComposerMap.setGridEnabled(True)
+        self.mComposerMap.setGridIntervalX(2000)
+        self.mComposerMap.setGridIntervalY(2000)
         checker = QgsCompositionChecker()
         myPngPath = os.path.join(TEST_DATA_DIR,
                                  'control_images',

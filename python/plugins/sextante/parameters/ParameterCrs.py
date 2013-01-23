@@ -27,8 +27,8 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterCrs(Parameter):
 
-    def __init__(self, name="", description="", default = "4326"):
-        '''The value is the EPSG code of the CRS'''
+    def __init__(self, name="", description="", default = "EPSG:4326"):
+        '''The value is the auth id of the CRS'''
         Parameter.__init__(self, name, description)
         self.value = None
         self.default = default

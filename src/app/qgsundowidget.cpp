@@ -87,16 +87,34 @@ void QgsUndoWidget::indexChanged( int curIndx )
   // this is called twice when a non-current command is clicked in QUndoView
   //   first call has offset, second call will have offset of 0
   int curCount = 0;
+  bool canRedo = true;
   if ( mUndoStack )
   {
+    canRedo = mUndoStack->canRedo();
     curCount = mUndoStack->count();
   }
-  bool cmdAdded = ( curIndx == curCount && mPreviousCount == ( curCount - 1 ) );
   int offset = qAbs( mPreviousIndex - curIndx );
-  // avoid refresh when only a command was added to stack (i.e. no undo/redo action)
-  if ( offset > 1 || ( offset == 1 && !cmdAdded ) )
+
+  // when individually redoing, differentiate between last redo and a new command added to stack
+  bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
+
+  bool debugThis = false;
+  if ( debugThis && offset != 0 )
   {
-    mMapCanvas->refresh();
+    // '= Rendering =' text is for filtering log results to also only show canvas rendering event
+    QgsDebugMsg( QString( "= Rendering = curIndx : %1" ).arg( curIndx ) );
+    QgsDebugMsg( QString( "= Rendering = offset  : %1" ).arg( offset ) );
+    QgsDebugMsg( QString( "= Rendering = curCount: %1" ).arg( curCount ) );
+    if ( lastRedo )
+      QgsDebugMsg( QString( "= Rendering = lastRedo: true" ) );
+  }
+
+  // avoid canvas refresh when only a command was added to stack (i.e. no user undo/redo action)
+  // or when user has clicked back in view history then added a new command to the stack
+  if ( offset > 1 || ( offset == 1 && ( canRedo || lastRedo ) ) )
+  {
+    if ( mMapCanvas )
+      mMapCanvas->refresh();
   }
 
   mPreviousIndex = curIndx;

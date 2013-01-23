@@ -191,7 +191,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 value.append(options[index])
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
-            return param.setValue(widget.getValue())                    
+            return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
                 return param.setValue(unicode(widget.toPlainText()))
@@ -236,7 +236,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     if command:
                         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     self.algEx = AlgorithmExecutor(self.alg)
-                self.algEx.finished.connect(self.finish)
+                self.algEx.algExecuted.connect(self.finish)
                 self.algEx.error.connect(self.error)
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
@@ -286,8 +286,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def finish(self):
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)        
+        SextantePostprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo("Algorithm %s finished" % self.alg.name)
         QApplication.restoreOverrideCursor()
@@ -298,10 +298,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot(str)
     def error(self, msg):
+        #self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         self.setInfo(msg, True)
-        self.algEx.finished.disconnect()
         if not keepOpen:
             QMessageBox.critical(self, "Error", msg)
             self.close()
@@ -318,7 +318,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def cancel(self):
         self.setInfo("<b>Algorithm %s canceled</b>" % self.alg.name)
         try:
-            self.algEx.finished.disconnect()
+            self.algEx.algExecuted.disconnect()
             self.algEx.terminate()
         except:
             pass

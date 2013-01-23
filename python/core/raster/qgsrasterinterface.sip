@@ -68,10 +68,10 @@ class QgsRasterInterface
 
     /** Returns a bitmask containing the supported capabilities */
     virtual int capabilities() const;
-    
+
     /**
      *  Returns the above in friendly format.
-     */ 
+     */
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
@@ -163,14 +163,14 @@ class QgsRasterInterface
                                           const QgsRectangle & theExtent,
                                           int theSampleSize,
                                           bool theIncludeOutOfRange );
-                                          
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()    
+
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
      * @note theBinCount, theMinimun and theMaximum not optional in python bindings
      */
     virtual bool hasHistogram( int theBandNo,
                                int theBinCount,
-                               double theMinimum,   
-                               double theMaximum,                              
+                               double theMinimum,
+                               double theMaximum,
                                const QgsRectangle & theExtent,
                                int theSampleSize,
                                bool theIncludeOutOfRange );

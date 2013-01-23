@@ -65,7 +65,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     *                otherwise we contact the host directly.
     *
     */
-    QgsGdalProvider( QString const & uri = 0 );
+    QgsGdalProvider( QString const & uri = 0, bool update = false );
+
+    /** Create invalid provider with error */
+    QgsGdalProvider( QString const & uri, QgsError error );
 
     //! Destructor
     ~QgsGdalProvider();
@@ -234,11 +237,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
+    /*
     bool create( const QString& format, int nBands,
                  QGis::DataType type,
                  int width, int height, double* geoTransform,
                  const QgsCoordinateReferenceSystem& crs,
                  QStringList createOptions = QStringList() );
+    */
 
     /**Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
@@ -257,6 +262,9 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void statusChanged( QString );
 
   private:
+    // update mode
+    bool mUpdate;
+
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 

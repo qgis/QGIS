@@ -101,7 +101,7 @@ class TestQgsComposition(TestCase):
         myPipe = myRasterLayer.pipe()
         assert myPipe.set( myRenderer ), "Cannot set pipe renderer"
 
-        QgsMapLayerRegistry.instance().addMapLayer(myRasterLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
         myMapRenderer = QgsMapRenderer()
         myLayerStringList = QStringList()

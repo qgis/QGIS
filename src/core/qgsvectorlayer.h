@@ -382,7 +382,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param elem the DOM element
      * @param parent the QObject which will own this object
      */
-    static QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -425,11 +425,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return true if calculated, false if failed or was canceled by user
      */
     bool countSymbolFeatures( bool showProgress = true );
-
-    /** This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
-     */
-    Q_DECL_DEPRECATED virtual long updateFeatureCount() const;
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -536,7 +531,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        6 if selected geometry not found
        7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
-    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint>& ring ) { return addPart( ring ); }
 
     /**Translates feature by dx, dy
        @param featureId id of the feature to translate
@@ -643,6 +637,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
 
+    /** returns list of attribute making up the primary key
+     * @note added in 2.0
+     */
+    QgsAttributeList pendingPkAttributesList();
+
     /** returns feature count after commit */
     int pendingFeatureCount();
 
@@ -666,11 +665,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
         returns true if the field was added
       @note added in version 1.2 */
     bool addAttribute( const QgsField &field );
-
-    /** add an attribute field (but does not commit it)
-      returns true if the field was added
-      @deprecated */
-    Q_DECL_DEPRECATED bool addAttribute( QString name, QString type );
 
     /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/

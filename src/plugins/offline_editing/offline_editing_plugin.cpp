@@ -19,7 +19,6 @@
 #include "offline_editing_plugin.h"
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
-#include "offline_editing.h"
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
@@ -41,6 +40,7 @@ QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterfac
     , mActionConvertProject( NULL )
     , mActionSynchronize( NULL )
     , mOfflineEditing( NULL )
+    , mProgressDialog( NULL )
 {
 }
 
@@ -69,7 +69,14 @@ void QgsOfflineEditingPlugin::initGui()
   mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
   mActionSynchronize->setEnabled( false );
 
-  mOfflineEditing = new QgsOfflineEditing( new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags ) );
+  mOfflineEditing = new QgsOfflineEditing();
+  mProgressDialog = new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+
+  connect( mOfflineEditing, SIGNAL( progressStarted() ), this, SLOT( showProgress() ) );
+  connect( mOfflineEditing, SIGNAL( layerProgressUpdated( int, int ) ), this, SLOT( setLayerProgress( int, int ) ) );
+  connect( mOfflineEditing, SIGNAL( progressModeSet( QgsOfflineEditing::ProgressMode, int ) ), this, SLOT( setProgressMode( QgsOfflineEditing::ProgressMode, int ) ) );
+  connect( mOfflineEditing, SIGNAL( progressUpdated( int ) ), this, SLOT( updateProgress( int ) ) );
+  connect( mOfflineEditing, SIGNAL( progressStopped() ), this, SLOT( hideProgress() ) );
 
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
@@ -94,6 +101,7 @@ void QgsOfflineEditingPlugin::convertProject()
       return;
     }
 
+    mProgressDialog->setTitle( tr( "Converting to offline project" ) );
     if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds ) )
     {
       updateActions();
@@ -105,7 +113,8 @@ void QgsOfflineEditingPlugin::convertProject()
 
 void QgsOfflineEditingPlugin::synchronize()
 {
-  mOfflineEditing->synchronize( mQGisIface->legendInterface() );
+  mProgressDialog->setTitle( tr( "Synchronizing to remote layers" ) );
+  mOfflineEditing->synchronize();
   updateActions();
 }
 
@@ -136,6 +145,61 @@ void QgsOfflineEditingPlugin::updateActions()
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );
 }
+
+void QgsOfflineEditingPlugin::showProgress()
+{
+  mProgressDialog->show();
+}
+
+void QgsOfflineEditingPlugin::setLayerProgress( int layer, int numLayers )
+{
+  mProgressDialog->setCurrentLayer( layer, numLayers );
+}
+
+void QgsOfflineEditingPlugin::setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum )
+{
+  QString format = "";
+  switch ( mode )
+  {
+    case QgsOfflineEditing::CopyFeatures:
+      format = tr( "%v / %m features copied" );
+      break;
+    case QgsOfflineEditing::ProcessFeatures:
+      format = tr( "%v / %m features processed" );
+      break;
+    case QgsOfflineEditing::AddFields:
+      format = tr( "%v / %m fields added" );
+      break;
+    case QgsOfflineEditing::AddFeatures:
+      format = tr( "%v / %m features added" );
+      break;
+    case QgsOfflineEditing::RemoveFeatures:
+      format = tr( "%v / %m features removed" );
+      break;
+    case QgsOfflineEditing::UpdateFeatures:
+      format = tr( "%v / %m feature updates" );
+      break;
+    case QgsOfflineEditing::UpdateGeometries:
+      format = tr( "%v / %m feature geometry updates" );
+      break;
+
+    default:
+      break;
+  }
+
+  mProgressDialog->setupProgressBar( format, maximum );
+}
+
+void QgsOfflineEditingPlugin::updateProgress( int progress )
+{
+  mProgressDialog->setProgressValue( progress );
+}
+
+void QgsOfflineEditingPlugin::hideProgress()
+{
+  mProgressDialog->hide();
+}
+
 
 /**
  * Required extern functions needed  for every plugin

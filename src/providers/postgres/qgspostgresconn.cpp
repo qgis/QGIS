@@ -309,7 +309,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   for ( int i = 0; i < 3; i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
-    QgsPostgresGeometryColumnType columnType;
+    QgsPostgresGeometryColumnType columnType = sctGeometry;
 
     if ( i == 0 )
     {
@@ -1091,7 +1091,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   }
 
 
-  // it is possible that the where clause restricts the feature type or srid
+  // our estimatation ignores that a where clause might restrict the feature type or srid
   if ( useEstimatedMetadata )
   {
     table = QString( "(SELECT %1 FROM %2 WHERE %1 IS NOT NULL%3 LIMIT %4) AS t" )
@@ -1476,7 +1476,7 @@ bool QgsPostgresConn::geometryColumnsOnly( QString theConnName )
 {
   QSettings settings;
 
-  return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometrycolumnsOnly", false ).toBool();
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometryColumnsOnly", false ).toBool();
 }
 
 bool QgsPostgresConn::allowGeometrylessTables( QString theConnName )

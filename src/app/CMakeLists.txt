@@ -2,6 +2,7 @@ SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
+  qgisappstylesheet.cpp
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -69,6 +70,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovevertex.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
@@ -91,7 +93,7 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
   qgsoptions.cpp
-  qgspastetransformations.cpp
+  #qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginitem.cpp
   qgspluginmanager.cpp
@@ -166,6 +168,7 @@ ENDIF (ANDROID)
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
+  qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h
@@ -226,6 +229,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmovevertex.h
   qgsmaptooloffsetcurve.h
   qgsmaptoolreshape.h
+  qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselectfreehand.h
@@ -244,7 +248,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
   qgsoptions.h
-  qgspastetransformations.h
+  #qgspastetransformations.h
   qgspluginmanager.h
   qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
@@ -498,10 +502,6 @@ ENDIF(APPLE)
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
-
-IF (SPATIALITE_FOUND)
-  TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
-ENDIF (SPATIALITE_FOUND)
 
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)

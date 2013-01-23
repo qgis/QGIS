@@ -28,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsproject.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -212,12 +213,12 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     }
 
 };
-QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
+QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
 {
   setupUi( this );
 
-  setWindowTitle( tr( "Browser" ) );
+  setWindowTitle( name );
 
   mBrowserView = new QgsBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
@@ -285,6 +286,10 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
       if ( item && item->type() == QgsDataItem::Favourites )
         mBrowserView->expand( index );
     }
+
+    connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), mModel, SLOT( reload() ) );
+    connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), mModel, SLOT( reload() ) );
+    connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( reload() ) );
   }
 
   QDockWidget::showEvent( e );

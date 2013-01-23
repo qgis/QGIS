@@ -154,9 +154,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Recalculate the map scale
     void updateScale();
 
-    //! Return the measuring object
-    //! @deprecated
-    Q_DECL_DEPRECATED QgsDistanceArea *distanceArea() { return mDistArea; }
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 
@@ -192,18 +189,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! returns true if projections are enabled for this layer set
     bool hasCrsTransformEnabled() const;
-
-    /** sets destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see setDestinationCrs
-     */
-    Q_DECL_DEPRECATED void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) { setDestinationCrs( srs ); };
-
-    /** returns CRS of destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see destinationCrs
-     */
-    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& destinationSrs() { return destinationCrs(); };
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
@@ -264,12 +249,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
-
-    //! invalidate cached layer CRS
-    void invalidateCachedLayerCrs();
-
-    //! cached layer was destroyed
-    void cachedLayerDestroyed();
 
   protected:
 
@@ -343,9 +322,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QMutex mRenderMutex;
 
   private:
-    QgsCoordinateTransform *tr( QgsMapLayer *layer );
-    QgsCoordinateTransform *mCachedTr;
-    QgsMapLayer *mCachedTrForLayer;
+    const QgsCoordinateTransform* tr( QgsMapLayer *layer );
 };
 
 #endif

@@ -558,7 +558,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                    "FROM SYSTABCOL "
                    "WHERE table_id = %1 "
                    "AND column_name = %2 "
-                   "AND base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
+                   "AND base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
           .arg( mTableId )
           .arg( quotedValue( mKeyColumn ) );
     stmt = mConnRO->execute_direct( sql );
@@ -631,7 +631,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                  "'SELECT * FROM %1', 1 ) dq1 "
                  "WHERE is_key_column = 1 "
                  "AND is_added_key_column = 0 "
-                 "AND domain_name IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
+                 "AND domain_name IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
                  "AND NOT EXISTS ( "
                  "SELECT column_number "
                  "FROM sa_describe_query( "
@@ -663,7 +663,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                  "AND c.column_id = ic.column_id "
                  "WHERE i.table_id = %1 "
                  "AND i.\"unique\" IN ( 1, 2 ) "
-                 "AND c.base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
+                 "AND c.base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
                  "AND NOT EXISTS ( "
                  "SELECT column_id "
                  "FROM SYSIDXCOL ic2 "
@@ -687,7 +687,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
   sql = QString( "SELECT column_name "
                  "FROM SYSTABCOL "
                  "WHERE table_id = %1 "
-                 "AND base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
+                 "AND base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
         .arg( mTableId );
   stmt = mConnRO->execute_direct( sql );
   while ( stmt->isValid() && stmt->fetchNext() )
@@ -1018,6 +1018,7 @@ QgsSqlAnywhereProvider::uniqueValues( int index, QList < QVariant > &uniqueValue
     delete stmt;
   }
 } // QgsSqlAnywhereProvider::uniqueValues()
+
 
 QString
 QgsSqlAnywhereProvider::getDefaultValue( QString attrName )
@@ -1583,6 +1584,10 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
   return ok;
 } // QgsSqlAnywhereProvider::changeGeometryValues()
 
+QgsAttributeList QgsSqlAnywhereProvider::attributeIndexes()
+{
+  return mAttributeFields.keys();
+}
 
 bool
 QgsSqlAnywhereProvider::ensureConnRO()

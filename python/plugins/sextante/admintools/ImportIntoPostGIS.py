@@ -50,7 +50,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
     def processAlgorithm(self, progress):
         connection = self.getParameterValue(self.DATABASE)
         overwrite = self.getParameterValue(self.OVERWRITE)
-        createIndex = self.getParameterValue(self.CREATEINDEX)        
+        createIndex = self.getParameterValue(self.CREATEINDEX)
         settings = QSettings()
         mySettings = "/PostgreSQL/connections/"+ connection
         try:
@@ -61,33 +61,33 @@ class ImportIntoPostGIS(GeoAlgorithm):
             password = settings.value(mySettings+"/password").toString()
         except Exception, e:
             raise GeoAlgorithmExecutionException("Wrong database connection name: " + connection)
-        
+
         table = self.getParameterValue(self.TABLENAME);
         table.replace(" ", "")
         providerName = "postgres"
-                
+
         try:
             db = postgis_utils.GeoDB(host=host, port=port, dbname=database, user=username, passwd=password)
         except postgis_utils.DbError, e:
             raise GeoAlgorithmExecutionException("Couldn't connect to database:\n"+e.message)
 
         uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, username, password)        
+        uri.setConnection(host, str(port), database, username, password)
         uri.setDataSource("public", table, "the_geom", "")
 
         options = {}
         if overwrite:
             options['overwrite'] = True
 
-        layerUri = self.getParameterValue(self.INPUT);        
-        layer = QGisLayers.getObjectFromUri(layerUri) 
+        layerUri = self.getParameterValue(self.INPUT);
+        layer = QGisLayers.getObjectFromUri(layerUri)
         ret, errMsg = QgsVectorLayerImport.importLayer(layer, uri.uri(), providerName, self.crs, False, False, options)
         if ret != 0:
-            raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)            
+            raise GeoAlgorithmExecutionException(u"Error importing to PostGIS\n%s" %  errMsg)
 
         if createIndex:
             db.create_spatial_index(table, "public", "the_geom")
-            
+
         db.vacuum_analyze(table, "public")
 
     def defineCharacteristics(self):
@@ -96,10 +96,10 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, "Layer to import"))
         self.addParameter(ParameterString(self.DATABASE, "Database (connection name)"))
         self.addParameter(ParameterString(self.TABLENAME, "Table to import to"))
-        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite", True))   
-        self.addParameter(ParameterBoolean(self.CREATEINDEX, "Create spatial index", True))       
-        
-       
+        self.addParameter(ParameterBoolean(self.OVERWRITE, "Overwrite", True))
+        self.addParameter(ParameterBoolean(self.CREATEINDEX, "Create spatial index", True))
+
+
 
 
 

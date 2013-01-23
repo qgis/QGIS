@@ -92,34 +92,6 @@ class CORE_EXPORT QgsLabel
     };
 
     /** \brief render label
-     *  \param painter painter to render label in
-     *  \param viewExtent extent to render labels in
-     *  \param coordinateTransform coordinate transformation to use
-     *  \param transform transformation from coordinate to canvas pixels
-     *  \param feature feature to label
-     *  \param selected feature is selected
-     *  \param classAttributes attributes to create label from
-     *  \param sizeScale scale
-     *  \param rasterScaleFactor raster scale
-     *  \deprecated
-     */
-    Q_DECL_DEPRECATED void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
-                                        QgsCoordinateTransform* coordinateTransform,
-                                        const QgsMapToPixel *transform,
-                                        QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
-                                        double sizeScale = 1.0, double rasterScaleFactor = 1.0 )
-    {
-      QgsRenderContext r;
-      r.setExtent( viewExtent );
-      r.setCoordinateTransform( new QgsCoordinateTransform( coordinateTransform->sourceCrs(), coordinateTransform->destCRS() ) );
-      r.setMapToPixel( *transform );
-      r.setPainter( painter );
-      r.setScaleFactor( sizeScale );
-      r.setRasterScaleFactor( rasterScaleFactor );
-      renderLabel( r, feature, selected, classAttributes );
-    }
-
-    /** \brief render label
      *  \param renderContext the render context
      *  \param feature feature to render the label for
      *  \param selected feature is selected
@@ -144,11 +116,6 @@ class CORE_EXPORT QgsLabel
 
     //! Available vector fields
     QgsFields & fields();
-
-    /** Pointer to default attributes.
-     * @deprecated in version 2 as it is badly named. Rather use attributes.
-     * @see labelAttributes method rather */
-    Q_DECL_DEPRECATED QgsLabelAttributes *layerAttributes();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.

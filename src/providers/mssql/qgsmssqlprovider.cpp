@@ -1679,7 +1679,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     QString pk = primaryKey = "qgs_fid";
     for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
-      if ( fldIt.value().name() == pk )
+      if ( fldIt.value().name() == primaryKey )
       {
         // it already exists, try again with a new name
         primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );

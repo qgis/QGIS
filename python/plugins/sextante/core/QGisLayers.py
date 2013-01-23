@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gdal.GdalUtils import GdalUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -38,13 +39,39 @@ class QGisLayers:
     iface = None;
 
     @staticmethod
+    def getSupportedOutputVectorLayerExtensions():
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        exts = ["shp"]#shp is the default, should be the first
+        for extension in formats.keys():
+            extension = unicode(extension)
+            extension = extension[extension.find('*.') + 2:]
+            extension = extension[:extension.find(" ")]
+            if extension.lower() != "shp":
+                exts.append(extension)
+        return exts
+    
+    @staticmethod
+    def getSupportedOutputRasterLayerExtensions():   
+        allexts = ["tif"]
+        for exts in GdalUtils.getSupportedRasters().values():
+            for ext in exts:
+                if ext not in allexts:
+                    allexts.append(ext)
+        return allexts             
+    
+    @staticmethod
+    def getSupportedOutputTableExtensions():        
+        exts = ["dbf, csv"]        
+        return exts
+                
+    @staticmethod
     def getRasterLayers():
         layers = QGisLayers.iface.legendInterface().layers()
         raster = list()
 
         for layer in layers:
             if layer.type() == layer.RasterLayer:
-                if layer.usesProvider() and layer.providerKey() == 'gdal':#only gdal file-based layers
+                if layer.providerType() == 'gdal':#only gdal file-based layers
                     raster.append(layer)
         return raster
 
@@ -56,7 +83,7 @@ class QGisLayers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
                     uri = unicode(layer.source())
-                    if not uri.endswith("csv") and not uri.endswith("dbf"):
+                    if not uri.lower().endswith("csv") and not uri.lower().endswith("dbf"):
                         vector.append(layer)
         return vector
 
@@ -74,7 +101,7 @@ class QGisLayers:
         for layer in layers:
             if layer.type() == layer.VectorLayer :
                 uri = unicode(layer.source())
-                if uri.endswith("csv") or uri.endswith("dbf"):
+                if uri.lower().endswith("csv") or uri.lower().endswith("dbf") or uri.lower().endswith("shp"):
                     tables.append(layer)
         return tables
 
@@ -111,7 +138,7 @@ class QGisLayers:
                 else:
                     style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+            QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
         else:
             qgslayer = QgsRasterLayer(layer, name)
             if qgslayer.isValid():
@@ -120,7 +147,7 @@ class QGisLayers:
                 if style == None:
                     style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
                 qgslayer.loadNamedStyle(style)
-                QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+                QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
                 QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)
             else:
                 if prjSetting:
@@ -168,6 +195,54 @@ class QGisLayers:
                     settings.setValue("/Projections/defaultBehaviour", prjSetting)
         else:
             return None
+
+    @staticmethod
+    def features(layer):
+        '''this returns an iterator over features in a vector layer, considering the
+        selection that might exist in the layer, and the SEXTANTE configuration that
+        indicates whether to use only selected feature or all of them.
+        This should be used by algorithms instead of calling the QGis API directly,
+        to ensure a consistent behaviour across algorithms'''
+        return Features(layer)
+
+
+class Features():
+
+    def __init__(self, layer):
+        self.layer = layer
+        self.selection = False;
+        self.layer.dataProvider().rewind()
+        if SextanteConfig.getSetting(SextanteConfig.USE_SELECTED):
+            self.selected = layer.selectedFeatures()
+            if len(self.selected) > 0:
+                self.selection = True
+                self.idx = 0;
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.selection:
+            if self.idx < len(self.selected):
+                feature = self.selected[self.idx]
+                self.idx += 1
+                return feature
+            else:
+                raise StopIteration()
+        else:
+            f = QgsFeature()
+            if self.layer.dataProvider().nextFeature(f):
+                return f
+            else:
+                raise StopIteration()
+
+    def __len__(self):
+        if self.selection:
+            return int(self.layer.selectedFeatureCount())
+        else:
+            return int(self.layer.dataProvider().featureCount())
+
+
 
 
 

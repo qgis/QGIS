@@ -89,14 +89,17 @@ class QgsStringRelay : public QObject
     QgsStringRelay( QObject* parent = NULL )
         : QObject( parent ) {}
 
+    void appendProxy( QWidget* proxy ) { mProxyList << proxy; }
+
   public slots:
-    void changeText( QString str )
-    {
-      emit textChanged( str );
-    }
+    void changeText();
+    void changeText( QString str );
 
   signals:
     void textChanged( QString );
+
+  private:
+    QList<QWidget*> mProxyList;
 };
 
 #endif

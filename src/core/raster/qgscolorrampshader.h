@@ -93,6 +93,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
+    void setClip( bool clip ) { mClip = clip; }
+    bool clip() const { return mClip; }
+
   private:
     /** Current index from which to start searching the color table*/
     int mCurrentColorRampItemIndex;
@@ -129,6 +132,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * mValueClassification. Interpolates the color between two class breaks
      * linearly.*/
     bool interpolatedColor( double, int*, int*, int* );
+
+    /** Do not render values out of range */
+    bool mClip;
 };
 
 #endif

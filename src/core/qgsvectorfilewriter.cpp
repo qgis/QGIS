@@ -496,7 +496,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     QgsGeometry *geom = feature.geometry();
 
     // turn single geoemetry to multi geometry if needed
-    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::flatType( mWkbType ) )
+    if ( geom && geom->wkbType() != mWkbType && geom->wkbType() == QGis::singleType( mWkbType ) )
     {
       geom->convertToMultiType();
     }
@@ -584,22 +584,6 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   {
     OGR_DS_Destroy( mDS );
   }
-}
-
-
-
-
-QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
-                                       const QString& shapefileName,
-                                       const QString& fileEncoding,
-                                       const QgsCoordinateReferenceSystem* destCRS,
-                                       bool onlySelected,
-                                       QString *errorMessage,
-                                       const QStringList &datasourceOptions,
-                                       const QStringList &layerOptions )
-{
-  return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage, datasourceOptions, layerOptions );
 }
 
 QgsVectorFileWriter::WriterError

@@ -65,6 +65,12 @@ class QgsComposition : QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const;
 
+    void setAlignmentSnap( bool s );
+    bool alignmentSnap() const;
+
+    void setAlignmentSnapTolerance( double t );
+    double alignmentSnapTolerance() const;
+
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();
 

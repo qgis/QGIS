@@ -63,6 +63,13 @@ class QgsMapToolEdit: public QgsMapTool
        @return 0 in case of success*/
     int addTopologicalPoints( const QList<QgsPoint>& geom );
 
+    /**Display a timed message bar noting the active layer is not vector.
+       @note added in QGIS 1.9*/
+    void notifyNotVectorLayer();
+    /**Display a timed message bar noting the active vector layer is not editable.
+       @note added in QGIS 1.9*/
+    void notifyNotEditableLayer();
+
 };
 
 #endif

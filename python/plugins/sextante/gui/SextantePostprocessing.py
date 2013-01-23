@@ -38,16 +38,19 @@ import os
 class SextantePostprocessing:
 
     @staticmethod
-    def handleAlgorithmResults(alg, showResults = True):
+    def handleAlgorithmResults(alg, progress, showResults = True):
         htmlResults = False;
+        progress.setText("Loading resulting layers")
+        i =  0
         for out in alg.outputs:
+            progress.setPercentage(100 * i / float(len(alg.outputs)))
             if out.hidden or not out.open:
                 continue
             if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
                 try:
                     if out.value.startswith("memory:"):
                         layer = out.memoryLayer
-                        QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        QgsMapLayerRegistry.instance().addMapLayers([layer])
                     else:
                         if SextanteConfig.getSetting(SextanteConfig.USE_FILENAME_AS_LAYER_NAME):
                             name = os.path.basename(out.value)
@@ -59,6 +62,7 @@ class SextantePostprocessing:
             elif isinstance(out, OutputHTML):
                 SextanteResults.addResult(out.description, out.value)
                 htmlResults = True
+            i += 1
         if showResults and htmlResults:
             QApplication.restoreOverrideCursor()
             dlg = ResultsDialog()

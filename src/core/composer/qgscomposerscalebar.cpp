@@ -36,6 +36,7 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mComposerMap( 0 )
     , mNumUnitsPerSegment( 0 )
+    , mFontColor( QColor( 0, 0, 0 ) )
     , mStyle( 0 )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
@@ -60,7 +61,6 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 
   drawBackground( painter );
-  painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
@@ -228,6 +228,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setStyle( Qt::SolidPattern );
 
   mFont.setPointSizeF( 12.0 );
+  mFontColor = QColor( 0, 0, 0 );
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
@@ -422,13 +423,10 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
     composerScaleBarElem.setAttribute( "mapId", mComposerMap->id() );
   }
 
-  //fill color
-  QColor brushColor = mBrush.color();
-  QDomElement colorElem = doc.createElement( "BrushColor" );
-  colorElem.setAttribute( "red", brushColor.red() );
-  colorElem.setAttribute( "green", brushColor.green() );
-  colorElem.setAttribute( "blue", brushColor.blue() );
-  composerScaleBarElem.appendChild( colorElem );
+  //colors
+  composerScaleBarElem.setAttribute( "brushColor", mBrush.color().name() );
+  composerScaleBarElem.setAttribute( "penColor", mPen.color().name() );
+  composerScaleBarElem.setAttribute( "fontColor", mFontColor.name() );
 
   //alignment
   composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
@@ -459,6 +457,12 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   {
     mFont.fromString( fontString );
   }
+
+  //colors
+  //fill color
+  mBrush.setColor( QColor( itemElem.attribute( "brushColor", "#000000" ) ) );
+  mPen.setColor( QColor( itemElem.attribute( "penColor", "#000000" ) ) );
+  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
 
   //style
   delete mStyle;

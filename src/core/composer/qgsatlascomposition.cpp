@@ -213,19 +213,21 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
     // geometry height is too big
     if ( geom_ratio < map_ratio )
     {
-      new_extent = QgsRectangle(( xa1 + xa2 + map_ratio * ( ya1 - ya2 ) ) / 2.0,
-                                ya1,
-                                xa1 + map_ratio * ( ya2 - ya1 ),
-                                ya2 );
+	    // extent the bbox's width
+	    double adj_width = ( map_ratio * geom_rect.height() - geom_rect.width() ) / 2.0;
+	    xa1 -= adj_width;
+	    xa2 += adj_width;
     }
     // geometry width is too big
     else if ( geom_ratio > map_ratio )
     {
-      new_extent = QgsRectangle( xa1,
-                                 ( ya1 + ya2 + ( xa1 - xa2 ) / map_ratio ) / 2.0,
-                                 xa2,
-                                 ya1 + ( xa2 - xa1 ) / map_ratio );
+	    // extent the bbox's height
+	    double adj_height = (geom_rect.width() / map_ratio - geom_rect.height() ) / 2.0;
+	    ya1 -= adj_height;
+	    ya2 += adj_height;
     }
+    new_extent = QgsRectangle( xa1, ya1, xa2, ya2 );
+
     if ( mMargin > 0.0 )
     {
       new_extent.scale( 1 + mMargin );

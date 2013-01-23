@@ -26,6 +26,12 @@ class CORE_EXPORT QgsVectorColorRampV2
   public:
     virtual ~QgsVectorColorRampV2() {}
 
+    // Number of defined colors
+    virtual int count() const = 0;
+
+    // Relative value (0,1) of color at index
+    virtual double value( int index ) const = 0;
+
     virtual QColor color( double value ) const = 0;
 
     virtual QString type() const = 0;
@@ -38,7 +44,7 @@ class CORE_EXPORT QgsVectorColorRampV2
 
 struct QgsGradientStop
 {
-  double offset;
+  double offset; // relative (0,1)
   QColor color;
   QgsGradientStop( double o, const QColor& c ) : offset( o ), color( c ) { }
 };
@@ -57,6 +63,10 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
                                   QgsGradientStopsList stops = QgsGradientStopsList() );
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    virtual int count() const { return mStops.count() + 2; }
+
+    virtual double value( int index ) const;
 
     virtual QColor color( double value ) const;
 
@@ -106,6 +116,8 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
+    virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
 
     virtual QString type() const { return "random"; }
@@ -150,6 +162,8 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
 
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
+    virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
 
     virtual QString type() const { return "colorbrewer"; }
@@ -159,6 +173,7 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     virtual QgsStringMap properties() const;
 
     QString schemeName() const { return mSchemeName; }
+    virtual int count() const { return mColors; }
     int colors() const { return mColors; }
 
     void setSchemeName( QString schemeName ) { mSchemeName = schemeName; loadPalette(); }
@@ -212,7 +227,6 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorGradientColorRampV2
 
     void loadPalette() { loadFile(); }
     bool hasMultiStops() const { return mMultiStops; }
-    int count() const { return mStops.count() + 2; }
 
     QString fileName() const;
     bool loadFile();
