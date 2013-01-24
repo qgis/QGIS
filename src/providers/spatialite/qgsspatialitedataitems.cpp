@@ -201,7 +201,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, "geomm" );
+      destUri.setDataSource( QString(), u.name, "geom" );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
