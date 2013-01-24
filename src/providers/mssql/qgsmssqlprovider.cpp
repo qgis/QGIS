@@ -1672,7 +1672,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     schemaName = "dbo";
 
   if ( geometryColumn.isEmpty() )
-    geometryColumn = "qgs_geometry";
+    geometryColumn = "geom";
 
   if ( primaryKey.isEmpty() )
     primaryKey = "qgs_fid";

@@ -228,7 +228,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name.left( 30 ).toUpper(), "QGS_GEOMETRY" );
+      uri.setDataSource( QString(), u.name.left( 30 ).toUpper(), "GEOM" );
       uri.setWkbType( srcLayer->wkbType() );
       QString authid = srcLayer->crs().authid();
       if ( authid.startsWith( "EPSG:", Qt::CaseInsensitive ) )

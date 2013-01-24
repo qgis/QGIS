@@ -49,7 +49,7 @@ void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
   double segmentHeight = mScaleBar->height() / 2;
 
   p->save();
-  p->setPen( p->pen() );
+  p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;
   mScaleBar->segmentPositions( segmentInfo );

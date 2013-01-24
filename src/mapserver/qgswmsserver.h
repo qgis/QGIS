@@ -170,11 +170,17 @@ class QgsWMSServer
     /**Applies opacity on layer/group level*/
     void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
                          QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
-                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                         QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                         QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
+                       );
 
     /**Restore original opacities*/
-    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers, QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
-                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers );
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                           QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                           QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                           QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 

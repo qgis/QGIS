@@ -43,6 +43,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mComposerMap( 0 )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
+    , mFontColor( QColor( 0, 0, 0 ) )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -206,7 +207,7 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
   {
@@ -241,7 +242,7 @@ QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, Q
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   QStringList lines = splitStringForWrapping( groupItem->text() );
   for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
@@ -269,7 +270,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
 
   double y = point.y();
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   QStringList lines = splitStringForWrapping( layerItem->text() );
   for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
@@ -377,7 +378,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
     }
   }
 
-  if ( painter ) painter->setPen( QColor( 0, 0, 0 ) );
+  if ( painter ) painter->setPen( mFontColor );
 
   double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
 
@@ -727,6 +728,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
   composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
+  composerLegendElem.setAttribute( "fontColor", mFontColor.name() );
 
   if ( mComposerMap )
   {
@@ -778,6 +780,9 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     mItemFont.fromString( itemFontString );
   }
+
+  //font color
+  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();

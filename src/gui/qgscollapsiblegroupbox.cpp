@@ -245,7 +245,15 @@ void QgsCollapsibleGroupBox::updateStyle()
   int marginRight = 5;  // a little bit of space on the right, to match space on the left
   int offsetLeft = 0;   // offset for oxygen theme
   int offsetTop = 0;
-  int offsetTop2 = 0;   // offset for triangle
+//  int offsetTop2 = 0;   // offset for triangle
+
+  // starting top offset for custom groupboxes in app stylesheet
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                       QStyle::SC_GroupBoxCheckBox, this );
+  int offsetTop2 = rectCheckBox.top();   // offset for triangle
+
 
   // calculate offset if frame overlaps triangle (oxygen theme)
   // using an offset of 6 pixels from frame border

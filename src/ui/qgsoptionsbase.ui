@@ -59,6 +59,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #fff</string>
+         </property>
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
@@ -266,8 +269,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>522</height>
+                <width>663</width>
+                <height>562</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -521,18 +524,43 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="cbxHideSplash">
-                    <property name="text">
-                     <string>Hide splash screen at startup</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxShowTips">
-                    <property name="text">
-                     <string>Show tips at start up</string>
-                    </property>
-                   </widget>
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="0" column="1" rowspan="2">
+                     <widget class="Line" name="line_2">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
+                      <property name="text">
+                       <string>Use custom group boxes</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="cbxShowTips">
+                      <property name="text">
+                       <string>Show tips at start up</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <widget class="QCheckBox" name="mBoldGroupBoxTitleChkBx">
+                      <property name="text">
+                       <string>Bold group box titles</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbxHideSplash">
+                      <property name="text">
+                       <string>Hide splash screen at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -747,8 +775,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>808</height>
+                <width>652</width>
+                <height>803</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1077,8 +1105,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>559</width>
-                <height>417</height>
+                <width>529</width>
+                <height>443</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1396,8 +1424,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>615</width>
-                <height>681</height>
+                <width>608</width>
+                <height>728</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1884,8 +1912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>483</width>
+                <height>364</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2123,8 +2151,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>718</height>
+                <width>534</width>
+                <height>771</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2503,8 +2531,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>517</width>
-                <height>643</height>
+                <width>500</width>
+                <height>691</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2992,8 +3020,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>361</height>
+                <width>462</width>
+                <height>386</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3132,8 +3160,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>614</width>
-                <height>393</height>
+                <width>638</width>
+                <height>422</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3313,8 +3341,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>300</width>
-                <height>248</height>
+                <width>298</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3413,8 +3441,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>650</height>
+                <width>540</width>
+                <height>672</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
