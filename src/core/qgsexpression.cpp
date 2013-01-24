@@ -569,6 +569,23 @@ static QVariant fcnLPad( const QVariantList& values, QgsFeature* , QgsExpression
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
+static QVariant fcnFormatString( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  for ( int n = 1; n <= values.length() - 1; n++ )
+  {
+    QString arg = getStringValue( values.at( n ), parent );
+    QString place = '%' + QString::number( n );
+    if ( string.indexOf( place ) == -1 )
+    {
+      continue;
+    }
+    string.replace( place, arg );
+  }
+  return string;
+}
+
+
 static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
 {
   return QVariant( QDateTime::currentDateTime() );
@@ -1100,6 +1117,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "right", 2, fcnRight, QObject::tr( "String" ) )
     << new StaticFunction( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
     << new StaticFunction( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+    << new StaticFunction( "format", -1, fcnFormatString, QObject::tr( "String" ) )
     << new StaticFunction( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
     << new StaticFunction( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
     << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
