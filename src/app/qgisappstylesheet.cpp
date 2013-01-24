@@ -22,6 +22,7 @@
 
 #include <QFont>
 #include <QSettings>
+#include <QStyle>
 
 /** @class QgisAppStyleSheet
  * @brief Adjustable stylesheet for the Qgis application
@@ -30,51 +31,7 @@
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
     : QObject( parent )
 {
-  // platforms, specific
-#ifdef Q_OS_LINUX
-  mLinuxOS = true;
-#else
-  mLinuxOS = false;
-#endif
-#ifdef Q_OS_WIN32
-  mWinOS = true;
-#else
-  mWinOS = false;
-#endif
-#ifdef Q_OS_MAC
-  mMacOS = true;
-#else
-  mMacOS = false;
-#endif
-#ifdef ANDROID
-  mAndroidOS = true;
-#else
-  mAndroidOS = false;
-#endif
-
-  // platforms, general
-#ifdef Q_OS_UNIX
-  mUnix = true;
-#else
-  mUnix = false;
-#endif
-
-  // window servers
-#ifdef Q_WS_X11
-  mX11WS = true;
-#else
-  mX11WS = false;
-#endif
-#ifdef Q_WS_WIN
-  mWinWS = true;
-#else
-  mWinWS = false;
-#endif
-#ifdef Q_WS_MAC
-  mMacWS = true;
-#else
-  mMacWS = false;
-#endif
+  setActiveValues();
 }
 
 QgisAppStyleSheet::~QgisAppStyleSheet()
@@ -84,7 +41,6 @@ QgisAppStyleSheet::~QgisAppStyleSheet()
 QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 {
   QMap<QString, QVariant> opts;
-  mDefaultFont = qApp->font(); // save before it is changed in any way
 
   // the following default values, before insertion in opts, can be
   // configured using the platforms and window servers defined in the
@@ -158,7 +114,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   ss += QString( "* { font: %1pt \"%2\"} " ).arg( fontSize ).arg( fontFamily );
 
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
-  // TODO: test on/adjust for Windows
   bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
   QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
   bool gbxBoldTitle = opts.value( "groupBoxBoldTitle" ).toBool();
@@ -169,16 +124,17 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
     if ( gbxBoldTitle )
     {
       // doesn't work for QGroupBox::title
-      ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacWS ? 25 : 60 );
+      ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
       ss += "font-weight: bold;";
     }
     if ( gbxCustom )
     {
-      ss += QString( "background-color: rgba(%1,%1,%1,90%);" ).arg( mMacWS ? 225 : 235 );
-      ss += "border: 1px solid #c0c0c0;";
+      ss += QString( "background-color: rgba(0,0,0,%1%);" )
+            .arg( mWinOS && mStyle.startsWith( "windows" ) ? 0 : 3 );
+      ss += "border: 1px solid rgba(0,0,0,20%);";
       ss += "border-radius: 5px;";
       ss += "margin-top: 2.5ex;";
-      ss += QString( "margin-bottom: %1ex;" ).arg( mMacWS ? 1.5 : 1 );
+      ss += QString( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
     }
     ss += "} ";
     if ( gbxCustom )
@@ -192,7 +148,10 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
       ss += "subcontrol-origin: margin;";
       ss += "subcontrol-position: top left;";
       ss += "margin-left: 6px;";
-      ss += "background-color: rgba(0,0,0,0);";
+      if ( !( mWinOS && mStyle.startsWith( "windows" ) ) && !mOxyStyle )
+      {
+        ss += "background-color: rgba(0,0,0,0);";
+      }
       ss += "} ";
     }
   }
@@ -214,4 +173,70 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant>& opts )
     ++opt;
   }
   settings.endGroup(); // "qgis/stylesheet"
+}
+
+void QgisAppStyleSheet::setActiveValues()
+{
+  mStyle = qApp->style()->objectName(); // active style name (lowercase)
+  QgsDebugMsg( QString( "Style name: %1" ).arg( mStyle ) );
+
+  mMotifStyle = mStyle.contains( "motif" ) ? true : false; // motif
+  mCdeStyle = mStyle.contains( "cde" ) ? true : false; // cde
+  mPlastqStyle = mStyle.contains( "plastique" ) ? true : false; // plastique
+  mCleanLkStyle = mStyle.contains( "cleanlooks" ) ? true : false; // cleanlooks
+  mGtkStyle = mStyle.contains( "gtk" ) ? true : false; // gtk+
+  mWinStyle = mStyle.contains( "windows" ) ? true : false; // windows
+  mWinXpStyle = mStyle.contains( "windowsxp" ) ? true : false; // windowsxp
+  mWinVistaStyle = mStyle.contains( "windowsvista" ) ? true : false; // windowsvista
+  mMacStyle = mStyle.contains( "macintosh" ) ? true : false; // macintosh (aqua)
+  mOxyStyle = mStyle.contains( "oxygen" ) ? true : false; // oxygen
+
+  mDefaultFont = qApp->font(); // save before it is changed in any way
+
+  // platforms, specific
+#ifdef Q_OS_LINUX
+  mLinuxOS = true;
+#else
+  mLinuxOS = false;
+#endif
+#ifdef Q_OS_WIN32
+  mWinOS = true;
+#else
+  mWinOS = false;
+#endif
+#ifdef Q_OS_MAC
+  mMacOS = true;
+#else
+  mMacOS = false;
+#endif
+#ifdef ANDROID
+  mAndroidOS = true;
+#else
+  mAndroidOS = false;
+#endif
+
+  // platforms, general
+#ifdef Q_OS_UNIX
+  mUnix = true;
+#else
+  mUnix = false;
+#endif
+
+  // window servers
+#ifdef Q_WS_X11
+  mX11WS = true;
+#else
+  mX11WS = false;
+#endif
+#ifdef Q_WS_WIN
+  mWinWS = true;
+#else
+  mWinWS = false;
+#endif
+#ifdef Q_WS_MAC
+  mMacWS = true;
+#else
+  mMacWS = false;
+#endif
+
 }
