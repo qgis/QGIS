@@ -29,15 +29,15 @@
 QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-    : QGroupBox( parent )
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
+    : QGroupBox( parent ), mSettings( settings )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
-    QWidget *parent )
-    : QGroupBox( title, parent )
+    QWidget *parent, QSettings* settings )
+    : QGroupBox( title, parent ), mSettings( settings )
 {
   init();
 }
@@ -45,10 +45,16 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
 QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
 {
   saveState();
+  delete mSettings;
 }
 
 void QgsCollapsibleGroupBox::init()
 {
+  // use pointer to app qsettings if no custom qsettings specified
+  if ( !mSettings )
+  {
+    mSettings = new QSettings();
+  }
   // variables
   mCollapsed = false;
   mSaveCollapsedState = true;
@@ -188,18 +194,17 @@ void QgsCollapsibleGroupBox::loadState()
 
   setUpdatesEnabled( false );
 
-  QSettings settings;
   QString key = saveKey();
   QVariant val;
   if ( mSaveCheckedState )
   {
-    val = settings.value( key + "/checked" );
+    val = mSettings->value( key + "/checked" );
     if ( ! val.isNull() )
       setChecked( val.toBool() );
   }
   if ( mSaveCollapsedState )
   {
-    val = settings.value( key + "/collapsed" );
+    val = mSettings->value( key + "/collapsed" );
     if ( ! val.isNull() )
       setCollapsed( val.toBool() );
   }
@@ -212,13 +217,12 @@ void QgsCollapsibleGroupBox::saveState()
   if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
     return;
 
-  QSettings settings;
   QString key = saveKey();
 
   if ( mSaveCheckedState )
-    settings.setValue( key + "/checked", isChecked() );
+    mSettings->setValue( key + "/checked", isChecked() );
   if ( mSaveCollapsedState )
-    settings.setValue( key + "/collapsed", isCollapsed() );
+    mSettings->setValue( key + "/collapsed", isCollapsed() );
 }
 
 void QgsCollapsibleGroupBox::checkToggled( bool chkd )
@@ -340,4 +344,3 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   }
   emit collapsedStateChanged( this );
 }
-

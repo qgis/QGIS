@@ -26,6 +26,7 @@
  */
 
 #include <QGroupBox>
+#include <QSettings>
 
 class QToolButton;
 class QScrollArea;
@@ -35,9 +36,12 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     Q_OBJECT
 
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0, QSettings* settings = 0 );
     ~QgsCollapsibleGroupBox();
+
+    // set custom QSettings pointer if group box was already created from QtDesigner promotion
+    void setSettings( QSettings* settings ) { mSettings = settings ;}
 
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );
@@ -79,6 +83,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void updateStyle();
     QRect titleRect() const;
     QString saveKey() const;
+
+    // pointer to app or custom QSettings
+    QSettings* mSettings;
 
     bool mCollapsed;
     bool mSaveCollapsedState;

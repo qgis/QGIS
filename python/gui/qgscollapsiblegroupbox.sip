@@ -4,9 +4,12 @@ class QgsCollapsibleGroupBox : QGroupBox
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0, QSettings* settings = 0 );
     ~QgsCollapsibleGroupBox();
+
+    // set custom QSettings pointer if group box was already created from QtDesigner promotion
+    void setSettings( QSettings* settings );
 
     bool isCollapsed() const;
     void setCollapsed( bool collapse );
