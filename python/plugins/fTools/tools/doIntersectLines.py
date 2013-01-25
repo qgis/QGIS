@@ -143,6 +143,7 @@ class Dialog(QDialog, Ui_Dialog):
         start = 15.00
         add = 85.00 / layer1.featureCount()
         index = ftools_utils.createIndex( provider2 )
+        singlelayer_tempList = []
         while provider1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             lineList = []
@@ -169,11 +170,30 @@ class Dialog(QDialog, Ui_Dialog):
                                 tempList = tempGeom.asMultiPoint()
                             else:
                                 tempList.append(tempGeom.asPoint())
-                            for j in tempList:
-                                outFeat.setGeometry(tempGeom.fromPoint(j))
-                                outFeat.addAttribute(0, atMap1[index1])
-                                outFeat.addAttribute(1, atMap2[index2])
-                                writer.addFeature(outFeat)
+                            if line1.compare(line2) == 0: #Same layer
+                                for point in tempList:
+                                    if not singlelayer_tempList:
+                                        singlelayer_tempList.append([QgsPoint(point),atMap2[index2]])
+                                    else:
+                                        flag = True
+                                        for val in singlelayer_tempList:
+                                            if val[0] == point:
+                                                val.append(atMap2[index2])
+                                                flag = False
+                                        if flag:
+                                            singlelayer_tempList.append([point,atMap2[index2]])
+                            else:
+                                for j in tempList:
+                                    outFeat.setGeometry(tempGeom.fromPoint(j))
+                                    outFeat.addAttribute(0, atMap1[index1])
+                                    outFeat.addAttribute(1, atMap2[index2])
+                                    writer.addFeature(outFeat)
             start = start + add
             progressBar.setValue(start)
+        if line1.compare(line2) == 0: #same layer
+            for j in singlelayer_tempList:
+                outFeat.setGeometry(tempGeom.fromPoint(j[0]))
+                outFeat.addAttribute(0, j[1])
+                outFeat.addAttribute(1, j[2])
+                writer.addFeature(outFeat)
         del writer
