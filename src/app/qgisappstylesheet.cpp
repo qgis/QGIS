@@ -156,6 +156,14 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
     }
   }
 
+  //fix background issue for gnome desktop
+  if ( mLinuxOS && mGtkStyle )
+  {
+    ss += "QListWidget#mOptionsListWidget{";
+    ss += "background-color: white;";
+    ss += "} ";
+  }
+
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );
