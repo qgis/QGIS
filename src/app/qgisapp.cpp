@@ -224,7 +224,7 @@
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
-#include "qgsmaptoolidentify.h"
+#include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolrotatefeature.h"
@@ -1861,7 +1861,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mTouch = new QgsMapToolTouch( mMapCanvas );
   mMapTools.mTouch->setAction( mActionTouch );
 #endif
-  mMapTools.mIdentify = new QgsMapToolIdentify( mMapCanvas );
+  mMapTools.mIdentify = new QgsMapToolIdentifyAction( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
   mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
   mMapTools.mFeatureAction->setAction( mActionFeatureAction );

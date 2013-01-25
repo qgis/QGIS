@@ -15,8 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSIDENTIFYRESULTS_H
-#define QGSIDENTIFYRESULTS_H
+#ifndef QGSIDENTIFYRESULTSDIALOG_H
+#define QGSIDENTIFYRESULTSDIALOG_H
 
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgsattributeaction.h"
@@ -42,7 +42,7 @@ class QDockWidget;
  *@author Gary E.Sherman
  */
 
-class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
+class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
 {
     Q_OBJECT
 
@@ -50,9 +50,9 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WFlags f = 0 );
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WFlags f = 0 );
 
-    ~QgsIdentifyResults();
+    ~QgsIdentifyResultsDialog();
 
     /** Add add feature from vector layer */
     void addFeature( QgsVectorLayer *layer,
