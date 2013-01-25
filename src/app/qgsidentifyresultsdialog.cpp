@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsidentifyresults.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
@@ -114,7 +114,7 @@ class QgsIdentifyResultsDock : public QDockWidget
 //       action
 //     name value
 
-QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
+QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
     : QDialog( parent, f )
     , mActionPopup( 0 )
     , mCanvas( canvas )
@@ -157,14 +157,14 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
            this, SLOT( printCurrentItem() ) );
 }
 
-QgsIdentifyResults::~QgsIdentifyResults()
+QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 {
   clearHighlights();
   if ( mActionPopup )
     delete mActionPopup;
 }
 
-QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
+QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *layer )
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
@@ -177,7 +177,7 @@ QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
   return 0;
 }
 
-void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
+void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer,
                                      const QgsFeature &f,
                                      const QMap<QString, QString> &derivedAttributes )
 {
@@ -290,7 +290,7 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
   highlightFeature( featItem );
 }
 
-void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
+void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
                                      QString label,
                                      const QMap<QString, QString> &attributes,
                                      const QMap<QString, QString> &derivedAttributes )
@@ -345,7 +345,7 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
   }
 }
 
-void QgsIdentifyResults::editingToggled()
+void QgsIdentifyResultsDialog::editingToggled()
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
   QgsVectorLayer *vlayer = vectorLayer( layItem );
@@ -380,7 +380,7 @@ void QgsIdentifyResults::editingToggled()
 }
 
 // Call to show the dialog box.
-void QgsIdentifyResults::show()
+void QgsIdentifyResultsDialog::show()
 {
   // Enforce a few things before showing the dialog box
   lstResults->sortItems( 0, Qt::AscendingOrder );
@@ -424,7 +424,7 @@ void QgsIdentifyResults::show()
 
 // Slot called when user clicks the Close button
 // (saves the current window size/position)
-void QgsIdentifyResults::close()
+void QgsIdentifyResultsDialog::close()
 {
   clear();
 
@@ -439,14 +439,14 @@ void QgsIdentifyResults::close()
 
 // Save the current window size/position before closing
 // from window menu or X in titlebar
-void QgsIdentifyResults::closeEvent( QCloseEvent *e )
+void QgsIdentifyResultsDialog::closeEvent( QCloseEvent *e )
 {
   // We'll close in our own good time thanks...
   e->ignore();
   close();
 }
 
-void QgsIdentifyResults::itemClicked( QTreeWidgetItem *item, int column )
+void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column );
   if ( item->data( 0, Qt::UserRole ).toString() == "edit" )
@@ -464,7 +464,7 @@ void QgsIdentifyResults::itemClicked( QTreeWidgetItem *item, int column )
 // actions that can be applied to the data in the identify results
 // dialog box.
 
-void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
+void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
 {
   QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
   // if the user clicked below the end of the attribute list, just return
@@ -535,25 +535,25 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
 }
 
 // Save the current window location (store in ~/.qt/qgisrc)
-void QgsIdentifyResults::saveWindowLocation()
+void QgsIdentifyResultsDialog::saveWindowLocation()
 {
   QSettings settings;
   settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
 }
 
-void QgsIdentifyResults::setColumnText( int column, const QString & label )
+void QgsIdentifyResultsDialog::setColumnText( int column, const QString & label )
 {
   QTreeWidgetItem* header = lstResults->headerItem();
   header->setText( column, label );
 }
 
-void QgsIdentifyResults::expandColumnsToFit()
+void QgsIdentifyResultsDialog::expandColumnsToFit()
 {
   lstResults->resizeColumnToContents( 0 );
   lstResults->resizeColumnToContents( 1 );
 }
 
-void QgsIdentifyResults::clearHighlights()
+void QgsIdentifyResultsDialog::clearHighlights()
 {
   foreach ( QgsHighlight *h, mHighlights )
   {
@@ -563,7 +563,7 @@ void QgsIdentifyResults::clearHighlights()
   mHighlights.clear();
 }
 
-void QgsIdentifyResults::clear()
+void QgsIdentifyResultsDialog::clear()
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
@@ -577,7 +577,7 @@ void QgsIdentifyResults::clear()
   mPrintToolButton->setHidden( true );
 }
 
-void QgsIdentifyResults::activate()
+void QgsIdentifyResultsDialog::activate()
 {
 #if 0
   foreach ( QgsRubberBand *rb, mRubberBands )
@@ -593,7 +593,7 @@ void QgsIdentifyResults::activate()
   }
 }
 
-void QgsIdentifyResults::deactivate()
+void QgsIdentifyResultsDialog::deactivate()
 {
 #if 0
   foreach ( QgsRubberBand *rb, mRubberBands )
@@ -603,7 +603,7 @@ void QgsIdentifyResults::deactivate()
 #endif
 }
 
-void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
+void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -633,7 +633,7 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
 }
 
-QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
+QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
 {
   if ( !item )
     return 0;
@@ -672,7 +672,7 @@ QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
   return featItem;
 }
 
-QTreeWidgetItem *QgsIdentifyResults::layerItem( QTreeWidgetItem *item )
+QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QTreeWidgetItem *item )
 {
   if ( item && item->parent() )
   {
@@ -683,7 +683,7 @@ QTreeWidgetItem *QgsIdentifyResults::layerItem( QTreeWidgetItem *item )
 }
 
 
-QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
+QgsVectorLayer *QgsIdentifyResultsDialog::vectorLayer( QTreeWidgetItem *item )
 {
   item = layerItem( item );
   if ( !item )
@@ -692,7 +692,7 @@ QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
 }
 
 
-QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
+QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -714,13 +714,13 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
   return featItem;
 }
 
-void QgsIdentifyResults::itemExpanded( QTreeWidgetItem *item )
+void QgsIdentifyResultsDialog::itemExpanded( QTreeWidgetItem *item )
 {
   Q_UNUSED( item );
   expandColumnsToFit();
 }
 
-void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   Q_UNUSED( previous );
   if ( !current )
@@ -745,7 +745,7 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTr
   }
 }
 
-void QgsIdentifyResults::layerDestroyed()
+void QgsIdentifyResultsDialog::layerDestroyed()
 {
   QObject *theSender = sender();
 
@@ -771,7 +771,7 @@ void QgsIdentifyResults::layerDestroyed()
   }
 }
 
-void QgsIdentifyResults::disconnectLayer( QObject *layer )
+void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
 {
   if ( !layer )
     return;
@@ -792,7 +792,7 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   }
 }
 
-void QgsIdentifyResults::featureDeleted( QgsFeatureId fid )
+void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
 
@@ -822,7 +822,7 @@ void QgsIdentifyResults::featureDeleted( QgsFeatureId fid )
   }
 }
 
-void QgsIdentifyResults::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &val )
+void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &val )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
   QTreeWidgetItem *layItem = layerItem( sender() );
@@ -855,7 +855,7 @@ void QgsIdentifyResults::attributeValueChanged( QgsFeatureId fid, int idx, const
   }
 }
 
-void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
+void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
 {
   QgsVectorLayer *layer = vectorLayer( item );
   if ( !layer )
@@ -891,7 +891,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   }
 }
 
-void QgsIdentifyResults::zoomToFeature()
+void QgsIdentifyResultsDialog::zoomToFeature()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
 
@@ -929,7 +929,7 @@ void QgsIdentifyResults::zoomToFeature()
   mCanvas->refresh();
 }
 
-void QgsIdentifyResults::featureForm()
+void QgsIdentifyResultsDialog::featureForm()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
 
@@ -962,7 +962,7 @@ void QgsIdentifyResults::featureForm()
   }
 }
 
-void QgsIdentifyResults::highlightAll()
+void QgsIdentifyResultsDialog::highlightAll()
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
@@ -975,12 +975,12 @@ void QgsIdentifyResults::highlightAll()
   }
 }
 
-void QgsIdentifyResults::highlightLayer()
+void QgsIdentifyResultsDialog::highlightLayer()
 {
   highlightLayer( lstResults->currentItem() );
 }
 
-void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
+void QgsIdentifyResultsDialog::highlightLayer( QTreeWidgetItem *item )
 {
   QTreeWidgetItem *layItem = layerItem( item );
   if ( !layItem )
@@ -994,12 +994,12 @@ void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
   }
 }
 
-void QgsIdentifyResults::layerProperties()
+void QgsIdentifyResultsDialog::layerProperties()
 {
   layerProperties( lstResults->currentItem() );
 }
 
-void QgsIdentifyResults::layerProperties( QTreeWidgetItem *item )
+void QgsIdentifyResultsDialog::layerProperties( QTreeWidgetItem *item )
 {
   QgsVectorLayer *vlayer = vectorLayer( item );
   if ( !vlayer )
@@ -1008,17 +1008,17 @@ void QgsIdentifyResults::layerProperties( QTreeWidgetItem *item )
   QgisApp::instance()->showLayerProperties( vlayer );
 }
 
-void QgsIdentifyResults::expandAll()
+void QgsIdentifyResultsDialog::expandAll()
 {
   lstResults->expandAll();
 }
 
-void QgsIdentifyResults::collapseAll()
+void QgsIdentifyResultsDialog::collapseAll()
 {
   lstResults->collapseAll();
 }
 
-void QgsIdentifyResults::copyAttributeValue()
+void QgsIdentifyResultsDialog::copyAttributeValue()
 {
   QClipboard *clipboard = QApplication::clipboard();
   QString text = lstResults->currentItem()->data( 1, Qt::DisplayRole ).toString();
@@ -1026,7 +1026,7 @@ void QgsIdentifyResults::copyAttributeValue()
   clipboard->setText( text );
 }
 
-void QgsIdentifyResults::copyFeatureAttributes()
+void QgsIdentifyResultsDialog::copyFeatureAttributes()
 {
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
@@ -1054,7 +1054,7 @@ void QgsIdentifyResults::copyFeatureAttributes()
   clipboard->setText( text );
 }
 
-void QgsIdentifyResults::openUrl( const QUrl &url )
+void QgsIdentifyResultsDialog::openUrl( const QUrl &url )
 {
   if ( !QDesktopServices::openUrl( url ) )
   {
@@ -1062,7 +1062,7 @@ void QgsIdentifyResults::openUrl( const QUrl &url )
   }
 }
 
-void QgsIdentifyResults::printCurrentItem()
+void QgsIdentifyResultsDialog::printCurrentItem()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
   if ( !item )
@@ -1078,7 +1078,7 @@ void QgsIdentifyResults::printCurrentItem()
     wv->print( &printer );
 }
 
-void QgsIdentifyResults:: on_mExpandNewToolButton_toggled( bool checked )
+void QgsIdentifyResultsDialog:: on_mExpandNewToolButton_toggled( bool checked )
 {
   QSettings settings;
   settings.setValue( "/Map/identifyExpand", checked );

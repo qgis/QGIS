@@ -19,7 +19,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsidentifyresults.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
@@ -57,10 +57,10 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
   }
 }
 
-QgsIdentifyResults *QgsMapToolIdentify::results()
+QgsIdentifyResultsDialog *QgsMapToolIdentify::results()
 {
   if ( !mResults )
-    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+    mResults = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
 
   return mResults;
 }

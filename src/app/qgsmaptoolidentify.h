@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QPointer>
 
-class QgsIdentifyResults;
+class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsRubberBand;
@@ -71,7 +71,7 @@ class QgsMapToolIdentify : public QgsMapTool
     bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
 
     //! Pointer to the identify results dialog for name/value pairs
-    QPointer<QgsIdentifyResults> mResults;
+    QPointer<QgsIdentifyResultsDialog> mResults;
 
     //! Private helper
     void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
@@ -81,7 +81,7 @@ class QgsMapToolIdentify : public QgsMapTool
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
-    QgsIdentifyResults *results();
+    QgsIdentifyResultsDialog *results();
 };
 
 #endif
