@@ -86,6 +86,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
 
     // pointer to app or custom QSettings
     QSettings* mSettings;
+    bool mDelSettings;
 
     bool mCollapsed;
     bool mSaveCollapsedState;

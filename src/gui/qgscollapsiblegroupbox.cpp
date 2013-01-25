@@ -45,15 +45,18 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
 QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
 {
   saveState();
-  delete mSettings;
+  if ( mDelSettings )
+    delete mSettings;
 }
 
 void QgsCollapsibleGroupBox::init()
 {
   // use pointer to app qsettings if no custom qsettings specified
+  mDelSettings = false;
   if ( !mSettings )
   {
     mSettings = new QSettings();
+    mDelSettings = true; // only delete obj created by class
   }
   // variables
   mCollapsed = false;
