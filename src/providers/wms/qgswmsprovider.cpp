@@ -807,8 +807,24 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         setQueryItem( url, "STYLES", mActiveSubStyles.join( "," ) );
         setQueryItem( url, "FORMAT", mImageMimeType );
         setQueryItem( url, crsKey, mImageCrs );
+
         if ( mTiled )
+        {
           setQueryItem( url, "TILED", "true" );
+        }
+
+        if ( mDpi != -1 )
+        {
+          setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
+          setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
+          setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+        }
+
+        if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+             !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+        {
+          setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
+        }
 
         int i = 0;
         for ( int row = row0; row <= row1; row++ )
