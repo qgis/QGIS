@@ -62,7 +62,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolhtmlannotation.cpp
   qgsmaptoolpinlabels.cpp
   qgsmaptoolshowhidelabels.cpp
-  qgsmaptoolidentify.cpp
+  qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
@@ -222,7 +222,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolfeatureaction.h
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
-  qgsmaptoolidentify.h
+  qgsmaptoolidentifyaction.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
