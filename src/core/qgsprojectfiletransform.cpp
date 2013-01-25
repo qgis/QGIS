@@ -617,6 +617,31 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
 
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
+
+  // While PalettedColor should normaly contain only integer values, usually
+  // color palette 0-255, it may happen (Tim, issue #7023) that it contains
+  // colormap classification with double values and text labels
+  // (which should normaly only appear in SingleBandPseudoColor drawingStyle)
+  // => we have to check first the values and change drawingStyle if necessary
+  if ( drawingStyle == "PalettedColor" )
+  {
+    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+
+    for ( int i = 0; i < colorRampEntryList.size(); ++i )
+    {
+      QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+      QString strValue = colorRampEntryElem.attribute( "value" );
+      double value = strValue.toDouble();
+      if ( value < 0 || value > 10000 || value != ( int )value )
+      {
+        QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
+        drawingStyle = "SingleBandPseudoColor";
+        break;
+      }
+    }
+  }
+
   if ( drawingStyle == "SingleBandGray" )
   {
     rasterRendererElem.setAttribute( "type", "singlebandgray" );
