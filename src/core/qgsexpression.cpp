@@ -572,15 +572,9 @@ static QVariant fcnLPad( const QVariantList& values, QgsFeature* , QgsExpression
 static QVariant fcnFormatString( const QVariantList& values, QgsFeature* , QgsExpression *parent )
 {
   QString string = getStringValue( values.at( 0 ), parent );
-  for ( int n = 1; n <= values.length() - 1; n++ )
+  for ( int n = 1; n < values.length(); n++ )
   {
-    QString arg = getStringValue( values.at( n ), parent );
-    QString place = '%' + QString::number( n );
-    if ( string.indexOf( place ) == -1 )
-    {
-      continue;
-    }
-    string.replace( place, arg );
+    string = string.arg( getStringValue( values.at( n ), parent ) );
   }
   return string;
 }
