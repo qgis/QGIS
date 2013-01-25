@@ -1361,7 +1361,8 @@ bool QgsWcsProvider::calculateExtent()
 
   QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
 
-  // It may happen (GeoServer) that extent reported in spatialDomain.Envelope is larger  // than the coverage. Then if that larger BBOX is requested, the server returns
+  // It may happen (GeoServer) that extent reported in spatialDomain.Envelope is larger
+  // than the coverage. Then if that larger BBOX is requested, the server returns
   // request BBOX intersected with coverage box scaled to requested WIDTH and HEIGHT.
   // GDAL WCS client does not suffer from this probably because it probably takes
   // extent from lonLatEnvelope (it probably does not calculate it from
@@ -1403,9 +1404,18 @@ bool QgsWcsProvider::calculateExtent()
   }
   else
   {
+    // Unfortunately it may also happen that a server (cubewerx.com) does not have
+    // overviews and it is not able to respond for the whole extent within timeout.
+    // It returns timeout error.
+    // In that case (if request failed) we do not report error to allow to work
+    // with such servers on smaller portions of extent
+    // (http://lists.osgeo.org/pipermail/qgis-developer/2013-January/024019.html)
+
+    // Unfortunately even if we get over this 10x10 check, QGIS also requests
+    // 32x32 thumbnail where it is waiting for another timeout
+
     QgsDebugMsg( "Cannot get cache to verify extent" );
-    setError( mCachedError );
-    return false;
+    QgsMessageLog::logMessage( tr( "Cannot verify coverage full extent: %1" ).arg( mCachedError.message() ), tr( "WCS" ) );
   }
 
   return true;
