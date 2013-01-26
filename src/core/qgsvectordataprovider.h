@@ -111,12 +111,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
 
-    // temporary
-    QgsFeatureIterator select( QgsAttributeList fetchAttributes,
-                               QgsRectangle rect = QgsRectangle(),
-                               bool fetchGeometry = true,
-                               bool useIntersect = false );
-
     /**
      * Get feature type.
      * @return int representing the feature type

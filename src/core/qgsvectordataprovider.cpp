@@ -491,25 +491,4 @@ void QgsVectorDataProvider::pushError( QString msg )
   mErrors << msg;
 }
 
-QgsFeatureIterator QgsVectorDataProvider::select( QgsAttributeList fetchAttributes,
-    QgsRectangle rect,
-    bool fetchGeometry,
-    bool useIntersect )
-{
-  qDebug( "OLD SELECT!" );
-
-  QgsFeatureRequest request;
-  if ( !rect.isEmpty() )
-  {
-    request.setFilterRect( rect );
-  }
-  if ( !fetchGeometry )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( useIntersect )
-    request.setFlags( request.flags() | QgsFeatureRequest::ExactIntersect );
-  request.setSubsetOfAttributes( fetchAttributes );
-  return getFeatures( request );
-}
-
-
 QStringList QgsVectorDataProvider::smEncodings;

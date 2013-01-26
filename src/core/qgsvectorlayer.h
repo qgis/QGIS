@@ -448,15 +448,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fetchGeometry fetch features with geometry
      * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
      */
-    void select( QgsAttributeList fetchAttributes,
+    Q_DECL_DEPRECATED void select( QgsAttributeList fetchAttributes,
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
                  bool useIntersect = false );
-
-    /** Select features based on criteria specified in the request
-     * @note added in 2.0
-     */
-    //void select( const QgsFeatureRequest& request );
 
     /**
      * Query the provider for features specified in request.
@@ -468,11 +463,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param feature buffer to read the feature into
      * @return true, if a feature was fetched, false, if there are no more features
      */
-    bool nextFeature( QgsFeature& feature );
+    Q_DECL_DEPRECATED bool nextFeature( QgsFeature& feature );
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    Q_DECL_DEPRECATED bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
         @param f feature to add

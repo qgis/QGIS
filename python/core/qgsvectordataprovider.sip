@@ -54,12 +54,6 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
 
-    // temporary
-    QgsFeatureIterator select( QList<int> fetchAttributes = QList<int>(),
-                               QgsRectangle rect = QgsRectangle(),
-                               bool fetchGeometry = true,
-                               bool useIntersect = false ) /Deprecated/;
-
     /**
      * Get feature type.
      * @return int representing the feature type

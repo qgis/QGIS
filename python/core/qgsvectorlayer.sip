@@ -302,7 +302,7 @@ class QgsVectorLayer : QgsMapLayer
     void select( QList<int> fetchAttributes,
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
-                 bool useIntersect = false );
+                 bool useIntersect = false ) /Deprecated/;
 
     /**
      * Query the provider for features specified in request.
@@ -314,11 +314,11 @@ class QgsVectorLayer : QgsMapLayer
      * @param feature buffer to read the feature into
      * @return true, if a feature was fetched, false, if there are no more features
      */
-    bool nextFeature( QgsFeature& feature );
+    bool nextFeature( QgsFeature& feature ) /Deprecated/;
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true ) /Deprecated/;
 
     /** Adds a feature
         @param f feature to add
