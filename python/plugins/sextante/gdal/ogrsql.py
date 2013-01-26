@@ -33,7 +33,13 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import string
 import re
-import ogr
+
+try:
+  from osgeo import ogr
+  ogrAvailable = True
+except:
+  ogrAvailable = False
+
 from sextante.gdal.OgrAlgorithm import OgrAlgorithm
 
 class OgrSql(OgrAlgorithm):
@@ -58,6 +64,10 @@ class OgrSql(OgrAlgorithm):
 
 
     def processAlgorithm(self, progress):
+        if not ogrAvailable:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "OGR bindings not installed" )
+            return
+
         input = self.getParameterValue(self.INPUT_LAYER)
         sql = self.getParameterValue(self.SQL)
         ogrLayer = self.ogrConnectionString(input)

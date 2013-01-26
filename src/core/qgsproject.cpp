@@ -739,14 +739,14 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
     mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
   }
 
-  Q_CHECK_PTR( mapLayer );
-
   if ( !mapLayer )
   {
     QgsDebugMsg( "Unable to create layer" );
 
     return false;
   }
+
+  Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
@@ -1369,7 +1369,7 @@ QString QgsProject::readPath( QString src ) const
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
     QString home = homePath();
-    if( home.isNull() )
+    if ( home.isNull() )
       return src;
 
     QFileInfo fi( home + "/" + src );

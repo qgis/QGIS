@@ -41,7 +41,6 @@ class GeoAlgorithm:
 
         self.defineCharacteristics()
 
-
     def getCopy(self):
         newone = copy.copy(self)
         newone.parameters = copy.deepcopy(self.parameters)
@@ -106,8 +105,8 @@ class GeoAlgorithm:
         This check is called from the parameters dialog, and also when calling from the console'''
         return None
     #=========================================================
-        
-    
+
+
     def execute(self, progress):
         '''The method to use to call a SEXTANTE algorithm.
         Although the body of the algorithm is in processAlgorithm(),
@@ -120,9 +119,9 @@ class GeoAlgorithm:
             self.resolveTemporaryOutputs()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
-            self.processAlgorithm(progress)                  
+            self.processAlgorithm(progress)
             self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)          
+            self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException, gaee:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, gaee.msg)
             raise gaee
@@ -144,32 +143,32 @@ class GeoAlgorithm:
     def runPostExecutionScript(self, progress):
         scriptFile = SextanteConfig.getSetting(SextanteConfig.POST_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress);
-    
+
     def runPreExecutionScript(self, progress):
         scriptFile = SextanteConfig.getSetting(SextanteConfig.PRE_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress);
-        
-    def runHookScript(self, filename, progress):                    
+
+    def runHookScript(self, filename, progress):
         if not os.path.exists(filename):
             return
-        try: 
+        try:
             script = "import sextante\n"
             ns = {}
             ns['progress'] = progress
-            ns['alg'] = self                
+            ns['alg'] = self
             f = open(filename)
             lines = f.readlines()
             for line in lines:
                 script+=line
-            exec(script) in ns        
+            exec(script) in ns
         except: # a wrong script should not cause problems, so we swallow all exceptions
             pass
-    
+
     def convertUnsupportedFormats(self, progress):
         i = 0
         progress.setText("Converting outputs")
-        for out in self.outputs:            
-            if isinstance(out, OutputVector): 
+        for out in self.outputs:
+            if isinstance(out, OutputVector):
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
@@ -177,16 +176,16 @@ class GeoAlgorithm:
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
-            elif isinstance(out, OutputRaster): 
+            elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
                     writer = QgsRasterFileWriter(out.value)
                     format = self.getFormatShortNameFromFilename(out.value)
-                    writer.setOutputFormat(format);                                     
-                    writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), layer.crs())                        
-            progress.setPercentage(100 * i / float(len(self.outputs)))                    
-            
+                    writer.setOutputFormat(format);
+                    writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), layer.crs())
+            progress.setPercentage(100 * i / float(len(self.outputs)))
+
     def getFormatShortNameFromFilename(self, filename):
         ext = filename[filename.rfind(".")+1:]
         supported = GdalUtils.getSupportedRasters()
@@ -195,7 +194,7 @@ class GeoAlgorithm:
             if ext in exts:
                 return name
         return "GTiff"
-            
+
     def checkOutputFileExtensions(self):
         '''Checks if the values of outputs are correct and have one of the supported output extensions.
         If not, it adds the first one of the supported extensions, which is assumed to be the default one'''

@@ -35,9 +35,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from osgeo import gdal
+from osgeo import gdal, ogr
 from osgeo.gdalconst import *
-from osgeo import ogr
 
 import os
 # to know the os
