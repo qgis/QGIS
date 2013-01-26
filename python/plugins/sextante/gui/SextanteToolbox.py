@@ -132,7 +132,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             if message:
                 QMessageBox.warning(self, self.tr("Warning"), message)
                 return
-            alg = alg.getCopy()#copy.deepcopy(alg)
+            alg = alg.getCopy()
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)

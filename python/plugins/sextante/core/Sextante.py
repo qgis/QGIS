@@ -70,7 +70,7 @@ class Sextante:
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
-    def addProvider(provider):
+    def addProvider(provider, updateList = False):
         '''use this method to add algorithms from external providers'''
         '''Adding a new provider automatically initializes it, so there is no need to do it in advance'''
         #Note: this might slow down the initialization process if there are many new providers added.
@@ -78,7 +78,8 @@ class Sextante:
         provider.initializeSettings()
         Sextante.providers.append(provider)
         SextanteConfig.loadSettings()
-        Sextante.updateAlgsList()
+        if updateList:
+            Sextante.updateAlgsList()
 
     @staticmethod
     def removeProvider(provider):
@@ -141,13 +142,14 @@ class Sextante:
         Sextante.fireAlgsListHasChanged()
 
     @staticmethod
-    def loadFromProviders():
+    def loadFromProviders():        
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
 
     @staticmethod
     def updateProviders():
+        
         for provider in Sextante.providers:
             provider.loadAlgorithms()
 

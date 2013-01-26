@@ -64,7 +64,6 @@ class FixedDistanceBuffer(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        useSelection = self.getParameterValue(self.USE_SELECTED)
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))

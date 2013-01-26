@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtGui
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
 
@@ -61,7 +60,7 @@ class QGisLayers:
     
     @staticmethod
     def getSupportedOutputTableExtensions():        
-        exts = ["dbf, csv"]        
+        exts = ["csv"]        
         return exts
                 
     @staticmethod

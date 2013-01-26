@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    SextanteVectorWriter.py
+    SextanteRasterWriter.py
     ---------------------
-    Date                 : September 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : January 2013
+    Copyright            : (C) 2013 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -24,28 +24,34 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import *
-
+import numpy
 from PyQt4.QtCore import *
 
-class SextanteTableWriter:
+class SextanteRasterWriter:
 
-    def __init__(self, fileName, encoding, fields):
+    NODATA = -99999.0
+    
+    def __init__(self, fileName, minx, miny, maxx, maxy, cellsize, nbands, crs):
         self.fileName = fileName
-        self.writer = None
-
-        if encoding is None:
-            settings = QSettings()
-            encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
-
-        if not fileName.endswith("csv"):
-            fileName += ".csv"
-        file = open(fileName, "w")
-        file.write(";".join(field.name() for field in fields))
-        file.write("\n")
-        file.close()
-
-    def addRecord(self, values):
-        file = open(self.fileName, "a")
-        file.write(";".join([value.toString() for value in values]))
-        file.write("\n")
-        file.close()
+        self.nx = (maxx - minx) / float(cellsize)
+        self.ny = (maxy - miny) / float(cellsize)
+        self.matrix = numpy.empty(shape=(self.nx, self.ny, nbands))
+        self.matrix[:] = self.NODATA
+        self.cellsize = cellsize
+        self.crs = crs    
+        
+    def setValue(self, value, x, y, band = 0):
+        try:
+            self.matrix[x, y, band] = value
+        except IndexError:
+            pass
+        
+    def getValue(self, x, y, band = 0):        
+        try:
+            return matrix[x, y, band]
+        except IndexError:
+            return self.NODATA        
+        
+    def close(self):
+        #todo
+        pass

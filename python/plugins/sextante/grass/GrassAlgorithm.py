@@ -119,6 +119,7 @@ class GrassAlgorithm(GeoAlgorithm):
         line = lines.readline().strip("\n").strip()
         self.group = line
         hasRasterOutput = False
+        hasVectorOutput = False
         while line != "":
             try:
                 line = line.strip("\n").strip()
@@ -126,9 +127,9 @@ class GrassAlgorithm(GeoAlgorithm):
                     parameter = ParameterFactory.getFromString(line);
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
-                        hasVectorOutput = True
+                       hasVectorOutput = True
                     if isinstance(parameter, ParameterMultipleInput) and parameter.datatype < 3:
-                        hasVectorOutput = True                        
+                       hasVectorOutput = True                        
                 elif line.startswith("*Parameter"):
                     param = ParameterFactory.getFromString(line[1:])
                     param.isAdvanced = True
@@ -151,9 +152,10 @@ class GrassAlgorithm(GeoAlgorithm):
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER, "v.in.ogr snap tolerance (-1 = no snap)", -1, None, -1.0)
             param.isAdvanced = True
             self.addParameter(param)
-            ParameterNumber(self.GRASS_MIN_AREA_PARAMETER, "v.in.ogr min area", 0, None, 0.0001)
+            param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER, "v.in.ogr min area", 0, None, 0.0001)
             param.isAdvanced = True
             self.addParameter(param)
+
 
     def getDefaultCellsize(self):
         cellsize = 0
