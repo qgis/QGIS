@@ -1,7 +1,7 @@
 r.rescale.eq
-r.rescale.eq - Rescales histogram equalized the range of category values in a raster map layer.
+r.rescale.eq - Rescales histogram equalized the range of category values in a raster  layer.
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterRange|from|The input data range to be rescaled (default: full range of input map)
+ParameterRaster|input|Input raster layer|False
+ParameterRange|from|The input data range to be rescaled
 ParameterRange|to|The output data range
-OutputRaster|output|Name for output raster map
+OutputRaster|output|Output raster layer
