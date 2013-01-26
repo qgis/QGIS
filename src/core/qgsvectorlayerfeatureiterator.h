@@ -8,9 +8,9 @@
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsVectorLayer;
-class QgsVectorJoinInfo;
+struct QgsVectorJoinInfo;
 
-class QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIterator
+class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIterator
 {
 public:
   QgsVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request );

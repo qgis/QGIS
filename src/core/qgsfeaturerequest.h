@@ -38,7 +38,7 @@ typedef QList<int> QgsAttributeList;
  *     QgsFeatureRequest().setFilterFid(45)
  *
  */
-class QgsFeatureRequest
+class CORE_EXPORT QgsFeatureRequest
 {
   public:
     enum Flag

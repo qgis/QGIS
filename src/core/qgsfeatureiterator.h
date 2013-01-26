@@ -7,7 +7,7 @@
 /** \ingroup core
  * Internal feature iterator to be implemented within data providers
  */
-class QgsAbstractFeatureIterator
+class CORE_EXPORT QgsAbstractFeatureIterator
 {
   public:
     //! base class constructor - stores the iteration parameters
@@ -40,7 +40,7 @@ class QgsAbstractFeatureIterator
  * \ingroup core
  * Wrapper for iterator of features from vector data provider or vector layer
  */
-class QgsFeatureIterator
+class CORE_EXPORT QgsFeatureIterator
 {
   public:
     //! construct invalid iterator
