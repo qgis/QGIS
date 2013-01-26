@@ -940,13 +940,16 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   size_t s = PQgetlength( queryResult.result(), row, col );
 
 #ifdef QGISDEBUG
-  QString buf = "";
-  for ( size_t i = 0; i < s; i++ )
+  if ( QgsLogger::debugLevel() >= 4 )
   {
-    buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
-  }
+    QString buf;
+    for ( size_t i = 0; i < s; i++ )
+    {
+      buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
+    }
 
-  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 4 );
+    QgsDebugMsg( QString( "int in hex:%1" ).arg( buf ) );
+  }
 #endif
 
   switch ( s )
