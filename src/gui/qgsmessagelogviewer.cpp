@@ -46,8 +46,8 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
 {
   setupUi( this );
 
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, int ) ),
-           this, SLOT( logMessage( QString, QString, int ) ) );
+  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
+           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 
   if ( statusBar )
   {
@@ -106,11 +106,11 @@ void QgsMessageLogViewer::buttonDestroyed()
   mButton = 0;
 }
 
-void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
+void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
   mButton->setToolTip( tr( "%1 message(s) logged." ).arg( mCount++ ) );
 
-  if ( !isVisible() )
+  if ( !isVisible() && level > QgsMessageLog::INFO )
   {
     mButton->show();
     QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );

@@ -28,8 +28,9 @@ import string
 import re
 import cgi
 import sys
-import ogr
-import gdal
+
+from osgeo import gdal, ogr
+
 from string import Template
 import os
 import tempfile

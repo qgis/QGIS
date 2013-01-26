@@ -28,8 +28,8 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication,QLocale, QString
-from qgis.core import QGis, QgsExpression
+from PyQt4.QtCore import QCoreApplication, QLocale, QString
+from qgis.core import QGis, QgsExpression, QgsMessageLog
 from string import Template
 import sys
 import traceback
@@ -37,9 +37,20 @@ import glob
 import os.path
 import re
 import ConfigParser
+import warnings
 
 #######################
 # ERROR HANDLING
+
+warnings.simplefilter('default')
+warnings.filterwarnings("ignore", "the sets module is deprecated")
+
+def showWarning(message, category, filename, lineno, file=None, line=None):
+  QgsMessageLog.logMessage(
+    warnings.formatwarning(message, category, filename, lineno),
+    QCoreApplication.translate( "Python", "Python" )
+  )
+warnings.showwarning = showWarning
 
 def showException(type, value, tb, msg):
   lst = traceback.format_exception(type, value, tb)

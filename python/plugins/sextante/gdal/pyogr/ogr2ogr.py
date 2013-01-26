@@ -29,9 +29,12 @@ __revision__ = '$Format:%H$'
 import sys
 import os
 import stat
-import ogr
-import gdal
-import osr
+
+try:
+  from osgeo import gdal, ogr, osr
+  gdalAvailable = True
+except:
+  gdalAvailable = False
 
 ###############################################################################
 
@@ -127,7 +130,7 @@ class StdStreamCapture(object):
 bSkipFailures = False
 nGroupTransactions = 200
 bPreserveFID = False
-nFIDToFetch = ogr.NullFID
+nFIDToFetch = ogr.NullFID if gdalAvailable else None
 
 class Enum(set):
     def __getattr__(self, name):
@@ -1593,6 +1596,9 @@ def TranslateLayer(poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
     return True
 
 if __name__ == '__main__':
+    if not gdalAvailable:
+        print('ERROR: Python bindings of GDAL 1.8.0 or later required')
+
     version_num = int(gdal.VersionInfo('VERSION_NUM'))
     if version_num < 1800: # because of ogr.GetFieldTypeName
         print('ERROR: Python bindings of GDAL 1.8.0 or later required')

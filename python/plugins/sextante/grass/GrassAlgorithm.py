@@ -56,8 +56,8 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 
 class GrassAlgorithm(GeoAlgorithm):
 
-
-
+    GRASS_MIN_AREA_PARAMETER = "GRASS_MIN_AREA_PARAMETER"
+    GRASS_SNAP_TOLERANCE_PARAMETER = "GRASS_SNAP_TOLERANCE_PARAMETER"
     GRASS_REGION_EXTENT_PARAMETER = "GRASS_REGION_PARAMETER"
     GRASS_REGION_CELLSIZE_PARAMETER = "GRASS_REGION_CELLSIZE_PARAMETER"
 
@@ -123,7 +123,12 @@ class GrassAlgorithm(GeoAlgorithm):
             try:
                 line = line.strip("\n").strip()
                 if line.startswith("Parameter"):
-                    self.addParameter(ParameterFactory.getFromString(line))
+                    parameter = ParameterFactory.getFromString(line);
+                    self.addParameter(parameter)
+                    if isinstance(parameter, ParameterVector):
+                        hasVectorOutput = True
+                    if isinstance(parameter, ParameterMultipleInput) and parameter.datatype < 3:
+                        hasVectorOutput = True                        
                 elif line.startswith("*Parameter"):
                     param = ParameterFactory.getFromString(line[1:])
                     param.isAdvanced = True
@@ -142,7 +147,13 @@ class GrassAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER, "GRASS region extent"))
         if hasRasterOutput:
             self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize (leave 0 for default)", 0, None, 0.0))
-
+        if hasVectorOutput:
+            param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER, "v.in.ogr snap tolerance (-1 = no snap)", -1, None, -1.0)
+            param.isAdvanced = True
+            self.addParameter(param)
+            ParameterNumber(self.GRASS_MIN_AREA_PARAMETER, "v.in.ogr min area", 0, None, 0.0001)
+            param.isAdvanced = True
+            self.addParameter(param)
 
     def getDefaultCellsize(self):
         cellsize = 0
@@ -252,7 +263,8 @@ class GrassAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value == None or param.value == "":
                 continue
-            if param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER:
+            if (param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER 
+                    or param.name == self.GRASS_MIN_AREA_PARAMETER or param.name == self.GRASS_SNAP_TOLERANCE_PARAMETER):
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -364,11 +376,14 @@ class GrassAlgorithm(GeoAlgorithm):
         destFilename = self.getTempFilename()
         self.exportedLayers[orgFilename]= destFilename
         command = "v.in.ogr"
-        command += " min_area=-1"
-        command +=" dsn=\"" + os.path.dirname(filename) + "\""
-        command +=" layer=" + os.path.basename(filename)[:-4]
-        command +=" output=" + destFilename;
-        command +=" --overwrite -o"
+        min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER);
+        command += " min_area=" + str(min_area)
+        snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER);
+        command += " snap=" + str(snap)
+        command += " dsn=\"" + os.path.dirname(filename) + "\""
+        command += " layer=" + os.path.basename(filename)[:-4]
+        command += " output=" + destFilename;
+        command += " --overwrite -o"
         return command
 
     def setSessionProjectionFromProject(self, commands):

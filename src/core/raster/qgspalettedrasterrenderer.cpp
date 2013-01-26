@@ -69,17 +69,36 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
   if ( !paletteElem.isNull() )
   {
     QDomNodeList paletteEntries = paletteElem.elementsByTagName( "paletteEntry" );
-    nColors = paletteEntries.size();
+
+    QDomElement entryElem;
+    int value;
+    nColors = 0;
+
+    // We cannot believe that data are correct, check first max value
+    for ( int i = 0; i < paletteEntries.size(); ++i )
+    {
+      entryElem = paletteEntries.at( i ).toElement();
+      // Could be written as doubles (with .0000) in old project files
+      value = ( int )entryElem.attribute( "value", "0" ).toDouble();
+      if ( value >= nColors && value <= 10000 ) nColors = value + 1;
+    }
+    QgsDebugMsg( QString( "nColors = %1" ).arg( nColors ) );
+
     colors = new QRgb[ nColors ];
 
-    int value = 0;
-    QDomElement entryElem;
     for ( int i = 0; i < nColors; ++i )
     {
       entryElem = paletteEntries.at( i ).toElement();
-      value = entryElem.attribute( "value", "0" ).toInt();
+      value = ( int )entryElem.attribute( "value", "0" ).toDouble();
       QgsDebugMsg( entryElem.attribute( "color", "#000000" ) );
-      colors[value] = QColor( entryElem.attribute( "color", "#000000" ) ).rgba();
+      if ( value >= 0 && value < nColors )
+      {
+        colors[value] = QColor( entryElem.attribute( "color", "#000000" ) ).rgba();
+      }
+      else
+      {
+        QgsDebugMsg( QString( "value %1 out of range" ).arg( value ) );
+      }
     }
   }
   QgsRasterRenderer* r = new QgsPalettedRasterRenderer( input, bandNumber, colors, nColors );
@@ -171,7 +190,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
   }
 
   //create copy of color table with nodata values replaced by fully transparent color
-  QVector<QRgb> colorTable(mNColors);
+  QVector<QRgb> colorTable( mNColors );
   for ( int i = 0; i < mNColors; ++i )
   {
     if ( inputBlock->isNoDataValue( i ) )
@@ -194,7 +213,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     int val = ( int ) inputBlock->value( i );
     if ( !hasTransparency )
     {
-      outputData[i] = colorTable[ val ];
+      outputData[i] = colorTable.value( val );
     }
     else
     {
@@ -207,7 +226,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
       {
         currentOpacity *=  alphaBlock->value( i ) / 255.0;
       }
-      QColor currentColor = QColor( colorTable[val] );
+      QColor currentColor = QColor( colorTable.value( val ) );
       outputData[i] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
     }
   }

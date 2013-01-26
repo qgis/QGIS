@@ -55,6 +55,25 @@ class QgisAppStyleSheet: public QObject
     void appStyleSheetChanged( const QString& appStyleSheet );
 
   private:
+    /** Set active configuration values */
+    void setActiveValues();
+
+    // qt styles
+    QString mStyle; // active style name (lowercase)
+    bool mMotifStyle; // motif
+    bool mCdeStyle; // cde
+    bool mPlastqStyle; // plastique
+    bool mCleanLkStyle; // cleanlooks
+    bool mGtkStyle; // gtk+
+    bool mWinStyle; // windows
+    bool mWinXpStyle; // windowsxp
+    bool mWinVistaStyle; // windowsvista
+    bool mMacStyle; // macintosh (aqua)
+    bool mOxyStyle; // oxygen
+
+    // default font saved for reference
+    QFont mDefaultFont;
+
     // platforms, specific
     bool mLinuxOS;
     bool mWinOS;
@@ -68,9 +87,6 @@ class QgisAppStyleSheet: public QObject
     bool mX11WS;
     bool mWinWS;
     bool mMacWS;
-
-    // default font saved for reference
-    QFont mDefaultFont;
 };
 
 #endif //QGISAPPSTYLESHEET_H

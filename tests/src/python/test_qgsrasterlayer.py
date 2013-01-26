@@ -161,7 +161,7 @@ class TestQgsRasterLayer(TestCase):
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
-        QgsMapLayerRegistry.addMapLayers([myRasterLayer])
+        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
     def testShaderCrash(self):
         """Check if we assign a shader and then reassign it no crash occurs."""

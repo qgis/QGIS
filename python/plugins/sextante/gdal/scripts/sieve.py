@@ -32,11 +32,7 @@ __revision__ = '$Format:%H$'
 ##connectedness=selection 4;8
 from sextante.gdal.GdalUtils import GdalUtils
 
-try:
-    from osgeo import gdal, ogr
-except ImportError:
-    import gdal
-    import ogr
+from osgeo import gdal, ogr
 
 threshold = 2
 connectedness=int(connectedness)

@@ -30,7 +30,12 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import string
 import re
-import ogr
+
+try:
+  from osgeo import ogr
+  ogrAvailable = True
+except:
+  ogrAvailable = False
 
 class OgrAlgorithm(GeoAlgorithm):
 
@@ -61,8 +66,9 @@ class OgrAlgorithm(GeoAlgorithm):
 
     def drivers(self):
         list = []
-        for iDriver in range(ogr.GetDriverCount()):
-            list.append("%s" % ogr.GetDriver(iDriver).GetName())
+        if ogrAvailable:
+            for iDriver in range(ogr.GetDriverCount()):
+                list.append("%s" % ogr.GetDriver(iDriver).GetName())
         return list
 
     def failure(self, pszDataSource):

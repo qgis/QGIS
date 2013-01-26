@@ -40,7 +40,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     ~QgsMessageLogViewer();
 
   public slots:
-    void logMessage( QString message, QString tag, int level );
+    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
   private:
     void showEvent( QShowEvent * );

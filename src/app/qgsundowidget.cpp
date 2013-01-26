@@ -35,7 +35,8 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
-  mUndoView = NULL;
+  mUndoView = new QUndoView( dockWidgetContents );
+  gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   mUndoStack = NULL;
   mPreviousIndex = 0;
   mPreviousCount = 0;
