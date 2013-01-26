@@ -66,7 +66,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -297,8 +297,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>920</width>
-            <height>756</height>
+            <width>906</width>
+            <height>720</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -615,17 +615,7 @@ p, li { white-space: pre-wrap; }
        <string>Display</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_19">
-       <item row="0" column="0">
-        <widget class="QLabel" name="textLabel3">
-         <property name="text">
-          <string>Legend display text</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="txtDisplayName"/>
-       </item>
-       <item row="1" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Map Tip display text</string>
@@ -751,6 +741,34 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
        </item>
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="textLabel3">
+           <property name="text">
+            <string>Layer name</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mLayerOrigNameLineEdit"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>displayed as</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="txtDisplayName">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetPage5">
@@ -778,8 +796,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>912</width>
-            <height>748</height>
+            <width>866</width>
+            <height>688</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -890,8 +908,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>912</width>
-            <height>748</height>
+            <width>866</width>
+            <height>688</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">

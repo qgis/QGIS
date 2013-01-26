@@ -382,6 +382,17 @@ class QgsLegend : public QTreeWidget
     void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
 
+    /** Slot to update styles for legend items, since
+     * QgsLegend::item doesn't work in app stylesheet for individual legend types
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemStyles();
+
+    /** Slot to update symbology for legend items
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemSymbologies();
+
   protected:
 
     /*!Event handler for mouse movements.

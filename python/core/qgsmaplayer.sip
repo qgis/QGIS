@@ -73,6 +73,11 @@ class QgsMapLayer : QObject
      */
     const QString & name() const;
 
+    /** Get the original name of the layer
+     * @note added in 1.9
+     */
+    const QString & originalName() const;
+
     void setTitle( const QString& title );
     const QString& title() const;
 
@@ -207,8 +212,8 @@ class QgsMapLayer : QObject
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    /** A convenience function to capitalise the layer name */
-    static QString capitaliseLayerName( const QString name );
+    /** A convenience function to (un)capitalise the layer name */
+    static QString capitaliseLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a

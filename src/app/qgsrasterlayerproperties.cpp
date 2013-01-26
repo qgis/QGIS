@@ -591,6 +591,7 @@ void QgsRasterLayerProperties::sync()
 
   //these properties (layer name and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText( mRasterLayer->source() );
+  mLayerOrigNameLineEd->setText( mRasterLayer->originalName() );
   leDisplayName->setText( mRasterLayer->name() );
 
   //display the raster dimensions and no data value
@@ -749,7 +750,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * General Tab
    */
-  mRasterLayer->setLayerName( leDisplayName->text() );
+  mRasterLayer->setLayerName( mLayerOrigNameLineEd->text() );
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
@@ -818,6 +819,11 @@ void QgsRasterLayerProperties::apply()
 
   updatePipeList();
 }//apply
+
+void QgsRasterLayerProperties::on_mLayerOrigNameLineEd_textEdited( const QString& text )
+{
+  leDisplayName->setText( mRasterLayer->capitaliseLayerName( text ) );
+}
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {

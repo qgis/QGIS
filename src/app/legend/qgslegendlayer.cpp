@@ -112,10 +112,12 @@ void QgsLegendLayer::setCheckState( int column, Qt::CheckState state )
   }
 }
 
-void QgsLegendLayer::setupFont() //private method
+void QgsLegendLayer::setupFont()
 {
+  QSettings settings;
   QFont myFont = font( 0 );
-  myFont.setBold( true ); //visually differentiate layer labels from the rest
+  //visually differentiate layer labels from the rest
+  myFont.setBold( settings.value( "/qgis/legendLayersBold", true ).toBool() );
   setFont( 0, myFont );
 }
 

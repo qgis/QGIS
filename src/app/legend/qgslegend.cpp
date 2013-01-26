@@ -970,7 +970,8 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
       group->setEmbedded( true );
       group->setProjectPath( projectFilePath );
 
-      QFont groupFont;
+      // start with already set font style
+      QFont groupFont = group->font( 0 );
       groupFont.setItalic( true );
       group->setFont( 0, groupFont );
       setCurrentItem( group );
@@ -1075,7 +1076,8 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
     QgsLegendLayer* llayer = new QgsLegendLayer( layer );
     if ( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
     {
-      QFont itemFont;
+      // start with already set font style
+      QFont itemFont = llayer->font( 0 );
       itemFont.setItalic( true );
       llayer->setFont( 0, itemFont );
     }
@@ -1897,7 +1899,8 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
 
       if ( currentLayer->layer() && !QgsProject::instance()->layerIsEmbedded( currentLayer->layer()->id() ).isEmpty() )
       {
-        QFont itemFont;
+        // start with already set font style
+        QFont itemFont = currentLayer->font( 0 );
         itemFont.setItalic( true );
         currentLayer->setFont( 0, itemFont );
       }
@@ -3093,4 +3096,36 @@ void QgsLegend::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
 QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const
 {
   return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}
+
+void QgsLegend::updateLegendItemStyles()
+{
+  QgsLegendGroup* lg = 0;
+  QgsLegendLayer* ll = 0;
+  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
+  {
+    ll = dynamic_cast<QgsLegendLayer *>( theItem );
+    if ( ll )
+    {
+      ll->setupFont();
+      // map layer name capitalize option may have changed
+      ll->layer()->setLayerName( ll->layer()->originalName() );
+      continue;
+    }
+
+    lg = dynamic_cast<QgsLegendGroup *>( theItem );
+    if ( lg )
+    {
+      lg->setupFont();
+    }
+  }
+  update();
+}
+
+void QgsLegend::updateLegendItemSymbologies()
+{
+  foreach ( QgsLegendLayer* ll, legendLayers() )
+  {
+    ll->refreshSymbology( ll->layer()->id() );
+  }
 }

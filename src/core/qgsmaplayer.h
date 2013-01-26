@@ -83,6 +83,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QString & name() const;
 
+    /** Get the original name of the layer
+     * @note added in 1.9
+     */
+    const QString & originalName() const { return mLayerOrigName; }
+
     void setTitle( const QString& title ) { mTitle = title; }
     const QString& title() const { return mTitle; }
 
@@ -223,8 +228,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    /** A convenience function to capitalise the layer name */
-    static QString capitaliseLayerName( const QString name );
+    /** A convenience function to (un)capitalise the layer name */
+    static QString capitaliseLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
@@ -427,6 +432,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Name of the layer - used for display */
     QString mLayerName;
+
+    /** Original name of the layer
+     *  @note added in 1.9
+     */
+    QString mLayerOrigName;
 
     QString mTitle;
 

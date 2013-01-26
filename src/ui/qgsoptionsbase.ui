@@ -807,7 +807,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
+                <width>654</width>
                 <height>808</height>
                </rect>
               </property>
@@ -1137,8 +1137,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>559</width>
-                <height>417</height>
+                <width>669</width>
+                <height>490</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1456,7 +1456,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>615</width>
+                <width>654</width>
                 <height>681</height>
                </rect>
               </property>
@@ -1944,8 +1944,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>498</width>
-                <height>332</height>
+                <width>669</width>
+                <height>490</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2074,25 +2074,97 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="capitaliseCheckBox">
-                    <property name="text">
-                     <string>Capitalise layer names</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxLegendClassifiers">
-                    <property name="text">
-                     <string>Display classification attribute names</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
-                    <property name="text">
-                     <string>Create raster icons</string>
-                    </property>
-                   </widget>
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="1" column="2">
+                     <widget class="Line" name="line_4">
+                      <property name="minimumSize">
+                       <size>
+                        <width>12</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <spacer name="horizontalSpacer_34">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>8</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="capitaliseCheckBox">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Capitalise layer names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="3">
+                     <widget class="QCheckBox" name="mLegendLayersBoldChkBx">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Bold layer names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1" colspan="3">
+                     <widget class="QCheckBox" name="cbxLegendClassifiers">
+                      <property name="text">
+                       <string>Display classification attribute names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1" colspan="3">
+                     <widget class="QCheckBox" name="mLegendGroupsBoldChkBx">
+                      <property name="text">
+                       <string>Bold group names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="4" column="1" colspan="3">
+                     <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
+                      <property name="text">
+                       <string>Create raster icons (may be slow)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0" colspan="4">
+                     <widget class="QLabel" name="label_53">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Legend item styles</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
