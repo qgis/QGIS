@@ -456,7 +456,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 ```
 
-__Lion system Python__
+__Lion and Mt. Lion system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
