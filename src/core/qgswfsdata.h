@@ -164,6 +164,7 @@ class CORE_EXPORT QgsWFSData: public QObject
     /**This contains the character data if an important element has been encountered*/
     QString mStringCash;
     QgsFeature* mCurrentFeature;
+    QVector<QVariant> mCurrentAttributes; //attributes of current feature
     QString mCurrentFeatureId;
     int mFeatureCount;
     /**The total WKB for a feature*/

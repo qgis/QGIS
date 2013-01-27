@@ -185,16 +185,15 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributeMap& attrMap = feature.attributeMap();
-  QgsAttributeMap::const_iterator ita = attrMap.find( mAttrNum );
-  if ( ita == attrMap.end() )
+  const QgsAttributes& attrs = feature.attributes();
+  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
     QgsDebugMsg( "attribute required by renderer not found: " + mAttrName + "(index " + QString::number( mAttrNum ) + ")" );
     return NULL;
   }
 
   // find the right category
-  QgsSymbolV2* symbol = symbolForValue( ita->toDouble() );
+  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum].toDouble() );
   if ( symbol == NULL )
     return NULL;
 
@@ -205,9 +204,9 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   double rotation = 0;
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
-    rotation = attrMap[mRotationFieldIdx].toDouble();
+    rotation = attrs[mRotationFieldIdx].toDouble();
   if ( mSizeScaleFieldIdx != -1 )
-    sizeScale = attrMap[mSizeScaleFieldIdx].toDouble();
+    sizeScale = attrs[mSizeScaleFieldIdx].toDouble();
 
   // take a temporary symbol (or create it if doesn't exist)
   QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
@@ -803,7 +802,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     lst.append( attrNum );
     vlayer->select( lst, QgsRectangle(), false );
     while ( vlayer->nextFeature( f ) )
-      values.append( f.attributeMap()[attrNum].toDouble() );
+      values.append( f.attribute( attrNum ).toDouble() );
     // calculate the breaks
     if ( mode == Quantile )
     {

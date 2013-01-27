@@ -4692,13 +4692,13 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   vl->beginEditCommand( tr( "Merged feature attributes" ) );
 
-  const QgsAttributeMap &merged = d.mergedAttributesMap();
+  const QgsAttributes &merged = d.mergedAttributes();
 
   foreach ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
-    for ( QgsAttributeMap::const_iterator it = merged.begin(); it != merged.end(); it++ )
+    for ( int i = 0; i < merged.count(); ++i )
     {
-      vl->changeAttributeValue( fid, it.key(), it.value() );
+      vl->changeAttributeValue( fid, i, merged.at( i ) );
     }
   }
 
@@ -4812,7 +4812,7 @@ void QgisApp::mergeSelectedFeatures()
   //create new feature
   QgsFeature newFeature;
   newFeature.setGeometry( unionGeom );
-  newFeature.setAttributeMap( d.mergedAttributesMap() );
+  newFeature.setAttributes( d.mergedAttributes() );
 
   QgsFeatureList::const_iterator feature_it = featureListAfter.constBegin();
   for ( ; feature_it != featureListAfter.constEnd(); ++feature_it )
@@ -4993,35 +4993,36 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 
   QHash<int, int> remap;
-  const QgsFieldMap &fields = clipboard()->fields();
+  const QgsFields &fields = clipboard()->fields();
   QgsAttributeList pkAttrList = pasteVectorLayer->pendingPkAttributesList();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( it->name() );
+    int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
     if ( dst < 0 || pkAttrList.contains( dst ) )
     {
       // skip primary key attributes
       continue;
     }
-    remap.insert( it.key(), dst );
+    remap.insert( idx, dst );
   }
 
+  int dstAttrCount = pasteVectorLayer->pendingFields().count();
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &f = features[i];
-    const QgsAttributeMap &srcMap = f.attributeMap();
-    QgsAttributeMap dstMap;
+    const QgsAttributes &srcAttr = f.attributes();
+    QgsAttributes dstAttr( dstAttrCount );
 
-    foreach ( int src, srcMap.keys() )
+    for ( int src = 0; src < srcAttr.count(); ++src )
     {
       int dst = remap.value( src, -1 );
       if ( dst < 0 )
         continue;
 
-      dstMap.insert( dst, srcMap[ src ] );
+      dstAttr[ dst ] = srcAttr[ src ];
     }
 
-    f.setAttributeMap( dstMap );
+    f.setAttributes( dstAttr );
   }
 
   pasteVectorLayer->addFeatures( features );

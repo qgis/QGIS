@@ -209,11 +209,10 @@ void RgLineVectorLayerSettingsWidget::on_mcbLayers_selectItem()
   if ( !provider )
     return;
 
-  const QgsFieldMap& fields = provider->fields();
-  QgsFieldMap::const_iterator it;
-  for ( it = fields.constBegin(); it != fields.constEnd(); ++it )
+  const QgsFields& fields = provider->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QgsField currentField = it.value();
+    const QgsField& currentField = fields[idx];
     QVariant currentType = currentField.type();
     if ( currentType == QVariant::Int || currentType == QVariant::String )
     {

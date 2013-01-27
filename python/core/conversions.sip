@@ -14,7 +14,7 @@ which are not wrapped by PyQt:
 - QMap<TYPE1, TYPE2*>
 - QMap<double, TYPE>
 - QMultiMap<double, TYPE2>
-- QMap<qint64, QgsGeometry>
+- QMap<qint64, TYPE>
 - QMap<qint64, QgsOverlayObject*>
 - QList< QPair< QString, QList<QString> > >
 - QVector<TYPE*>
@@ -661,91 +661,114 @@ template<TYPE>
 };
 
 
+//
+// copied from PyQt4 QMap<int, TYPE> and adapted to qint64
+//
 
-%MappedType QMap<qint64, QgsGeometry>
+// QMap<qint64, TYPE> is implemented as a Python dictionary.
+template<TYPE>
+%MappedType QMap<qint64, TYPE> /DocType="dict-of-qint64-TYPE"/
 {
 %TypeHeaderCode
-#include <QMap>
+#include <qmap.h>
 %End
 
 %ConvertFromTypeCode
-  // Create the list.
-  PyObject *d;
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
 
-  if ((d = PyDict_New()) == NULL)
-    return NULL;
+    if (!d)
+        return NULL;
 
-  // Set the list elements.
-  for (QMap<qint64, QgsGeometry>::iterator it = sipCpp->begin(); it != sipCpp->end(); ++it)
-  {
-    PyObject *kobj = PyLong_FromLongLong(it.key());
-    PyObject *tobj = sipConvertFromInstance( &it.value(), sipClass_QgsGeometry, sipTransferObj);
+    // Set the dictionary elements.
+    QMap<qint64, TYPE>::const_iterator i = sipCpp->constBegin();
 
-    if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
+    while (i != sipCpp->constEnd())
     {
-      Py_DECREF(d);
+        TYPE *t = new TYPE(i.value());
 
-      if (kobj)
-      {
+        PyObject *kobj = PyLong_FromLongLong(i.key());
+        //PyObject *kobj = SIPLong_FromLong(i.key());
+        PyObject *tobj = sipConvertFromNewType(t, sipType_TYPE, sipTransferObj);
+
+        if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (kobj)
+            {
+                Py_DECREF(kobj);
+            }
+
+            if (tobj)
+            {
+                Py_DECREF(tobj);
+            }
+            else
+            {
+                delete t;
+            }
+
+            return NULL;
+        }
+
         Py_DECREF(kobj);
-      }
-
-      if (tobj)
-      {
         Py_DECREF(tobj);
-      }
 
-      return NULL;
+        ++i;
     }
 
-    Py_DECREF(tobj);
-  }
-
-  return d;
+    return d;
 %End
 
 %ConvertToTypeCode
-  PyObject *kobj, *tobj;
+    PyObject *kobj, *tobj;
+    SIP_SSIZE_T i = 0;
 
-  // Check the type if that is all that is required.
-  if (sipIsErr == NULL)
-  {
-    if (!PyDict_Check(sipPy))
-      return 0;
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
 
-    Py_ssize_t i = 0;
+        while (PyDict_Next(sipPy, &i, &kobj, &tobj))
+            if (!sipCanConvertToType(tobj, sipType_TYPE, SIP_NOT_NONE))
+                return 0;
+
+        return 1;
+    }
+
+    QMap<qint64, TYPE> *qm = new QMap<qint64, TYPE>;
+
     while (PyDict_Next(sipPy, &i, &kobj, &tobj))
     {
-      if (!sipCanConvertToInstance(tobj, sipClass_QgsGeometry, SIP_NOT_NONE))
-        return 0;
-    }
-    return 1;
-  }
+        int state;
+        //, k = SIPLong_AsLong(kobj);
+        qint64 k = PyLong_AsLongLong(kobj);
+        TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(tobj, sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
-  QMap<qint64, QgsGeometry> *qm = new QMap<qint64, QgsGeometry>;
+        if (*sipIsErr)
+        {
+            sipReleaseType(t, sipType_TYPE, state);
 
-  Py_ssize_t i = 0;
-  while (PyDict_Next(sipPy, &i, &kobj, &tobj))
-  {
-    int state;
-    qint64 k = PyLong_AsLongLong(kobj);
-    QgsGeometry * t = reinterpret_cast<QgsGeometry*>(sipConvertToInstance(tobj, sipClass_QgsGeometry, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
+            delete qm;
+            return 0;
+        }
 
-    if (*sipIsErr)
-    {
-      sipReleaseInstance(t, sipClass_QgsGeometry, state);
-      delete qm;
-      return 0;
+        qm->insert(k, *t);
+
+        sipReleaseType(t, sipType_TYPE, state);
     }
 
-    qm->insert(k, *t);
-    sipReleaseInstance(t, sipClass_QgsGeometry, state);
-  }
+    *sipCppPtr = qm;
 
-  *sipCppPtr = qm;
-  return sipGetState(sipTransferObj);
+    return sipGetState(sipTransferObj);
 %End
 };
+
+
+
+
 
 
 

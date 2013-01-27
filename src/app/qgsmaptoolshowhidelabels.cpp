@@ -288,7 +288,7 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
   }
 
   int colVal = hide ? 0 : 1;
-  QVariant fQVal = f.attributeMap()[showCol];
+  QVariant fQVal = f.attributes()[showCol];
   bool convToInt;
   int fVal = fQVal.toInt( &convToInt );
 

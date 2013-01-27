@@ -28,13 +28,11 @@
 
 #include <QProgressDialog>
 
-#include <QProgressDialog>
-
 #define FEATURE_BUFFER_SIZE 200
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem *destCRS,
   bool overwrite,
@@ -46,7 +44,7 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
-    const QgsFieldMap& fields,
+    const QgsFields& fields,
     QGis::WkbType geometryType,
     const QgsCoordinateReferenceSystem* crs,
     bool overwrite,
@@ -125,20 +123,21 @@ QString QgsVectorLayerImport::errorMessage()
 
 bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
-  const QgsAttributeMap &attrs = feat.attributeMap();
+  const QgsAttributes &attrs = feat.attributes();
 
   QgsFeature newFeat;
   if ( feat.geometry() )
     newFeat.setGeometry( *feat.geometry() );
+  newFeat.initAttributes( attrs.count() );
 
-  for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
+  for ( int i = 0; i < attrs.count(); ++i )
   {
     // add only mapped attributes (un-mapped ones will not be present in the
     // destination layer)
-    if ( mOldToNewAttrIdx.contains( it.key() ) )
+    if ( mOldToNewAttrIdx.contains( i ) )
     {
-      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( it.key() ).arg( mOldToNewAttrIdx.value( it.key() ) ), 3 );
-      newFeat.addAttribute( mOldToNewAttrIdx.value( it.key() ), *it );
+      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( mOldToNewAttrIdx.value( i ) ), 3 );
+      newFeat.setAttribute( mOldToNewAttrIdx.value( i ), attrs[i] );
     }
   }
 
@@ -232,16 +231,16 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
   }
 
-  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
   QGis::WkbType wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
   if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
   {
     // convert field names to lowercase
-    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      fldIt.value().setName( fldIt.value().name().toLower() );
+      fields[fldIdx].setName( fields[fldIdx].name().toLower() );
     }
 
     if ( !forceSinglePartGeom )
@@ -360,8 +359,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.typeName() ).arg( e.what() );
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += "\n" + msg;
@@ -371,7 +370,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
     if ( skipAttributeCreation )
     {
-      fet.clearAttributeMap();
+      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {

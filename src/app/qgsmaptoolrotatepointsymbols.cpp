@@ -124,14 +124,13 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   {
     return;
   }
-  const QgsAttributeMap pointFeatureAttributes = pointFeature.attributeMap();
-  const QgsAttributeMap::const_iterator attIt = pointFeatureAttributes.find( mCurrentRotationAttributes.at( 0 ) );
-  if ( attIt == pointFeatureAttributes.constEnd() )
+  QVariant attrVal = pointFeature.attribute( mCurrentRotationAttributes.at( 0 ) );
+  if ( !attrVal.isValid() )
   {
     return;
   }
 
-  mCurrentRotationFeature = attIt.value().toDouble();
+  mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( pointFeature );
   if ( mRotationItem )
   {

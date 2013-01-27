@@ -54,7 +54,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   {
     return;
   }
-  const QgsAttributeMap& attributeValues = f.attributeMap();
+  const QgsAttributes& attributeValues = f.attributes();
 
   //get layerproperties. Problem: only for pallabeling...
   QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
@@ -81,7 +81,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
     {
       mCurrentLabelField = vlayer->fieldNameIndex( labelFieldName );
       mLabelTextLineEdit->setText( attributeValues[mCurrentLabelField].toString() );
-      const QgsFieldMap& layerFields = vlayer->pendingFields();
+      const QgsFields& layerFields = vlayer->pendingFields();
       switch ( layerFields[mCurrentLabelField].type() )
       {
         case QVariant::Double:

@@ -262,26 +262,24 @@ void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  QgsFieldMap fieldMap = mLayer->pendingFields();
-  QgsFieldMap::Iterator it = fieldMap.begin();
+  const QgsFields& fields = mLayer->pendingFields();
 
   mColumnBox->clear();
 
-  for ( ; it != fieldMap.end(); ++it )
-    if ( mLayer->editType( it.key() ) != QgsVectorLayer::Hidden )
-      mColumnBox->addItem( it.value().name() );
+  for ( int idx = 0; idx < fields.count(); ++idx )
+    if ( mLayer->editType( idx ) != QgsVectorLayer::Hidden )
+      mColumnBox->addItem( fields[idx].name() );
 
   mColumnBox->setCurrentIndex( mColumnBox->findText( mLayer->displayField() ) );
 }
 
 int QgsAttributeTableDialog::columnBoxColumnId()
 {
-  QgsFieldMap fieldMap = mLayer->pendingFields();
-  QgsFieldMap::Iterator it = fieldMap.begin();
+  const QgsFields& fields = mLayer->pendingFields();
 
-  for ( ; it != fieldMap.end(); ++it )
-    if ( it.value().name() == mColumnBox->currentText() )
-      return it.key();
+  for ( int idx = 0; idx < fields.count(); ++idx )
+    if ( fields[idx].name() == mColumnBox->currentText() )
+      return idx;
 
   return 0;
 }
@@ -620,7 +618,7 @@ void QgsAttributeTableDialog::search()
 {
 
   QString fieldName = mColumnBox->currentText();
-  const QgsFieldMap& flds = mLayer->pendingFields();
+  const QgsFields& flds = mLayer->pendingFields();
   int fldIndex = mLayer->fieldNameIndex( fieldName );
   QVariant::Type fldType = flds[fldIndex].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );

@@ -315,6 +315,7 @@ QgsSqlAnywhereProvider::nextFeature( QgsFeature & feature, SqlAnyStatement *stmt
 
   if ( ok )
   {
+    feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
     // iterate mAttributesToFetch
     feature.clearAttributeMap();
     for ( QgsAttributeList::const_iterator it = mAttributesToFetch.constBegin()

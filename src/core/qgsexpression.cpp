@@ -1286,7 +1286,7 @@ void QgsExpression::setGeomCalculator( QgsDistanceArea& calc )
   mCalc.setSourceCrs( calc.sourceCrs() );
 }
 
-bool QgsExpression::prepare( const QgsFieldMap& fields )
+bool QgsExpression::prepare( const QgsFields& fields )
 {
   mEvalErrorString = QString();
   if ( !mRootNode )
@@ -1310,7 +1310,7 @@ QVariant QgsExpression::evaluate( QgsFeature* f )
   return mRootNode->eval( this, f );
 }
 
-QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFieldMap& fields )
+QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFields& fields )
 {
   // first prepare
   bool res = prepare( fields );
@@ -1647,7 +1647,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression* parent, QgsFeatu
   return QVariant();
 }
 
-bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   return mOperand->prepare( parent, fields );
 }
@@ -1933,7 +1933,7 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
 }
 
 
-bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool resL = mOpLeft->prepare( parent, fields );
   bool resR = mOpRight->prepare( parent, fields );
@@ -2158,7 +2158,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
     return mNotIn ? TVL_True : TVL_False;
 }
 
-bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res = mNode->prepare( parent, fields );
   foreach ( Node* n, mList->list() )
@@ -2226,7 +2226,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
   return res;
 }
 
-bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res = true;
   if ( mArgs )
@@ -2419,7 +2419,7 @@ QVariant QgsExpression::NodeLiteral::eval( QgsExpression* , QgsFeature* )
   return mValue;
 }
 
-bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFieldMap& /*fields*/ )
+bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFields& /*fields*/ )
 {
   return true;
 }
@@ -2539,14 +2539,14 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeatu
 {
   if ( f )
   {
-    return f->attributeMap()[mIndex];
+    return f->attribute( mIndex );
   }
   return QVariant( "[" + mName + "]" );
 }
 
-bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFields& fields )
 {
-  foreach ( int i, fields.keys() )
+  for ( int i = 0; i < fields.count(); ++i )
   {
     if ( QString::compare( fields[i].name(), mName, Qt::CaseInsensitive ) == 0 )
     {
@@ -2613,7 +2613,7 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* 
   return QVariant();
 }
 
-bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res;
   foreach ( WhenThen* cond, mConditions )

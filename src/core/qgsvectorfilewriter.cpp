@@ -55,7 +55,7 @@
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theVectorFileName,
   const QString &theFileEncoding,
-  const QgsFieldMap& fields,
+  const QgsFields& fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem* srs,
   const QString& driverName,
@@ -297,14 +297,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   mFields = fields;
   mAttrIdxToOgrIdx.clear();
 
-  QgsFieldMap::const_iterator fldIt;
-  for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+  for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
   {
-    const QgsField& attrField = fldIt.value();
+    const QgsField& attrField = fields[fldIdx];
 
     OGRFieldType ogrType = OFTString; //default to string
-    int ogrWidth = fldIt->length();
-    int ogrPrecision = fldIt->precision();
+    int ogrWidth = attrField.length();
+    int ogrPrecision = attrField.precision();
     switch ( attrField.type() )
     {
       case QVariant::LongLong:
@@ -398,7 +397,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       }
     }
 
-    mAttrIdxToOgrIdx.insert( fldIt.key(), ogrIdx );
+    mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
   }
 
   QgsDebugMsg( "Done creating fields" );
@@ -451,25 +450,18 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   }
 
   // attribute handling
-  QgsFieldMap::const_iterator fldIt;
-  for ( fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt )
+  for ( int fldIdx = 0; fldIdx < mFields.count(); ++fldIdx )
   {
-    if ( !feature.attributeMap().contains( fldIt.key() ) )
+    if ( !mAttrIdxToOgrIdx.contains( fldIdx ) )
     {
-      QgsDebugMsg( QString( "no attribute for field %1" ).arg( fldIt.key() ) );
+      QgsDebugMsg( QString( "no ogr field for field %1" ).arg( fldIdx ) );
       continue;
     }
 
-    if ( !mAttrIdxToOgrIdx.contains( fldIt.key() ) )
-    {
-      QgsDebugMsg( QString( "no ogr field for field %1" ).arg( fldIt.key() ) );
-      continue;
-    }
+    const QVariant& attrValue = feature.attribute( fldIdx );
+    int ogrField = mAttrIdxToOgrIdx[ fldIdx ];
 
-    const QVariant& attrValue = feature.attributeMap()[ fldIt.key()];
-    int ogrField = mAttrIdxToOgrIdx[ fldIt.key()];
-
-    if ( attrValue.isNull() )
+    if ( !attrValue.isValid() || attrValue.isNull() )
       continue;
 
     switch ( attrValue.type() )
@@ -488,7 +480,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
-                        .arg( fldIt.value().name() )
+                        .arg( mFields[fldIdx].name() )
                         .arg( ogrField )
                         .arg( QMetaType::typeName( attrValue.type() ) )
                         .arg( attrValue.toString() );
@@ -629,7 +621,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
+    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
 
   if ( newFilename )
   {
@@ -692,8 +684,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.typeName() ).arg( e.what() );
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.id() ).arg( e.what() );
         QgsLogger::warning( msg );
         if ( errorMessage )
           *errorMessage = msg;
@@ -703,7 +695,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     }
     if ( skipAttributeCreation )
     {
-      fet.clearAttributeMap();
+      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {

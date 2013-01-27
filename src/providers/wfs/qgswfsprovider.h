@@ -25,6 +25,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgswfsfeatureiterator.h"
 
 class QgsRectangle;
 class QgsSpatialIndex;
@@ -46,17 +47,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     /* Inherited from QgsVectorDataProvider */
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /**
      * Gets the feature at the given feature ID.
@@ -83,8 +74,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     QGis::WkbType geometryType() const;
     long featureCount() const;
-    uint fieldCount() const;
-    const QgsFieldMap & fields() const;
+
+    const QgsFields& fields() const;
     void rewind();
 
     virtual QgsCoordinateReferenceSystem crs();
@@ -144,7 +135,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     /**Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
     int describeFeatureType( const QString& uri, QString& geometryAttribute,
-                             QgsFieldMap& fields, QGis::WkbType& geomType );
+                             QgsFields& fields, QGis::WkbType& geomType );
 
   signals:
     void dataReadProgressMessage( QString message );
@@ -159,10 +150,12 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
   private:
     bool mNetworkRequestFinished;
+    friend class QgsWFSFeatureIterator;
+    QgsWFSFeatureIterator* mActiveIterator;
 
   protected:
     /**Thematic attributes*/
-    QgsFieldMap mFields;
+    QgsFields mFields;
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
     /**The encoding used for request/response. Can be GET, POST or SOAP*/
@@ -209,13 +202,13 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int getFeatureSOAP( const QString& uri, const QString& geometryAttribute );
     int getFeatureFILE( const QString& uri, const QString& geometryAttribute );
     //encoding specific methods of describeFeatureType
-    int describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
-    int describeFeatureTypePOST( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
-    int describeFeatureTypeSOAP( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
-    int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
+    int describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
+    int describeFeatureTypePOST( const QString& uri, QString& geometryAttribute, QgsFields& fields );
+    int describeFeatureTypeSOAP( const QString& uri, QString& geometryAttribute, QgsFields& fields );
+    int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
 
     /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
+    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
 

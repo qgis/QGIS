@@ -13,11 +13,11 @@ struct QgsVectorJoinInfo
 %End
 
   /**Join field in the target layer*/
-  int targetField;
+  QString targetFieldName;
   /**Source layer*/
   QString joinLayerId;
   /**Join field in the source layer*/
-  int joinField;
+  QString joinFieldName;
   /**True if the join is cached in virtual memory*/
   bool memoryCache;
   /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
@@ -187,12 +187,6 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    bool copySymbologySettings( const QgsMapLayer& other );
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    bool hasCompatibleSymbology( const QgsMapLayer& other ) const;
-
     /** Returns a pointer to the renderer */
     const QgsRenderer* renderer() const;
 
@@ -308,18 +302,23 @@ class QgsVectorLayer : QgsMapLayer
     void select( QList<int> fetchAttributes,
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
-                 bool useIntersect = false );
+                 bool useIntersect = false ) /Deprecated/;
+
+    /**
+     * Query the provider for features specified in request.
+     */
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /**
      * fetch a feature (after select)
      * @param feature buffer to read the feature into
      * @return true, if a feature was fetched, false, if there are no more features
      */
-    bool nextFeature( QgsFeature& feature );
+    bool nextFeature( QgsFeature& feature ) /Deprecated/;
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true ) /Deprecated/;
 
     /** Adds a feature
         @param f feature to add
@@ -477,7 +476,7 @@ class QgsVectorLayer : QgsMapLayer
     QgsRectangle extent();
 
     /** returns field list in the to-be-committed state */
-    const QMap<int, QgsField> &pendingFields() const;
+    const QgsFields &pendingFields() const;
 
     /** returns list of attributes */
     QList<int> pendingAllAttributesList();
@@ -490,9 +489,6 @@ class QgsVectorLayer : QgsMapLayer
      *  @note added in 1.6
      */
     bool setReadOnly( bool readonly = true );
-
-    /** Sets whether some features are modified or not */
-    void setModified( bool modified = true, bool onlyGeometryWasModified = false );
 
     /** Make layer editable */
     bool startEditing();
@@ -630,6 +626,9 @@ class QgsVectorLayer : QgsMapLayer
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
 
+    //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
+    QgsVectorLayerEditBuffer* editBuffer();
+
     /**
      * Create edit command for undo/redo operations
      * @param text text which is to be displayed in undo window
@@ -669,10 +668,6 @@ class QgsVectorLayer : QgsMapLayer
     /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
-
-    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
-     @note added in 1.7 */
-    void updateFieldMap();
 
     /** Caches joined attributes if required (and not already done)
       @note added in 1.7 */
@@ -722,7 +717,7 @@ class QgsVectorLayer : QgsMapLayer
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */
-    void layerModified( bool onlyGeometry );
+    void layerModified();
 
     void editingStarted();
     void editingStopped();
@@ -737,7 +732,7 @@ class QgsVectorLayer : QgsMapLayer
 
     /** Signals emitted after committing changes
       \note added in v1.6 */
-    void committedAttributesDeleted( const QString& layerId, const QgsAttributeIds& deletedAttributeIds );
+    void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributeIds );
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
     void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );

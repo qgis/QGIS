@@ -65,9 +65,7 @@ void QgsAtlasComposition::beginRender()
   mTransform.setSourceCrs( coverage_crs );
   mTransform.setDestCRS( destination_crs );
 
-  QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
-
-  QgsFieldMap fieldmap = provider->fields();
+  const QgsFields& fields = mCoverageLayer->pendingFields();
 
   if ( mFilenamePattern.size() > 0 )
   {
@@ -80,17 +78,17 @@ void QgsAtlasComposition::beginRender()
     }
 
     // prepare the filename expression
-    mFilenameExpr->prepare( fieldmap );
+    mFilenameExpr->prepare( fields );
   }
 
   // select all features with all attributes
-  provider->select( provider->attributeIndexes() );
+  mCoverageLayer->select( mCoverageLayer->pendingAllAttributesList() );
 
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
   mFeatureIds.clear();
-  while ( provider->nextFeature( feat ) )
+  while ( mCoverageLayer->nextFeature( feat ) )
   {
     mFeatureIds.push_back( feat.id() );
   }
@@ -154,9 +152,8 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
     return;
   }
 
-  QgsVectorDataProvider* provider = mCoverageLayer->dataProvider();
   // retrieve the next feature, based on its id
-  provider->featureAtId( mFeatureIds[ featureI ], mCurrentFeature, /* fetchGeometry = */ true, provider->attributeIndexes() );
+  mCoverageLayer->featureAtId( mFeatureIds[ featureI ], mCurrentFeature, /* fetchGeometry = */ true, /* fetchAttributes = */ true );
 
   if ( mFilenamePattern.size() > 0 )
   {

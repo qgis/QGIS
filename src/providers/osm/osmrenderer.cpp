@@ -95,8 +95,7 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
 {
   Q_UNUSED( selected );
   QPainter* p = renderContext.painter();
-  QgsAttributeMap attr_map = f.attributeMap();
-  QMap<QString, QString> tags = parse_tags( attr_map[2].toString() );
+  QMap<QString, QString> tags = parse_tags( f.attribute( 2 ).toString() );
 
   if ( mGeomType == QGis::Line )
   {

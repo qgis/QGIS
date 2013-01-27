@@ -7,7 +7,7 @@ class QgsLabel
 %End
 
   public:
-    QgsLabel( const QMap<int, QgsField> & fields );
+    QgsLabel( const QgsFields & fields );
 
     ~QgsLabel();
 
@@ -67,10 +67,10 @@ class QgsLabel
     void addRequiredFields( QList<int> & fields ) const;
 
     //! Set available fields
-    void setFields( const QMap<int, QgsField> & fields );
+    void setFields( const QgsFields & fields );
 
     //! Available vector fields
-    QMap<int, QgsField> & fields();
+    const QgsFields & fields();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.

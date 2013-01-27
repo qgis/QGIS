@@ -264,7 +264,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(40,10),
             ]
         ))
-        myFeature1.setAttributeMap({0 : QVariant('Johny')})
+        myFeature1.setAttributes([QVariant('Johny')])
 
         myFeature2 = QgsFeature()
         myFeature2.setGeometry(QgsGeometry.fromPolyline([
@@ -274,7 +274,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(40,40),
             ]
         ))
-        myFeature2.setAttributeMap({0 : QVariant('Be')})
+        myFeature2.setAttributes([QVariant('Be')])
 
         myFeature3 = QgsFeature()
         myFeature3.setGeometry(QgsGeometry.fromPolyline([
@@ -285,7 +285,7 @@ class TestQgsGeometry(TestCase):
             ]
         ))
 
-        myFeature3.setAttributeMap({0 : QVariant('Good')})
+        myFeature3.setAttributes([QVariant('Good')])
 
         myResult, myFeatures = myProvider.addFeatures(
             [myFeature1, myFeature2, myFeature3])
@@ -302,11 +302,10 @@ class TestQgsGeometry(TestCase):
         )
         print 'Clip: %s' % myClipPolygon.exportToWkt()
         writeShape(myMemoryLayer, 'clipGeometryBefore.shp')
-        myProvider.rewind()
-        myProvider.select(myProvider.attributeIndexes())
+        myMemoryLayer.select(myProvider.attributeIndexes())
         myFeatures = []
         myFeature = QgsFeature()
-        while myProvider.nextFeature(myFeature):
+        while myMemoryLayer.nextFeature(myFeature):
             myGeometry = myFeature.geometry()
             if myGeometry.intersects(myClipPolygon):
                 # Adds nodes where the clip and the line intersec
@@ -329,7 +328,7 @@ class TestQgsGeometry(TestCase):
                                  mySymmetricalGeometry.exportToWkt())
 
                 myNewFeature = QgsFeature()
-                myNewFeature.setAttributeMap(myFeature.attributeMap())
+                myNewFeature.setAttributes(myFeature.attributes())
                 myNewFeature.setGeometry(mySymmetricalGeometry)
                 myFeatures.append(myNewFeature)
 
@@ -341,7 +340,6 @@ class TestQgsGeometry(TestCase):
         myResult, myFeatures = myNewProvider.addFeatures(myFeatures)
         self.assertTrue(myResult)
         self.assertEqual(len(myFeatures), 1)
-        myNewMemoryLayer.commitChanges()
 
         writeShape(myNewMemoryLayer, 'clipGeometryAfter.shp')
 

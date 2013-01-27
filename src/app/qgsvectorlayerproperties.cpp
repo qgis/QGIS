@@ -123,7 +123,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin( 0 );
-  const QgsFieldMap &fields = layer->pendingFields();
+  const QgsFields &fields = layer->pendingFields();
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
@@ -361,11 +361,11 @@ void QgsVectorLayerProperties::reset( void )
   }
 
   //get field list for display field combo
-  const QgsFieldMap& myFields = layer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = layer->pendingFields();
+  for ( int idx = 0; idx < myFields.count(); ++idx )
   {
-    displayFieldComboBox->addItem( it->name() );
-    fieldComboBox->addItem( it->name() );
+    displayFieldComboBox->addItem( myFields[idx].name() );
+    fieldComboBox->addItem( myFields[idx].name() );
   }
 
   setDisplayField( layer-> displayField() );
@@ -449,7 +449,6 @@ void QgsVectorLayerProperties::apply()
     if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
     {
       layer->dataProvider()->setEncoding( cboProviderEncoding->currentText() );
-      layer->updateFieldMap();
     }
   }
 
@@ -810,9 +809,9 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
   if ( d.exec() == QDialog::Accepted )
   {
     QgsVectorJoinInfo info;
-    info.targetField = d.targetField();
+    info.targetFieldName = d.targetFieldName();
     info.joinLayerId = d.joinedLayerId();
-    info.joinField = d.joinField();
+    info.joinFieldName = d.joinFieldName();
     info.memoryCache = d.cacheInMemory();
     if ( layer )
     {
@@ -822,7 +821,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
         QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
         if ( joinLayer )
         {
-          joinLayer->dataProvider()->createAttributeIndex( info.joinField );
+          joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
         }
       }
 
@@ -846,12 +845,8 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
 
   joinItem->setText( 0, joinLayer->name() );
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
-  QString joinFieldName = joinLayer->pendingFields().value( join.joinField ).name();
-  QString targetFieldName = layer->pendingFields().value( join.targetField ).name();
-  joinItem->setText( 1, joinFieldName );
-  joinItem->setData( 1, Qt::UserRole, join.joinField );
-  joinItem->setText( 2, targetFieldName );
-  joinItem->setData( 2, Qt::UserRole, join.targetField );
+  joinItem->setText( 1, join.joinFieldName );
+  joinItem->setText( 2, join.targetFieldName );
 
   mJoinTreeWidget->addTopLevelItem( joinItem );
 }

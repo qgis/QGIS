@@ -228,10 +228,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           QgsFeature f;
           while ( layer->nextFeature( f ) )
           {
-            if ( fi >= 0 && f.attributeMap()[ fi ].toString() != data.mFilterAttributeValue )
+            if ( fi >= 0 && f.attribute( fi ).toString() != data.mFilterAttributeValue )
               continue;
 
-            map.insert( f.attributeMap()[ ki ].toString(), f.attributeMap()[ vi ].toString() );
+            map.insert( f.attribute( ki ).toString(), f.attribute( vi ).toString() );
           }
         }
       }
@@ -999,7 +999,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
   return true;
 }
 
-QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &proxyWidgets, bool createGroupBox )
+QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributes &attrs, QMap<int, QWidget*> &proxyWidgets, bool createGroupBox )
 {
   QWidget *newWidget = 0;
 

@@ -137,14 +137,17 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
 
   //iterate over each polygon
-  vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fi = vectorProvider->getFeatures( request );
+  //vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
   QgsFeature f;
   double count = 0;
   double sum = 0;
   double mean = 0;
   int featureCounter = 0;
 
-  while ( vectorProvider->nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
     if ( p )
     {
@@ -225,7 +228,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALClose( inputDataset );
-  mPolygonLayer->updateFieldMap();
 
   if ( p && p->wasCanceled() )
   {

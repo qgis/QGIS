@@ -58,11 +58,11 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( !mFeature || !vl->dataProvider() )
     return;
 
-  const QgsFieldMap &theFieldMap = vl->pendingFields();
-  if ( theFieldMap.isEmpty() )
+  const QgsFields &theFields = vl->pendingFields();
+  if ( theFields.isEmpty() )
     return;
 
-  QgsAttributeMap myAttributes = mFeature->attributeMap();
+  QgsAttributes myAttributes = mFeature->attributes();
 
   QDialogButtonBox *buttonBox = NULL;
 
@@ -172,13 +172,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QGridLayout *mypInnerLayout = new QGridLayout( mypInnerFrame );
 
     int index = 0;
-    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
+    for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
       //show attribute alias if available
-      QString myFieldName = vl->attributeDisplayName( it.key() );
-      int myFieldType = it->type();
+      QString myFieldName = vl->attributeDisplayName( fldIdx );
+      int myFieldType = theFields[fldIdx].type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ), mProxyWidgets );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
       if ( !myWidget )
         continue;
 
@@ -202,7 +202,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         mypLabel->setText( myFieldName );
       }
 
-      if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+      if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
         myWidget->setEnabled( vl->isEditable() );
       }
@@ -221,24 +221,23 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
   else
   {
-
     QgsDistanceArea myDa;
 
     myDa.setSourceCrs( vl->crs().srsid() );
     myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
     myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
-    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
+    for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
-      QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( it->name() );
+      QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( theFields[fldIdx].name() );
       if ( !myWidgets.size() )
         continue;
 
       for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, it.key(), myAttributes.value( it.key(), QVariant() ), mProxyWidgets );
+        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
 
-        if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
+        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
         {
           ( *itw )->setEnabled(( *itw )->isEnabled() && vl->isEditable() );
         }
@@ -401,14 +400,13 @@ void QgsAttributeDialog::accept()
     return;
 
   //write the new values back to the feature
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int idx = it.key();
-
     QVariant value;
 
     if ( QgsAttributeEditor::retrieveValue( mProxyWidgets.value( idx ), mLayer, idx, value ) )
-      mFeature->changeAttribute( idx, value );
+      mFeature->setAttribute( idx, value );
   }
 }
 

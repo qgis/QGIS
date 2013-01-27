@@ -1,4 +1,3 @@
-
 = Building on MacOS X =
 
 In this approach I will try to avoid as much as possible building dependencies
@@ -76,6 +75,9 @@ installed via the Xcode preferences. The tools now appear to require an install
 of Xcode, regardless of using a separate DMG installer for just the tools.
 
 Xcode 4.4+ also introduces the clang frontend to the LLVM compiler as default.
+
+**Note:** In XCODE 4.5 installed from teh app store, you need to install the 
+command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
 

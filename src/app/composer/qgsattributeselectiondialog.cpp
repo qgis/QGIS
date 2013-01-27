@@ -31,17 +31,17 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
   setupUi( this );
   if ( vLayer )
   {
-    QgsFieldMap fieldMap = vLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
+    const QgsFields& fieldMap = vLayer->pendingFields();
     int layoutRowCounter = 1;
-    for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+    for ( int idx = 0; idx < fieldMap.count(); ++idx )
     {
+      QString fieldName = fieldMap[idx].name();
       //insert field into sorting combo first
-      mSortColumnComboBox->addItem( fieldIt.value().name(), QVariant( fieldIt.key() ) );
+      mSortColumnComboBox->addItem( fieldName, QVariant( idx ) );
 
       //and into enabled / alias list
-      QCheckBox* attributeCheckBox = new QCheckBox( fieldIt.value().name(), this );
-      if ( enabledAttributes.size() < 1 || enabledAttributes.contains( fieldIt.key() ) )
+      QCheckBox* attributeCheckBox = new QCheckBox( fieldName, this );
+      if ( enabledAttributes.size() < 1 || enabledAttributes.contains( idx ) )
       {
         attributeCheckBox->setCheckState( Qt::Checked );
       }
@@ -52,7 +52,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
       mAttributeGridLayout->addWidget(( QWidget* )attributeCheckBox, layoutRowCounter, 0, 1, 1 );
 
       QLineEdit* attributeLineEdit = new QLineEdit( this );
-      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( fieldIt.key() );
+      QMap<int, QString>::const_iterator aliasIt = aliasMap.find( idx );
       if ( aliasIt != aliasMap.constEnd() )
       {
         attributeLineEdit->setText( aliasIt.value() );

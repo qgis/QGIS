@@ -21,6 +21,8 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -42,22 +44,6 @@ QgsVectorDataProvider::~QgsVectorDataProvider()
 QString QgsVectorDataProvider::storageType() const
 {
   return "Generic vector file";
-}
-
-bool QgsVectorDataProvider::featureAtId( QgsFeatureId featureId,
-    QgsFeature& feature,
-    bool fetchGeometry,
-    QgsAttributeList fetchAttributes )
-{
-  select( fetchAttributes, QgsRectangle(), fetchGeometry );
-
-  while ( nextFeature( feature ) )
-  {
-    if ( feature.id() == featureId )
-      return true;
-  }
-
-  return false;
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -215,13 +201,13 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
-  const QgsFieldMap &theFields = fields();
+  const QgsFields &theFields = fields();
 
-  for ( QgsFieldMap::const_iterator it = theFields.constBegin(); it != theFields.constEnd(); ++it )
+  for ( int i = 0; i < theFields.count(); ++i )
   {
-    if ( QString::compare( it->name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( theFields[i].name(), fieldName, Qt::CaseInsensitive ) == 0 )
     {
-      return it.key();
+      return i;
     }
   }
   return -1;
@@ -231,11 +217,10 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 {
   QMap<QString, int> resultMap;
 
-  const QgsFieldMap& theFields = fields();
-  QgsFieldMap::const_iterator field_it = theFields.constBegin();
-  for ( ; field_it != theFields.constEnd(); ++field_it )
+  const QgsFields& theFields = fields();
+  for ( int i = 0; i < theFields.count(); ++i )
   {
-    resultMap.insert( field_it.value().name(), field_it.key() );
+    resultMap.insert( theFields[i].name(), i );
   }
 
   return resultMap;
@@ -243,10 +228,10 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 
 QgsAttributeList QgsVectorDataProvider::attributeIndexes()
 {
-  uint count = fieldCount();
+    int count = fields().count();
   QgsAttributeList list;
 
-  for ( uint i = 0; i < count; i++ )
+  for ( int i = 0; i < count; i++ )
     list.append( i );
 
   return list;
@@ -271,16 +256,16 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
          field.length() >= mNativeTypes[i].mMinLen && field.length() <= mNativeTypes[i].mMaxLen &&
          field.precision() >= mNativeTypes[i].mMinPrec && field.precision() <= mNativeTypes[i].mMaxPrec )
     {
-      break;
+      return true;
     }
   }
 
-  return i < mNativeTypes.size();
+  return false;
 }
 
 QVariant QgsVectorDataProvider::minimumValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= fields().count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -296,7 +281,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index )
 
 QVariant QgsVectorDataProvider::maximumValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= fields().count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -315,17 +300,17 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
-  select( keys, QgsRectangle(), false );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
 
   QSet<QString> set;
   values.clear();
 
-  while ( nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
-    if ( !set.contains( f.attributeMap()[index].toString() ) )
+    if ( !set.contains( f.attribute( index ).toString() ) )
     {
-      values.append( f.attributeMap()[index] );
-      set.insert( f.attributeMap()[index].toString() );
+      values.append( f.attribute( index ) );
+      set.insert( f.attribute( index ).toString() );
     }
 
     if ( limit >= 0 && values.size() >= limit )
@@ -343,36 +328,36 @@ void QgsVectorDataProvider::fillMinMaxCache()
   if ( !mCacheMinMaxDirty )
     return;
 
-  const QgsFieldMap& flds = fields();
-  for ( QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it )
+  const QgsFields& flds = fields();
+  for ( int i = 0; i < flds.count(); ++i )
   {
-    if ( it->type() == QVariant::Int )
+    if ( flds[i].type() == QVariant::Int )
     {
-      mCacheMinValues[it.key()] = QVariant( INT_MAX );
-      mCacheMaxValues[it.key()] = QVariant( INT_MIN );
+      mCacheMinValues[i] = QVariant( INT_MAX );
+      mCacheMaxValues[i] = QVariant( INT_MIN );
     }
-    else if ( it->type() == QVariant::Double )
+    else if ( flds[i].type() == QVariant::Double )
     {
-      mCacheMinValues[it.key()] = QVariant( DBL_MAX );
-      mCacheMaxValues[it.key()] = QVariant( -DBL_MAX );
+      mCacheMinValues[i] = QVariant( DBL_MAX );
+      mCacheMaxValues[i] = QVariant( -DBL_MAX );
     }
     else
     {
-      mCacheMinValues[it.key()] = QVariant();
-      mCacheMaxValues[it.key()] = QVariant();
+      mCacheMinValues[i] = QVariant();
+      mCacheMaxValues[i] = QVariant();
     }
   }
 
   QgsFeature f;
   QgsAttributeList keys = mCacheMinValues.keys();
-  select( keys, QgsRectangle(), false );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
 
-  while ( nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
-    QgsAttributeMap attrMap = f.attributeMap();
+    const QgsAttributes& attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
-      const QVariant& varValue = attrMap[*it];
+      const QVariant& varValue = attrs[*it];
 
       if ( flds[*it].type() == QVariant::Int )
       {

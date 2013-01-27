@@ -87,7 +87,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
     connect( layer, SIGNAL( editingStarted() ), this, SLOT( updateIcon() ) );
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( updateIcon() ) );
-    connect( layer, SIGNAL( layerModified( bool ) ), this, SLOT( updateAfterLayerModification( bool ) ) );
+    connect( layer, SIGNAL( layerModified() ), this, SLOT( updateAfterLayerModification() ) ); // TODO[MD]: should have symbologyChanged signal
   }
   if ( qobject_cast<QgsRasterLayer *>( layer ) )
   {
@@ -207,13 +207,16 @@ void QgsLegendLayer::vectorLayerSymbology( QgsVectorLayer* layer, double widthSc
       if ( renderer->needsAttributes() )
       {
         QgsAttributeList classfieldlist = renderer->classificationAttributes();
-        const QgsFieldMap& fields = layer->pendingFields();
+        const QgsFields& fields = layer->pendingFields();
         for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
         {
-          QString classfieldname = layer->attributeAlias( *it );
+          int idx = *it;
+          if ( idx < 0 || idx >= fields.count() )
+            continue;
+          QString classfieldname = layer->attributeAlias( idx );
           if ( classfieldname.isEmpty() )
           {
-            classfieldname = fields[*it].name();
+            classfieldname = fields[idx].name();
           }
           itemList.append( qMakePair( classfieldname, QPixmap() ) );
         }
@@ -617,17 +620,6 @@ QString QgsLegendLayer::layerName()
 
 void QgsLegendLayer::updateAfterLayerModification()
 {
-  updateAfterLayerModification( false );
-}
-
-void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
-{
-  if ( onlyGeomChanged )
-  {
-    updateIcon();
-    return;
-  }
-
   double widthScale = 1.0;
   QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
   if ( canvas && canvas->map() )
@@ -738,7 +730,7 @@ void QgsLegendLayer::setShowFeatureCount( bool show, bool update )
     mShowFeatureCount = show;
     if ( update )
     {
-      updateAfterLayerModification( false );
+      updateAfterLayerModification();
     }
   }
 }

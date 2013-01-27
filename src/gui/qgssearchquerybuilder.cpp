@@ -73,11 +73,11 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  const QgsFieldMap& fields = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QString fieldName = it->name();
-    mFieldMap[fieldName] = it.key();
+    QString fieldName = fields[idx].name();
+    mFieldMap[fieldName] = idx;
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
@@ -136,8 +136,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   while ( mLayer->nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
-    const QgsAttributeMap& attributes = feat.attributeMap();
-    value = attributes[fieldIndex].toString();
+    value = feat.attribute( fieldIndex ).toString();
 
     if ( !numeric )
     {
@@ -200,7 +199,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFieldMap& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->pendingFields();
 
   if ( !search.prepare( fields ) )
   {

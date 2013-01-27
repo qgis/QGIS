@@ -831,6 +831,13 @@ Qt::CheckState QgsLegend::layerCheckState( QgsMapLayer * layer )
   return ll ? ll->checkState( 0 ) : Qt::Unchecked;
 }
 
+bool QgsLegend::layerIsExpanded( QgsMapLayer * layer )
+{
+  QgsLegendLayer * ll = findLegendLayer( layer );
+
+  return ll->isExpanded();
+}
+
 QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent )
 {
   mEmbeddedGroups.insert( groupName, projectFilePath );

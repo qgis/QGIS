@@ -25,7 +25,7 @@ QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare(): mCurrentSo
 }
 
 
-bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
+bool QgsComposerAttributeTableCompare::operator()( const QgsAttributes& m1, const QgsAttributes& m2 )
 {
   QVariant v1 = m1[mCurrentSortColumn];
   QVariant v2 = m2[mCurrentSortColumn];
@@ -81,14 +81,13 @@ void QgsComposerAttributeTable::initializeAliasMap()
   mFieldAliasMap.clear();
   if ( mVectorLayer )
   {
-    QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator it = fieldMap.constBegin();
-    for ( ; it != fieldMap.constEnd(); ++it )
+    const QgsFields& fields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      QString currentAlias = mVectorLayer->attributeAlias( it.key() );
+      QString currentAlias = mVectorLayer->attributeAlias( idx );
       if ( !currentAlias.isEmpty() )
       {
-        mFieldAliasMap.insert( it.key(), currentAlias );
+        mFieldAliasMap.insert( idx, currentAlias );
       }
     }
   }
@@ -117,7 +116,7 @@ void QgsComposerAttributeTable::setComposerMap( const QgsComposerMap* map )
   }
 }
 
-bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
 {
   if ( !mVectorLayer )
   {
@@ -158,7 +157,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
   int counter = 0;
   while ( mVectorLayer->nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    attributes.push_back( f.attributeMap() );
+    attributes.push_back( f.attributes() );
     ++counter;
   }
 
@@ -178,15 +177,14 @@ QMap<int, QString> QgsComposerAttributeTable::getHeaderLabels() const
   QMap<int, QString> header;
   if ( mVectorLayer )
   {
-    QgsFieldMap vectorFields = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = vectorFields.constBegin();
-    for ( ; fieldIt != vectorFields.constEnd(); ++fieldIt )
+    const QgsFields& vectorFields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < vectorFields.count(); ++idx )
     {
-      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( fieldIt.key() ) )
+      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( idx ) )
       {
         continue;
       }
-      header.insert( fieldIt.key(), attributeDisplayName( fieldIt.key(), fieldIt.value().name() ) );
+      header.insert( idx, attributeDisplayName( idx, vectorFields[idx].name() ) );
     }
   }
   return header;

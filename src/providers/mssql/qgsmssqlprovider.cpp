@@ -537,6 +537,7 @@ bool QgsMssqlProvider::nextFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
+    feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
     return true;
   }
   return false;
@@ -869,14 +870,6 @@ QGis::WkbType QgsMssqlProvider::geometryType() const
 long QgsMssqlProvider::featureCount() const
 {
   return mNumberFeatures;
-}
-
-/**
- * Return the number of fields
- */
-uint QgsMssqlProvider::fieldCount() const
-{
-  return mAttributeFields.size();
 }
 
 

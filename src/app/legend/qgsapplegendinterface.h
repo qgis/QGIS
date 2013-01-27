@@ -61,6 +61,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Check if a group is visible
     bool isGroupVisible( int groupIndex );
 
+    //! Check if a layer is expanded
+    bool isLayerExpanded( QgsMapLayer * ml );
+
     //! Check if a layer is visible
     bool isLayerVisible( QgsMapLayer * ml );
 

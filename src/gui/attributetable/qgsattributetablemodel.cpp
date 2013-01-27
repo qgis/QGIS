@@ -203,22 +203,23 @@ void QgsAttributeTableModel::loadAttributes()
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().constBegin(); it != mLayer->pendingFields().end(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    switch ( mLayer->editType( it.key() ) )
+    switch ( mLayer->editType( idx ) )
     {
       case QgsVectorLayer::Hidden:
         continue;
 
       case QgsVectorLayer::ValueMap:
-        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
+        mValueMaps.insert( idx, &mLayer->valueMap( idx ) );
         break;
 
       default:
         break;
     }
 
-    attributes << it.key();
+    attributes << idx;
   }
 
   if ( columnCount() < attributes.size() )
@@ -491,7 +492,7 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
     if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
       continue;
 
-    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attributeMap()[idx] );
+    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attribute( idx ) );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -550,7 +551,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( mFeat.id() != rowId )
     return QVariant( "ERROR" );
 
-  const QVariant &val = mFeat.attributeMap()[ fieldId ];
+  const QVariant &val = mFeat.attribute( fieldId );
 
   if ( val.isNull() )
   {
@@ -584,12 +585,12 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 
   if ( mFeatureMap.contains( fid ) )
   {
-    mFeatureMap[ fid ].changeAttribute( idx, value );
+    mFeatureMap[ fid ].setAttribute( idx, value );
   }
 
   if ( mFeat.id() == fid || featureAtId( fid ) )
   {
-    mFeat.changeAttribute( idx, value );
+    mFeat.setAttribute( idx, value );
   }
 
   if ( !mLayer->isModified() )
@@ -654,10 +655,11 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
+  f.initAttributes( mAttributes.size() );
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
+    f.setAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   return f;

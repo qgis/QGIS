@@ -80,7 +80,7 @@ void QgsContinuousColorRenderer::renderFeature( QgsRenderContext &renderContext,
   if (( mMinimumSymbol && mMaximumSymbol ) )
   {
     //first find out the value for the classification attribute
-    const QgsAttributeMap& attrs = f.attributeMap();
+    const QgsAttributes& attrs = f.attributes();
     if ( attrs[mClassificationField].isNull() )
     {
       if ( img )
@@ -201,7 +201,7 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   {
     return 1;
   }
-  int classificationId = theProvider->fieldNameIndex( classificationField );
+  int classificationId = vl.fieldNameIndex( classificationField );
   if ( classificationId == -1 )
   {
     //go on. Because with joins, it might be the joined layer is not loaded yet
@@ -262,10 +262,10 @@ bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   }
 
   QString classificationFieldName;
-  QgsFieldMap::const_iterator field_it = theProvider->fields().find( mClassificationField );
-  if ( field_it != theProvider->fields().constEnd() )
+  const QgsFields& fields = vl.pendingFields();
+  if ( mClassificationField >= 0 && mClassificationField < fields.count() )
   {
-    classificationFieldName = field_it.value().name();
+    classificationFieldName = fields[ mClassificationField ].name();
   }
   bool returnval = true;
 

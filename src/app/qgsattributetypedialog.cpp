@@ -323,7 +323,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     int max = INT_MAX;
     while ( mLayer->nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         int valInt = val.toInt();
@@ -344,7 +344,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) );
     while ( mLayer->nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         double dVal =  val.toDouble();
@@ -644,12 +644,13 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
 
   valueRelationFilterColumn->addItem( tr( "No filter" ), -1 );
 
-  const QgsFieldMap &fields = vl->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  const QgsFields &fields = vl->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    valueRelationKeyColumn->addItem( it->name() );
-    valueRelationValueColumn->addItem( it->name() );
-    valueRelationFilterColumn->addItem( it->name(), it.key() );
+    QString fieldName = fields[idx].name();
+    valueRelationKeyColumn->addItem( fieldName );
+    valueRelationValueColumn->addItem( fieldName );
+    valueRelationFilterColumn->addItem( fieldName, idx );
   }
 
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );

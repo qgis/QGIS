@@ -198,16 +198,15 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributeMap& attrMap = feature.attributeMap();
-  QgsAttributeMap::const_iterator ita = attrMap.find( mAttrNum );
-  if ( ita == attrMap.end() )
+  const QgsAttributes& attrs = feature.attributes();
+  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
     QgsDebugMsg( "attribute '" + mAttrName + "' (index " + QString::number( mAttrNum ) + ") required by renderer not found" );
     return NULL;
   }
 
   // find the right symbol for the category
-  QgsSymbolV2* symbol = symbolForValue( *ita );
+  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum] );
   if ( symbol == NULL )
   {
     // if no symbol found use default one
@@ -226,12 +225,12 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   double rotation = 0;
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
-    rotation = attrMap[mRotationFieldIdx].toDouble();
+    rotation = attrs[mRotationFieldIdx].toDouble();
   if ( mSizeScaleFieldIdx != -1 )
-    sizeScale = attrMap[mSizeScaleFieldIdx].toDouble();
+    sizeScale = attrs[mSizeScaleFieldIdx].toDouble();
 
   // take a temporary symbol (or create it if doesn't exist)
-  QgsSymbolV2* tempSymbol = mTempSymbols[ita->toString()];
+  QgsSymbolV2* tempSymbol = mTempSymbols[attrs[mAttrNum].toString()];
 
   // modify the temporary symbol and return it
   if ( tempSymbol->type() == QgsSymbolV2::Marker )

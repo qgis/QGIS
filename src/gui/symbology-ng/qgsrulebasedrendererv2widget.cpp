@@ -541,7 +541,7 @@ void QgsRendererRulePropsDialog::testFilter()
     return;
   }
 
-  const QgsFieldMap& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->pendingFields();
 
   if ( !filter.prepare( fields ) )
   {
@@ -551,7 +551,7 @@ void QgsRendererRulePropsDialog::testFilter()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  mLayer->select( fields.keys(), QgsRectangle(), false );
+  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
 
   int count = 0;
   QgsFeature f;

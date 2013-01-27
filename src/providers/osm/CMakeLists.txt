@@ -3,6 +3,7 @@
 # Files
 
 SET(OSM_SRCS
+osmfeatureiterator.cpp
 osmhandler.cpp
 osmprovider.cpp
 osmrenderer.cpp

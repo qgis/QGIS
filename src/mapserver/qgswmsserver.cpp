@@ -1257,21 +1257,16 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   }
 
   //do a select with searchRect and go through all the features
-  QgsVectorDataProvider* provider = layer->dataProvider();
-  if ( !provider )
-  {
-    return 2;
-  }
 
   QgsFeature feature;
-  QgsAttributeMap featureAttributes;
+  QgsAttributes featureAttributes;
   int featureCounter = 0;
-  const QgsFieldMap& fields = provider->fields();
+  const QgsFields& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
-  provider->select( provider->attributeIndexes(), searchRect, addWktGeometry || featureBBox, true );
-  while ( provider->nextFeature( feature ) )
+  layer->select( layer->pendingAllAttributesList(), searchRect, addWktGeometry || featureBBox, true );
+  while ( layer->nextFeature( feature ) )
   {
     ++featureCounter;
     if ( featureCounter > nFeatures )
@@ -1310,21 +1305,21 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     layerElement.appendChild( featureElement );
 
     //read all attribute values from the feature
-    featureAttributes = feature.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = featureAttributes.begin(); it != featureAttributes.end(); ++it )
+    featureAttributes = feature.attributes();
+    for ( int i = 0; i < featureAttributes.count(); ++i )
     {
       //skip attribute if it is explicitely excluded from WMS publication
-      if ( excludedAttributes.contains( fields[it.key()].name() ) )
+      if ( excludedAttributes.contains( fields[i].name() ) )
       {
         continue;
       }
 
       //replace attribute name if there is an attribute alias?
-      QString attributeName = layer->attributeDisplayName( it.key() );
+      QString attributeName = layer->attributeDisplayName( i );
 
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
       attributeElement.setAttribute( "name", attributeName );
-      attributeElement.setAttribute( "value", it->toString() );
+      attributeElement.setAttribute( "value", featureAttributes[i].toString() );
       featureElement.appendChild( attributeElement );
     }
 

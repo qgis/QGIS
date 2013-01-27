@@ -7,9 +7,9 @@ ADD_SUBDIRECTORY(ogr)
 ADD_SUBDIRECTORY(wms)
 ADD_SUBDIRECTORY(delimitedtext)
 ADD_SUBDIRECTORY(osm)
-ADD_SUBDIRECTORY(sqlanywhere)
+#ADD_SUBDIRECTORY(sqlanywhere)   # TODO: enable when migrated to new api
 ADD_SUBDIRECTORY(gdal)
-ADD_SUBDIRECTORY(mssql)
+#ADD_SUBDIRECTORY(mssql)         # TODO: enable when migrated to new api
 ADD_SUBDIRECTORY(ows)
 ADD_SUBDIRECTORY(wcs)
 ADD_SUBDIRECTORY(gpx)

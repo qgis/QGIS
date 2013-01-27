@@ -26,6 +26,8 @@
 %Include qgsdistancearea.sip
 %Include qgsexpression.sip
 %Include qgsfeature.sip
+%Include qgsfeatureiterator.sip
+%Include qgsfeaturerequest.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
@@ -72,6 +74,7 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip

@@ -30,18 +30,18 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
 
-  QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+  QVariant attrVal = attributes[is.classificationAttribute];
 
-  if ( attIt == attributes.constEnd() )
+  if ( !attrVal.isValid() )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attIt.value().toDouble();
+  double scaledValue = attrVal.toDouble();
   double scaledLowerValue = is.lowerValue;
   double scaledUpperValue = is.upperValue;
   double scaledLowerSizeWidth = is.lowerSize.width();
@@ -76,7 +76,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
   return size;
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
   Q_UNUSED( attributes );
@@ -84,7 +84,7 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
   if ( !p )

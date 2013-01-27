@@ -26,6 +26,8 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfield.h"
 #include "qgssnapper.h"
 #include "qgsfield.h"
 
@@ -34,6 +36,7 @@ class QImage;
 
 class QgsAttributeAction;
 class QgsCoordinateTransform;
+class QgsFeatureRequest;
 class QgsGeometry;
 class QgsGeometryVertexIndex;
 class QgsMapToPixel;
@@ -49,6 +52,8 @@ class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
+class QgsVectorLayerCache;
+class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
 
 typedef QList<int> QgsAttributeList;
@@ -119,29 +124,23 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 struct CORE_EXPORT QgsVectorJoinInfo
 {
   /**Join field in the target layer*/
-  int targetField;
+  QString targetFieldName;
   /**Source layer*/
   QString joinLayerId;
   /**Join field in the source layer*/
-  int joinField;
+  QString joinFieldName;
   /**True if the join is cached in virtual memory*/
   bool memoryCache;
   /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
-  QHash< QString, QgsAttributeMap> cachedAttributes;
+  QHash< QString, QgsAttributes> cachedAttributes;
+
+  // the following are temporaries, assigned by QgsVectorLayerJoinBuffer::updateFields()
+  mutable int tmpTargetField;
+  mutable int tmpJoinField;
 };
 
-/** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
-  Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
- @note added in 1.7
-*/
-struct CORE_EXPORT QgsFetchJoinInfo
-{
-  const QgsVectorJoinInfo* joinInfo;
-  QgsAttributeList attributes; //attributes to fetch
-  int indexOffset; //index offset between this layer and join layer
-};
 
 /** \ingroup core
  * Vector layer backed by a data source provider.
@@ -276,7 +275,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @note added in 1.7 */
-    void addJoin( QgsVectorJoinInfo joinInfo );
+    void addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /** Removes  a vector layer join
       @note added in 1.7 */
@@ -315,12 +314,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
-
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    bool copySymbologySettings( const QgsMapLayer& other );
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    bool hasCompatibleSymbology( const QgsMapLayer& other ) const;
 
     /** Returns a pointer to the renderer */
     const QgsRenderer* renderer() const;
@@ -455,21 +448,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fetchGeometry fetch features with geometry
      * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
      */
-    void select( QgsAttributeList fetchAttributes,
+    Q_DECL_DEPRECATED void select( QgsAttributeList fetchAttributes,
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
                  bool useIntersect = false );
+
+    /**
+     * Query the provider for features specified in request.
+     */
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /**
      * fetch a feature (after select)
      * @param feature buffer to read the feature into
      * @return true, if a feature was fetched, false, if there are no more features
      */
-    bool nextFeature( QgsFeature& feature );
+    Q_DECL_DEPRECATED bool nextFeature( QgsFeature& feature );
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    Q_DECL_DEPRECATED bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
         @param f feature to add
@@ -513,7 +511,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        2 ring not closed,
        3 ring not valid,
        4 ring crosses existing rings,
-       5 no feature found where ring can be inserted*/
+       5 no feature found where ring can be inserted
+       6 layer not editable */
     int addRing( const QList<QgsPoint>& ring );
 
     /**Adds a new part polygon to a multipart feature
@@ -524,7 +523,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        3 if new polygon ring not disjoint with existing rings,
        4 if no feature was selected,
        5 if several features are selected,
-       6 if selected geometry not found*/
+       6 if selected geometry not found
+       7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
 
     /**Translates feature by dx, dy
@@ -627,7 +627,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsRectangle extent();
 
     /** returns field list in the to-be-committed state */
-    const QgsFieldMap &pendingFields() const;
+    const QgsFields &pendingFields() const;
 
     /** returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
@@ -645,9 +645,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @note added in 1.6
      */
     bool setReadOnly( bool readonly = true );
-
-    /** Sets whether some features are modified or not */
-    void setModified( bool modified = true, bool onlyGeometryWasModified = false );
 
     /** Make layer editable */
     bool startEditing();
@@ -793,6 +790,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
+    //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
+    QgsVectorLayerEditBuffer* editBuffer() { return mEditBuffer; }
 
     /**
      * Create edit command for undo/redo operations
@@ -805,16 +804,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
-
-    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand.
-     * @note not available in python bindings
-     */
-    void undoEditCommand( QgsUndoCommand* cmd );
-
-    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand.
-     * @note not available in python bindings
-     */
-    void redoEditCommand( QgsUndoCommand* cmd );
 
     /** Returns the index of a field name or -1 if the field does not exist
       @note this method was added in version 1.4
@@ -833,10 +822,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
-
-    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
-     @note added in 1.7 */
-    void updateFieldMap();
 
     /** Caches joined attributes if required (and not already done)
       @note added in 1.7 */
@@ -880,13 +865,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
+    inline QgsVectorLayerCache* cache() { return mCache; }
+
   signals:
 
     /** This signal is emited when selection was changed */
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */
-    void layerModified( bool onlyGeometry );
+    void layerModified();
 
     void editingStarted();
     void editingStopped();
@@ -901,7 +888,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Signals emitted after committing changes
       \note added in v1.6 */
-    void committedAttributesDeleted( const QString& layerId, const QgsAttributeIds& deletedAttributeIds );
+    void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
     void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
@@ -951,9 +938,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
     QgsFeatureId findFreeId();
 
-    /**Deletes the geometries in mCachedGeometries*/
-    void deleteCachedGeometries();
-
     /**Snaps to a geometry and adds the result to the multimap if it is within the snapping result
      @param startPoint start point of the snap
      @param featureId id of feature
@@ -969,49 +953,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;
 
-    /**Little helper function that gives bounding box from a list of points.
-    @return 0 in case of success*/
-    int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
-
     /**Reads vertex marker type from settings*/
     static QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
 
     /**Reads vertex marker size from settings*/
     static int currentVertexMarkerSize();
 
-    /**Update feature with uncommited attribute updates and joined attributes*/
-    void updateFeatureAttributes( QgsFeature &f, bool all = false );
-
-    /**Adds joined attributes to a feature
-      @param f the feature to add the attributes
-      @param joinInfo vector join
-      @param joinFieldName name of the (source) join Field
-      @param joinValue lookup value for join
-      @param attributes (join layer) attribute indices to add
-      @param attributeIndexOffset index offset to get from join layer attribute index to layer index*/
-    void addJoinedFeatureAttributes( QgsFeature& f, const QgsVectorJoinInfo& joinInfo, const QString& joinFieldName, const QVariant& joinValue,
-                                     const QgsAttributeList& attributes, int attributeIndexOffset );
-
-    /**Update feature with uncommited geometry updates*/
-    void updateFeatureGeometry( QgsFeature &f );
-
-    /** Record changed geometry, store in active command (if any) */
-    void editGeometryChange( QgsFeatureId featureId, QgsGeometry& geometry );
-
-    /** Record added feature, store in active command (if any) */
-    void editFeatureAdd( QgsFeature& feature );
-
-    /** Record deleted feature, store in active command (if any) */
-    void editFeatureDelete( QgsFeatureId featureId );
-
-    /** Record changed attribute, store in active command (if any) */
-    void editAttributeChange( QgsFeatureId featureId, int field, QVariant value );
+    /** Add joined attributes to a feature */
+    //void addJoinedAttributes( QgsFeature& f, bool all = false );
 
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
 
-    /**Updates an index in an attribute map to a new value (usually necessary because of a join operation)*/
-    void updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex, int newIndex ) const;
+    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in 1.7 */
+    void updateFields();
 
     /**Registers label and diagram layer
       @param rendererContext render context
@@ -1035,6 +991,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
 
+    QgsFeatureIterator mProviderIterator;
+
     /** index of the primary label field */
     QString mDisplayField;
 
@@ -1044,20 +1002,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** The user-defined actions that are accessed from the Identify Results dialog box */
     QgsAttributeAction* mActions;
 
-    /** Flag indicating whether the layer is in editing mode or not */
-    bool mEditable;
-
     /** Flag indicating whether the layer is in read-only mode (editing disabled) or not */
     bool mReadOnly;
-
-    /** Flag indicating whether the layer has been modified since the last commit */
-    bool mModified;
-
-    /** cache of the committed geometries retrieved *for the current display* */
-    QgsGeometryMap mCachedGeometries;
-
-    /** extent for which there are cached geometries */
-    QgsRectangle mCachedGeometriesRect;
 
     /** Set holding the feature IDs that are activated.  Note that if a feature
         subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
@@ -1065,31 +1011,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsFeatureIds mSelectedFeatureIds;
 
-    /** Deleted feature IDs which are not commited.  Note a feature can be added and then deleted
-        again before the change is committed - in that case the added feature would be removed
-        from mAddedFeatures only and *not* entered here.
-     */
-    QgsFeatureIds mDeletedFeatureIds;
-
-    /** New features which are not commited.  Note a feature can be added and then changed,
-        therefore the details here can be overridden by mChangedAttributeValues and mChangedGeometries.
-     */
-    QgsFeatureList mAddedFeatures;
-
-    /** Changed attributes values which are not commited */
-    QgsChangedAttributesMap mChangedAttributeValues;
-
-    /** deleted attributes fields which are not commited */
-    QgsAttributeIds mDeletedAttributeIds;
-
-    /** added attributes fields which are not commited */
-    QgsAttributeIds mAddedAttributeIds;
-
-    /** Changed geometries which are not commited. */
-    QgsGeometryMap mChangedGeometries;
-
     /** field map to commit */
-    QgsFieldMap mUpdatedFields;
+    QgsFields mUpdatedFields;
 
     /**Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QMap< QString, QString > mAttributeAliasMap;
@@ -1105,13 +1028,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Map that stores the tab for attributes in the edit form. Key is the tab order and value the tab name*/
     QList< TabData > mTabs;
 
-    /** max field index */
-    int mMaxUpdatedIndex;
-
     /** Geometry type as defined in enum WkbType (qgis.h) */
     int mWkbType;
-
-    QgsUndoCommand * mActiveCommand;
 
     /** Renderer object which holds the information about how to display the features */
     QgsRenderer *mRenderer;
@@ -1155,6 +1073,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     //annotation form for this layer
     QString mAnnotationForm;
 
+    QgsFeatureIterator mLayerIterator; // temporary: to support old API
+    friend class QgsVectorLayerFeatureIterator;
+#if 0
     bool mFetching;
     QgsRectangle mFetchRect;
     QgsAttributeList mFetchAttributes;
@@ -1164,6 +1085,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<QgsFeatureId> mFetchConsidered;
     QgsGeometryMap::iterator mFetchChangedGeomIt;
     QgsFeatureList::iterator mFetchAddedFeaturesIt;
+#endif
+
+    //! cache for some vector layer data - currently only geometries for faster editing
+    QgsVectorLayerCache* mCache;
+
+    //! stores information about uncommitted changes to layer
+    QgsVectorLayerEditBuffer* mEditBuffer;
+    friend class QgsVectorLayerEditBuffer;
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer* mJoinBuffer;

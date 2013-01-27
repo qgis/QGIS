@@ -95,7 +95,7 @@ class CORE_EXPORT QgsExpression
     QString parserErrorString() const { return mParserErrorString; }
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsFieldMap& fields );
+    bool prepare( const QgsFields& fields );
 
     //! Get list of columns referenced by the expression
     QStringList referencedColumns();
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( QgsFeature* f, const QgsFieldMap& fields );
+    QVariant evaluate( QgsFeature* f, const QgsFields& fields );
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const { return !mEvalErrorString.isNull(); }
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsExpression
 
         // abstract virtual preparation function
         // errors are reported to the parent
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields ) = 0;
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields ) = 0;
 
         virtual QString dump() const = 0;
 
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsExpression
         UnaryOperator op() { return mOp; }
         Node* operand() { return mOperand; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsExpression
         Node* opLeft() { return mOpLeft; }
         Node* opRight() { return mOpRight; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsExpression
         bool isNotIn() { return mNotIn; }
         NodeList* list() { return mList; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsExpression
         int fnIndex() { return mFnIndex; }
         NodeList* args() { return mArgs; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsExpression
 
         QVariant value() { return mValue; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -516,7 +516,7 @@ class CORE_EXPORT QgsExpression
 
         QString name() { return mName; }
 
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
 
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsExpression
         ~NodeCondition() { delete mElseExp; foreach ( WhenThen* cond, mConditions ) delete cond; }
 
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
-        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual bool prepare( QgsExpression* parent, const QgsFields& fields );
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;

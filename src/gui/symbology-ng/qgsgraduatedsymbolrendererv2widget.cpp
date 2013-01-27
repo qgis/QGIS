@@ -438,12 +438,11 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
 void QgsGraduatedSymbolRendererV2Widget::populateColumns()
 {
   cboGraduatedColumn->clear();
-  const QgsFieldMap& flds = mLayer->pendingFields();
-  QgsFieldMap::ConstIterator it = flds.begin();
-  for ( ; it != flds.end(); ++it )
+  const QgsFields& flds = mLayer->pendingFields();
+  for ( int idx = 0; idx < flds.count(); ++idx )
   {
-    if ( it->type() == QVariant::Double || it->type() == QVariant::Int )
-      cboGraduatedColumn->addItem( it->name() );
+    if ( flds[idx].type() == QVariant::Double || flds[idx].type() == QVariant::Int )
+      cboGraduatedColumn->addItem( flds[idx].name() );
   }
 }
 

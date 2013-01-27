@@ -132,7 +132,7 @@ void QgsAttributeTableMemoryModel::layerDeleted()
 void QgsAttributeTableMemoryModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsg( "entered." );
-  mFeatureMap[fid].changeAttribute( idx, value );
+  mFeatureMap[fid].setAttribute( idx, value );
   QgsAttributeTableModel::attributeValueChanged( fid, idx, value );
 }
 

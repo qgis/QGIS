@@ -382,11 +382,14 @@ class TestQgsExpression: public QObject
 
     void eval_columns()
     {
-      QgsFieldMap fields;
-      fields[4] = QgsField( "foo", QVariant::Int );
+      QgsFields fields;
+      fields.append( QgsField("x1") );
+      fields.append( QgsField("x2") );
+      fields.append( QgsField( "foo", QVariant::Int ) );
 
       QgsFeature f;
-      f.addAttribute( 4, QVariant( 20 ) );
+      f.initAttributes( 3 );
+      f.setAttribute( 2, QVariant( 20 ) );
 
       // good exp
       QgsExpression exp( "foo + 1" );

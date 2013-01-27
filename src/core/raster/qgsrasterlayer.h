@@ -428,9 +428,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     const QgsContrastEnhancement* constContrastEnhancement( unsigned int theBand ) const;
 
-    /**Copies the symbology settings from another layer. Returns true in case of success*/
-    bool copySymbologySettings( const QgsMapLayer& theOther );
-
     /** \brief Get a pointer to the color table */
     QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
@@ -460,9 +457,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * NOTE: May be deprecated in the future!. DrawingStyle drawingStyle() instead.
      * */
     QString drawingStyleAsString() const;
-
-    /** \brief Checks if symbology is the same as another layers */
-    bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
 
     /** \brief Identify raster value(s) found on the point position */
     //bool identify( const QgsPoint & point, QMap<QString, QString>& results );

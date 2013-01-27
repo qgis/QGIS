@@ -40,7 +40,7 @@ QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
   if ( mVectorLayer && mMapCanvas ) //default to the layers edit form
   {
     mDesignerForm = mVectorLayer->annotationForm();
-    QObject::connect( mVectorLayer, SIGNAL( layerModified( bool ) ), this, SLOT( setFeatureForMapPosition() ) );
+    QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
   }
@@ -87,18 +87,16 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
     QgsFeature f;
     if ( mVectorLayer->featureAtId( mFeature, f, false, true ) )
     {
-      const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
-      QgsAttributeMap attMap = f.attributeMap();
-      QgsAttributeMap::const_iterator attIt = attMap.constBegin();
-      for ( ; attIt != attMap.constEnd(); ++attIt )
+      const QgsFields& fields = mVectorLayer->pendingFields();
+      const QgsAttributes& attrs = f.attributes();
+      for ( int i = 0; i < attrs.count(); ++i )
       {
-        QgsFieldMap::const_iterator fieldIt = fieldMap.find( attIt.key() );
-        if ( fieldIt != fieldMap.constEnd() )
+        if ( i < fields.count() )
         {
-          QWidget* attWidget = widget->findChild<QWidget*>( fieldIt->name() );
+          QWidget* attWidget = widget->findChild<QWidget*>( fields[i].name() );
           if ( attWidget )
           {
-            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, attIt.key(), attIt.value() );
+            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs[i] );
           }
         }
       }
@@ -196,7 +194,7 @@ void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
     if ( mVectorLayer )
     {
-      QObject::connect( mVectorLayer, SIGNAL( layerModified( bool ) ), this, SLOT( setFeatureForMapPosition() ) );
+      QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
       QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
     }
