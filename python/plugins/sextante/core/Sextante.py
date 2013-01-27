@@ -407,9 +407,12 @@ def getObjectFromName(name):
 def getObjectFromUri(uri):
     return QGisLayers.getObjectFromUri(uri, False)
 
-def load(layer):
+def load(path):
     '''Loads a layer into QGIS'''
-    QGisLayers.load(layer)
+    return QGisLayers.load(path)
+
+def features(layer):
+    return QGisLayers.features(layer)
 
 def loadFromAlg(layersdict):
     '''Load all layer resulting from a given algorithm.

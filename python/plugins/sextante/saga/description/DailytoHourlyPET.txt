@@ -1,8 +1,0 @@
-Daily to Hourly PET
-table_calculus
-ParameterTable|DAYS|Daily Data|False
-ParameterTableField|JD|Julian Day|DAYS
-ParameterTableField|ET|Evapotranspiration|DAYS
-ParameterTableField|P|Precipitation|DAYS
-ParameterNumber|LAT|Latitude|None|None|0.0
-OutputTable|HOURS|Hourly Data

@@ -115,8 +115,8 @@ class QGisLayers:
             QGisLayers.load(layer)
 
     @staticmethod
-    def load(layer, name = None, crs = None, style  = None):
-        if layer == None:
+    def load(fileName, name = None, crs = None, style  = None):
+        if fileName == None:
             return
         prjSetting = None
         settings = QSettings()
@@ -124,8 +124,8 @@ class QGisLayers:
             prjSetting = settings.value("/Projections/defaultBehaviour")
             settings.setValue("/Projections/defaultBehaviour", QVariant(""))
         if name == None:
-            name = path.split(layer)[1]
-        qgslayer = QgsVectorLayer(layer, name , 'ogr')
+            name = path.split(fileName)[1]
+        qgslayer = QgsVectorLayer(fileName, name , 'ogr')
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -139,7 +139,7 @@ class QGisLayers:
             qgslayer.loadNamedStyle(style)
             QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
         else:
-            qgslayer = QgsRasterLayer(layer, name)
+            qgslayer = QgsRasterLayer(fileName, name)
             if qgslayer.isValid():
                 if crs != None:
                     qgslayer.setCrs(crs,False)
@@ -151,11 +151,12 @@ class QGisLayers:
             else:
                 if prjSetting:
                     settings.setValue("/Projections/defaultBehaviour", prjSetting)
-                raise RuntimeError("Could not load layer: " + unicode(layer)
-                                       +"\nCheck the SEXTANTE log to look for errors in algorithm execution")
+                raise RuntimeError("Could not load layer: " + unicode(fileName)
+                                       +"\nCheck the SEXTANTE log to look for errors")
         if prjSetting:
             settings.setValue("/Projections/defaultBehaviour", prjSetting)
 
+        return qgslayer
 
     @staticmethod
     def loadFromDict(layersdict, crs):

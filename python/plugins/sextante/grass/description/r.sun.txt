@@ -1,33 +1,23 @@
 r.sun
 r.sun - Solar irradiance and irradiation model.
 Raster (r.*)
-ParameterRaster|elevin|Name of the input elevation raster map [meters]|False
-ParameterRaster|aspin|Name of the input aspect map (terrain aspect or azimuth of the solar panel) [decimal degrees]|False
-ParameterNumber|aspect|A single value of the orientation (aspect), 270 is south|None|None|270.0
+ParameterRaster|elevin|Elevation layer [meters]|False
+ParameterRaster|aspin|Aspect layer [decimal degrees]|False
 ParameterRaster|slopein|Name of the input slope raster map (terrain slope or solar panel inclination) [decimal degrees]|False
-ParameterNumber|slope|A single value of inclination (slope)|None|None|0.0
-ParameterRaster|linkein|Name of the Linke atmospheric turbidity coefficient input raster map [-]|False
-ParameterNumber|lin|A single value of the Linke atmospheric turbidity coefficient [-]|None|None|3.0
-ParameterRaster|albedo|Name of the ground albedo coefficient input raster map [-]|False
-ParameterNumber|alb|A single value of the ground albedo coefficient [-]|None|None|0.2
-ParameterRaster|latin|Name of input raster map containing latitudes [decimal degrees]|False
-ParameterRaster|longin|Name of input raster map containing longitudes [decimal degrees]|False
-ParameterRaster|coefbh|Name of real-sky beam radiation coefficient input raster map [-]|False
-ParameterRaster|coefdh|Name of real-sky diffuse radiation coefficient input raster map [-]|False
-ParameterRaster|horizon|The horizon information input map prefix|False
-ParameterNumber|horizonstep|Angle step size for multidirectional horizon [degrees]|None|None|0.0
-ParameterNumber|day|No. of day of the year (1-365)|None|None|0.0
-ParameterNumber|step|Time step when computing all-day radiation sums [decimal hours]|None|None|0.5
-ParameterNumber|declin|Declination value (overriding the internally computed value) [radians]|None|None|0.0
-ParameterNumber|time|Local (solar) time (to be set for mode 1 only) [decimal hours]|None|None|0.0
-ParameterNumber|dist|Sampling distance step coefficient (0.5-1.5)|None|None|1.0
-ParameterNumber|numpartitions|Read the input files in this number of chunks|None|None|1.0
-ParameterNumber|civiltime|Civil time zone value, if none, the time will be local solar time|None|None|0.0
+ParameterRaster|linkein|Name of the Linke atmospheric turbidity coefficient input raster map|True
+ParameterRaster|albedo|Name of the ground albedo coefficient input raster map|True
+ParameterRaster|latin|Name of input raster map containing latitudes [decimal degrees]|True
+ParameterRaster|longin|Name of input raster map containing longitudes [decimal degrees]|True
+ParameterRaster|coefbh|Name of real-sky beam radiation coefficient input raster map|True
+ParameterRaster|coefdh|Name of real-sky diffuse radiation coefficient input raster map|True
+ParameterNumber|day|No. of day of the year (1-365)|1|365|1
+*ParameterNumber|step|Time step when computing all-day radiation sums [decimal hours]|0|None|0.5
+*ParameterNumber|declin|Declination value (overriding the internally computed value) [radians]|None|None|0.0
+*ParameterNumber|dist|Sampling distance step coefficient (0.5-1.5)|0.5|1.5|1.0
 ParameterBoolean|-s|Incorporate the shadowing effect of terrain|False
-ParameterBoolean|-m|Use the low-memory version of the program|False
-OutputRaster|incidout|Output incidence angle raster map (mode 1 only)
-OutputRaster|beam_rad|Output beam irradiance [W.m-2] (mode 1) or irradiation raster map [Wh.m-2.day-1] (mode 2)
-OutputRaster|insol_time|Output insolation time raster map [h] (mode 2 only)
-OutputRaster|diff_rad|Output diffuse irradiance [W.m-2] (mode 1) or irradiation raster map [Wh.m-2.day-1] (mode 2)
-OutputRaster|refl_rad|Output ground reflected irradiance [W.m-2] (mode 1) or irradiation raster map [Wh.m-2.day-1] (mode 2)
-OutputRaster|glob_rad|Output global (total) irradiance/irradiation [W.m-2] (mode 1) or irradiance/irradiation raster map [Wh.m-2.day-1] (mode 2)
+*ParameterBoolean|-m|Use the low-memory version of the program|False
+OutputRaster|beam_rad|Output irradiation layer [Wh.m-2.day-1] 
+OutputRaster|insol_time|Output insolation time layer [h] 
+OutputRaster|diff_rad|Outpu diffuse irradiation layer [Wh.m-2.day-1]
+OutputRaster|refl_rad|Output ground reflected irradiation layer [Wh.m-2.day-1] 
+OutputRaster|glob_rad|Output global (total) irradiance/irradiation layer [Wh.m-2.day-1]

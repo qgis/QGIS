@@ -1,19 +1,19 @@
 r.watershed
 r.watershed - Watershed basin analysis program.
 Raster (r.*)
-ParameterRaster|elevation|Input map: elevation on which entire analysis is based|False
-ParameterRaster|depression|Input map: locations of real depressions|True
-ParameterRaster|flow|Input map: amount of overland flow per cell|True
-ParameterRaster|disturbed.land|Input map or value: percent of disturbed land, for USLE|True
-ParameterRaster|blocking|Input map: terrain blocking overland surface flow, for USLE|True
-ParameterNumber|threshold|Input value: minimum size of exterior watershed basin|None|None|0
-ParameterNumber|max.slope.length|Input value: maximum length of surface flow, for USLE|None|None|0
+ParameterRaster|elevation|Elevation|False
+ParameterRaster|depression|Locations of real depressions|True
+ParameterRaster|flow|Amount of overland flow per cell|True
+ParameterRaster|disturbed.land|Percent of disturbed land, for USLE|True
+ParameterRaster|blocking|Terrain blocking overland surface flow, for USLE|True
+ParameterNumber|threshold|Minimum size of exterior watershed basin|None|None|0
+ParameterNumber|max.slope.length|Maximum length of surface flow, for USLE|None|None|0
 ParameterBoolean|-4|Allow only horizontal and vertical flow of water|True
-OutputRaster|accumulation|Output map: number of cells that drain through each cell
-OutputRaster|drainage|Output map: drainage direction
-OutputRaster|basin|Output map: unique label for each watershed basin
-OutputRaster|stream|Output map: stream segments
-OutputRaster|half.basin|Output map: each half-basin is given a unique value
-OutputRaster|visual|Output map: useful for visual display of results
-OutputRaster|length.slope|Output map: slope length and steepness (LS) factor for USLE
-OutputRaster|slope.steepness|Output map: slope steepness (S) factor for USLE
+OutputRaster|accumulation|Number of cells that drain through each cell
+OutputRaster|drainage|Drainage direction
+OutputRaster|basin|Unique label for each watershed basin
+OutputRaster|stream|Stream segments
+OutputRaster|half.basin|Half-basins output layer
+OutputRaster|visual|Visual display output layer
+OutputRaster|length.slope|Slope length and steepness (LS) factor for USLE
+OutputRaster|slope.steepness|Slope steepness (S) factor for USLE

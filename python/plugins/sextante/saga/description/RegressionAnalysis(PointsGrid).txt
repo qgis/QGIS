@@ -1,4 +1,4 @@
-Regression Analysis (Points/Grid)
+Regression analysis|Regression Analysis (Points/Grid)
 geostatistics_regression
 ParameterRaster|GRID|Grid|False
 ParameterVector|SHAPES|Shapes|-1|False
