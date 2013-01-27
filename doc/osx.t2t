@@ -76,7 +76,7 @@ of Xcode, regardless of using a separate DMG installer for just the tools.
 
 Xcode 4.4+ also introduces the clang frontend to the LLVM compiler as default.
 
-**Note:** In XCODE 4.5 installed from teh app store, you need to install the 
+**Note:** In XCODE 4.5 installed from the app store, you need to install the 
 command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
@@ -113,7 +113,7 @@ __PPC note:__ The readymade Qt Cocoa installers don't include PPC support, you'd
 have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
 PPC Macs anyways.  Qt Carbon is recommended on PPC Macs.
 
-http://qt.nokia.com/downloads
+http://qt-project.org/downloads
 
 If you want debug frameworks, Qt also provides a separate download with these.
 These are in addition to the non-debug frameworks.
