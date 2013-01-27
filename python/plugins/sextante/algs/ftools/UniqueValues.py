@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.outputs.OutputString import OutputString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,6 +38,7 @@ class UniqueValues(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
     TOTAL_VALUES = "TOTAL_VALUES"
+    UNIQUE_VALUES = "UNIQUE_VALUES"
     OUTPUT = "OUTPUT"
 
     #===========================================================================
@@ -48,19 +50,19 @@ class UniqueValues(GeoAlgorithm):
         self.name = "List unique values"
         self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, "Targer field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.FIELD_NAME, "Target field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
         self.addOutput(OutputHTML(self.OUTPUT, "Unique values"))
         self.addOutput(OutputNumber(self.TOTAL_VALUES, "Total unique values"))
+        self.addOutput(OutputString(self.UNIQUE_VALUES, "Unique values"))       
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
-
         outputFile = self.getOutputValue(self.OUTPUT)
-
         values = layer.uniqueValues(layer.fieldNameIndex(fieldName))
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
+        self.setOutputValue(self.UNIQUE_VALUES, ";".join([unicode(v.toString()) for v in values]))
 
     def createHTML(self, outputFile, algData):
         f = codecs.open(outputFile, "w", encoding="utf-8")

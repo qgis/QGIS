@@ -629,7 +629,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 	ATTRIBUTE = "ATTRIBUTE"
 	COMPARISONVALUE = "COMPARISONVALUE"
 	COMPARISON = "COMPARISON"
-	SAVENAME = "SAVENAME"
+	RESULT = "RESULT"
 
 	def defineCharacteristics(self):
 		self.name = "Select by attribute"
@@ -641,7 +641,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 		self.addParameter(ParameterSelection(self.COMPARISON, "Comparison", self.comparisons, default = 0))
 		self.addParameter(ParameterString(self.COMPARISONVALUE, "Value", default = "0"))
 
-		self.addOutput(OutputVector(self.SAVENAME, "Output"))
+		self.addOutput(OutputVector(self.RESULT, "Output", True))
 
 	#===========================================================================
 	# def getIcon(self):
@@ -650,17 +650,19 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 
 	def processAlgorithm(self, progress):
 
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
+		filename = self.getParameterValue(self.LAYERNAME)
+		layer = QGisLayers.getObjectFromUri(filename)
 
 		attribute = self.getParameterValue(self.ATTRIBUTE)
-		comparison = self.comparisons [ self.getParameterValue(self.COMPARISON) ]
-		comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
-		savename = self.getOutputValue(self.SAVENAME)
+		comparison = self.comparisons [self.getParameterValue(self.COMPARISON)]
+		comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)		
 
-		message = mmqgisx_select(progress, layer, attribute, comparisonvalue, comparison, savename, False)
+		message = mmqgisx_select(progress, layer, attribute, comparisonvalue, comparison)
 
 		if message:
 			raise GeoAlgorithmExecutionException(message)
+		
+		self.setOutputValue(self.RESULT, filename)
 
 class mmqgisx_sort_algorithm(GeoAlgorithm):
 

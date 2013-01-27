@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -139,7 +138,7 @@ class GeoAlgorithm:
         Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
 
         try:
-            self.setOutputCRSFromInputLayers()
+            self.setOutputCRS()
             self.resolveTemporaryOutputs()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
@@ -259,7 +258,7 @@ class GeoAlgorithm:
             if (not out.hidden) and out.value == None:
                 SextanteUtils.setTempOutput(out, self)
 
-    def setOutputCRSFromInputLayers(self):
+    def setOutputCRS(self):
         layers = QGisLayers.getAllLayers()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -270,7 +269,8 @@ class GeoAlgorithm:
                             if layer.source() == inputlayer:
                                 self.crs = layer.crs()
                                 return
-
+        qgis = QGisLayers.iface
+        self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 
     def addOutput(self, output):
         #TODO: check that name does not exist
@@ -320,8 +320,8 @@ class GeoAlgorithm:
         for param in self.parameters:
             s+=("\t" + str(param) + "\n")
         for out in self.outputs:
-            if not out.hidden:
-                s+=("\t" + str(out) + "\n")
+            #if not out.hidden:
+            s+=("\t" + str(out) + "\n")
         s+=("\n")
         return s
 

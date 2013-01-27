@@ -78,7 +78,7 @@ class RandomSelection(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException("Selected number is greater than feature count. Choose a lower value and try again.")
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException("Persentage can't be greater than 100. Set a different value and try again.")
+                raise GeoAlgorithmExecutionException("Percentage can't be greater than 100. Set a different value and try again.")
             value = int(round((value / 100.0000), 4) * featureCount)
 
         selran = random.sample(xrange(0, featureCount), value)

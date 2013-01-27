@@ -1694,7 +1694,7 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 #    mmqgisx_select - Select features by attribute
 # ----------------------------------------------------------
 
-def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, comparisonname, savename, addlayer):
+def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, comparisonname):
 
 	selectindex = layer.dataProvider().fieldNameIndex(selectattributename)
 	if selectindex < 0:
@@ -1703,25 +1703,13 @@ def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, compar
 	if (not comparisonvalue) or (len(comparisonvalue) <= 0):
 		return "No comparison value given"
 
-	if (not savename) or (len(savename) <= 0):
-		return "No output filename given"
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), layer.dataProvider().fields(),
-			layer.dataProvider().geometryType(), layer.dataProvider().crs())
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
 	readcount = 0
 	writecount = 0
 	feature = QgsFeature()
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 
+	selected = []
 	totalcount = layer.featureCount()
 	features = QGisLayers.features(layer)
 	for feature in features:
@@ -1754,12 +1742,11 @@ def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, compar
 
 		readcount += 1
 		if (match):
-			outfile.addFeature(feature)
-			writecount += 1
+			selected.append(feature.id())			
 
 		progress.setPercentage(float(readcount) / totalcount * 100)
-
-	del outfile
+	
+	layer.setSelectedFeatures(selected)    
 
 	return None
 

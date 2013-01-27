@@ -25,12 +25,9 @@ __revision__ = '$Format:%H$'
 
 import os, sys
 import inspect
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from qgis.core import *
-
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
@@ -94,14 +91,6 @@ class SextantePlugin:
         self.resultsAction.triggered.connect(self.openResults)
         self.menu.addAction(self.resultsAction)
 
-        #=======================================================================
-        # self.helpAction = QAction(QIcon(":/sextante/images/help.png"),
-        #    QCoreApplication.translate("SEXTANTE", "&SEXTANTE help"),
-        #    self.iface.mainWindow())
-        # self.helpAction.triggered.connect(self.openHelp)
-        # self.menu.addAction(self.helpAction)
-        #=======================================================================
-
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
 
@@ -143,7 +132,3 @@ class SextantePlugin:
         dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
 
-    #===========================================================================
-    # def openHelp(self):
-    #    QDesktopServices.openUrl(QUrl(os.path.dirname(__file__) + "/help/index.html"))
-    #===========================================================================

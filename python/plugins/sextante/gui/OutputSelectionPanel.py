@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -24,13 +23,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from qgis.gui import *
-
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.outputs.OutputVector import OutputVector
 
 class OutputSelectionPanel(QWidget):
 
@@ -60,8 +57,8 @@ class OutputSelectionPanel(QWidget):
         saveToTemporaryFileAction = QAction("Save to a temporary file", self.pushButton)
         saveToTemporaryFileAction.triggered.connect(self.saveToTemporaryFile)
         popupmenu.addAction(saveToTemporaryFileAction )
-        if (self.alg.provider.supportsNonFileBasedOutput()):
-            saveToMemoryAction= QAction("Save to a memory layer...", self.pushButton)
+        if (isinstance(self.output, OutputVector) and self.alg.provider.supportsNonFileBasedOutput()):
+            saveToMemoryAction= QAction("Save to a memory layer", self.pushButton)
             saveToMemoryAction.triggered.connect(self.saveToMemory)
             popupmenu.addAction(saveToMemoryAction)
         saveToFileAction = QAction("Save to file...", self.pushButton)

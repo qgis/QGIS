@@ -23,9 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -39,14 +36,11 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 from sextante.outputs.OutputVector import OutputVector
 
-from sextante.algs.ftools import FToolsUtils as utils
-
 class SelectByLocation(GeoAlgorithm):
 
     INPUT = "INPUT"
     INTERSECT = "INTERSECT"
-    METHOD = "METHOD"
-    USE_SELECTED = "USE_SELECTED"
+    METHOD = "METHOD"    
     OUTPUT = "OUTPUT"
 
     METHODS = ["creating new selection",
@@ -61,63 +55,44 @@ class SelectByLocation(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Select by location"
         self.group = "Vector selection tools"
-
         self.addParameter(ParameterVector(self.INPUT, "Layer to select from", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterVector(self.INTERSECT, "Additional layer (intersection layer)", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))
-        self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features", False))
-
+        self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))        
         self.addOutput(OutputVector(self.OUTPUT, "Selection", True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = QGisLayers.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
-        selection = self.getParameterValue(self.USE_SELECTED)
-
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = QGisLayers.getObjectFromUri(filename)
-
         inputProvider = inputLayer.dataProvider()
         selectProvider = selectLayer.dataProvider()
-
-        index = utils.createSpatialIndex(inputLayer)
-
+                
+        index = QgsSpatialIndex()
+        inputProvider.rewind()
         inputProvider.select()
-        selectProvider.select()
-
         feat = QgsFeature()
+        while inputProvider.nextFeature(feat):        
+            index.insertFeature(feat)
+                
+        selectProvider.select()       
         infeat = QgsFeature()
         geom = QgsGeometry()
-        selectedSet = []
-
-        if selection:
-            features = selectLayer.selectedFeatures()
-            total = 100.0 / float(len(features))
-            current = 0
-            for feat in features:
-                geom = QgsGeometry(feat.geometry())
-                intersects = index.intersects(geom.boundingBox())
-                for i in intersects:
-                    inputProvider.featureAtId(i, infeat, True)
-                    tmpGeom = QgsGeometry(infeat.geometry())
-                    if geom.intersects(tmpGeom):
-                        selectedSet.append(infeat.id())
-                current += 1
-                progress.setPercentage(int(current * total))
-        else:
-            total = 100.0 / float(selectProvider.featureCount())
-            current = 0
-            while selectProvider.nextFeature(feat):
-                geom = QgsGeometry(feat.geometry())
-                intersects = index.intersects(geom.boundingBox())
-                for i in intersects:
-                    inputProvider.featureAtId(i, infeat, True)
-                    tmpGeom = QgsGeometry( infeat.geometry() )
-                    if geom.intersects(tmpGeom):
-                        selectedSet.append(infeat.id())
-                current += 1
-                progress.setPercentage(int(current * total))
+        selectedSet = []        
+        current = 0
+        features = QGisLayers.features(selectLayer)
+        total = 100.0 / float(len(features))
+        for feat in features:
+            geom = QgsGeometry(feat.geometry())
+            intersects = index.intersects(geom.boundingBox())
+            for i in intersects:
+                inputProvider.featureAtId(i, infeat, True)
+                tmpGeom = QgsGeometry( infeat.geometry() )
+                if geom.intersects(tmpGeom):
+                    selectedSet.append(infeat.id())
+            current += 1
+            progress.setPercentage(int(current * total))
 
         if method == 1:
             selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))

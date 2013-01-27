@@ -54,7 +54,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         with some other properties'''
 
         #the name that the user will see in the toolbox
-        self.name = "Create new layer with selected features"
+        self.name = "Save selected features"
 
         #the branch of the toolbox under which the algorithm will appear
         self.group = "Vector general tools"

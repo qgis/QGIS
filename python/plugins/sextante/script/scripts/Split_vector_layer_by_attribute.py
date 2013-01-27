@@ -1,28 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-***************************************************************************
-    Split_vector_layer_by_attribute.py
-    ---------------------
-    Date                 : November 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
-***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************
-"""
-
-__author__ = 'Victor Olaya'
-__date__ = 'November 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
 #Definition of inputs and outputs
 #==================================
 ##[Example scripts]=group
@@ -57,18 +32,17 @@ nElement = 0
 writers = {}
 
 while provider.nextFeature(inFeat):
-  progress.setPercentage(int((100 * nElement)/nFeat))
-  nElement += 1
-  atMap = inFeat.attributeMap()
-  clazz = atMap[class_field_index].toString()
-  if clazz not in writers:
-      outputFile = output + "_" + str(len(writers)) + ".shp"
-      writers[clazz] = SextanteVectorWriter(outputFile, None, fields, provider.geometryType(), provider.crs() )
-  inGeom = inFeat.geometry()
-  outFeat.setGeometry(inGeom)
-  outFeat.setAttributeMap(atMap)
-  writers[clazz].addFeature(outFeat)
-
+    progress.setPercentage(int((100 * nElement)/nFeat))
+    nElement += 1
+    atMap = inFeat.attributeMap()
+    clazz = atMap[class_field_index].toString()
+    if clazz not in writers:
+        outputFile = output + "_" + str(len(writers)) + ".shp"
+        writers[clazz] = SextanteVectorWriter(outputFile, None, fields, provider.geometryType(), provider.crs() )
+    inGeom = inFeat.geometry()
+    outFeat.setGeometry(inGeom)
+    outFeat.setAttributeMap(atMap)
+    writers[clazz].addFeature(outFeat)
 
 
 for writer in writers.values():

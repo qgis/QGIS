@@ -335,10 +335,10 @@ class Sextante:
         return alg
 
 
-    ##==========================================================
-    ##This methods are here to be used from the python console,
-    ##making it easy to use SEXTANTE from there
-    ##==========================================================
+##==========================================================
+##This methods are here to be used from the python console,
+##making it easy to use SEXTANTE from there
+##==========================================================
 
 
 def alglist(text=None):
@@ -374,11 +374,11 @@ def alghelp(name):
 
 def runalg(algOrName, *args):
     alg = Sextante.runAlgorithm(algOrName, None, *args)
-    return alg.getOutputValuesAsDictionary()
+    if alg is not None:
+        return alg.getOutputValuesAsDictionary()
 
 def runandload(name, *args):
     Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
-
 
 def extent(layers):
     first = True
