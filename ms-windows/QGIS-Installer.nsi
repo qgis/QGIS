@@ -119,27 +119,27 @@ ShowUnInstDetails show
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
-;.onInit Function (called when the installer is nearly finished initializing)
+; .onInit Function (called when the installer is nearly finished initializing)
 
-;Check if QGIS is already installed on the system and, if yes, what version and binary release;
-;depending on that, select the install procedure:
+; Check if QGIS is already installed on the system and, if yes, what version and binary release;
+; depending on that, select the install procedure:
 
-;1. first installation = if QGIS is not already installed
-;install QGIS asking for the install PATH
+; 1. first installation = if QGIS is not already installed
+;    install QGIS asking for the install PATH
 
-;2. upgrade installation = if an older release of QGIS is already installed
-;call the uninstaller of the currently installed QGIS release
-;if the uninstall procedure succeeded, call the current installer without asking for the install PATH
-;QGIS will be installed in the same PATH of the previous installation
+; 2. upgrade installation = if an older release of QGIS is already installed
+;    call the uninstaller of the currently installed QGIS release
+;    if the uninstall procedure succeeded, call the current installer without asking for the install PATH
+;    QGIS will be installed in the same PATH of the previous installation
 
-;3. downgrade installation = if a newer release of QGIS is already installed
-;call the uninstaller of the currently installed QGIS release
-;if the uninstall procedure succeeded, call the current installer without asking for the install PATH
-;QGIS will be installed in the same PATH of the previous installation
+; 3. downgrade installation = if a newer release of QGIS is already installed
+;    call the uninstaller of the currently installed QGIS release
+;    if the uninstall procedure succeeded, call the current installer without asking for the install PATH
+;    QGIS will be installed in the same PATH of the previous installation
 
-;4. repair installation = if the same release of QGIS is already installed
-;call the uninstaller of the currently installed QGIS release
-;if the uninstall procedure succeeded, call the current installer asking for the install PATH
+; 4. repair installation = if the same release of QGIS is already installed
+;    call the uninstaller of the currently installed QGIS release
+;    if the uninstall procedure succeeded, call the current installer asking for the install PATH
 
 ;the currently installed release of QGIS is defined by the variable $INSTALLED_VERSION = $INSTALLED_SVN_REVISION + $INSTALLED_BINARY_REVISION 
 
@@ -150,20 +150,20 @@ Function .onInit
 
 	Var /GLOBAL UNINSTALL_STRING
 	Var /GLOBAL INSTALL_PATH
-	
+
 	Var /GLOBAL INSTALLED_VERSION_NUMBER
 	Var /GLOBAL INSTALLED_SVN_REVISION
 	Var /GLOBAL INSTALLED_BINARY_REVISION
-	
+
 	Var /GLOBAL INSTALLED_VERSION
-	
+
 	Var /GLOBAL DISPLAYED_INSTALLED_VERSION
-	
+
 	Var /GLOBAL MESSAGE_0_
 	Var /GLOBAL MESSAGE_1_
 	Var /GLOBAL MESSAGE_2_
 	Var /GLOBAL MESSAGE_3_
-	
+
 	ReadRegStr $UNINSTALL_STRING HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "UninstallString"
 	ReadRegStr $INSTALL_PATH HKLM "Software\${QGIS_BASE}" "InstallPath"
 	ReadRegStr $INSTALLED_VERSION_NUMBER HKLM "Software\${QGIS_BASE}" "VersionNumber"
@@ -174,22 +174,22 @@ Function .onInit
 	${EndIf}	
 	
 	ReadRegStr $INSTALLED_BINARY_REVISION HKLM "Software\${QGIS_BASE}" "BinaryRevision"
-	
+
 	StrCpy $MESSAGE_0_ "${CHECK_INSTALL_NAME} is already installed on your system.$\r$\n"
 	StrCpy $MESSAGE_0_ "$MESSAGE_0_$\r$\n"
-	
-	!if ${INSTALLER_TYPE} == "Release"		
+
+	!if ${INSTALLER_TYPE} == "Release"
 		${If} $INSTALLED_BINARY_REVISION == ""
 			StrCpy $DISPLAYED_INSTALLED_VERSION "$INSTALLED_VERSION_NUMBER"
 		${Else}
 			StrCpy $DISPLAYED_INSTALLED_VERSION "$INSTALLED_VERSION_NUMBER-$INSTALLED_BINARY_REVISION"
 		${EndIf}
 	!else
-		StrCpy $DISPLAYED_INSTALLED_VERSION "$INSTALLED_VERSION_NUMBER-$INSTALLED_SVN_REVISION-$INSTALLED_BINARY_REVISION"
+		StrCpy $DISPLAYED_INSTALLED_VERSION "$INSTALLED_VERSION_NUMBER-$INSTALLED_BINARY_REVISION"
 	!endif
 	
 	StrCpy $MESSAGE_0_ "$MESSAGE_0_The installed release is $DISPLAYED_INSTALLED_VERSION$\r$\n"
-	
+
 	StrCpy $MESSAGE_1_ "$MESSAGE_0_$\r$\n"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_You are going to install a newer release of ${CHECK_INSTALL_NAME}$\r$\n"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_$\r$\n"
@@ -422,6 +422,8 @@ Section "Quantum GIS" SecQGIS
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
@@ -433,13 +435,23 @@ RebootNecessary:
 	SetRebootFlag true
 
 NoRebootNecessary:
-
         Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+
+        Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
-        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+        Delete "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !else
         CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
@@ -509,7 +521,7 @@ Section /O "North Carolina Data Set" SecNorthCarolinaSDB
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 293314
   
-  	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
+	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
 	StrCpy $ARCHIVE_NAME "nc_spm_latest.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "North Carolina"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "nc_spm_08"
@@ -565,19 +577,18 @@ Section "Uninstall"
 	GetFullPathName /SHORT $0 $INSTDIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\preremove.bat"'
 
 	Delete "$INSTDIR\Uninstall-QGIS.exe"
-	Delete "$INSTDIR\postinstall.bat.done"
-	Delete "$INSTDIR\postinstall.bat"
-	Delete "$INSTDIR\postinstall.log"
-
-	Delete "$INSTDIR\preremove.bat.done"
-	Delete "$INSTDIR\preremove.bat"
-	Delete "$INSTDIR\preremove.log"
+	Delete "$INSTDIR\*.bat.done"
+	Delete "$INSTDIR\*.log"
 	Delete "$INSTDIR\*.txt"
+	Delete "$INSTDIR\*.ico"
+	Delete "$INSTDIR\*.bat"
 
 	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\apps"
@@ -632,7 +643,10 @@ Section "Uninstall"
 	
 	;remove the Desktop ShortCut
 	SetShellVarContext all
+	Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
 	Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\OSGeo4W.lnk"
 	
 	;remove the Programs Start ShortCut
 	SetShellVarContext all
