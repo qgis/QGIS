@@ -32,6 +32,7 @@ class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidget
     QgsComposerLabelWidget( QgsComposerLabel* label );
 
   public slots:
+    void on_mHtmlCheckBox_stateChanged( int i );
     void on_mTextEdit_textChanged();
     void on_mFontButton_clicked();
     void on_mInsertExpressionButton_clicked();
