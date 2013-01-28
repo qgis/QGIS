@@ -47,11 +47,10 @@ QString QgsExpressionBuilderDialog::expressionText()
   return builder->expressionText();
 }
 
-void QgsExpressionBuilderDialog::closeEvent( QCloseEvent *event )
+void QgsExpressionBuilderDialog::done( int r )
 {
-  QDialog::closeEvent( event );
+  QDialog::done( r );
 
-  // TODO Work out why this is not working yet.
   QSettings settings;
   settings.setValue( "/Windows/ExpressionBuilderDialog/geometry", saveGeometry() );
 }
