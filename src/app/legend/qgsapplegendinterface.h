@@ -72,6 +72,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
     bool removeLegendLayerAction( QAction* action );
 
+    QgsMapLayer* currentLayer();
+    bool setCurrentLayer( QgsMapLayer *layer );
+
   public slots:
 
     //! Add a new group

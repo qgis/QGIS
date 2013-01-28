@@ -30,6 +30,7 @@ QgsAppLegendInterface::QgsAppLegendInterface( QgsLegend * legend )
   connect( legend, SIGNAL( itemMovedGroup( QgsLegendItem *, int ) ), this, SIGNAL( groupRelationsChanged() ) );
   // connect( legend, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ), this, SIGNAL( groupRelationsChanged() ) );
   connect( legend, SIGNAL( itemRemoved() ), this, SIGNAL( itemRemoved() ) );
+  connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
 }
 
 QgsAppLegendInterface::~QgsAppLegendInterface()
@@ -208,3 +209,12 @@ bool QgsAppLegendInterface::removeLegendLayerAction( QAction* action )
   return mLegend->removeLegendLayerAction( action );
 }
 
+QgsMapLayer* QgsAppLegendInterface::currentLayer()
+{
+  return mLegend->currentLayer();
+}
+
+bool QgsAppLegendInterface::setCurrentLayer( QgsMapLayer *layer )
+{
+  return mLegend->setCurrentLayer( layer );
+}
