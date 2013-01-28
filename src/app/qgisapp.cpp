@@ -124,6 +124,7 @@
 #include "qgserror.h"
 #include "qgserrordialog.h"
 #include "qgsexception.h"
+#include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
 #include "qgshtmlannotationitem.h"
@@ -934,6 +935,7 @@ void QgisApp::createActions()
   connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
   connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
+  connect( mActionSelectByExpression, SIGNAL( triggered() ), this, SLOT( selectByExpression() ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
   connect( mActionFeatureAction, SIGNAL( triggered() ), this, SLOT( doFeatureAction() ) );
   connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
@@ -4914,6 +4916,25 @@ void QgisApp::deselectAll()
   // Turn on rendering (if it was on previously)
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( true );
+}
+
+void QgisApp::selectByExpression()
+{
+  QgsVectorLayer* vlayer = NULL;
+  if ( !mMapCanvas->currentLayer()
+       || NULL == ( vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() ) ) )
+  {
+    messageBar()->pushMessage(
+      QObject::tr( "No active vector layer" ),
+      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      QgsMessageBar::INFO,
+      messageTimeout() );
+  }
+  else
+  {
+    QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer );
+    dlg->show();
+  }
 }
 
 void QgisApp::addRing()
