@@ -1,9 +1,63 @@
 
 typedef QList<int> QgsAttributeList;
-typedef QSet<qint64> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
-typedef qint64 QgsFeatureId;
 
+/** @note Added in 1.9 */
+class QgsAttributeEditorElement : QObject
+{
+%TypeHeaderCode
+#include "qgsvectorlayer.h"
+%End
+
+  public:
+
+    enum AttributeEditorType
+    {
+      AeTypeContainer,
+      AeTypeField,
+      AeTypeInvalid
+    };
+
+    QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL );
+
+    virtual ~QgsAttributeEditorElement();
+
+    QString name() const;
+    AttributeEditorType type() const;
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
+};
+
+/** @note Added in 1.9 */
+class QgsAttributeEditorContainer : QgsAttributeEditorElement
+{
+%TypeHeaderCode
+#include "qgsvectorlayer.h"
+%End
+
+  public:
+    QgsAttributeEditorContainer( QString name, QObject *parent );
+    ~QgsAttributeEditorContainer();
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    virtual void addChildElement( QgsAttributeEditorElement *widget );
+    QList<QgsAttributeEditorElement*> children() const;
+};
+
+/** @note Added in 1.9 */
+class QgsAttributeEditorField : QgsAttributeEditorElement
+{
+%TypeHeaderCode
+#include "qgsvectorlayer.h"
+%End
+
+  public:
+    QgsAttributeEditorField( QString name , int idx, QObject *parent );
+    ~QgsAttributeEditorField();
+
+    virtual QDomElement toDomElement( QDomDocument& doc ) const;
+    int idx() const;
+};
 
 /** @note added in 1.7 */
 struct QgsVectorJoinInfo
@@ -52,6 +106,13 @@ class QgsVectorLayer : QgsMapLayer
     }
 %End
 
+    enum EditorLayout
+    {
+      GeneratedLayout,
+      TabLayout,
+      UiFileLayout,
+    };
+
     enum EditType
     {
       LineEdit,
@@ -71,13 +132,6 @@ class QgsVectorLayer : QgsMapLayer
       DialRange,     /* dial range @added in 1.5 */
       ValueRelation, /* value map from an table @added in 1.8 */
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
-    };
-
-    enum EditorLayout
-    {
-      GeneratedLayout,
-      TabLayout,
-      UiFileLayout,
     };
 
     struct RangeData
@@ -106,6 +160,23 @@ class QgsVectorLayer : QgsMapLayer
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */
+    };
+
+    struct GroupData
+    {
+      GroupData();
+      GroupData( QString name , QList<QString> fields );
+      QString mName;
+      QList<QString> mFields;
+    };
+
+    struct TabData
+    {
+      TabData();
+      TabData( QString name , QList<QString> fields , QList<QgsVectorLayer::GroupData> groups );
+      QString mName;
+      QList<QString> mFields;
+      QList<QgsVectorLayer::GroupData> mGroups;
     };
 
     /** Constructor */
@@ -250,6 +321,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
+    /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
+     * @param elem the DOM element
+     * @param parent the QObject which will own this object
+     */
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
+
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
@@ -276,6 +353,21 @@ class QgsVectorLayer : QgsMapLayer
      * @return long containing number of features
      */
     virtual long featureCount() const;
+
+    /**
+     * Number of features rendered with specified symbol. Features must be first
+     * calculated by countSymbolFeatures()
+     * @param symbol the symbol
+     * @return number of features rendered by symbol or -1 if failed or counts are not available
+     */
+    long featureCount( QgsSymbolV2* symbol );
+
+    /**
+     * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
+     * @param showProgress show progress dialog
+     * @return true if calculated, false if failed or was canceled by user
+     */
+    bool countSymbolFeatures( bool showProgress = true );
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -362,7 +454,8 @@ class QgsVectorLayer : QgsMapLayer
        2 ring not closed,
        3 ring not valid,
        4 ring crosses existing rings,
-       5 no feature found where ring can be inserted*/
+       5 no feature found where ring can be inserted
+       6 layer not editable */
     int addRing( const QList<QgsPoint>& ring );
 
     /**Adds a new part polygon to a multipart feature
@@ -373,7 +466,8 @@ class QgsVectorLayer : QgsMapLayer
        3 if new polygon ring not disjoint with existing rings,
        4 if no feature was selected,
        5 if several features are selected,
-       6 if selected geometry not found*/
+       6 if selected geometry not found
+       7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
 
     /**Translates feature by dx, dy
@@ -481,6 +575,11 @@ class QgsVectorLayer : QgsMapLayer
     /** returns list of attributes */
     QList<int> pendingAllAttributesList();
 
+    /** returns list of attribute making up the primary key
+     * @note added in 2.0
+     */
+    QList<int> pendingPkAttributesList();
+
     /** returns feature count after commit */
     int pendingFeatureCount();
 
@@ -508,6 +607,16 @@ class QgsVectorLayer : QgsMapLayer
     /**Sets an alias (a display name) for attributes to display in dialogs
       @note added in version 1.2*/
     void addAttributeAlias( int attIndex, QString aliasString );
+
+    /**Adds a tab (for the attribute editor form) holding groups and fields
+      @note added in version 1.9*/
+    void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+    /**Returns a list of tabs holding groups and fields
+      @note added in version 1.9*/
+    QList< QgsAttributeEditorElement* > &attributeEditorElements();
+    /**Clears all the tabs for the attribute editor form
+      @note added in version 1.9*/
+    void clearAttributeEditorWidgets();
 
     /**Returns the alias of an attribute name or an empty string if there is no alias
       @note added in version 1.2*/
@@ -561,11 +670,11 @@ class QgsVectorLayer : QgsMapLayer
     /**set edit type*/
     void setEditType( int idx, EditType edit );
 
-    /**get editor layout**/
+    /** get the active layout for the attribute editor for this layer (added in 1.9) */
     EditorLayout editorLayout();
 
-    /**set editor layout*/
-    void setEditorLayout( EditorLayout layout );
+    /** set the active layout for the attribute editor for this layer (added in 1.9) */
+    void setEditorLayout( EditorLayout editorLayout );
 
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
@@ -625,7 +734,6 @@ class QgsVectorLayer : QgsMapLayer
     */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
-
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer();
 
@@ -640,16 +748,6 @@ class QgsVectorLayer : QgsMapLayer
 
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
-
-    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand.
-     * @note not available in python bindings
-     */
-    // void undoEditCommand( QgsUndoCommand* cmd );
-
-    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand.
-     * @note not available in python bindings
-     */
-    // void redoEditCommand( QgsUndoCommand* cmd );
 
     /** Returns the index of a field name or -1 if the field does not exist
       @note this method was added in version 1.4
@@ -732,7 +830,7 @@ class QgsVectorLayer : QgsMapLayer
 
     /** Signals emitted after committing changes
       \note added in v1.6 */
-    void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributeIds );
+    void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
     void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );

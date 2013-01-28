@@ -33,6 +33,7 @@
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mTitle( tr( "Legend" ) )
+    , mFontColor( QColor( 0, 0, 0 ) )
     , mBoxSpace( 2 )
     , mColumnSpace( 2 )
     , mGroupSpace( 2 )
@@ -43,7 +44,6 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mComposerMap( 0 )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
-    , mFontColor( QColor( 0, 0, 0 ) )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );

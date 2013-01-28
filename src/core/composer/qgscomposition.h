@@ -243,7 +243,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
     /**Snaps item position to align with other items (left / middle / right or top / middle / bottom
-    @param itemRectangle current item rectangle
+    @param item current item
     @param alignX x-coordinate of align or -1 if not aligned to x
     @param alignY y-coordinate of align or -1 if not aligned to y
     @param dx item shift in x direction
@@ -253,6 +253,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Snaps position to align with the boundaries of other items
     @param pos position to snap
+    @param excludeItem item to exclude
     @param alignX snapped x coordinate or -1 if not snapped
     @param alignY snapped y coordinate or -1 if not snapped
     @return snapped position or original position if no snap*/

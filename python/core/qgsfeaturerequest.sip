@@ -16,9 +16,9 @@ class QgsFeatureRequest
 
     enum FilterType
     {
-        FilterNone,   //!< No filter is applied
-        FilterRect,   //!< Filter using a rectangle
-        FilterFid     //!< Filter using feature ID
+      FilterNone,   //!< No filter is applied
+      FilterRect,   //!< Filter using a rectangle
+      FilterFid     //!< Filter using feature ID
     };
 
     //! construct a default request: for all features get attributes and geometries

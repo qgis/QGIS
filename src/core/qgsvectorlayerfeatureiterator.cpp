@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsvectorlayerfeatureiterator.cpp
+    ---------------------
+    begin                : Dezember 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include "qgsmaplayerregistry.h"
@@ -7,7 +21,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* layer, const QgsFeatureRequest& request )
-  : QgsAbstractFeatureIterator( request ), L( layer )
+    : QgsAbstractFeatureIterator( request ), L( layer )
 {
 
   QgsVectorLayerJoinBuffer* joinBuffer = L->mJoinBuffer;
@@ -232,18 +246,18 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
     f.setGeometry( geom );
 
-  bool subsetAttrs = (mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes);
-  if ( !subsetAttrs || (subsetAttrs && mRequest.subsetOfAttributes().count() > 0) )
+  bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
+  if ( !subsetAttrs || ( subsetAttrs && mRequest.subsetOfAttributes().count() > 0 ) )
   {
     // retrieve attributes from provider
     QgsFeature tmp;
     //mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
     QgsFeatureRequest request;
-    request.setFilterFid( fid ).setFlags(QgsFeatureRequest::NoGeometry).setSubsetOfAttributes( mProviderRequest.subsetOfAttributes() );
+    request.setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( mProviderRequest.subsetOfAttributes() );
     QgsFeatureIterator fi = L->dataProvider()->getFeatures( request );
     if ( fi.nextFeature( tmp ) )
     {
-      if (L->editBuffer())
+      if ( L->editBuffer() )
         L->editBuffer()->updateChangedAttributes( tmp );
       f.setAttributes( tmp.attributes() );
     }
@@ -272,7 +286,7 @@ void QgsVectorLayerFeatureIterator::rewindEditBuffer()
 
 void QgsVectorLayerFeatureIterator::prepareJoins()
 {
-  QgsAttributeList fetchAttributes = (mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes) ? mRequest.subsetOfAttributes() : L->pendingAllAttributesList();
+  QgsAttributeList fetchAttributes = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : L->pendingAllAttributesList();
   QgsAttributeList sourceJoinFields; // attributes that also need to be fetched from this layer in order to have joins working
 
   mFetchJoinInfo.clear();
@@ -282,7 +296,7 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
 
   for ( QgsAttributeList::const_iterator attIt = fetchAttributes.constBegin(); attIt != fetchAttributes.constEnd(); ++attIt )
   {
-    if ( fields.fieldOrigin(*attIt) != QgsFields::OriginJoin )
+    if ( fields.fieldOrigin( *attIt ) != QgsFields::OriginJoin )
       continue;
 
     int sourceLayerIndex;

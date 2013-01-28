@@ -43,7 +43,6 @@ class QgsMapToPixel;
 class QgsLabel;
 class QgsRectangle;
 class QgsRenderer;
-class QgsUndoCommand;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;
@@ -449,9 +448,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
      */
     Q_DECL_DEPRECATED void select( QgsAttributeList fetchAttributes,
-                 QgsRectangle rect = QgsRectangle(),
-                 bool fetchGeometry = true,
-                 bool useIntersect = false );
+                                   QgsRectangle rect = QgsRectangle(),
+                                   bool fetchGeometry = true,
+                                   bool useIntersect = false );
 
     /**
      * Query the provider for features specified in request.

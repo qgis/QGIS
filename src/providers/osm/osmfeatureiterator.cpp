@@ -1,3 +1,17 @@
+/***************************************************************************
+    osmfeatureiterator.cpp
+    ---------------------
+    begin                : Januar 2013
+    copyright            : (C) 2013 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "osmfeatureiterator.h"
 
 #include "osmprovider.h"
@@ -7,8 +21,8 @@
 #include "qgslogger.h"
 
 QgsOSMFeatureIterator::QgsOSMFeatureIterator( QgsOSMDataProvider* p, const QgsFeatureRequest& request )
-  : QgsAbstractFeatureIterator( request ), P( p )
-  , mRectGeom(0)
+    : QgsAbstractFeatureIterator( request ), P( p )
+    , mRectGeom( 0 )
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
@@ -27,9 +41,9 @@ QgsOSMFeatureIterator::QgsOSMFeatureIterator( QgsOSMDataProvider* p, const QgsFe
     const char* sqlSelectNode = "SELECT id, lat, lon, timestamp, user FROM node WHERE id=? AND usage=0 AND status<>'R' AND u=1";
     const char* sqlSelectPoints = "SELECT id, lat, lon, timestamp, user FROM node WHERE usage=0 AND status<>'R' AND u=1";
     const char* sqlSelectPointsIn = "SELECT id, lat, lon, timestamp, user FROM node WHERE usage=0 AND status<>'R' AND u=1 "
-                               "AND lat>=? AND lat<=? AND lon>=? AND lon<=?";
+                                    "AND lat>=? AND lat<=? AND lon>=? AND lon<=?";
 
-    const char* sql = hasFilterFid ? sqlSelectNode : (hasFilterRect ? sqlSelectPointsIn : sqlSelectPoints);
+    const char* sql = hasFilterFid ? sqlSelectNode : ( hasFilterRect ? sqlSelectPointsIn : sqlSelectPoints );
 
     if ( sqlite3_prepare_v2( P->mDatabase, sql, -1, &mSelectStmt, 0 ) != SQLITE_OK )
     {
@@ -55,8 +69,8 @@ QgsOSMFeatureIterator::QgsOSMFeatureIterator( QgsOSMDataProvider* p, const QgsFe
     const char* sqlSelectWay     = "SELECT id, wkb, timestamp, user FROM way WHERE id=? AND status<>'R' AND u=1";
     const char* sqlSelectLines   = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1";
     const char* sqlSelectLinesIn = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1 "
-                               "AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) "
-                               "AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
+                                   "AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) "
+                                   "AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
     const char* sql = hasFilterFid ? sqlSelectWay : ( hasFilterRect ? sqlSelectLinesIn : sqlSelectLines );
 
     if ( sqlite3_prepare_v2( P->mDatabase, sql, -1, &mSelectStmt, 0 ) != SQLITE_OK )
@@ -92,8 +106,8 @@ QgsOSMFeatureIterator::QgsOSMFeatureIterator( QgsOSMDataProvider* p, const QgsFe
     const char* sqlSelectWay     = "SELECT id, wkb, timestamp, user FROM way WHERE id=? AND status<>'R' AND u=1";
     const char* sqlSelectPolys = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1";
     const char* sqlSelectPolysIn = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1 "
-                               "AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) "
-                               "AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
+                                   "AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) "
+                                   "AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
     const char* sql = hasFilterFid ? sqlSelectWay : ( hasFilterRect ? sqlSelectPolysIn : sqlSelectPolys );
 
     if ( sqlite3_prepare_v2( P->mDatabase, sql, -1, &mSelectStmt, 0 ) != SQLITE_OK )

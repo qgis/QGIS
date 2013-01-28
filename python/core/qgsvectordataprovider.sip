@@ -7,28 +7,28 @@ class QgsVectorDataProvider : QgsDataProvider
 
   public:
 
-      // If you add to this, please also add to capabilitiesString()
-      /**
-       * enumeration with capabilities that providers might implement
-       */
-      enum Capability
-      {
-        NoCapabilities =               0,
-        AddFeatures =                  1,
-        DeleteFeatures =               2,
-        ChangeAttributeValues =        4,
-        AddAttributes =                8,
-        DeleteAttributes =             16,
-        SaveAsShapefile =              32,
-        CreateSpatialIndex =           64,
-        SelectAtId =                   128,
-        ChangeGeometries =             256,
-        SelectGeometryAtId =           512,
-        RandomSelectGeometryAtId =     1024,
-        SequentialSelectGeometryAtId = 2048,
-        CreateAttributeIndex =         4096,
-        SetEncoding =                  8192,
-      };
+    // If you add to this, please also add to capabilitiesString()
+    /**
+     * enumeration with capabilities that providers might implement
+     */
+    enum Capability
+    {
+      NoCapabilities =               0,
+      AddFeatures =                  1,
+      DeleteFeatures =               2,
+      ChangeAttributeValues =        4,
+      AddAttributes =                8,
+      DeleteAttributes =             16,
+      SaveAsShapefile =              32,
+      CreateSpatialIndex =           64,
+      SelectAtId =                   128,
+      ChangeGeometries =             256,
+      SelectGeometryAtId =           512,
+      RandomSelectGeometryAtId =     1024,
+      SequentialSelectGeometryAtId = 2048,
+      CreateAttributeIndex =         4096,
+      SetEncoding =                  8192,
+    };
 
     /** bitmask of all provider's editing capabilities */
     static const int EditingCapabilities;
@@ -120,7 +120,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QList<QgsFeature> & flist /In,Out/ );
+    virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**
      * Deletes one or more features
@@ -158,9 +158,10 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A std::map containing the feature IDs to change the geometries of.
-     *                       the second map parameter being the new geometries themselves
-     * @return               true in case of success and false in case of failure
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return               True in case of success and false in case of failure
      */
     virtual bool changeGeometryValues( QMap<qint64, QgsGeometry> & geometry_map );
 
@@ -207,6 +208,12 @@ class QgsVectorDataProvider : QgsDataProvider
      * Return list of indexes to fetch all attributes in nextFeature()
      */
     QList<int> attributeIndexes();
+
+    /**
+     * Return list of indexes of fields that make up the primary key
+     * @note added in 2.0
+     */
+    virtual QList<int> pkAttributeIndexes();
 
     /**
      * Set whether provider should also return features that don't have

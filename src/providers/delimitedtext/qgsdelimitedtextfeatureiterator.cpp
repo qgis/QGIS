@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsdelimitedtextfeatureiterator.cpp
+    ---------------------
+    begin                : Oktober 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsdelimitedtextfeatureiterator.h"
 
 #include "qgsdelimitedtextprovider.h"
@@ -74,14 +88,14 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
 
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
-       const QgsAttributeList& attrs = mRequest.subsetOfAttributes();
-       for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
-       {
-         int fieldIdx = *i;
-         if ( fieldIdx < 0 || fieldIdx >= P->attributeColumns.count() )
-           continue; // ignore non-existant fields
-         fetchAttribute( feature, fieldIdx, tokens );
-       }
+      const QgsAttributeList& attrs = mRequest.subsetOfAttributes();
+      for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
+      {
+        int fieldIdx = *i;
+        if ( fieldIdx < 0 || fieldIdx >= P->attributeColumns.count() )
+          continue; // ignore non-existant fields
+        fetchAttribute( feature, fieldIdx, tokens );
+      }
     }
     else
     {
@@ -131,7 +145,7 @@ bool QgsDelimitedTextFeatureIterator::close()
 }
 
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt(const QStringList& tokens)
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens )
 {
   QgsGeometry* geom = 0;
   try
@@ -197,7 +211,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
 bool QgsDelimitedTextFeatureIterator::boundsCheck( double x, double y )
 {
   // no selection rectangle or geometry => always in the bounds
-  if ( mRequest.filterType() != QgsFeatureRequest::FilterRect || (mRequest.flags() & QgsFeatureRequest::NoGeometry) )
+  if ( mRequest.filterType() != QgsFeatureRequest::FilterRect || ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
     return true;
 
   return mRequest.filterRect().contains( QgsPoint( x, y ) );
@@ -209,7 +223,7 @@ bool QgsDelimitedTextFeatureIterator::boundsCheck( double x, double y )
 bool QgsDelimitedTextFeatureIterator::boundsCheck( QgsGeometry *geom )
 {
   // no selection rectangle or geometry => always in the bounds
-  if ( mRequest.filterType() != QgsFeatureRequest::FilterRect || (mRequest.flags() & QgsFeatureRequest::NoGeometry) )
+  if ( mRequest.filterType() != QgsFeatureRequest::FilterRect || ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
     return true;
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )

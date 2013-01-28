@@ -395,30 +395,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
 
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
-      @note python bindings not available
-      */
-    //void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
-      @note python bindings not available
-      */
-    //void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
-      \note added in v1.6 */
-    //void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
-      @note python bindings not available
-      */
-    //void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
-      @note python bindings not available
-      */
-    //void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
-
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
     //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
@@ -521,9 +497,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
     //void resetNoDataValue();
 
-    /** \brief Mutator for blue band name mapping */
-    void setBlueBandName( const QString & theBandName );
-
     static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
     static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
 
@@ -579,11 +552,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap */
     QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
-
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
-     * @note added in QGIS 1.6
-     * */
-    /* Q_DECL_DEPRECATED void thumbnailAsImage( QImage * thepImage ); */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

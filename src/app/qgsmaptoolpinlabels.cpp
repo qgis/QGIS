@@ -442,14 +442,16 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
   {
     QgsDebugMsg( QString( "Write to attribute table failed" ) );
 
-//    QgsDebugMsg( QString( "Undoing and removing failed command from layer's undo stack" ) );
-//    int lastCmdIndx = vlayer->undoStack()->count();
-//    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
-//    if ( lastCmd )
-//    {
-//      vlayer->undoEditCommand( lastCmd );
-//      delete vlayer->undoStack()->command( lastCmdIndx );
-//    }
+#if 0
+    QgsDebugMsg( QString( "Undoing and removing failed command from layer's undo stack" ) );
+    int lastCmdIndx = vlayer->undoStack()->count();
+    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
+    if ( lastCmd )
+    {
+      vlayer->undoEditCommand( lastCmd );
+      delete vlayer->undoStack()->command( lastCmdIndx );
+    }
+#endif
 
     return false;
   }

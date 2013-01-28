@@ -233,22 +233,6 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
 
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    // void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    // void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
-      \note added in v1.6 */
-    //void computeMinimumMaximumEstimates( int theBand, double& theMin /Out/, double& theMax /Out/ );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    // void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    // void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
-
     /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
       \note added in v1.6 */
     //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
@@ -405,11 +389,6 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Draws a preview of the rasterlayer into a pixmap */
     QPixmap previewAsPixmap( QSize size, QColor bgColor = QColor( 255, 255, 255 ) );
-
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
-     * @note added in QGIS 1.6
-     * */
-    /* void thumbnailAsImage( QImage * thepImage ) /Deprecated/; */
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();

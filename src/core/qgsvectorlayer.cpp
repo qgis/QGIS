@@ -100,9 +100,9 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
+    , mEditorLayout( GeneratedLayout )
     , mCache( new QgsVectorLayerCache( this ) )
     , mEditBuffer( 0 )
-    , mEditorLayout( GeneratedLayout )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
@@ -4310,7 +4310,7 @@ QString QgsVectorLayer::metadata()
   {
     myMetadata += "<tr><td>";
     myMetadata += tr( "Primary key attributes: " );
-    foreach( int idx, pkAttrList )
+    foreach ( int idx, pkAttrList )
     {
       myMetadata += pendingFields()[ idx ].name() + " ";
     }
