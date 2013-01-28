@@ -366,6 +366,7 @@ void QgsLegend::removeLayers( QStringList theLayers )
           {
             invLayerRemoved = true;
           }
+          removeLegendLayerActionsForLayer( ll->layer() );
           removeItem( ll );
           delete ll;
           break;
@@ -761,7 +762,73 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   {
     if ( li->type() == QgsLegendItem::LEGEND_LAYER )
     {
-      qobject_cast<QgsLegendLayer*>( li )->addToPopupMenu( theMenu );
+      QgsLegendLayer* lyr = qobject_cast<QgsLegendLayer*>( li );
+      lyr->addToPopupMenu( theMenu );
+
+      // add custom layer actions
+      QList< LegendLayerAction > actions = legendLayerActions( lyr->layer()->type() );
+      if ( ! actions.isEmpty() )
+      {
+        theMenu.addSeparator();
+        QList<QMenu*> theMenus;
+        for ( int i = 0; i < actions.count(); i++ )
+        {
+          if ( actions[i].allLayers || actions[i].layers.contains( lyr->layer() ) )
+          {
+            if ( actions[i].menu.isEmpty() )
+            {
+              theMenu.addAction( actions[i].action );
+            }
+            else
+            {
+              // find or create menu for given menu name
+              // adapted from QgisApp::getPluginMenu( QString menuName )
+              QString menuName = actions[i].menu;
+#ifdef Q_WS_MAC
+              // Mac doesn't have '&' keyboard shortcuts.
+              menuName.remove( QChar( '&' ) );
+#endif
+              QAction* before = 0;
+              QMenu* newMenu = 0;
+              QString dst = menuName;
+              dst.remove( QChar( '&' ) );
+              foreach ( QMenu* menu, theMenus )
+              {
+                QString src = menu->title();
+                src.remove( QChar( '&' ) );
+                int comp = dst.localeAwareCompare( src );
+                if ( comp < 0 )
+                {
+                  // Add item before this one
+                  before = menu->menuAction();
+                  break;
+                }
+                else if ( comp == 0 )
+                {
+                  // Plugin menu item already exists
+                  newMenu = menu;
+                  break;
+                }
+              }
+              if ( ! newMenu )
+              {
+                // It doesn't exist, so create
+                newMenu = new QMenu( menuName, this );
+                theMenus.append( newMenu );
+                // Where to put it? - we worked that out above...
+                theMenu.insertMenu( before, newMenu );
+              }
+              // QMenu* menu = getMenu( actions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+              newMenu->addAction( actions[i].action );
+            }
+          }
+        }
+        theMenu.addSeparator();
+      }
+
+      // properties goes on bottom of menu for consistency with normal ui standards
+      // e.g. kde stuff
+      theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
@@ -2969,3 +3036,61 @@ void QgsLegend::groupSelectedLayers()
   }
 }
 
+void QgsLegend::addLegendLayerAction( QAction* action, QString menu, QString id,
+                                      QgsMapLayer::LayerType type, bool allLayers )
+{
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
+}
+
+bool QgsLegend::removeLegendLayerAction( QAction* action )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it ).removeAt( i );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void QgsLegend::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      if (( *it )[i].action == action )
+      {
+        ( *it )[i].layers.append( layer );
+        return;
+      }
+    }
+  }
+}
+
+void QgsLegend::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
+{
+  QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
+  for ( it = mLegendLayerActionMap.begin();
+        it != mLegendLayerActionMap.end(); ++it )
+  {
+    for ( int i = 0; i < it->count(); i++ )
+    {
+      ( *it )[i].layers.removeAll( layer );
+    }
+  }
+}
+
+QList< LegendLayerAction > QgsLegend::legendLayerActions( QgsMapLayer::LayerType type ) const
+{
+  return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >() ;
+}

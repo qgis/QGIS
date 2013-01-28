@@ -520,10 +520,6 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     // disable duplication of plugin layers
     duplicateLayersAction->setEnabled( false );
   }
-
-  // properties goes on bottom of menu for consistency with normal ui standards
-  // e.g. kde stuff
-  theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 }
 
 //////////
