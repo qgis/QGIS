@@ -97,6 +97,7 @@ qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsexpressionselectiondialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
@@ -188,6 +189,7 @@ qgssearchquerybuilder.h
 qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
+qgsexpressionselectiondialog.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
@@ -229,6 +231,7 @@ qgsattributeeditor.h
 qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsexpressionselectiondialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
@@ -259,6 +262,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
 )
 
 # ModelTest
