@@ -290,11 +290,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /** \brief Create pyramid overviews */
-    virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
-                                   const QString &  theResamplingMethod = "NEAREST",
-                                   RasterPyramidsFormat theFormat = PyramidsGTiff )
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
+                                   const QString & theResamplingMethod = "NEAREST",
+                                   RasterPyramidsFormat theFormat = PyramidsGTiff,
+                                   const QStringList & theConfigOptions = QStringList() )
     {
-      Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod ); Q_UNUSED( theFormat );
+      Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod );
+      Q_UNUSED( theFormat ); Q_UNUSED( theConfigOptions );
       return "FAILED_NOT_SUPPORTED";
     };
 
@@ -443,17 +445,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Remove dataset*/
     virtual bool remove() { return false; }
 
-    static QStringList pyramidResamplingMethods( QString providerKey )
-    {
-      return providerKey == "gdal" ?
-             QStringList() << tr( "Average" ) << tr( "Nearest Neighbour" ) << tr( "Gauss" ) <<
-             tr( "Cubic" ) << tr( "Mode" ) << tr( "None" ) : QStringList();
-    }
+    /** Returns a list of pyramid resampling method names for given provider */
+    static QStringList pyramidResamplingMethods( QString providerKey = "gdal" );
+    /** Returns the pyramid resampling argument that corresponds to a given method */
+    static QString pyramidResamplingArg( QString method, QString providerKey = "gdal" );
 
-    /** Validates creation options for a specific dataset and destination format - used by GDAL provider only.
-     * See also validateCreationOptionsFormat() in gdal provider for validating options based on format only. */
+    /** Validates creation options for a specific dataset and destination format.
+     * @note used by GDAL provider only
+     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
     virtual QString validateCreationOptions( const QStringList& createOptions, QString format )
     { Q_UNUSED( createOptions ); Q_UNUSED( format ); return QString(); }
+
+    /** Validates pyramid creation options for a specific dataset and destination format
+     * @note used by GDAL provider only */
+    virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat )
+    { Q_UNUSED( pyramidsFormat ); Q_UNUSED( theConfigOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
   signals:
     /** Emit a signal to notify of the progress event.
@@ -495,6 +502,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QList< QList<QgsRasterBlock::Range> > mUserNoDataValue;
 
     QgsRectangle mExtent;
+
+    static void initPyramidResamplingDefs();
+    static QStringList mPyramidResamplingListGdal;
+    static QgsStringMap mPyramidResamplingMapGdal;
 
 };
 #endif

@@ -4180,9 +4180,10 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setCreateOptions( d.createOptions() );
 
     fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
-    fileWriter.setPyramidsList( d.overviewList() );
-    fileWriter.setPyramidsResampling( d.pyramidsResampling() );
+    fileWriter.setPyramidsList( d.pyramidsList() );
+    fileWriter.setPyramidsResampling( d.pyramidsResamplingMethod() );
     fileWriter.setPyramidsFormat( d.pyramidsFormat() );
+    fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
     QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     if ( err != QgsRasterFileWriter::NoError )

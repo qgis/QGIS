@@ -36,7 +36,6 @@ class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
 
-typedef QMap<QString, QString> QgsStringMap;
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
