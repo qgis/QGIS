@@ -17,15 +17,19 @@
 
 #include "qgscomposerlabel.h"
 #include "qgsexpression.h"
+#include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
+#include <QWebFrame>
+#include <QWebPage>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
-    QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
+    QgsComposerItem( composition ), mMargin( 1.0 ), mHtmlState( 0 ), mFontColor( QColor( 0, 0, 0 ) ),
     mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
-    mExpressionFeature( 0 ), mExpressionLayer( 0 )
+    mExpressionFeature( 0 ), mExpressionLayer( 0 ), mHtmlUnitsToMM( 1.0 )
 {
+  mHtmlUnitsToMM = htmlUnitsToMM();
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
 }
@@ -45,22 +49,45 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   drawBackground( painter );
   painter->save();
-  painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
-  painter->setFont( mFont );
 
-  QFontMetricsF fontSize( mFont );
-
-  //support multiline labels
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
   painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
   painter->rotate( mRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
-  //debug
-  //painter->setPen( QColor( Qt::red ) );
-  //painter->drawRect( painterRect );
-  drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+  if( mHtmlState )
+  {
+    painter->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
+    //painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToMM );
+    QWebPage* webPage = new QWebPage();
+    /*
+    TODO : http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    is it possible ?
+    */
+    webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM) );
+    webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    webPage->mainFrame()->setHtml( displayText() );
+    webPage->mainFrame()->render( painter );
+    //webPage->mainFrame()->render( painter, QRegion( painterRect.left(), painterRect.top() * mHtmlUnitsToMM, painterRect.width(), painterRect.height() ) );
+    //webPage->mainFrame()->render( painter, QRegion( painterRect.left(), painterRect.top() * mHtmlUnitsToMM, painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM ) );
+    //DELETE WEBPAGE ?
+  }
+  else
+  {
+    painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
+    painter->setFont( mFont );
+
+    QFontMetricsF fontSize( mFont );
+
+    //debug
+    //painter->setPen( QColor( Qt::red ) );
+    //painter->drawRect( painterRect );
+    drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+  }
+
+
 
 
   painter->restore();
@@ -70,6 +97,16 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     drawSelectionBoxes( painter );
   }
+}
+
+double QgsComposerLabel::htmlUnitsToMM()
+{
+  if ( !mComposition )
+  {
+    return 1.0;
+  }
+
+  return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
 }
 
 void QgsComposerLabel::setText( const QString& text )
@@ -181,6 +218,8 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
 
+  composerLabelElem.setAttribute( "htmlState", mHtmlState );
+
   composerLabelElem.setAttribute( "labelText", mText );
   composerLabelElem.setAttribute( "margin", QString::number( mMargin ) );
 
@@ -216,6 +255,9 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //text
   mText = itemElem.attribute( "labelText" );
+
+  //html state
+  mHtmlState = itemElem.attribute( "htmlState" ).toInt();
 
   //margin
   mMargin = itemElem.attribute( "margin" ).toDouble();

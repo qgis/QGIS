@@ -44,6 +44,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QString text() { return mText; }
     void setText( const QString& text );
 
+    int htmlSate() { return mHtmlState; }
+    void setHtmlSate( int state ) {mHtmlState = state;}
+
     /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
     QString displayText() const;
@@ -103,6 +106,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
   private:
     // Text
     QString mText;
+
+    // Html state
+    int mHtmlState;
+    double mHtmlUnitsToMM;
+    double htmlUnitsToMM(); //calculate scale factor
 
     // Font
     QFont mFont;

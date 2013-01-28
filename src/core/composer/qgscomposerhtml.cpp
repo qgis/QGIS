@@ -103,7 +103,7 @@ double QgsComposerHtml::htmlUnitsToMM()
     return 1.0;
   }
 
-  return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
+  return ( mComposition->printResolution() / 72.0 ); //webkit seems to assume a standard dpi of 96
 }
 
 void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )

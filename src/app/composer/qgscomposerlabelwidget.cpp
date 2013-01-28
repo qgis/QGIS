@@ -50,15 +50,6 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
       mFontColorButton->setEnabled( false );
       mHorizontalAlignementGroup->setEnabled( false );
       mVerticalAlignementGroup->setEnabled( false );
-      mMarginDoubleSpinBox->setEnabled( false );
-      mRotationSpinBox->setEnabled( false );
-      mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
-      mComposerLabel->blockSignals( true );
-      //mComposerLabel->setHtml(state);
-      mComposerLabel->setText( mTextEdit->toPlainText() );
-      mComposerLabel->update();
-      mComposerLabel->blockSignals( false );
-      mComposerLabel->endCommand();
     }
     else
     {
@@ -66,16 +57,15 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
       mFontColorButton->setEnabled( true );
       mHorizontalAlignementGroup->setEnabled( true );
       mVerticalAlignementGroup->setEnabled( true );
-      mMarginDoubleSpinBox->setEnabled( true );
-      mRotationSpinBox->setEnabled( true );
-      mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
-      mComposerLabel->blockSignals( true );
-      //mComposerLabel->setHtml(state);
-      mComposerLabel->setText( mTextEdit->toPlainText() );
-      mComposerLabel->update();
-      mComposerLabel->blockSignals( false );
-      mComposerLabel->endCommand();
     }
+
+    mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
+    mComposerLabel->blockSignals( true );
+    mComposerLabel->setHtmlSate(state);
+    mComposerLabel->setText( mTextEdit->toPlainText() );
+    mComposerLabel->update();
+    mComposerLabel->blockSignals( false );
+    mComposerLabel->endCommand();
   }
 }
 
@@ -263,9 +253,10 @@ void QgsComposerLabelWidget::on_mRotationSpinBox_valueChanged( double v )
 void QgsComposerLabelWidget::setGuiElementValues()
 {
   blockAllSignals( true );
-  mTextEdit->setText( mComposerLabel->text() );
+  mTextEdit->setPlainText( mComposerLabel->text() );
   mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
   mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+  mHtmlCheckBox->setChecked( mComposerLabel->htmlSate() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
   mBottomRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignBottom );
@@ -279,6 +270,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
 void QgsComposerLabelWidget::blockAllSignals( bool block )
 {
   mTextEdit->blockSignals( block );
+  mHtmlCheckBox->blockSignals( block );
   mMarginDoubleSpinBox->blockSignals( block );
   mTopRadioButton->blockSignals( block );
   mMiddleRadioButton->blockSignals( block );
