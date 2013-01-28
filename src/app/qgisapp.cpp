@@ -7117,7 +7117,7 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
       QgsVectorDataProvider* vProvider = vlayer->dataProvider();
       if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
-        connect( vlayer, SIGNAL( layerModified( bool ) ), this, SLOT( updateLayerModifiedActions() ) );
+        connect( vlayer, SIGNAL( layerModified() ), this, SLOT( updateLayerModifiedActions() ) );
         connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
         connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
       }
