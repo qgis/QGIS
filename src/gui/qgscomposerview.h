@@ -32,6 +32,7 @@ class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposerPicture;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -122,6 +123,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mRubberBandStartPos;
 
     bool mPaintingEnabled;
+
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );

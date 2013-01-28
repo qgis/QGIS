@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QClipboard>
 #include <QMimeData>
+#include <QGridLayout>
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
@@ -31,6 +32,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
@@ -47,6 +49,21 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
+
+
+  QGridLayout* gridLayout = new QGridLayout();
+  gridLayout->setSpacing( 0 );
+  gridLayout->setMargin( 0 );
+  mHorizontalRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
+  mVerticalRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
+  QWidget* fake = new QWidget();
+  fake->setBackgroundRole( QPalette::Window );
+  fake->setFixedSize( 20, 20 );
+  gridLayout->addWidget( fake, 0, 0 );
+  gridLayout->addWidget( mHorizontalRuler, 0, 1 );
+  gridLayout->addWidget( mVerticalRuler, 1, 0 );
+  gridLayout->addWidget( this->viewport(), 1, 1 );
+  this->setLayout( gridLayout );
 
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );

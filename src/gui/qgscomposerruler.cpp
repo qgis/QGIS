@@ -3,7 +3,7 @@
 
 const int RULER_MIN_SIZE = 20;
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): mDirection( d )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d )
 {
 }
 
