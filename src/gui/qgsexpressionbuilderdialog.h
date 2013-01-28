@@ -42,10 +42,12 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
   protected:
     /**
-     * Handle closing of the window
-     * @param event unused
+     * Is called when the dialog get accepted or rejected
+     * Used to save geometry
+     *
+     * @param r result value (unused)
      */
-    void closeEvent( QCloseEvent * event );
+    virtual void done( int r );
 };
 
 #endif
