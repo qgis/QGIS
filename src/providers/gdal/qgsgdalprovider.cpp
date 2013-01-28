@@ -1321,8 +1321,9 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
  * @param theTryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
  * @return null string on success, otherwise a string specifying error
  */
-QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRasterPyramidList,
-                                        QString const & theResamplingMethod, RasterPyramidsFormat theFormat )
+QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                                        const QString & theResamplingMethod, RasterPyramidsFormat theFormat,
+                                        const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated infomation
@@ -1337,14 +1338,6 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   // TODO add signal and connect from rasterlayer
   //emit drawingProgress( 0, 0 );
-  //first test if the file is writable
-  //QFileInfo myQFile( mDataSource );
-  QFileInfo myQFile( dataSourceUri() );
-
-  if ( !myQFile.isWritable() )
-  {
-    return "ERROR_WRITE_ACCESS";
-  }
 
   if ( mGdalDataset != mGdalBaseDataset )
   {
@@ -1355,6 +1348,16 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   // check if building internally
   if ( theFormat == PyramidsInternal )
   {
+
+    // test if the file is writable
+    //QFileInfo myQFile( mDataSource );
+    QFileInfo myQFile( dataSourceUri() );
+
+    if ( !myQFile.isWritable() )
+    {
+      return "ERROR_WRITE_ACCESS";
+    }
+
     // libtiff < 4.0 has a bug that prevents safe building of overviews on JPEG compressed files
     // we detect libtiff < 4.0 by checking that BIGTIFF is not in the creation options of the GTiff driver
     // see https://trac.osgeo.org/qgis/ticket/1357
@@ -1369,9 +1372,12 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       }
     }
 
-    //if needed close the gdal dataset and reopen it in read / write mode
+    // if needed close the gdal dataset and reopen it in read / write mode
+    // TODO this doesn't seem to work anymore... must fix it before 2.0!!!
+    // no errors are reported, but pyramids are not present in file.
     if ( GDALGetAccess( mGdalDataset ) == GA_ReadOnly )
     {
+      QgsDebugMsg( "re-opening the dataset in read/write mode" );
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
@@ -1389,11 +1395,28 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   }
 
   // are we using Erdas Imagine external overviews?
-  char* myConfigUseRRD = strdup( CPLGetConfigOption( "USE_RRD", "NO" ) );
+  QgsStringMap myConfigOptionsOld;
+  myConfigOptionsOld[ "USE_RRD" ] = CPLGetConfigOption( "USE_RRD", "NO" );
   if ( theFormat == PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
     CPLSetConfigOption( "USE_RRD", "NO" );
+
+  // add any driver-specific configuration options, save values to be restored later
+  if ( theFormat != PyramidsErdas && ! theConfigOptions.isEmpty() )
+  {
+    foreach ( QString option, theConfigOptions )
+    {
+      QStringList opt = option.split( "=" );
+      QByteArray key = opt[0].toLocal8Bit();
+      QByteArray value = opt[1].toLocal8Bit();
+      // save previous value
+      myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), NULL ) );
+      // set temp. value
+      CPLSetConfigOption( key.data(), value.data() );
+      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data() ).arg( value.data() ) );
+    }
+  }
 
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
@@ -1420,36 +1443,20 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       myOverviewLevelsVector.append( myRasterPyramidIterator->level );
     }
   }
-  /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
-   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE"
-   *                 controlling the downsampling method applied.
+  /* From : http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE" controlling the downsampling method applied.
    * nOverviews : number of overviews to build.
    * panOverviewList : the list of overview decimation factors to build.
-   * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
+   * nListBands : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
    * panBandList : list of band numbers.
    * pfnProgress : a function to call to report progress, or NULL.
    * pProgressData : application data to pass to the progress function.
    */
 
-  const char* theMethod;
-  if ( theResamplingMethod == tr( "Gauss" ) )
-    theMethod = "GAUSS";
-  else if ( theResamplingMethod == tr( "Cubic" ) )
-    theMethod = "CUBIC";
-  else if ( theResamplingMethod == tr( "Average" ) )
-    theMethod = "AVERAGE";
-  else if ( theResamplingMethod == tr( "Mode" ) )
-    theMethod = "MODE";
-  //NOTE magphase is disabled in the gui since it tends
-  //to create corrupted images. The images can be repaired
-  //by running one of the other resampling strategies below.
-  //see ticket #284
-  // else if ( theResamplingMethod == tr( "Average Magphase" ) )
-  //   theMethod = "AVERAGE_MAGPHASE";
-  else if ( theResamplingMethod == tr( "None" ) )
-    theMethod = "NONE";
-  else // fall back to nearest neighbor
-    theMethod = "NEAREST";
+  // resampling method is now passed directly, via QgsRasterDataProvider::pyramidResamplingArg()
+  // average_mp and average_magphase have been removed from the gui
+  QByteArray ba = theResamplingMethod.toLocal8Bit();
+  const char *theMethod = ba.data();
 
   //build the pyramid and show progress to console
   QgsDebugMsg( QString( "Building overviews at %1 levels using resampling method %2"
@@ -1467,7 +1474,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
     if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
     {
-      QgsDebugMsg( "Building pyramids failed" );
+      QgsDebugMsg( QString( "Building pyramids failed using resampling method [%1]" ).arg( theMethod ) );
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
@@ -1476,9 +1483,17 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       mGdalDataset = mGdalBaseDataset;
 
       //emit drawingProgress( 0, 0 );
-      // restore former USE_RRD config (Erdas)
-      CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-      free( myConfigUseRRD );
+
+      // restore former configOptions
+      for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
+            it != myConfigOptionsOld.end(); ++it )
+      {
+        QByteArray key = it.key().toLocal8Bit();
+        QByteArray value = it.value().toLocal8Bit();
+        CPLSetConfigOption( key.data(), value.data() );
+      }
+
+      // TODO print exact error message
       return "FAILED_NOT_SUPPORTED";
     }
     else
@@ -1493,9 +1508,14 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsLogger::warning( "Pyramid overview building failed!" );
   }
 
-  // restore former USE_RRD config (Erdas)
-  CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-  free( myConfigUseRRD );
+  // restore former configOptions
+  for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
+        it != myConfigOptionsOld.end(); ++it )
+  {
+    QByteArray key = it.key().toLocal8Bit();
+    QByteArray value = it.value().toLocal8Bit();
+    CPLSetConfigOption( key.data(), value.data() );
+  }
 
   QgsDebugMsg( "Pyramid overviews built" );
 
@@ -2521,13 +2541,21 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( myGdalDriver )
   {
-    // need to serialize xml to get newlines
-    // should we make the basic xml prettier?
+    // first report details and help page
+    char ** GDALmetadata = GDALGetMetadata( myGdalDriver, NULL );
+    message += "Format Details:\n";
+    message += QString( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += QString( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
+    message += QString( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += QString( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+
+    // next get creation options
+    // need to serialize xml to get newlines, should we make the basic xml prettier?
     CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
                                            GDAL_DMD_CREATIONOPTIONLIST, "" ) );
     char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
     if ( pszFormattedXML )
-      message = QString( pszFormattedXML );
+      message += QString( pszFormattedXML );
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
@@ -2607,4 +2635,39 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   }
 
   return message;
+}
+
+QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+    const QStringList & theConfigOptions, const QString & fileFormat )
+{
+  // Erdas Imagine format does not support config options
+  if ( pyramidsFormat == PyramidsErdas )
+  {
+    if ( ! theConfigOptions.isEmpty() )
+      return "Erdas Imagine format does not support config options";
+    else
+      return QString();
+  }
+  // Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files
+  else if ( pyramidsFormat == PyramidsInternal )
+  {
+    QStringList supportedFormats;
+    supportedFormats << "gtiff" << "georaster" << "hfa" << "jp2kak" << "mrsid" << "nitf";
+    if ( ! supportedFormats.contains( fileFormat.toLower() ) )
+      return QString( "Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files (using %1)" ).arg( fileFormat );
+    // TODO - check arguments for georaster hfa jp2kak mrsid nitf
+    // for now, only test gtiff
+    else if ( fileFormat.toLower() != "gtiff" )
+      return QString();
+  }
+
+  // for gtiff external or internal pyramids, validate gtiff-specific values
+  // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
+  if ( theConfigOptions.contains( "PHOTOMETRIC_OVERVIEW=YCBCR" ) )
+  {
+    if ( GDALGetRasterCount( mGdalDataset ) != 3 )
+      return "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)";
+  }
+
+  return QString();
 }
