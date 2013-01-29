@@ -83,13 +83,14 @@ struct QgsOracleLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 view=%6 sql=%7" )
+    return QString( "%1.%2.%3 type=%4 srid=%5 view=%6%7 sql=%8" )
            .arg( ownerName )
            .arg( tableName )
            .arg( geometryColName )
            .arg( typeString )
            .arg( sridString )
            .arg( isView ? "yes" : "no" )
+           .arg( isView ? QString( " pk=%1" ).arg( pkCols.join( "|" ) ) : "" )
            .arg( sql );
   }
 #endif
