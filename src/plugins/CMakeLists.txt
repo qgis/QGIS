@@ -11,7 +11,7 @@ ADD_SUBDIRECTORY(coordinate_capture)
 ADD_SUBDIRECTORY(dxf2shp_converter)
 ADD_SUBDIRECTORY(evis)
 ADD_SUBDIRECTORY(spatialquery)
-#ADD_SUBDIRECTORY(sqlanywhere) # TODO: enable when migrated to new api
+ADD_SUBDIRECTORY(sqlanywhere)
 ADD_SUBDIRECTORY(roadgraph)
 ADD_SUBDIRECTORY(zonal_statistics)
 ADD_SUBDIRECTORY(georeferencer)
