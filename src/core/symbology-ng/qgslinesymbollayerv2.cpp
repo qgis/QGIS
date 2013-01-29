@@ -195,6 +195,21 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
   }
 }
 
+QString QgsSimpleLineSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
+{
+  if ( mUseCustomDashPattern )
+  {
+    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor,
+           mPen.color(), mPenJoinStyle,
+           mPenCapStyle, mOffset, &mCustomDashVector );
+  }
+  else
+  {
+    return QgsSymbolLayerV2Utils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor, mPen.color(), mPenJoinStyle,
+           mPenCapStyle, mOffset );
+  }
+}
+
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );

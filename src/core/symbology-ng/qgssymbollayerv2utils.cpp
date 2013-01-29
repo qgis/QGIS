@@ -2095,6 +2095,90 @@ void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
+QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitScaleFactor, const QColor& c,
+    Qt::PenJoinStyle joinStyle,
+    Qt::PenCapStyle capStyle,
+    double offset,
+    const QVector<qreal>* dashPattern )
+{
+  QString penStyle;
+  penStyle.append( "PEN(" );
+  penStyle.append( "c:" );
+  penStyle.append( c.name() );
+  penStyle.append( ",w:" );
+  //dxf driver writes ground units as mm? Should probably be changed in ogr
+  penStyle.append( QString::number( width * mmScaleFactor ) );
+  penStyle.append( "mm" );
+
+  //dash dot vector
+  if ( dashPattern && dashPattern->size() > 0 )
+  {
+    penStyle.append( ",p:\"" );
+    QVector<qreal>::const_iterator pIt = dashPattern->constBegin();
+    for ( ; pIt != dashPattern->constEnd(); ++pIt )
+    {
+      if ( pIt != dashPattern->constBegin() )
+      {
+        penStyle.append( " " );
+      }
+      penStyle.append( QString::number( *pIt * mapUnitScaleFactor ) );
+      penStyle.append( "g" );
+    }
+    penStyle.append( "\"" );
+  }
+
+  //cap
+  penStyle.append( ",cap:" );
+  switch ( capStyle )
+  {
+    case Qt::SquareCap:
+      penStyle.append( "p" );
+      break;
+    case Qt::RoundCap:
+      penStyle.append( "r" );
+      break;
+    case Qt::FlatCap:
+    default:
+      penStyle.append( "b" );
+  }
+
+  //join
+  penStyle.append( ",j:" );
+  switch ( joinStyle )
+  {
+    case Qt::BevelJoin:
+      penStyle.append( "b" );
+      break;
+    case Qt::RoundJoin:
+      penStyle.append( "r" );
+      break;
+    case Qt::MiterJoin:
+    default:
+      penStyle.append( "m" );
+  }
+
+  //offset
+  if ( !doubleNear( offset, 0.0 ) )
+  {
+    penStyle.append( ",dp:" );
+    penStyle.append( QString::number( offset * mapUnitScaleFactor ) );
+    penStyle.append( "g" );
+  }
+
+  penStyle.append( ")" );
+  return penStyle;
+}
+
+QString QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( const QColor& fillColor )
+{
+  QString brushStyle;
+  brushStyle.append( "BRUSH(" );
+  brushStyle.append( "fc:" );
+  brushStyle.append( fillColor.name() );
+  brushStyle.append( ")" );
+  return brushStyle;
+}
+
 void QgsSymbolLayerV2Utils::createGeometryElement( QDomDocument &doc, QDomElement &element, QString geomFunc )
 {
   if ( geomFunc.isEmpty() )
@@ -2454,7 +2538,7 @@ QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
   return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
 
   if ( u == QgsSymbolV2::MM )
@@ -2475,7 +2559,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymb
   }
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
   if ( u == QgsSymbolV2::MM )
   {

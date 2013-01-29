@@ -24,6 +24,8 @@
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsrendererv2.h"
+#include "qgssymbollayerv2.h"
 
 #include <QFile>
 #include <QSettings>
@@ -61,12 +63,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QString& driverName,
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
-  QString *newFilename
+  QString *newFilename,
+  SymbologyExport symbologyExport
 )
     : mDS( NULL )
     , mLayer( NULL )
     , mGeom( NULL )
     , mError( NoError )
+    , mSymbologyExport( symbologyExport )
 {
   QString vectorFileName = theVectorFileName;
   QString fileEncoding = theFileEncoding;
@@ -428,24 +432,84 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
+bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer, QGis::UnitType outputUnit )
 {
   // create the feature
+  OGRFeatureH poFeature = createFeature( feature );
+
+  //add OGR feature style type
+  if ( mSymbologyExport != NoSymbology && renderer )
+  {
+    //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
+    QgsSymbolV2List symbols = renderer->symbolsForFeature( feature );
+    QString styleString;
+    QString currentStyle;
+
+    QgsSymbolV2List::const_iterator symbolIt = symbols.constBegin();
+    for ( ; symbolIt != symbols.constEnd(); ++symbolIt )
+    {
+      int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
+      for ( int i = 0; i < nSymbolLayers; ++i )
+      {
+        /*QMap< QgsSymbolLayerV2*, QString >::const_iterator it = mSymbolLayerTable.find( (*symbolIt)->symbolLayer( i ) );
+        if( it == mSymbolLayerTable.constEnd() )
+        {
+            continue;
+        }*/
+        double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
+        double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
+
+        currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( mmsf, musf );//"@" + it.value();
+
+        if ( mSymbologyExport == FeatureSymbology )
+        {
+          if ( symbolIt != symbols.constBegin() || i != 0 )
+          {
+            styleString.append( ";" );
+          }
+          styleString.append( currentStyle );
+        }
+        else if ( mSymbologyExport == SymbolLayerSymbology )
+        {
+          OGR_F_SetStyleString( poFeature, currentStyle.toLocal8Bit().data() );
+          if ( !writeFeature( mLayer, poFeature ) )
+          {
+            return false;
+          }
+        }
+      }
+    }
+    OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().data() );
+  }
+
+  if ( mSymbologyExport == NoSymbology || mSymbologyExport == FeatureSymbology )
+  {
+    if ( !writeFeature( mLayer, poFeature ) )
+    {
+      return false;
+    }
+  }
+
+  OGR_F_Destroy( poFeature );
+  return true;
+}
+
+OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
+{
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
   qint64 fid = FID_TO_NUMBER( feature.id() );
   if ( fid > std::numeric_limits<int>::max() )
   {
     QgsDebugMsg( QString( "feature id %1 too large." ).arg( fid ) );
-  }
-
-  OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
-  if ( err != OGRERR_NONE )
-  {
-    QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
-                 .arg( feature.id() )
-                 .arg( err ).arg( CPLGetLastErrorMsg() )
-               );
+    OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
+    if ( err != OGRERR_NONE )
+    {
+      QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
+                   .arg( feature.id() )
+                   .arg( err ).arg( CPLGetLastErrorMsg() )
+                 );
+    }
   }
 
   // attribute handling
@@ -554,21 +618,19 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       OGR_F_SetGeometry( poFeature, mGeom );
     }
   }
+  return poFeature;
+}
 
-  // put the created feature to layer
-  if ( OGR_L_CreateFeature( mLayer, poFeature ) != OGRERR_NONE )
+bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
+{
+  if ( OGR_L_CreateFeature( layer, feature ) != OGRERR_NONE )
   {
     mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrFeatureWriteFailed;
-
     QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-
-    OGR_F_Destroy( poFeature );
+    OGR_F_Destroy( feature );
     return false;
   }
-
-  OGR_F_Destroy( poFeature );
-
   return true;
 }
 
@@ -596,7 +658,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     const QStringList &datasourceOptions,
     const QStringList &layerOptions,
     bool skipAttributeCreation,
-    QString *newFilename )
+    QString *newFilename,
+    SymbologyExport symbologyExport,
+    double symbologyScale )
 {
   QgsDebugMsg( "fileName = " + fileName );
   const QgsCoordinateReferenceSystem* outputCRS;
@@ -620,7 +684,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
+    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+  writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
   {
@@ -642,6 +707,20 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     errorMessage->clear();
   }
 
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsFeature fet;
+
+  //add possible attributes needed by renderer
+  writer->addRendererAttributes( layer, allAttr );
+
+  QgsFeatureRequest req;
+  if ( layer->wkbType() == QGis::WKBNoGeometry )
+  {
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  req.setSubsetOfAttributes( allAttr );
+  QgsFeatureIterator fit = layer->getFeatures( req );
+
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
   // Create our transform
@@ -656,18 +735,37 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     shallTransform = false;
   }
 
+  //create symbol table if needed
+  if ( writer->symbologyExport() != NoSymbology )
+  {
+    //writer->createSymbolLayerTable( layer,  writer->mDS );
+  }
+
+  if ( writer->symbologyExport() == SymbolLayerSymbology && layer->isUsingRendererV2() )
+  {
+    QgsFeatureRendererV2* r = layer->rendererV2();
+    if ( r->capabilities() & QgsFeatureRendererV2::SymbolLevels
+         && r->usingSymbolLevels() )
+    {
+      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, fit, ct, errorMessage );
+      delete writer;
+      delete ct;
+      return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
+    }
+  }
+
   int n = 0, errors = 0;
 
-  QgsFeatureRequest req;
-  if ( layer->wkbType() == QGis::WKBNoGeometry )
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( skipAttributeCreation )
-    req.setSubsetOfAttributes( QgsAttributeList() );
+  //unit type
+  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
 
-  QgsFeatureIterator fit = layer->getFeatures( req );
+  writer->startRender( layer );
 
   // write all features
-  QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
     if ( onlySelected && !ids.contains( fet.id() ) )
@@ -696,11 +794,12 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
         return ErrProjection;
       }
     }
-    if ( skipAttributeCreation )
+    if ( allAttr.size() < 1 && skipAttributeCreation )
     {
       fet.initAttributes( 0 );
     }
-    if ( !writer->addFeature( fet ) )
+
+    if ( !writer->addFeature( fet, layer->rendererV2(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
@@ -727,6 +826,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     n++;
   }
 
+  writer->stopRender( layer );
   delete writer;
 
   if ( shallTransform )
@@ -1060,4 +1160,290 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
   }
 
   return true;
+}
+
+void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds )
+{
+  if ( !vl || !ds )
+  {
+    return;
+  }
+
+  if ( !vl->isUsingRendererV2() )
+  {
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = vl->rendererV2();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  //unit type
+  QGis::UnitType mapUnits = vl->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
+
+  mSymbolLayerTable.clear();
+  OGRStyleTableH ogrStyleTable = OGR_STBL_Create();
+  OGRStyleMgrH styleManager = OGR_SM_Create( ogrStyleTable );
+
+  //get symbols
+  int nTotalLevels = 0;
+  QgsSymbolV2List symbolList = renderer->symbols();
+  QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+  for ( ; symbolIt != symbolList.end(); ++symbolIt )
+  {
+    double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits );
+    double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits );
+
+    int nLevels = ( *symbolIt )->symbolLayerCount();
+    for ( int i = 0; i < nLevels; ++i )
+    {
+      mSymbolLayerTable.insert(( *symbolIt )->symbolLayer( i ), QString::number( nTotalLevels ) );
+      OGR_SM_AddStyle( styleManager, QString::number( nTotalLevels ).toLocal8Bit(),
+                       ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( mmsf, musf ).toLocal8Bit() );
+      ++nTotalLevels;
+    }
+  }
+  OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
+                                                                                  const QgsCoordinateTransform* ct, QString* errorMessage )
+{
+  if ( !layer || !layer->isUsingRendererV2() )
+  {
+    //return error
+  }
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  if ( !renderer )
+  {
+    //return error
+  }
+  QHash< QgsSymbolV2*, QList<QgsFeature> > features;
+
+  //unit type
+  QGis::UnitType mapUnits = layer->crs().mapUnits();
+  if ( ct )
+  {
+    mapUnits = ct->destCRS().mapUnits();
+  }
+
+  startRender( layer );
+
+  //fetch features
+  QgsFeature fet;
+  QgsSymbolV2* featureSymbol = 0;
+  while ( fit.nextFeature( fet ) )
+  {
+    if ( ct )
+    {
+      try
+      {
+        if ( fet.geometry() )
+        {
+          fet.geometry()->transform( *ct );
+        }
+      }
+      catch ( QgsCsException &e )
+      {
+        delete ct;
+
+        QString msg = QObject::tr( "Failed to transform, writing stopped. (Exception: %1)" )
+                      .arg( e.what() );
+        QgsLogger::warning( msg );
+        if ( errorMessage )
+          *errorMessage = msg;
+
+        return ErrProjection;
+      }
+    }
+
+    featureSymbol = renderer->symbolForFeature( fet );
+    if ( !featureSymbol )
+    {
+      continue;
+    }
+
+    QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator it = features.find( featureSymbol );
+    if ( it == features.end() )
+    {
+      it = features.insert( featureSymbol, QList<QgsFeature>() );
+    }
+    it.value().append( fet );
+  }
+
+  //find out order
+  QgsSymbolV2LevelOrder levels;
+  QgsSymbolV2List symbols = renderer->symbols();
+  for ( int i = 0; i < symbols.count(); i++ )
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for ( int j = 0; j < sym->symbolLayerCount(); j++ )
+    {
+      int level = sym->symbolLayer( j )->renderingPass();
+      if ( level < 0 || level >= 1000 ) // ignore invalid levels
+        continue;
+      QgsSymbolV2LevelItem item( sym, j );
+      while ( level >= levels.count() ) // append new empty levels
+        levels.append( QgsSymbolV2Level() );
+      levels[level].append( item );
+    }
+  }
+
+  int nErrors = 0;
+  int nTotalFeatures = 0;
+
+  //export symbol layers and symbology
+  for ( int l = 0; l < levels.count(); l++ )
+  {
+    QgsSymbolV2Level& level = levels[l];
+    for ( int i = 0; i < level.count(); i++ )
+    {
+      QgsSymbolV2LevelItem& item = level[i];
+      QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
+      if ( levelIt == features.end() )
+      {
+        ++nErrors;
+        continue;
+      }
+
+      double mmsf = mmScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(), mapUnits );
+      double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(), mapUnits );
+
+      int llayer = item.layer();
+      QList<QgsFeature>& featureList = levelIt.value();
+      QList<QgsFeature>::iterator featureIt = featureList.begin();
+      for ( ; featureIt != featureList.end(); ++featureIt )
+      {
+        ++nTotalFeatures;
+        OGRFeatureH ogrFeature = createFeature( *featureIt );
+        if ( !ogrFeature )
+        {
+          ++nErrors;
+          continue;
+        }
+
+        QString styleString = levelIt.key()->symbolLayer( llayer )->ogrFeatureStyle( mmsf, musf );
+        if ( !styleString.isEmpty() )
+        {
+          OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().data() );
+          if ( ! writeFeature( mLayer, ogrFeature ) )
+          {
+            ++nErrors;
+          }
+        }
+        OGR_F_Destroy( ogrFeature );
+      }
+    }
+  }
+
+  stopRender( layer );
+
+  if ( nErrors > 0 && errorMessage )
+  {
+    *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( nTotalFeatures - nErrors ).arg( nTotalFeatures );
+  }
+
+  return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
+}
+
+double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+{
+  if ( symbolUnits == QgsSymbolV2::MM )
+  {
+    return 1.0;
+  }
+  else
+  {
+    //conversion factor map units -> mm
+    if ( mapUnits == QGis::Meters )
+    {
+      return 1000 / scaleDenominator;
+    }
+
+  }
+  return 1.0; //todo: map units
+}
+
+double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits )
+{
+  if ( symbolUnits == QgsSymbolV2::MapUnit )
+  {
+    return 1.0;
+  }
+  else
+  {
+    if ( symbolUnits == QgsSymbolV2::MM && mapUnits == QGis::Meters )
+    {
+      return scaleDenominator / 1000;
+    }
+  }
+  return 1.0;
+}
+
+QgsRenderContext QgsVectorFileWriter::renderContext() const
+{
+  QgsRenderContext context;
+  context.setRendererScale( mSymbologyScaleDenominator );
+  return context;
+}
+
+void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->startRender( ctx, vl );
+}
+
+void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( !renderer )
+  {
+    return;
+  }
+
+  QgsRenderContext ctx = renderContext();
+  renderer->stopRender( ctx );
+}
+
+QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl ) const
+{
+  if ( mSymbologyExport == NoSymbology )
+  {
+    return 0;
+  }
+  if ( !vl || !vl->isUsingRendererV2() )
+  {
+    return 0;
+  }
+
+  return vl->rendererV2();
+}
+
+void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList )
+{
+  QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
+  if ( renderer )
+  {
+    QList<QString> rendererAttributes = renderer->usedAttributes();
+    for ( int i = 0; i < rendererAttributes.size(); ++i )
+    {
+      int index = vl->fieldNameIndex( rendererAttributes.at( i ) );
+      if ( index != -1 )
+      {
+        attList.push_back( vl->fieldNameIndex( rendererAttributes.at( i ) ) );
+      }
+    }
+  }
 }

@@ -21,13 +21,16 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
+#include "qgssymbolv2.h"
 
 #include <QPair>
 
 typedef void *OGRDataSourceH;
 typedef void *OGRLayerH;
 typedef void *OGRGeometryH;
+typedef void *OGRFeatureH;
 
+class QgsSymbolLayerV2;
 class QTextCodec;
 
 /** \ingroup core
@@ -56,6 +59,14 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrInvalidLayer, // added in 2.0
     };
 
+    //added in 2.0
+    enum SymbologyExport
+    {
+      NoSymbology = 0, //export only data
+      FeatureSymbology, //Keeps the number of features and export symbology per feature
+      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
+    };
+
     /** Write contents of vector layer to an (OGR supported) vector formt
         @note: this method was added in version 1.5
     @param layer layer to write
@@ -81,7 +92,9 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QStringList &datasourceOptions = QStringList(),  // added in 1.6
                                             const QStringList &layerOptions = QStringList(),  // added in 1.6
                                             bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0 // added in 1.9
+                                            QString *newFilename = 0, // added in 1.9
+                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
+                                            double symbologyScale = 1.0 // added in 2.0
                                           );
 
     /** create shapefile and initialize it */
@@ -93,7 +106,8 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& driverName = "ESRI Shapefile",
                          const QStringList &datasourceOptions = QStringList(), // added in 1.6
                          const QStringList &layerOptions = QStringList(), // added in 1.6
-                         QString *newFilename = 0 // added in 1.9
+                         QString *newFilename = 0, // added in 1.9
+                         SymbologyExport symbologyExport = NoSymbology//added in 2.0
                        );
 
     /**Returns map with format filter string as key and OGR format key as value*/
@@ -120,7 +134,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** add feature to the currently opened shapefile */
-    bool addFeature( QgsFeature& feature );
+    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -133,6 +147,12 @@ class CORE_EXPORT QgsVectorFileWriter
      * @return bool true if the file was deleted successfully
      */
     static bool deleteShapeFile( QString theFileName );
+
+    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
+
+    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
+    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
 
   protected:
     //! @note not available in python bindings
@@ -156,8 +176,30 @@ class CORE_EXPORT QgsVectorFileWriter
     /** map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
 
+    SymbologyExport mSymbologyExport;
+
+    QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
+
+    /**Scale for symbology export (e.g. for symbols units in map units)*/
+    double mSymbologyScaleDenominator;
+
   private:
     static bool driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext );
+    void createSymbolLayerTable( QgsVectorLayer* vl,  const QgsCoordinateTransform* ct, OGRDataSourceH ds );
+    OGRFeatureH createFeature( QgsFeature& feature );
+    bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
+
+    /**Writes features considering symbol level order*/
+    WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
+    double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+    QgsRenderContext renderContext() const;
+    void startRender( QgsVectorLayer* vl ) const;
+    void stopRender( QgsVectorLayer* vl ) const;
+    QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
+    /**Adds attributes needed for classification*/
+    void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
+
 };
 
 #endif

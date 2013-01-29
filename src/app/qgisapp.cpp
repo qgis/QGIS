@@ -4268,7 +4268,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation(),
-              &newFilename );
+              &newFilename,
+              ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
+              dialog->scaleDenominator() );
 
     QApplication::restoreOverrideCursor();
 
