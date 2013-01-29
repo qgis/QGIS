@@ -9,12 +9,12 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * add python-unittest2 build dependency for maverick and squeeze
   * disable PyQgsRectangle test on lucid (depends on unittest2)
   * add python-psycopg2 and python-qscintilla2 dependency to python-qgis
-  * add support for ubuntu quantal
+  * add support for ubuntu quantal and raring
   * remove js files and add libjs-jquery/libjs-underscore dependency
   * temporarily disable mssql and sqlanywhere provider until migrated to
     new vector api.
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 28 Jan 2013 12:24:19 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 29 Jan 2013 21:01:49 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

@@ -16,7 +16,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise quantal raring sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
