@@ -140,7 +140,7 @@ void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
   mItem->endCommand();
 }
 
-void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
+void QgsComposerItemWidget::on_mFrameGroupBox_toggled( bool state )
 {
   if ( !mItem )
   {
@@ -148,21 +148,12 @@ void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
   }
 
   mItem->beginCommand( tr( "Item frame toggled" ) );
-  if ( state == Qt::Checked )
-  {
-    mFrameBox->setEnabled( true );
-    mItem->setFrameEnabled( true );
-  }
-  else
-  {
-    mFrameBox->setEnabled( false );
-    mItem->setFrameEnabled( false );
-  }
+  mItem->setFrameEnabled( state );
   mItem->update();
   mItem->endCommand();
 }
 
-void QgsComposerItemWidget::on_mBackgroundCheckBox_stateChanged( int state )
+void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 {
   if ( !mItem )
   {
@@ -170,16 +161,7 @@ void QgsComposerItemWidget::on_mBackgroundCheckBox_stateChanged( int state )
   }
 
   mItem->beginCommand( tr( "Item background toggled" ) );
-  if ( state == Qt::Checked )
-  {
-    mBackgroundBox->setEnabled( true );
-    mItem->setBackgroundEnabled( true );
-  }
-  else
-  {
-    mBackgroundBox->setEnabled( false );
-    mItem->setBackgroundEnabled( false );
-  }
+  mItem->setBackgroundEnabled( state );
   mItem->update();
   mItem->endCommand();
 }
@@ -193,7 +175,8 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   mOpacitySlider->blockSignals( true );
   mOutlineWidthSpinBox->blockSignals( true );
-  mFrameCheckBox->blockSignals( true );
+  mFrameGroupBox->blockSignals( true );
+  mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
   mOpacitySpinBox->blockSignals( true );
 
@@ -201,18 +184,13 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOpacitySlider->setValue( mItem->brush().color().alpha() );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
-  if ( mItem->hasFrame() )
-  {
-    mFrameCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mFrameCheckBox->setCheckState( Qt::Unchecked );
-  }
-
+  mFrameGroupBox->setChecked( mItem->hasFrame() );
+  mBackgroundGroupBox->setChecked( mItem->hasBackground() );
+  
   mOpacitySlider->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
-  mFrameCheckBox->blockSignals( false );
+  mFrameGroupBox->blockSignals( false );
+  mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
   mOpacitySpinBox->blockSignals( false );
 }

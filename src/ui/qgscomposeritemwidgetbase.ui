@@ -14,17 +14,23 @@
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout_2">
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="mFrameCheckBox">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
+   <item row="0" column="0" colspan="2">
+    <widget class="QPushButton" name="mPositionButton">
      <property name="text">
-      <string>Show frame</string>
+      <string>Position and size...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QGroupBox" name="mFrameBox">
+   <item row="1" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="mFrameGroupBox">
      <property name="title">
-      <string>Frame settings</string>
+      <string>Show frame</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0" colspan="2">
@@ -53,17 +59,19 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="mBackgroundCheckBox">
-     <property name="text">
+   <item row="2" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="mBackgroundGroupBox">
+     <property name="title">
       <string>Show background</string>
      </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QGroupBox" name="mBackgroundBox">
-     <property name="title">
-      <string>Background settings</string>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" colspan="3">
@@ -106,20 +114,20 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout"/>
    </item>
-   <item row="7" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mIdLabel">
      <property name="text">
       <string>Item ID</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="5" column="1">
     <widget class="QLineEdit" name="mItemIdLineEdit"/>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -132,15 +140,16 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QPushButton" name="mPositionButton">
-     <property name="text">
-      <string>Position and size...</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
