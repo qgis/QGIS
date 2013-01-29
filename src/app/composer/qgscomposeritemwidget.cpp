@@ -150,11 +150,35 @@ void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
   mItem->beginCommand( tr( "Item frame toggled" ) );
   if ( state == Qt::Checked )
   {
+    mFrameBox->setEnabled( true );
     mItem->setFrameEnabled( true );
   }
   else
   {
+    mFrameBox->setEnabled( false );
     mItem->setFrameEnabled( false );
+  }
+  mItem->update();
+  mItem->endCommand();
+}
+
+void QgsComposerItemWidget::on_mBackgroundCheckBox_stateChanged( int state )
+{
+  if ( !mItem )
+  {
+    return;
+  }
+
+  mItem->beginCommand( tr( "Item background toggled" ) );
+  if ( state == Qt::Checked )
+  {
+    mBackgroundBox->setEnabled( true );
+    mItem->setBackgroundEnabled( true );
+  }
+  else
+  {
+    mBackgroundBox->setEnabled( false );
+    mItem->setBackgroundEnabled( false );
   }
   mItem->update();
   mItem->endCommand();

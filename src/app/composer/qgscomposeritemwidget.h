@@ -38,6 +38,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mOpacitySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameCheckBox_stateChanged( int state );
+    void on_mBackgroundCheckBox_stateChanged( int state );
     void on_mPositionButton_clicked();
     void on_mItemIdLineEdit_textChanged( const QString& text );
 

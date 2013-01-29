@@ -175,6 +175,22 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
 
+
+    /** Whether this item has a Background or not.
+     * @returns true if there is a Background around this item, otherwise false.
+     * @note introduced since 2.0
+     * @see hasBackground
+     */
+    bool hasBackground() const {return mBackground;}
+
+    /** Set whether this item has a Background drawn around it or not.
+     * @param drawBackground draw Background
+     * @returns nothing
+     * @note introduced in 2.0
+     * @see hasBackground
+     */
+    void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
@@ -271,6 +287,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**True if item fram needs to be painted*/
     bool mFrame;
+    /**True if item background needs to be painted*/
+    bool mBackground;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
