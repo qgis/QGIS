@@ -33,7 +33,7 @@ class QgsFeatureRequest
 
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( qint64 fid );
-    const qint64& filterFid() const;
+    qint64 filterFid() const;
 
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( Flags flags );
