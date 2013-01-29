@@ -1,3 +1,31 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    GeoAlgorithmExecutionException.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import os.path
+import traceback
+import copy
 from sextante.outputs.Output import Output
 from sextante.parameters.Parameter import Parameter
 from sextante.core.QGisLayers import QGisLayers
@@ -6,18 +34,14 @@ from sextante.parameters.ParameterVector import ParameterVector
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from qgis.core import *
-import os.path
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import traceback
 from sextante.core.SextanteLog import SextanteLog
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputHTML import OutputHTML
-import copy
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.gdal.GdalUtils import GdalUtils
 
@@ -40,7 +64,6 @@ class GeoAlgorithm:
         self.provider = None
 
         self.defineCharacteristics()
-
 
     def getCopy(self):
         newone = copy.copy(self)
@@ -106,8 +129,8 @@ class GeoAlgorithm:
         This check is called from the parameters dialog, and also when calling from the console'''
         return None
     #=========================================================
-        
-    
+
+
     def execute(self, progress):
         '''The method to use to call a SEXTANTE algorithm.
         Although the body of the algorithm is in processAlgorithm(),
@@ -120,9 +143,9 @@ class GeoAlgorithm:
             self.resolveTemporaryOutputs()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
-            self.processAlgorithm(progress)                  
+            self.processAlgorithm(progress)
             self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)          
+            self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException, gaee:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, gaee.msg)
             raise gaee
@@ -144,32 +167,32 @@ class GeoAlgorithm:
     def runPostExecutionScript(self, progress):
         scriptFile = SextanteConfig.getSetting(SextanteConfig.POST_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress);
-    
+
     def runPreExecutionScript(self, progress):
         scriptFile = SextanteConfig.getSetting(SextanteConfig.PRE_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress);
-        
-    def runHookScript(self, filename, progress):                    
+
+    def runHookScript(self, filename, progress):
         if not os.path.exists(filename):
             return
-        try: 
+        try:
             script = "import sextante\n"
             ns = {}
             ns['progress'] = progress
-            ns['alg'] = self                
+            ns['alg'] = self
             f = open(filename)
             lines = f.readlines()
             for line in lines:
                 script+=line
-            exec(script) in ns        
+            exec(script) in ns
         except: # a wrong script should not cause problems, so we swallow all exceptions
             pass
-    
+
     def convertUnsupportedFormats(self, progress):
         i = 0
         progress.setText("Converting outputs")
-        for out in self.outputs:            
-            if isinstance(out, OutputVector): 
+        for out in self.outputs:
+            if isinstance(out, OutputVector):
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
@@ -177,16 +200,25 @@ class GeoAlgorithm:
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
-            elif isinstance(out, OutputRaster): 
+            elif isinstance(out, OutputRaster):
+                out.close()
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
                     writer = QgsRasterFileWriter(out.value)
                     format = self.getFormatShortNameFromFilename(out.value)
-                    writer.setOutputFormat(format);                                     
-                    writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), layer.crs())                        
-            progress.setPercentage(100 * i / float(len(self.outputs)))                    
-            
+                    writer.setOutputFormat(format);
+                    writer.writeRaster(layer.pipe(), layer.width(), layer.height(), layer.extent(), layer.crs())
+            elif isinstance(out, OutputTable):
+                if out.compatible is not None:
+                    layer = QGisLayers.getObjectFromUri(out.compatible)
+                    provider = layer.dataProvider()
+                    writer = out.getTableWriter(provider.fields())
+                    features = QGisLayers.features(layer)
+                    for feature in features:
+                        writer.addRecord(feature)                                    
+            progress.setPercentage(100 * i / float(len(self.outputs)))
+
     def getFormatShortNameFromFilename(self, filename):
         ext = filename[filename.rfind(".")+1:]
         supported = GdalUtils.getSupportedRasters()
@@ -195,7 +227,7 @@ class GeoAlgorithm:
             if ext in exts:
                 return name
         return "GTiff"
-            
+
     def checkOutputFileExtensions(self):
         '''Checks if the values of outputs are correct and have one of the supported output extensions.
         If not, it adds the first one of the supported extensions, which is assumed to be the default one'''

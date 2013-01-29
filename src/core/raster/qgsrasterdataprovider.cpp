@@ -387,6 +387,63 @@ QString QgsRasterDataProvider::lastErrorFormat()
   return "text/plain";
 }
 
+// pyramids resampling
+
+// TODO move this to gdal provider
+// but we need some way to get a static instance of the provider
+// or use function pointers like in QgsRasterFormatSaveOptionsWidget::helpOptions()
+
+// see http://www.gdal.org/gdaladdo.html
+//     http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+//     http://www.gdal.org/classGDALRasterBand.html#afaea945b13ec9c86c2d783b883c68432
+
+// from http://www.gdal.org/gdaladdo.html
+//   average_mp is unsuitable for use thus not included
+
+// from qgsgdalprovider.cpp (removed)
+//   NOTE magphase is disabled in the gui since it tends
+//   to create corrupted images. The images can be repaired
+//   by running one of the other resampling strategies below.
+//   see ticket #284
+QStringList QgsRasterDataProvider::mPyramidResamplingListGdal = QStringList();
+QgsStringMap QgsRasterDataProvider::mPyramidResamplingMapGdal = QgsStringMap();
+
+void QgsRasterDataProvider::initPyramidResamplingDefs()
+{
+  mPyramidResamplingListGdal.clear();
+  mPyramidResamplingListGdal << tr( "Nearest Neighbour" ) << tr( "Average" ) << tr( "Gauss" ) << tr( "Cubic" ) << tr( "Mode" ) << tr( "None" ); // << tr( "Average magphase" )
+  mPyramidResamplingMapGdal.clear();
+  mPyramidResamplingMapGdal[ tr( "Nearest Neighbour" )] = "NEAREST";
+  mPyramidResamplingMapGdal[ tr( "Average" )] = "AVERAGE";
+  mPyramidResamplingMapGdal[ tr( "Gauss" )] = "GAUSS";
+  mPyramidResamplingMapGdal[ tr( "Cubic" )] = "CUBIC";
+  mPyramidResamplingMapGdal[ tr( "Mode" )] = "MODE";
+  // mPyramidResamplingMapGdal[ tr( "Average magphase" ) ] = "average_magphase";
+  mPyramidResamplingMapGdal[ tr( "None" )] = "NONE" ;
+}
+
+QStringList QgsRasterDataProvider::pyramidResamplingMethods( QString providerKey )
+{
+  if ( mPyramidResamplingListGdal.isEmpty() )
+    initPyramidResamplingDefs();
+
+  return providerKey == "gdal" ? mPyramidResamplingListGdal : QStringList();
+}
+
+QString QgsRasterDataProvider::pyramidResamplingArg( QString method, QString providerKey )
+{
+  if ( providerKey != "gdal" )
+    return QString();
+
+  if ( mPyramidResamplingListGdal.isEmpty() )
+    initPyramidResamplingDefs();
+
+  if ( mPyramidResamplingMapGdal.contains( method ) )
+    return mPyramidResamplingMapGdal.value( method );
+  else
+    return "NEAREST";
+}
+
 bool QgsRasterDataProvider::hasPyramids()
 {
   QList<QgsRasterPyramid> myPyramidList = buildPyramidList();

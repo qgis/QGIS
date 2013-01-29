@@ -32,6 +32,13 @@ class QgsLegendGroup : public QgsLegendItem
     QgsLegendGroup( QString name );
     ~QgsLegendGroup();
 
+    /** Helper method to set font characteristics.
+     *  Not to be confused with setFont() which is inherited
+     *  from the QTreeWidgetItem base class.
+     *  @note added in QGIS 1.9
+     */
+    void setupFont();
+
     bool insert( QgsLegendItem* theItem );
     /**Returns all legend layers under this group (including those of subgroups by default)*/
     QList<QgsLegendLayer*> legendLayers( bool recurse = true );

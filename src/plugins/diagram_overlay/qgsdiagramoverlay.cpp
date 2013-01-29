@@ -79,39 +79,35 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
   //go through all the features and fill the multimap (query mDiagramRenderer for the correct sizes)
   if ( mVectorLayer && mDiagramRenderer )
   {
-    QgsVectorDataProvider* theProvider = mVectorLayer->dataProvider();
-    if ( theProvider )
+    //set spatial filter on data provider
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( renderContext.extent() ).setSubsetOfAttributes( mAttributes ) );
+
+    QgsFeature currentFeature;
+    QgsGeometry* currentGeometry = 0;
+
+    int width, height;
+
+    std::list<unsigned char*> wkbBuffers;
+    std::list<int> wkbSizes;
+
+    std::list<unsigned char*>::iterator bufferIt;
+    std::list<int>::iterator sizeIt;
+
+    while ( fit.nextFeature( currentFeature ) )
     {
-      //set spatial filter on data provider
-      theProvider->select( mAttributes, renderContext.extent() );
-
-      QgsFeature currentFeature;
-      QgsGeometry* currentGeometry = 0;
-
-      int width, height;
-
-      std::list<unsigned char*> wkbBuffers;
-      std::list<int> wkbSizes;
-
-      std::list<unsigned char*>::iterator bufferIt;
-      std::list<int>::iterator sizeIt;
-
-      while ( theProvider->nextFeature( currentFeature ) )
+      //todo: insert more objects for multipart features
+      if ( mDiagramRenderer->getDiagramDimensions( width, height, currentFeature, renderContext ) != 0 )
       {
-        //todo: insert more objects for multipart features
-        if ( mDiagramRenderer->getDiagramDimensions( width, height, currentFeature, renderContext ) != 0 )
-        {
-          //error
-        }
-
-        currentGeometry = currentFeature.geometryAndOwnership();
-        //overlay objects needs the geometry in map coordinates
-        if ( currentGeometry && renderContext.coordinateTransform() )
-        {
-          currentGeometry->transform( *( renderContext.coordinateTransform() ) );
-        }
-        mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentGeometry ) );
+        //error
       }
+
+      currentGeometry = currentFeature.geometryAndOwnership();
+      //overlay objects needs the geometry in map coordinates
+      if ( currentGeometry && renderContext.coordinateTransform() )
+      {
+        currentGeometry->transform( *( renderContext.coordinateTransform() ) );
+      }
+      mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentGeometry ) );
     }
   }
 }
@@ -124,56 +120,52 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
   }
   if ( mVectorLayer && mDiagramRenderer )
   {
-    QgsVectorDataProvider* theProvider = mVectorLayer->dataProvider();
-    if ( theProvider )
+    //set spatial filter on data provider
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( context.extent() ).setSubsetOfAttributes( mAttributes ) );
+
+    QgsFeature currentFeature;
+    QImage* currentDiagramImage = 0;
+
+    QPainter* painter = context.painter();
+
+    while ( fit.nextFeature( currentFeature ) )
     {
-      //set spatial filter on data provider
-      theProvider->select( mAttributes, context.extent() );
-
-      QgsFeature currentFeature;
-      QImage* currentDiagramImage = 0;
-
-      QPainter* painter = context.painter();
-
-      while ( theProvider->nextFeature( currentFeature ) )
+      //request diagram from renderer
+      currentDiagramImage = mDiagramRenderer->renderDiagram( currentFeature, context );
+      if ( !currentDiagramImage )
       {
-        //request diagram from renderer
-        currentDiagramImage = mDiagramRenderer->renderDiagram( currentFeature, context );
-        if ( !currentDiagramImage )
+        QgsDebugMsg( "diagram image is 0" );
+        continue;
+      }
+      //search for overlay object in the map
+      QMap<QgsFeatureId, QgsOverlayObject*>::const_iterator it = mOverlayObjects.find( currentFeature.id() );
+      if ( it != mOverlayObjects.constEnd() )
+      {
+        if ( it.value() )
         {
-          QgsDebugMsg( "diagram image is 0" );
-          continue;
-        }
-        //search for overlay object in the map
-        QMap<QgsFeatureId, QgsOverlayObject*>::const_iterator it = mOverlayObjects.find( currentFeature.id() );
-        if ( it != mOverlayObjects.constEnd() )
-        {
-          if ( it.value() )
+          QList<QgsPoint> positionList = it.value()->positions();
+
+          QList<QgsPoint>::const_iterator positionIt = positionList.constBegin();
+          for ( ; positionIt != positionList.constEnd(); ++positionIt )
           {
-            QList<QgsPoint> positionList = it.value()->positions();
+            QgsPoint overlayPosition = *positionIt;
+            context.mapToPixel().transform( &overlayPosition );
+            int shiftX = currentDiagramImage->width() / 2;
+            int shiftY = currentDiagramImage->height() / 2;
 
-            QList<QgsPoint>::const_iterator positionIt = positionList.constBegin();
-            for ( ; positionIt != positionList.constEnd(); ++positionIt )
+            if ( painter )
             {
-              QgsPoint overlayPosition = *positionIt;
-              context.mapToPixel().transform( &overlayPosition );
-              int shiftX = currentDiagramImage->width() / 2;
-              int shiftY = currentDiagramImage->height() / 2;
-
-              if ( painter )
-              {
-                painter->save();
-                painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
-                //painter->drawRect(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, it.value()->width(), it.value()->height());
-                painter->drawImage(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, *currentDiagramImage );
-                painter->restore();
-              }
+              painter->save();
+              painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
+              //painter->drawRect(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, it.value()->width(), it.value()->height());
+              painter->drawImage(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, *currentDiagramImage );
+              painter->restore();
             }
           }
         }
-
-        delete currentDiagramImage;
       }
+
+      delete currentDiagramImage;
     }
   }
 }
@@ -416,11 +408,10 @@ QString QgsDiagramOverlay::attributeNameFromIndex( int index, const QgsVectorLay
   const QgsVectorDataProvider *provider;
   if (( provider = dynamic_cast<const QgsVectorDataProvider *>( vl->dataProvider() ) ) )
   {
-    const QgsFieldMap & fields = provider->fields();
-    QgsFieldMap::const_iterator field_iter = fields.find( index );
-    if ( field_iter != fields.constEnd() )
+    const QgsFields & fields = provider->fields();
+    if ( index < 0 || index >= fields.count() )
     {
-      return field_iter->name();
+      return fields[index].name();
     }
   }
   return "";

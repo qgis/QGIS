@@ -706,7 +706,6 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
     vIt->first->createJoinCaches();
-    vIt->first->updateFieldMap();
     //for old symbology, it is necessary to read the symbology again after having the complete field map
     if ( !vIt->first->isUsingRendererV2() )
     {
@@ -739,14 +738,14 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
     mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
   }
 
-  Q_CHECK_PTR( mapLayer );
-
   if ( !mapLayer )
   {
     QgsDebugMsg( "Unable to create layer" );
 
     return false;
   }
+
+  Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
@@ -1369,7 +1368,7 @@ QString QgsProject::readPath( QString src ) const
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
     QString home = homePath();
-    if( home.isNull() )
+    if ( home.isNull() )
       return src;
 
     QFileInfo fi( home + "/" + src );
@@ -1544,7 +1543,7 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
     return QString();
   }
   return it.value().first;
-};
+}
 
 bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                                       QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )

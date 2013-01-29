@@ -72,11 +72,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRectangle outputRectangle() const;
     QList<QgsRasterNuller::NoData> noData() const;
 
-    QList< int > overviewList() const;
+    QList< int > pyramidsList() const;
     QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const;
-    QString pyramidsResampling() const { return mPyramidsOptionsWidget->resamplingMethod(); }
+    QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
     QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const
     { return mPyramidsOptionsWidget->pyramidsFormat(); }
+    QStringList pyramidsConfigOptions() const
+    { return mPyramidsOptionsWidget->configOptions(); }
 
     void hideFormat();
     void hideOutput();

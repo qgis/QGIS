@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -504,6 +505,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
   chkAddedVisibility->setChecked( settings.value( "/qgis/new_layers_visible", true ).toBool() );
   cbxLegendClassifiers->setChecked( settings.value( "/qgis/showLegendClassifiers", false ).toBool() );
+  mLegendLayersBoldChkBx->setChecked( settings.value( "/qgis/legendLayersBold", true ).toBool() );
+  mLegendGroupsBoldChkBx->setChecked( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
@@ -562,7 +565,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
-  capitaliseCheckBox->setChecked( settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
+  capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
@@ -1003,7 +1006,12 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
+  bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
+  bool legendLayersBold = settings.value( "/qgis/legendLayersBold", true ).toBool();
+  settings.setValue( "/qgis/legendLayersBold", mLegendLayersBoldChkBx->isChecked() );
+  bool legendGroupsBold = settings.value( "/qgis/legendGroupsBold", false ).toBool();
+  settings.setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
@@ -1019,6 +1027,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addNewLayersToCurrentGroup", cbxAddNewLayersToCurrentGroup->isChecked() );
+  bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", true ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
   settings.setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
@@ -1027,6 +1036,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
+  bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // project
@@ -1232,6 +1242,21 @@ void QgsOptions::saveOptions()
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
     saveGdalDriverList();
+
+  // refresh legend if any legend item's state is to be changed
+  if ( legendLayersBold != mLegendLayersBoldChkBx->isChecked()
+       || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
+       || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
+  {
+    QgisApp::instance()->legend()->updateLegendItemStyles();
+  }
+
+  // refresh symbology for any legend items, only if needed
+  if ( showLegendClassifiers != cbxLegendClassifiers->isChecked()
+       || createRasterLegendIcons != cbxCreateRasterLegendIcons->isChecked() )
+  {
+    QgisApp::instance()->legend()->updateLegendItemSymbologies();
+  }
 
   // save app stylesheet last (in case reset becomes necessary)
   if ( mStyleSheetNewOpts != mStyleSheetOldOpts )

@@ -36,7 +36,7 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
 
   public:
     QgsAttributeActionDialog( QgsAttributeAction* actions,
-                              const QgsFieldMap& fields,
+                              const QgsFields& fields,
                               QWidget* parent = 0 );
 
     ~QgsAttributeActionDialog() {};

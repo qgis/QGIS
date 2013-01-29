@@ -283,6 +283,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
       QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
+      QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
 
       // implicit conversions
       QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
@@ -381,11 +382,14 @@ class TestQgsExpression: public QObject
 
     void eval_columns()
     {
-      QgsFieldMap fields;
-      fields[4] = QgsField( "foo", QVariant::Int );
+      QgsFields fields;
+      fields.append( QgsField("x1") );
+      fields.append( QgsField("x2") );
+      fields.append( QgsField( "foo", QVariant::Int ) );
 
       QgsFeature f;
-      f.addAttribute( 4, QVariant( 20 ) );
+      f.initAttributes( 3 );
+      f.setAttribute( 2, QVariant( 20 ) );
 
       // good exp
       QgsExpression exp( "foo + 1" );

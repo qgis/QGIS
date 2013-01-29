@@ -37,7 +37,7 @@ class OutputVector(Output):
     compatible = None
 
     def getFileFilter(self,alg):        
-        exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+        exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
@@ -50,7 +50,8 @@ class OutputVector(Output):
         '''Returns a filename that is compatible with the algorithm that is going to generate this output.
         If the algorithm supports the file format of the current output value, it returns that value. If not, 
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
-        if self.value.endswith(self.getDefaultFileExtension(alg)):
+        ext = self.value[self.value.rfind(".") + 1:]
+        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:                            

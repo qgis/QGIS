@@ -27,6 +27,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   setCheckState( 0, Qt::Checked );
   QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
   mEmbedded = false;
   mDrawingOrder = -1;
 }
@@ -38,6 +39,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
   setCheckState( 0, Qt::Checked );
   QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
   mEmbedded = false;
   mDrawingOrder = -1;
 }
@@ -50,6 +52,7 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
   QIcon myIcon = QgsApplication::getThemeIcon( + "/mActionFolder.png" );
   setText( 0, name );
   setIcon( 0, myIcon );
+  setupFont();
   mEmbedded = false;
   mDrawingOrder = -1;
 }
@@ -57,6 +60,14 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
 QgsLegendGroup::~QgsLegendGroup()
 {}
 
+void QgsLegendGroup::setupFont()
+{
+  QSettings settings;
+  QFont myFont = font( 0 );
+  //visually differentiate group labels from the rest
+  myFont.setBold( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
+  setFont( 0, myFont );
+}
 
 bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {

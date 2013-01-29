@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from sextante.core.QGisLayers import QGisLayers
+from sextante.core.SextanteRasterWriter import SextanteRasterWriter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -44,9 +45,22 @@ class OutputRaster(Output):
         '''Returns a filename that is compatible with the algorithm that is going to generate this output.
         If the algorithm supports the file format of the current output value, it returns that value. If not, 
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
-        if self.value.endswith(self.getDefaultFileExtension(alg)):
+        ext = self.value[self.value.rfind(".") + 1:]
+        if ext in alg.provider.getSupportedOutputRasterLayerExtensions():
             return self.value
         else:
             if self.compatible is None:                            
                 self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
             return self.compatible;
+
+    def getVectorWriter(self, minx, miny, maxx, maxy, cellsize, nbands, crs):
+        '''Returns a suitable raster. Use this to transparently handle output
+        values instead of creating your own method.
+
+        It should be called just once, since a new call might
+        result in previous data being replaced, thus rendering a previously
+        obtained writer useless
+        '''        
+
+        w = SextanteRasterWriter(self.value, minx, miny, maxx, maxy, cellsize, nbands, crs)        
+        return w

@@ -61,8 +61,19 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Check if a group is visible
     bool isGroupVisible( int groupIndex );
 
+    //! Check if a layer is expanded
+    bool isLayerExpanded( QgsMapLayer * ml );
+
     //! Check if a layer is visible
     bool isLayerVisible( QgsMapLayer * ml );
+
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    bool removeLegendLayerAction( QAction* action );
+
+    QgsMapLayer* currentLayer();
+    bool setCurrentLayer( QgsMapLayer *layer );
 
   public slots:
 

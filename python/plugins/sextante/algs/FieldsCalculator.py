@@ -79,7 +79,8 @@ class FieldsCalculator(GeoAlgorithm):
             try:
                 result = eval(expression)
             except Exception:
-                raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
+                result = None
+                #raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry(inGeom)

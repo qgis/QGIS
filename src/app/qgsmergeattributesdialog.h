@@ -35,7 +35,7 @@ class QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDi
   public:
     QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsMergeAttributesDialog();
-    QgsAttributeMap mergedAttributesMap() const;
+    QgsAttributes mergedAttributes() const;
 
   private slots:
     void comboValueChanged( const QString & text );

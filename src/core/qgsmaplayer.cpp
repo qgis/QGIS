@@ -47,17 +47,16 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mTransparencyLevel( 255 ), // 0 is completely transparent
     mValid( false ), // assume the layer is invalid
     mDataSource( source ),
+    mLayerOrigName( lyrname ), // store the original name
     mID( "" ),
     mLayerType( type )
-
 {
-  QgsDebugMsg( "lyrname is '" + lyrname + "'" );
-
   mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
-  mLayerName = capitaliseLayerName( lyrname );
-  QgsDebugMsg( "layerName is '" + mLayerName + "'" );
+  QgsDebugMsg( "original name: '" + mLayerOrigName + "'" );
+  mLayerName = capitaliseLayerName( mLayerOrigName );
+  QgsDebugMsg( "display name: '" + mLayerName + "'" );
 
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
@@ -76,8 +75,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mScaleBasedVisibility = false;
   mpCacheImage = 0;
 }
-
-
 
 QgsMapLayer::~QgsMapLayer()
 {
@@ -102,9 +99,11 @@ QString QgsMapLayer::id() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName( const QString & name )
 {
-  QgsDebugMsg( "new name is '" + name + "'" );
+  QgsDebugMsg( "new original name: '" + name + "'" );
   QString newName = capitaliseLayerName( name );
-  if ( newName == mLayerName ) return;
+  QgsDebugMsg( "new display name: '" + name + "'" );
+  if ( name == mLayerOrigName && newName == mLayerName ) return;
+  mLayerOrigName = name; // store the new original name
   mLayerName = newName;
   emit layerNameChanged();
 }
@@ -432,7 +431,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // layer name
   QDomElement layerName = document.createElement( "layername" );
-  QDomText layerNameText = document.createTextNode( name() );
+  QDomText layerNameText = document.createTextNode( originalName() );
   layerName.appendChild( layerNameText );
 
   // layer title
@@ -608,12 +607,12 @@ void QgsMapLayer::setTransparency( unsigned int theInt )
   mTransparencyLevel = theInt;
 }
 
-QString QgsMapLayer::capitaliseLayerName( const QString name )
+QString QgsMapLayer::capitaliseLayerName( const QString& name )
 {
   // Capitalise the first letter of the layer name if requested
   QSettings settings;
   bool capitaliseLayerName =
-    settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool();
+    settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool();
 
   QString layerName( name );
 

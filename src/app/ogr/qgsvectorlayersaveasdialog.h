@@ -41,6 +41,12 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     long crs() const;
     bool skipAttributeCreation() const;
     bool addToCanvas() const;
+    /**Returns type of symbology export.
+        0: No symbology
+        1: Feature symbology
+        2: Symbol level symbology*/
+    int symbologyExport() const;
+    double scaleDenominator() const;
 
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
@@ -48,6 +54,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void on_browseFilename_clicked();
     void on_browseCRS_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
     void accept();
 
   private:

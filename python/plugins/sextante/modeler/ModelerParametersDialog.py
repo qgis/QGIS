@@ -540,7 +540,6 @@ class ModelerParametersDialog(QtGui.QDialog):
                     if value is not None:
                         widget = self.valueItems[out.name].setText(unicode(value))
 
-            #TODO
 
 
     def setParamValues(self):

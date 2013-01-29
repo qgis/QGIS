@@ -106,7 +106,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
 
   if ( vlayer->selectedFeatureCount() == 0 )
   {
-    vlayer->select( QgsAttributeList(), selectRect, true );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
     //find the closest feature
     QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
@@ -119,7 +119,7 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
 
     QgsFeature cf;
     QgsFeature f;
-    while ( vlayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       if ( f.geometry() )
       {
@@ -215,7 +215,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
   foreach ( QgsFeatureId id, mRotatedFeatures )
   {
     QgsFeature feat;
-    vlayer->featureAtId( id, feat );
+    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
     QgsGeometry* geom = feat.geometry();
     i = start;
 

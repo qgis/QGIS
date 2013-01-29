@@ -510,11 +510,10 @@ void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 void QgsCategorizedSymbolRendererV2Widget::populateColumns()
 {
   cboCategorizedColumn->clear();
-  const QgsFieldMap& flds = mLayer->pendingFields();
-  QgsFieldMap::ConstIterator it = flds.begin();
-  for ( ; it != flds.end(); ++it )
+  const QgsFields& flds = mLayer->pendingFields();
+  for ( int idx = 0; idx < flds.count(); ++idx )
   {
-    cboCategorizedColumn->addItem( it->name() );
+    cboCategorizedColumn->addItem( flds[idx].name() );
   }
 }
 

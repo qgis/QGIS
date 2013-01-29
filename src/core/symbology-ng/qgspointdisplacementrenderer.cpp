@@ -364,8 +364,8 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
   QgsFeature f;
   QList<QgsFeatureId> intersectList;
 
-  vlayer->select( attList, viewExtent, true, false );
-  while ( vlayer->nextFeature( f ) )
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( viewExtent ).setSubsetOfAttributes( attList ) );
+  while ( fit.nextFeature( f ) )
   {
     intersectList.clear();
 
@@ -399,7 +399,7 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
         {
           QMap<QgsFeatureId, QgsFeature> newMap;
           QgsFeature existingFeature;
-          vlayer->featureAtId( existingEntry, existingFeature );
+          vlayer->getFeatures( QgsFeatureRequest().setFilterFid( existingEntry ) ).nextFeature( existingFeature );
           newMap.insert( existingEntry, existingFeature );
           mDisplacementIds.insert( existingEntry );
           newMap.insert( f.id(), f );
@@ -409,8 +409,6 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
       }
     }
   }
-  //refresh the selection because the vector layer is going to step through all features now
-  vlayer->select( attList, viewExtent, true, false );
 }
 
 QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p ) const
@@ -458,14 +456,10 @@ void QgsPointDisplacementRenderer::setDisplacementGroups( const QList< QMap<QgsF
 QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
 {
   QString attribute;
-  QgsAttributeMap attMap = f.attributeMap();
-  if ( attMap.size() > 0 )
+  const QgsAttributes& attrs = f.attributes();
+  if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
-    QgsAttributeMap::const_iterator valIt = attMap.find( mLabelIndex );
-    if ( valIt != attMap.constEnd() )
-    {
-      attribute = valIt->toString();
-    }
+    attribute = attrs[mLabelIndex].toString();
   }
   return attribute;
 }

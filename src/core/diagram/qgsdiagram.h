@@ -34,12 +34,12 @@ class CORE_EXPORT QgsDiagram
   public:
     virtual ~QgsDiagram() {}
     /**Draws the diagram at the given position (in pixel coordinates)*/
-    virtual void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
+    virtual void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
     virtual QString diagramName() const = 0;
     /**Returns the size in map units the diagram will use to render.*/
-    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
+    virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
     /**Returns the size in map units the diagram will use to render. Interpolate size*/
-    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
+    virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
   protected:
     /** Changes the pen width to match the current settings and rendering context

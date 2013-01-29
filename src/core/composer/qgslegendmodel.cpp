@@ -202,15 +202,15 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLaye
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
   {
-    QgsFieldMap layerFields = vlayer->pendingFields();
+    const QgsFields& layerFields = vlayer->pendingFields();
     QgsAttributeList attributes = vectorRenderer->classificationAttributes();
     QgsAttributeList::const_iterator att_it = attributes.constBegin();
     for ( ; att_it != attributes.constEnd(); ++att_it )
     {
-      QgsFieldMap::const_iterator fieldIt = layerFields.find( *att_it );
-      if ( fieldIt != layerFields.constEnd() )
+      int idx = *att_it;
+      if ( idx >= 0 && idx < layerFields.count() )
       {
-        QString attributeName = vlayer->attributeDisplayName( fieldIt.key() );
+        QString attributeName = vlayer->attributeDisplayName( idx );
         QStandardItem* attributeItem = new QStandardItem( attributeName );
         attributeItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
         attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );

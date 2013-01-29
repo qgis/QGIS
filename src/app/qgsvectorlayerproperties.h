@@ -89,6 +89,11 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /** Get metadata about the layer in nice formatted html */
     QString metadata();
 
+    /** Slot to update layer display name as original is edited
+     * @note added in QGIS 1.9
+     */
+    void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
+
     /** Set transparency based on slider position */
     void sliderTransparency_valueChanged( int theValue );
 

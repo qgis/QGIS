@@ -186,6 +186,8 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
+    QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
+    mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsWFSData::featureMember );
   }
   else if ( localName == mTypeName )
@@ -277,7 +279,8 @@ void QgsWFSData::endElement( const XML_Char* el )
           var = QVariant( mStringCash );
           break;
       }
-      mCurrentFeature->addAttribute( att_it.value().first, QVariant( mStringCash ) );
+
+      mCurrentFeature->setAttribute( att_it.value().first, QVariant( mStringCash ) );
     }
   }
   else if ( localName == mGeometryAttribute )
@@ -302,20 +305,6 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
-    //MH090531: Check if all feature attributes are initialised, sometimes attribute values are missing.
-    //We fill the not initialized ones with empty strings, otherwise the feature cannot be exported to shp later
-    QgsAttributeMap currentFeatureAttributes = mCurrentFeature->attributeMap();
-    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constBegin();
-    for ( ; att_it != mThematicAttributes.constEnd(); ++att_it )
-    {
-      int attIndex = att_it.value().first;
-      QgsAttributeMap::const_iterator findIt = currentFeatureAttributes.find( attIndex );
-      if ( findIt == currentFeatureAttributes.constEnd() )
-      {
-        mCurrentFeature->addAttribute( attIndex, QVariant( "" ) );
-      }
-    }
-
 
     if ( mCurrentWKBSize > 0 )
     {

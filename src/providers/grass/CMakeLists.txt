@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES(
 #
 
 QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS qgsgrassprovider.h)
-ADD_LIBRARY(qgisgrass SHARED qgsgrass.cpp qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
+ADD_LIBRARY(qgisgrass SHARED qgsgrass.cpp qgsgrassfeatureiterator.cpp qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
 
 SET_TARGET_PROPERTIES(qgisgrass PROPERTIES
   CLEAN_DIRECT_OUTPUT 1

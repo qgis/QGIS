@@ -299,7 +299,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
 void QgsFieldsProperties::loadRows()
 {
   disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
-  const QgsFieldMap &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->pendingFields();
 
   mAttributesList->clear();
 
@@ -324,9 +324,8 @@ void QgsFieldsProperties::loadRows()
   mAttributesList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mAttributesList->verticalHeader()->hide();
 
-  int row = 0;
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
-    setRow( row, it.key(), it.value() );
+  for ( int i = 0; i < fields.count(); ++i )
+    setRow( i, i, fields[i] );
 
   mAttributesList->resizeColumnsToContents();
   connect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
@@ -534,7 +533,7 @@ void QgsFieldsProperties::attributeTypeDialog()
 
 void QgsFieldsProperties::attributeAdded( int idx )
 {
-  const QgsFieldMap &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->pendingFields();
   int row = mAttributesList->rowCount();
   mAttributesList->insertRow( row );
   setRow( row, idx, fields[idx] );
@@ -679,9 +678,9 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   {
     int idx = mAttributesList->item( row, attrIdCol )->text().toInt();
 
-    const QgsFieldMap &fields = mLayer->pendingFields();
+    const QgsFields &fields = mLayer->pendingFields();
 
-    if ( !fields.contains( idx ) )
+    if ( idx >= fields.count() )
     {
       return; // index must be wrong
     }

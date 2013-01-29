@@ -85,6 +85,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
 
+    // setup creation option widget
     mCreateOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == "gdal" )
     {
@@ -97,7 +98,9 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   // Only do pyramids if dealing directly with GDAL.
   if ( mDataProvider->capabilities() & QgsRasterDataProvider::BuildPyramids )
   {
-    mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
+    // setup pyramids option widget
+    // mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
+    mPyramidsOptionsWidget->createOptionsWidget()->setRasterLayer( mRasterLayer );
 
     // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
     // if ( ! mDataProvider->hasPyramids() )
@@ -732,12 +735,13 @@ void QgsRasterLayerSaveAsDialog::on_mPyramidsGroupBox_toggled( bool toggled )
 
 void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
 {
-  // if selection != "Build pyramids", get pyramids from actual layer
   QString text;
 
   if ( mPyramidsGroupBox->isChecked() )
   {
     QList<QgsRasterPyramid> myPyramidList;
+    // if use existing, get pyramids from actual layer
+    // but that's not available yet
     if ( mPyramidsUseExistingCheckBox->isChecked() )
     {
       myPyramidList = mDataProvider->buildPyramidList();
@@ -752,7 +756,7 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
     {
-      if ( myRasterPyramidIterator->exists )
+      if ( ! mPyramidsUseExistingCheckBox->isChecked() ||  myRasterPyramidIterator->exists )
       {
         text += QString::number( myRasterPyramidIterator->xDim ) + QString( "x" ) +
                 QString::number( myRasterPyramidIterator->yDim ) + " ";
@@ -809,7 +813,7 @@ QList<QgsRasterNuller::NoData> QgsRasterLayerSaveAsDialog::noData() const
   return noDataList;
 }
 
-QList<int> QgsRasterLayerSaveAsDialog::overviewList() const
+QList<int> QgsRasterLayerSaveAsDialog::pyramidsList() const
 {
   return mPyramidsGroupBox->isChecked() ? mPyramidsOptionsWidget->overviewList() : QList<int>();
 }
@@ -829,6 +833,12 @@ bool QgsRasterLayerSaveAsDialog::validate() const
   if ( mCreateOptionsGroupBox->isChecked() )
   {
     QString message = mCreateOptionsWidget->validateOptions( true, false );
+    if ( !message.isNull() )
+      return false;
+  }
+  if ( mPyramidsGroupBox->isChecked() )
+  {
+    QString message = mPyramidsOptionsWidget->createOptionsWidget()->validateOptions( true, false );
     if ( !message.isNull() )
       return false;
   }

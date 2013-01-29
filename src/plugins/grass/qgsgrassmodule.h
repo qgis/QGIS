@@ -31,6 +31,7 @@ class QgsGrassModuleItem;
 class QgsGrassModuleOptions;
 
 class QgisInterface;
+class QgsFields;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -640,7 +641,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     virtual QStringList options();
 
     // ! Return vector of attribute fields of current vector
-    std::vector<QgsField> currentFields();
+    QgsFields currentFields();
 
     //! Returns pointer to currently selected layer or null
     QgsMapLayer * currentLayer();
@@ -713,7 +714,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     QList<int> mBands;
 
     //! Attribute fields of layers in the combobox
-    std::vector< std::vector<QgsField> > mVectorFields;
+    std::vector< QgsFields > mVectorFields;
 
     //! The imput map will be updated -> must be from current mapset
     bool mUpdate;

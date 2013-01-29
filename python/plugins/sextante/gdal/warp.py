@@ -57,7 +57,7 @@ class warp(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         srs = self.getParameterValue(warp.DEST_SRS)
-        self.crs = QgsCoordinateReferenceSystem(int(srs))
+        self.crs = QgsCoordinateReferenceSystem(srs)
         commands = ["gdalwarp"]
         commands.append("-s_srs")
         commands.append(str(self.getParameterValue(warp.SOURCE_SRS)))

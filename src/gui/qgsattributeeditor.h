@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
      * @param createGroupBox If the element is a container, should a GroupBox be created to hold the children?
      *
      */
-    static QWidget *createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeMap &attrs, QMap<int, QWidget*> &proxyWidgets, bool createGroupBox );
+    static QWidget *createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributes &attrs, QMap<int, QWidget*> &proxyWidgets, bool createGroupBox );
     static bool retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value );
     static bool setValue( QWidget *widget, QgsVectorLayer *vl, int idx, const QVariant &value );
 

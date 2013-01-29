@@ -130,7 +130,7 @@ class QgsClipboard
     /*
      * source fields
      */
-    const QgsFieldMap &fields() { return mFeatureFields; }
+    const QgsFields &fields() { return mFeatureFields; }
 
   private:
 
@@ -139,7 +139,7 @@ class QgsClipboard
         involves a deep copy anyway.
      */
     QgsFeatureList mFeatureClipboard;
-    QgsFieldMap mFeatureFields;
+    QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
 };
 

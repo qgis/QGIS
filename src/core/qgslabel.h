@@ -42,6 +42,7 @@ class QgsLabelAttributes;
 typedef QList<int> QgsAttributeList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
+class QgsFields;
 
 /** \ingroup core
   * A class to render labels.
@@ -51,7 +52,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 class CORE_EXPORT QgsLabel
 {
   public:
-    QgsLabel( const QgsFieldMap & fields );
+    QgsLabel( const QgsFields & fields );
 
     ~QgsLabel();
 
@@ -111,10 +112,10 @@ class CORE_EXPORT QgsLabel
     void addRequiredFields( QgsAttributeList& fields ) const;
 
     //! Set available fields
-    void setFields( const QgsFieldMap & fields );
+    void setFields( const QgsFields & fields );
 
     //! Available vector fields
-    QgsFieldMap & fields();
+    QgsFields & fields();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.
@@ -173,7 +174,7 @@ class CORE_EXPORT QgsLabel
     QgsLabelAttributes *mLabelAttributes;
 
     //! Available layer fields
-    QgsFieldMap mField;
+    QgsFields mFields;
 
     //! Label fields
     std::vector<QString> mLabelField;

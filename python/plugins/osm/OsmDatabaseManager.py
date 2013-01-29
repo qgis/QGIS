@@ -323,7 +323,6 @@ class OsmDatabaseManager:
         lay=self.pointLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             return (feat,'Point')
@@ -332,7 +331,6 @@ class OsmDatabaseManager:
         lay=self.lineLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             # line vertices
@@ -341,7 +339,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"lineId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 c.close()
@@ -354,7 +352,6 @@ class OsmDatabaseManager:
         lay=self.polygonLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             # polygon vertices
@@ -363,7 +360,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"polygonId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 c.close()
@@ -416,7 +413,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"lineId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 featMap[feat2.id()]=feat2
@@ -439,7 +436,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"polygonId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 featMap[feat2.id()]=feat2
@@ -471,7 +468,7 @@ class OsmDatabaseManager:
         nodeId=self.__getFreeFeatureId()
 
         affected=set()
-        feat=QgsFeature(nodeId,"Point")
+        feat=QgsFeature(nodeId)
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(mapPoint.x(),mapPoint.y())))
 
         # should snapping be done? if not, everything's easy
@@ -612,7 +609,7 @@ class OsmDatabaseManager:
 
         # finishing...
         c.close()
-        feat=QgsFeature(lineId,"Line")
+        feat=QgsFeature(lineId)
         feat.setGeometry(QgsGeometry.fromPolyline(pline))
 
         if doCommit:
@@ -691,7 +688,7 @@ class OsmDatabaseManager:
 
         # finish
         c.close()
-        feat=QgsFeature(polygonId,"Polygon")
+        feat=QgsFeature(polygonId)
         polygon=[]
         polygon.append(pline)
         feat.setGeometry(QgsGeometry.fromPolygon(polygon))

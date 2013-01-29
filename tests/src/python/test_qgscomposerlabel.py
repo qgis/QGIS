@@ -72,15 +72,15 @@ class TestQgsComposerLabel(unittest.TestCase):
     def feature_evaluation_test( self, mComposition, mLabel, mVectorLayer ):
         provider = mVectorLayer.dataProvider()
 
-        provider.select( provider.attributeIndexes() )
+        fi = provider.getFeatures( QgsFeatureRequest() )
         feat = QgsFeature()
 
-        provider.nextFeature( feat )
+        fi.nextFeature( feat )
         mLabel.setExpressionContext( feat, mVectorLayer )
         mLabel.setText( "[%\"NAME_1\"||'_ok'%]")
         assert mLabel.displayText() == "Basse-Normandie_ok"
 
-        provider.nextFeature( feat )
+        fi.nextFeature( feat )
         mLabel.setExpressionContext( feat, mVectorLayer )
         assert mLabel.displayText() == "Bretagne_ok"
 

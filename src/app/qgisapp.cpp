@@ -578,7 +578,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QString caption = tr( "Quantum GIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
-  QgsMessageLog::logMessage( tr( "QGIS starting..." ) );
+  QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );
 
   // set QGIS specific srs validation
   connect( this, SIGNAL( customSrsValidation( QgsCoordinateReferenceSystem& ) ),
@@ -660,9 +660,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
-  QgsMessageLog::logMessage( QgsApplication::showSettings() );
+  QgsMessageLog::logMessage( QgsApplication::showSettings(), QString::null, QgsMessageLog::INFO );
 
-  QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
+  QgsMessageLog::logMessage( tr( "QGIS Ready!" ), QString::null, QgsMessageLog::INFO );
 
   mMapTipsVisible = false;
   mTrustedMacros = false;
@@ -4180,9 +4180,10 @@ void QgisApp::saveAsRasterFile()
     fileWriter.setCreateOptions( d.createOptions() );
 
     fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
-    fileWriter.setPyramidsList( d.overviewList() );
-    fileWriter.setPyramidsResampling( d.pyramidsResampling() );
+    fileWriter.setPyramidsList( d.pyramidsList() );
+    fileWriter.setPyramidsResampling( d.pyramidsResamplingMethod() );
     fileWriter.setPyramidsFormat( d.pyramidsFormat() );
+    fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
 
     QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     if ( err != QgsRasterFileWriter::NoError )
@@ -4267,7 +4268,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation(),
-              &newFilename );
+              &newFilename,
+              ( QgsVectorFileWriter::SymbologyExport )( dialog->symbologyExport() ),
+              dialog->scaleDenominator() );
 
     QApplication::restoreOverrideCursor();
 
@@ -4692,13 +4695,13 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   vl->beginEditCommand( tr( "Merged feature attributes" ) );
 
-  const QgsAttributeMap &merged = d.mergedAttributesMap();
+  const QgsAttributes &merged = d.mergedAttributes();
 
   foreach ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
-    for ( QgsAttributeMap::const_iterator it = merged.begin(); it != merged.end(); it++ )
+    for ( int i = 0; i < merged.count(); ++i )
     {
-      vl->changeAttributeValue( fid, it.key(), it.value() );
+      vl->changeAttributeValue( fid, i, merged.at( i ) );
     }
   }
 
@@ -4812,7 +4815,7 @@ void QgisApp::mergeSelectedFeatures()
   //create new feature
   QgsFeature newFeature;
   newFeature.setGeometry( unionGeom );
-  newFeature.setAttributeMap( d.mergedAttributesMap() );
+  newFeature.setAttributes( d.mergedAttributes() );
 
   QgsFeatureList::const_iterator feature_it = featureListAfter.constBegin();
   for ( ; feature_it != featureListAfter.constEnd(); ++feature_it )
@@ -4993,35 +4996,36 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 
   QHash<int, int> remap;
-  const QgsFieldMap &fields = clipboard()->fields();
+  const QgsFields &fields = clipboard()->fields();
   QgsAttributeList pkAttrList = pasteVectorLayer->pendingPkAttributesList();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( it->name() );
+    int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );
     if ( dst < 0 || pkAttrList.contains( dst ) )
     {
       // skip primary key attributes
       continue;
     }
-    remap.insert( it.key(), dst );
+    remap.insert( idx, dst );
   }
 
+  int dstAttrCount = pasteVectorLayer->pendingFields().count();
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &f = features[i];
-    const QgsAttributeMap &srcMap = f.attributeMap();
-    QgsAttributeMap dstMap;
+    const QgsAttributes &srcAttr = f.attributes();
+    QgsAttributes dstAttr( dstAttrCount );
 
-    foreach ( int src, srcMap.keys() )
+    for ( int src = 0; src < srcAttr.count(); ++src )
     {
       int dst = remap.value( src, -1 );
       if ( dst < 0 )
         continue;
 
-      dstMap.insert( dst, srcMap[ src ] );
+      dstAttr[ dst ] = srcAttr[ src ];
     }
 
-    f.setAttributeMap( dstMap );
+    f.setAttributes( dstAttr );
   }
 
   pasteVectorLayer->addFeatures( features );
@@ -5937,7 +5941,7 @@ void QgisApp::loadPythonSupport()
     // init python runner
     QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
-    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ) );
+    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString::null, QgsMessageLog::INFO );
   }
   else
   {
@@ -7116,7 +7120,7 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
       QgsVectorDataProvider* vProvider = vlayer->dataProvider();
       if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
-        connect( vlayer, SIGNAL( layerModified( bool ) ), this, SLOT( updateLayerModifiedActions() ) );
+        connect( vlayer, SIGNAL( layerModified() ), this, SLOT( updateLayerModifiedActions() ) );
         connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
         connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
       }

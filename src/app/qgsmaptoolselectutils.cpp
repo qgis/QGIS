@@ -131,14 +131,14 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
-  vlayer->select( QgsAttributeList(), selectGeomTrans.boundingBox(), true, true );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
   QgsFeatureId closestFeatureId = 0;
   bool foundSingleFeature = false;
   double closestFeatureDist = std::numeric_limits<double>::max();
-  while ( vlayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QgsGeometry* g = f.geometry();
     if ( doContains )

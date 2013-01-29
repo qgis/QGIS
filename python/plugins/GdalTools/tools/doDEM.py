@@ -60,15 +60,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.configSelector.setFilename(colorConfigFile)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
+      self.creationOptionsWidget.setFormat(self.outputFormat)
 
       self.setParamsStatus(
         [
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
-          (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"),
+          (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, 1800),
           (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck),
-          (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"),
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox),
+          (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, 1800),
+          (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
+          (self.creationOptionsGroupBox, SIGNAL("toggled(bool)")),
           (self.modeCombo, SIGNAL("currentIndexChanged(int)")),
           ([self.hillshadeZFactorSpin, self.hillshadeScaleSpin, self.hillshadeAltitudeSpin, self.hillshadeAzimuthSpin], SIGNAL("valueChanged(double)")),
           (self.slopeScaleSpin, SIGNAL("valueChanged(double)")),
@@ -102,6 +104,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.inSelector.setFilename(inputFile)
+      self.getArguments()
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -112,6 +115,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
       self.outSelector.setFilename(outputFile)
+      self.creationOptionsWidget.setFormat(self.outputFormat)
 
   def fillColorConfigFileEdit(self):
       configFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the color configuration file" ))
@@ -158,9 +162,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << "-b" << str(self.bandSpin.value())
       if not outputFn.isEmpty():
         arguments << "-of" << self.outputFormat
-      if self.creationGroupBox.isChecked():
-        for opt in self.creationOptionsTable.options():
+      if self.creationOptionsGroupBox.isChecked():
+        for opt in self.creationOptionsWidget.options():
           arguments << "-co" << opt
+      # set creation options filename/layer for validation
+      if self.inSelector.layer():
+        self.creationOptionsWidget.setRasterLayer(self.inSelector.layer())
+      else:
+        self.creationOptionsWidget.setRasterFileName(self.getInputFileName())
+
       return arguments
 
   def getInputFileName(self):

@@ -30,7 +30,13 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import string
 import re
-import ogr
+
+try:
+  from osgeo import ogr
+  ogrAvailable = True
+except:
+  ogrAvailable = False
+
 from sextante.gdal.OgrAlgorithm import OgrAlgorithm
 
 class OgrInfo(OgrAlgorithm):
@@ -70,6 +76,10 @@ class OgrInfo(OgrAlgorithm):
         bVerbose = True
         bSummaryOnly = True
         self.info = ''
+
+        if not ogrAvailable:
+            self.info = "OGR bindings not installed"
+            return
 
         qDebug("Opening data source '%s'" % pszDataSource)
         poDS = ogr.Open( pszDataSource, False )

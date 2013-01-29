@@ -37,6 +37,8 @@ class QTreeWidgetItem;
 class QgsCoordinateReferenceSystem;
 class QgsMapCanvasLayer;
 
+#include "qgsmaplayer.h"
+
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
 //value: containter with layer ids contained in the group
@@ -50,10 +52,21 @@ struct DrawingOrderInfo
   bool embeddedGroup;
 };
 
+struct LegendLayerAction
+{
+  LegendLayerAction( QAction* a, QString m, QString i, bool all )
+      : action( a ), menu( m ), id( i ), allLayers( all ) {}
+  QAction* action;
+  QString menu;
+  QString id;
+  bool allLayers;
+  QList<QgsMapLayer*> layers;
+};
+
 /**
    \class QgsLegend
    \brief A Legend treeview for QGIS
-   Map legend is a specialised QListView designed to show grooups of map layers,
+   Map legend is a specialised QListView designed to show groups of map layers,
    map layers, and the map layer members, properties and symbols for each layer.
 
    The legend supports simple operations such as displaying an ordered list of
@@ -221,6 +234,9 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
+    /**Returns a layers expanded state*/
+    bool layerIsExpanded( QgsMapLayer * layer );
+
     /**Add group from other project file. Returns a pointer to the new group in case of success or 0 in case of error*/
     QgsLegendGroup* addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
 
@@ -358,6 +374,24 @@ class QgsLegend : public QTreeWidget
 
     /** Create a new group for the selected items **/
     void groupSelectedLayers();
+
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    bool removeLegendLayerAction( QAction* action );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
+    QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
+
+    /** Slot to update styles for legend items, since
+     * QgsLegend::item doesn't work in app stylesheet for individual legend types
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemStyles();
+
+    /** Slot to update symbology for legend items
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemSymbologies();
 
   protected:
 
@@ -545,6 +579,8 @@ class QgsLegend : public QTreeWidget
 
     //! Widget that holds the indicator line //
     QWidget *mInsertionLine;
+
+    QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 
 #ifdef QGISDEBUG
     void showItem( QString msg, QTreeWidgetItem *item );

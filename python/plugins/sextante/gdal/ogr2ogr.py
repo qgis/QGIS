@@ -39,10 +39,12 @@ from string import Template
 import re
 import os
 import tempfile
-import ogr
-import gdal
-import osr
 
+try:
+  from osgeo import gdal, ogr, osr
+  gdalAvailable = True
+except:
+  gdalAvailable = False
 
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
@@ -70,6 +72,10 @@ class Ogr2Ogr(OgrAlgorithm):
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
+
+        if not gdalAvailable:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "GDAL bindings not installed." )
+            return
 
         input = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(input)

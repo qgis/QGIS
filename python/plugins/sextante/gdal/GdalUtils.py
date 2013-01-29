@@ -28,7 +28,12 @@ from PyQt4.QtGui import *
 import subprocess
 from sextante.core.SextanteLog import SextanteLog
 import os
-import gdal
+
+try:
+  from osgeo import gdal
+  gdalAvailable = True
+except:
+  gdalAvailable = False
 
 class GdalUtils():
 
@@ -57,6 +62,9 @@ class GdalUtils():
 
     @staticmethod
     def getSupportedRasters():
+        if not gdalAvailable:
+            return {}
+
         '''this has been adapted from GdalTools plugin'''
         if GdalUtils.supportedRasters != None:
             return GdalUtils.supportedRasters
@@ -76,7 +84,7 @@ class GdalUtils():
             if not metadata.has_key(gdal.DCAP_CREATE) or metadata[gdal.DCAP_CREATE] != 'YES':
                 continue
             if metadata.has_key(gdal.DMD_EXTENSION):
-                extensions = metadata[gdal.DMD_EXTENSION].split("/")                                
+                extensions = metadata[gdal.DMD_EXTENSION].split("/")
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
 

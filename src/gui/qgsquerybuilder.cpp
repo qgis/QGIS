@@ -63,10 +63,11 @@ QgsQueryBuilder::~QgsQueryBuilder()
 
 void QgsQueryBuilder::populateFields()
 {
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QStandardItem *myItem = new QStandardItem( it->name() );
-    myItem->setData( it.key() );
+    QStandardItem *myItem = new QStandardItem( fields[idx].name() );
+    myItem->setData( idx );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
   }

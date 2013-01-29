@@ -63,6 +63,8 @@ SET(QGIS_CORE_SRCS
   qgserror.cpp
   qgsexpression.cpp
   qgsfeature.cpp
+  qgsfeatureiterator.cpp
+  qgsfeaturerequest.cpp
   qgsfield.cpp
   qgsgeometry.cpp
   qgsgeometryvalidator.cpp
@@ -109,6 +111,10 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayercache.cpp
+  qgsvectorlayereditbuffer.cpp
+  qgsvectorlayereditutils.cpp
+  qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
@@ -297,6 +303,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsproject.h
   qgsrunprocess.h
   qgsvectorlayer.h
+  qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
   qgswfsdata.h
@@ -369,6 +376,8 @@ SET(QGIS_CORE_HDRS
   qgsexception.h
   qgsexpression.h
   qgsfeature.h
+  qgsfeatureiterator.h
+  qgsfeaturerequest.h
   qgsfield.h
   qgsgeometry.h
   qgshttptransaction.h
@@ -410,7 +419,12 @@ SET(QGIS_CORE_HDRS
   qgsvectordataprovider.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
+  qgsvectorlayercache.h
+  qgsvectorlayereditbuffer.h
+  qgsvectorlayereditutils.h
+  qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerundocommand.h
   qgsvectoroverlay.h
   qgswfsdata.h
   qgstolerance.h

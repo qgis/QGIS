@@ -18,6 +18,9 @@
 
 class QgsFeature;
 class QgsField;
+
+class QgsGrassFeatureIterator;
+
 #include <QDateTime>
 
 #include "qgsvectordataprovider.h"
@@ -72,7 +75,7 @@ struct GLAYER
   int     nColumns;              // number of columns in database table, if 0, attributes are not available
   // and category (column name 'cat') is used instead
   int     keyColumn;             // number of key column
-  QgsFieldMap fields;  // description of layer fields
+  QgsFields fields;              // description of layer fields
   int     nAttributes;           // number of attributes read to the memory (may be < nRecords)
   GATT    *attributes;           // vector of attributes
   double( *minmax )[2];          // minimum and maximum values of attributes
@@ -124,28 +127,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const;
 
-
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     *
-     * @note This function works only until first edit operation! (category index used)
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /**
      * Get the feature type as defined in WkbType (qgis.h).
@@ -159,11 +141,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     long featureCount() const;
 
-    /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const;
-
 
     /** Return the extent for this data layer
      */
@@ -172,7 +149,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /**
      * Get the field information for the layer
      */
-    const QgsFieldMap & fields() const;
+    const QgsFields & fields() const;
 
     // ! Key (category) field index
     int keyField();
@@ -537,27 +514,11 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     struct  Map_info *mMap; // vector header pointer
     int     mMapVersion;    // The version of the map for which the instance was last time updated
 
-    struct line_pnts *mPoints; // points structure
-    struct line_cats *mCats;   // cats structure
-    struct ilist     *mList;
     int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
     int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
-    int    mNextCidx;          // !UPDATE! Next index in cidxFieldIndex to be read, used to find nextFeature
-
-    // selection: array of size nlines or nareas + 1, set to 1 - selected or 0 - not selected, 2 - read
-    // Code 2 means that the line was already read in this cycle, all 2 must be reset to 1
-    // if getFirstFeature() or select() is calles.
-    // Distinction between 1 and 2 is used if attribute table exists, in that case attributes are
-    // read from the table and geometry is append and selection set to 2.
-    // In the end the selection array is scanned for 1 (attributes missing), and the geometry
-    // is returned without attributes
-    char    *mSelection;           // !UPDATE!
-    int     mSelectionSize;        // !UPDATE! Size of selection array
 
     bool    mValid;                // !UPDATE!
     long    mNumberFeatures;       // !UPDATE!
-
-    void resetSelection( bool sel ); // reset selection
 
     // Reopen map after edit or freeze
     bool reopenMap();
@@ -643,15 +604,6 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static bool attributesOutdated( int mapId );
 
-    /*! Allocate sellection array for given map id. The array is large enough for lines or areas
-     *  (bigger from num lines and num areas)
-     *  Possible old selection array is not released.
-     *  @param map pointer to map structure
-     *  @param selection pointer to pointer to char array
-     *  @return selection size
-     */
-    static int allocateSelection( struct Map_info *map, char **selection );
-
     /*! Get layer map.
      *  @param layerId
      *  @return pointer to Map_info structure
@@ -681,9 +633,15 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     void setFeatureAttributes( int layerId, int cat, QgsFeature *feature, const QgsAttributeList & attlist );
 
+    /** check if provider is outdated and update if necessary */
+    void ensureUpdated();
+
     /* Static arrays of opened layers and vectors */
     static  std::vector<GLAYER> mLayers; // Map + field/attributes
     static  std::vector<GMAP> mMaps;     // Map
+
+    friend class QgsGrassFeatureIterator;
+    QgsGrassFeatureIterator* mActiveIterator;
 };
 
 #endif // QGSGRASSPROVIDER_H

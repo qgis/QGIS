@@ -198,11 +198,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const;
 
-    /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
     /** update the extent, feature count, wkb type and srid for this layer */
     void UpdateStatistics( bool estimate );
 

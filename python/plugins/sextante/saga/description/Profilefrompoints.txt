@@ -1,4 +1,4 @@
-Profile from points
+Profile from points table|Profile from points
 ta_profiles
 ParameterRaster|GRID|Grid|False
 ParameterTable|TABLE|Input|False

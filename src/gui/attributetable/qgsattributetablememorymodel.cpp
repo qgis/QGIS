@@ -47,7 +47,7 @@ void QgsAttributeTableMemoryModel::loadLayer()
     rect = mCurrentExtent;
   }
 
-  mLayer->select( mLayer->pendingAllAttributesList(), rect, false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ) );
 
   if ( behaviour != 1 )
     mFeatureMap.reserve( mLayer->pendingFeatureCount() + 50 );
@@ -60,7 +60,7 @@ void QgsAttributeTableMemoryModel::loadLayer()
   t.start();
 
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
       continue;
@@ -132,7 +132,7 @@ void QgsAttributeTableMemoryModel::layerDeleted()
 void QgsAttributeTableMemoryModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsg( "entered." );
-  mFeatureMap[fid].changeAttribute( idx, value );
+  mFeatureMap[fid].setAttribute( idx, value );
   QgsAttributeTableModel::attributeValueChanged( fid, idx, value );
 }
 

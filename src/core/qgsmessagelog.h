@@ -37,16 +37,23 @@ class CORE_EXPORT QgsMessageLog : public QObject
   public:
     static QgsMessageLog *instance();
 
+    enum MessageLevel
+    {
+      INFO = 0,
+      WARNING = 1,
+      CRITICAL = 2
+    };
+
     //! add a message to the instance (and create it if necessary)
-    static void logMessage( QString message, QString tag = QString::null, int level = 0 );
+    static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING );
 
   signals:
-    void messageReceived( QString message, QString tag, int level );
+    void messageReceived( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
   private:
     QgsMessageLog();
 
-    void emitMessage( QString message, QString tag, int level );
+    void emitMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
     static QgsMessageLog *sInstance;
 };
@@ -66,7 +73,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     QgsMessageLogConsole();
 
   public slots:
-    void logMessage( QString message, QString tag, int level );
+    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 };
 
 #endif

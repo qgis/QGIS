@@ -82,7 +82,7 @@ class QgsExpressionBuilderWidget : QWidget
       */
     void loadFieldNames();
 
-    void loadFieldNames( QMap<int, QgsField> fields );
+    void loadFieldNames( const QgsFields& fields );
 
     /** Sets geometry calculator used in distance/area calculations.
       * @note added in version 2.0

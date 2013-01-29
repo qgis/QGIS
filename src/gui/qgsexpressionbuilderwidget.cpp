@@ -165,19 +165,19 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   if ( !mLayer )
     return;
 
-  const QgsFieldMap fieldMap = mLayer->pendingFields();
-  loadFieldNames( fieldMap );
+  loadFieldNames( mLayer->pendingFields() );
 }
 
-void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
+void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 {
   if ( fields.isEmpty() )
     return;
 
   QStringList fieldNames;
-  foreach ( QgsField field, fields )
+  //foreach ( const QgsField& field, fields )
+  for ( int i = 0; i < fields.count(); ++i )
   {
-    QString fieldName = field.name();
+    QString fieldName = fields[i].name();
     fieldNames << fieldName;
     registerItem( tr( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }
@@ -282,8 +282,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( !mFeature.isValid() )
     {
-      mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() );
-      mLayer->nextFeature( mFeature );
+      mLayer->getFeatures( QgsFeatureRequest().setFlags(( mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ).nextFeature( mFeature );
     }
 
     if ( mFeature.isValid() )

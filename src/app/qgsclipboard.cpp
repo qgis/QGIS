@@ -67,9 +67,9 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     textFields += "wkt_geom";
   }
 
-  for ( QgsFieldMap::const_iterator fit = mFeatureFields.begin(); fit != mFeatureFields.end(); ++fit )
+  for ( int idx = 0; idx < mFeatureFields.count(); ++idx )
   {
-    textFields += fit->name();
+    textFields += mFeatureFields[idx].name();
   }
   textLines += textFields.join( "\t" );
   textFields.clear();
@@ -77,7 +77,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   // then the field contents
   for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
   {
-    QgsAttributeMap attributes = it->attributeMap();
+    const QgsAttributes& attributes = it->attributes();
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
     if ( copyWKT )
@@ -91,10 +91,10 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
     }
 
     // QgsDebugMsg("about to traverse fields.");
-    for ( QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2 )
+    for ( int idx = 0; idx < attributes.count(); ++idx )
     {
       // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
-      textFields += it2->toString();
+      textFields += attributes[idx].toString();
     }
 
     textLines += textFields.join( "\t" );

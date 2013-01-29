@@ -717,9 +717,10 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
     myPyramidList[myCounterInt].build = true;
   }
 
-  QgsDebugMsg( QString( "building pyramids : %1 pyramids, %2 resampling, %3 format" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ) );
+  QgsDebugMsg( QString( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ).arg( mPyramidsConfigOptions.count() ) );
   // QApplication::setOverrideCursor( Qt::WaitCursor );
-  QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling, mPyramidsFormat );
+  QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling,
+                mPyramidsFormat, mPyramidsConfigOptions );
   // QApplication::restoreOverrideCursor();
 
   // TODO put this in provider or elsewhere

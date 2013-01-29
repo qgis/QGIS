@@ -2,6 +2,6 @@ r.water.outlet
 r.water.outlet - Watershed basin creation program.
 Raster (r.*)
 ParameterRaster|drainage|Name of input raster map|False
-ParameterNumber|easting|The map E grid coordinates|None|None|0
-ParameterNumber|northing|The map N grid coordinates|None|None|0
-OutputRaster|basin|Name of raster map to contain results
+ParameterNumber|easting|Easting coordinate of outlet point|None|None|0
+ParameterNumber|northing|Northing coordinate of outlet point|None|None|0
+OutputRaster|basin|Output basin layer

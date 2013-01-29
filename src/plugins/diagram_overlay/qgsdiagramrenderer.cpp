@@ -77,9 +77,7 @@ int QgsDiagramRenderer::getDiagramDimensions( int& width, int& height, const Qgs
 int QgsDiagramRenderer::classificationValue( const QgsFeature& f, QVariant& value ) const
 {
   //find out attribute value of the feature
-  QgsAttributeMap featureAttributes = f.attributeMap();
-
-  QgsAttributeMap::const_iterator iter;
+  const QgsAttributes& featureAttributes = f.attributes();
 
   if ( value.type() == QVariant::String ) //string type
   {
@@ -89,12 +87,12 @@ int QgsDiagramRenderer::classificationValue( const QgsFeature& f, QVariant& valu
       return 1;
     }
 
-    iter = featureAttributes.find( mClassificationAttributes.first() );
-    if ( iter == featureAttributes.constEnd() )
+    int idx = mClassificationAttributes.first();
+    if ( idx < 0 || idx >= featureAttributes.count() )
     {
       return 2;
     }
-    value = iter.value();
+    value = featureAttributes[idx];
   }
   else //numeric type
   {
@@ -104,12 +102,12 @@ int QgsDiagramRenderer::classificationValue( const QgsFeature& f, QVariant& valu
     QList<int>::const_iterator list_it = mClassificationAttributes.constBegin();
     for ( ; list_it != mClassificationAttributes.constEnd(); ++list_it )
     {
-      QgsAttributeMap::const_iterator iter = featureAttributes.find( *list_it );
-      if ( iter == featureAttributes.constEnd() )
+      int idx = *list_it;
+      if ( idx < 0 || idx >= featureAttributes.count() )
       {
         continue;
       }
-      currentValue = iter.value().toDouble();
+      currentValue = featureAttributes[idx].toDouble();
       totalValue += currentValue;
     }
     value = QVariant( totalValue );

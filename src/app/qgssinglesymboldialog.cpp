@@ -149,25 +149,23 @@ void QgsSingleSymbolDialog::refreshMarkers()
   QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if ( provider )
   {
-    const QgsFieldMap & fields = provider->fields();
-    QString str;
+    const QgsFields & fields = provider->fields();
 
     mRotationClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
     mScaleClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
     mSymbolComboBox->addItem( DO_NOT_USE_STR, -1 );
-    for ( QgsFieldMap::const_iterator it = fields.begin();
-          it != fields.end();
-          ++it )
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      QVariant::Type type = ( *it ).type();
+      QVariant::Type type = fields[idx].type();
+      QString fieldName = fields[idx].name();
       if ( type == QVariant::Int || type == QVariant::Double )
       {
-        mRotationClassificationComboBox->addItem( it->name(), it.key() );
-        mScaleClassificationComboBox->addItem( it->name(), it.key() );
+        mRotationClassificationComboBox->addItem( fieldName, idx );
+        mScaleClassificationComboBox->addItem( fieldName, idx );
       }
       else if ( type == QVariant::String )
       {
-        mSymbolComboBox->addItem( it->name(), it.key() );
+        mSymbolComboBox->addItem( fieldName, idx );
       }
     }
   }

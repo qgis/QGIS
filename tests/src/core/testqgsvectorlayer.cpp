@@ -140,15 +140,14 @@ class TestQgsVectorLayer: public QObject
 
     void QgsVectorLayerNonSpatialIterator()
     {
-      QgsVectorDataProvider * myProvider = mpNonSpatialLayer->dataProvider();
       QgsFeature f;
       QgsAttributeList myList;
       myList << 0 << 1 << 2 << 3;
       int myCount = 0;
-      myProvider->select( myList );
-      while ( myProvider->nextFeature( f ) )
+      QgsFeatureIterator fit = mpNonSpatialLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myList ) );
+      while ( fit.nextFeature( f ) )
       {
-        qDebug( "Getting feature from provider" );
+        qDebug( "Getting non-spatial feature from layer" );
         myCount++;
       }
       QVERIFY( myCount == 3 );

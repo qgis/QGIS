@@ -64,7 +64,7 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
     mFeat = mFeatureMap[ fid ];
     return true;
   }
-  else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
+  else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( mFeat ) )
   {
     QSettings settings;
     int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
@@ -203,22 +203,23 @@ void QgsAttributeTableModel::loadAttributes()
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().constBegin(); it != mLayer->pendingFields().end(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    switch ( mLayer->editType( it.key() ) )
+    switch ( mLayer->editType( idx ) )
     {
       case QgsVectorLayer::Hidden:
         continue;
 
       case QgsVectorLayer::ValueMap:
-        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
+        mValueMaps.insert( idx, &mLayer->valueMap( idx ) );
         break;
 
       default:
         break;
     }
 
-    attributes << it.key();
+    attributes << idx;
   }
 
   if ( columnCount() < attributes.size() )
@@ -333,10 +334,10 @@ void QgsAttributeTableModel::loadLayer()
       }
     }
 
-    mLayer->select( attributeList, rect, false );
+    QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
     QgsFeature f;
-    for ( i = 0; mLayer->nextFeature( f ); ++i )
+    for ( i = 0; fit.nextFeature( f ); ++i )
     {
       if ( !filter || renderer->willRenderFeature( f ) )
       {
@@ -483,15 +484,15 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
   mSortList.clear();
 
   int idx = fieldIdx( column );
-  mLayer->select( QgsAttributeList() << idx, rect, false );
 
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << idx ) );
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
       continue;
 
-    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attributeMap()[idx] );
+    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attribute( idx ) );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -550,7 +551,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( mFeat.id() != rowId )
     return QVariant( "ERROR" );
 
-  const QVariant &val = mFeat.attributeMap()[ fieldId ];
+  const QVariant &val = mFeat.attribute( fieldId );
 
   if ( val.isNull() )
   {
@@ -584,12 +585,12 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 
   if ( mFeatureMap.contains( fid ) )
   {
-    mFeatureMap[ fid ].changeAttribute( idx, value );
+    mFeatureMap[ fid ].setAttribute( idx, value );
   }
 
   if ( mFeat.id() == fid || featureAtId( fid ) )
   {
-    mFeat.changeAttribute( idx, value );
+    mFeat.setAttribute( idx, value );
   }
 
   if ( !mLayer->isModified() )
@@ -654,10 +655,11 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
+  f.initAttributes( mAttributes.size() );
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
+    f.setAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   return f;

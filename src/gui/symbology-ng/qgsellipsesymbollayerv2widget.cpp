@@ -234,12 +234,10 @@ void QgsEllipseSymbolLayerV2Widget::fillDataDefinedComboBoxes()
 
   if ( mVectorLayer )
   {
-    const QgsFieldMap& fm = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fm.constBegin();
-    for ( ; fieldIt != fm.constEnd(); ++fieldIt )
+    const QgsFields& fm = mVectorLayer->pendingFields();
+    for ( int index = 0; index < fm.count(); ++index )
     {
-      QString fieldName = fieldIt.value().name();
-      int index = fieldIt.key();
+      QString fieldName = fm[index].name();
 
       mDDSymbolWidthComboBox->addItem( fieldName, index );
       mDDSymbolHeightComboBox->addItem( fieldName, index );

@@ -349,11 +349,11 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         geomElem.setAttribute( "maxOccurs", "1" );
         sequenceElem.appendChild( geomElem );
 
-        const QgsFieldMap& fields = provider->fields();
-        for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+        const QgsFields& fields = provider->fields();
+        for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
-          QString attributeName = it.value().name();
+          QString attributeName = fields[idx].name();
           //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
@@ -363,16 +363,17 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           //xsd:element
           QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
           geomElem.setAttribute( "name", attributeName );
-          if ( it.value().type() == 2 )
+          QVariant::Type attributeType = fields[idx].type();
+          if ( attributeType == QVariant::Int )
             geomElem.setAttribute( "type", "integer" );
-          else if ( it.value().type() == 6 )
+          else if ( attributeType == QVariant::Double )
             geomElem.setAttribute( "type", "double" );
           else
             geomElem.setAttribute( "type", "string" );
 
           sequenceElem.appendChild( geomElem );
 
-          QString alias = layer->attributeAlias( it.key() );
+          QString alias = layer->attributeAlias( idx );
           if ( !alias.isEmpty() )
           {
             geomElem.setAttribute( "alias", alias );
@@ -625,24 +626,24 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
-    const QgsFieldMap& layerFields = vLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
-    for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
+    const QgsFields& layerFields = vLayer->pendingFields();
+    for ( int idx = 0; idx < layerFields.count(); ++idx )
     {
-      if ( excludedAttributes.contains( fieldIt->name() ) )
+      const QgsField& field = layerFields[idx];
+      if ( excludedAttributes.contains( field.name() ) )
       {
         continue;
       }
       QDomElement attributeElem = doc.createElement( "Attribute" );
-      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( fieldIt.key() ) );
-      attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
+      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
+      attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
 
       //edit type to text
-      QgsVectorLayer::EditType typeEnum = vLayer->editType( fieldIt.key() );
+      QgsVectorLayer::EditType typeEnum = vLayer->editType( idx );
       attributeElem.setAttribute( "editType", editTypeString( typeEnum ) );
-      attributeElem.setAttribute( "comment", fieldIt->comment() );
-      attributeElem.setAttribute( "length", fieldIt->length() );
-      attributeElem.setAttribute( "precision", fieldIt->precision() );
+      attributeElem.setAttribute( "comment", field.comment() );
+      attributeElem.setAttribute( "length", field.length() );
+      attributeElem.setAttribute( "precision", field.precision() );
       attributesElem.appendChild( attributeElem );
     }
     layerElem.appendChild( attributesElem );

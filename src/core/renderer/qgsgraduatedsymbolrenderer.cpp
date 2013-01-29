@@ -145,14 +145,12 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
     if ( theSymbol->scaleClassificationField() >= 0 )
     {
       //first find out the value for the scale classification attribute
-      const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( qAbs( attrs[theSymbol->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( f.attribute( theSymbol->scaleClassificationField() ).toDouble() ) );
       QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
     if ( theSymbol->rotationClassificationField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      rotation = attrs[theSymbol->rotationClassificationField()].toDouble();
+      rotation = f.attribute( theSymbol->rotationClassificationField() ).toDouble();
       QgsDebugMsgLevel( QString( "Feature has rotation factor %1" ).arg( rotation ), 3 );
     }
 
@@ -160,8 +158,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
 
     if ( theSymbol->symbolField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      QString name = attrs[theSymbol->symbolField()].toString();
+      QString name = f.attribute( theSymbol->symbolField() ).toString();
       QgsDebugMsgLevel( QString( "Feature has name %1" ).arg( name ), 3 );
       oldName = theSymbol->pointSymbolName();
       theSymbol->setNamedPointSymbol( name );
@@ -223,8 +220,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
 QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature* f )
 {
   //first find out the value for the classification attribute
-  const QgsAttributeMap& attrs = f->attributeMap();
-  double value = attrs[mClassificationField].toDouble();
+  double value = f->attribute( mClassificationField ).toDouble();
 
   QList<QgsSymbol*>::iterator it;
   //find the first render item which contains the feature
@@ -376,9 +372,10 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   }
 
   QString classificationFieldName;
-  if ( vl.pendingFields().contains( mClassificationField ) )
+  const QgsFields& fields = vl.pendingFields();
+  if ( mClassificationField >= 0 && mClassificationField < fields.count() )
   {
-    classificationFieldName = vl.pendingFields()[ mClassificationField ].name();
+    classificationFieldName = fields[ mClassificationField ].name();
   }
 
   QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );

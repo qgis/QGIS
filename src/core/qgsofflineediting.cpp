@@ -397,11 +397,11 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
   QString delim = "";
-  const QgsFieldMap& fields = layer->dataProvider()->fields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end() ; ++it )
+  const QgsFields& fields = layer->dataProvider()->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString dataType = "";
-    QVariant::Type type = it.value().type();
+    QVariant::Type type = fields[idx].type();
     if ( type == QVariant::Int )
     {
       dataType = "INTEGER";
@@ -419,7 +419,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       showWarning( tr( "Unknown data type %1" ).arg( type ) );
     }
 
-    sql += delim + QString( "'%1' %2" ).arg( it.value().name() ).arg( dataType );
+    sql += delim + QString( "'%1' %2" ).arg( fields[idx].name() ).arg( dataType );
     delim = ",";
   }
   sql += ")";
@@ -509,26 +509,26 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
       layer->setSubsetString( "" );
 
-      layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
+      QgsFeatureIterator fit = layer->getFeatures();
 
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->featureCount() );
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
-      while ( layer->nextFeature( f ) )
+      while ( fit.nextFeature( f ) )
       {
         remoteFeatureIds << f.id();
 
         // NOTE: Spatialite provider ignores position of geometry column
         // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
         int column = 0;
-        QgsAttributeMap newAttrMap;
-        QgsAttributeMap attrMap = f.attributeMap();
-        for ( QgsAttributeMap::const_iterator it = attrMap.begin(); it != attrMap.end(); ++it )
+        QgsAttributes newAttrs;
+        QgsAttributes attrs = f.attributes();
+        for ( int it = 0; it < attrs.count(); ++it )
         {
-          newAttrMap.insert( column++, it.value() );
+          newAttrs[column++] = attrs[it];
         }
-        f.setAttributeMap( newAttrMap );
+        f.setAttributes( newAttrs );
 
         newLayer->addFeature( f, false );
 
@@ -542,8 +542,9 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         // update feature id lookup
         int layerId = getOrCreateLayerId( db, newLayer->id() );
         QList<QgsFeatureId> offlineFeatureIds;
-        newLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
-        while ( newLayer->nextFeature( f ) )
+
+        QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+        while ( fit.nextFeature( f ) )
         {
           offlineFeatureIds << f.id();
         }
@@ -617,7 +618,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   for ( int i = 0; i < newFeatureIds.size(); i++ )
   {
     QgsFeature feature;
-    if ( offlineLayer->featureAtId( newFeatureIds.at( i ), feature, true, true ) )
+    if ( offlineLayer->getFeatures( QgsFeatureRequest().setFilterFid( newFeatureIds.at( i ) ) ).nextFeature( feature ) )
     {
       features << feature;
     }
@@ -627,6 +628,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   emit progressModeSet( QgsOfflineEditing::AddFeatures, features.size() );
 
   int i = 1;
+  int newAttrsCount = remoteLayer->pendingFields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsFeature f = *it;
@@ -634,13 +636,13 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     // NOTE: Spatialite provider ignores position of geometry column
     // restore gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
     QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
-    QgsAttributeMap newAttrMap;
-    QgsAttributeMap attrMap = f.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = attrMap.begin(); it != attrMap.end(); ++it )
+    QgsAttributes newAttrs( newAttrsCount );
+    QgsAttributes attrs = f.attributes();
+    for ( int it = 0; it < attrs.count(); ++it )
     {
-      newAttrMap.insert( attrLookup[ it.key()], it.value() );
+      newAttrs[ attrLookup[ it ] ] = attrs[ it ];
     }
-    f.setAttributeMap( newAttrMap );
+    f.setAttributes( newAttrs );
 
     remoteLayer->addFeature( f, false );
 
@@ -708,12 +710,13 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
   // NOTE: use QMap for sorted fids
   QMap < QgsFeatureId, bool /*dummy*/ > newRemoteFids;
   QgsFeature f;
-  remoteLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
+
+  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 
   int i = 1;
-  while ( remoteLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( offlineFid( db, layerId, f.id() ) == -1 )
     {

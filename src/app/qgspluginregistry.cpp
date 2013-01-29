@@ -263,7 +263,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
   }
 }
 

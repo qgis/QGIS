@@ -43,6 +43,7 @@ import warnings
 # ERROR HANDLING
 
 warnings.simplefilter('default')
+warnings.filterwarnings("ignore", "the sets module is deprecated")
 
 def showWarning(message, category, filename, lineno, file=None, line=None):
   QgsMessageLog.logMessage(

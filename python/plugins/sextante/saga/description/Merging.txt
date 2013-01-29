@@ -1,4 +1,4 @@
-Merging|Merge raster layers
+Merge raster layers|Merging
 grid_tools
 DontResample
 ParameterMultipleInput|GRIDS|Grids to Merge|3|False
@@ -7,4 +7,3 @@ ParameterSelection|INTERPOL|Interpolation|[0] Nearest Neighbor;[1] Bilinear Inte
 ParameterSelection|OVERLAP|Overlapping Cells|[0] mean value;[1] first value in order of grid list
 ParameterNumber|MERGE_INFO_MESH_SIZE|Cell Size|0.0|None|1.0
 OutputRaster|MERGED|Merged Grid
-d
