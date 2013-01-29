@@ -267,7 +267,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>654</width>
-                <height>538</height>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -604,18 +604,98 @@
                  </property>
                  <layout class="QVBoxLayout">
                   <item>
-                   <widget class="QCheckBox" name="chbAskToSaveProjectChanges">
-                    <property name="text">
-                     <string>Prompt to save project and data source changes when required</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QCheckBox" name="chbWarnOldProjectVersion">
-                    <property name="text">
-                     <string>Warn when opening a project file saved with an older version of QGIS</string>
-                    </property>
-                   </widget>
+                   <layout class="QGridLayout" name="gridLayout_4">
+                    <item row="0" column="2" colspan="2">
+                     <widget class="QComboBox" name="mProjectOnLaunchCmbBx">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>New</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Most recent</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Specific</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="1" column="5">
+                     <widget class="QPushButton" name="mProjectOnLaunchPushBtn">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>...</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <spacer name="horizontalSpacer_35">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Fixed</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>4</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="0" column="4">
+                     <spacer name="horizontalSpacer_36">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="1" column="1" colspan="4">
+                     <widget class="QLineEdit" name="mProjectOnLaunchLineEdit">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0" colspan="2">
+                     <widget class="QLabel" name="label_54">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Open project on launch</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbxProjectDefaultNew">
@@ -702,6 +782,20 @@
                      </widget>
                     </item>
                    </layout>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="chbAskToSaveProjectChanges">
+                    <property name="text">
+                     <string>Prompt to save project and data source changes when required</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="chbWarnOldProjectVersion">
+                    <property name="text">
+                     <string>Warn when opening a project file saved with an older version of QGIS</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -807,7 +901,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
+                <width>611</width>
                 <height>808</height>
                </rect>
               </property>
@@ -1137,8 +1231,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>559</width>
+                <height>417</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1456,7 +1550,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
+                <width>615</width>
                 <height>681</height>
                </rect>
               </property>
@@ -1944,8 +2038,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>498</width>
+                <height>396</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">

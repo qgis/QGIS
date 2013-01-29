@@ -77,6 +77,16 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void iconSizeChanged( const QString &iconSize );
 
+    /** Slot to handle when type of project to open after launch is changed
+     * @note added in QGIS 1.9
+     */
+    void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+
+    /** Slot to choose path to project to open after launch
+     * @note added in QGIS 1.9
+     */
+    void on_mProjectOnLaunchPushBtn_pressed();
+
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox
     void toggleEnableBackbuffer( int );

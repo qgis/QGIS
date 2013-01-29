@@ -567,6 +567,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
 
+  int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
+  mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
+  mProjectOnLaunchLineEdit->setText( settings.value( "/qgis/projOpenAtLaunchPath" ).toString() );
+  mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
+  mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
+
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
   cmbEnableMacros->setCurrentIndex( settings.value( "/qgis/enableMacros", 1 ).toInt() );
@@ -899,6 +905,28 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
+void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
+{
+  bool specific = ( indx == 2 );
+  mProjectOnLaunchLineEdit->setEnabled( specific );
+  mProjectOnLaunchPushBtn->setEnabled( specific );
+}
+
+void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
+{
+  // Retrieve last used project dir from persistent settings
+  QSettings settings;
+  QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
+  QString projPath = QFileDialog::getOpenFileName( this,
+                     tr( "Choose project file to open at launch" ),
+                     lastUsedDir,
+                     tr( "QGis files" ) + " (*.qgs *.QGS)" );
+  if ( !projPath.isNull() )
+  {
+    mProjectOnLaunchLineEdit->setText( projPath );
+  }
+}
+
 void QgsOptions::toggleEnableBackbuffer( int state )
 {
 #ifdef Q_WS_X11
@@ -1040,6 +1068,9 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // project
+  settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );
+  settings.setValue( "/qgis/projOpenAtLaunchPath", mProjectOnLaunchLineEdit->text() );
+
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   if (( settings.value( "/qgis/projectTemplateDir" ).toString() != leTemplateFolder->text() ) ||

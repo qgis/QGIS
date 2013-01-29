@@ -1816,6 +1816,10 @@ void QgisApp::setupConnections()
            SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( removingLayers( QStringList ) ) );
 
+  // connect initialization signal
+  connect( this, SIGNAL( initializationCompleted() ),
+           this, SLOT( fileOpenAfterLaunch() ) );
+
   // Connect warning dialog from project reading
   connect( QgsProject::instance(), SIGNAL( oldProjectVersionWarning( QString ) ),
            this, SLOT( oldProjectVersionWarning( QString ) ) );
@@ -1830,6 +1834,9 @@ void QgisApp::setupConnections()
 
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadComposersFromProject( const QDomDocument& ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadAnnotationItemsFromProject( const QDomDocument& ) ) );
+
+  connect( this, SIGNAL( projectRead() ),
+           this, SLOT( fileOpenedOKAfterLaunch() ) );
 
   //
   // Do we really need this ??? - its already connected to the esc key...TS
@@ -3199,6 +3206,33 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   updateCRSStatusBar();
 
+  // notify user if last attempt at auto-opening a project failed
+  bool projOpenedOK = settings.value( "/qgis/projOpenedOKAtLaunch", QVariant( true ) ).toBool();
+  if ( !projOpenedOK )
+  {
+    // only show the following 'auto-open project failed' message once
+    settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( true ) );
+
+    int projOpen = settings.value( "/qgis/projOpenAtLaunch", QVariant( 0 ) ).toInt();
+
+    QString projPath = QString();
+    if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // most recent project
+    {
+      projPath = mRecentProjectPaths.at( 0 );
+    }
+    if ( projOpen == 2 ) // specific project
+    {
+      projPath = settings.value( "/qgis/projOpenAtLaunchPath" ).toString();
+    }
+
+    // set auto-open project back to 'New' to avoid re-opening bad project
+    settings.setValue( "/qgis/projOpenAtLaunch" , QVariant( 0 ) );
+
+    messageBar()->pushMessage( tr( "Auto-open Project Failed" ),
+                               projPath,
+                               QgsMessageBar::CRITICAL );
+  }
+
   // set the initial map tool
 #ifndef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mPan );
@@ -3220,6 +3254,62 @@ bool QgisApp::fileNewFromTemplate( QString fileName )
     return true;
   }
   return false;
+}
+
+void QgisApp::fileOpenAfterLaunch()
+{
+  // TODO: move at-launch options to enums and switch statement
+  QSettings settings;
+  int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
+
+  if ( projOpen == 0 ) // new project (default)
+  {
+    return; // fileNew() has already been called in constructor
+  }
+
+  QString projPath = QString();
+  if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // open most recent project
+  {
+    projPath = mRecentProjectPaths.at( 0 );
+  }
+
+  if ( projOpen == 2 ) // open specific project
+  {
+    projPath = settings.value( "/qgis/projOpenAtLaunchPath" ).toString();
+  }
+
+  if ( projPath.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !projPath.endsWith( QString( "qgs" ), Qt::CaseInsensitive ) )
+  {
+    messageBar()->pushMessage( tr( "Auto-open Project" ),
+                               tr( "File not valid project: %1" ).arg( projPath ),
+                               QgsMessageBar::WARNING );
+    return;
+  }
+
+  if ( QFile::exists( projPath ) )
+  {
+    // set flag to check on next app launch if the following project opened OK
+    settings.setValue( "/qgis/projOpenedOKAtLaunch" , QVariant( false ) );
+
+    addProject( projPath );
+  }
+  else
+  {
+    messageBar()->pushMessage( tr( "Auto-open Project" ),
+                               tr( "File not found: %1" ).arg( projPath ),
+                               QgsMessageBar::WARNING );
+  }
+}
+
+void QgisApp::fileOpenedOKAfterLaunch()
+{
+  QSettings settings;
+  settings.setValue( "/qgis/projOpenedOKAtLaunch" , QVariant( true ) );
 }
 
 void QgisApp::fileNewFromTemplateAction( QAction * qAction )
