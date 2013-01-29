@@ -240,9 +240,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     r = toLayerCoordinates( layer, r );
 
-    layer->select( layer->pendingAllAttributesList(), r, true, true );
+    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
-    while ( layer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
       featureList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )

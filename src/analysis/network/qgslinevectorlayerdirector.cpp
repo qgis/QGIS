@@ -158,11 +158,12 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   //Graph's points;
   QVector< QgsPoint > points;
 
+  QgsFeatureIterator fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+
   // begin: tie points to the graph
   QgsAttributeList la;
-  vl->select( la );
   QgsFeature feature;
-  while ( vl->nextFeature( feature ) )
+  while ( fit.nextFeature( feature ) )
   {
     QgsMultiPolyline mpl;
     if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
@@ -233,7 +234,6 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
-
   for ( i = 0;i < points.size();++i )
     builder->addVertex( i, points[ i ] );
 
@@ -242,7 +242,8 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
   qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
-  { // fill attribute list 'la'
+  {
+    // fill attribute list 'la'
     QgsAttributeList tmpAttr;
     if ( mDirectionFieldId != -1 )
     {
@@ -277,8 +278,8 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   } // end fill attribute list 'la'
 
   // begin graph construction
-  vl->select( la );
-  while ( vl->nextFeature( feature ) )
+  fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
+  while ( fit.nextFeature( feature ) )
   {
     int directionType = mDefaultDirection;
 

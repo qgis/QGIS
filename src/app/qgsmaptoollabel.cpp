@@ -178,7 +178,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     {
       int labelFieldId = vlayer->fieldNameIndex( labelField );
       QgsFeature f;
-      if ( vlayer->featureAtId( mCurrentLabelPos.featureId, f, false, true ) )
+      if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabelPos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
       {
         QString labelText = f.attribute( labelFieldId ).toString();
         if ( trunc > 0 && labelText.length() > trunc )
@@ -231,7 +231,10 @@ bool QgsMapToolLabel::currentFeature( QgsFeature& f, bool fetchGeom )
   {
     return false;
   }
-  return vlayer->featureAtId( mCurrentLabelPos.featureId, f, fetchGeom, true );
+  return vlayer->getFeatures( QgsFeatureRequest()
+                              .setFilterFid( mCurrentLabelPos.featureId )
+                              .setFlags( fetchGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry )
+                            ).nextFeature( f );
 }
 
 QFont QgsMapToolLabel::labelFontCurrentFeature()
@@ -247,7 +250,7 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
     font = layerSettings.textFont;
 
     QgsFeature f;
-    if ( vlayer->featureAtId( mCurrentLabelPos.featureId, f, false, true ) )
+    if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabelPos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
       const QgsAttributes& attributes = f.attributes();
       QMap< QgsPalLayerSettings::DataDefinedProperties, int > ddProperties = layerSettings.dataDefinedProperties;
@@ -440,7 +443,7 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
   }
 
   QgsFeature f;
-  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }
@@ -490,7 +493,7 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId
   }
 
   QgsFeature f;
-  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }
@@ -525,7 +528,7 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId
   }
 
   QgsFeature f;
-  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }

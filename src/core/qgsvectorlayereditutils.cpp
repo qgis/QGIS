@@ -26,7 +26,6 @@ QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer* layer )
 {
 }
 
-
 bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex )
 {
   if ( !L->hasGeometryType() )
@@ -95,10 +94,10 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
     return 3; //ring not valid
   }
 
-  L->select( QgsAttributeList(), bBox, true, true );
+  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
 
   QgsFeature f;
-  while ( L->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     addRingReturnCode = f.geometry()->addRing( ring );
     if ( addRingReturnCode == 0 )
@@ -124,7 +123,7 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->featureAtId( featureId, f, true, false ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return 6; //geometry not found
 
     geometry = *f.geometry();
@@ -150,7 +149,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->featureAtId( featureId, f, true, false ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return 1; //geometry not found
 
     geometry = *f.geometry();
@@ -215,10 +214,10 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
     }
 
-    L->select( L->pendingAllAttributesList(), bBox, true, true );
+    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
 
     QgsFeature f;
-    while ( L->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
       featureList << QgsFeature( f );
   }
 

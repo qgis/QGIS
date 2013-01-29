@@ -120,7 +120,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 
   //find out initial arrow direction
   QgsFeature pointFeature;
-  if ( !mActiveLayer->featureAtId( mFeatureNumber, pointFeature, false, true ) )
+  if ( !mActiveLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterFid( mFeatureNumber ) ).nextFeature( pointFeature ) )
   {
     return;
   }

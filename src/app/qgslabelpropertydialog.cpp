@@ -50,7 +50,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   }
 
   QgsFeature f;
-  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
   {
     return;
   }

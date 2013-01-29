@@ -687,11 +687,11 @@ void QgsLegendLayer::updateItemListCount( QgsVectorLayer* layer, const QList<Qgs
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
-  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
   QgsFeature f;
   QgsSymbol* currentSymbol = 0;
 
-  while ( layer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     currentSymbol = renderer->symbolForFeature( &f );
     if ( currentSymbol )

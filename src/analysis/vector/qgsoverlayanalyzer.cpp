@@ -60,7 +60,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     QgsFeatureIds::const_iterator it = selectionB.constBegin();
     for ( ; it != selectionB.constEnd(); ++it )
     {
-      if ( !layerB->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layerB->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -86,7 +86,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
       {
         break;
       }
-      if ( !layerA->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layerA->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -102,13 +102,11 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   //take all features
   else
   {
-    layerB->select( layerB->pendingAllAttributesList(), QgsRectangle(), true, false );
-    while ( layerB->nextFeature( currentFeature ) )
+    QgsFeatureIterator fit = layerB->getFeatures();
+    while ( fit.nextFeature( currentFeature ) )
     {
       index.insertFeature( currentFeature );
     }
-    QgsFeature currentFeature;
-    layerA->select( layerA->pendingAllAttributesList(), QgsRectangle(), true, false );
 
     int featureCount = layerA->featureCount();
     if ( p )
@@ -117,7 +115,10 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     }
     int processedFeatures = 0;
 
-    while ( layerA->nextFeature( currentFeature ) )
+    fit = layerA->getFeatures();
+
+    QgsFeature currentFeature;
+    while ( fit.nextFeature( currentFeature ) )
     {
       if ( p )
       {
@@ -156,7 +157,7 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   QgsFeature outFeature;
   for ( ; it != intersects.constEnd(); ++it )
   {
-    if ( !vl->featureAtId( *it, overlayFeature, true, true ) )
+    if ( !vl->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( overlayFeature ) )
     {
       continue;
     }
@@ -192,7 +193,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
     int count = 0;
     while ( names.contains( field.name() ) )
     {
-      QString name = QString("%1_%2").arg( field.name() ).arg( count );
+      QString name = QString( "%1_%2" ).arg( field.name() ).arg( count );
       field = QgsField( name, field.type() );
       ++count;
     }

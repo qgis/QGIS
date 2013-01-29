@@ -64,7 +64,7 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
     mFeat = mFeatureMap[ fid ];
     return true;
   }
-  else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
+  else if ( mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( mFeat ) )
   {
     QSettings settings;
     int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
@@ -334,10 +334,10 @@ void QgsAttributeTableModel::loadLayer()
       }
     }
 
-    mLayer->select( attributeList, rect, false );
+    QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
     QgsFeature f;
-    for ( i = 0; mLayer->nextFeature( f ); ++i )
+    for ( i = 0; fit.nextFeature( f ); ++i )
     {
       if ( !filter || renderer->willRenderFeature( f ) )
       {
@@ -484,10 +484,10 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
   mSortList.clear();
 
   int idx = fieldIdx( column );
-  mLayer->select( QgsAttributeList() << idx, rect, false );
 
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << idx ) );
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
       continue;

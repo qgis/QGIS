@@ -132,9 +132,9 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
     r = toLayerCoordinates( layer, r );
 
-    layer->select( layer->pendingAllAttributesList(), r, true, true );
+    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
     QgsFeature f;
-    while ( layer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
       featList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )

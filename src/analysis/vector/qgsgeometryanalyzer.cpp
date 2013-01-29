@@ -73,7 +73,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
       {
         break;
       }
-      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -89,8 +89,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   //take all features
   else
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
-
+    QgsFeatureIterator fit = layer->getFeatures();
 
     int featureCount = layer->featureCount();
     if ( p )
@@ -99,7 +98,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
     }
     int processedFeatures = 0;
 
-    while ( layer->nextFeature( currentFeature ) )
+    while ( fit.nextFeature( currentFeature ) )
     {
       if ( p )
       {
@@ -189,7 +188,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
       {
         break;
       }
-      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -205,7 +204,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   //take all features
   else
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
+    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
     int featureCount = layer->featureCount();
     if ( p )
@@ -214,7 +213,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
     }
     int processedFeatures = 0;
 
-    while ( layer->nextFeature( currentFeature ) )
+    while ( fit.nextFeature( currentFeature ) )
     {
       if ( p )
       {
@@ -435,7 +434,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         return false;
       }
 #endif
-      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -444,8 +443,8 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   }
   else
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
-    while ( layer->nextFeature( currentFeature ) )
+    QgsFeatureIterator fit = layer->getFeatures();
+    while ( fit.nextFeature( currentFeature ) )
     {
 #if 0
       if ( p )
@@ -489,7 +488,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
           {
             p->setValue( processedFeatures );
           }
-          if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
+          if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( jt.value() ) ).nextFeature( currentFeature ) )
           {
             continue;
           }
@@ -535,7 +534,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         {
           break;
         }
-        if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
+        if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( jt.value() ) ).nextFeature( currentFeature ) )
         {
           continue;
         }
@@ -629,7 +628,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
     QgsFeatureIds::const_iterator it = selection.constBegin();
     for ( ; it != selection.constEnd(); ++it )
     {
-      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -638,8 +637,8 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   }
   else
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
-    while ( layer->nextFeature( currentFeature ) )
+    QgsFeatureIterator fit = layer->getFeatures();
+    while ( fit.nextFeature( currentFeature ) )
     {
       map.insert( currentFeature.attribute( uniqueIdField ).toString(), currentFeature.id() );
     }
@@ -674,7 +673,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
           {
             p->setValue( processedFeatures );
           }
-          if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
+          if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( jt.value() ) ).nextFeature( currentFeature ) )
           {
             continue;
           }
@@ -708,7 +707,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
         {
           break;
         }
-        if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
+        if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( jt.value() ) ).nextFeature( currentFeature ) )
         {
           continue;
         }
@@ -798,7 +797,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
       {
         break;
       }
-      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
       {
         continue;
       }
@@ -814,8 +813,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   //take all features
   else
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
-
+    QgsFeatureIterator fit = layer->getFeatures();
 
     int featureCount = layer->featureCount();
     if ( p )
@@ -824,7 +822,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
     }
     int processedFeatures = 0;
 
-    while ( layer->nextFeature( currentFeature ) )
+    while ( fit.nextFeature( currentFeature ) )
     {
       if ( p )
       {
@@ -920,10 +918,9 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   //create line field / id map for line layer
   QMultiHash< QString, QgsFeatureId > lineLayerIdMap; //1:n possible (e.g. several linear reference geometries for one feature in the event layer)
-  lineLayer->select( QgsAttributeList() << lineField,
-                     QgsRectangle(), false, false );
+  QgsFeatureIterator fit = lineLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << lineField ) );
   QgsFeature fet;
-  while ( lineLayer->nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     lineLayerIdMap.insert( fet.attribute( lineField ).toString(), fet.id() );
   }
@@ -955,7 +952,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
 
   //iterate over eventLayer and write new features to output file or layer
-  eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  fit = eventLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
   QgsGeometry* lrsGeom = 0;
   QgsFeature lineFeature;
   double measure1, measure2 = 0.0;
@@ -971,7 +968,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     p->show();
   }
 
-  while ( eventLayer->nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     nOutputFeatures = 0;
 
@@ -996,7 +993,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     QList<QgsFeatureId>::const_iterator featureIdIt = featureIdList.constBegin();
     for ( ; featureIdIt != featureIdList.constEnd(); ++featureIdIt )
     {
-      if ( !lineLayer->featureAtId( *featureIdIt, lineFeature, true, false ) )
+      if ( !lineLayer->getFeatures( QgsFeatureRequest().setFilterFid( *featureIdIt ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( lineFeature ) )
       {
         continue;
       }

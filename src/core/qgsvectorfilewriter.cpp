@@ -116,14 +116,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
     // check for unique fieldnames
     QSet<QString> fieldNames;
-    QgsFieldMap::const_iterator fldIt;
-    for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( int i = 0; i < fields.count(); ++i )
     {
-      QString name = fldIt.value().name().left( 10 );
+      QString name = fields[i].name().left( 10 );
       if ( fieldNames.contains( name ) )
       {
         mErrorMessage = QObject::tr( "trimming attribute name '%1' to ten significant characters produces duplicate column name." )
-                        .arg( fldIt.value().name() );
+                        .arg( fields[i].name() );
         mError = ErrAttributeCreationFailed;
         return;
       }
@@ -643,11 +642,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
-  QgsFeature fet;
-
-  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
-
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
   // Create our transform
@@ -664,8 +658,17 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   int n = 0, errors = 0;
 
+  QgsFeatureRequest req;
+  if ( layer->wkbType() == QGis::WKBNoGeometry )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( skipAttributeCreation )
+    req.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fit = layer->getFeatures( req );
+
   // write all features
-  while ( layer->nextFeature( fet ) )
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
   {
     if ( onlySelected && !ids.contains( fet.id() ) )
       continue;

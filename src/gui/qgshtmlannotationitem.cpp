@@ -193,13 +193,14 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   double halfIdentifyWidth = mMapCanvas->extent().width() / 100 / 2 * identifyValue;
   QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
                            mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
-  mVectorLayer->select( mVectorLayer->pendingAllAttributesList() , searchRect, false, true );
+
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ) );
 
   QgsFeature currentFeature;
   QgsFeatureId currentFeatureId = 0;
   bool featureFound = false;
 
-  while ( mVectorLayer->nextFeature( currentFeature ) )
+  while ( fit.nextFeature( currentFeature ) )
   {
     currentFeatureId = currentFeature.id();
     featureFound = true;
@@ -212,7 +213,6 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
 
   QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, mFeature, vectorLayer() );
   mWebView->setHtml( newtext );
-
 }
 
 void QgsHtmlAnnotationItem::updateVisibility()

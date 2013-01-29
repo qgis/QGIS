@@ -509,13 +509,13 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
       layer->setSubsetString( "" );
 
-      layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
+      QgsFeatureIterator fit = layer->getFeatures();
 
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->featureCount() );
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
-      while ( layer->nextFeature( f ) )
+      while ( fit.nextFeature( f ) )
       {
         remoteFeatureIds << f.id();
 
@@ -542,8 +542,9 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         // update feature id lookup
         int layerId = getOrCreateLayerId( db, newLayer->id() );
         QList<QgsFeatureId> offlineFeatureIds;
-        newLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
-        while ( newLayer->nextFeature( f ) )
+
+        QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+        while ( fit.nextFeature( f ) )
         {
           offlineFeatureIds << f.id();
         }
@@ -617,7 +618,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   for ( int i = 0; i < newFeatureIds.size(); i++ )
   {
     QgsFeature feature;
-    if ( offlineLayer->featureAtId( newFeatureIds.at( i ), feature, true, true ) )
+    if ( offlineLayer->getFeatures( QgsFeatureRequest().setFilterFid( newFeatureIds.at( i ) ) ).nextFeature( feature ) )
     {
       features << feature;
     }
@@ -709,12 +710,13 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
   // NOTE: use QMap for sorted fids
   QMap < QgsFeatureId, bool /*dummy*/ > newRemoteFids;
   QgsFeature f;
-  remoteLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
+
+  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 
   int i = 1;
-  while ( remoteLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( offlineFid( db, layerId, f.id() ) == -1 )
     {

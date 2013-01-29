@@ -389,10 +389,9 @@ void GlobePlugin::setupMap()
     if ( model )
     {
       QgsVectorLayer* layer = mSettingsDialog->modelLayer();
-      QgsAttributeList fetchAttributes;
-      layer->select( fetchAttributes ); //TODO: select only visible features
+      QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ); //TODO: select only visible features
       QgsFeature feature;
-      while ( layer->nextFeature( feature ) )
+      while ( fit.nextFeature( feature ) )
       {
         QgsPoint point = feature.geometry()->asPoint();
         placeNode( model, point.y(), point.x() );

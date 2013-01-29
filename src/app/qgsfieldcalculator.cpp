@@ -161,8 +161,8 @@ void QgsFieldCalculator::accept()
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
 
-  mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
-  while ( mVectorLayer->nextFeature( feature ) )
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+  while ( fit.nextFeature( feature ) )
   {
     if ( onlySelected )
     {

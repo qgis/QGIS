@@ -72,6 +72,7 @@ class QgsReaderFeatures
     QgsFeatureList   mListSelectedFeature;
     QList<QgsFeature>::iterator mIterSelectedFeature;
     bool ( QgsReaderFeatures::* mFuncNextFeature )( QgsFeature & );
+    QgsFeatureIterator mFit;
 };
 
 #endif // READERFEATURES_H

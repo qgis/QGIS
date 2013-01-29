@@ -293,7 +293,13 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  layer->select( allAttr, QgsRectangle(), wkbType != QGis::WKBNoGeometry );
+  QgsFeatureRequest req;
+  if ( wkbType == QGis::WKBNoGeometry )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( skipAttributeCreation )
+    req.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fit = layer->getFeatures( req );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
@@ -322,7 +328,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   }
 
   // write all features
-  while ( layer->nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     if ( progress && progress->wasCanceled() )
     {

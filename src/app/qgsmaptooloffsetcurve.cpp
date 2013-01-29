@@ -71,7 +71,7 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
       mSourceLayerId = snapResult.layer->id();
 
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
-      if ( vl && vl->featureAtId( snapResult.snappedAtGeometry, fet ) )
+      if ( vl && vl->getFeatures( QgsFeatureRequest().setFilterFid( snapResult.snappedAtGeometry ) ).nextFeature( fet ) )
       {
         mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );

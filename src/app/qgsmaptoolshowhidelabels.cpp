@@ -210,10 +210,10 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
   QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
 
-  vlayer->select( QgsAttributeList(), selectGeomTrans.boundingBox(), false, true );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
-  while ( vlayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QgsGeometry* g = f.geometry();
 
@@ -282,7 +282,7 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
 
   // check if attribute value is already the same
   QgsFeature f;
-  if ( !vlayer->featureAtId( fid, f, false, true ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }

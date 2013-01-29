@@ -140,7 +140,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
   QgsFeatureIterator fi = vectorProvider->getFeatures( request );
-  //vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
   QgsFeature f;
   double count = 0;
   double sum = 0;

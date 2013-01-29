@@ -49,7 +49,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   mCoverageLayer = layer;
 
   // update the number of features
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)mFeatureIds.size() ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::beginRender()
@@ -82,13 +82,13 @@ void QgsAtlasComposition::beginRender()
   }
 
   // select all features with all attributes
-  mCoverageLayer->select( mCoverageLayer->pendingAllAttributesList() );
+  QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
   mFeatureIds.clear();
-  while ( mCoverageLayer->nextFeature( feat ) )
+  while ( fit.nextFeature( feat ) )
   {
     mFeatureIds.push_back( feat.id() );
   }
@@ -153,7 +153,7 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
   }
 
   // retrieve the next feature, based on its id
-  mCoverageLayer->featureAtId( mFeatureIds[ featureI ], mCurrentFeature, /* fetchGeometry = */ true, /* fetchAttributes = */ true );
+  mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
   if ( mFilenamePattern.size() > 0 )
   {
@@ -213,18 +213,18 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
     // geometry height is too big
     if ( geom_ratio < map_ratio )
     {
-	    // extent the bbox's width
-	    double adj_width = ( map_ratio * geom_rect.height() - geom_rect.width() ) / 2.0;
-	    xa1 -= adj_width;
-	    xa2 += adj_width;
+      // extent the bbox's width
+      double adj_width = ( map_ratio * geom_rect.height() - geom_rect.width() ) / 2.0;
+      xa1 -= adj_width;
+      xa2 += adj_width;
     }
     // geometry width is too big
     else if ( geom_ratio > map_ratio )
     {
-	    // extent the bbox's height
-	    double adj_height = (geom_rect.width() / map_ratio - geom_rect.height() ) / 2.0;
-	    ya1 -= adj_height;
-	    ya2 += adj_height;
+      // extent the bbox's height
+      double adj_height = ( geom_rect.width() / map_ratio - geom_rect.height() ) / 2.0;
+      ya1 -= adj_height;
+      ya2 += adj_height;
     }
     new_extent = QgsRectangle( xa1, ya1, xa2, ya2 );
 

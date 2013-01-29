@@ -145,17 +145,16 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attr
     }
   }
 
-  if ( mDisplayAttributes.size() < 1 )
-  {
-    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
-  }
-  else
-  {
-    mVectorLayer->select( mDisplayAttributes.toList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
-  }
+  QgsFeatureRequest req;
+  req.setFilterRect( selectionRect );
+  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
+  if ( mDisplayAttributes.size() >= 0 )
+    req.setSubsetOfAttributes( mDisplayAttributes.toList() );
+
   QgsFeature f;
   int counter = 0;
-  while ( mVectorLayer->nextFeature( f ) && counter < mMaximumNumberOfFeatures )
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+  while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
     attributes.push_back( f.attributes() );
     ++counter;

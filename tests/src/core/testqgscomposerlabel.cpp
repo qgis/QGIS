@@ -125,11 +125,10 @@ void TestQgsComposerLabel::evaluation()
 
 void TestQgsComposerLabel::feature_evaluation()
 {
-  QgsAttributeList allAttrs = mVectorLayer->pendingAllAttributesList();
-  mVectorLayer->select( allAttrs );
+  QgsFeatureIterator fit = mVectorLayer->getFeatures();
   QgsFeature feat;
 
-  mVectorLayer->nextFeature( feat );
+  fit.nextFeature( feat );
   {
     // evaluation with a feature
     mComposerLabel->setExpressionContext( &feat, mVectorLayer );
@@ -138,7 +137,7 @@ void TestQgsComposerLabel::feature_evaluation()
     QString expected = "Basse-Normandie_ok";
     QCOMPARE( evaluated, expected );
   }
-  mVectorLayer->nextFeature( feat );
+  fit.nextFeature( feat );
   {
     // evaluation with a feature
     mComposerLabel->setExpressionContext( &feat, mVectorLayer );
