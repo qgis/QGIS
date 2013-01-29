@@ -429,9 +429,6 @@
       </property>
       <item>
        <widget class="QgsRasterFormatSaveOptionsWidget" name="creationOptionsWidget" native="true">
-        <property name="toolTip">
-         <string>bla</string>
-        </property>
        </widget>
       </item>
      </layout>
