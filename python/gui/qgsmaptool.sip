@@ -6,6 +6,7 @@
 #include <qgsmaptoolzoom.h>
 #include <qgsmaptoolpan.h>
 #include <qgsmaptoolemitpoint.h>
+#include <qgsmaptoolidentify.h>
 %End
 
 %Feature HAVE_TOUCH
@@ -23,6 +24,8 @@ class QgsMapTool : QObject
     sipClass = sipClass_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMapToolEmitPoint;
+  else if (dynamic_cast<QgsMapToolIdentify*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolIdentify;
   else
     sipClass = NULL;
 %End
