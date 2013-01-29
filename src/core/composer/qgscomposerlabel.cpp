@@ -59,24 +59,17 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   if( mHtmlState )
   {
     painter->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
-    //painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToMM );
+
     QWebPage* webPage = new QWebPage();
-    /*
-    TODO : http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
-    is it possible ?
-    */
     webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM) );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setHtml( displayText() );
-    webPage->mainFrame()->render( painter );
-    //webPage->mainFrame()->render( painter, QRegion( painterRect.left(), painterRect.top() * mHtmlUnitsToMM, painterRect.width(), painterRect.height() ) );
-    //webPage->mainFrame()->render( painter, QRegion( painterRect.left(), painterRect.top() * mHtmlUnitsToMM, painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM ) );
-    //DELETE WEBPAGE ?
+    webPage->mainFrame()->render( painter );//DELETE WEBPAGE ?
   }
   else
   {
-    painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
+    painter->setPen( QPen( QColor( mFontColor ) ) );
     painter->setFont( mFont );
 
     QFontMetricsF fontSize( mFont );
@@ -106,6 +99,7 @@ double QgsComposerLabel::htmlUnitsToMM()
     return 1.0;
   }
 
+  //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
   return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
 }
 
