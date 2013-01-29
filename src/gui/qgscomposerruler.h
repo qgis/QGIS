@@ -18,11 +18,14 @@ class QgsComposerRuler: public QWidget
 
     QSize minimumSizeHint() const;
 
+    void setSceneTransform( const QTransform& transform );
+
   protected:
     void paintEvent( QPaintEvent* event );
 
   private:
     Direction mDirection;
+    QTransform mTransform;
 };
 
 #endif // QGSCOMPOSERRULER_H

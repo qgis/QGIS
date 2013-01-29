@@ -256,6 +256,18 @@ void QgsComposerView::addShape( Tool currentTool )
   }
 }
 
+void QgsComposerView::updateRulers()
+{
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setSceneTransform( viewportTransform() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -625,6 +637,18 @@ void QgsComposerView::showEvent( QShowEvent* e )
 {
   emit( composerViewShow( this ) );
   e->ignore();
+}
+
+void QgsComposerView::resizeEvent( QResizeEvent* event )
+{
+  QGraphicsView::resizeEvent( event );
+  updateRulers();
+}
+
+void QgsComposerView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
 }
 
 void QgsComposerView::setComposition( QgsComposition* c )

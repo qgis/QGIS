@@ -90,6 +90,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
 
+    /**Update rulers with current scene rect*/
+    void updateRulers();
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -105,6 +108,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     void hideEvent( QHideEvent* e );
     void showEvent( QShowEvent* e );
+
+    void resizeEvent( QResizeEvent* event );
+    void scrollContentsBy( int dx, int dy );
 
   private:
     /**Status of shift key (used for multiple selection)*/

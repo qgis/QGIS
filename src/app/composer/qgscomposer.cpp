@@ -526,6 +526,7 @@ void QgsComposer::zoomFull( void )
 void QgsComposer::on_mActionZoomAll_triggered()
 {
   zoomFull();
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
@@ -533,6 +534,7 @@ void QgsComposer::on_mActionZoomAll_triggered()
 void QgsComposer::on_mActionZoomIn_triggered()
 {
   mView->scale( 2, 2 );
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
@@ -540,6 +542,7 @@ void QgsComposer::on_mActionZoomIn_triggered()
 void QgsComposer::on_mActionZoomOut_triggered()
 {
   mView->scale( .5, .5 );
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
