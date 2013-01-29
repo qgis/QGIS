@@ -18,7 +18,7 @@
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsidentifyresults.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsattributedialog.h"
 #include "qgslogger.h"
 
