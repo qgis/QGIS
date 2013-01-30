@@ -85,6 +85,16 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
+  mAttributeCount = -1;
+
+  foreach ( int idx, mOldToNewAttrIdx.values() )
+  {
+    if ( idx > mAttributeCount )
+      mAttributeCount = idx;
+  }
+
+  mAttributeCount++;
+
   QgsDebugMsg( "Created empty layer" );
 
   QgsVectorDataProvider *vectorProvider = ( QgsVectorDataProvider* ) pReg->provider( providerKey, uri );
@@ -128,17 +138,19 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   QgsFeature newFeat;
   if ( feat.geometry() )
     newFeat.setGeometry( *feat.geometry() );
-  newFeat.initAttributes( attrs.count() );
+
+  newFeat.initAttributes( mAttributeCount );
 
   for ( int i = 0; i < attrs.count(); ++i )
   {
     // add only mapped attributes (un-mapped ones will not be present in the
     // destination layer)
-    if ( mOldToNewAttrIdx.contains( i ) )
-    {
-      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( mOldToNewAttrIdx.value( i ) ), 3 );
-      newFeat.setAttribute( mOldToNewAttrIdx.value( i ), attrs[i] );
-    }
+    int dstIdx = mOldToNewAttrIdx.value( i, -1 );
+    if ( dstIdx < 0 )
+      continue;
+
+    QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
+    newFeat.setAttribute( dstIdx, attrs[i] );
   }
 
   mFeatureBuffer.append( newFeat );

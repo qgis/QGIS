@@ -1820,7 +1820,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
 
   if ( fields.size() > 0 )
   {
-    int offset = geometryColumn.isEmpty() ? 0 : 1;
+    int offset = 0;
 
     // get the list of fields
     QList<QgsField> flist;
