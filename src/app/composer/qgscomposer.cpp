@@ -20,6 +20,7 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 #include "qgscompositionwidget.h"
@@ -245,8 +246,24 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
-  //create composer view
-  mView = new QgsComposerView( mViewFrame );
+  //create composer view and layout with rulers
+  mView = new QgsComposerView();
+  mView->setContentsMargins( 0, 0, 0, 0 );
+  QGridLayout* viewLayout = new QGridLayout();
+  viewLayout->setSpacing( 0 );
+  viewLayout->setMargin( 0 );
+  QgsComposerRuler* hRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
+  mView->setHorizontalRuler( hRuler );
+  QgsComposerRuler* vRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
+  mView->setVerticalRuler( vRuler );
+  QWidget* fake = new QWidget();
+  fake->setBackgroundRole( QPalette::Window );
+  fake->setFixedSize( 20, 20 );
+  viewLayout->addWidget( fake, 0, 0 );
+  viewLayout->addWidget( hRuler, 0, 1 );
+  viewLayout->addWidget( vRuler, 1, 0 );
+  viewLayout->addWidget( mView, 1, 1 );
+  mViewFrame->setLayout( viewLayout );
 
   //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -313,7 +330,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QGridLayout *l = new QGridLayout( mViewFrame );
   l->setMargin( 0 );
-  l->addWidget( mView, 0, 0 );
+  l->addLayout( viewLayout, 0, 0 );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
