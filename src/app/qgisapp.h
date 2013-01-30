@@ -739,6 +739,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new file from a template project
     bool fileNewFromTemplate( QString fileName );
     void fileNewFromTemplateAction( QAction * qAction );
+    void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();

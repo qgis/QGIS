@@ -713,7 +713,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // update windows
   qApp->processEvents();
 
-  fileNew(); // prepare empty project
+  fileNewBlank(); // prepare empty project
 
 } // QgisApp ctor
 
@@ -3128,18 +3128,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
-  // load template instead of loading defaults - or should this be done *after* loading defaults?
   QSettings settings;
-  if ( ! forceBlank )
-  {
-    QString projectTemplate = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
-    if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
-         ! projectTemplate.isEmpty() )
-    {
-      if ( fileNewFromTemplate( projectTemplate ) )
-        return;
-    }
-  }
 
   closeProject();
   mMapCanvas->clear();
@@ -3206,31 +3195,22 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   updateCRSStatusBar();
 
-  // notify user if last attempt at auto-opening a project failed
-  bool projOpenedOK = settings.value( "/qgis/projOpenedOKAtLaunch", QVariant( true ) ).toBool();
-  if ( !projOpenedOK )
+  /** New Empty Project Created
+      (before attempting to load custom project templates/filepaths) */
+
+  // load default template
+  /* NOTE: don't open default template on launch until after initialization,
+           in case a project was defined via command line */
+
+  // don't open template if last auto-opening of a project failed
+  if ( ! forceBlank )
   {
-    // only show the following 'auto-open project failed' message once
-    settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( true ) );
+    forceBlank = ! settings.value( "/qgis/projOpenedOKAtLaunch", QVariant( true ) ).toBool();
+  }
 
-    int projOpen = settings.value( "/qgis/projOpenAtLaunch", QVariant( 0 ) ).toInt();
-
-    QString projPath = QString();
-    if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // most recent project
-    {
-      projPath = mRecentProjectPaths.at( 0 );
-    }
-    if ( projOpen == 2 ) // specific project
-    {
-      projPath = settings.value( "/qgis/projOpenAtLaunchPath" ).toString();
-    }
-
-    // set auto-open project back to 'New' to avoid re-opening bad project
-    settings.setValue( "/qgis/projOpenAtLaunch" , QVariant( 0 ) );
-
-    messageBar()->pushMessage( tr( "Auto-open Project Failed" ),
-                               projPath,
-                               QgsMessageBar::CRITICAL );
+  if ( ! forceBlank && settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() )
+  {
+    fileNewFromDefaultTemplate();
   }
 
   // set the initial map tool
@@ -3256,37 +3236,97 @@ bool QgisApp::fileNewFromTemplate( QString fileName )
   return false;
 }
 
+void QgisApp::fileNewFromDefaultTemplate()
+{
+  QString projectTemplate = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+  QString msgTxt;
+  if ( !projectTemplate.isEmpty() && QFile::exists( projectTemplate ) )
+  {
+    if ( fileNewFromTemplate( projectTemplate ) )
+    {
+      return;
+    }
+    msgTxt = tr( "Default failed to open: %1" );
+  }
+  else
+  {
+    msgTxt = tr( "Default not found: %1" );
+  }
+  messageBar()->pushMessage( tr( "Open Template Project" ),
+                             msgTxt.arg( projectTemplate ),
+                             QgsMessageBar::WARNING );
+}
+
 void QgisApp::fileOpenAfterLaunch()
 {
-  // TODO: move at-launch options to enums and switch statement
+  // TODO: move auto-open project options to enums
+
+  // fileNewBlank() has already been called in QgisApp constructor
+  // loaded project is either a new blank one, or one from command line
   QSettings settings;
+  QString autoOpenMsgTitle = tr( "Auto-open Project" );
+
+  // what type of project to auto-open
   int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
 
-  if ( projOpen == 0 ) // new project (default)
-  {
-    return; // fileNew() has already been called in constructor
-  }
-
+  // get path of project file to open, or was attempted
   QString projPath = QString();
-  if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // open most recent project
+  if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // most recent project
   {
     projPath = mRecentProjectPaths.at( 0 );
   }
-
-  if ( projOpen == 2 ) // open specific project
+  if ( projOpen == 2 ) // specific project
   {
     projPath = settings.value( "/qgis/projOpenAtLaunchPath" ).toString();
   }
 
-  if ( projPath.isEmpty() )
+  // whether last auto-opening of a project failed
+  bool projOpenedOK = settings.value( "/qgis/projOpenedOKAtLaunch", QVariant( true ) ).toBool();
+
+  // notify user if last attempt at auto-opening a project failed
+  /** NOTE: Notification will not show if last auto-opened project failed but
+      next project opened is from command line (minor issue) */
+  /** TODO: Keep projOpenedOKAtLaunch from being reset to true after
+      reading command line project (which happens before initialization signal) */
+  if ( !projOpenedOK )
+  {
+    // only show the following 'auto-open project failed' message once, at launch
+    settings.setValue( "/qgis/projOpenedOKAtLaunch", QVariant( true ) );
+
+    // set auto-open project back to 'New' to avoid re-opening bad project
+    settings.setValue( "/qgis/projOpenAtLaunch" , QVariant( 0 ) );
+
+    messageBar()->pushMessage( autoOpenMsgTitle,
+                               tr( "Failed to open: %1" ).arg( projPath ),
+                               QgsMessageBar::CRITICAL );
+    return;
+  }
+
+  // check if a project is already loaded via command line
+  if ( !QgsProject::instance()->fileName().isNull() )
+  {
+    return;
+  }
+
+  if ( projOpen == 0 ) // new project (default)
+  {
+    // open default template, if defined
+    if ( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() )
+    {
+      fileNewFromDefaultTemplate();
+    }
+    return;
+  }
+
+  if ( projPath.isEmpty() ) // projPath required from here
   {
     return;
   }
 
   if ( !projPath.endsWith( QString( "qgs" ), Qt::CaseInsensitive ) )
   {
-    messageBar()->pushMessage( tr( "Auto-open Project" ),
-                               tr( "File not valid project: %1" ).arg( projPath ),
+    messageBar()->pushMessage( autoOpenMsgTitle,
+                               tr( "Not valid project file: %1" ).arg( projPath ),
                                QgsMessageBar::WARNING );
     return;
   }
@@ -3296,11 +3336,23 @@ void QgisApp::fileOpenAfterLaunch()
     // set flag to check on next app launch if the following project opened OK
     settings.setValue( "/qgis/projOpenedOKAtLaunch" , QVariant( false ) );
 
-    addProject( projPath );
+    if ( !addProject( projPath ) )
+    {
+      messageBar()->pushMessage( autoOpenMsgTitle,
+                                 tr( "Project failed to open: %1" ).arg( projPath ),
+                                 QgsMessageBar::WARNING );
+    }
+
+    if ( projPath.endsWith( QString( "project_default.qgs" ) ) )
+    {
+      messageBar()->pushMessage( autoOpenMsgTitle,
+                                 tr( "Default template has been reopened: %1" ).arg( projPath ),
+                                 QgsMessageBar::INFO );
+    }
   }
   else
   {
-    messageBar()->pushMessage( tr( "Auto-open Project" ),
+    messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "File not found: %1" ).arg( projPath ),
                                QgsMessageBar::WARNING );
   }
@@ -3434,6 +3486,10 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( QString projectFile )
 {
+  QFileInfo pfi( projectFile );
+  statusBar()->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
+  qApp->processEvents();
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // close the previous opened project if any
@@ -3442,6 +3498,7 @@ bool QgisApp::addProject( QString projectFile )
   if ( ! QgsProject::instance()->read( projectFile ) )
   {
     QApplication::restoreOverrideCursor();
+    statusBar()->clearMessage();
 
     QMessageBox::critical( this,
                            tr( "Unable to open project" ),
@@ -3533,6 +3590,8 @@ bool QgisApp::addProject( QString projectFile )
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+
+  statusBar()->showMessage( tr( "Project loaded" ), 3000 );
   return true;
 } // QgisApp::addProject(QString projectFile)
 
