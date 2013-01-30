@@ -28,6 +28,7 @@
 #include <QGridLayout>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QTextEdit>
 
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
@@ -45,7 +46,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
-
+  mCountProgress->setObjectName( "mCountProgress" );
   mCountStyleSheet = QString( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
                               " border-radius: 2px; background: rgba(0, 0, 0, 0);"
                               " image: url(:/images/themes/default/%1) }"
@@ -73,15 +74,16 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
 
   mCloseBtn = new QToolButton( this );
+  mCloseMenu->setObjectName( "mCloseMenu" );
   mCloseBtn->setToolTip( tr( "Close" ) );
-  mCloseBtn->setMinimumWidth( 36 );
+  mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
     "QToolButton { background-color: rgba(255, 255, 255, 0); } "
-    "QToolButton::menu-indicator { subcontrol-position: right bottom; subcontrol-origin: padding; bottom: 6px; }" );
+    "QToolButton::menu-indicator { subcontrol-position: right bottom; subcontrol-origin: padding; bottom: 2px; }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
   mCloseBtn->setIconSize( QSize( 18, 18 ) );
-  mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
@@ -256,20 +258,19 @@ void QgsMessageBar::pushWidget( QWidget *widget, MessageLevel level, int duratio
   if ( level >= CRITICAL )
   {
     stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                 "QLabel { color: white; } ";
+                 "QLabel,QTextEdit { color: white; } ";
   }
   else if ( level == WARNING )
   {
     stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                 "QLabel { color: black; } ";
+                 "QLabel,QTextEdit { color: black; } ";
   }
   else if ( level <= INFO )
   {
     stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                 "QLabel { color: #2554a1; } ";
+                 "QLabel,QTextEdit { color: #2554a1; } ";
   }
-  stylesheet += "QLabel#mMsgTitle { font-weight: bold; } "
-                "QLabel#mItemCount { font-style: italic; }";
+  stylesheet += "QLabel#mItemCount { font-style: italic; }";
   pushWidget( widget, stylesheet, duration );
 }
 
@@ -298,23 +299,26 @@ QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text
     layout->addWidget( lblIcon );
   }
 
+  QTextEdit *msgText = new QTextEdit( widget );
+  msgText->setObjectName( "mMsgText" );
+  QString content = text;
   if ( !title.isEmpty() )
   {
     // add ':' to end of title
     QString t = title.trimmed();
     if ( !t.endsWith( ":" ) )
-      t += ":";
-
-    QLabel *lblTitle = new QLabel( t, widget );
-    lblTitle->setObjectName( "mMsgTitle" );
-    layout->addWidget( lblTitle );
+      t += ": ";
+    content.prepend( QString( "<b>" ) + t + "</b>" );
   }
-
-  QLabel *lblText = new QLabel( text, widget );
-  lblText->setObjectName( "mMsgText" );
-  lblText->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-  lblText->setWordWrap( true );
-  layout->addWidget( lblText );
+  msgText->setText( content );
+  msgText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+  msgText->setReadOnly( true );
+  msgText->setFrameShape( QFrame::NoFrame );
+  // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
+  // adjusts to height of font set in app options
+  msgText->setStyleSheet( "* { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                          "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); }" );
+  layout->addWidget( msgText );
 
   return widget;
 }
