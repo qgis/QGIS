@@ -40,7 +40,6 @@
 #include <cstdlib> // size_t
 #include <limits> // std::numeric_limits
 
-#include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
@@ -451,11 +450,13 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
       int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
       for ( int i = 0; i < nSymbolLayers; ++i )
       {
-        /*QMap< QgsSymbolLayerV2*, QString >::const_iterator it = mSymbolLayerTable.find( (*symbolIt)->symbolLayer( i ) );
-        if( it == mSymbolLayerTable.constEnd() )
+#if 0
+        QMap< QgsSymbolLayerV2*, QString >::const_iterator it = mSymbolLayerTable.find(( *symbolIt )->symbolLayer( i ) );
+        if ( it == mSymbolLayerTable.constEnd() )
         {
-            continue;
-        }*/
+          continue;
+        }
+#endif
         double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
         double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
 
@@ -549,7 +550,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                         .arg( attrValue.toString() );
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
-        return false;
+        return 0;
     }
   }
 
@@ -584,7 +585,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return false;
+        return 0;
       }
 
       OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
@@ -595,7 +596,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return false;
+        return 0;
       }
 
       // pass ownership to geometry
@@ -611,7 +612,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         mError = ErrFeatureWriteFailed;
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
-        return false;
+        return 0;
       }
 
       // set geometry (ownership is not passed to OGR)
@@ -1187,6 +1188,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     mapUnits = ct->destCRS().mapUnits();
   }
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
   mSymbolLayerTable.clear();
   OGRStyleTableH ogrStyleTable = OGR_STBL_Create();
   OGRStyleMgrH styleManager = OGR_SM_Create( ogrStyleTable );
@@ -1210,10 +1212,11 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     }
   }
   OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
+#endif
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
-                                                                                  const QgsCoordinateTransform* ct, QString* errorMessage )
+    const QgsCoordinateTransform* ct, QString* errorMessage )
 {
   if ( !layer || !layer->isUsingRendererV2() )
   {

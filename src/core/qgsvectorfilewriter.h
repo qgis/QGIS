@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgssymbolv2.h"
+#include <ogr_api.h>
 
 #include <QPair>
 
@@ -178,7 +179,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     SymbologyExport mSymbologyExport;
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1700
     QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
+#endif
 
     /**Scale for symbology export (e.g. for symbols units in map units)*/
     double mSymbologyScaleDenominator;

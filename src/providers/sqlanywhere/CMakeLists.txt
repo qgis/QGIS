@@ -9,7 +9,6 @@ SET (SA_SRCS
 )
 SET (SA_MOC_HDRS
   qgssqlanywhereprovider.h
-  qgssqlanywherefeatureiterator.h
 )
 
 ADD_DEFINITIONS("-DSACONN_EXPORT=${DLLEXPORT}")
