@@ -334,7 +334,10 @@ void QgsAttributeTableModel::loadLayer()
       }
     }
 
-    QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
+    QgsFeatureRequest req;
+    if ( !rect.isEmpty() )
+      req.setFilterRect( rect );
+    QgsFeatureIterator fit = mLayer->getFeatures( req.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
     QgsFeature f;
     for ( i = 0; fit.nextFeature( f ); ++i )
@@ -485,7 +488,10 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 
   int idx = fieldIdx( column );
 
-  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << idx ) );
+  QgsFeatureRequest req;
+  if ( !rect.isEmpty() )
+    req.setFilterRect( rect );
+  QgsFeatureIterator fit = mLayer->getFeatures( req.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << idx ) );
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
@@ -585,11 +591,16 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 
   if ( mFeatureMap.contains( fid ) )
   {
-    mFeatureMap[ fid ].setAttribute( idx, value );
+    QgsFeature &f = mFeatureMap[ fid ];
+    if( idx >= f.attributes().size() )
+      f.attributes().resize( mFieldCount );
+    f.setAttribute( idx, value );
   }
 
   if ( mFeat.id() == fid || featureAtId( fid ) )
   {
+    if( idx >= mFeat.attributes().size() )
+      mFeat.attributes().resize( mFieldCount );
     mFeat.setAttribute( idx, value );
   }
 
