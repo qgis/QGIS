@@ -276,10 +276,10 @@ QgsSqlAnywhereProvider::storageType() const
   return "SQL Anywhere database";
 } // QgsSqlAnywhereProvider::storageType()
 
-QgsFeatureIterator 
+QgsFeatureIterator
 QgsSqlAnywhereProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  if( !mValid )
+  if ( !mValid )
   {
     QgsMessageLog::logMessage( tr( "Read attemt on an invalid SqlAnywhere data source" ), tr( "SQLAnywhere" ) );
     return QgsFeatureIterator();
@@ -816,7 +816,7 @@ QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
              .arg( mSrid );
 
     // iterate attributes
-    for( int idx = 0; idx < attrs.count(); ++idx )
+    for ( int idx = 0; idx < attrs.count(); ++idx )
     {
       QVariant v = attrs[idx];
       QString fieldname = mAttributeFields[idx].name();
@@ -1144,15 +1144,15 @@ QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           ; ait++ )
     {
       QString attr;
-      if( ait.key() < mAttributeFields.size() )
+      if ( ait.key() < mAttributeFields.size() )
       {
         attr = field( ait.key() ).name();
-      } 
+      }
       sql += ( cnt++ != 0 ? ", " : "" );
       sql += QString( "%1=%2" )
              .arg( attr )
              .arg( quotedValue( ait->toString() ) );
-      
+
       ok = !attr.isEmpty();
     }
 
@@ -1298,7 +1298,10 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
 
 QgsAttributeList QgsSqlAnywhereProvider::attributeIndexes()
 {
-  return mAttributeFields.keys();
+  QgsAttributeList lst;
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
+    lst.append( i );
+  return lst;
 }
 
 bool

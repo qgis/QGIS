@@ -39,7 +39,7 @@ class QgsSqlAnywhereFeatureIterator : public QgsAbstractFeatureIterator
      * Statement handle for fetching of features by bounding rectangle
      */
     SqlAnyStatement *mStmt;
-    
+
     QgsRectangle mStmtRect;
 
 };
