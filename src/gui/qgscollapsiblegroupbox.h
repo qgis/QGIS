@@ -41,7 +41,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     ~QgsCollapsibleGroupBox();
 
     // set custom QSettings pointer if group box was already created from QtDesigner promotion
-    void setSettings( QSettings* settings ) { mSettings = settings ;}
+    void setSettings( QSettings* settings );
 
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );

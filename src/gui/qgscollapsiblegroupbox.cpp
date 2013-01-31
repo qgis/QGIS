@@ -45,8 +45,19 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
 QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
 {
   saveState();
-  if ( mDelSettings )
+  if ( mDelSettings ) // local settings obj to delete
     delete mSettings;
+  mSettings = 0; // null the pointer (in case of outside settings obj)
+  delete mSettings; // delete the null pointer
+}
+
+
+void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
+{
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = settings;
+  mDelSettings = false; // don't delete outside obj
 }
 
 void QgsCollapsibleGroupBox::init()
