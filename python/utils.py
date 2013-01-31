@@ -46,8 +46,11 @@ warnings.simplefilter('default')
 warnings.filterwarnings("ignore", "the sets module is deprecated")
 
 def showWarning(message, category, filename, lineno, file=None, line=None):
+  stk = ""
+  for s in traceback.format_stack()[:-2]:
+    stk += s.decode('utf-8', 'replace')
   QgsMessageLog.logMessage(
-    warnings.formatwarning(message, category, filename, lineno),
+    "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
     QCoreApplication.translate( "Python", "Python" )
   )
 warnings.showwarning = showWarning
