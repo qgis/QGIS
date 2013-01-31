@@ -437,7 +437,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   sqliteHandle = handle->handle();
 
   bool alreadyDone = false;
-  bool ret;
+  bool ret = false;
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
@@ -449,7 +449,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
     specialCase = true;
 
-  if ( specialCase == false )
+  if ( !specialCase )
   {
     // using v.4.0 Abstract Interface
     ret = true;
@@ -469,14 +469,14 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   }
 #endif
 
-  if ( alreadyDone == false )
+  if ( !alreadyDone )
   {
     // check if this one Layer is based on a Table, View or VirtualShapefile
     // by using the traditional methods
     ret = checkLayerType();
   }
 
-  if ( ret == false )
+  if ( !ret )
   {
     // invalid metadata
     numberFeatures = 0;
@@ -529,7 +529,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   }
 #endif
 
-  if ( alreadyDone == false )
+  if ( !alreadyDone )
   {
     // using the traditional methods
     if ( !getGeometryDetails() )  // gets srid and geometry type
