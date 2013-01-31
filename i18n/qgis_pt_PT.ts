@@ -31530,17 +31530,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="128"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished">Edição Offline</translation>
+        <translation>Edição Offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="129"/>
         <source>Converting to offline project.</source>
-        <translation type="unfinished">Converter para projeto offline.</translation>
+        <translation>Converter para projecto offline.</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="130"/>
         <source>Offline database file &apos;%1&apos; exists. Overwrite?</source>
-        <translation type="unfinished">Base de dados offline %1 já existe. Substituir?</translation>
+        <translation>Base de dados offline %1 já existe. Substituir?</translation>
     </message>
 </context>
 <context>
@@ -35915,7 +35915,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="46"/>
         <source>Ignore</source>
-        <translation type="unfinished">Ignorar</translation>
+        <translation>Ignorar</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="52"/>
@@ -40877,7 +40877,7 @@ O erro foi:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="207"/>
         <source>Texture</source>
-        <translation type="unfinished">Textura</translation>
+        <translation>Textura</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="293"/>
@@ -40897,7 +40897,7 @@ O erro foi:
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="183"/>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="193"/>
         <source>None</source>
-        <translation type="unfinished">Nenhum</translation>
+        <translation>Nenhum</translation>
     </message>
 </context>
 <context>
@@ -45211,7 +45211,7 @@ Existem classes que poderiam ser excluídas antes da classificação?</translati
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="43"/>
         <source>SpatiaLite</source>
-        <translation type="unfinished">SpatiaLite</translation>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <source>Original CRS</source>
@@ -45359,12 +45359,12 @@ Existem classes que poderiam ser excluídas antes da classificação?</translati
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="90"/>
         <source>Edit...</source>
-        <translation type="unfinished">Editar...</translation>
+        <translation>Editar...</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="94"/>
         <source>Delete</source>
-        <translation type="unfinished">Apagar</translation>
+        <translation>Apagar</translation>
     </message>
 </context>
 <context>
@@ -45421,7 +45421,7 @@ Existem classes que poderiam ser excluídas antes da classificação?</translati
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="104"/>
         <source>Loading WFS data
 %1</source>
-        <translation type="unfinished">Carregando dados WFS
+        <translation>Carregando dados WFS
 %1</translation>
     </message>
 </context>
@@ -48694,7 +48694,7 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="98"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Deslocamento X,Y</translation>
+        <translation>Deslocamento X,Y</translation>
     </message>
 </context>
 <context>
@@ -48717,7 +48717,7 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="61"/>
         <source>Pen width</source>
-        <translation type="unfinished">Espessura da linha</translation>
+        <translation>Espessura da linha</translation>
     </message>
 </context>
 <context>
@@ -48761,7 +48761,7 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="96"/>
         <source>Offset</source>
-        <translation type="unfinished">Deslocamento</translation>
+        <translation>Deslocamento</translation>
     </message>
 </context>
 <context>
@@ -48782,7 +48782,7 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="81"/>
         <source>Line offset</source>
-        <translation type="unfinished">Deslocamento da linha</translation>
+        <translation>Deslocamento da linha</translation>
     </message>
     <message>
         <source>Change</source>
@@ -49024,7 +49024,7 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="55"/>
         <source>Fill color</source>
-        <translation type="unfinished">Cor do preenchimento</translation>
+        <translation>Cor do preenchimento</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="69"/>
@@ -49039,13 +49039,13 @@ provedores adicionais de algoritmos</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="96"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Deslocamento X,Y</translation>
+        <translation>Deslocamento X,Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="32"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="62"/>
         <source>Change</source>
-        <translation type="unfinished">Mudar</translation>
+        <translation>Mudar</translation>
     </message>
 </context>
 <context>
