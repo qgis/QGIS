@@ -2,8 +2,8 @@
     qgssqlanywhereprovider.cpp - QGIS data provider for SQL Anywhere DBMS
     --------------------------
     begin                : Dec 2010
-    copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author               : David DeHaan
+    copyright            : (C) 2013 by SAP AG or an SAP affiliate company.
+    author               : David DeHaan, Mary Steele
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
