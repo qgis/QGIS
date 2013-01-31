@@ -1,7 +1,7 @@
+	
+SET (MSSQL_SRCS qgsmssqlprovider.cpp qgsmssqlgeometryparser.cpp qgsmssqlsourceselect.cpp qgsmssqltablemodel.cpp qgsmssqlnewconnection.cpp qgsmssqldataitems.cpp qgsmssqlfeatureiterator.cpp)
 
-SET (MSSQL_SRCS qgsmssqlprovider.cpp qgsmssqlgeometryparser.cpp qgsmssqlsourceselect.cpp qgsmssqltablemodel.cpp qgsmssqlnewconnection.cpp qgsmssqldataitems.cpp)
-
-SET (MSSQL_MOC_HDRS qgsmssqlprovider.h qgsmssqlsourceselect.h qgsmssqltablemodel.h qgsmssqlnewconnection.h qgsmssqldataitems.h)
+SET (MSSQL_MOC_HDRS qgsmssqlprovider.h qgsmssqlsourceselect.h qgsmssqltablemodel.h qgsmssqlnewconnection.h qgsmssqldataitems.h qgsmssqlfeatureiterator.h)
 
 ########################################################
 # Build
