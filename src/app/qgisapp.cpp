@@ -6299,6 +6299,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEn
 
   myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
+  myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();
 }
 
