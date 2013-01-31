@@ -210,7 +210,7 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid quantal raring"))
 	dh_python2 --no-guessing-versions
 else
 	dh_pycentral
