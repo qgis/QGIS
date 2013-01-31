@@ -1986,11 +1986,15 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionSelectByExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+   </property>
    <property name="text">
     <string>Select By Expression</string>
    </property>
    <property name="toolTip">
-    <string>Select features by using an expression</string>
+    <string>Select features using an expression</string>
    </property>
   </action>
  </widget>
