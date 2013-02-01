@@ -143,19 +143,16 @@ class Dialog(QDialog, Ui_Dialog):
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
         provider = vlayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
         feat = QgsFeature()
         geom = QgsGeometry()
         #geom2 = QgsGeometry()
-        provider.nextFeature(feat)
+        fit = provider.getFeatures()
+        fit.nextFeature(feat)
         geom = QgsGeometry(feat.geometry())
         count = 10.00
         add = ( 40.00 - 10.00 ) / provider.featureCount()
-        #provider.rewind()
-        #provider.nextFeature(feat)
         #geom = QgsGeometry(feat.geometry())
-        while provider.nextFeature(feat):
+        while fit.nextFeature(feat):
             geom = geom.combine(QgsGeometry( feat.geometry() ))
             count = count + add
             self.progressBar.setValue(count)
@@ -194,7 +191,7 @@ class Dialog(QDialog, Ui_Dialog):
             pGeom = QgsGeometry().fromPoint(point)
             ids = index.intersects(pGeom.buffer(5,5).boundingBox())
             for id in ids:
-                provider.featureAtId(int(id),feat,True)
+                provider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( feat )
                 tGeom = QgsGeometry(feat.geometry())
                 if pGeom.intersects(tGeom):
                     points.append(pGeom)
@@ -238,8 +235,6 @@ class Dialog(QDialog, Ui_Dialog):
 #
     def loopThruPolygons(self, inLayer, numRand, design):
         sProvider = inLayer.dataProvider()
-        sAllAttrs = sProvider.attributeIndexes()
-        sProvider.select(sAllAttrs)
         sFeat = QgsFeature()
         sGeom = QgsGeometry()
         sPoints = []
@@ -250,13 +245,14 @@ class Dialog(QDialog, Ui_Dialog):
                     break
         count = 10.00
         add = 60.00 / sProvider.featureCount()
-        while sProvider.nextFeature(sFeat):
+        sFit = sProvider.getFeatures()
+        while sFit.nextFeature(sFeat):
             sGeom = sFeat.geometry()
             if design == self.tr("density"):
                 sDistArea = QgsDistanceArea()
                 value = int(round(numRand * sDistArea.measure(sGeom)))
             elif design == self.tr("field"):
-                sAtMap = sFeat.attributeMap()
+                sAtMap = sFeat.attributes()
                 value = sAtMap[index].toInt()[0]
             else:
                 value = numRand

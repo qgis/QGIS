@@ -116,8 +116,6 @@ class Dialog(QDialog, Ui_Dialog):
         weightIndex = provider.fieldNameIndex(weightField)
         uniqueIndex = provider.fieldNameIndex(uniqueField)
         feat = QgsFeature()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
         sRs = provider.crs()
         check = QFile(self.shapefileName)
         if check.exists():
@@ -143,26 +141,25 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, nFeat)
         for j in uniqueValues:
-            provider.rewind()
-            provider.select(allAttrs)
             cx = 0.00
             cy = 0.00
             points = []
             weights = []
-            while provider.nextFeature(feat):
+	    fit = provider.getFeatures()
+            while fit.nextFeature(feat):
                 nElement += 1
                 self.progressBar.setValue(nElement)
                 if single:
                     check = j.toString().trimmed()
                 else:
-                    check = feat.attributeMap()[uniqueIndex].toString().trimmed()
+                    check = feat.attributes()[uniqueIndex].toString().trimmed()
                 if check == j.toString().trimmed():
                     cx = 0.00
                     cy = 0.00
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
+                        weight = float(feat.attributes()[weightIndex].toDouble()[0])
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:

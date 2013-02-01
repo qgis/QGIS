@@ -114,7 +114,6 @@ class Dialog(QDialog, Ui_Dialog):
 
         layer1 = ftools_utils.getVectorLayerByName(line1)
         provider1 = layer1.dataProvider()
-        allAttrs = provider1.attributeIndexes()
         fieldList = ftools_utils.getFieldList(layer1)
         index1 = provider1.fieldNameIndex(field1)
         field1 = fieldList[index1]
@@ -122,7 +121,6 @@ class Dialog(QDialog, Ui_Dialog):
 
         layer2 = ftools_utils.getVectorLayerByName(line2)
         provider2 = layer2.dataProvider()
-        allAttrs = provider2.attributeIndexes()
         fieldList = ftools_utils.getFieldList(layer2)
         index2 = provider2.fieldNameIndex(field2)
         field2 = fieldList[index2]
@@ -145,16 +143,16 @@ class Dialog(QDialog, Ui_Dialog):
 
         index = ftools_utils.createIndex( provider2 )
 
-        provider1.select([index1])
-        while provider1.nextFeature(inFeat):
+	fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
+        while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            v1 = inFeat.attributeMap()[index1]
+            v1 = inFeat.attributes()[index1]
 
             lineList = index.intersects( inGeom.boundingBox() )
             for i in lineList:
-                provider2.featureAtId( int( i ), inFeatB , True, [index2] )
+                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int( i ) ).setSubsetOfAttributes([index2]) ).nextFeature( inFeatB )
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
-                v2 = inFeatB.attributeMap()[index2]
+                v2 = inFeatB.attributes()[index2]
 
                 if inGeom.intersects(tmpGeom):
                     tempGeom = inGeom.intersection(tmpGeom)

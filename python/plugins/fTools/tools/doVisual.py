@@ -236,9 +236,6 @@ class visualThread( QThread ):
 
   def list_unique_values( self, vlayer, myField ):
     vprovider = vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
     index = vprovider.fieldNameIndex( myField )
     unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
     lstUnique = []
@@ -256,9 +253,6 @@ class visualThread( QThread ):
 
   def basic_statistics( self, vlayer, myField ):
     vprovider = vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
     index = vprovider.fieldNameIndex( myField )
     feat = QgsFeature()
     sumVal = 0.0
@@ -279,7 +273,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
-          atMap = f.attributeMap()
+          atMap = f.attributes()
           lenVal = float( len( atMap[ index ].toString() ) )
           if first:
             minVal = lenVal
@@ -301,9 +295,9 @@ class visualThread( QThread ):
         if nFeat > 0:
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-        vprovider.select( allAttrs )
-        while vprovider.nextFeature( feat ):
-          atMap = feat.attributeMap()
+        fit = vprovider.getFeatures()
+        while fit.nextFeature( feat ):
+          atMap = feat.attributes()
           lenVal = float( len( atMap[ index ].toString() ) )
           if first:
             minVal = lenVal
@@ -348,7 +342,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
-          atMap = f.attributeMap()
+          atMap = f.attributes()
           value = float( atMap[ index ].toDouble()[ 0 ] )
           if first:
             minVal = value
@@ -367,9 +361,9 @@ class visualThread( QThread ):
         if nFeat > 0:
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-        vprovider.select( allAttrs )
-        while vprovider.nextFeature( feat ):
-          atMap = feat.attributeMap()
+        fit = vprovider.getFeatures()
+        while fit.nextFeature( feat ):
+          atMap = feat.attributes()
           value = float( atMap[ index ].toDouble()[ 0 ] )
           if first:
             minVal = value
@@ -415,10 +409,6 @@ class visualThread( QThread ):
 
   def nearest_neighbour_analysis( self, vlayer ):
     vprovider = vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    feat = QgsFeature()
-    neighbour = QgsFeature()
     sumDist = 0.00
     distance = QgsDistanceArea()
     A = vlayer.extent()
@@ -430,9 +420,12 @@ class visualThread( QThread ):
     if nFeat > 0:
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
       self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( feat ):
+    feat = QgsFeature()
+    neighbour = QgsFeature()
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( feat ):
       neighbourID = index.nearestNeighbor( feat.geometry().asPoint(), 2 )[ 1 ]
-      vprovider.featureAtId( neighbourID, neighbour, True, [] )
+      vprovider.getFeatures( QgsFeatureRequest().setFilterFid( neighbourID ).setSubsetOfAttributes( [] ) ).nextFeature( neighbour )
       nearDist = distance.measureLine( neighbour.geometry().asPoint(), feat.geometry().asPoint() )
       sumDist += nearDist
       nElement += 1

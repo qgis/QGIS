@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 #-----------------------------------------------------------
 #
 # fTools
@@ -158,15 +158,11 @@ class Dialog(QDialog, Ui_Dialog):
         layer2 = ftools_utils.getVectorLayerByName(line2)
         provider1 = layer1.dataProvider()
         provider2 = layer2.dataProvider()
-        allAttrs = provider1.attributeIndexes()
-        provider1.select(allAttrs)
-        allAttrs = provider2.attributeIndexes()
-        provider2.select(allAttrs)
         sindex = QgsSpatialIndex()
         inFeat = QgsFeature()
-        while provider2.nextFeature(inFeat):
+	fit2 = provider2.getFeatures()
+        while fit2.nextFeature(inFeat):
             sindex.insertFeature(inFeat)
-        provider2.rewind()
         if nearest < 1: nearest = layer2.featureCount()
         else: nearest = nearest
         index1 = provider1.fieldNameIndex(field1)
@@ -196,20 +192,21 @@ class Dialog(QDialog, Ui_Dialog):
         first = True
         start = 15.00
         add = 85.00 / provider1.featureCount()
-        while provider1.nextFeature(inFeat):
+	fit1 = provider1.getFeatures()
+        while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            inID = inFeat.attributeMap()[index1].toString()
+            inID = inFeat.attributes()[index1].toString()
             if first:
                 featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
                 first = False
                 data = ["ID"]
                 for i in featList:
-                    provider2.featureAtId(int(i), outFeat, True, [index2])
-                    data.append(unicode(outFeat.attributeMap()[index2].toString()))
+                    provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
+                    data.append(unicode(outFeat.attributes()[index2].toString()))
                 writer.writerow(data)
             data = [unicode(inID)]
             for j in featList:
-                provider2.featureAtId(int(j), outFeat, True)
+                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(j) ) ).nextFeature( outFeat )
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 data.append(str(float(dist)))
@@ -225,15 +222,16 @@ class Dialog(QDialog, Ui_Dialog):
         outGeom = QgsGeometry()
         start = 15.00
         add = 85.00 / provider1.featureCount()
-        while provider1.nextFeature(inFeat):
+        fit1 = provider1.getFeatures()
+        while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            inID = inFeat.attributeMap()[index1].toString()
+            inID = inFeat.attributes()[index1].toString()
             featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
             distList = []
             vari = 0.00
             for i in featList:
-                provider2.featureAtId(int(i), outFeat, True, [index2])
-                outID = outFeat.attributeMap()[index2].toString()
+                provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
+                outID = outFeat.attributes()[index2].toString()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:

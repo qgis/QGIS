@@ -353,12 +353,9 @@ class geometryThread( QThread ):
 
   def single_to_multi( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
     allValid = True
     geomType = self.singleToMultiGeom( vprovider.geometryType() )
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
                                   geomType, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -376,12 +373,11 @@ class geometryThread( QThread ):
     merge_all = self.myField == QString( "--- " + self.tr( "Merge all" ) + " ---" )
     if not len( unique ) == self.vlayer.featureCount() or merge_all:
       for i in unique:
-        vprovider.rewind()
         multi_feature= []
         first = True
-        vprovider.select( allAttrs )
-        while vprovider.nextFeature( inFeat ):
-          atMap = inFeat.attributeMap()
+        fit = vprovider.getFeatures()
+        while fit.nextFeature( inFeat ):
+          atMap = inFeat.attributes()
           if not merge_all:
             idVar = atMap[ index ]
           else:
@@ -396,7 +392,7 @@ class geometryThread( QThread ):
             multi_feature.extend( feature_list )
           nElement += 1
           self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
-        outFeat.setAttributeMap( atts )
+        outFeat.setAttributes( atts )
         outGeom = QgsGeometry( self.convertGeometry( multi_feature, vType ) )
         if not outGeom.isGeosValid():
           allValid = "valid_error"
@@ -409,11 +405,8 @@ class geometryThread( QThread ):
 
   def multi_to_single( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
     geomType = self.multiToSingleGeom( vprovider.geometryType() )
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
                                   geomType, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -423,13 +416,14 @@ class geometryThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( inFeat ):
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), nElement )
       inGeom = inFeat.geometry()
-      atMap = inFeat.attributeMap()
+      atMap = inFeat.attributes()
       featList = self.extractAsSingle( inGeom )
-      outFeat.setAttributeMap( atMap )
+      outFeat.setAttributes( atMap )
       for i in featList:
         outFeat.setGeometry( i )
         writer.addFeature( outFeat )
@@ -438,10 +432,7 @@ class geometryThread( QThread ):
 
   def extract_nodes( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
                                   QGis.WKBPoint, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -451,13 +442,14 @@ class geometryThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( inFeat ):
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       inGeom = inFeat.geometry()
-      atMap = inFeat.attributeMap()
+      atMap = inFeat.attributes()
       pointList = ftools_utils.extractPoints( inGeom )
-      outFeat.setAttributeMap( atMap )
+      outFeat.setAttributes( atMap )
       for i in pointList:
         outFeat.setGeometry( outGeom.fromPoint( i ) )
         writer.addFeature( outFeat )
@@ -466,10 +458,7 @@ class geometryThread( QThread ):
 
   def polygons_to_lines( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vproviders.fields(),
                                   QGis.WKBLineString, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -479,16 +468,18 @@ class geometryThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( inFeat ):
+
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       multi = False
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       inGeom = inFeat.geometry()
       if inGeom.isMultipart():
         multi = True
-      atMap = inFeat.attributeMap()
+      atMap = inFeat.attributes()
       lineList = self.extractAsLine( inGeom )
-      outFeat.setAttributeMap( atMap )
+      outFeat.setAttributes( atMap )
       for h in lineList:
         outFeat.setGeometry( outGeom.fromPolyline( h ) )
         writer.addFeature( outFeat )
@@ -497,10 +488,7 @@ class geometryThread( QThread ):
 
   def lines_to_polygons( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vproviders.fields(),
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -509,7 +497,9 @@ class geometryThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( inFeat ):
+
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       outGeomList = []
       multi = False
       nElement += 1
@@ -522,8 +512,8 @@ class geometryThread( QThread ):
       polyGeom = self.remove_bad_lines( outGeomList )
       if len( polyGeom ) <> 0:
         outFeat.setGeometry( QgsGeometry.fromPolygon( polyGeom ) )
-        atMap = inFeat.attributeMap()
-        outFeat.setAttributeMap( atMap )
+        atMap = inFeat.attributes()
+        outFeat.setAttributes( atMap )
         writer.addFeature( outFeat )
     del writer
     return True
@@ -552,7 +542,6 @@ class geometryThread( QThread ):
     nElement = 0
 
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
 
@@ -560,8 +549,8 @@ class geometryThread( QThread ):
       ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
       writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                     vprovider.geometryType(), vprovider.crs() )
-      vprovider.select( allAttrs )
-      while vprovider.nextFeature(inFeat):
+      fit = vprovider.getFeatures()
+      while fit.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
         inGeom = inFeat.geometry()
@@ -572,8 +561,8 @@ class geometryThread( QThread ):
         ( attr1, attr2 ) = self.simpleMeasure( inGeom, self.myCalcType, ellips, crs )
 
         outFeat.setGeometry( inGeom )
-        atMap = inFeat.attributeMap()
-        outFeat.setAttributeMap( atMap )
+        atMap = inFeat.attributes()
+        outFeat.setAttributes( atMap )
         outFeat.addAttribute( index1, QVariant( attr1 ) )
         outFeat.addAttribute( index2, QVariant( attr2 ) )
         writer.addFeature( outFeat )
@@ -582,8 +571,8 @@ class geometryThread( QThread ):
     else: # update existing file
       ( index1, index2 ) = self.findOrCreateFields( self.vlayer )
 
-      vprovider.select( allAttrs )
-      while vprovider.nextFeature(inFeat):
+      fit = vprovider.getFeatures()
+      while fit.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
         inGeom = inFeat.geometry()
@@ -601,10 +590,7 @@ class geometryThread( QThread ):
 
   def polygon_centroids( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
                                   QGis.WKBPoint, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -612,15 +598,16 @@ class geometryThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( inFeat ):
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       inGeom = inFeat.geometry()
-      atMap = inFeat.attributeMap()
+      atMap = inFeat.attributes()
       outGeom = inGeom.centroid()
       if outGeom is None:
         return "math_error"
-      outFeat.setAttributeMap( atMap )
+      outFeat.setAttributes( atMap )
       outFeat.setGeometry( QgsGeometry( outGeom ) )
       writer.addFeature( outFeat )
     del writer
@@ -630,11 +617,9 @@ class geometryThread( QThread ):
     import voronoi
     from sets import Set
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    fields = { 0 : QgsField( "POINTA", QVariant.Double ),
-               1 : QgsField( "POINTB", QVariant.Double ),
-               2 : QgsField( "POINTC", QVariant.Double ) }
+    fields = [ QgsField( "POINTA", QVariant.Double ),
+               QgsField( "POINTB", QVariant.Double ),
+               QgsField( "POINTC", QVariant.Double ) ]
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
@@ -642,7 +627,8 @@ class geometryThread( QThread ):
     pts = []
     ptDict = {}
     ptNdx = -1
-    while vprovider.nextFeature( inFeat ):
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       geom = QgsGeometry( inFeat.geometry() )
       point = geom.asPoint()
       x = point.x()
@@ -669,7 +655,7 @@ class geometryThread( QThread ):
       polygon = []
       step = 0
       for index in indicies:
-        vprovider.featureAtId( ptDict[ ids[ index ] ], inFeat, True, allAttrs )
+        vprovider.getFeatures( QgsFeatureRequest().setFilterFid( ptDict[ ids[ index ] ] ) ).nextFeature( inFeat )
         geom = QgsGeometry( inFeat.geometry() )
         point = QgsPoint( geom.asPoint() )
         polygon.append( point )
@@ -685,8 +671,6 @@ class geometryThread( QThread ):
 
   def voronoi_polygons( self ):
     vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
@@ -700,7 +684,8 @@ class geometryThread( QThread ):
     pts = []
     ptDict = {}
     ptNdx = -1
-    while vprovider.nextFeature( inFeat ):
+    fit = vprovider.getFeatures()
+    while fit.nextFeature( inFeat ):
       geom = QgsGeometry( inFeat.geometry() )
       point = geom.asPoint()
       x = point.x() - extent.xMinimum()
@@ -721,12 +706,12 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
     for site, edges in c.polygons.iteritems():
-      vprovider.featureAtId( ptDict[ ids[ site ] ], inFeat, True,  allAttrs )
+      vprovider.getFeatures( QgsFeatureRequest().setFilterFid( ptDict[ ids[ site ] ] ) ).nextFeature( inFeat )
       lines = self.clip_voronoi( edges, c, width, height, extent, extraX, extraY )
       geom = QgsGeometry.fromMultiPoint( lines )
       geom = QgsGeometry( geom.convexHull() )
       outFeat.setGeometry( geom )
-      outFeat.setAttributeMap( inFeat.attributeMap() )
+      outFeat.setAttributes( inFeat.attributes() )
       writer.addFeature( outFeat )
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), nElement )
@@ -829,16 +814,16 @@ class geometryThread( QThread ):
   def layer_extent( self ):
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, 0 ) )
-    fields = { 0 : QgsField( "MINX", QVariant.Double ),
-               1 : QgsField( "MINY", QVariant.Double ),
-               2 : QgsField( "MAXX", QVariant.Double ),
-               3 : QgsField( "MAXY", QVariant.Double ),
-               4 : QgsField( "CNTX", QVariant.Double ),
-               5 : QgsField( "CNTY", QVariant.Double ),
-               6 : QgsField( "AREA", QVariant.Double ),
-               7 : QgsField( "PERIM", QVariant.Double ),
-               8 : QgsField( "HEIGHT", QVariant.Double ),
-               9 : QgsField( "WIDTH", QVariant.Double ) }
+    fields = [ QgsField( "MINX", QVariant.Double ),
+               QgsField( "MINY", QVariant.Double ),
+               QgsField( "MAXX", QVariant.Double ),
+               QgsField( "MAXY", QVariant.Double ),
+               QgsField( "CNTX", QVariant.Double ),
+               QgsField( "CNTY", QVariant.Double ),
+               QgsField( "AREA", QVariant.Double ),
+               QgsField( "PERIM", QVariant.Double ),
+               QgsField( "HEIGHT", QVariant.Double ),
+               QgsField( "WIDTH", QVariant.Double ) ]
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                   QGis.WKBPolygon, self.vlayer.crs() )
@@ -861,16 +846,16 @@ class geometryThread( QThread ):
     geometry = QgsGeometry().fromPolygon( [ rect ] )
     feat = QgsFeature()
     feat.setGeometry( geometry )
-    feat.setAttributeMap( { 0 : QVariant( minx ),
-                            1 : QVariant( miny ),
-                            2 : QVariant( maxx ),
-                            3 : QVariant( maxy ),
-                            4 : QVariant( cntx ),
-                            5 : QVariant( cnty ),
-                            6 : QVariant( area ),
-                            7 : QVariant( perim ),
-                            8 : QVariant( height ),
-                            9 : QVariant( width ) } )
+    feat.setAttributes( [ QVariant( minx ),
+                          QVariant( miny ),
+                          QVariant( maxx ),
+                          QVariant( maxy ),
+                          QVariant( cntx ),
+                          QVariant( cnty ),
+                          QVariant( area ),
+                          QVariant( perim ),
+                          QVariant( height ),
+                          QVariant( width ) ] )
     writer.addFeature( feat )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, 100 ) )
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  0 )
@@ -926,20 +911,21 @@ class geometryThread( QThread ):
         geometry = QgsGeometry().fromPolygon( [ rect ] )
 
         outFeat.setGeometry( geometry )
-        outFeat.setAttributeMap( { 0 : QVariant( minx ),
-                                   1 : QVariant( miny ),
-                                   2 : QVariant( maxx ),
-                                   3 : QVariant( maxy ),
-                                   4 : QVariant( cntx ),
-                                   5 : QVariant( cnty ),
-                                   6 : QVariant( area ),
-                                   7 : QVariant( perim ),
-                                   8 : QVariant( height ),
-                                   9 : QVariant( width ) } )
+        outFeat.setAttributes( [ QVariant( minx ),
+                                 QVariant( miny ),
+                                 QVariant( maxx ),
+                                 QVariant( maxy ),
+                                 QVariant( cntx ),
+                                 QVariant( cnty ),
+                                 QVariant( area ),
+                                 QVariant( perim ),
+                                 QVariant( height ),
+                                 QVariant( width ) ] )
         writer.addFeature( outFeat )
     else:
       self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
-      while vprovider.nextFeature( inFeat ):
+      fit = vprovider.getFeatures()
+      while fit.nextFeature( inFeat ):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
 
@@ -962,16 +948,16 @@ class geometryThread( QThread ):
         geometry = QgsGeometry().fromPolygon( [ rect ] )
 
         outFeat.setGeometry( geometry )
-        outFeat.setAttributeMap( { 0 : QVariant( minx ),
-                                   1 : QVariant( miny ),
-                                   2 : QVariant( maxx ),
-                                   3 : QVariant( maxy ),
-                                   4 : QVariant( cntx ),
-                                   5 : QVariant( cnty ),
-                                   6 : QVariant( area ),
-                                   7 : QVariant( perim ),
-                                   8 : QVariant( height ),
-                                   9 : QVariant( width ) } )
+        outFeat.setAttributes( [ QVariant( minx ),
+                                 QVariant( miny ),
+                                 QVariant( maxx ),
+                                 QVariant( maxy ),
+                                 QVariant( cntx ),
+                                 QVariant( cnty ),
+                                 QVariant( area ),
+                                 QVariant( perim ),
+                                 QVariant( height ),
+                                 QVariant( width ) ] )
         writer.addFeature( outFeat )
 
     del writer

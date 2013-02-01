@@ -100,10 +100,6 @@ class Dialog(QDialog, Ui_Dialog):
         lineProvider = lineLayer.dataProvider()
         if polyProvider.crs() <> lineProvider.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
-        allAttrs = polyProvider.attributeIndexes()
-        polyProvider.select(allAttrs)
-        allAttrs = lineProvider.attributeIndexes()
-        lineProvider.select(allAttrs)
         fieldList = ftools_utils.getFieldList(polyLayer)
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
@@ -117,7 +113,6 @@ class Dialog(QDialog, Ui_Dialog):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
-        lineProvider.rewind()
         start = 15.00
         add = 85.00 / polyProvider.featureCount()
         check = QFile(self.shapefileName)
@@ -127,9 +122,10 @@ class Dialog(QDialog, Ui_Dialog):
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
         spatialIndex = ftools_utils.createIndex( lineProvider )
-        while polyProvider.nextFeature(inFeat):
+	polyFit = polyProvider.getFeatures()
+        while polyFit.nextFeature(inFeat):
             inGeom = QgsGeometry(inFeat.geometry())
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
             lineList = []
             length = 0
             #(check, lineList) = lineLayer.featuresInRectangle(inGeom.boundingBox(), True, False)
@@ -140,13 +136,13 @@ class Dialog(QDialog, Ui_Dialog):
             else: check = 1
             if check == 0:
                 for i in lineList:
-                    lineProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
+                    lineProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
-            outFeat.setAttributeMap(atMap)
+            outFeat.setAttributes(atMap)
             outFeat.addAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1

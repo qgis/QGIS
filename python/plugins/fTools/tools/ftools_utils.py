@@ -32,7 +32,6 @@
 # Utility functions
 # -------------------------------------------------
 #
-# combineVectorAttributes( QgsAttributeMap, QgsAttributeMap )
 # convertFieldNameType( QgsField.name() )
 # combineVectorFields( QgsVectorLayer, QgsVectorLayer )
 # checkCRSCompatibility( QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem )
@@ -63,15 +62,6 @@ from qgis.gui import *
 
 import locale
 
-# From two input attribute maps, create single attribute map
-def combineVectorAttributes( atMapA, atMapB ):
-    attribA = atMapA.values()
-    lengthA = len(attribA)
-    attribB = atMapB.values()
-    lengthB = len(attribB)
-    attribA.extend( attribB )
-    return dict( zip( range( 0, lengthB + lengthA ), attribA ) )
-
 # For use with memory provider/layer, converts full field type to simple string
 def convertFieldNameType( inName ):
     if inName == "Integer":
@@ -83,12 +73,10 @@ def convertFieldNameType( inName ):
 
 # From two input field maps, create single field map
 def combineVectorFields( layerA, layerB ):
-    fieldsA = layerA.dataProvider().fields().values()
-    fieldsB = layerB.dataProvider().fields().values()
+    fieldsA = layerA.dataProvider().fields()
+    fieldsB = layerB.dataProvider().fields()
     fieldsB = testForUniqueness( fieldsA, fieldsB )
-    seq = range( 0, len( fieldsA ) + len( fieldsB ) )
     fieldsA.extend( fieldsB )
-    fieldsA = dict( zip ( seq, fieldsA ) )
     return fieldsA
 
 # Check if two input CRSs are identical
@@ -258,20 +246,14 @@ def getMapLayerByName( myName ):
 
 # Return the field list of a vector layer
 def getFieldList( vlayer ):
-    vprovider = vlayer.dataProvider()
-    feat = QgsFeature()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    myFields = vprovider.fields()
-    return myFields
+    return vlayer.dataProvider().fields()
 
 # Convinience function to create a spatial index for input QgsVectorDataProvider
 def createIndex( provider ):
     feat = QgsFeature()
     index = QgsSpatialIndex()
-    provider.rewind()
-    provider.select()
-    while provider.nextFeature( feat ):
+    fit = provider.getFeatures()
+    while fit.nextFeature( feat ):
         index.insertFeature( feat )
     return index
 
@@ -292,8 +274,7 @@ def addShapeToCanvas( shapefile_path ):
 
 # Return all unique values in field based on field index
 def getUniqueValues( provider, index ):
-    values = provider.uniqueValues( index )
-    return values
+    return provider.uniqueValues( index )
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
 def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
@@ -348,29 +329,28 @@ def dirDialog( parent ):
 
 # Return field type from it's name
 def getFieldType(vlayer, fieldName):
-    fields = vlayer.dataProvider().fields()
-    for name, field in fields.iteritems():
+    for field in vlayer.dataProvider().fields():
         if field.name() == fieldName:
             return field.typeName()
 
 # return the number of unique values in field
 def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
-    vprovider = vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
     count = 0
     values = []
     if useSelection:
         selection = vlayer.selectedFeatures()
         for f in selection:
-            if f.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( f.attributeMap()[ fieldIndex ].toString() )
+            v = f.attributes()[ fieldIndex ].toString()
+            if v not in values:
+                values.append( v )
                 count += 1
     else:
         feat = QgsFeature()
-        while vprovider.nextFeature( feat ):
-            if feat.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( feat.attributeMap()[ fieldIndex ].toString() )
+        fit = vlayer.dataProvider().getFeatures()
+        while fit.nextFeature( feat ):
+            v = feat.attributes()[ fieldIndex ].toString()
+            if v not in values:
+                values.append( v )
                 count += 1
     return count
 
