@@ -104,6 +104,18 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   return myResultList;
 } // QgsMapLayerRegistry::addMapLayers
 
+//this is just a thin wrapper for addMapLayers
+QgsMapLayer *
+QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer,
+                                  bool theEmitSignal )
+{
+  QList<QgsMapLayer *> myList, myList2;
+  myList.append( theMapLayer );
+  myList2 = addMapLayers( myList, theEmitSignal );
+  return myList2.isEmpty() ? 0 : myList2[0];
+}
+
+
 //introduced in 1.8
 void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
     bool theEmitSignal )
