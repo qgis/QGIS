@@ -11,6 +11,10 @@ ELSE (WIN32)
   ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT)
 ENDIF (WIN32)
 
+IF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-mismatched-tags ")
+ENDIF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
+
 ########################################################
 # Files
 

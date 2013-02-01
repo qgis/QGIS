@@ -117,6 +117,10 @@ ENDIF (WITH_GLOBE)
 # Compile flag. Make it possible to turn it off.
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
+# whether the compiler front-end is clang on Apple (Mac OS X 10.7+)
+SET (APPLE_CLANG (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+SET (APPLE_CLANG_WARNINGS TRUE CACHE BOOL "Whether to show extra compiler warnings on Mac from clang front-end not shown in gcc front-end builds")
+
 # whether unit tests should be build
 SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 
@@ -304,7 +308,12 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Wextra  -Wno-long-long -Wformat-security -Wno-strict-aliasing )
+    IF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
+      SET(CMAKE_C_FLAGS "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing ")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual ")
+    ELSE (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
+      ADD_DEFINITIONS( -Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing )
+    ENDIF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
