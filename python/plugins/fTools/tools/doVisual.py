@@ -91,8 +91,8 @@ class VisualDialog( QDialog, Ui_Dialog ):
         else:
           self.useSelected.setCheckState( Qt.Unchecked )
       # add all fields in combobox because now we can work with text fields too
-      for i in changedField:
-        self.cmbField.addItem( unicode( changedField[i].name() ) )
+      for f in changedField:
+        self.cmbField.addItem( unicode( f.name() ) )
 
   def accept( self ):
     if self.inShape.currentText() == "":
