@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionselectiondialog.h"
+#include "qgsapplication.h"
 #include "qgsexpression.h"
 
 #include <QSettings>
@@ -24,7 +25,11 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
 {
   setupUi( this );
 
-  setAttribute( Qt::WA_DeleteOnClose );
+  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
+  mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectAdd.svg" ) );
+  mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectRemove.svg" ) );
+  mActionSelectInstersect->setIcon( QgsApplication::getThemeIcon( "/mIconSelectIntersect.svg" ) );
+
   mButtonSelect->addAction( mActionSelect );
   mButtonSelect->addAction( mActionAddToSelection );
   mButtonSelect->addAction( mActionRemoveFromSelection );

@@ -523,6 +523,9 @@
         <file>themes/gis/mIconExpressionFilter.svg</file>
         <file>themes/gis/mIconExpressionPreview.svg</file>
         <file>themes/gis/mIconExpressionSelect.svg</file>
+        <file>themes/gis/mIconSelectAdd.svg</file>
+        <file>themes/gis/mIconSelectIntersect.svg</file>
+        <file>themes/gis/mIconSelectRemove.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -4934,6 +4934,7 @@ void QgisApp::selectByExpression()
   else
   {
     QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->show();
   }
 }
