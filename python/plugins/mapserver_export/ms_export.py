@@ -553,7 +553,7 @@ class Qgis2Map:
           # TODO: add epsg to all METADATA tags??
         except:
           print "ERROR while trying to write ows_srs METADATA"
-	  pass
+          pass
         layer_def += "      'wms_format' '" + format + "'\n"
         layer_def += "      'wms_style' '" + ','.join(wmsStyles) + "'\n"
         layer_def += "    END\n"
@@ -687,9 +687,11 @@ class Qgis2Map:
     intTypes = [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]
 
     integerFields = []
-    for id, field in fields.iteritems():
+    id = 0
+    for field in fields:
       if field.type() in intTypes:
         integerFields.append(id)
+      id += 1
 
     # fid end
     fidIntegerFields = []

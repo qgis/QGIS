@@ -1157,7 +1157,7 @@ class geoprocessingThread( QThread ):
                 # in geometries of different types
                 # produced by the intersection
                 # fix #3549
-                gList = ftools_utils.getGeomType(  geom.wkbType() )
+                gList = ftools_utils.getGeomType( geom.wkbType() )
                 if int_geom.wkbType() in gList:
                   try:
                     outFeat.setGeometry( int_geom )

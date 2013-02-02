@@ -95,7 +95,7 @@ class Intersection(GeoAlgorithm):
                             int_geom = QgsGeometry( int_com.difference( int_sym ) )
                     try:
                         outFeat.setGeometry( int_geom )
-                        outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                        outFeat.setAttributeMap( atMapA.extend( atMapB ) )
                         writer.addFeature( outFeat )
                     except:
                         FEATURE_EXCEPT = False

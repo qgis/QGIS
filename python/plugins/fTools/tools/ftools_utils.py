@@ -183,7 +183,7 @@ def createUniqueFieldName( field ):
 # Return list of field names with more than 10 characters length
 def checkFieldNameLength( fieldList ):
     longNames = QStringList()
-    for num, field in fieldList.iteritems():
+    for field in fieldList:
         if field.name().size() > 10:
             longNames << unicode( field.name() )
     return longNames
@@ -209,7 +209,7 @@ def getLayerNames( vTypes ):
 def getFieldNames( vlayer ):
     fieldmap = getFieldList( vlayer )
     fieldlist = []
-    for name, field in fieldmap.iteritems():
+    for field in fieldmap:
         if not field.name() in fieldlist:
             fieldlist.append( unicode( field.name() ) )
     return sorted( fieldlist, cmp=locale.strcoll )
@@ -299,14 +299,12 @@ def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="Single
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
     encode = settings.value( "/UI/encoding" ).toString()
     fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
-    #fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    #return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
     if dialogMode == "SingleFile":
       return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
     else:
