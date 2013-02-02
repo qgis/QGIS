@@ -71,6 +71,10 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"raring"))
+        CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_GNU_TYPE)/libpython2.7.so
+endif
+
 ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	CMAKE_OPTS += -D WITH_ORACLE=TRUE
 endif
