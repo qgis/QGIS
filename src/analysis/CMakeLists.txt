@@ -44,14 +44,24 @@ ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
-IF (MSVC AND PEDANTIC)
-# disable warnings
-# 4065 switch with default and no case
-# 4702 unreachable code
-SET_SOURCE_FILES_PROPERTIES(
-                ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp 
-                PROPERTIES COMPILE_FLAGS "-wd4065 -wd4702")
-ENDIF (MSVC AND PEDANTIC)
+IF (PEDANTIC AND MSVC)
+  # disable warnings
+  # 4065 switch with default and no case
+  # 4702 unreachable code
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+    PROPERTIES COMPILE_FLAGS "-wd4065 -wd4702"
+  )
+ENDIF (PEDANTIC AND MSVC)
+
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  SET_SOURCE_FILES_PROPERTIES(
+    interpolation/qgstininterpolator.cpp
+    interpolation/NormVecDecorator.cc
+    interpolation/CloughTocherInterpolator.cc
+    PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
+  )
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 SET(QGIS_ANALYSIS_MOC_HDRS
 )

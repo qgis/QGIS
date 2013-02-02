@@ -27,13 +27,15 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
     void showSymbolLevels();
 
+    void rowsMoved();
+
   protected:
 
     void updateUiFromRenderer();
 
     void updateCategorizedSymbolIcon();
 
-    //! populate categories view
+    // Called by virtual refreshSymbolView()
     void populateCategories();
 
     //! populate column combo
@@ -41,6 +43,12 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
 
     //! return row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
+
+    //! return a list of indexes for the categories unders selection
+    QList<int> selectedCategories();
+
+    //! change the selected symbols alone for the change button, if there is a selection
+    void changeSelectedSymbols();
 
     void changeCategorySymbol();
 

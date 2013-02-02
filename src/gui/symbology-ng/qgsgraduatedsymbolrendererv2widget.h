@@ -44,7 +44,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     void setRenderer( QgsGraduatedSymbolRendererV2* renderer );
 
     void addClass( QgsSymbolV2* symbol );
-    void removeRows( QList<int> rows );
+    void deleteRows( QList<int> rows );
     void removeAllRows( );
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
 

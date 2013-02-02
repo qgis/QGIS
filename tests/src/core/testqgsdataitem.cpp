@@ -122,7 +122,7 @@ void TestQgsDataItem::testDirItemChildren()
       {
         QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points.vrt", errStr.toLocal8Bit().constData() )
+      else if ( lFile == "points.vrt" )
       {
         QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }

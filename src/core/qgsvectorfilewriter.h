@@ -80,8 +80,9 @@ class CORE_EXPORT QgsVectorFileWriter
     @param datasourceOptions list of OGR data source creation options
     @param layerOptions list of OGR layer creation options
     @param skipAttributeCreation only write geometries
-    @param newFilename QString pointer which will contain the new file name created
-        (in case it is different to fileName).
+    @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
+    @param symbologyExport symbology to export
+    @param symbologyScale scale of symbology
     */
     static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
                                             const QString& fileName,

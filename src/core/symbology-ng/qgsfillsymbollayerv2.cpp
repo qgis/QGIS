@@ -918,7 +918,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   }
 }
 
-QString QgsLinePatternFillSymbolLayer::ogrFeatureStyle( double widthScaleFactor ) const
+QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFactor ) const
 {
   QString featureStyle;
   featureStyle.append( "Brush(" );

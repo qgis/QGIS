@@ -175,7 +175,7 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Developers</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0" rowspan="2">
         <widget class="QListWidget" name="lstDevelopers">
          <property name="alternatingRowColors">

@@ -218,6 +218,11 @@ SET(QGIS_CORE_SRCS
   qgsscaleutils.cpp
 )
 
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # spatialindex headers produce warnings
+  SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qextserialport/qextserialport.cpp

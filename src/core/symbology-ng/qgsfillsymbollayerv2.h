@@ -191,7 +191,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    QString ogrFeatureStyle( double widthScaleFactor ) const;
+    QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
     void setLineAngle( double a ) { mLineAngle = a; }

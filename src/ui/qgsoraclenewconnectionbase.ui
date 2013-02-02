@@ -44,7 +44,7 @@
      <property name="title">
       <string>Connection Information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_1">
       <item row="4" column="1" colspan="2">
        <widget class="QLineEdit" name="txtUsername"/>
       </item>

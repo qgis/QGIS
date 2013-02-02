@@ -308,17 +308,25 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    IF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
-      SET(CMAKE_C_FLAGS "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing ")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual ")
-    ELSE (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
-      ADD_DEFINITIONS( -Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing )
-    ENDIF (APPLE_CLANG AND NOT APPLE_CLANG_WARNINGS)
+    ADD_DEFINITIONS( -Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing )
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
+
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      ADD_DEFINITIONS(-Wno-return-type-c-linkage) # used in plugins and providers
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   ENDIF (MSVC)
+
 ENDIF (PEDANTIC)
+
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
