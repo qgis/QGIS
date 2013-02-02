@@ -363,10 +363,12 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     {
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
-      select( attributes, rendererContext.extent() );
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFilterRect( rendererContext.extent() )
+                                            .setSubsetOfAttributes( attributes ) );
 
       QgsFeature fet;
-      while ( nextFeature( fet ) )
+      while ( fit.nextFeature( fet ) )
       {
         if (( mRenderer && mRenderer->willRenderFeature( &fet ) )
             || ( mRendererV2 && mRendererV2->willRenderFeature( fet ) ) )
@@ -715,7 +717,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
   return ptr;
 }
 
-void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
+void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
 {
   if ( !hasGeometryType() )
     return;
@@ -730,7 +732,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif //Q_WS_MAC
 
   QgsFeature fet;
-  while ( nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     try
     {
@@ -805,7 +807,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif
 }
 
-void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
+void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
 {
   if ( !hasGeometryType() )
     return;
@@ -832,7 +834,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 #ifndef Q_WS_MAC
   int featureCount = 0;
 #endif //Q_WS_MAC
-  while ( nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     if ( !fet.geometry() )
       continue; // skip features without geometry
@@ -1005,13 +1007,15 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     //register label and diagram layer to the labeling engine
     prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
-    select( attributes, rendererContext.extent() );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFilterRect( rendererContext.extent() )
+                                          .setSubsetOfAttributes( attributes ) );
 
     if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
         && mRendererV2->usingSymbolLevels() )
-      drawRendererV2Levels( rendererContext, labeling );
+      drawRendererV2Levels( fit, rendererContext, labeling );
     else
-      drawRendererV2( rendererContext, labeling );
+      drawRendererV2( fit, rendererContext, labeling );
 
     return true;
   }
@@ -1053,11 +1057,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     bool labeling = false;
     prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
-    select( attributes, rendererContext.extent() );
 
     try
     {
-      while ( nextFeature( fet ) )
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFilterRect( rendererContext.extent() )
+                                            .setSubsetOfAttributes( attributes ) );
+      while ( fit.nextFeature( fet ) )
       {
         if ( !fet.geometry() )
           continue; // skip features without geometry
@@ -1209,10 +1215,13 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
   }
 
   //select all the elements
-  select( QgsAttributeList(), rect, false, true );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFilterRect( rect )
+                                        .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
-  while ( nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     select( f.id(), false ); // don't emit signal (not to redraw it everytime)
   }
@@ -1230,10 +1239,12 @@ void QgsVectorLayer::invertSelection()
 
   removeSelection( false ); // don't emit signal
 
-  select( QgsAttributeList(), QgsRectangle(), false );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature fet;
-  while ( nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     select( fet.id(), false ); // don't emit signal
   }
@@ -1249,15 +1260,18 @@ void QgsVectorLayer::invertSelection()
   emit selectionChanged();
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
 {
   // normalize the rectangle
   rect.normalize();
 
-  select( QgsAttributeList(), rect, false, true );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFilterRect( rect )
+                                        .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature fet;
-  while ( nextFeature( fet ) )
+  while ( fit.nextFeature( fet ) )
   {
     if ( mSelectedFeatureIds.contains( fet.id() ) )
     {
@@ -1417,7 +1431,11 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   {
     foreach ( QgsFeatureId fid, mSelectedFeatureIds )
     {
-      if ( featureAtId( fid, fet, true, false ) && fet.geometry() )
+      if ( getFeatures( QgsFeatureRequest()
+                        .setFilterFid( fid )
+                        .setSubsetOfAttributes( QgsAttributeList() ) )
+           .nextFeature( fet ) &&
+           fet.geometry() )
       {
         r = fet.geometry()->boundingBox();
         retval.combineExtentWith( &r );
@@ -1426,9 +1444,10 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   }
   else
   {
-    select( QgsAttributeList(), QgsRectangle(), true );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setSubsetOfAttributes( QgsAttributeList() ) );
 
-    while ( nextFeature( fet ) )
+    while ( fit.nextFeature( fet ) )
     {
       if ( mSelectedFeatureIds.contains( fet.id() ) )
       {
@@ -1503,15 +1522,15 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   progressDialog.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
-  select( pendingAllAttributesList(), QgsRectangle(), false, false );
-  QgsFeature f;
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
   mRendererV2->startRender( renderContext, this );
 
-  while ( nextFeature( f ) )
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
   {
     QgsSymbolV2List featureSymbolList = mRendererV2->symbolsForFeature( f );
     for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
@@ -1591,10 +1610,11 @@ QgsRectangle QgsVectorLayer::extent()
   }
   else
   {
-    select( QgsAttributeList(), QgsRectangle(), true );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setSubsetOfAttributes( QgsAttributeList() ) );
 
     QgsFeature fet;
-    while ( nextFeature( fet ) )
+    while ( fit.nextFeature( fet ) )
     {
       if ( fet.geometry() )
       {
@@ -1658,6 +1678,13 @@ void QgsVectorLayer::addJoinedAttributes( QgsFeature& f, bool all )
 }
 #endif
 
+QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
+{
+  if ( !mDataProvider )
+    return QgsFeatureIterator();
+
+  return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
+}
 
 void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, bool fetchGeometries, bool useIntersect )
 {
@@ -1676,18 +1703,6 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
 
   mLayerIterator = getFeatures( request );
 }
-
-
-
-
-QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
-{
-  if ( !mDataProvider )
-    return QgsFeatureIterator();
-
-  return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
-}
-
 
 bool QgsVectorLayer::nextFeature( QgsFeature &f )
 {
@@ -1951,8 +1966,15 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 
 bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
+  QgsFeatureRequest req;
+  req.setFilterFid( f.id() );
+  if ( !f.geometry() )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( f.attributes().isEmpty() )
+    req.setSubsetOfAttributes( QgsAttributeList() );
+
   QgsFeature current;
-  if ( !featureAtId( f.id(), current, f.geometry(), !f.attributes().isEmpty() ) )
+  if ( !getFeatures( req ).nextFeature( current ) )
   {
     QgsDebugMsg( QString( "feature %1 could not be retrieved" ).arg( f.id() ) );
     return false;
@@ -2115,10 +2137,13 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
   QgsRectangle geomBBox = geom->boundingBox();
 
   //get list of features that intersect this bounding box
-  select( QgsAttributeList(), geomBBox, true, true );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFilterRect( geomBBox )
+                                        .setFlags( QgsFeatureRequest::ExactIntersect )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
-  while ( nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     if ( ignoreFeatures.contains( f.id() ) )
     {
@@ -2135,6 +2160,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
       }
     }
   }
+
   return returnValue;
 }
 
@@ -3345,10 +3371,14 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
 
+  QgsFeatureRequest req;
+  if ( geometryType() == QGis::NoGeometry )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+
   foreach ( QgsFeatureId fid, mSelectedFeatureIds )
   {
     features.push_back( QgsFeature() );
-    featureAtId( fid, features.back(), geometryType() != QGis::NoGeometry, true );
+    getFeatures( req.setFilterFid( fid ) ).nextFeature( features.back() );
   }
 
   return features;
@@ -3439,9 +3469,12 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   {
     // snapping outside cached area
 
-    select( QgsAttributeList(), searchRect, true, true );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFilterRect( searchRect )
+                                          .setFlags( QgsFeatureRequest::ExactIntersect )
+                                          .setSubsetOfAttributes( QgsAttributeList() ) );
 
-    while ( nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
       ++n;
@@ -4047,12 +4080,14 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     QgsAttributeList attList;
     attList << index;
 
-    select( attList, QgsRectangle(), false, false );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFlags( QgsFeatureRequest::NoGeometry )
+                                          .setSubsetOfAttributes( attList ) );
 
     QgsFeature f;
     QVariant currentValue;
     QHash<QString, QVariant> val;
-    while ( nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       currentValue = f.attribute( index );
       val.insert( currentValue.toString(), currentValue );
@@ -4105,12 +4140,14 @@ QVariant QgsVectorLayer::minimumValue( int index )
     QgsAttributeList attList;
     attList << index;
 
-    select( attList, QgsRectangle(), false, false );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFlags( QgsFeatureRequest::NoGeometry )
+                                          .setSubsetOfAttributes( attList ) );
 
     QgsFeature f;
     double minimumValue = std::numeric_limits<double>::max();
     double currentValue = 0;
-    while ( nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       currentValue = f.attribute( index ).toDouble();
       if ( currentValue < minimumValue )
@@ -4152,7 +4189,10 @@ QVariant QgsVectorLayer::maximumValue( int index )
   else if ( origin == QgsFields::OriginEdit )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
-    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
+    if ( mEditBuffer->mDeletedFeatureIds.isEmpty() &&
+         mEditBuffer->mAddedFeatures.isEmpty() &&
+         !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
+         mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
       return mDataProvider->maximumValue( index );
     }
@@ -4161,12 +4201,14 @@ QVariant QgsVectorLayer::maximumValue( int index )
     QgsAttributeList attList;
     attList << index;
 
-    select( attList, QgsRectangle(), false, false );
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setFlags( QgsFeatureRequest::NoGeometry )
+                                          .setSubsetOfAttributes( attList ) );
 
     QgsFeature f;
     double maximumValue = -std::numeric_limits<double>::max();
     double currentValue = 0;
-    while ( nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       currentValue = f.attribute( index ).toDouble();
       if ( currentValue > maximumValue )
@@ -4216,11 +4258,17 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
     QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
-      select( QgsAttributeList(), rendererContext.extent() );
+      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                            .setFilterRect( rendererContext.extent() )
+                                            .setSubsetOfAttributes( QgsAttributeList() ) );
+
       // total number of features that may be labeled
-      QgsFeature ftr;
+      QgsFeature f;
       int nFeatsToLabel = 0;
-      while ( nextFeature( ftr ) ) { nFeatsToLabel += 1; }
+      while ( fit.nextFeature( f ) )
+      {
+        nFeatsToLabel++;
+      }
       palyr.mFeaturesToLabel = nFeatsToLabel;
     }
   }

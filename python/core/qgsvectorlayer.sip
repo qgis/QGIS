@@ -290,12 +290,12 @@ class QgsVectorLayer : QgsMapLayer
     /** Draw layer with renderer V2.
      * @note added in 1.4
      */
-    void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Draw layer with renderer V2 using symbol levels.
      * @note added in 1.4
      */
-    void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;

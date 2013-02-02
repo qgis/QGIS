@@ -346,12 +346,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draw layer with renderer V2.
      * @note added in 1.4
      */
-    void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Draw layer with renderer V2 using symbol levels.
      * @note added in 1.4
      */
-    void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
+    void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
@@ -451,12 +451,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                                    QgsRectangle rect = QgsRectangle(),
                                    bool fetchGeometry = true,
                                    bool useIntersect = false );
-
-    /**
-     * Query the provider for features specified in request.
-     */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
-
     /**
      * fetch a feature (after select)
      * @param feature buffer to read the feature into
@@ -467,6 +461,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
     Q_DECL_DEPRECATED bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+
+    /**
+     * Query the provider for features specified in request.
+     */
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /** Adds a feature
         @param f feature to add
@@ -1073,7 +1072,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mAnnotationForm;
 
     QgsFeatureIterator mLayerIterator; // temporary: to support old API
-    friend class QgsVectorLayerFeatureIterator;
+
 #if 0
     bool mFetching;
     QgsRectangle mFetchRect;
@@ -1109,6 +1108,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+
+    friend class QgsVectorLayerFeatureIterator;
 };
 
 #endif
