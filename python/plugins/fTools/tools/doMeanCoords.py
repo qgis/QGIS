@@ -193,13 +193,13 @@ class Dialog(QDialog, Ui_Dialog):
                     sd += (i-md)*(i-md)
                 sd = sqrt(sd/item)
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint).buffer(sd * times, 10))
-                outfeat.addAttribute(0, QVariant(sd))
-                outfeat.addAttribute(1, QVariant(j))
+                outfeat.setAttribute(0, QVariant(sd))
+                outfeat.setAttribute(1, QVariant(j))
             else:
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-                outfeat.addAttribute(0, QVariant(cx))
-                outfeat.addAttribute(1, QVariant(cy))
-                outfeat.addAttribute(2, QVariant(j))
+                outfeat.setAttribute(0, QVariant(cx))
+                outfeat.setAttribute(1, QVariant(cy))
+                outfeat.setAttribute(2, QVariant(j))
             writer.addFeature(outfeat)
             if single:
                 break

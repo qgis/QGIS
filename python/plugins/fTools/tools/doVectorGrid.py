@@ -193,8 +193,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(bound.xMaximum(), y)
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(y))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(y))
                 writer.addFeature(outFeat)
                 y = y - yOffset
                 idVar = idVar + 1
@@ -213,8 +213,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(x, bound.yMinimum())
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(x))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(x))
                 writer.addFeature(outFeat)
                 x = x + xOffset
                 idVar = idVar + 1
@@ -238,11 +238,11 @@ class Dialog(QDialog, Ui_Dialog):
                     pt5 = QgsPoint(x, y)
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
-                    outFeat.addAttribute(0, QVariant(idVar))
-                    outFeat.addAttribute(1, QVariant(x))
-                    outFeat.addAttribute(2, QVariant(x + xOffset))
-                    outFeat.addAttribute(3, QVariant(y - yOffset))
-                    outFeat.addAttribute(4, QVariant(y))
+                    outFeat.setAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(1, QVariant(x))
+                    outFeat.setAttribute(2, QVariant(x + xOffset))
+                    outFeat.setAttribute(3, QVariant(y - yOffset))
+                    outFeat.setAttribute(4, QVariant(y))
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + xOffset

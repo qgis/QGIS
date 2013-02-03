@@ -32,6 +32,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"lucid"))
 TESTMAKE += ARGS="-E PyQgsRectangle"
 endif
 
+
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -57,7 +58,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
          MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise raring"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
@@ -72,7 +73,8 @@ else
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"raring"))
-        CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_GNU_TYPE)/libpython2.7.so
+DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+        CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
 ifneq (,$(findstring -oracle,$(DISTRIBUTION)))

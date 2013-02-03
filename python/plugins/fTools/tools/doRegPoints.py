@@ -147,7 +147,7 @@ class Dialog(QDialog, Ui_Dialog):
                     pGeom = QgsGeometry().fromPoint(QgsPoint(x, y))
                 if pGeom.intersects(bound):
                     outFeat.setGeometry(pGeom)
-                    outFeat.addAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(0, QVariant(idVar))
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + pointSpacing
