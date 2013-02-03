@@ -6747,7 +6747,7 @@ Bitte koorigieren Sie dies, da die OSM-Erweiterung nicht weiß welche Layer das 
     </message>
     <message>
         <source>Open script file</source>
-        <translation>Skiptdatei öffnen</translation>
+        <translation>Skriptdatei öffnen</translation>
     </message>
     <message>
         <source>Save to script file</source>
