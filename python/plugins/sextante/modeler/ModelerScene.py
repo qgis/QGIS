@@ -117,6 +117,9 @@ class ModelerScene(QtGui.QGraphicsScene):
                     for sourceItem in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, self.algItems[iAlg])
                         self.addItem(arrow)
+            for depend in model.dependencies[iAlg]:
+                arrow = ModelerArrowItem(self.algItems[depend], self.algItems[iAlg])
+                self.addItem(arrow)
             iAlg+=1
 
     def mousePressEvent(self, mouseEvent):

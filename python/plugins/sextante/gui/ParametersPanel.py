@@ -275,7 +275,7 @@ class ParametersPanel(QtGui.QWidget):
             opts = []
             for opt in options:
                 opts.append(opt.name())
-            item = MultipleInputPanel(opts, param.datatype)
+            item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):

@@ -45,7 +45,7 @@ class UnthreadedAlgorithmExecutor:
             QMessageBox.critical(None, "Error", e.msg)
             return False
         except Exception:
-            QMessageBox.critical(None, "Error", traceback.format_exc())
+            QMessageBox.critical(None, "Uncaught error", traceback.format_exc())
             return False
 
     @staticmethod

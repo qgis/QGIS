@@ -24,15 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterBoolean import ParameterBoolean
+
 
 from sextante.outputs.OutputVector import OutputVector
 
@@ -67,16 +64,15 @@ class SelectByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = QGisLayers.getObjectFromUri(filename)
         inputProvider = inputLayer.dataProvider()
-        selectProvider = selectLayer.dataProvider()
-                
+
+        oldSelection = set(inputLayer.selectedFeaturesIds())                
         index = QgsSpatialIndex()
         inputProvider.rewind()
         inputProvider.select()
         feat = QgsFeature()
         while inputProvider.nextFeature(feat):        
             index.insertFeature(feat)
-                
-        selectProvider.select()       
+     
         infeat = QgsFeature()
         geom = QgsGeometry()
         selectedSet = []        
@@ -95,9 +91,9 @@ class SelectByLocation(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         if method == 1:
-            selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
+            selectedSet = list(oldSelection.union(selectedSet))
         elif method == 2:
-            selectedSet = list(set(inputLayer.selectedFeaturesIds()).difference(selectedSet))
+            selectedSet = list(oldSelection.difference(selectedSet))
 
         inputLayer.setSelectedFeatures(selectedSet)
         self.setOutputValue(self.OUTPUT, filename)

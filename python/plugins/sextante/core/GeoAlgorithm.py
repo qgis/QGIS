@@ -194,13 +194,14 @@ class GeoAlgorithm:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
+                    if layer is None: # for the case of memory layer, if the getCompatible method has been called
+                        continue
                     provider = layer.dataProvider()
                     writer = out.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs())
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
-            elif isinstance(out, OutputRaster):
-                out.close()
+            elif isinstance(out, OutputRaster):                
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()

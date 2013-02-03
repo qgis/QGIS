@@ -367,7 +367,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             dlg.exec_()
             if dlg.params != None:
                 self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
-                self.alg.addAlgorithm(alg, dlg.params, dlg.values, dlg.outputs)
+                self.alg.addAlgorithm(alg, dlg.params, dlg.values, dlg.outputs, dlg.dependencies)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
 

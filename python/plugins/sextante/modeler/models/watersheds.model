@@ -20,6 +20,7 @@ VALUE:HARDCODEDPARAMVALUE_CONVERGENCE_0===1.0
 VALUE:HARDCODEDPARAMVALUE_DIV_CELLS_1===10
 ALGORITHM:saga:catchmentarea(parallel)
 260.0,172.0
+None
 -1|RASTERLAYER_DEM
 None
 None
@@ -42,6 +43,7 @@ None
 None
 ALGORITHM:saga:channelnetwork
 447.0,291.0
+None
 -1|RASTERLAYER_DEM
 None
 0|CAREA
@@ -56,6 +58,7 @@ None
 None
 ALGORITHM:saga:watershedbasins
 730.0,182.0
+None
 -1|RASTERLAYER_DEM
 1|CHNLNTWRK
 None
@@ -63,13 +66,15 @@ None
 None
 ALGORITHM:saga:vectorisinggridclasses
 864.0,330.0
+None
 2|BASINS
 -1|HARDCODEDPARAMVALUE_CLASS_ALL_3
 -1|HARDCODEDPARAMVALUE_CLASS_ID_3
 -1|HARDCODEDPARAMVALUE_SPLIT_3
 None
-ALGORITHM:ftools:export/addgeometrycolumns
+ALGORITHM:qgis:export/addgeometrycolumns
 655.0,442.0
+None
 3|POLYGONS
 -1|HARDCODEDPARAMVALUE_CALC_METHOD_4
 Watersheds

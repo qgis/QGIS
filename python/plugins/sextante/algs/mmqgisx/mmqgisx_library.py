@@ -1704,21 +1704,19 @@ def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, compar
 		return "No comparison value given"
 
 	readcount = 0
-	writecount = 0
 	feature = QgsFeature()
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 
 	selected = []
 	totalcount = layer.featureCount()
-	features = QGisLayers.features(layer)
-	for feature in features:
+	while layer.dataProvider().nextFeature(feature):
 		if (comparisonname == 'begins with') or (comparisonname == 'contains') or \
-		   (feature.attributeMap()[selectindex].type() == QVariant.String):
+		   		(feature.attributeMap()[selectindex].type() == QVariant.String) or \
+		   		isinstance(comparisonvalue, basestring):
 			x = unicode(feature.attributeMap()[selectindex].toString())
 			y = unicode(comparisonvalue)
 		else:
-			# print feature.attributeMap()[selectindex].typeName()
 			x = float(feature.attributeMap()[selectindex].toString())
 			y = float(comparisonvalue)
 

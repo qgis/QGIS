@@ -29,8 +29,6 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-import os
-from PyQt4 import QtGui
 
 class AutoincrementalField(GeoAlgorithm):
 
@@ -72,4 +70,6 @@ class AutoincrementalField(GeoAlgorithm):
         self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
+
+
 

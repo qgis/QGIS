@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.algs.JoinAttributes import JoinAttributes
+from sextante.algs.CreateConstantRaster import CreateConstantRaster
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,7 +68,6 @@ from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_alg
     mmqgisx_label_point_algorithm, mmqgisx_merge_algorithm,
     mmqgisx_select_algorithm, mmqgisx_sort_algorithm,
     mmqgisx_text_to_float_algorithm)
-
 from sextante.algs.EquivalentNumField import EquivalentNumField
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.algs.AddTableField import AddTableField
@@ -79,6 +78,7 @@ from sextante.algs.SaveSelectedFeatures import SaveSelectedFeatures
 from sextante.algs.Explode import Explode
 from sextante.algs.AutoincrementalField import AutoincrementalField
 from sextante.algs.FieldPyculator import FieldsPyculator
+from sextante.algs.JoinAttributes import JoinAttributes
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
@@ -120,7 +120,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_merge_algorithm(),
                         mmqgisx_select_algorithm(),
                         mmqgisx_sort_algorithm(),
-                        mmqgisx_text_to_float_algorithm()]
+                        mmqgisx_text_to_float_algorithm(),
+                        #raster
+                        CreateConstantRaster()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
