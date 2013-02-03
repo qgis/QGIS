@@ -3,8 +3,13 @@
 
 ADD_SUBDIRECTORY(sqlanyconnection)
 
-SET (SA_SRCS qgssqlanywhereprovider.cpp)
-SET (SA_MOC_HDRS qgssqlanywhereprovider.h)
+SET (SA_SRCS
+  qgssqlanywhereprovider.cpp
+  qgssqlanywherefeatureiterator.cpp
+)
+SET (SA_MOC_HDRS
+  qgssqlanywhereprovider.h
+)
 
 ADD_DEFINITIONS("-DSACONN_EXPORT=${DLLEXPORT}")
 
@@ -15,7 +20,7 @@ QT4_WRAP_CPP (SA_MOC_SRCS  ${SA_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
      ${GEOS_INCLUDE_DIR}
-     ../../core 
+     ../../core
      sqlanyconnection
 )
 

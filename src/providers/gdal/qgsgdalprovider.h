@@ -221,9 +221,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   int theSampleSize = 0,
                                   bool theIncludeOutOfRange = false );
 
-    QString buildPyramids( const QList<QgsRasterPyramid> &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           RasterPyramidsFormat theFormat = PyramidsGTiff );
+    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                           const QString & theResamplingMethod = "NEAREST",
+                           RasterPyramidsFormat theFormat = PyramidsGTiff,
+                           const QStringList & theCreateOptions = QStringList() );
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 
     /** \brief Close data set and release related data */
@@ -257,6 +258,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool remove();
 
     QString validateCreationOptions( const QStringList& createOptions, QString format );
+    QString validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
 
   signals:
     void statusChanged( QString );
@@ -314,6 +317,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** \brief sublayers list saved for subsequent access */
     QStringList mSubLayers;
+
 };
 
 #endif

@@ -63,12 +63,13 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
   QgsVectorLayer* cacheLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
   if ( cacheLayer )
   {
-    int joinFieldIndex = cacheLayer->pendingFields().indexFromName(joinInfo.joinFieldName);
+    int joinFieldIndex = cacheLayer->pendingFields().indexFromName( joinInfo.joinFieldName );
 
     joinInfo.cachedAttributes.clear();
-    cacheLayer->select( cacheLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
+
+    QgsFeatureIterator fit = cacheLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
     QgsFeature f;
-    while ( cacheLayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       const QgsAttributes& attrs = f.attributes();
       joinInfo.cachedAttributes.insert( attrs[joinFieldIndex].toString(), attrs );
@@ -87,10 +88,10 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       continue;
     }
 
-    joinIt->tmpTargetField = fields.indexFromName(joinIt->targetFieldName);
+    joinIt->tmpTargetField = fields.indexFromName( joinIt->targetFieldName );
 
     const QgsFields& joinFields = joinLayer->pendingFields();
-    joinIt->tmpJoinField = joinFields.indexFromName(joinIt->joinFieldName);
+    joinIt->tmpJoinField = joinFields.indexFromName( joinIt->joinFieldName );
 
     for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
@@ -99,7 +100,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       {
         QgsField f = joinFields[idx];
         f.setName( joinLayer->name() + "_" + f.name() );
-        fields.append( f, QgsFields::OriginJoin, idx + (joinIdx*1000) );
+        fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx*1000 ) );
       }
     }
   }
@@ -153,10 +154,10 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
 
 const QgsVectorJoinInfo* QgsVectorLayerJoinBuffer::joinForFieldIndex( int index, const QgsFields& fields, int& sourceFieldIndex ) const
 {
-  if ( fields.fieldOrigin(index) != QgsFields::OriginJoin )
+  if ( fields.fieldOrigin( index ) != QgsFields::OriginJoin )
     return 0;
 
-  int originIndex = fields.fieldOriginIndex(index);
+  int originIndex = fields.fieldOriginIndex( index );
   int sourceJoinIndex = originIndex / 1000;
   sourceFieldIndex = originIndex % 1000;
 

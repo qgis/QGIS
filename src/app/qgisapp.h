@@ -730,9 +730,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewBlank();
     //! As above but allows forcing without prompt and forcing blank project
     void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
+    /** What type of project to open after launch
+     * @note Added in QGIS 1.9 */
+    void fileOpenAfterLaunch();
+    /** After project read, set any auto-opened project as successful
+     * @note Added in QGIS 1.9 */
+    void fileOpenedOKAfterLaunch();
     //! Create a new file from a template project
     bool fileNewFromTemplate( QString fileName );
     void fileNewFromTemplateAction( QAction * qAction );
+    void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();

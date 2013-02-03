@@ -123,7 +123,7 @@ K3ProcessController::~K3ProcessController()
   close( d->fd[0] );
   close( d->fd[1] );
 #else
-#warning FIXME: why does close() freeze up destruction?
+//FIXME: why does close() freeze up destruction?
 #endif
 
   delete d;

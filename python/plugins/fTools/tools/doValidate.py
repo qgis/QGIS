@@ -182,7 +182,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
 
         ft = QgsFeature()
         (fid,ok) = self.tblUnique.item(row, 0).text().toInt()
-        if not ok or not self.vlayer.featureAtId( fid, ft, True):
+        if not ok or not self.vlayer.getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( ft ):
           return
 
         rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
@@ -298,7 +298,8 @@ class validateThread( QThread ):
       layer = []
       vlayer.select([]) # select all features, and ignore attributes
       ft = QgsFeature()
-      while vlayer.nextFeature(ft):
+      fit = vlayer.getFeatures()
+      while fit.nextFeature(ft):
         layer.append(QgsFeature(ft))
       nFeat = len(layer)
     nElement = 0
@@ -317,8 +318,8 @@ class validateThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
 
     if self.writeShape:
-      fields = { 0 : QgsField( "FEAT_ID", QVariant.Int ),
-                 1 : QgsField( "ERROR", QVariant.String ) }
+      fields = [ QgsField( "FEAT_ID", QVariant.Int ),
+                 QgsField( "ERROR", QVariant.String ) ]
       writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                     QGis.WKBPoint, vlayer.crs() )
       for rec in lstErrors:
@@ -335,8 +336,7 @@ class validateThread( QThread ):
             geometry = QgsGeometry().fromPoint( myPoint )
             ft = QgsFeature()
             ft.setGeometry( geometry )
-            ft.setAttributeMap( { 0 : QVariant( fidItem ),
-                                  1 : QVariant( message ) } )
+            ft.setAttributes( [ QVariant( fidItem ), QVariant( message ) ] )
             writer.addFeature( ft )
       del writer
       return "writeShape"

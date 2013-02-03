@@ -24,6 +24,9 @@
 
 class QgsMapLayer;
 class QTreeWidgetItem;
+class QAction;
+
+#include "qgsmaplayer.h"
 
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
@@ -83,6 +86,34 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     //! @note added in 1.5
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;
 
+    /** Add action for layers in the legend
+     * @note added in 2.0
+     */
+    virtual void addLegendLayerAction( QAction* action, QString menu, QString id,
+                                       QgsMapLayer::LayerType type, bool allLayers ) = 0;
+
+    /** Add action for a specific layers in the legend.
+     * Use this in combination with addLegendLayerAction( allLayers = False )
+     * @note added in 2.0
+     */
+    virtual void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
+
+    /** Remove action for layers in the legend
+     * @note added in 2.0
+     */
+    virtual bool removeLegendLayerAction( QAction* action ) = 0;
+
+    //! Returns the current layer if the current item is a QgsLegendLayer.
+    //! If the current item is a QgsLegendLayer, its first maplayer is returned.
+    //! Else, 0 is returned.
+    //! @note Added in 2.0
+    virtual QgsMapLayer* currentLayer() = 0;
+
+    //! set the current layer
+    //! returns true if the layer exists, false otherwise
+    //! @note Added in 2.0
+    virtual bool setCurrentLayer( QgsMapLayer *layer ) = 0;
+
   signals:
 
     //! emitted when a group index has changed
@@ -96,6 +127,11 @@ class GUI_EXPORT QgsLegendInterface : public QObject
 
     /* //! emitted when an item (group/layer) is removed */
     void itemRemoved( );
+
+    //! Emitted whenever current (selected) layer changes
+    //  the pointer to layer can be null if no layer is selected
+    //! @note Added in 2.0
+    void currentLayerChanged( QgsMapLayer * layer );
 
   public slots:
 

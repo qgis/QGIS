@@ -248,7 +248,7 @@ bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt:
   return false;
 }
 
-void QgsGraduatedSymbolRendererV2Model::removeRows( QList<int> rows )
+void QgsGraduatedSymbolRendererV2Model::deleteRows( QList<int> rows )
 {
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
@@ -657,7 +657,7 @@ void QgsGraduatedSymbolRendererV2Widget::addClass()
 void QgsGraduatedSymbolRendererV2Widget::deleteClasses()
 {
   QList<int> classIndexes = selectedClasses();
-  mModel->removeRows( classIndexes );
+  mModel->deleteRows( classIndexes );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()

@@ -112,10 +112,12 @@ void QgsLegendLayer::setCheckState( int column, Qt::CheckState state )
   }
 }
 
-void QgsLegendLayer::setupFont() //private method
+void QgsLegendLayer::setupFont()
 {
+  QSettings settings;
   QFont myFont = font( 0 );
-  myFont.setBold( true ); //visually differentiate layer labels from the rest
+  //visually differentiate layer labels from the rest
+  myFont.setBold( settings.value( "/qgis/legendLayersBold", true ).toBool() );
   setFont( 0, myFont );
 }
 
@@ -520,10 +522,6 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     // disable duplication of plugin layers
     duplicateLayersAction->setEnabled( false );
   }
-
-  // properties goes on bottom of menu for consistency with normal ui standards
-  // e.g. kde stuff
-  theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 }
 
 //////////
@@ -689,11 +687,11 @@ void QgsLegendLayer::updateItemListCount( QgsVectorLayer* layer, const QList<Qgs
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
-  layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
   QgsFeature f;
   QgsSymbol* currentSymbol = 0;
 
-  while ( layer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     currentSymbol = renderer->symbolForFeature( &f );
     if ( currentSymbol )

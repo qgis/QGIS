@@ -107,6 +107,7 @@ class CORE_EXPORT QgsVectorLayerImport
 
     /** map attribute indexes to new field indexes */
     QMap<int, int> mOldToNewAttrIdx;
+    int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
     QProgressDialog *mProgress;

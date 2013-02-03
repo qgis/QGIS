@@ -164,6 +164,16 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, QString label,
                                 QFont font, QColor color = QColor(), double size = -1 );
 
+    /**Create ogr feature style string for pen */
+    static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
+                                       Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+                                       Qt::PenCapStyle capStyle = Qt::FlatCap,
+                                       double offset = 0.0,
+                                       const QVector<qreal>* dashPattern = 0 );
+    /**Create ogr feature syle string for brush
+        @param fillColr fill color*/
+    static QString ogrFeatureStyleBrush( const QColor& fillColr );
+
     static void createRotationElement( QDomDocument &doc, QDomElement &element, QString rotationFunc );
     static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
 
@@ -203,9 +213,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 

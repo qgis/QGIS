@@ -337,6 +337,7 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 void QgsVectorLayerProperties::reset( void )
 {
   // populate the general information
+  mLayerOrigNameLineEdit->setText( layer->originalName() );
   txtDisplayName->setText( layer->name() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
@@ -468,7 +469,7 @@ void QgsVectorLayerProperties::apply()
   if ( labelDialog )
     labelDialog->apply();
   layer->enableLabels( labelCheckBox->isChecked() );
-  layer->setLayerName( displayName() );
+  layer->setLayerName( mLayerOrigNameLineEdit->text() );
 
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
@@ -584,7 +585,10 @@ QString QgsVectorLayerProperties::metadata()
   return layer->metadata();
 }
 
-
+void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString& text )
+{
+  txtDisplayName->setText( layer->capitaliseLayerName( text ) );
+}
 
 void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {

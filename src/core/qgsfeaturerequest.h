@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturerequest.h
+    ---------------------
+    begin                : Mai 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
@@ -43,9 +57,10 @@ class CORE_EXPORT QgsFeatureRequest
   public:
     enum Flag
     {
-      NoGeometry         = 0x01,  //!< Do not fetch geometry
-      SubsetOfAttributes = 0x02,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 0x04   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      NoFlags            = 0,
+      NoGeometry         = 1,  //!< Do not fetch geometry
+      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

@@ -310,7 +310,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 			QApplication.restoreOverrideCursor()
 
 		if ret != 0:
-			QMessageBox.warning(self, "Import to database", u"Error %d\n%s" % (ret, errMsg) )
+			output = qgis.gui.QgsMessageViewer()
+			output.setTitle( "Import to database" )
+			output.setMessageAsPlainText( u"Error %d\n%s" % (ret, errMsg) )
+			output.showMessage()
 			return
 
 		# create spatial index

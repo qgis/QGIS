@@ -1543,7 +1543,7 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
     return QString();
   }
   return it.value().first;
-};
+}
 
 bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                                       QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )

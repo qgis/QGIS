@@ -76,7 +76,7 @@ of Xcode, regardless of using a separate DMG installer for just the tools.
 
 Xcode 4.4+ also introduces the clang frontend to the LLVM compiler as default.
 
-**Note:** In XCODE 4.5 installed from teh app store, you need to install the 
+**Note:** In XCODE 4.5 installed from the app store, you need to install the 
 command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
@@ -113,7 +113,7 @@ __PPC note:__ The readymade Qt Cocoa installers don't include PPC support, you'd
 have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
 PPC Macs anyways.  Qt Carbon is recommended on PPC Macs.
 
-http://qt.nokia.com/downloads
+http://qt-project.org/downloads
 
 If you want debug frameworks, Qt also provides a separate download with these.
 These are in addition to the non-debug frameworks.
@@ -456,7 +456,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 ```
 
-__Lion system Python__
+__Lion and Mt. Lion system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
@@ -527,7 +527,31 @@ cd <Qwt 6.x.x source directory>
 qmake -spec macx-g++
 make -j [#cpus]
 sudo make install
+```
 
+**TODO:** Remedy for :
+
+```
+shrub:qwt-6.1-rc3 timlinux$ sudo make install
+Password:
+cd src/ && make -f Makefile install
+rm -f -r "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
+cp -f -R "../lib/qwt.framework" "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
+cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/html /usr/local/qwt-6.1.0-rc3/doc/
+cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/man /usr/local/qwt-6.1.0-rc3/doc/
+cd textengines/ && make -f Makefile install
+make[1]: Nothing to be done for `install'.
+cd designer/ && make -f Makefile install
+rm -f libqwt_designer_plugin.dylib
+linking plugins/designer/libqwt_designer_plugin.dylib
+ld: library not found for -lqwt
+collect2: ld returned 1 exit status
+make[1]: *** [plugins/designer/libqwt_designer_plugin.dylib] Error 1
+make: *** [sub-designer-install_subtargets-ordered] Error 2
+```
+
+
+```
 sudo install_name_tool -id /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt \
   /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt
 ```

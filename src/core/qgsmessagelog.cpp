@@ -16,6 +16,7 @@
 #include "qgsmessagelog.h"
 #include <qgslogger.h>
 #include <QDateTime>
+#include <QMetaType>
 #include <iostream>
 
 class QgsMessageLogConsole;
@@ -31,7 +32,10 @@ QgsMessageLog::QgsMessageLog()
 QgsMessageLog *QgsMessageLog::instance()
 {
   if ( !sInstance )
+  {
+    qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
     sInstance = new QgsMessageLog();
+  }
 
   return sInstance;
 }

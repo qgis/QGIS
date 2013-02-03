@@ -1,4 +1,5 @@
 
+typedef qint64 QgsFeatureId;
 
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
@@ -189,6 +190,6 @@ class QgsFeature
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
-    
 }; // class QgsFeature
 
+typedef QSet<QgsFeatureId> QgsFeatureIds;

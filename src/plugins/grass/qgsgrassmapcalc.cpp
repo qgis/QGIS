@@ -531,8 +531,9 @@ QStringList QgsGrassMapcalc::checkRegion()
   return list;
 }
 
-bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
+bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
 {
+  Q_UNUSED( crs );
   Q_UNUSED( all );
   QgsDebugMsg( "entered." );
 

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsvectorlayereditbuffer.cpp
+    ---------------------
+    begin                : Dezember 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsvectorlayereditbuffer.h"
 
 #include "qgsgeometry.h"
@@ -7,10 +21,10 @@
 #include "qgsvectorlayer.h"
 
 
-QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer(QgsVectorLayer* layer)
-  : L(layer)
+QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer* layer )
+    : L( layer )
 {
-  connect(L->undoStack(), SIGNAL(indexChanged(int)), this, SLOT(undoIndexChanged(int))); // TODO[MD]: queued?
+  connect( L->undoStack(), SIGNAL( indexChanged( int ) ), this, SLOT( undoIndexChanged( int ) ) ); // TODO[MD]: queued?
 }
 
 QgsVectorLayerEditBuffer::~QgsVectorLayerEditBuffer()
@@ -26,8 +40,8 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  qDebug("undo index changed %d", index);
-  Q_UNUSED(index);
+  qDebug( "undo index changed %d", index );
+  Q_UNUSED( index );
   emit layerModified();
 }
 
@@ -40,7 +54,7 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields& fields )
     fields.remove( mDeletedAttributeIds[i] );
   }
   // add new fields
-  for (int i = 0; i < mAddedAttributes.count(); ++i)
+  for ( int i = 0; i < mAddedAttributes.count(); ++i )
   {
     fields.append( mAddedAttributes[i], QgsFields::OriginEdit, i );
   }
@@ -87,7 +101,7 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   }
 
   int layerFieldCount = L->dataProvider()->fields().count() + mAddedAttributes.count() - mDeletedAttributeIds.count();
-  if (layerFieldCount != f.attributes().count())
+  if ( layerFieldCount != f.attributes().count() )
     return false;
 
   // TODO: check correct geometry type
@@ -120,7 +134,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 
   if ( FID_IS_NEW( fid ) )
   {
-    if (!mAddedFeatures.contains(fid))
+    if ( !mAddedFeatures.contains( fid ) )
       return false;
   }
   else // existing feature
@@ -146,7 +160,7 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 
   if ( FID_IS_NEW( fid ) )
   {
-    if (!mAddedFeatures.contains(fid))
+    if ( !mAddedFeatures.contains( fid ) )
       return false;
   }
 
@@ -164,12 +178,12 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
 
   if ( FID_IS_NEW( fid ) )
   {
-    if (!mAddedFeatures.contains(fid))
+    if ( !mAddedFeatures.contains( fid ) )
       return false;
   }
 
   if ( field < 0 || field >= L->pendingFields().count() ||
-       L->pendingFields().fieldOrigin(field) == QgsFields::OriginJoin )
+       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin )
     return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, value ) );
@@ -209,11 +223,11 @@ bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
     return false;
 
   // find out source of the field
-  QgsFields::FieldOrigin origin = L->pendingFields().fieldOrigin(index);
-  int originIndex = L->pendingFields().fieldOriginIndex(index);
+  QgsFields::FieldOrigin origin = L->pendingFields().fieldOrigin( index );
+  int originIndex = L->pendingFields().fieldOriginIndex( index );
 
   if ( origin == QgsFields::OriginProvider && mDeletedAttributeIds.contains( originIndex ) )
-      return false;
+    return false;
 
   if ( origin == QgsFields::OriginJoin )
     return false;
@@ -223,7 +237,7 @@ bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
 }
 
 
-bool QgsVectorLayerEditBuffer::commitChanges(QStringList& commitErrors)
+bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
 {
   QgsVectorDataProvider* provider = L->dataProvider();
   commitErrors.clear();
@@ -470,7 +484,7 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
   // go through the changed attributes map and adapt indices
   for ( int i = 0; i < mChangedAttributeValues.size(); ++i )
   {
-    updateAttributeMapIndex( mChangedAttributeValues[i], index, +1 );
+    updateAttributeMapIndex( mChangedAttributeValues[i], index, + 1 );
   }
 
   // go through added features and adapt attributes
@@ -489,7 +503,7 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
   {
     QgsAttributeMap& attrMap = mChangedAttributeValues[i];
     // remove the attribute
-    if (attrMap.contains(index))
+    if ( attrMap.contains( index ) )
       attrMap.remove( index );
 
     // update attribute indices
@@ -513,7 +527,7 @@ void QgsVectorLayerEditBuffer::updateAttributeMapIndex( QgsAttributeMap& map, in
   for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
   {
     int attrIndex = it.key();
-    updatedMap.insert( attrIndex < index ? attrIndex : attrIndex+offset, it.value() );
+    updatedMap.insert( attrIndex < index ? attrIndex : attrIndex + offset, it.value() );
   }
   map = updatedMap;
 }

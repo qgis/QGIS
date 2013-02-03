@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgspostgresfeatureiterator.cpp
+    ---------------------
+    begin                : Juli 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
 
@@ -246,7 +260,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                   .arg( qBox );
     if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
-       whereClause += QString( " AND %1(%2%3,%4)" )
+      whereClause += QString( " AND %1(%2%3,%4)" )
                      .arg( P->mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
                      .arg( P->quotedIdentifier( P->mGeometryColumn ) )
                      .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
@@ -257,10 +271,10 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   if ( !P->mRequestedSrid.isEmpty() && P->mRequestedSrid != P->mDetectedSrid )
   {
     whereClause += QString( " AND %1(%2%3)=%4" )
-                      .arg( P->mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
-                      .arg( P->quotedIdentifier( P->mGeometryColumn ) )
-                      .arg( P->mSpatialColType == sctGeography ? "::geography" : "" )
-                      .arg( P->mRequestedSrid );
+                   .arg( P->mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
+                   .arg( P->quotedIdentifier( P->mGeometryColumn ) )
+                   .arg( P->mSpatialColType == sctGeography ? "::geography" : "" )
+                   .arg( P->mRequestedSrid );
   }
 
   if ( P->mRequestedGeomType != QGis::WKBUnknown && P->mRequestedGeomType != P->mDetectedGeomType )
@@ -433,12 +447,12 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     if ( subsetOfAttributes )
     {
       foreach ( int idx, fetchAttributes )
-        getFeatureAttribute(idx, queryResult, row, col, feature );
+        getFeatureAttribute( idx, queryResult, row, col, feature );
     }
     else
     {
-      for (int idx = 0; idx < P->mAttributeFields.count(); ++idx )
-        getFeatureAttribute(idx, queryResult, row, col, feature );
+      for ( int idx = 0; idx < P->mAttributeFields.count(); ++idx )
+        getFeatureAttribute( idx, queryResult, row, col, feature );
     }
 
     return true;

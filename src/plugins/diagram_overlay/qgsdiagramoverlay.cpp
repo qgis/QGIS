@@ -80,7 +80,7 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
   if ( mVectorLayer && mDiagramRenderer )
   {
     //set spatial filter on data provider
-    mVectorLayer->select( mAttributes, renderContext.extent() );
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( renderContext.extent() ).setSubsetOfAttributes( mAttributes ) );
 
     QgsFeature currentFeature;
     QgsGeometry* currentGeometry = 0;
@@ -93,7 +93,7 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
     std::list<unsigned char*>::iterator bufferIt;
     std::list<int>::iterator sizeIt;
 
-    while ( mVectorLayer->nextFeature( currentFeature ) )
+    while ( fit.nextFeature( currentFeature ) )
     {
       //todo: insert more objects for multipart features
       if ( mDiagramRenderer->getDiagramDimensions( width, height, currentFeature, renderContext ) != 0 )
@@ -121,14 +121,14 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
   if ( mVectorLayer && mDiagramRenderer )
   {
     //set spatial filter on data provider
-    mVectorLayer->select( mAttributes, context.extent() );
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( context.extent() ).setSubsetOfAttributes( mAttributes ) );
 
     QgsFeature currentFeature;
     QImage* currentDiagramImage = 0;
 
     QPainter* painter = context.painter();
 
-    while ( mVectorLayer->nextFeature( currentFeature ) )
+    while ( fit.nextFeature( currentFeature ) )
     {
       //request diagram from renderer
       currentDiagramImage = mDiagramRenderer->renderDiagram( currentFeature, context );

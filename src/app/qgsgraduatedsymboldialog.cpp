@@ -500,8 +500,8 @@ int QgsGraduatedSymbolDialog::quantilesFromVectorLayer( std::list<double>& resul
     double currentValue;
     int index = 0;
 
-    mVectorLayer->select( attList, QgsRectangle(), false );
-    while ( mVectorLayer->nextFeature( currentFeature ) )
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attList ) );
+    while ( fit.nextFeature( currentFeature ) )
     {
       currentValue = currentFeature.attribute( attributeIndex ).toDouble();
       attributeValues[index] = currentValue;

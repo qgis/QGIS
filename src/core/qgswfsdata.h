@@ -122,8 +122,6 @@ class CORE_EXPORT QgsWFSData: public QObject
     /**Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
-       @param cs coortinate separator
-       @param ts tuple separator
        @return 0 in case of success*/
     int pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const;
 

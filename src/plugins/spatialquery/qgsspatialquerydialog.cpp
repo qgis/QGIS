@@ -673,7 +673,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   }
 
   QgsFeature feat;
-  if ( !lyr->featureAtId( fid, feat, true, false ) )
+  if ( !lyr->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( feat ) )
   {
     return;
   }

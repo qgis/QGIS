@@ -67,6 +67,14 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Check if a layer is visible
     bool isLayerVisible( QgsMapLayer * ml );
 
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    bool removeLegendLayerAction( QAction* action );
+
+    QgsMapLayer* currentLayer();
+    bool setCurrentLayer( QgsMapLayer *layer );
+
   public slots:
 
     //! Add a new group

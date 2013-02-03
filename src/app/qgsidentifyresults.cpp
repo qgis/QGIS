@@ -871,7 +871,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
-  if ( !layer->featureAtId( fid, feat, true, false ) )
+  if ( !layer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( feat ) )
   {
     return;
   }
@@ -906,7 +906,7 @@ void QgsIdentifyResults::zoomToFeature()
   int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
-  if ( ! layer->featureAtId( fid, feat, true, false ) )
+  if ( ! layer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( feat ) )
   {
     return;
   }
@@ -945,7 +945,7 @@ void QgsIdentifyResults::featureForm()
   int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
-  if ( !vlayer->featureAtId( fid, f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f ) )
     return;
 
   QgsFeatureAction action( tr( "Attribute changes" ), f, vlayer, idx, -1, this );

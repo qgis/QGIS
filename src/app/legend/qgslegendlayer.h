@@ -53,6 +53,12 @@ class QgsLegendLayer : public QgsLegendItem
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
     void refreshSymbology( const QString& key, double widthScale = 1.0 );
 
+    /** Helper method to set font characteristics.
+     *  Not to be confused with setFont() which is inherited
+     *  from the QTreeWidgetItem base class.
+     */
+    void setupFont();
+
     /** called to add appropriate menu items to legend's popup menu */
     void addToPopupMenu( QMenu& theMenu );
 
@@ -122,11 +128,6 @@ class QgsLegendLayer : public QgsLegendItem
     QPixmap getOriginalPixmap();
 
   private:
-    /** Helper method to make the font bold from all ctors.
-     *  Not to be confused with setFont() which is inherited
-     *  from the QTreeWidgetItem base class.
-     */
-    void setupFont();
 
     /** Label, may be layer name or layer name + [feature count] */
     QString label();

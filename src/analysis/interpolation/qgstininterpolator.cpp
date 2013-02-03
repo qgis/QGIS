@@ -113,8 +113,10 @@ void QgsTINInterpolator::initialize()
       {
         attList.push_back( layerDataIt->interpolationAttribute );
       }
-      layerDataIt->vectorLayer->select( attList );
-      while ( layerDataIt->vectorLayer->nextFeature( f ) )
+
+      QgsFeatureIterator fit = layerDataIt->vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+
+      while ( fit.nextFeature( f ) )
       {
         if ( mShowProgressDialog )
         {

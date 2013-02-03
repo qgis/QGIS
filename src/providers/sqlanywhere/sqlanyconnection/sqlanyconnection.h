@@ -2,7 +2,7 @@
     sqlanyconnection.h - Class for pooling connections to a SQL Anywhere DBMS
     ------------------------
     begin                : Dec 2010
-    copyright            : (C) 2010 by iAnywhere Solutions, Inc.
+    copyright            : (C) 2013 by SAP AG or an SAP affiliate company.
     author               : David DeHaan
     email                : ddehaan at sybase dot com
 

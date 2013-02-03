@@ -46,7 +46,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     void setRenderer( QgsCategorizedSymbolRendererV2* renderer );
 
     void addCategory( const QgsRendererCategoryV2 &cat );
-    void removeRows( QList<int> rows );
+    void deleteRows( QList<int> rows );
     void removeAllRows( );
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
 

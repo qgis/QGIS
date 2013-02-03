@@ -95,6 +95,17 @@ IF(NOT WIN32)
 		qtermwidget/k3processcontroller.h
 		qtermwidget/qtermwidget.h
 		)
+
+	IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		SET_SOURCE_FILES_PROPERTIES(
+			${CMAKE_CURRENT_BINARY_DIR}/qtermwidget/moc_Pty.cxx
+			qtermwidget/Pty.cpp
+			qtermwidget/Session.cpp
+			qtermwidget/kpty.cpp
+			qtermwidget/k3process.cpp
+			PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
+		)
+	ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ENDIF(NOT WIN32)
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)

@@ -64,7 +64,7 @@ void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
     setStyle();
   }
   QgsFeature feat;
-  if ( !lyr->featureAtId( fid, feat, true, false ) )
+  if ( !lyr->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( feat ) )
   {
     return;
   }

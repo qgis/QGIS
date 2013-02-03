@@ -133,7 +133,7 @@ class   Union(GeoAlgorithm):
                           int_geom = QgsGeometry( i )
                   try:
                     outFeat.setGeometry( int_geom )
-                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                    outFeat.setAttributes( atMapA.extend( atMapB ) )
                     writer.addFeature( outFeat )
                   except Exception, err:
                     FEATURE_EXCEPT = False

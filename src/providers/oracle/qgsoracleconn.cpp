@@ -220,16 +220,10 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
     layerProperty.ownerName       = qry.value( 0 ).toString();
     layerProperty.tableName       = qry.value( 1 ).toString();
     layerProperty.geometryColName = qry.value( 2 ).toString();
+    layerProperty.types           = QList<QGis::WkbType>() << ( qry.value( 2 ).isNull() ? QGis::WKBNoGeometry : QGis::WKBUnknown );
     layerProperty.srids           = QList<int>() << qry.value( 3 ).toInt();
-    layerProperty.types           = QList<QGis::WkbType>() << QGis::WKBUnknown; // detect
     layerProperty.isView          = qry.value( 4 ).isNull();
     layerProperty.pkCols.clear();
-
-    if ( allowGeometrylessTables )
-    {
-      layerProperty.types << QGis::WKBNoGeometry;
-      layerProperty.srids << 0;
-    }
 
     mLayersSupported << layerProperty;
   }

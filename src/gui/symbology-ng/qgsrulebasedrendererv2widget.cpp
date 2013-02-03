@@ -419,7 +419,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
     countMap[rule].duplicateCount = 0;
   }
 
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
@@ -431,7 +431,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   int featuresCounted = 0;
 
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f );
 
@@ -551,11 +551,11 @@ void QgsRendererRulePropsDialog::testFilter()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   int count = 0;
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QVariant value = filter.evaluate( &f );
     if ( value.toInt() != 0 )

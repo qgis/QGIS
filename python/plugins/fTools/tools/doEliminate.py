@@ -141,7 +141,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         else:
             QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not delete features"))
             return None
-        
+
         # ANALYZE
         start = 20.00
         progressBar.setValue(start)
@@ -160,7 +160,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             for fid2Eliminate in inLayer.selectedFeaturesIds():
                 feat = QgsFeature()
 
-                if inLayer.featureAtId(fid2Eliminate, feat, True, False):
+                if inLayer.getFeatures( QgsFeatureRequest().setFilterFid( fid2Eliminate ).setSubsetOfAttributes([]) ).nextFeature( feat ):
                     geom2Eliminate = feat.geometry()
                     bbox = geom2Eliminate.boundingBox()
                     outLayer.select(bbox, False) # make a new selection
@@ -171,7 +171,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                     for selFid in outLayer.selectedFeaturesIds():
                         selFeat = QgsFeature()
 
-                        if outLayer.featureAtId(selFid, selFeat, True, False):
+                        if outLayer.getFeatures( QgsFeatureRequest().setFilterFid( selFid ).setSubsetOfAttributes([]) ).nextFeature( selFeat ):
                             selGeom = selFeat.geometry()
 
                             if geom2Eliminate.intersects(selGeom): # we have a candidate
@@ -190,7 +190,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                                     max = selValue
                                     mergeWithFid = selFid
                                     mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
-                    
+
                     if mergeWithFid != None: # a successful candidate
                         newGeom = mergeWithGeom.combine(geom2Eliminate)
 
@@ -206,8 +206,8 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                         else:
                             QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
                                 self.tr("Could not replace geometry of feature with id %1").arg( mergeWithFid ))
-                            return None                            
-                        
+                            return None
+
                         start = start + add
                         progressBar.setValue(start)
             # end for fid2Eliminate
@@ -215,7 +215,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             # deselect features that are already eliminated in inLayer
             for aFid in fidsToDeselect:
                 inLayer.deselect(aFid, False)
-                
+
         #end while
 
         if inLayer.selectedFeatureCount() > 0:
@@ -232,7 +232,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
 
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
                         self.tr("Could not eliminate features with these ids:\n%1").arg(fidList))
-            else:        
+            else:
                 QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
 
         # stop editing outLayer and commit any pending changes

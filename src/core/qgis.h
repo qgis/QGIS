@@ -336,6 +336,8 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 /** default snapping tolerance for segments (@note added in 1.8) */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
+typedef QMap<QString, QString> QgsStringMap;
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32

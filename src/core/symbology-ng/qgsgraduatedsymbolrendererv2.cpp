@@ -800,8 +800,9 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     QgsFeature f;
     QgsAttributeList lst;
     lst.append( attrNum );
-    vlayer->select( lst, QgsRectangle(), false );
-    while ( vlayer->nextFeature( f ) )
+
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+    while ( fit.nextFeature( f ) )
       values.append( f.attribute( attrNum ).toDouble() );
     // calculate the breaks
     if ( mode == Quantile )

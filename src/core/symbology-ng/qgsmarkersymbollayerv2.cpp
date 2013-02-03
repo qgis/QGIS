@@ -480,6 +480,68 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
 }
 
+QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
+{
+  Q_UNUSED( mmScaleFactor );
+  Q_UNUSED( mapUnitScaleFactor );
+#if 0
+  QString ogrType = "3"; //default is circle
+  if ( mName == "square" )
+  {
+    ogrType = "5";
+  }
+  else if ( mName == "triangle" )
+  {
+    ogrType = "7";
+  }
+  else if ( mName == "star" )
+  {
+    ogrType = "9";
+  }
+  else if ( mName == "circle" )
+  {
+    ogrType = "3";
+  }
+  else if ( mName == "cross" )
+  {
+    ogrType = "0";
+  }
+  else if ( mName == "x" || mName == "cross2" )
+  {
+    ogrType = "1";
+  }
+  else if ( mName == "line" )
+  {
+    ogrType = "10";
+  }
+
+  QString ogrString;
+  ogrString.append( "SYMBOL(" );
+  ogrString.append( "id:" );
+  ogrString.append( "\"" );
+  ogrString.append( "ogr-sym-" );
+  ogrString.append( ogrType );
+  ogrString.append( "\"" );
+  ogrString.append( ",c:" );
+  ogrString.append( mColor.name() );
+  ogrString.append( ",o:" );
+  ogrString.append( mBorderColor.name() );
+  ogrString.append( QString( ",s:%1mm" ).arg( mSize ) );
+  ogrString.append( ")" );
+  return ogrString;
+#endif //0
+
+  QString ogrString;
+  ogrString.append( "PEN(" );
+  ogrString.append( "c:" );
+  ogrString.append( mColor.name() );
+  ogrString.append( ",w:" );
+  ogrString.append( QString::number( mSize ) );
+  ogrString.append( "mm" );
+  ogrString.append( ")" );
+  return ogrString;
+}
+
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );

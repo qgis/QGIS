@@ -26,6 +26,7 @@ my $releasename;
 my $shortname;
 my $version;
 my $binary;
+my $ininame = "setup.ini";
 my $help;
 
 my $result = GetOptions(
@@ -33,9 +34,10 @@ my $result = GetOptions(
 		"keep" => \$keep,
 		"releasename=s" => \$releasename,
 		"version=s" => \$version,
-		"binary=s" => \$binary,
+		"binary=i" => \$binary,
 		"packagename=s" => \$packagename,
 		"shortname=s" => \$shortname,
+		"ininame=s" => \$ininame,
 		"help" => \$help
 	);
 
@@ -62,7 +64,7 @@ my %dep;
 my %file;
 my $package;
 
-system "wget $wgetopt -c $root/setup.ini";
+system "wget $wgetopt -O setup.ini -c $root/$ininame";
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {
 	chop;
@@ -246,8 +248,6 @@ unless( defined $binary ) {
 	} else {
 		$binary = 1;
 	}
-} else {
-	die "given binary version not numeric" unless $package =~ /^\d+$/;
 }
 
 system "unzip packages/Untgz.zip" unless -d "untgz";
@@ -294,6 +294,7 @@ creatensis.pl [options] [packages...]
     -keep		don't start with a fresh unpacked directory
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -binary=b		binary version of package
+    -ininame=filename	name of the setup.ini (defaults to setup.ini)
     -packagename=s	name of package (defaults to 'Quantum GIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
     -help		this help

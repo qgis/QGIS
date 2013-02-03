@@ -85,7 +85,6 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     if ( values.size() == 0 )
       return 0;
 
-
     if ( values.size() > 0 )
     {
       QComboBox *cb = new QComboBox( parent );

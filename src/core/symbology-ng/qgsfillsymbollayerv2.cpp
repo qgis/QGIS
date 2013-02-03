@@ -175,6 +175,17 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, mOffset );
 }
 
+QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
+{
+  //brush
+  QString symbolStyle;
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
+  symbolStyle.append( ";" );
+  //pen
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor ) );
+  return symbolStyle;
+}
+
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
@@ -905,6 +916,21 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
     // have more than one layer
     mOutline->toSld( doc, element, props );
   }
+}
+
+QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFactor ) const
+{
+  QString featureStyle;
+  featureStyle.append( "Brush(" );
+  featureStyle.append( QString( "fc:%1" ).arg( mColor.name() ) );
+  featureStyle.append( QString( ",bc:%1" ).arg( "#00000000" ) ); //transparent background
+  featureStyle.append( ",id:\"ogr-brush-2\"" );
+  featureStyle.append( QString( ",a:%1" ).arg( mLineAngle ) );
+  featureStyle.append( QString( ",s:%1" ).arg( mLineWidth * widthScaleFactor ) );
+  featureStyle.append( ",dx:0mm" );
+  featureStyle.append( QString( ",dy:%1mm" ).arg( mDistance * widthScaleFactor ) );
+  featureStyle.append( ")" );
+  return featureStyle;
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &element )

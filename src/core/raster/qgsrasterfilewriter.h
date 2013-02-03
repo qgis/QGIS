@@ -88,9 +88,11 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
 
-    // for now not putting createOptions in all methods, use createOptions()
     void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
     QStringList createOptions() const { return mCreateOptions; }
+
+    void setPyramidsConfigOptions( const QStringList& list ) { mPyramidsConfigOptions = list; }
+    QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
   private:
     QgsRasterFileWriter(); //forbidden
@@ -157,6 +159,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString mPyramidsResampling;
     QgsRasterDataProvider::RasterBuildPyramids mBuildPyramidsFlag;
     QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
+    QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;
     QList<QDomElement> mVRTBands;

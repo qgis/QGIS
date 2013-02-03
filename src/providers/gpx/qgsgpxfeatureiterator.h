@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsgpxfeatureiterator.h
+    ---------------------
+    begin                : Dezember 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSGPXFEATUREITERATOR_H
 #define QGSGPXFEATUREITERATOR_H
 
@@ -27,13 +41,13 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
 
     bool readFid( QgsFeature& feature );
 
-    bool readWaypoint(const QgsWaypoint& wpt, QgsFeature& feature);
-    bool readRoute(const QgsRoute& rte, QgsFeature& feature);
-    bool readTrack(const QgsTrack& trk, QgsFeature& feature);
+    bool readWaypoint( const QgsWaypoint& wpt, QgsFeature& feature );
+    bool readRoute( const QgsRoute& rte, QgsFeature& feature );
+    bool readTrack( const QgsTrack& trk, QgsFeature& feature );
 
-    QgsGeometry* readWaypointGeometry(const QgsWaypoint& wpt);
-    QgsGeometry* readRouteGeometry(const QgsRoute& rte);
-    QgsGeometry* readTrackGeometry(const QgsTrack& trk);
+    QgsGeometry* readWaypointGeometry( const QgsWaypoint& wpt );
+    QgsGeometry* readRouteGeometry( const QgsRoute& rte );
+    QgsGeometry* readTrackGeometry( const QgsTrack& trk );
 
     void readAttributes( QgsFeature& feature, const QgsWaypoint& wpt );
     void readAttributes( QgsFeature& feature, const QgsRoute& rte );

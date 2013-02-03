@@ -81,9 +81,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       RandomSelectGeometryAtId =     1 << 10,
       /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId = 1 << 11,
-      CreateAttributeIndex = 1 << 12,
+      CreateAttributeIndex =         1 << 12,
       /** Uses mEncoding for conversion of 8-bit strings to unicode */
-      SetEncoding = 1 << 13,
+      SetEncoding =                  1 << 13,
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -292,8 +292,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       QString mTypeDesc;
       QString mTypeName;
       QVariant::Type mType;
-      int mMinLen, mMaxLen;
-      int mMinPrec, mMaxPrec;
+      int mMinLen;
+      int mMaxLen;
+      int mMinPrec;
+      int mMaxPrec;
     };
 
     /**

@@ -172,7 +172,7 @@ void Heatmap::run()
     }
     // This might have attributes or mightnot have attibutes at all
     // based on the variableRadius() and weighted()
-    inputLayer->select( myAttrList );
+    QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
     int totalFeatures = inputLayer->featureCount();
     int counter = 0;
 
@@ -181,7 +181,7 @@ void Heatmap::run()
 
     QgsFeature myFeature;
 
-    while ( inputLayer->nextFeature( myFeature ) )
+    while ( fit.nextFeature( myFeature ) )
     {
       counter++;
       p.setValue( counter );

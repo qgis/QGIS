@@ -71,5 +71,7 @@ class QProgressDialog;
     /** flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
+    /** create index */
+    bool createSpatialIndex();
 };
 

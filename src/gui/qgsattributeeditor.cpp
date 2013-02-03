@@ -224,9 +224,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           attributes << vi;
           if ( fi >= 0 )
             attributes << fi;
-          layer->select( attributes, QgsRectangle(), false );
+
+          QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributes ) );
           QgsFeature f;
-          while ( layer->nextFeature( f ) )
+          while ( fit.nextFeature( f ) )
           {
             if ( fi >= 0 && f.attribute( fi ).toString() != data.mFilterAttributeValue )
               continue;

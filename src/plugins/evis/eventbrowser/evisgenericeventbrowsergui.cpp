@@ -568,7 +568,7 @@ QgsFeature* eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
   //It has mostly been stripped down now
   if ( mDataProvider && mFeatureIds.size( ) != 0 )
   {
-    if ( !mVectorLayer->featureAtId( id, mFeature, true, true ) )
+    if ( !mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( mFeature ) )
     {
       return 0;
     }

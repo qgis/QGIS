@@ -261,7 +261,7 @@ bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Q
   return false;
 }
 
-void QgsCategorizedSymbolRendererV2Model::removeRows( QList<int> rows )
+void QgsCategorizedSymbolRendererV2Model::deleteRows( QList<int> rows )
 {
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
@@ -723,7 +723,7 @@ QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
 void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 {
   QList<int> categoryIndexes = selectedCategories();
-  mModel->removeRows( categoryIndexes );
+  mModel->deleteRows( categoryIndexes );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()

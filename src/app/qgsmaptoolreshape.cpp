@@ -83,13 +83,13 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     }
 
     //query all the features that intersect bounding box of capture line
-    vlayer->select( QgsAttributeList(), bbox, true, false );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
     QgsFeature f;
     int reshapeReturn;
     bool reshapeDone = false;
 
     vlayer->beginEditCommand( tr( "Reshape" ) );
-    while ( vlayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       //query geometry
       //call geometry->reshape(mCaptureList)

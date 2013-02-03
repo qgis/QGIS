@@ -453,7 +453,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         if ( maxFeatures == -1 )
           maxFeat += layer->featureCount();
 
-        layer->select( attrIndexes, searchRect, mWithGeom, true );
+        QgsFeatureIterator fit = layer->getFeatures(
+                                   QgsFeatureRequest()
+                                   .setFilterRect( searchRect )
+                                   .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
+                                   .setSubsetOfAttributes( attrIndexes ) );
 
         long featCounter = 0;
         QDomNodeList filterNodes = queryElem.elementsByTagName( "Filter" );
@@ -477,7 +481,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
 
               //Need to be test for propertyname
-              layer->featureAtId( fid.toInt(), feature, mWithGeom, true );
+              layer->getFeatures( QgsFeatureRequest()
+                                  .setFilterFid( fid.toInt() )
+                                  .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
+                                ).nextFeature( feature );
 
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerCrs, &searchRect );
@@ -493,21 +500,28 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             QDomElement bboxElem = filterElem.firstChildElement();
             QDomElement childElem = bboxElem.firstChildElement();
+
+            QgsFeatureRequest req;
+            req.setSubsetOfAttributes( attrIndexes );
+            req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+
             while ( !childElem.isNull() )
             {
               if ( childElem.tagName() == "Box" )
               {
-                QgsRectangle* rect = new QgsRectangle( childElem );
-                layer->select( attrIndexes, *rect, mWithGeom, true );
+                req.setFilterRect( QgsRectangle( childElem ) );
               }
               else if ( childElem.tagName() != "PropertyName" )
               {
-                QgsGeometry* geom = QgsGeometry::fromGML2( childElem );
-                layer->select( attrIndexes, geom->boundingBox(), mWithGeom, true );
+                QgsGeometry *geom = QgsGeometry::fromGML2( childElem );
+                req.setFilterRect( geom->boundingBox() );
+                delete geom;
               }
               childElem = childElem.nextSiblingElement();
             }
-            while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+
+            QgsFeatureIterator fit = layer->getFeatures( req );
+            while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
             {
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerCrs, &searchRect );
@@ -526,7 +540,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             if ( mFilter )
             {
-              while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+              while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
               {
                 QVariant res = mFilter->evaluate( &feature, fields );
                 if ( mFilter->hasEvalError() )
@@ -548,7 +562,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+          while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
           {
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerCrs, &searchRect );
@@ -784,7 +798,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( !fidStr.startsWith( tnStr ) )
             continue;
           //Need to be test for propertyname
-          layer->featureAtId( fidStr.section( ".", 1, 1 ).toInt(), feature, mWithGeom, true );
+          layer->getFeatures( QgsFeatureRequest()
+                              .setFilterFid( fidStr.section( ".", 1, 1 ).toInt() )
+                              .setFlags( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry )
+                            ).nextFeature( feature );
 
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerCrs, &searchRect );
@@ -796,7 +813,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       else if ( expFilterOk )
       {
-        layer->select( attrIndexes, searchRect, mWithGeom, true );
+        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
+                                 .setFilterRect( searchRect )
+                                 .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
+                                 .setSubsetOfAttributes( attrIndexes ) );
         QgsExpression *mFilter = new QgsExpression( expFilter );
         if ( mFilter->hasParserError() )
         {
@@ -804,7 +824,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         if ( mFilter )
         {
-          while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+          while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
           {
             QVariant res = mFilter->evaluate( &feature, fields );
             if ( mFilter->hasEvalError() )
@@ -826,7 +846,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       else if ( filterOk )
       {
-        layer->select( attrIndexes, searchRect, mWithGeom, true );
         QDomElement filterElem = filter.firstChildElement();
         QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
         if ( fidNodes.size() > 0 )
@@ -845,7 +864,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
 
             //Need to be test for propertyname
-            layer->featureAtId( fid.toInt(), feature, mWithGeom, true );
+            layer->getFeatures( QgsFeatureRequest()
+                                .setFilterFid( fid.toInt() )
+                                .setFlags( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry )
+                              ).nextFeature( feature );
 
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerCrs, &searchRect );
@@ -861,21 +883,28 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         {
           QDomElement bboxElem = filterElem.firstChildElement();
           QDomElement childElem = bboxElem.firstChildElement();
+
+          QgsFeatureRequest req;
+          req.setSubsetOfAttributes( attrIndexes );
+          req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+
           while ( !childElem.isNull() )
           {
             if ( childElem.tagName() == "Box" )
             {
-              QgsRectangle* rect = new QgsRectangle( childElem );
-              layer->select( attrIndexes, *rect, mWithGeom, true );
+              req.setFilterRect( QgsRectangle( childElem ) );
             }
             else if ( childElem.tagName() != "PropertyName" )
             {
               QgsGeometry* geom = QgsGeometry::fromGML2( childElem );
-              layer->select( attrIndexes, geom->boundingBox(), mWithGeom, true );
+              req.setFilterRect( geom->boundingBox() );
+              delete geom;
             }
             childElem = childElem.nextSiblingElement();
           }
-          while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+
+          QgsFeatureIterator fit = layer->getFeatures( req );
+          while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
           {
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerCrs, &searchRect );
@@ -894,7 +923,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           if ( mFilter )
           {
-            while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+            QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
+                                     .setFilterRect( searchRect )
+                                     .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
+                                     .setSubsetOfAttributes( attrIndexes ) );
+            while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
             {
               QVariant res = mFilter->evaluate( &feature, fields );
               if ( mFilter->hasEvalError() )
@@ -917,8 +950,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       else
       {
-        layer->select( attrIndexes, searchRect, mWithGeom, true );
-        while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
+        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
+                                 .setFilterRect( searchRect )
+                                 .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
+                                 .setSubsetOfAttributes( attrIndexes ) );
+        while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
         {
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerCrs, &searchRect );
@@ -1489,7 +1525,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
 {
   QgsFeatureIds fids;
 
-  QgsVectorDataProvider* provider = layer->dataProvider();
+  QgsVectorDataProvider *provider = layer->dataProvider();
   QDomNodeList fidNodes = filterElem.elementsByTagName( "FeatureId" );
 
   if ( fidNodes.size() != 0 )
@@ -1517,7 +1553,8 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
     {
       QgsFeature feature;
       const QgsFields& fields = provider->fields();
-      while ( layer->nextFeature( feature ) )
+      QgsFeatureIterator fit = layer->getFeatures();
+      while ( fit.nextFeature( feature ) )
       {
         QVariant res = mFilter->evaluate( &feature, fields );
         if ( mFilter->hasEvalError() )

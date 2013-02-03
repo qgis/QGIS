@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsvectorlayereditutils.cpp
+    ---------------------
+    begin                : Dezember 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsvectorlayereditutils.h"
 
 #include "qgsvectordataprovider.h"
@@ -7,11 +21,10 @@
 #include <limits>
 
 
-QgsVectorLayerEditUtils::QgsVectorLayerEditUtils(QgsVectorLayer* layer)
-  : L(layer)
+QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer* layer )
+    : L( layer )
 {
 }
-
 
 bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex )
 {
@@ -19,7 +32,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
     return false;
 
   QgsGeometry geometry;
-  if (!cache()->geometry(atFeatureId, geometry))
+  if ( !cache()->geometry( atFeatureId, geometry ) )
     return false;   // TODO: support also uncached geometries
 
   geometry.insertVertex( x, y, beforeVertex );
@@ -35,7 +48,7 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
     return false;
 
   QgsGeometry geometry;
-  if (!cache()->geometry(atFeatureId, geometry))
+  if ( !cache()->geometry( atFeatureId, geometry ) )
     return false;   // TODO: support also uncached geometries
 
   geometry.moveVertex( x, y, atVertex );
@@ -51,7 +64,7 @@ bool QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId atFeatureId, int atVert
     return false;
 
   QgsGeometry geometry;
-  if (!cache()->geometry(atFeatureId, geometry))
+  if ( !cache()->geometry( atFeatureId, geometry ) )
     return false;   // TODO: support also uncached geometries
 
   if ( !geometry.deleteVertex( atVertex ) )
@@ -81,10 +94,10 @@ int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring )
     return 3; //ring not valid
   }
 
-  L->select( QgsAttributeList(), bBox, true, true );
+  QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
 
   QgsFeature f;
-  while ( L->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     addRingReturnCode = f.geometry()->addRing( ring );
     if ( addRingReturnCode == 0 )
@@ -106,11 +119,11 @@ int QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureI
     return 6;
 
   QgsGeometry geometry;
-  if (!cache()->geometry(featureId, geometry)) // maybe it's in cache
+  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->featureAtId( featureId, f, true, false ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return 6; //geometry not found
 
     geometry = *f.geometry();
@@ -132,11 +145,11 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
     return 1;
 
   QgsGeometry geometry;
-  if (!cache()->geometry(featureId, geometry)) // maybe it's in cache
+  if ( !cache()->geometry( featureId, geometry ) ) // maybe it's in cache
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->featureAtId( featureId, f, true, false ) || !f.geometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return 1; //geometry not found
 
     geometry = *f.geometry();
@@ -201,10 +214,10 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
     }
 
-    L->select( L->pendingAllAttributesList(), bBox, true, true );
+    QgsFeatureIterator fit = L->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
 
     QgsFeature f;
-    while ( L->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
       featureList << QgsFeature( f );
   }
 

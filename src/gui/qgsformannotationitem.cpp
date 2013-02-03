@@ -85,7 +85,7 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
   if ( mVectorLayer && mHasAssociatedFeature )
   {
     QgsFeature f;
-    if ( mVectorLayer->featureAtId( mFeature, f, false, true ) )
+    if ( mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
       const QgsFields& fields = mVectorLayer->pendingFields();
       const QgsAttributes& attrs = f.attributes();
@@ -224,19 +224,19 @@ void QgsFormAnnotationItem::setFeatureForMapPosition()
     return;
   }
 
-  QgsAttributeList noAttributes;
   QSettings settings;
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
   double halfIdentifyWidth = mMapCanvas->extent().width() / 100 / 2 * identifyValue;
   QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
                            mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
-  mVectorLayer->select( noAttributes, searchRect, false, true );
+
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature currentFeature;
   QgsFeatureId currentFeatureId = 0;
   bool featureFound = false;
 
-  while ( mVectorLayer->nextFeature( currentFeature ) )
+  while ( fit.nextFeature( currentFeature ) )
   {
     currentFeatureId = currentFeature.id();
     featureFound = true;

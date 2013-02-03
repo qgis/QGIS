@@ -582,11 +582,11 @@ bool QgsOracleProvider::loadFields()
                              ",t.char_used"
                              ",t.data_default"
                              " FROM all_tab_columns t"
-                             " WHERE t.owner=%1 AND t.table_name=%2 AND t.column_name<>%3"
+                             " WHERE t.owner=%1 AND t.table_name=%2%3"
                              " ORDER BY t.column_id" )
                .arg( quotedValue( mOwnerName ) )
                .arg( quotedValue( mTableName ) )
-               .arg( quotedValue( mGeometryColumn ) )
+               .arg( mGeometryColumn.isEmpty() ? "" : QString( " AND t.column_name<>%1 " ).arg( quotedValue( mGeometryColumn ) ) )
              ) )
     {
       while ( qry.next() )
@@ -643,49 +643,52 @@ bool QgsOracleProvider::loadFields()
                                  tr( "Oracle" ) );
     }
 
-    if ( exec( qry, QString( "SELECT i.index_name,i.domidx_opstatus"
-                             " FROM all_indexes i"
-                             " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=%3"
-                             " WHERE i.table_owner=%1 AND i.table_name=%2 AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" )
-               .arg( quotedValue( mOwnerName ) )
-               .arg( quotedValue( mTableName ) )
-               .arg( quotedValue( mGeometryColumn ) ) ) )
+    if ( !mGeometryColumn.isEmpty() )
     {
-      if ( qry.next() )
+      if ( exec( qry, QString( "SELECT i.index_name,i.domidx_opstatus"
+                               " FROM all_indexes i"
+                               " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=%3"
+                               " WHERE i.table_owner=%1 AND i.table_name=%2 AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" )
+                 .arg( quotedValue( mOwnerName ) )
+                 .arg( quotedValue( mTableName ) )
+                 .arg( quotedValue( mGeometryColumn ) ) ) )
       {
-        mSpatialIndex = qry.value( 0 ).toString();
-        if ( qry.value( 1 ).toString() != "VALID" )
+        if ( qry.next() )
         {
-          QgsMessageLog::logMessage( tr( "Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance." )
-                                     .arg( mSpatialIndex )
+          mSpatialIndex = qry.value( 0 ).toString();
+          if ( qry.value( 1 ).toString() != "VALID" )
+          {
+            QgsMessageLog::logMessage( tr( "Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance." )
+                                       .arg( mSpatialIndex )
+                                       .arg( mOwnerName )
+                                       .arg( mTableName )
+                                       .arg( mGeometryColumn ),
+                                       tr( "Oracle" ) );
+            mSpatialIndex = QString::null;
+          }
+          else
+          {
+            QgsDebugMsg( QString( "Valid spatial index %1 found" ).arg( mSpatialIndex ) );
+          }
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
                                      .arg( mOwnerName )
                                      .arg( mTableName )
                                      .arg( mGeometryColumn ),
                                      tr( "Oracle" ) );
-          mSpatialIndex = QString::null;
-        }
-        else
-        {
-          QgsDebugMsg( QString( "Valid spatial index %1 found" ).arg( mSpatialIndex ) );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
+        QgsMessageLog::logMessage( tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" )
                                    .arg( mOwnerName )
                                    .arg( mTableName )
-                                   .arg( mGeometryColumn ),
+                                   .arg( mGeometryColumn )
+                                   .arg( qry.lastError().text() ),
                                    tr( "Oracle" ) );
       }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" )
-                                 .arg( mOwnerName )
-                                 .arg( mTableName )
-                                 .arg( mGeometryColumn )
-                                 .arg( qry.lastError().text() ),
-                                 tr( "Oracle" ) );
     }
 
     qry.finish();
@@ -706,6 +709,9 @@ bool QgsOracleProvider::loadFields()
     QSqlField field = record.field( i );
 
     if ( field.name() == mGeometryColumn )
+      continue;
+
+    if ( !types.contains( field.name() ) )
       continue;
 
     mAttributeFields.append( QgsField( field.name(), field.type(), types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );

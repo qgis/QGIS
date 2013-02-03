@@ -169,10 +169,11 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QStringList subLayers() const;
 
     /** \brief Create pyramid overviews */
-    virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
-                                   const QString &  theResamplingMethod = "NEAREST",
-                                   RasterPyramidsFormat theFormat = PyramidsGTiff );
-
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
+                                   const QString & theResamplingMethod = "NEAREST",
+                                   RasterPyramidsFormat theFormat = PyramidsGTiff,
+                                   const QStringList & theConfigOptions = QStringList() );
+ 
     /** \brief Accessor for ths raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
@@ -269,13 +270,22 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Remove dataset*/
     virtual bool remove();
 
-    static QStringList pyramidResamplingMethods( QString providerKey );
+    /** Returns a list of pyramid resampling method names for given provider */
+    static QStringList pyramidResamplingMethods( QString providerKey = "gdal" );
+    /** Returns the pyramid resampling argument that corresponds to a given method */
+    static QString pyramidResamplingArg( QString method, QString providerKey = "gdal" );
 
-    /** Validates creation options for a specific dataset and destination format - used by GDAL provider only.
-     * See also validateCreationOptionsFormat() in gdal provider for validating options based on format only. */
-    virtual QString validateCreationOptions( const QStringList& createOptions, QString format );
+    /** Validates creation options for a specific dataset and destination format.
+     * @note used by GDAL provider only
+     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
+     virtual QString validateCreationOptions( const QStringList& createOptions, QString format );
 
-  signals:
+    /** Validates pyramid creation options for a specific dataset and destination format
+     * @note used by GDAL provider only */
+    virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
+
+   signals:
     /** Emit a signal to notify of the progress event.
       * Emited theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, QString theMessage );

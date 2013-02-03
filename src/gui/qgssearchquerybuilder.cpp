@@ -123,7 +123,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   QgsAttributeList attrs;
   attrs.append( fieldIndex );
 
-  mLayer->select( attrs, QgsRectangle(), false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attrs ) );
 
   lstValues->setCursor( Qt::WaitCursor );
   // Block for better performance
@@ -133,7 +133,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
-  while ( mLayer->nextFeature( feat ) &&
+  while ( fit.nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
     value = feat.attribute( fieldIndex ).toString();
@@ -209,10 +209,9 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsAttributeList allAttributes = mLayer->pendingAllAttributesList();
-  mLayer->select( allAttributes, QgsRectangle(), fetchGeom );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( fetchGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
 
-  while ( mLayer->nextFeature( feat ) )
+  while ( fit.nextFeature( feat ) )
   {
     QVariant value = search.evaluate( &feat );
     if ( value.toInt() != 0 )

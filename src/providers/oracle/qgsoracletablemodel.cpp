@@ -59,10 +59,10 @@ void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
   QgsDebugMsg( layerProperty.toString() );
 #endif
 
-  if ( !layerProperty.types.contains( QGis::WKBUnknown ) )
+  if ( layerProperty.isView && layerProperty.pkCols.isEmpty() )
   {
-    layerProperty.types << ( layerProperty.geometryColName.isEmpty() ? QGis::WKBNoGeometry : QGis::WKBUnknown );
-    layerProperty.srids << 0;
+    QgsDebugMsg( "View without pk skipped." );
+    return;
   }
 
   // is there already a root item with the given scheme Name?
@@ -75,7 +75,7 @@ void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
 
-    bool selectable = wkbType != QGis::WKBUnknown && srid != 0;
+    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid != 0 );
 
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
@@ -85,9 +85,9 @@ void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( QString::number( srid ) );
-    sridItem->setEditable( srid == 0 );
-    if ( srid == 0 )
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
+    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == 0 );
+    if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter..." ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
@@ -256,10 +256,10 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
     bool ok = geomType != QGis::WKBUnknown;
 
     if ( ok && geomType != QGis::WKBNoGeometry )
-      idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
-
-    int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt();
-    ok &= srid != 0;
+    {
+      int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
+      ok &= srid != 0;
+    }
 
     ok &= !idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toBool() ||
           idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toBool();

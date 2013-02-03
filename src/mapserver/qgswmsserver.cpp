@@ -1265,8 +1265,11 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
-  layer->select( layer->pendingAllAttributesList(), searchRect, addWktGeometry || featureBBox, true );
-  while ( layer->nextFeature( feature ) )
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
+                           .setFilterRect( searchRect )
+                           .setFlags((( addWktGeometry || featureBBox ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect )
+                                             );
+  while ( fit.nextFeature( feature ) )
   {
     ++featureCounter;
     if ( featureCounter > nFeatures )

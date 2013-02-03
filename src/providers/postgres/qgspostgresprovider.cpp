@@ -2992,7 +2992,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 
   if ( fields.size() > 0 )
   {
-    int offset = geometryColumn.isEmpty() ? 1 : 2;
+    int offset = 1;
 
     // get the list of fields
     QList<QgsField> flist;

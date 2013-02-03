@@ -261,7 +261,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( !mFeature->geometry() && exp.needsGeometry() )
       {
         QgsFeature f;
-        if ( vl->featureAtId( mFeature->id(), f, true, false ) && f.geometry() )
+        if ( vl->getFeatures( QgsFeatureRequest().setFilterFid( mFeature->id() ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) && f.geometry() )
         {
           mFeature->setGeometry( *f.geometry() );
         }

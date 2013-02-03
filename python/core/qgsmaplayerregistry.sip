@@ -44,6 +44,12 @@ class QgsMapLayerRegistry : QObject
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers /Transfer/,
                                        bool theEmitSignal = true );
 
+    /** Add a layer to the map of loaded layers
+       @returns NULL if unable to add layer, otherwise pointer to newly added layer
+       @see addMapLayers
+       @note Use addMapLayers if adding more than one layer at a time
+    */
+    QgsMapLayer *addMapLayer( QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = true ) /Deprecated/;
 
     /** Remove a set of layers from qgis
        @note As a side-effect QgsProject is made dirty.
@@ -56,7 +62,6 @@ class QgsMapLayerRegistry : QObject
        table entry.
     */
     void removeMapLayers( QStringList theLayerIds, bool theEmitSignal = true );
-
 
     /** Remove all registered layers
        @note raises removedAll()

@@ -67,13 +67,14 @@ int QgsInterpolator::cacheBaseData()
       attList.push_back( v_it->interpolationAttribute );
     }
 
-    vlayer->select( attList );
 
-    QgsFeature theFeature;
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
 
-    while ( vlayer->nextFeature( theFeature ) )
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+
+    QgsFeature theFeature;
+    while ( fit.nextFeature( theFeature ) )
     {
       if ( !v_it->zCoordInterpolation )
       {

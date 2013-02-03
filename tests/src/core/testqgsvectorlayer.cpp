@@ -144,8 +144,8 @@ class TestQgsVectorLayer: public QObject
       QgsAttributeList myList;
       myList << 0 << 1 << 2 << 3;
       int myCount = 0;
-      mpNonSpatialLayer->select( myList );
-      while ( mpNonSpatialLayer->nextFeature( f ) )
+      QgsFeatureIterator fit = mpNonSpatialLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myList ) );
+      while ( fit.nextFeature( f ) )
       {
         qDebug( "Getting non-spatial feature from layer" );
         myCount++;

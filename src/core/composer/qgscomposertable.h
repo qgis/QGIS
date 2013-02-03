@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 
     /**Retrieves feature attributes*/
     //! @note not available in python bindings
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+    virtual bool getFeatureAttributeMap( QList<QgsAttributeMap>& attributes )
     { Q_UNUSED( attributes ); return false; } //= 0;
     virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
     /**Calculate the maximum width values of the vector attributes*/
