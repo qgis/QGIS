@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import os
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -60,7 +61,7 @@ class ParameterVector(ParameterDataObject):
                 if layer.name() == self.value:
                     self.value = unicode(layer.source())
                     return True
-            return True
+            return os.path.exists(self.value)
 
     def getSafeExportedLayer(self):
         '''Returns not the value entered by the user, but a string with a filename which

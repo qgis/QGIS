@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import os
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -62,7 +63,7 @@ class ParameterTable(ParameterDataObject):
             val = unicode(obj)
             if val.endswith("dbf") or val.endswith("csv"):
                 self.value = val
-                return True
+                return os.path.exists(self.value)
             else:
                 return False
 

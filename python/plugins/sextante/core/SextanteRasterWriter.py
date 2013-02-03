@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
@@ -26,6 +27,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import *
 import numpy
 from PyQt4.QtCore import *
+from osgeo import gdal
+from osgeo import osr
 
 class SextanteRasterWriter:
 
@@ -33,25 +36,33 @@ class SextanteRasterWriter:
     
     def __init__(self, fileName, minx, miny, maxx, maxy, cellsize, nbands, crs):
         self.fileName = fileName
-        self.nx = (maxx - minx) / float(cellsize)
-        self.ny = (maxy - miny) / float(cellsize)
-        self.matrix = numpy.empty(shape=(self.nx, self.ny, nbands))
+        self.nx = int((maxx - minx) / float(cellsize))
+        self.ny = int((maxy - miny) / float(cellsize))
+        self.nbands = nbands;
+        self.matrix = numpy.ones(shape=(self.ny, self.nx), dtype=numpy.float32)
         self.matrix[:] = self.NODATA
         self.cellsize = cellsize
-        self.crs = crs    
+        self.crs = crs   
+        self.minx = minx
+        self.maxy = maxy 
         
     def setValue(self, value, x, y, band = 0):
         try:
-            self.matrix[x, y, band] = value
+            self.matrix[y, x] = value
         except IndexError:
             pass
         
     def getValue(self, x, y, band = 0):        
         try:
-            return matrix[x, y, band]
+            return self.matrix[y, x]
         except IndexError:
             return self.NODATA        
         
     def close(self):
-        #todo
-        pass
+        format = "GTiff"
+        driver = gdal.GetDriverByName( format )
+        dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1, gdal.GDT_Float32)  
+        dst_ds.SetProjection(str(self.crs.toWkt()))
+        dst_ds.SetGeoTransform( [self.minx, self.cellsize, 0, self.maxy, self.cellsize, 0] )                   
+        dst_ds.GetRasterBand(1).WriteArray(self.matrix)
+        dst_ds = None

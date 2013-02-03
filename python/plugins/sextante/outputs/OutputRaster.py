@@ -53,14 +53,3 @@ class OutputRaster(Output):
                 self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
             return self.compatible;
 
-    def getVectorWriter(self, minx, miny, maxx, maxy, cellsize, nbands, crs):
-        '''Returns a suitable raster. Use this to transparently handle output
-        values instead of creating your own method.
-
-        It should be called just once, since a new call might
-        result in previous data being replaced, thus rendering a previously
-        obtained writer useless
-        '''        
-
-        w = SextanteRasterWriter(self.value, minx, miny, maxx, maxy, cellsize, nbands, crs)        
-        return w

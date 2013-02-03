@@ -73,7 +73,7 @@ class ParameterRaster(ParameterDataObject):
                 if layer.name() == self.value:
                     self.value = unicode(layer.dataProvider().dataSourceUri())
                     return True
-        return True
+            return os.path.exists(self.value)
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
