@@ -30,7 +30,7 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import ftools_utils
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.core.SextanteLog import SextanteLog
 
 class Clip(GeoAlgorithm):
@@ -53,11 +53,12 @@ class Clip(GeoAlgorithm):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
-        allAttrsA = vproviderA.attributeIndexes()
-        vproviderA.select( allAttrsA )
+        #allAttrsA = vproviderA.attributeIndexes()
+        #vproviderA.select( allAttrsA )
         vproviderB = vlayerB.dataProvider()
-        allAttrsB = vproviderB.attributeIndexes()
-        vproviderB.select( allAttrsB )
+        #allAttrsB = vproviderB.attributeIndexes()
+        #vproviderB.select( allAttrsB )
+        
         # check for crs compatibility
         crsA = vproviderA.crs()
         crsB = vproviderB.crs()
@@ -72,55 +73,54 @@ class Clip(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = ftools_utils.createIndex(QGisLayers.features(vlayerB))
-        vproviderA.rewind()
+        index = utils.createSpatialIndex(vlayerB)
+        #vproviderA.rewind()
         nElement = 0        
         selectionA = QGisLayers.features(vlayerA)
         nFeat = len(selectionA)        
         for inFeatA in selectionA:
-          nElement += 1
-          progress.setPercentage(nElement/float(nFeat) * 100)
-          geom = QgsGeometry( inFeatA.geometry() )
-          int_geom = QgsGeometry( geom )
-          atMap = inFeatA.attributeMap()
-          intersects = index.intersects( geom.boundingBox() )
-          found = False
-          first = True
-          for id in intersects:
-              vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-              tmpGeom = QgsGeometry( inFeatB.geometry() )
-              if tmpGeom.intersects( geom ):
-                found = True
-                if first:
-                  outFeat.setGeometry( QgsGeometry( tmpGeom ) )
-                  first = False
-                else:
-                  try:
+            nElement += 1
+            progress.setPercentage(nElement/float(nFeat) * 100)
+            geom = QgsGeometry( inFeatA.geometry() )
+            int_geom = QgsGeometry( geom )
+            atMap = inFeatA.attributes()
+            intersects = index.intersects(geom.boundingBox())
+            found = False
+            first = True
+            for id in intersects:
+                vlayerB.featureAtId(int(id), inFeatB)
+                tmpGeom = QgsGeometry(inFeatB.geometry())
+                if tmpGeom.intersects(geom):
+                    found = True
+                    if first:
+                        outFeat.setGeometry(QgsGeometry(tmpGeom))
+                        first = False
+                    else:
+                        try:
+                            cur_geom = QgsGeometry( outFeat.geometry() )
+                            new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
+                            outFeat.setGeometry( QgsGeometry( new_geom ) )
+                        except:
+                            GEOS_EXCEPT = False
+                            break
+            if found:
+                try:
                     cur_geom = QgsGeometry( outFeat.geometry() )
-                    new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
-                    outFeat.setGeometry( QgsGeometry( new_geom ) )
-                  except:
+                    new_geom = QgsGeometry( geom.intersection( cur_geom ) )
+                    if new_geom.wkbType() == 7:
+                        int_com = QgsGeometry( geom.combine( cur_geom ) )
+                        int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
+                        new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                    try:
+                        outFeat.setGeometry( new_geom )
+                        outFeat.setAttributes( atMap )
+                        writer.addFeature( outFeat )
+                    except:
+                        FEATURE_EXCEPT = False
+                        continue
+                except:
                     GEOS_EXCEPT = False
-                    break
-          if found:
-            try:
-              cur_geom = QgsGeometry( outFeat.geometry() )
-              new_geom = QgsGeometry( geom.intersection( cur_geom ) )
-              if new_geom.wkbType() == 7:
-                int_com = QgsGeometry( geom.combine( cur_geom ) )
-                int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
-                new_geom = QgsGeometry( int_com.difference( int_sym ) )
-              try:
-                outFeat.setGeometry( new_geom )
-                outFeat.setAttributeMap( atMap )
-                writer.addFeature( outFeat )
-              except:
-                FEAT_EXCEPT = False
-                continue
-            except:
-              GEOS_EXCEPT = False
-              continue
-
+                    continue
 
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing clip")

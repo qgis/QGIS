@@ -24,17 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterVector import ParameterVector
-
 from sextante.outputs.OutputVector import OutputVector
-
 from sextante.algs.ftools import FToolsUtils as utils
 
 
@@ -71,41 +66,39 @@ class MeanCoords(GeoAlgorithm):
         uniqueIndex = layer.fieldNameIndex(uniqueField)
 
         if uniqueIndex <> -1:
-            uniqueValues = layer.uniqueValues(uniqueIndex)
+            uniqueValues = utils.getUniqueValues(layer, uniqueIndex)
             single = False
         else:
             uniqueValues = [QVariant(1)]
             single = True
 
-        fieldList = {0 : QgsField("MEAN_X", QVariant.Double, "", 24, 15),
-                     1 : QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
-                     2 : QgsField("UID", QVariant.String, "", 255)
-                    }
+        fieldList = [QgsField("MEAN_X", QVariant.Double, "", 24, 15),
+                     QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
+                     QgsField("UID", QVariant.String, "", 255)
+                    ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                      QGis.WKBPoint, provider.crs())
 
         current = 0
         total = 100.0 / float(provider.featureCount() * len(uniqueValues))
-
-        feat = QgsFeature()
+        
         outFeat = QgsFeature()
 
-        for j in uniqueValues:
-            provider.rewind()
-            layer.select([weightIndex, uniqueIndex])
+        for j in uniqueValues:                    
             cx = 0.00
             cy = 0.00
             points = []
             weights = []
-            while layer.nextFeature(feat):
+            features = QGisLayers.features(layer)            
+            for feat in features:
                 current += 1
                 progress.setPercentage(current * total)
 
                 if single:
                     check = j.toString().trimmed()
                 else:
-                    check = feat.attributeMap()[uniqueIndex].toString().trimmed()
+                    check = feat.attributes()[uniqueIndex].toString().trimmed()
 
                 if check == j.toString().trimmed():
                     cx = 0.00
@@ -114,7 +107,7 @@ class MeanCoords(GeoAlgorithm):
                         weight = 1.00
                     else:
                         try:
-                            weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
+                            weight = float(feat.attributes()[weightIndex].toDouble()[0])
                         except:
                             weight = 1.00
 
@@ -139,9 +132,7 @@ class MeanCoords(GeoAlgorithm):
             meanPoint = QgsPoint(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.addAttribute(0, QVariant(cx))
-            outFeat.addAttribute(1, QVariant(cy))
-            outFeat.addAttribute(2, QVariant(j))
+            outFeat.setAttributes([QVariant(cx), QVariant(cy), QVariant(j)])            
             writer.addFeature(outFeat)
 
             if single:

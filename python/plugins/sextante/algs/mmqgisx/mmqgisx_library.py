@@ -394,7 +394,7 @@ def mmqgisx_delete_columns(progress, layer, columns, savename, addlayer):
 	# Build dictionary of fields excluding fields flagged for deletion
 	srcfields = {}
 	destfields = {}
-	for index, field in layer.dataProvider().fields().iteritems():
+	for field in layer.fields():
 		keep = 1
 		for column in columns:
 			if field.name() == column:
@@ -443,232 +443,15 @@ def mmqgisx_delete_columns(progress, layer, columns, savename, addlayer):
 	return None
 
 # --------------------------------------------------------
-#    mmqgisx_delete_duplicate_geometries - Save to shaperile
-#			while removing duplicate shapes
-# --------------------------------------------------------
-
-def mmqgisx_delete_duplicate_geometries(qgis, layer, savename, addlayer):
-
-	# Initialization and error checking
-	#layer = mmqgisx_find_layer(layername)
-	if layer == None:
-		return "Invalid layer"
-
-	if len(savename) <= 0:
-		return "No output filename given"
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"), layer.dataProvider().fields(),
-			layer.dataProvider().geometryType(), layer.dataProvider().crs())
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
-	# Read geometries into an array
-	# Have to save as WKT because saving geometries causes segfault
-	# when they are used with equal() later
-	geometries = []
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-	feature = QgsFeature()
-	while layer.dataProvider().nextFeature(feature):
-		#print "Read geometry " + str(feature.id())
-		geometries.append(feature.geometry().exportToWkt())
-
-
-	# NULL duplicate geometries
-	for x in range(0, len(geometries) - 1):
-		if geometries[x] != None:
-			qgis.mainWindow().statusBar().showMessage("Checking feature " + unicode(x))
-			for y in range(x + 1, len(geometries)):
-				#print "Comparing " + str(x) + ", " + str(y)
-				if geometries[x] == geometries[y]:
-					#print "None " + str(x)
-					geometries[y] = None
-
-	# Write unique features to output
-	writecount = 0
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-	for x in range(0, len(geometries)):
-		# print "Writing " + str(x)
-		if layer.dataProvider().nextFeature(feature):
-			if geometries[x] != None:
-				writecount += 1
-				outfile.addFeature(feature)
-
-	del outfile
-
-	if addlayer:
-		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
-
-	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " of " + \
-		unicode(layer.dataProvider().featureCount()) + \
-		" unique features written to " + savename)
-
-	return None
-
-# --------------------------------------------------------------
-#    mmqgisx_geocode_google - Geocode CSV points from Google Maps
-# --------------------------------------------------------------
-
-def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, addlayer):
-	# Read the CSV file header
-	try:
-		infile = open(csvname, 'r')
-	except:
-		return "Failure opening " + csvname
-
-	try:
-		dialect = csv.Sniffer().sniff(infile.read(2048))
-	except:
-		return "Failure reading " + unicode(csvname) + ": " + unicode(sys.exc_info()[1])
-
-
-	fields = {}
-	indices = []
-	try:
-		infile.seek(0)
-		reader = csv.reader(infile, dialect)
-		header = reader.next()
-	except:
-		return "Failure reading " + unicode(csvname) + ": " + unicode(sys.exc_info()[1])
-
-	for x in range(0, len(header)):
-		for y in range(0, len(keys)):
-			if header[x] == keys[y]:
-				indices.append(x)
-
-		fieldname = header[x].strip()
-		fields[len(fields)] = QgsField(fieldname[0:9], QVariant.String)
-
-	if (len(fields) <= 0) or (len(indices) <= 0):
-		return "No valid location fields in " + csvname
-
-
-	# Create the CSV file for ungeocoded records
-	try:
-		notfound = open(notfoundfile, 'w')
-	except:
-		return "Failure opening " + notfoundfile
-
-	notwriter = csv.writer(notfound, dialect)
-	notwriter.writerow(header)
-
-
-	# Create the output shapefile
-	if QFile(shapefilename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(shapefilename)):
-			return "Failure deleting existing shapefile: " + unicode(shapefilename)
-
-	crs = QgsCoordinateReferenceSystem()
-	crs.createFromSrid(4326)
-	outfile = QgsVectorFileWriter(QString(shapefilename), QString("System"), fields, QGis.WKBPoint, crs)
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
-	# Geocode and import
-
-	recordcount = 0
-	notfoundcount = 0
-	for row in reader:
-		time.sleep(0.5) # to avoid Google rate quota limits
-
-		recordcount += 1
-		qgis.mainWindow().statusBar().showMessage("Geocoding " + unicode(recordcount) +
-			" (" + unicode(notfoundcount) + " not found)")
-
-		address = ""
-		for x in indices:
-			if x < len(row):
-				value = row[x].strip().replace(" ","+")
-				if len(value) > 0:
-					if x != indices[0]:
-						address += "+"
-					address += value
-
-		if len(address) <= 0:
-			notfoundcount += 1
-			notwriter.writerow(row)
-
-		else:
-			url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=" + address
-			xml = urllib.urlopen(url).read()
-
-			latstart = xml.find("<lat>")
-			latend = xml.find("</lat>")
-			longstart = xml.find("<lng>")
-			longend = xml.find("</lng>")
-
-			if (latstart > 0) and (latend > (latstart + 5)) and \
-			   (longstart > 0) and (longend > (longstart + 5)):
-				x = float(xml[longstart + 5:longend])
-				y = float(xml[latstart + 5:latend])
-				# print address + ": " + str(x) + ", " + str(y)
-
-				attributes = {}
-				for z in range(0, len(header)):
-					if z < len(row):
-						attributes[z] = QVariant(row[z].strip())
-
-				#y = 40.714353
-				#x = -74.005973
-				newfeature = QgsFeature()
-				newfeature.setAttributeMap(attributes)
-				geometry = QgsGeometry.fromPoint(QgsPoint(x, y))
-				newfeature.setGeometry(geometry)
-				outfile.addFeature(newfeature)
-
-			else:
-				notfoundcount += 1
-				notwriter.writerow(row)
-				# print xml
-
-	del outfile
-	del notfound
-
-	if addlayer and (recordcount > notfoundcount) and (recordcount > 0):
-		vlayer = qgis.addVectorLayer(shapefilename, os.path.basename(shapefilename), "ogr")
-
-	qgis.mainWindow().statusBar().showMessage(unicode(recordcount - notfoundcount) + " of " + unicode(recordcount)
-		+ " addresses geocoded with Google")
-
-	return None
-
-# --------------------------------------------------------
 #    mmqgisx_geometry_convert - Convert geometries to
 #		simpler types
 # --------------------------------------------------------
 
 def mmqgisx_geometry_convert(progress, layer, newtype, splitnodes, savename, addlayer):
-
-	if (layer == None) and (layer.type() != QgsMapLayer.VectorLayer):
-		return "Invalid Vector Layer"
-
-	# Create output file
-	if len(savename) <= 0:
-		return "Invalid output filename given"
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
-	outfile = QgsVectorFileWriter(QString(savename), QString("System"),
-		layer.dataProvider().fields(), newtype, layer.dataProvider().crs())
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
-
+	
 	# Iterate through each feature in the source layer
-	feature_count = layer.dataProvider().featureCount()
-
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
 	features = QGisLayers.features(layer)
+	feature_count = len(features)
 	i = 0
 	for feature in features:
 		i += 1
@@ -679,7 +462,7 @@ def mmqgisx_geometry_convert(progress, layer, newtype, splitnodes, savename, add
 
 			if (newtype == QGis.WKBPoint):
 				newfeature = QgsFeature()
-				newfeature.setAttributeMap(feature.attributeMap())
+				newfeature.setAttributes(feature.attributes())
 				newfeature.setGeometry(feature.asPoint())
 				outfile.addFeature(newfeature)
 
@@ -895,15 +678,6 @@ def mmqgisx_geometry_import_from_csv(progress, node_filename, long_colname, lat_
 		elif (header[x] == shapeid_colname):
 			shapeid_col = x
 
-	if (lat_col < 0):
-		return "Invalid latitude column name: " + lat_colname
-
-	if (long_col < 0):
-		return "Invalid longitude column name: " + long_colname
-
-	if (shapeid_col < 0):
-		return "Invalid shape ID column name: " + shapeid_colname
-
 	if (geometry_type == "Point"):
 		wkb_type = QGis.WKBPoint
 
@@ -915,27 +689,15 @@ def mmqgisx_geometry_import_from_csv(progress, node_filename, long_colname, lat_
 	else:
 		return "Invalid geometry type: " + geometry_type
 
-	# Create the output shapefile
-	if QFile(shapefile_name).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(shapefile_name)):
-			return "Failure deleting existing shapefile: " + shapefile_name
 
-	if qgis.activeLayer() and qgis.activeLayer().dataProvider():
-		crs = qgis.activeLayer().dataProvider().crs()
-	else:
-		crs = QgsCoordinateReferenceSystem()
-		crs.createFromSrid(4326) # WGS 84
 
-	fields = { 0 : QgsField(shapeid_colname, QVariant.String) }
+	fields = [QgsField(shapeid_colname, QVariant.String)]
 	if (geometry_type == "Point"):
 		for x in range(len(header)):
 			if ((x != lat_col) and (x != long_col) and (x != shapeid_col)):
-				fields[len(fields)] = QgsField(header[x], QVariant.String)
+				fields.append(QgsField(header[x], QVariant.String))
 
 	outfile = QgsVectorFileWriter(QString(shapefile_name), QString("System"), fields, wkb_type, crs)
-
-	if (outfile.hasError() != QgsVectorFileWriter.NoError):
-		return "Failure creating output shapefile: " + unicode(outfile.errorMessage())
 
 	polyline = []
 	node_count = 0
@@ -985,17 +747,17 @@ def mmqgisx_geometry_import_from_csv(progress, node_filename, long_colname, lat_
 					geometry = QgsGeometry.fromPolygon(polygon)
 
 			if not bad_feature:
-				attributes = { 0:QVariant(str(current_shape_id)) }
+				attributes = [QVariant(str(current_shape_id))]
 				if (geometry_type == "Point"):
 					for x in range(len(header)):
 						if x >= len(row):
-							attributes[len(attributes)] = QVariant("")
+							attributes.append(QVariant(""))
 						elif ((x != lat_col) and (x != long_col) and (x != shapeid_col)):
-							attributes[len(attributes)] = QVariant(str(row[x]))
+							attributes.append(QVariant(str(row[x])))
 
 				#print attributes
 				newfeature = QgsFeature()
-				newfeature.setAttributeMap(attributes)
+				newfeature.setAttributes(attributes)
 				newfeature.setGeometry(geometry)
 				outfile.addFeature(newfeature)
 				shape_count += 1
@@ -1024,13 +786,9 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 	if (width < hspacing) or (height < vspacing):
 		return "Invalid width / height: " + unicode(width) + " / " + unicode(height)
 
-	fields = {
-		0 : QgsField("longitude", QVariant.Double, "real", 24, 16, "Longitude"),
-		1 : QgsField("latitude", QVariant.Double, "real", 24, 16, "Latitude") }
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
+	fields = [
+		QgsField("longitude", QVariant.Double, "real", 24, 16, "Longitude"),
+		QgsField("latitude", QVariant.Double, "real", 24, 16, "Latitude") ]
 
 
 	if gridtype.find("polygon") >= 0:
@@ -1060,8 +818,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				y = y + vspacing;
 
 			feature.setGeometry(geometry.fromPolyline(polyline))
-			feature.addAttribute(0, QVariant(x))
-			feature.addAttribute(1, QVariant(0))
+			feature.setAttributes([QVariant(x), QVariant(0)])
 			outfile.addFeature(feature)
 			linecount = linecount + 1
 			#self.iface.mainWindow().statusBar().showMessage("Line " + str(linecount) + " " + str(x))
@@ -1079,8 +836,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				x = x + hspacing;
 
 			feature.setGeometry(geometry.fromPolyline(polyline))
-			feature.addAttribute(0, QVariant(0))
-			feature.addAttribute(1, QVariant(y))
+			feature.setAttributes([QVariant(0), QVariant(y)])
 			outfile.addFeature(feature)
 			linecount = linecount + 1
 			#self.iface.mainWindow().statusBar().showMessage("Line " + str(linecount) + " " + str(y))
@@ -1100,8 +856,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				geometry = QgsGeometry()
 				feature = QgsFeature()
 				feature.setGeometry(geometry.fromPolygon([polyline]))
-				feature.addAttribute(0, QVariant(x + (hspacing / 2.0)))
-				feature.addAttribute(1, QVariant(y + (vspacing / 2.0)))
+				feature.setAttributes([QVariant(x + (hspacing / 2.0)), QVariant(y + (vspacing / 2.0))])				
 				outfile.addFeature(feature)
 				linecount = linecount + 1
 				y = y + vspacing;
@@ -1127,8 +882,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				geometry = QgsGeometry()
 				feature = QgsFeature()
 				feature.setGeometry(geometry.fromPolygon([polyline]))
-				feature.addAttribute(0, QVariant(x + (hspacing / 2.0)))
-				feature.addAttribute(1, QVariant(y + (vspacing / 2.0)))
+				feature.setAttributes([QVariant(x + (hspacing / 2.0)), QVariant(y + (vspacing / 2.0))])
 				outfile.addFeature(feature)
 				linecount = linecount + 1
 				y = y + vspacing;
@@ -1166,8 +920,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 				geometry = QgsGeometry()
 				feature = QgsFeature()
 				feature.setGeometry(geometry.fromPolygon([polyline]))
-				feature.addAttribute(0, QVariant(x))
-				feature.addAttribute(1, QVariant(y))
+				feature.setAttributes([QVariant(x), QVariant(y)])
 				outfile.addFeature(feature)
 				linecount = linecount + 1
 				y = y + vspacing;
@@ -1184,20 +937,11 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 # --------------------------------------------------------
 
 def mmqgisx_gridify_layer(progress, layer, hspacing, vspacing, savename, addlayer):
-	#layer = mmqgisx_find_layer(layername)
-	if not layer:
-		return "Project has no active vector layer to gridify"
-
+	
 	if (hspacing <= 0) or (vspacing <= 0):
 		return "Invalid grid spacing: " + unicode(hspacing) + "/" + unicode(vspacing)
 
-	if len(savename) <= 0:
-		return "No output filename given"
-
-	if QFile(savename).exists():
-		if not QgsVectorFileWriter.deleteShapeFile(QString(savename)):
-			return "Failure deleting existing shapefile: " + savename
-
+	
 	outfile = QgsVectorFileWriter(QString(savename), QString("System"), layer.dataProvider().fields(),
 			layer.dataProvider().geometryType(), layer.dataProvider().crs())
 
@@ -1690,63 +1434,6 @@ def mmqgisx_merge(progress, layers, savename, addlayer):
 
 	return None
 
-# ----------------------------------------------------------
-#    mmqgisx_select - Select features by attribute
-# ----------------------------------------------------------
-
-def mmqgisx_select(progress, layer, selectattributename, comparisonvalue, comparisonname):
-
-	selectindex = layer.dataProvider().fieldNameIndex(selectattributename)
-	if selectindex < 0:
-		return "Invalid select field name: " + selectattributename
-
-	if (not comparisonvalue) or (len(comparisonvalue) <= 0):
-		return "No comparison value given"
-
-	readcount = 0
-	feature = QgsFeature()
-	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
-	layer.dataProvider().rewind()
-
-	selected = []
-	totalcount = layer.featureCount()
-	while layer.dataProvider().nextFeature(feature):
-		if (comparisonname == 'begins with') or (comparisonname == 'contains') or \
-		   		(feature.attributeMap()[selectindex].type() == QVariant.String) or \
-		   		isinstance(comparisonvalue, basestring):
-			x = unicode(feature.attributeMap()[selectindex].toString())
-			y = unicode(comparisonvalue)
-		else:
-			x = float(feature.attributeMap()[selectindex].toString())
-			y = float(comparisonvalue)
-
-		match = False
-		if (comparisonname == '=='):
-			match = (x == y)
-		elif (comparisonname == '!='):
-			match = (x != y)
-		elif (comparisonname == '>'):
-			match = (x > y)
-		elif (comparisonname == '>='):
-			match = (x >= y)
-		elif (comparisonname == '<'):
-			match = (x < y)
-		elif (comparisonname == '<='):
-			match = (x <= y)
-		elif (comparisonname == 'begins with'):
-			match = x.startswith(y)
-		elif (comparisonname == 'contains'):
-			match = (x.find(y) >= 0)
-
-		readcount += 1
-		if (match):
-			selected.append(feature.id())			
-
-		progress.setPercentage(float(readcount) / totalcount * 100)
-	
-	layer.setSelectedFeatures(selected)    
-
-	return None
 
 # --------------------------------------------------------
 #    mmqgisx_sort - Sort shapefile by attribute

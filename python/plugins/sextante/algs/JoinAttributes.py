@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from sextante.parameters.ParameterTableField import ParameterTableField
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,6 +26,7 @@ __revision__ = '$Format:%H$'
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.outputs.OutputVector import OutputVector
 from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterTableField import ParameterTableField
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -61,22 +60,17 @@ class JoinAttributes(GeoAlgorithm):
         # Layer 1
         layer = QGisLayers.getObjectFromUri(input)
         provider = layer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
-        join_field1_index = provider.fieldNameIndex(field)
+        join_field1_index = layer.fieldNameIndex(field)
         # Layer 2
         layer2 = QGisLayers.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
-        allAttrs = provider2.attributeIndexes()
-        provider2.select(allAttrs)
         fields2 = provider2.fields()
-        join_field2_index = provider2.fieldNameIndex(field2)
+        join_field2_index = layer2.fieldNameIndex(field2)
 
         # Output
-        outFields = provider.fields()
-        for (i, f) in fields2.iteritems():
-            f.setName("x_" + f.name())
-            outFields[len(outFields)] = f
+        outFields = input.fields()
+        for f in fields2:
+            outFields.append(f)
 
         writer = output.getVectorWriter(outFields, provider.geometryType(), provider.crs())
 
@@ -85,22 +79,21 @@ class JoinAttributes(GeoAlgorithm):
         outFeat = QgsFeature()
 
         # Create output vector layer with additional attribute
-        while provider.nextFeature(inFeat):
+        features = QGisLayers.features(layer);
+        for inFeat in features:
             inGeom = inFeat.geometry()
-            atMap = inFeat.attributeMap()
-            join_value1 = atMap[join_field1_index].toString()
-            provider2.rewind()
+            atMap = inFeat.attributes()
+            join_value1 = atMap[join_field1_index].toString()            
             while provider2.nextFeature(inFeat2):
+                ## Maybe it should cache this entries...
                 atMap2 = inFeat2.attributeMap()
                 join_value2 = atMap2[join_field2_index].toString()
                 if join_value1 == join_value2:
                     # create the new feature
-                    outFeat.setGeometry(inGeom)
-                    outFeat.setAttributeMap(atMap)
-                    l = len(provider.fields())
-                    for (i, a) in atMap2.iteritems():
-                        outFeat.addAttribute(l + i, a)
-
-                    writer.addFeature(outFeat)
+                    outFeat.setGeometry(inGeom)                    
+                    atMap.extend(atMap2)
+                    break;                    
+            outFeat.setAttributes(atMap)
+            writer.addFeature(outFeat)
 
         del writer

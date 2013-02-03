@@ -92,7 +92,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         index = layer.fieldNameIndex(fieldName)
-        layer.select([index], QgsRectangle(), False)
+        #layer.select([index], QgsRectangle(), False)
 
         cvValue = 0
         minValue = 0
@@ -110,7 +110,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         total = 100.0 / float(count)
         current = 0
         for ft in features:
-            value = float(ft.attributeMap()[index].toDouble()[0])
+            value = float(ft.attributes()[index].toDouble()[0])
 
             if isFirst:
                 minValue = value

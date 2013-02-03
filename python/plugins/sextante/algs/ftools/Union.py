@@ -28,9 +28,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import ftools_utils
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 
@@ -65,17 +64,16 @@ class   Union(GeoAlgorithm):
         else:
             if not crsA != crsB:
                 SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Union. Non-matching CRSs. Results might be unexpected")
-        fields = ftools_utils.combineVectorFields(vlayerA, vlayerB )
-        longNames = ftools_utils.checkFieldNameLength( fields )
-        if not longNames.isEmpty():
-            raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
+        fields = utils.combineVectorFields(vlayerA, vlayerB )
+        #longNames = ftools_utils.checkFieldNameLength( fields )
+        #if not longNames.isEmpty():
+            #raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = ftools_utils.createIndex( QGisLayers.features(vlayerB)  )
-        indexB = ftools_utils.createIndex( QGisLayers.features(vlayerA)  )
-        nFeat = vproviderA.featureCount() + vproviderB.featureCount()
+        indexA = utils.createSpatialIndex(vlayerB)
+        indexB = utils.createSpatialIndex(vlayerA)
         vproviderA.rewind()
         count = 0
         nElement = 0
@@ -88,12 +86,12 @@ class   Union(GeoAlgorithm):
           found = False
           geom = QgsGeometry( inFeatA.geometry() )
           diff_geom = QgsGeometry( geom )
-          atMapA = inFeatA.attributeMap()
+          atMapA = inFeatA.attributes()
           intersects = indexA.intersects( geom.boundingBox() )
           if len( intersects ) < 1:
             try:
               outFeat.setGeometry( geom )
-              outFeat.setAttributeMap( atMapA )
+              outFeat.setAttributes( atMapA )
               writer.addFeature( outFeat )
             except:
               # this really shouldn't happen, as we
@@ -103,7 +101,7 @@ class   Union(GeoAlgorithm):
             for id in intersects:
               count += 1
               vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-              atMapB = inFeatB.attributeMap()
+              atMapB = inFeatB.attributes()
               tmpGeom = QgsGeometry( inFeatB.geometry() )
               try:
                 if geom.intersects( tmpGeom ):
@@ -142,7 +140,7 @@ class   Union(GeoAlgorithm):
                   # intersects, but the geometry doesn't
                   try:
                     outFeat.setGeometry( geom )
-                    outFeat.setAttributeMap( atMapA )
+                    outFeat.setAttributes( atMapA )
                     writer.addFeature( outFeat )
                   except:
                     # also shoudn't ever happen
@@ -159,7 +157,7 @@ class   Union(GeoAlgorithm):
                     if i.type() == geom.type():
                         diff_geom = QgsGeometry( i )
                 outFeat.setGeometry( diff_geom )
-                outFeat.setAttributeMap( atMapA )
+                outFeat.setAttributes( atMapA )
                 writer.addFeature( outFeat )
               except Exception, err:
                 FEATURE_EXCEPT = False
@@ -174,21 +172,21 @@ class   Union(GeoAlgorithm):
             add = False
             geom = QgsGeometry( inFeatA.geometry() )
             diff_geom = QgsGeometry( geom )
-            atMap = inFeatA.attributeMap().values()
+            atMap = inFeatA.attributes()
             atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
             intersects = indexB.intersects( geom.boundingBox() )
 
             if len(intersects) < 1:
                 try:
                     outFeat.setGeometry( geom )
-                    outFeat.setAttributeMap( atMap )
+                    outFeat.setAttributes( atMap )
                     writer.addFeature( outFeat )
                 except Exception, err:
                     FEATURE_EXCEPT = False
             else:
                 for id in intersects:
-                    vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
-                    atMapB = inFeatB.attributeMap()
+                    vlayerA.featureAtId( int( id ), inFeatB , True, allAttrsA )
+                    atMapB = inFeatB.attributes()
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     try:
                         if diff_geom.intersects( tmpGeom ):
@@ -198,7 +196,7 @@ class   Union(GeoAlgorithm):
                             # this only happends if the bounding box
                             # intersects, but the geometry doesn't
                             outFeat.setGeometry( diff_geom )
-                            outFeat.setAttributeMap( atMap )
+                            outFeat.setAttributes( atMap )
                             writer.addFeature( outFeat )
                     except Exception, err:
                         add = False
@@ -207,7 +205,7 @@ class   Union(GeoAlgorithm):
             if add:
                 try:
                     outFeat.setGeometry( diff_geom )
-                    outFeat.setAttributeMap( atMapB )
+                    outFeat.setAttributes( atMapB )
                     writer.addFeature( outFeat )
                 except Exception, err:
                     FEATURE_EXCEPT = False   

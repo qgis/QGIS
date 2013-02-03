@@ -32,6 +32,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.algs.ftools import FToolsUtils as utils
 
 class UniqueValues(GeoAlgorithm):
 
@@ -59,7 +60,7 @@ class UniqueValues(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
-        values = layer.uniqueValues(layer.fieldNameIndex(fieldName))
+        values = utils.getUniqueValues(layer, layer.fieldNameIndex(fieldName))
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
         self.setOutputValue(self.UNIQUE_VALUES, ";".join([unicode(v.toString()) for v in values]))

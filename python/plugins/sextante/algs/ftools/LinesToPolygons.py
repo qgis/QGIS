@@ -50,7 +50,6 @@ class LinesToPolygons(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         provider = layer.dataProvider()
-        layer.select(layer.pendingAllAttributesList())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      QGis.WKBPolygon, provider.crs())
@@ -70,8 +69,8 @@ class LinesToPolygons(GeoAlgorithm):
             polyGeom = self.removeBadLines(outGeomList)
             if len(polyGeom) <> 0:
                 outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
-                atMap = inFeat.attributeMap()
-                outFeat.setAttributeMap(atMap)
+                atMap = inFeat.attributes()
+                outFeat.setAttributes(atMap)
                 writer.addFeature(outFeat)
 
             current += 1

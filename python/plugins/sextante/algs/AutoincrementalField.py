@@ -44,25 +44,24 @@ class AutoincrementalField(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField("AUTO", QVariant.Int)
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature(inFeat):
-          progress.setPercentage(int((100 * nElement)/nFeat))
-          nElement += 1
-          inGeom = inFeat.geometry()
-          outFeat.setGeometry( inGeom )
-          atMap = inFeat.attributeMap()
-          outFeat.setAttributeMap( atMap )
-          outFeat.addAttribute( len(vprovider.fields()), QVariant(nElement) )
-          writer.addFeature( outFeat )
+        features = QGisLayers.features(vlayer)
+        nFeat = len(features)
+        for inFeat in features:
+            progress.setPercentage(int((100 * nElement)/nFeat))
+            nElement += 1
+            inGeom = inFeat.geometry()
+            outFeat.setGeometry( inGeom )
+            atMap = inFeat.attributeMap()
+            atMap.append(QVariant(nElement))
+            outFeat.setAttributeMap( atMap )          
+            writer.addFeature( outFeat )
         del writer
 
     def defineCharacteristics(self):

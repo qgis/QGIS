@@ -101,7 +101,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         total = 100.0 / float(count)
         current = 0
         for ft in features:
-            length = float(len(ft.attributeMap()[index].toString()))
+            length = float(len(ft.attributes()[index].toString()))
 
             if isFirst:
                 minValue = length

@@ -61,8 +61,6 @@ class ReprojectLayer(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), targetCrs)
 
-        layer.select(layer.pendingAllAttributesList())
-
         layerCrs = layer.crs()
         crsTransform = QgsCoordinateTransform(layerCrs, targetCrs)
 
@@ -74,7 +72,7 @@ class ReprojectLayer(GeoAlgorithm):
             geom = f.geometry()
             geom.transform(crsTransform)
             outFeat.setGeometry(geom)
-            outFeat.setAttributeMap(f.attributeMap())
+            outFeat.setAttributes(f.attributes())
             writer.addFeature(outFeat)
 
             current += 1

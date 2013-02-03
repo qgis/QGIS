@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -57,17 +58,17 @@ class ExtentFromLayer(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
-        fields = {0 : QgsField("MINX", QVariant.Double),
-                  1 : QgsField("MINY", QVariant.Double),
-                  2 : QgsField("MAXX", QVariant.Double),
-                  3 : QgsField("MAXY", QVariant.Double),
-                  4 : QgsField("CNTX", QVariant.Double),
-                  5 : QgsField("CNTY", QVariant.Double),
-                  6 : QgsField("AREA", QVariant.Double),
-                  7 : QgsField("PERIM", QVariant.Double),
-                  8 : QgsField("HEIGHT", QVariant.Double),
-                  9 : QgsField("WIDTH", QVariant.Double)
-                 }
+        fields = [ QgsField("MINX", QVariant.Double),
+                   QgsField("MINY", QVariant.Double),
+                   QgsField("MAXX", QVariant.Double),
+                   QgsField("MAXY", QVariant.Double),
+                   QgsField("CNTX", QVariant.Double),
+                   QgsField("CNTY", QVariant.Double),
+                   QgsField("AREA", QVariant.Double),
+                   QgsField("PERIM", QVariant.Double),
+                   QgsField("HEIGHT", QVariant.Double),
+                   QgsField("WIDTH", QVariant.Double)
+                 ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                      QGis.WKBPolygon, layer.crs())
@@ -76,10 +77,10 @@ class ExtentFromLayer(GeoAlgorithm):
             self.featureExtent(layer, writer, progress)
         else:
             self.layerExtent(layer, writer, progress)
+        
+        del writer        
 
-        del writer
-
-    def layerExtent(self, layer, writer, progress):
+    def layerExtent(self, layer, writer, progress):        
         rect = layer.extent()
         minx = rect.xMinimum()
         miny = rect.yMinimum()
@@ -97,27 +98,26 @@ class ExtentFromLayer(GeoAlgorithm):
                 QgsPoint(maxx, maxy),
                 QgsPoint(maxx, miny),
                 QgsPoint(minx, miny)
-               ]
-
+               ]        
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
-        feat.setGeometry(geometry)
-        feat.setAttributeMap({0 : QVariant(minx),
-                              1 : QVariant(miny),
-                              2 : QVariant(maxx),
-                              3 : QVariant(maxy),
-                              4 : QVariant(cntx),
-                              5 : QVariant(cnty),
-                              6 : QVariant(area),
-                              7 : QVariant(perim),
-                              8 : QVariant(height),
-                              9 : QVariant(width)
-                             })
+        feat.setGeometry(geometry)        
+        attrs = [QVariant(minx),
+            QVariant(miny),
+            QVariant(maxx),
+            QVariant(maxy),
+            QVariant(cntx),
+            QVariant(cnty),
+            QVariant(area),
+            QVariant(perim),
+            QVariant(height),
+            QVariant(width) ]
+        feat.setAttributes(attrs)
         writer.addFeature(feat)
 
     def featureExtent(self, layer, writer, progress):
         current = 0
-        outFeat = QgsFeature()
+        feat = QgsFeature()
 
         provider = layer.dataProvider()
         provider.select()
@@ -143,19 +143,19 @@ class ExtentFromLayer(GeoAlgorithm):
                    ]
 
             geometry = QgsGeometry().fromPolygon([rect])
-
-            outFeat.setGeometry(geometry)
-            outFeat.setAttributeMap({0 : QVariant(minx),
-                                     1 : QVariant(miny),
-                                     2 : QVariant(maxx),
-                                     3 : QVariant(maxy),
-                                     4 : QVariant(cntx),
-                                     5 : QVariant(cnty),
-                                     6 : QVariant(area),
-                                     7 : QVariant(perim),
-                                     8 : QVariant(height),
-                                     9 : QVariant(width)
-                                    })
-            writer.addFeature(outFeat)
+            feat.setGeometry(geometry)
+            attrs = [QVariant(minx),
+                QVariant(miny),
+                QVariant(maxx),
+                QVariant(maxy),
+                QVariant(cntx),
+                QVariant(cnty),
+                QVariant(area),
+                QVariant(perim),
+                QVariant(height),
+                QVariant(width) ]
+            feat.setAttributes(attrs)
+                                    
+            writer.addFeature(feat)
             current += 1
             progress.setPercentage(int(current * total))

@@ -67,23 +67,17 @@ class LinesIntersection(GeoAlgorithm):
         providerA = layerA.dataProvider()
         providerB = layerB.dataProvider()
 
-
         idxA = layerA.fieldNameIndex(fieldA)
         idxB = layerB.fieldNameIndex(fieldB)
 
-        fieldList = {0 : layerA.pendingFields()[idxA],
-                     1 : layerB.pendingFields()[idxB]
-                    }
+        fieldList = [layerA.pendingFields()[idxA],
+                     layerB.pendingFields()[idxB]
+                    ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
                      QGis.WKBPoint, providerA.crs())
 
         spatialIndex = utils.createSpatialIndex(layerB)
-
-        providerA.rewind()
-        layerA.select([idxA])
-        providerB.rewind()
-        layerB.select([idxB])
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
@@ -110,8 +104,8 @@ class LinesIntersection(GeoAlgorithm):
                     tmpGeom = QgsGeometry(inFeatB.geometry())
 
                     points = []
-                    atMapA = inFeatA.attributeMap()
-                    atMapB = inFeatB.attributeMap()
+                    atMapA = inFeatA.attributes()
+                    atMapB = inFeatB.attributes()
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
@@ -123,8 +117,7 @@ class LinesIntersection(GeoAlgorithm):
 
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
-                                outFeat.addAttribute(0, atMapA[idxA])
-                                outFeat.addAttribute(1, atMapB[idxB])
+                                outFeat.setAttributes([atMapA[idxA], atMapB[idxB]])
                                 writer.addFeature(outFeat)
 
             current += 1

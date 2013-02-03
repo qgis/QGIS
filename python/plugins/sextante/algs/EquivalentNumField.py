@@ -29,7 +29,6 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 
 class EquivalentNumField(GeoAlgorithm):
@@ -48,37 +47,28 @@ class EquivalentNumField(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
-        field_index = vprovider.fieldNameIndex(fieldname)
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select(allAttrs)
+        fieldindex = vlayer.fieldNameIndex(fieldname)        
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField("NUM_FIELD", QVariant.Int)
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        inFeat = QgsFeature()
+        fields.append(QgsField("NUM_FIELD", QVariant.Int))
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
+        inGeom = QgsGeometry()        
         nElement = 0
         classes = {}
-        features = QGisLayers.features(layer)
+        features = QGisLayers.features(vlayer)
+        nFeat = len(features)
         for feature in features:
-          progress.setPercentage(int((100 * nElement)/nFeat))
-          nElement += 1
-          atMap = feature.attributeMap()
-          clazz = atMap[field_index].toString()
-          if clazz not in classes:
-              classes[clazz] = len(classes.keys())
-        features = QGisLayers.features(layer)
-        for feature in features:
-          progress.setPercentage(int((100 * nElement)/nFeat))
-          nElement += 1
-          inGeom = features.geometry()
-          outFeat.setGeometry( inGeom )
-          atMap = inFeat.attributeMap()
-          clazz = atMap[field_index].toString()
-          outFeat.setAttributeMap( atMap )
-          outFeat.addAttribute( len(vprovider.fields()), QVariant(classes[clazz]) )
-          writer.addFeature( outFeat )
+            progress.setPercentage(int((100 * nElement)/nFeat))
+            nElement += 1
+            inGeom = feature.geometry()
+            outFeat.setGeometry( inGeom )
+            atMap = feature.attributes()
+            clazz = atMap[fieldindex].toString()
+            if clazz not in classes:
+                classes[clazz] = len(classes.keys())
+            atMap.append(QVariant(classes[clazz]))
+            outFeat.setAttributes(atMap)                        
+            writer.addFeature( outFeat )
         del writer
 
     def defineCharacteristics(self):

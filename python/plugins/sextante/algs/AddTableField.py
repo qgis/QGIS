@@ -63,23 +63,21 @@ class AddTableField(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
+        inGeom = QgsGeometry()        
         nElement = 0
         features = QGisLayers.features(vlayer)
+        nFeat = len(features)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry( inGeom )
             atMap = inFeat.attributeMap()
-            outFeat.setAttributeMap( atMap )
+            atMap.append(QVariant())            
             outFeat.addAttribute( len(vprovider.fields()), QVariant() )
             writer.addFeature( outFeat )
         del writer

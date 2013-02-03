@@ -70,7 +70,7 @@ class OutputVector(Output):
         result in previous data being replaced, thus rendering a previously
         obtained writer useless
 
-        @param fields   a dict of int-QgsField
+        @param fields   a list  of QgsField
         @param geomType a suitable geometry type, as it would be passed
                         to a QgsVectorFileWriter constructor
         @param crs      the crs of the layer to create

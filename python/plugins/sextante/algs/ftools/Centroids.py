@@ -20,7 +20,7 @@
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
+# This will get replaced with a git SHA1 when you do a git archive323
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
@@ -58,7 +58,7 @@ class Centroids(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(layer.pendingFields(),
                      QGis.WKBPoint, layer.dataProvider().crs())
 
-        layer.select(layer.pendingAllAttributesList())
+        #layer.select(layer.pendingAllAttributesList())
 
         outFeat = QgsFeature()
 
@@ -68,14 +68,14 @@ class Centroids(GeoAlgorithm):
 
         for inFeat in features:
             inGeom = inFeat.geometry()
-            attrMap = inFeat.attributeMap()
+            attrs = inFeat.attributes()
 
             outGeom = QgsGeometry(inGeom.centroid())
             if outGeom is None:
                 raise GeoAlgorithmExecutionException("Error calculating centroid")
 
             outFeat.setGeometry(outGeom)
-            outFeat.setAttributeMap(attrMap)
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(int(current * total))

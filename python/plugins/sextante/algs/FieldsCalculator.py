@@ -60,10 +60,8 @@ class FieldsCalculator(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select(allAttrs)
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField(fieldname, QVariant.Double)
+        fields.append(QgsField(fieldname, QVariant.Double))
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -72,10 +70,12 @@ class FieldsCalculator(GeoAlgorithm):
         features = QGisLayers.features(vlayer)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement) / nFeat))
-            attrs = inFeat.attributeMap()
+            attrs = inFeat.attributes()
             expression = formula
-            for (k, attr) in attrs.iteritems():
+            k = 0
+            for attr in attrs:
                 expression = expression.replace(str(fields[k].name()), str(attr.toString()))
+                k += 1
             try:
                 result = eval(expression)
             except Exception:
@@ -85,8 +85,8 @@ class FieldsCalculator(GeoAlgorithm):
             inGeom = inFeat.geometry()
             outFeat.setGeometry(inGeom)
             atMap = inFeat.attributeMap()
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(len(vprovider.fields()), QVariant(result))
+            atMap.append(QVariant(result))
+            outFeat.setAttributeMap(atMap)            
             writer.addFeature(outFeat)
         del writer
 

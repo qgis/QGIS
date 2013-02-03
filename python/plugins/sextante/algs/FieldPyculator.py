@@ -70,7 +70,7 @@ class FieldsPyculator(GeoAlgorithm):
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField(fieldname, QVariant.Double)
+        fields.append(QgsField(fieldname, QVariant.Double))
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
         new_ns = {}
@@ -86,11 +86,13 @@ class FieldsPyculator(GeoAlgorithm):
                             (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
         #replace all fields tags
-        field_map = vprovider.fields()
-        for num, field in field_map.iteritems():
+        fields = vprovider.fields()
+        num = 0
+        for field in fields:
             field_name = unicode(field.name())
             replval = '__attr[' + str(num) + ']'
             code = code.replace("<"+field_name+">",replval)
+            num += 1
 
         #replace all special vars
         code = code.replace('$id','__id')
@@ -109,18 +111,12 @@ class FieldsPyculator(GeoAlgorithm):
                                  (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
         #run
-        if need_attrs:
-            attr_ind = vprovider.attributeIndexes()
-        else:
-            attr_ind = []
-        vprovider.select(attr_ind, QgsRectangle(), True)
-
         features = QGisLayers.features(layer)
         nFeatures = len(features)
         nElement = 1
         for feat in features:
             progress.setPercentage(int((100 * nElement)/nFeatures))
-            attrMap = feat.attributeMap()
+            attrMap = feat.attributes()
             feat_id = feat.id()
 
             #add needed vars
@@ -132,10 +128,8 @@ class FieldsPyculator(GeoAlgorithm):
                 new_ns['__geom'] = geom
 
             if need_attrs:
-                attr = []
-                for num,a in attrMap.iteritems():
-                    attr.append(self.Qvar2py(a))
-                new_ns['__attr'] = attr
+                pyattrs = [self.Qvar2py(a) for a in attrMap]                
+                new_ns['__attr'] = pyattrs
 
             #clear old result
             if new_ns.has_key(self.RESULT_VAR_NAME):
@@ -165,8 +159,8 @@ class FieldsPyculator(GeoAlgorithm):
             #write feature
             nElement += 1
             outFeat.setGeometry( feat.geometry() )
-            outFeat.setAttributeMap( attrMap )
-            outFeat.addAttribute(len(vprovider.fields()), QVariant(new_ns[self.RESULT_VAR_NAME]))
+            attrMap.append(QVariant(new_ns[self.RESULT_VAR_NAME]))
+            outFeat.setAttributeMap( attrMap )            
             writer.addFeature(outFeat)
 
         del writer

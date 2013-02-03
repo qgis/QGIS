@@ -68,9 +68,8 @@ class VariableDistanceBuffer(GeoAlgorithm):
         field = self.getParameterValue(self.FIELD)
         segments = int(self.getParameterValue(self.SEGMENTS))
 
-        provider = layer.dataProvider()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     QGis.WKBPolygon, provider.crs())
+                     QGis.WKBPolygon, layer.crs())
 
         buff.buffering(progress, writer, 0, field, True,
                        layer, dissolve, segments)

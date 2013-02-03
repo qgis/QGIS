@@ -24,11 +24,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-import os.path
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
@@ -52,15 +51,13 @@ class Dissolve(GeoAlgorithm):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
-        field = vlayerA.dataProvider().fieldNameIndex(fieldname)
+        field = vlayerA.fieldNameIndex(fieldname)
         GEOS_EXCEPT = True
-        vproviderA = vlayerA.dataProvider()
-        allAttrsA = vproviderA.attributeIndexes()
+        vproviderA = vlayerA.dataProvider()        
         fields = vproviderA.fields()
         writer = self.getOutputFromName(Dissolve.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         #inFeat = QgsFeature()
-        outFeat = QgsFeature()
-        vproviderA.rewind()
+        outFeat = QgsFeature()        
         nElement = 0
         nFeat = vproviderA.featureCount()
         if not useField:
@@ -70,7 +67,7 @@ class Dissolve(GeoAlgorithm):
                 nElement += 1
                 progress.setPercentage(int(nElement/nFeat * 100))
                 if first:
-                    attrs = inFeat.attributeMap()
+                    attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry( inFeat.geometry() )
                     outFeat.setGeometry( tmpInGeom )
                     first = False
@@ -83,21 +80,19 @@ class Dissolve(GeoAlgorithm):
                     except:
                         GEOS_EXCEPT = False
                         continue
-                    outFeat.setAttributeMap( attrs )
+                    outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )
         else:
-            unique = vproviderA.uniqueValues( int( field ) )
+            unique = utils.getUniqueValues( vlayerA, int( field ) )
             nFeat = nFeat * len( unique )
             for item in unique:
                 first = True
                 add = True
-                vproviderA.select( allAttrsA )
-                vproviderA.rewind()
                 features = QGisLayers.features(vlayerA)
                 for inFeat in features:
                     nElement += 1
                     progress.setPercentage(int(nElement/nFeat * 100))
-                    atMap = inFeat.attributeMap()
+                    atMap = inFeat.attributes()
                     tempItem = atMap[ field ]
                     if tempItem.toString().trimmed() == item.toString().trimmed():
                         if first:
@@ -105,7 +100,7 @@ class Dissolve(GeoAlgorithm):
                             tmpInGeom = QgsGeometry( inFeat.geometry() )
                             outFeat.setGeometry( tmpInGeom )
                             first = False
-                            attrs = inFeat.attributeMap()
+                            attrs = inFeat.attributes()
                         else:
                             tmpInGeom = QgsGeometry( inFeat.geometry() )
                             tmpOutGeom = QgsGeometry( outFeat.geometry() )
@@ -116,7 +111,7 @@ class Dissolve(GeoAlgorithm):
                             GEOS_EXCEPT = False
                             add = False
                 if add:
-                    outFeat.setAttributeMap( attrs )
+                    outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )
         del writer
         if not GEOS_EXCEPT:

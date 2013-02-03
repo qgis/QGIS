@@ -55,17 +55,15 @@ class Delaunay(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        
 
-        provider = layer.dataProvider()
-        provider.select()
-
-        fields = {0 : QgsField("POINTA", QVariant.Double, "", 24, 15),
-                  1 : QgsField("POINTB", QVariant.Double, "", 24, 15),
-                  2 : QgsField("POINTC", QVariant.Double, "", 24, 15)
-                 }
+        fields = [ QgsField("POINTA", QVariant.Double, "", 24, 15),
+                   QgsField("POINTB", QVariant.Double, "", 24, 15),
+                   QgsField("POINTC", QVariant.Double, "", 24, 15)
+                 ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                     QGis.WKBPolygon, provider.crs())
+                     QGis.WKBPolygon, layer.dataProvider().crs())
 
         pts = []
         ptDict = {}
@@ -99,16 +97,17 @@ class Delaunay(GeoAlgorithm):
             indicies = list(triangle)
             indicies.append(indicies[0])
             polygon = []
+            attrs = []
             step = 0
             for index in indicies:
-                provider.featureAtId(ptDict[ids[index]], inFeat, True)
+                layer.featureAtId(ptDict[ids[index]], inFeat, True)
                 geom = QgsGeometry(inFeat.geometry())
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
-                    feat.addAttribute(step, QVariant(ids[index]))
+                    attrs.append(QVariant(ids[index]))                    
                 step += 1
-
+            feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
             writer.addFeature(feat)

@@ -55,8 +55,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()
-        layer.select(layer.pendingAllAttributesList())
+        provider = layer.dataProvider()        
 
         geomType = self.multiToSingleGeom(provider.geometryType())
 
@@ -71,10 +70,10 @@ class MultipartToSingleparts(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
 
             features = self.extractAsSingle(inGeom)
-            outFeat.setAttributeMap(atMap)
+            outFeat.setAttributes(atMap)
 
             for f in features:
                 outFeat.setGeometry(f)

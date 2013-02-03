@@ -73,7 +73,12 @@ class SextanteVectorWriter:
             if extension not in OGRCodes:
                 extension = "shp"
                 self.filename = self.filename + "shp"
-            self.writer = QgsVectorFileWriter(self.fileName, encoding, fields, geometryType, crs, OGRCodes[extension])
+            
+            qgsfields = QgsFields()
+            for field in fields:
+                qgsfields.append(field)
+        
+            self.writer = QgsVectorFileWriter(self.fileName, encoding, qgsfields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):
         if self.isMemory:

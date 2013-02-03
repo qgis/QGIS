@@ -59,11 +59,8 @@ class VoronoiPolygons(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()
-        layer.select(layer.pendingAllAttributesList())
-
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     QGis.WKBPolygon, provider.crs())
+                     QGis.WKBPolygon, layer.crs())
 
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -104,7 +101,7 @@ class VoronoiPolygons(GeoAlgorithm):
             geom = QgsGeometry.fromMultiPoint(lines)
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
-            outFeat.setAttributeMap(inFeat.attributeMap())
+            outFeat.setAttributes(inFeat.attributes())
             writer.addFeature(outFeat)
 
             current += 1

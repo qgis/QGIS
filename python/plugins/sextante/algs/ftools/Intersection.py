@@ -28,11 +28,9 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import ftools_utils
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.core.SextanteLog import SextanteLog
-from sextante.core.SextanteConfig import SextanteConfig
 
 class Intersection(GeoAlgorithm):
 
@@ -50,12 +48,9 @@ class Intersection(GeoAlgorithm):
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
-        vproviderA = vlayerA.dataProvider()
-        allAttrsA = vproviderA.attributeIndexes()
-        vproviderA.select( allAttrsA )
-        vproviderB = vlayerB.dataProvider()
-        allAttrsB = vproviderB.attributeIndexes()
-        vproviderB.select(allAttrsB )
+        vproviderA = vlayerA.dataProvider()       
+        vproviderB = vlayerB.dataProvider()        
+        
         # check for crs compatibility
         crsA = vproviderA.crs()
         crsB = vproviderB.crs()
@@ -64,15 +59,17 @@ class Intersection(GeoAlgorithm):
         else:
             if not crsA != crsB:
                 SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Intersection. Non-matching CRSs. Results might be unexpected")
-        fields = ftools_utils.combineVectorFields(vlayerA, vlayerB)
-        longNames = ftools_utils.checkFieldNameLength( fields )
-        if not longNames.isEmpty():
-            raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
+        fields = utils.combineVectorFields(vlayerA, vlayerB)
+        #=======================================================================
+        # longNames = ftools_utils.checkFieldNameLength( fields )
+        # if not longNames.isEmpty():
+        #    raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
+        #=======================================================================
         writer = self.getOutputFromName(Intersection.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = ftools_utils.createIndex(QGisLayers.features(vlayerB))
+        index = utils.createSpatialIndex(vlayerB)
         nElement = 0
         selectionA = QGisLayers.features(vlayerA)
         nFeat = len(selectionA)        
@@ -80,14 +77,14 @@ class Intersection(GeoAlgorithm):
             nElement += 1
             progress.setPercentage(nElement/float(nFeat) * 100)
             geom = QgsGeometry( inFeatA.geometry() )
-            atMapA = inFeatA.attributeMap()
+            atMapA = inFeatA.attributes()
             intersects = index.intersects( geom.boundingBox() )
             for id in intersects:
-                vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+                vlayerB.featureAtId( int( id ), inFeatB , True)
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
                     if geom.intersects( tmpGeom ):
-                        atMapB = inFeatB.attributeMap()
+                        atMapB = inFeatB.attributes()
                         int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
                         if int_geom.wkbType() == 7:
                             int_com = geom.combine( tmpGeom )
@@ -95,7 +92,7 @@ class Intersection(GeoAlgorithm):
                             int_geom = QgsGeometry( int_com.difference( int_sym ) )
                     try:
                         outFeat.setGeometry( int_geom )
-                        outFeat.setAttributeMap( atMapA.extend( atMapB ) )
+                        outFeat.setAttributes( atMapA.extend( atMapB ) )
                         writer.addFeature( outFeat )
                     except:
                         FEATURE_EXCEPT = False

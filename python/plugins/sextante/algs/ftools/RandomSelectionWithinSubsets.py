@@ -24,15 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import random
-
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
-
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterNumber import ParameterNumber
@@ -77,9 +74,8 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         layer.removeSelection(True)
         index = layer.fieldNameIndex(field)
-        layer.select([index])
 
-        unique = layer.uniqueValues(index)
+        unique = utils.getUniqueValues(layer, index)
         featureCount = layer.featureCount()
 
         value = int(self.getParameterValue(self.NUMBER))
@@ -102,7 +98,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 FIDs= []
                 layer.select([index])
                 while layer.nextFeature(inFeat):
-                    atMap = inFeat.attributeMap()
+                    atMap = inFeat.attributes()
                     if atMap[index] == QVariant(i):
                         FIDs.append(inFeat.id())
                     current += 1

@@ -24,13 +24,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
-
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 
@@ -75,7 +73,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         outGeom = QgsGeometry()
 
         index = layer.fieldNameIndex(fieldName)
-        unique = layer.uniqueValues(index)
+        unique = utils.getUniqueValues(layer, index)
 
         current = 0
         features = QGisLayers.features(layer)
@@ -89,7 +87,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 layer.select(allAttrs)
                 features = QGisLayers.features(layer)
                 for inFeat in features:
-                    atMap = inFeat.attributeMap()
+                    atMap = inFeat.attributes()
                     idVar = atMap[index]
                     if idVar.toString().trimmed() == i.toString().trimmed():
                         if first:
@@ -104,7 +102,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                     current += 1
                     progress.setPercentage(int(current * total))
 
-                outFeat.setAttributeMap(attrs)
+                outFeat.setAttributes(attrs)
                 outGeom = QgsGeometry(self.convertGeometry(multi_feature, vType))
                 outFeat.setGeometry(outGeom)
                 writer.addFeature(outFeat)

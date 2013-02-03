@@ -68,10 +68,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
-        provider = layer.dataProvider()
         spatialIndex = utils.createSpatialIndex(layer)
-        provider.rewind()
-        provider.select()
 
         neighbour = QgsFeature()
         distance = QgsDistanceArea()
@@ -82,16 +79,16 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
 
         current = 0
         features = QGisLayers.features(layer)
+        count = len(features)
         total = 100.0 / float(len(features))
         for feat in features:
             neighbourID = spatialIndex.nearestNeighbor(feat.geometry().asPoint(), 2)[1]
-            provider.featureAtId(neighbourID, neighbour, True)
+            layer.featureAtId(neighbourID, neighbour, True)
             sumDist += distance.measureLine(neighbour.geometry().asPoint(), feat.geometry().asPoint())
 
             current += 1
             progress.setPercentage(int(current * total))
-
-        count = provider.featureCount()
+        
         do = float(sumDist) / count
         de = float(0.5 / math.sqrt(count / A))
         d = float(do / de)

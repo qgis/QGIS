@@ -30,7 +30,7 @@ import cStringIO
 from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -103,38 +103,30 @@ class PointDistance(GeoAlgorithm):
             self.writer.writerow(["InputID", "TargetID", "Distance"])
         else:
             self.writer.writerow(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
-
-        targetProvider = targetLayer.dataProvider()
-        targetProvider.select()
-
-        index = QgsSpatialIndex()
-        inFeat = QgsFeature()
-        while targetProvider.nextFeature(inFeat):
-            index.insertFeature(inFeat)
+        
+        index = utils.createSpatialIndex(targetLayer);
 
         inIdx = inLayer.fieldNameIndex(inField)
         inLayer.select([inIdx])
         outIdx = targetLayer.fieldNameIndex(inField)
-        targetProvider.rewind()
-        targetLayer.select([outIdx])
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
-
+        
+        features = QGisLayers.features(inLayer)
         current = 0
-        total = 100.0 / float(inLayer.featureCount())
-
-        while inLayer.nextFeature(inFeat):
+        total = 100.0 / float(len(features))
+        for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributeMap()[inIdx].toString()
+            inID = inFeat.attributes()[inIdx].toString()
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
             for i in featList:
                 targetLayer.featureAtId(i, outFeat)
-                outID = outFeat.attributeMap()[outIdx].toString()
+                outID = outFeat.attributes()[outIdx].toString()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if matType == 0:
@@ -152,21 +144,12 @@ class PointDistance(GeoAlgorithm):
             current += 1
             progress.setPercentage(int(current * total))
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
-        inProvider = inLayer.dataProvider()
-        targetProvider = targetLayer.dataProvider()
-        targetProvider.select()
+    def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):        
 
-        index = QgsSpatialIndex()
-        inFeat = QgsFeature()
-        while targetProvider.nextFeature(inFeat):
-            index.insertFeature(inFeat)
-
-        inIdx = inLayer.fieldNameIndex(inField)
-        inLayer.select([inIdx])
-        outIdx = targetLayer.fieldNameIndex(inField)
-        targetProvider.rewind()
-        targetLayer.select([outIdx])
+        index = utils.createSpatialIndex(targetLayer)
+        
+        inIdx = inLayer.fieldNameIndex(inField)        
+        outIdx = targetLayer.fieldNameIndex(inField)        
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -177,9 +160,10 @@ class PointDistance(GeoAlgorithm):
         current = 0
         total = 100.0 / float(inLayer.featureCount())
 
-        while inLayer.nextFeature(inFeat):
+        features = QGisLayers.features(inLayer)
+        for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributeMap()[inIdx].toString()
+            inID = inFeat.attributes()[inIdx].toString()
             if first:
                 featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False

@@ -67,8 +67,6 @@ class SelectByLocation(GeoAlgorithm):
 
         oldSelection = set(inputLayer.selectedFeaturesIds())                
         index = QgsSpatialIndex()
-        inputProvider.rewind()
-        inputProvider.select()
         feat = QgsFeature()
         while inputProvider.nextFeature(feat):        
             index.insertFeature(feat)

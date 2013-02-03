@@ -52,7 +52,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     if dissolve:
         first = True
         for inFeat in features:
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
             if useField:
                 value = atMap[field].toDouble()[0]
             else:
@@ -84,7 +84,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     # without dissolve
     else:
         for inFeat in features:
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
             if useField:
                 value = atMap[field].toDouble()[0]
             else:
@@ -95,7 +95,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 outGeom = inGeom.buffer(float(value), segments)
                 try:
                     outFeat.setGeometry(outGeom)
-                    outFeat.setAttributeMap(atMap)
+                    outFeat.setAttributes(atMap)
                     writer.addFeature(outFeat)
                 except:
                     FEATURE_EXCEPT = False

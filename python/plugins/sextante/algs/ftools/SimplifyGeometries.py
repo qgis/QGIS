@@ -63,7 +63,6 @@ class SimplifyGeometries(GeoAlgorithm):
         pointsAfter = 0
 
         provider = layer.dataProvider()
-        layer.select(layer.pendingAllAttributesList())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), provider.crs())
@@ -73,13 +72,13 @@ class SimplifyGeometries(GeoAlgorithm):
         total =  100.0 / float(len(selection))
         for f in selection:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributeMap()
+            attrMap = f.attributes()
             pointsBefore += self.geomVertexCount(featGeometry)
             newGeometry = featGeometry.simplify(tolerance)
             pointsAfter += self.geomVertexCount(newGeometry)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
-            feature.setAttributeMap(attrMap)
+            feature.setAttributes(attrMap)
             writer.addFeature(feature)
             current += 1
             progress.setPercentage(int(current * total))

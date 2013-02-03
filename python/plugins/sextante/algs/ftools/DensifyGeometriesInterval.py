@@ -56,13 +56,10 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
-
-        provider = layer.dataProvider()
-        layer.select(layer.pendingAllAttributesList())
+        isPolygon = layer.geometryType() == QGis.Polygon               
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     layer.wkbType(), provider.crs())
+                     layer.wkbType(), layer.crs())
 
 
         features = QGisLayers.features(layer)
@@ -70,12 +67,11 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         current = 0
         for f in features:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributeMap()
+            attrMap = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
-
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
-            feature.setAttributeMap(attrMap)
+            feature.setAttributes(attrMap)
             writer.addFeature(feature)
 
             current += 1

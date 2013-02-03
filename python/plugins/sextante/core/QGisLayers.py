@@ -210,8 +210,9 @@ class Features():
 
     def __init__(self, layer):
         self.layer = layer
+        self.iter = layer.getFeatures()
         self.selection = False;
-        self.layer.dataProvider().rewind()
+        ##self.layer.dataProvider().rewind()
         if SextanteConfig.getSetting(SextanteConfig.USE_SELECTED):
             self.selected = layer.selectedFeatures()
             if len(self.selected) > 0:
@@ -230,17 +231,20 @@ class Features():
             else:
                 raise StopIteration()
         else:
+            if self.iter.isClosed():
+                raise StopIteration()
             f = QgsFeature()
-            if self.layer.dataProvider().nextFeature(f):
+            if self.iter.nextFeature(f):
                 return f
             else:
+                self.iter.close()
                 raise StopIteration()
 
     def __len__(self):
         if self.selection:
             return int(self.layer.selectedFeatureCount())
         else:
-            return int(self.layer.dataProvider().featureCount())
+            return int(self.layer.featureCount())
 
 
 

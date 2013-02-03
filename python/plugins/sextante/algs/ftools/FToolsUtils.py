@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.QGisLayers import QGisLayers
-
 __author__ = 'Carson, Farmer, Victor Olaya'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Carson Farmer, Victor Olaya'
@@ -25,14 +23,11 @@ __copyright__ = '(C) 2012, Carson Farmer, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
+from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
 
 def createSpatialIndex(layer):
-    provider = layer.provider()
-    idx = QgsSpatialIndex()
-    provider.rewind()
-    provider.select()
+    idx = QgsSpatialIndex()    
     features = QGisLayers.features(layer)
     for ft in features:
         idx.insertFeature(ft)
@@ -66,13 +61,12 @@ def createUniqueFieldName(fieldName, fieldList):
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
-    if idx == -1:
-        idx = len(fieldList)
-        if idx == max(fieldList.keys()):
-            idx += 1
+    if idx == -1:            
         fn = createUniqueFieldName(fieldName, fieldList)
         field =  QgsField(fn, QVariant.Double, "", fieldLen, fieldPrec)
-        fieldList[idx] = field
+        idx = len(fieldList)
+        fieldList.append(field)
+        
     return idx, fieldList
 
 def extractPoints( geom ):
@@ -102,14 +96,52 @@ def extractPoints( geom ):
 
     return points
 
-def getUniqueValuesCount(layer, fieldIndex):
-    count = 0
+def getUniqueValues(layer, fieldIndex):    
     values = []
     layer.select([fieldIndex], QgsRectangle(), False)
-
     features = QGisLayers.features(layer)
     for feat in features:
-        if feat.attributeMap()[fieldIndex].toString() not in values:
-            values.append(feat.attributeMap()[fieldIndex].toString())
-            count += 1
-    return count
+        if feat.attributes()[fieldIndex] not in values:
+            values.append(feat.attributes()[fieldIndex])            
+    return values
+
+def getUniqueValuesCount(layer, fieldIndex):
+    return len(getUniqueValues(layer, fieldIndex))
+
+# From two input field maps, create single field map
+def combineVectorFields( layerA, layerB ):
+    fieldsA = layerA.fields()
+    fieldsB = layerB.fields()
+    fieldsB = testForUniqueness( fieldsA, fieldsB )
+    fieldsA.extend( fieldsB )
+    return fieldsA
+
+# Check if two input field maps are unique, and resolve name issues if they aren't
+def testForUniqueness( fieldList1, fieldList2 ):
+    changed = True
+    while changed:
+        changed = False
+        for i in fieldList1:
+            for j in fieldList2:
+                if j.name() == i.name():
+                    j = createUniqueFieldNameFromName( j )
+                    changed = True
+    return fieldList2
+
+# Create a unique field name based on input field name
+def createUniqueFieldNameFromName( field ):
+    check = field.name().right( 2 )
+    shortName = field.name().left( 8 )
+    if check.startsWith("_"):
+        ( val, test ) = check.right( 1 ).toInt()
+        if test:
+            if val < 2:
+                val = 2
+            else:
+                val = val + 1
+            field.setName( shortName.left( len( shortName )-1 ) + unicode( val ) )
+        else:
+            field.setName( shortName + "_2" )
+    else:
+        field.setName( shortName + "_2" )
+    return field

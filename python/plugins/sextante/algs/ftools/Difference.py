@@ -29,9 +29,8 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import ftools_utils
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.core.SextanteLog import SextanteLog
-from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 
 
@@ -52,11 +51,7 @@ class Difference(GeoAlgorithm):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
-        allAttrsA = vproviderA.attributeIndexes()
-        vproviderA.select( allAttrsA )
-        vproviderB = vlayerB.dataProvider()
-        allAttrsB = vproviderB.attributeIndexes()
-        vproviderB.select( allAttrsB )
+        vproviderB = vlayerB.dataProvider()        
         fields = vproviderA.fields()
         # check for crs compatibility
         crsA = vproviderA.crs()
@@ -70,7 +65,7 @@ class Difference(GeoAlgorithm):
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        index = ftools_utils.createIndex( QGisLayers.features(vlayerB) )
+        index = utils.createSpatialIndex(vlayerB)
         nElement = 0
         selectionA = QGisLayers.features(vlayerA)   
         nFeat = len(selectionA)         
@@ -80,10 +75,10 @@ class Difference(GeoAlgorithm):
             add = True
             geom = QgsGeometry( inFeatA.geometry() )
             diff_geom = QgsGeometry( geom )
-            atMap = inFeatA.attributeMap()
+            atMap = inFeatA.attributes()
             intersects = index.intersects( geom.boundingBox() )
             for id in intersects:                
-                vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+                vlayerB.featureAtId( int( id ), inFeatB , True, allAttrsB )
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
                     if diff_geom.intersects( tmpGeom ):
@@ -95,7 +90,7 @@ class Difference(GeoAlgorithm):
             if add:
                 try:
                     outFeat.setGeometry( diff_geom )
-                    outFeat.setAttributeMap( atMap )
+                    outFeat.setAttributes( atMap )
                     writer.addFeature( outFeat )
                 except:
                     FEATURE_EXCEPT = False

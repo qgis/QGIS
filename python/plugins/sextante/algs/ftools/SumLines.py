@@ -84,12 +84,6 @@ class SumLines(GeoAlgorithm):
 
         spatialIndex = utils.createSpatialIndex(lineLayer)
 
-        lineProvider.rewind()
-        lineProvider.select()
-
-        allAttrs = polyLayer.pendingAllAttributesList()
-        polyLayer.select(allAttrs)
-
         ftLine = QgsFeature()
         ftPoly = QgsFeature()
         outFeat = QgsFeature()
@@ -103,7 +97,7 @@ class SumLines(GeoAlgorithm):
         hasIntersections = False
         for ftPoly in features:
             inGeom = QgsGeometry(ftPoly.geometry())
-            atMap = ftPoly.attributeMap()
+            atMap = ftPoly.attributes()
             count = 0
             length = 0
             hasIntersections = False
@@ -113,7 +107,7 @@ class SumLines(GeoAlgorithm):
 
             if hasIntersections:
                 for i in lines:
-                    lineProvider.featureAtId(int(i), ftLine)
+                    lineLayer.featureAtId(int(i), ftLine)
                     tmpGeom = QgsGeometry(ftLine.geometry())
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
@@ -121,9 +115,15 @@ class SumLines(GeoAlgorithm):
                         count += 1
 
             outFeat.setGeometry(inGeom)
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(idxLength, QVariant(length))
-            outFeat.addAttribute(idxCount, QVariant(count))
+            if idxLength == len(atMap):
+                atMap.append(QVariant(length))
+            else:
+                atMap[idxLength] = QVariant(length)
+            if idxCount == len(atMap):
+                atMap.append(QVariant(count))
+            else:
+                atMap[idxCount] = QVariant(count)                
+            outFeat.setAttributes(atMap)            
             writer.addFeature(outFeat)
 
             current += 1

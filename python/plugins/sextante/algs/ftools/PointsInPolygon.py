@@ -75,12 +75,6 @@ class PointsInPolygon(GeoAlgorithm):
 
         spatialIndex = utils.createSpatialIndex(pointLayer)
 
-        pointProvider.rewind()
-        pointProvider.select()
-
-        allAttrs = polyLayer.pendingAllAttributesList()
-        polyLayer.select(allAttrs)
-
         ftPoly = QgsFeature()
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
@@ -93,7 +87,7 @@ class PointsInPolygon(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()
-            atMap = ftPoly.attributeMap()
+            atMap = ftPoly.attributes()
 
             count = 0
             hasIntersections = False
@@ -109,8 +103,11 @@ class PointsInPolygon(GeoAlgorithm):
                         count += 1
 
             outFeat.setGeometry(geom)
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(idxCount, QVariant(count))
+            if idxCount == len(atMap):
+                atMap.append(QVariant(count))
+            else:
+                atMap[idxCount] = QVariant(count)
+            outFeat.setAttributes(atMap)            
             writer.addFeature(outFeat)
 
             current += 1

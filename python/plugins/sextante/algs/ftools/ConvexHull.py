@@ -30,7 +30,7 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import ftools_utils
+from sextante.algs.ftools import FToolsUtils as utils
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -55,11 +55,11 @@ class ConvexHull(GeoAlgorithm):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
-        allAttrsA = vproviderA.attributeIndexes()
-        vproviderA.select(allAttrsA)
-        fields = { 0 : QgsField("ID", QVariant.Int),
-                    1 : QgsField("Area", QVariant.Double),
-                    2 : QgsField("Perim", QVariant.Double) }
+        #allAttrsA = vproviderA.attributeIndexes()
+        #vproviderA.select(allAttrsA)
+        fields = [QgsField("ID", QVariant.Int),
+                    QgsField("Area", QVariant.Double),
+                    QgsField("Perim", QVariant.Double)]
         writer = self.getOutputFromName(ConvexHull.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vproviderA.crs())
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -72,23 +72,23 @@ class ConvexHull(GeoAlgorithm):
         nFeat = len(features)
 
         if useField:
-          unique = ftools_utils.getUniqueValues(vproviderA, index)
+          unique = utils.getUniqueValues(vproviderA, index)
           nFeat = nFeat * len(unique)
           for i in unique:
             hull = []
             first = True
             outID = 0
-            vproviderA.select(allAttrsA)
+            #vproviderA.select(allAttrsA)
             features = QGisLayers.features(vlayerA)
             for inFeat in features:
-              atMap = inFeat.attributeMap()
+              atMap = inFeat.attributes()
               idVar = atMap[ index ]
               if idVar.toString().trimmed() == i.toString().trimmed():
                 if first:
                   outID = idVar
                   first = False
                 inGeom = QgsGeometry(inFeat.geometry())
-                points = ftools_utils.extractPoints(inGeom)
+                points = utils.extractPoints(inGeom)
                 hull.extend(points)
               nElement += 1
               progress.setPercentage(int(nElement / nFeat * 100))
@@ -107,11 +107,11 @@ class ConvexHull(GeoAlgorithm):
                 continue
         else:
           hull = []
-          vproviderA.select(allAttrsA)
+          #vproviderA.select(allAttrsA)
           features = QGisLayers.features(vlayerA)
           for inFeat in features:
             inGeom = QgsGeometry(inFeat.geometry())
-            points = ftools_utils.extractPoints(inGeom)
+            points = utils.extractPoints(inGeom)
             hull.extend(points)
             nElement += 1
             progress.setPercentage(int(nElement / nFeat * 100))
@@ -119,6 +119,10 @@ class ConvexHull(GeoAlgorithm):
           try:
             outGeom = tmpGeom.convexHull()
             outFeat.setGeometry(outGeom)
+            (area, perim) = self.simpleMeasure(outGeom)
+            #outFeat.addAttribute(0, QVariant("1"))
+            #outFeat.addAttribute(1, QVariant(area))
+            #outFeat.addAttribute(2, QVariant(perim))
             writer.addFeature(outFeat)
           except:
             GEOS_EXCEPT = False

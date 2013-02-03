@@ -85,12 +85,6 @@ class PointsInPolygonUnique(GeoAlgorithm):
 
         spatialIndex = utils.createSpatialIndex(pointLayer)
 
-        pointProvider.rewind()
-        pointProvider.select()
-
-        allAttrs = polyLayer.pendingAllAttributesList()
-        polyLayer.select(allAttrs)
-
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
         geom = QgsGeometry()
@@ -102,7 +96,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()
-            atMap = ftPoly.attributeMap()
+            atMap = ftPoly.attributes()
 
             classes = []
             hasIntersections = False
@@ -115,13 +109,16 @@ class PointsInPolygonUnique(GeoAlgorithm):
                     pointLayer.featureAtId(int(i), ftPoint, True, True)
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        clazz = ftPoint.attributeMap()[classFieldIndex].toString()
+                        clazz = ftPoint.attributes()[classFieldIndex].toString()
                         if not clazz in classes:
                             classes.append(clazz)
 
-            outFeat.setGeometry(geom)
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(idxCount, QVariant(len(classes)))
+            outFeat.setGeometry(geom)        
+            if idxCount == len(atMap):
+                atMap.append(QVariant(len(classes)))
+            else:
+                atMap[idxCount] =  QVariant(len(classes))
+            outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
             current += 1
