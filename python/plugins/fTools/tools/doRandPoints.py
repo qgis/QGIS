@@ -225,7 +225,7 @@ class Dialog(QDialog, Ui_Dialog):
         add = ( 100.00 - 70.00 ) / len(points)
         for i in points:
             outFeat.setGeometry(i)
-            outFeat.addAttribute(0, QVariant(idVar))
+            outFeat.setAttribute(0, QVariant(idVar))
             writer.addFeature(outFeat)
             idVar = idVar + 1
             count = count + add

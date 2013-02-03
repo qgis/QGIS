@@ -143,7 +143,7 @@ class Dialog(QDialog, Ui_Dialog):
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
             outFeat.setAttributes(atMap)
-            outFeat.addAttribute(index, QVariant(length))
+            outFeat.setAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1
             progressBar.setValue(start)

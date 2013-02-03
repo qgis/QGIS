@@ -165,8 +165,8 @@ class Dialog(QDialog, Ui_Dialog):
 
                         for j in tempList:
                             outFeat.setGeometry(tempGeom.fromPoint(j))
-                            outFeat.addAttribute(0, v1)
-                            outFeat.addAttribute(1, v2)
+                            outFeat.setAttribute(0, v1)
+                            outFeat.setAttribute(1, v2)
                             writer.addFeature(outFeat)
 
             start = start + add

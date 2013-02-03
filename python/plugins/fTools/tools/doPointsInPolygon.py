@@ -219,7 +219,7 @@ class PointsInPolygonThread(QThread):
                         interrupted = True
                         break
 
-            outFeat.addAttribute(index, QVariant(count))
+            outFeat.setAttribute(index, QVariant(count))
             writer.addFeature(outFeat)
 
             self.emit( SIGNAL( "updateProgress()" ) )

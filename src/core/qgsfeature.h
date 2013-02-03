@@ -140,7 +140,7 @@ class CORE_EXPORT QgsFeature
     const QgsAttributes& attributes() const { return mAttributes; }
     QgsAttributes& attributes() { return mAttributes; }
     void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
-    void setAttribute( int field, const QVariant& attr ) { mAttributes[field] = attr; }
+    bool setAttribute( int field, const QVariant& attr );
     void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/

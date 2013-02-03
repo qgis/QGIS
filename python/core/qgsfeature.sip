@@ -111,7 +111,7 @@ class QgsFeature
     const QgsAttributes& attributes() const;
     //QgsAttributes& attributes();
     void setAttributes(const QgsAttributes& attrs);
-    void setAttribute( int field, const QVariant& attr );
+    bool setAttribute( int field, const QVariant& attr );
     void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/

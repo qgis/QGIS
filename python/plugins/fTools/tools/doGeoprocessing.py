@@ -507,9 +507,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.addAttribute( 0, QVariant( outID ) )
-              outFeat.addAttribute( 1, QVariant( area ) )
-              outFeat.addAttribute( 2, QVariant( perim ) )
+              outFeat.setAttribute( 0, QVariant( outID ) )
+              outFeat.setAttribute( 1, QVariant( area ) )
+              outFeat.setAttribute( 2, QVariant( perim ) )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
@@ -563,9 +563,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.addAttribute( 0, QVariant( outID ) )
-              outFeat.addAttribute( 1, QVariant( area ) )
-              outFeat.addAttribute( 2, QVariant( perim ) )
+              outFeat.setAttribute( 0, QVariant( outID ) )
+              outFeat.setAttribute( 1, QVariant( area ) )
+              outFeat.setAttribute( 2, QVariant( perim ) )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
