@@ -92,21 +92,6 @@ class QgsMapToolIdentify : QgsMapTool
     void identifyMessage( QString );
 
   private:
-    /** Performs the identification.
-    To avoid beeing forced to specify IdentifyMode with a list of layers
-    this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerList Performs the identification within the given list of layers.
-    @param layerType Only performs identification in a certain type of layers (raster, vector).
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
-    bool identify(int x, int y, IdentifyMode mode, QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers);
-    
-    bool identifyLayer( QgsMapLayer *layer, int x, int y, LayerType layerType = AllLayers );
-    bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
-    bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
-
     //! Private helper
     virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
 
