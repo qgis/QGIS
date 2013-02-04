@@ -21,7 +21,7 @@
 #               and projections defs based on the output of installed PROJ.4 and
 #               GDAL.
 #
-# VERSION:      1.1.0, 2009.03.19
+# VERSION:      1.1.1, 2013.02.04
 #
 # COPYRIGHT:    (c) 2008,2009 Maciej Sieczka
 #
@@ -29,6 +29,10 @@
 #               License (>=v2).
 
 # CHANGELOG:
+#
+# 1.1.1:
+# - Up to date with the current scheme of db files. (as of 12106b8)
+# - Support running on Mac OS X.
 #
 # 1.1.0:
 # - Reorganize the code into functions.
@@ -47,9 +51,9 @@
 #
 # 1.0:   First public release.
 
-# USAGE:  1. qgis_srs.sh --full/--tmpl > output.sql
+# USAGE:  1. qgis_srs.sh --srs/--qgis > output.sql
 #         2. import output.sql into SQLite Database Browser
-#         3. save as a new dbase, name it srs.db (--full) or qgis.db (--tmpl),
+#         3. save as a new dbase, name it srs.db (--srs) or qgis.db (--qgis),
 #            use with QGIS
 
 # DETAILS:
@@ -133,7 +137,7 @@ for i in `proj -l | cut -d" " -f1 | sed -e 's/lonlat/longlat/' -e 's/latlon/latl
 
  #...to extract it's parameters, making sure not more than 4 fields are created...
 
- proj=`proj -l=$i | tr -d "\t" | sed 's/^ *//g' | sed 's/ : /\n/' | sed "s/'/''/g" | awk '{print "'\''"$0"'\''"}' | tr "\n" "," | sed 's/,$/\n/' | sed "s/','/ /4g"`
+ proj=`proj -l=$i | tr -d "\t" | tr ":" "\n" | sed 's/^ *//g; s/ *$//g' | sed "s/'/''/g" | awk 'NR <= 3 {print "'\''"$0"'\''" ; next} {o=o$0" "} END {gsub(/ +$/, "", o); print "'\''"o"'\''"}' | tr "\n" "," | sed 's/,$//'`
 
  #...count the number of parameters...
 
@@ -152,25 +156,9 @@ for i in `proj -l | cut -d" " -f1 | sed -e 's/lonlat/longlat/' -e 's/latlon/latl
 done
 }
 
-mk_tbl_srss_srs ()
+mk_tbl_srss ()
 {
-# Create SRSs table for srs.db:
-
-echo "CREATE TABLE tbl_srs (
-  srs_id INTEGER PRIMARY KEY,
-  description text NOT NULL,
-  projection_acronym text NOT NULL,
-  ellipsoid_acronym NOT NULL,
-  parameters text NOT NULL,
-  srid integer NOT NULL,
-  epsg integer NOT NULL,
-  is_geo integer NOT NULL
-);"
-}
-
-mk_tbl_srss_qgis ()
-{
-# Create SRSs table for qgis.db:
+# Create SRSs table for both srs.db and qgis.db:
 
 echo "CREATE TABLE tbl_srs (
   srs_id INTEGER PRIMARY KEY,
@@ -181,7 +169,8 @@ echo "CREATE TABLE tbl_srs (
   srid integer NULL,
   auth_name varchar NULL,
   auth_id varchar NULL,
-  is_geo integer NOT NULL
+  is_geo integer NOT NULL,
+  deprecated boolean
 );"
 }
 
@@ -208,8 +197,9 @@ for i in `awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1`; do
    srs=`echo $raw | grep -o "+proj.\{1,\} +no_defs"`
    epsg=`echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g'`
    isgeo=0
+   deprecated=$(echo $name | grep -viq "deprecated")$?
 
-   echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"
+   echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},'EPSG','${epsg}',${isgeo},${deprecated});"
 
   fi
 
@@ -231,8 +221,9 @@ for i in `awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1`; do
    srs=`echo $raw | grep -o "+proj.\{1,\} +no_defs"`
    epsg=`echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g'`
    isgeo=1
+   deprecated=$(echo $name | grep -viq "deprecated")$?
 
-   echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"
+   echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},'EPSG','${epsg}',${isgeo},${deprecated});"
 
   fi
 
@@ -247,15 +238,23 @@ echo "CREATE VIEW vw_srs as
    select a.description as description,
           a.srs_id as srs_id,
           a.is_geo as is_geo,
-          b.name as name,
+          coalesce(b.name,a.projection_acronym) as name,
           a.parameters as parameters,
           a.auth_name as auth_name,
-          a.auth_id as auth_id
+          a.auth_id as auth_id,
+          a.deprecated as deprecated
    from tbl_srs a
-     inner join tbl_projection b
+     left outer join tbl_projection b
      on a.projection_acronym=b.acronym
    order by
-     b.name, a.description;"
+     coalesce(b.name,a.projection_acronym),
+     a.description;"
+}
+
+mk_index ()
+{
+echo "CREATE UNIQUE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);
+CREATE UNIQUE INDEX idx_srssrid on tbl_srs(srid);"
 }
 
 usage ()
@@ -271,23 +270,24 @@ Usage:
 ### DO IT ###
 
 if [ "$1" = "--qgis" ]; then
+  echo "PRAGMA foreign_keys=OFF;"
   echo "BEGIN TRANSACTION;"
   mk_tbl_bookmarks
   mk_tbl_ellps; pop_tbl_ellps
   mk_tbl_projs; pop_tbl_projs
-  mk_tbl_srss_qgis
+  mk_tbl_srss
   mk_view
   echo "COMMIT;"
 
 elif [ "$1" = "--srs" ]; then
+  echo "PRAGMA foreign_keys=OFF;"
   echo "BEGIN TRANSACTION;"
   mk_tbl_ellps; pop_tbl_ellps
   mk_tbl_projs; pop_tbl_projs
-  mk_tbl_srss_srs; pop_tbl_srss
+  mk_tbl_srss; pop_tbl_srss
+  mk_index
   mk_view
-  echo "CREATE UNIQUE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);
-CREATE UNIQUE INDEX idx_srssrid on tbl_srs(srid);
-COMMIT;"
+  echo "COMMIT;"
 
 else
   usage
