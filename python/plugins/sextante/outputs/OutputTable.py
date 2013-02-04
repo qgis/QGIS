@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.SextanteTableWriter import SextanteTableWriter
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,12 +23,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from sextante.core.SextanteTableWriter import SextanteTableWriter
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.outputs.Output import Output
 
 from PyQt4.QtCore import *
 
 class OutputTable(Output):
 
+    compatible = None
+    
     def getFileFilter(self,alg):
         exts = ['csv']
         for i in range(len(exts)):
@@ -40,8 +43,16 @@ class OutputTable(Output):
         return alg.provider.getSupportedOutputTableExtensions()[0]
 
     def getCompatibleFileName(self, alg):
-        #TODO!!!
-        return self.value
+        '''Returns a filename that is compatible with the algorithm that is going to generate this output.
+        If the algorithm supports the file format of the current output value, it returns that value. If not, 
+        it returns a temporary file with a supported file format, to be used to generate the output result.'''
+        ext = self.value[self.value.rfind(".") + 1:]
+        if ext in alg.provider.getSupportedOutputTableExtensions:
+            return self.value
+        else:
+            if self.compatible is None:                            
+                self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
+            return self.compatible;
 
     def getTableWriter(self, fields):
         '''Returns a suitable writer to which records can be added as a

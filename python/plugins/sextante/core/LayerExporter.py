@@ -49,11 +49,9 @@ class LayerExporter():
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         output = SextanteUtils.getTempFilename("shp")
         provider = layer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select( allAttrs )
         useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
         if useSelection and layer.selectedFeatureCount() != 0:
-            writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+            writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs())
             selection = layer.selectedFeatures()
             for feat in selection:
                 writer.addFeature(feat)
@@ -66,9 +64,8 @@ class LayerExporter():
             except UnicodeEncodeError:
                 isASCII=False
             if (not unicode(layer.source()).endswith("shp") or not isASCII):
-                writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
-                feat = QgsFeature()
-                while provider.nextFeature(feat):
+                writer = QgsVectorFileWriter( output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs() )                
+                for feat in layer.getFeatures():
                     writer.addFeature(feat)
                 del writer
                 return output

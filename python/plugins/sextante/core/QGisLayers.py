@@ -176,6 +176,10 @@ class QGisLayers:
         for layer in layers:
             if layer.source() == uri:
                 return layer
+        tables = QGisLayers.getTables()
+        for table in tables:
+            if table.source() == uri:
+                return table            
         if forceLoad:
             settings = QSettings()
             prjSetting = settings.value("/Projections/defaultBehaviour")

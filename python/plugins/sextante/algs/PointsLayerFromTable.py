@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    Explode.py
+    PointsLayerFromTable.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : January 2013
+    Copyright            : (C) 2013 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -16,10 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterTable import ParameterTable
+from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.core.SextanteLog import SextanteLog
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'August 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -27,13 +30,14 @@ from sextante.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-class Explode(GeoAlgorithm):
+class PointsLayerFromTable(GeoAlgorithm):
 
     INPUT = "INPUT"
+    XFIELD = "XFIELD"
+    YFIELD = "YFIELD"
     OUTPUT = "OUTPUT"
 
     #===========================================================================
@@ -42,51 +46,41 @@ class Explode(GeoAlgorithm):
     #===========================================================================
 
     def processAlgorithm(self, progress):
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
+        source = self.getParameterValue(self.INPUT)
+        vlayer = QGisLayers.getObjectFromUri(source)
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBLineString, vprovider.crs() )
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()        
+        writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
+        xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
+        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))         
+        
+        outFeat = QgsFeature()       
         nElement = 0
-        features = QGisLayers.features(layer)
+        features = QGisLayers.features(vlayer)
         nFeat = len(features)
         for feature in features:
             nElement += 1
-            progress.setPercentage((nElement*100)/nFeat)
-            inGeom = feature.geometry()
-            atMap = feature.attributes()
-            segments = self.extractAsSingleSegments( inGeom )
-            outFeat.setAttributes( atMap )
-            for segment in segments:
-                outFeat.setGeometry(segment)
-                writer.addFeature(outFeat)
+            progress.setPercentage((nElement*100)/nFeat)            
+            attrs = feature.attributes()
+            try:
+                x =  float(attrs[xfieldindex].toString())
+                y =  float(attrs[yfieldindex].toString())
+            except:
+                continue
+            pt = QgsPoint(x, y)
+            outFeat.setGeometry(QgsGeometry.fromPoint(pt))
+            outFeat.setAttributes(attrs)                        
+            writer.addFeature(outFeat)
+        
         del writer
 
 
-    def extractAsSingleSegments( self, geom ):
-        segments = []
-        if geom.isMultipart():
-            multi = geom.asMultiPolyline()
-            for polyline in multi:
-                segments.extend( self.getPolylineAsSingleSegments(polyline))
-        else:
-            segments.extend( self.getPolylineAsSingleSegments(geom.asPolyline()))
-        return segments
-
-    def getPolylineAsSingleSegments(self, polyline):
-        segments = []
-        for i in range(len(polyline)-1):
-            ptA = polyline[i]
-            ptB = polyline[i+1]
-            segment = QgsGeometry.fromPolyline([ptA, ptB])
-            segments.append(segment)
-        return segments
-
     def defineCharacteristics(self):
-        self.name = "Explode lines"
-        self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer",ParameterVector.VECTOR_TYPE_LINE))
+        self.name = "Points layer from table"
+        self.group = "Vector creation tools"
+        self.addParameter(ParameterTable(self.INPUT, "Input layer"))
+        self.addParameter(ParameterTableField(self.XFIELD, "X field", self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.YFIELD, "Y field", self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

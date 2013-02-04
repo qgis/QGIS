@@ -141,9 +141,7 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
 	def processAlgorithm(self, progress):
 
 		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))		
-		output = self.getOutputFromName(self.SAVENAME)	
-		fields = layer.pendingFields()			
-		outfile = output.getVectorWriter(fields, layer.wkbType(), layer.crs() )		
+		output = self.getOutputFromName(self.SAVENAME)		
 		index = self.getParameterValue(self.NEWTYPE)
 
 		splitnodes = 0
@@ -161,198 +159,201 @@ class mmqgisx_geometry_convert_algorithm(GeoAlgorithm):
 		else:
 			newtype = QGis.WKBPoint
 
-			features = QGisLayers.features(layer)
-			feature_count = len(features)
-			i = 0
-			for feature in features:
-				i += 1
-				progress.setPercentage(float(i) / feature_count * 100)
-		
-				if (feature.geometry().wkbType() == QGis.WKBPoint) or \
-				   (feature.geometry().wkbType() == QGis.WKBPoint25D):
-		
-					if (newtype == QGis.WKBPoint):
+		fields = layer.pendingFields()			
+		outfile = output.getVectorWriter(fields, newtype, layer.crs() )	
+			
+		features = QGisLayers.features(layer)
+		feature_count = len(features)
+		i = 0
+		for feature in features:
+			i += 1
+			progress.setPercentage(float(i) / feature_count * 100)
+	
+			if (feature.geometry().wkbType() == QGis.WKBPoint) or \
+			   (feature.geometry().wkbType() == QGis.WKBPoint25D):
+	
+				if (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.asPoint())
+					outfile.addFeature(newfeature)		
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+			elif (feature.geometry().wkbType() == QGis.WKBLineString) or \
+			     (feature.geometry().wkbType() == QGis.WKBLineString25D):
+	
+				if (newtype == QGis.WKBPoint) and splitnodes:
+					polyline = feature.geometry().asPolyline()
+					for point in polyline:
 						newfeature = QgsFeature()
 						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.asPoint())
-						outfile.addFeature(newfeature)		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-				elif (feature.geometry().wkbType() == QGis.WKBLineString) or \
-				     (feature.geometry().wkbType() == QGis.WKBLineString25D):
-		
-					if (newtype == QGis.WKBPoint) and splitnodes:
-						polyline = feature.geometry().asPolyline()
+						newfeature.setGeometry(QgsGeometry.fromPoint(point))
+						outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry().centroid())
+					outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBLineString):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry())
+					outfile.addFeature(newfeature)
+	
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+			elif (feature.geometry().wkbType() == QGis.WKBPolygon) or \
+			     (feature.geometry().wkbType() == QGis.WKBPolygon25D):
+	
+				if (newtype == QGis.WKBPoint) and splitnodes:
+					polygon = feature.geometry().asPolygon()
+					for polyline in polygon:
 						for point in polyline:
 							newfeature = QgsFeature()
 							newfeature.setAttributes(feature.attributes())
 							newfeature.setGeometry(QgsGeometry.fromPoint(point))
 							outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPoint):
+	
+				elif (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry().centroid())
+					outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBMultiLineString):
+					linestrings = []
+					polygon = feature.geometry().asPolygon()
+					for polyline in polygon:
+						linestrings.append(polyline)
+	
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(QgsGeometry.fromMultiPolyline(linestrings))
+					outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBPolygon):
+					newfeature = QgsFeature()
+					newfeature.setAttributeMap(feature.attributes())
+					newfeature.setGeometry(feature.geometry())
+					outfile.addFeature(newfeature)
+	
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+			elif (feature.geometry().wkbType() == QGis.WKBMultiPoint) or \
+			     (feature.geometry().wkbType() == QGis.WKBMultiPoint25D):
+	
+				if (newtype == QGis.WKBPoint) and splitnodes:
+					points = feature.geometry().asMultiPoint()
+					for point in points:
 						newfeature = QgsFeature()
 						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry().centroid())
+						newfeature.setGeometry(QgsGeometry.fromPoint(point))
 						outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBLineString):
-						newfeature = QgsFeature()
-						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry())
-						outfile.addFeature(newfeature)
-		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-				elif (feature.geometry().wkbType() == QGis.WKBPolygon) or \
-				     (feature.geometry().wkbType() == QGis.WKBPolygon25D):
-		
-					if (newtype == QGis.WKBPoint) and splitnodes:
-						polygon = feature.geometry().asPolygon()
-						for polyline in polygon:
-							for point in polyline:
-								newfeature = QgsFeature()
-								newfeature.setAttributes(feature.attributes())
-								newfeature.setGeometry(QgsGeometry.fromPoint(point))
-								outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPoint):
-						newfeature = QgsFeature()
-						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry().centroid())
-						outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBMultiLineString):
-						linestrings = []
-						polygon = feature.geometry().asPolygon()
-						for polyline in polygon:
-							linestrings.append(polyline)
-		
-						newfeature = QgsFeature()
-						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(QgsGeometry.fromMultiPolyline(linestrings))
-						outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPolygon):
-						newfeature = QgsFeature()
-						newfeature.setAttributeMap(feature.attributes())
-						newfeature.setGeometry(feature.geometry())
-						outfile.addFeature(newfeature)
-		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-				elif (feature.geometry().wkbType() == QGis.WKBMultiPoint) or \
-				     (feature.geometry().wkbType() == QGis.WKBMultiPoint25D):
-		
-					if (newtype == QGis.WKBPoint) and splitnodes:
-						points = feature.geometry().asMultiPoint()
-						for point in points:
+	
+				elif (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry().centroid())
+					outfile.addFeature(newfeature)
+	
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+	
+			elif (feature.geometry().wkbType() == QGis.WKBMultiLineString) or \
+			     (feature.geometry().wkbType() == QGis.WKBMultiLineString25D):
+	
+				if (newtype == QGis.WKBPoint) and splitnodes:
+					polylines = feature.geometry().asMultiPolyline()
+					for polyline in polylines:
+						for point in polyline:
 							newfeature = QgsFeature()
 							newfeature.setAttributes(feature.attributes())
 							newfeature.setGeometry(QgsGeometry.fromPoint(point))
 							outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPoint):
+	
+				elif (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry().centroid())
+					outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBLineString):
+					linestrings = feature.geometry().asMultiPolyline()
+					for linestring in linestrings:
 						newfeature = QgsFeature()
 						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry().centroid())
+						newfeature.setGeometry(QgsGeometry.fromPolyline(linestring))
 						outfile.addFeature(newfeature)
-		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-		
-				elif (feature.geometry().wkbType() == QGis.WKBMultiLineString) or \
-				     (feature.geometry().wkbType() == QGis.WKBMultiLineString25D):
-		
-					if (newtype == QGis.WKBPoint) and splitnodes:
-						polylines = feature.geometry().asMultiPolyline()
-						for polyline in polylines:
+	
+				elif (newtype == QGis.WKBMultiLineString):
+					linestrings = feature.geometry().asMultiPolyline()
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(QgsGeometry.fromMultiPolyline(linestrings))
+					outfile.addFeature(newfeature)
+	
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+			elif (feature.geometry().wkbType() == QGis.WKBMultiPolygon) or \
+			     (feature.geometry().wkbType() == QGis.WKBMultiPolygon25D):
+	
+				if (newtype == QGis.WKBPoint) and splitnodes:
+					polygons = feature.geometry().asMultiPolygon()
+					for polygon in polygons:
+						for polyline in polygon:
 							for point in polyline:
 								newfeature = QgsFeature()
 								newfeature.setAttributes(feature.attributes())
 								newfeature.setGeometry(QgsGeometry.fromPoint(point))
 								outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPoint):
+	
+				elif (newtype == QGis.WKBPoint):
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(feature.geometry().centroid())
+					outfile.addFeature(newfeature)
+	
+				elif (newtype == QGis.WKBLineString):
+					polygons = feature.geometry().asMultiPolygon()
+					for polygon in polygons:
 						newfeature = QgsFeature()
 						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry().centroid())
+						newfeature.setGeometry(QgsGeometry.fromPolyline(polygon))
 						outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBLineString):
-						linestrings = feature.geometry().asMultiPolyline()
-						for linestring in linestrings:
-							newfeature = QgsFeature()
-							newfeature.setAttributes(feature.attributes())
-							newfeature.setGeometry(QgsGeometry.fromPolyline(linestring))
-							outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBMultiLineString):
-						linestrings = feature.geometry().asMultiPolyline()
+	
+				elif (newtype == QGis.WKBPolygon):
+					polygons = feature.geometry().asMultiPolygon()
+					for polygon in polygons:
 						newfeature = QgsFeature()
 						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(QgsGeometry.fromMultiPolyline(linestrings))
+						newfeature.setGeometry(QgsGeometry.fromPolygon(polygon))
 						outfile.addFeature(newfeature)
-		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-				elif (feature.geometry().wkbType() == QGis.WKBMultiPolygon) or \
-				     (feature.geometry().wkbType() == QGis.WKBMultiPolygon25D):
-		
-					if (newtype == QGis.WKBPoint) and splitnodes:
-						polygons = feature.geometry().asMultiPolygon()
-						for polygon in polygons:
-							for polyline in polygon:
-								for point in polyline:
-									newfeature = QgsFeature()
-									newfeature.setAttributes(feature.attributes())
-									newfeature.setGeometry(QgsGeometry.fromPoint(point))
-									outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPoint):
-						newfeature = QgsFeature()
-						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(feature.geometry().centroid())
-						outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBLineString):
-						polygons = feature.geometry().asMultiPolygon()
-						for polygon in polygons:
-							newfeature = QgsFeature()
-							newfeature.setAttributes(feature.attributes())
-							newfeature.setGeometry(QgsGeometry.fromPolyline(polygon))
-							outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBPolygon):
-						polygons = feature.geometry().asMultiPolygon()
-						for polygon in polygons:
-							newfeature = QgsFeature()
-							newfeature.setAttributes(feature.attributes())
-							newfeature.setGeometry(QgsGeometry.fromPolygon(polygon))
-							outfile.addFeature(newfeature)
-		
-					elif (newtype == QGis.WKBMultiLineString) or \
-					     (newtype == QGis.WKBMultiPolygon):
-						polygons = feature.geometry().asMultiPolygon()
-						newfeature = QgsFeature()
-						newfeature.setAttributes(feature.attributes())
-						newfeature.setGeometry(QgsGeometry.fromMultiPolygon(polygons))
-						outfile.addFeature(newfeature)
-		
-					else:
-						return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
-							" to " + mmqgisx_wkbtype_to_text(newtype)
-		
-			del outfile
+	
+				elif (newtype == QGis.WKBMultiLineString) or \
+				     (newtype == QGis.WKBMultiPolygon):
+					polygons = feature.geometry().asMultiPolygon()
+					newfeature = QgsFeature()
+					newfeature.setAttributes(feature.attributes())
+					newfeature.setGeometry(QgsGeometry.fromMultiPolygon(polygons))
+					outfile.addFeature(newfeature)
+	
+				else:
+					return "Invalid Conversion: " + mmqgisx_wkbtype_to_text(feature.geometry().wkbType()) + \
+						" to " + mmqgisx_wkbtype_to_text(newtype)
+	
+		del outfile
 
 def mmqgisx_wkbtype_to_text(wkbtype):
 	if wkbtype == QGis.WKBUnknown: return "Unknown"
@@ -371,49 +372,6 @@ def mmqgisx_wkbtype_to_text(wkbtype):
 	if wkbtype == QGis.WKBMultiPolygon25D: return "multipolygon 2.5D"
 	return "Unknown WKB " + unicode(wkbtype)
 
-
-class mmqgisx_geometry_import_algorithm(GeoAlgorithm):
-
-	NODEFILENAME = "NODEFILENAME"
-	LONGITUDE = "LONGITUDE"
-	LATITUDE = "LATITUDE"
-	SHAPEID = "SHAPEID"
-	GEOMETRYTYPE = "GEOMETRYTYPE"
-	SHAPEFILENAME = "SHAPEFILENAME"
-
-	def defineCharacteristics(self):
-		self.name = "Create from table"
-		self.group = "Vector creation tools"
-
-		self.addParameter(ParameterTable(self.NODEFILENAME, "Input table", False))
-		self.addParameter(ParameterTableField(self.LONGITUDE, "Longitude column", self.NODEFILENAME))
-		self.addParameter(ParameterTableField(self.LATITUDE, "Latitude column", self.NODEFILENAME))
-		self.addParameter(ParameterTableField(self.SHAPEID, "Shape ID column", self.NODEFILENAME))
-		self.geotypes = ['Point', 'Polyline', 'Polygon']
-		self.addParameter(ParameterSelection(self.GEOMETRYTYPE, "Geometry type", self.geotypes, default = 0))
-		self.addOutput(OutputVector(self.SHAPEFILENAME, "Output"))
-
-	#===========================================================================
-	# def getIcon(self):
-	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_geometry_import.png")
-	#===========================================================================
-
-	def processAlgorithm(self, progress):
-
-		table = QGisLayers.getObjectFromUri(self.getParameterValue(self.NODEFILENAME))
-		node_filename = table.name()
-
-		longitude = self.getParameterValue(self.LONGITUDE)
-		latitude = self.getParameterValue(self.LATITUDE)
-		shapeid = self.getParameterValue(self.SHAPEID)
-		geometrytype = self.geotypes[self.getParameterValue(self.GEOMETRYTYPE)]
-		shapefilename = self.getOutputValue(self.SHAPEFILENAME)
-
-		message = mmqgisx_geometry_import_from_csv(progress, node_filename, longitude, latitude,
-			shapeid, geometrytype, shapefilename, False)
-
-		if message:
-			raise GeoAlgorithmExecutionException(message)
 
 class mmqgisx_grid_algorithm(GeoAlgorithm):
 
@@ -921,46 +879,60 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
 		hublayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.HUBNAME))
 		spokelayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.SPOKENAME))
 
-		hubattribute = self.getParameterValue(self.HUBATTRIBUTE)
-		spokeattribute = self.getParameterValue(self.SPOKEATTRIBUTE)
+		hubattr = self.getParameterValue(self.HUBATTRIBUTE)
+		spokeattr = self.getParameterValue(self.SPOKEATTRIBUTE)
 
-		savename = self.getOutputValue(self.SAVENAME)
+		
+		if hublayer == spokelayer:
+			raise GeoAlgorithmExecutionException ("Same layer given for both hubs and spokes")
 
-		message = mmqgisx_hub_lines(progress, hublayer, hubattribute, spokelayer, spokeattribute, savename, False)
-
-		if message:
-			raise GeoAlgorithmExecutionException(message)
-
-class mmqgisx_label_point_algorithm(GeoAlgorithm):
-
-	LAYERNAME = "LAYERNAME"
-	LABELATTRIBUTE = "LABELATTRIBUTE"
-	SAVENAME = "SAVENAME"
-
-	def defineCharacteristics(self):
-		self.name = "Create label layer"
-		self.group = "Vector creation tools"
-
-		self.addParameter(ParameterVector(self.LAYERNAME, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-		self.addParameter(ParameterTableField(self.LABELATTRIBUTE, "Label attribute", self.LAYERNAME))
-		self.addOutput(OutputVector(self.SAVENAME, "Output"))
-
-	#===========================================================================
-	# def getIcon(self):
-	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_label.png")
-	#===========================================================================
-
-	def processAlgorithm(self, progress):
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
-
-		labelattribute = self.getParameterValue(self.LABELATTRIBUTE)
-
-		savename = self.getOutputValue(self.SAVENAME)
-
-		message = mmqgisx_label_point(progress, layer, labelattribute, savename, False)
-
-		if message:
-			raise GeoAlgorithmExecutionException(message)
+		hubindex = hublayer.dataProvider().fieldNameIndex(hubattr)
+		spokeindex = spokelayer.dataProvider().fieldNameIndex(spokeattr)
+	
+		outfields = spokelayer.pendingFields()
+	
+		output = self.getOutputFromName(self.SAVENAME)
+		out = output.getVectorWriter(outfields, QGis.WKBLineString, spokelayer.crs())		
+	
+		# Scan spoke points
+		linecount = 0
+		spokepoints = QGisLayers.features(spokelayer)
+		i = 0
+		for spokepoint in spokepoints:
+			i += 1
+			spokex = spokepoint.geometry().boundingBox().center().x()
+			spokey = spokepoint.geometry().boundingBox().center().y()
+			spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())
+			progress.setPercentage(float(i) / len(spokepoints) * 100)
+			# Scan hub points to find first matching hub
+			hubpoint = QgsFeature()
+			hublayer.dataProvider().select(hublayer.dataProvider().attributeIndexes())
+			hublayer.dataProvider().rewind()
+			hubpoints = QGisLayers.features(hublayer)
+			for hubpoint in hubpoints:
+				hubid = unicode(hubpoint.attributeMap()[hubindex].toString())
+				if hubid == spokeid:
+					hubx = hubpoint.geometry().boundingBox().center().x()
+					huby = hubpoint.geometry().boundingBox().center().y()
+	
+					# Write line to the output file
+					outfeature = QgsFeature()
+					outfeature.setAttributes(spokepoint.attributes())
+	
+					polyline = []
+					polyline.append(QgsPoint(spokex, spokey))
+					polyline.append(QgsPoint(hubx, huby))
+					geometry = QgsGeometry()
+					outfeature.setGeometry(geometry.fromPolyline(polyline))
+					out.addFeature(outfeature)
+					linecount = linecount + 1
+					break
+	
+		del out
+	
+		if linecount <= 0:
+			raise GeoAlgorithmExecutionException("No spoke/hub matches found to create lines")
+				
 
 class mmqgisx_merge_algorithm(GeoAlgorithm):
 
@@ -1119,44 +1091,6 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 		self.setOutputValue(self.RESULT, filename)
 		
 
-class mmqgisx_sort_algorithm(GeoAlgorithm):
-
-	LAYERNAME = "LAYERNAME"
-	ATTRIBUTE = "ATTRIBUTE"
-	DIRECTION = "DIRECTION"
-	SAVENAME = "SAVENAME"
-
-	def defineCharacteristics(self):
-		self.name = "Sort by attribute"
-		self.group = "Vector table tools"
-
-		self.addParameter(ParameterVector(self.LAYERNAME, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-		self.addParameter(ParameterTableField(self.ATTRIBUTE, "Selection attribute", self.LAYERNAME))
-		self.directions = ['Ascending', 'Descending']
-		self.addParameter(ParameterSelection(self.DIRECTION, "Direction", self.directions, default = 0))
-		self.addOutput(OutputVector(self.SAVENAME, "Output"))
-
-	#===========================================================================
-	# def getIcon(self):
-	#	return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/mmqgis_sort.png")
-	#===========================================================================
-
-	def processAlgorithm(self, progress):
-
-		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
-
-		attribute = self.getParameterValue(self.ATTRIBUTE)
-		direction = self.directions [ self.getParameterValue(self.DIRECTION) ]
-		savename = self.getOutputValue(self.SAVENAME)
-
-		message = mmqgisx_sort(progress, layer, attribute, savename, direction, False)
-
-		if message:
-			raise GeoAlgorithmExecutionException(message)
-
-# Too complex for Sextante GUI
-# def mmqgisx_geocode_street_layer(GeoAlgorithm):
-
 class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
 
 	LAYERNAME = "LAYERNAME"
@@ -1177,13 +1111,34 @@ class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
 	#===========================================================================
 
 	def processAlgorithm(self, progress):
-
 		layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.LAYERNAME))
-
 		attribute = self.getParameterValue(self.ATTRIBUTE)
-		savename = self.getOutputValue(self.SAVENAME)
+		idx = layer.fieldNameIndex(attribute)
+		fields = layer.pendingFields() 
+		fields[idx] = QgsField(fields[idx].name(), QVariant.Double)
+		output = self.getOutputFromName(self.SAVENAME)
+		out = output.getVectorWriter(fields, layer.wkbType(), layer.crs())
+				
+		i = 0
+		features = QGisLayers.features(layer)
+		featurecount = len(features)
+		for feature in features:
+			i+=1
+			progress.setPercentage(float(i) / featurecount * 100)
+			attributes = feature.attributes()
+			try:
+				v = unicode(attributes[idx].toString())
+				if '%' in v:
+					v = v.replace('%', "")					
+					attributes[idx] = float(attributes[idx]) / float(100)
+				else:
+					attributes[idx] = float(attributes[idx]) 
+			except:
+				attributes[idx] = QVariant()			
+	
+			feature.setAttributes(attributes)
+			out.addFeature(feature)
+	
+		del out
 
-		message = mmqgisx_text_to_float(progress, layer, [ attribute ], savename, False)
 
-		if message:
-			raise GeoAlgorithmExecutionException(message)

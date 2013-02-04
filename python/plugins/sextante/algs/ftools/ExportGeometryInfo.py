@@ -24,18 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterSelection import ParameterSelection
-
 from sextante.outputs.OutputVector import OutputVector
-
-from sextante.algs.ftools import FToolsUtils as utils
 
 class ExportGeometryInfo(GeoAlgorithm):
 
@@ -72,19 +66,16 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         layer.select(layer.pendingAllAttributesList())
 
-        idx1 = -1
-        idx2 = -1
-        fields = layer.pendingFields()
+        fields = provider.fields()
 
         if geometryType == QGis.Polygon:
-            idx1, fields = utils.findOrCreateField(layer, fields, "area", 21, 6)
-            idx2, fields = utils.findOrCreateField(layer, fields, "perimeter", 21, 6)
+            fields.append(QgsField(QString("area"), QVariant.Double))
+            fields.append(QgsField(QString("perimeter"), QVariant.Double))            
         elif geometryType == QGis.Line:
-            idx1, fields = utils.findOrCreateField(layer, fields, "length", 21, 6)
-            idx2 = idx1
+            fields.append(QgsField(QString("length"), QVariant.Double))            
         else:
-            idx1, fields = utils.findOrCreateField(layer, fields, "xcoord", 21, 6)
-            idx2, fields = utils.findOrCreateField(layer, fields, "ycoord", 21, 6)
+            fields.append(QgsField(QString("xcoords"), QVariant.Double))
+            fields.append(QgsField(QString("ycoords"), QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                      provider.geometryType(), provider.crs())
@@ -121,11 +112,12 @@ class ExportGeometryInfo(GeoAlgorithm):
             (attr1, attr2) = self.simpleMeasure(inGeom, method, ellips, crs)
 
             outFeat.setGeometry(inGeom)
-            atMap = inFeat.attributeMap()
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(idx1, QVariant(attr1))
-            outFeat.addAttribute(idx2, QVariant(attr2))
-            writer.addFeature( outFeat )
+            atMap = inFeat.attributes()
+            atMap.append(QVariant(attr1))                        
+            if attr2 is not None:
+                atMap.append(QVariant(attr2))
+            outFeat.setAttributes(atMap)                
+            writer.addFeature(outFeat)
 
             current += 1
             progress.setPercentage(int(current * total))
@@ -153,7 +145,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             if geom.type() == QGis.Polygon:
                 attr2 = self.perimMeasure(geom, measure)
             else:
-                attr2 = attr1
+                attr2 = None
 
         return (attr1, attr2)
 

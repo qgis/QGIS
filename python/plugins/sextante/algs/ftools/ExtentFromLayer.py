@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -120,7 +119,6 @@ class ExtentFromLayer(GeoAlgorithm):
         feat = QgsFeature()
 
         provider = layer.dataProvider()
-        provider.select()
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
         for inFeat in features:
