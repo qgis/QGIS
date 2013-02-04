@@ -208,7 +208,7 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   if ( version != "1.0.0" && version != "1.0" )
   {
     mErrorCode = WFSVersionNotSupported;
-    mErrorMessage = tr( "The WFS server does not support WFS version 1.0" );
+    mErrorMessage = tr( "Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong" );
     emit gotCapabilities();
     return;
   }
