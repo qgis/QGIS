@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLIDENTIFY_H
-#define QGSMAPTOOLIDENTIFY_H
+#ifndef QGSMAPTOOLIDENTIFYACTION_H
+#define QGSMAPTOOLIDENTIFYACTION_H
 
 #include "qgis.h"
-#include "qgsmaptool.h"
+#include "qgsmaptoolidentify.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsdistancearea.h"
@@ -25,28 +25,28 @@
 #include <QObject>
 #include <QPointer>
 
-class QgsIdentifyResults;
+class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsRubberBand;
 class QgsVectorLayer;
 
 /**
-  \brief Map tool for identifying features in current layer
+  \brief Map tool for identifying features layers and showing results
 
   after selecting a point shows dialog with identification results
   - for raster layers shows value of underlying pixel
   - for vector layers shows feature attributes within search radius
     (allows to edit values when vector layer is in editing mode)
 */
-class QgsMapToolIdentify : public QgsMapTool
+class QgsMapToolIdentifyAction : public QgsMapToolIdentify
 {
     Q_OBJECT
 
   public:
-    QgsMapToolIdentify( QgsMapCanvas* canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas* canvas );
 
-    ~QgsMapToolIdentify();
+    ~QgsMapToolIdentifyAction();
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
@@ -71,17 +71,16 @@ class QgsMapToolIdentify : public QgsMapTool
     bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
 
     //! Pointer to the identify results dialog for name/value pairs
-    QPointer<QgsIdentifyResults> mResults;
-
-    //! Private helper
-    void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+    QPointer<QgsIdentifyResultsDialog> mResultsDialog;
 
     void addFeature( QgsMapLayer *layer, int fid,
                      QString displayField, QString displayValue,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
-    QgsIdentifyResults *results();
+    QgsIdentifyResultsDialog *resultsDialog();
+
+    virtual QGis::UnitType displayUnits();
 };
 
 #endif

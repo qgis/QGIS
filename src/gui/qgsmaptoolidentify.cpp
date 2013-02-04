@@ -19,18 +19,17 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsidentifyresults.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolidentify.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsmaptoolidentify.h"
+#include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 #include "qgsrendererv2.h"
 
 #include <QSettings>
@@ -51,18 +50,6 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
 {
-  if ( mResults )
-  {
-    mResults->done( 0 );
-  }
-}
-
-QgsIdentifyResults *QgsMapToolIdentify::results()
-{
-  if ( !mResults )
-    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
-
-  return mResults;
 }
 
 void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent *e )
@@ -77,48 +64,72 @@ void QgsMapToolIdentify::canvasPressEvent( QMouseEvent *e )
 
 void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent *e )
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
+    Q_UNUSED( e );
+}
 
-  results()->clear();
+bool QgsMapToolIdentify::identify(int x, int y, QList<QgsMapLayer *> layerList, IdentifyMode mode)
+{
+    return identify(x, y, mode, layerList, AllLayers);
+}
 
-  QSettings settings;
-  int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
+bool QgsMapToolIdentify::identify(int x, int y, IdentifyMode mode, LayerType layerType)
+{
+    return identify(x, y, mode, QList<QgsMapLayer*>(), layerType);
+}
 
+bool QgsMapToolIdentify::identify(int x, int y, IdentifyMode mode, QList<QgsMapLayer*> layerList, LayerType layerType )
+{
   bool res = false;
 
-  if ( identifyMode == 0 )
+  if ( !mCanvas || mCanvas->isDrawing() )
+  {
+    return res;
+  }
+
+  mResultData.mVectorResults.clear();
+  mResultData.mRasterResults.clear();
+
+  if (mode == DefaultQgsSetting)
+  {
+    QSettings settings;
+    mode = static_cast<IdentifyMode>( settings.value( "/Map/identifyMode", 0 ).toInt() );
+  }
+
+  if ( mode == ActiveLayer && ~layerList.isEmpty())
   {
     QgsMapLayer *layer = mCanvas->currentLayer();
 
     if ( !layer )
     {
-      QMessageBox::warning( mCanvas,
-                            tr( "No active layer" ),
-                            tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
-      return;
+      emit identifyMessage( tr( "No active layer. To identify features, you must choose an active layer." ) );
+      return res;
     }
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    res = identifyLayer( layer, e->x(), e->y() );
-
-    QApplication::restoreOverrideCursor();
+    res = identifyLayer( layer, x, y, layerType );
   }
   else
   {
-    connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-    connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
-    for ( int i = 0; i < mCanvas->layerCount(); i++ )
+    int layerCount;
+    if (layerList.isEmpty())
+        layerCount = mCanvas->layerCount();
+    else
+        layerCount = layerList.count();
+
+
+    for ( int i = 0; i < layerCount; i++ )
     {
-      QgsMapLayer *layer = mCanvas->layer( i );
+
+      QgsMapLayer *layer ;
+      if (layerList.isEmpty())
+          layer = mCanvas->layer( i );
+      else
+          layer = layerList.value( i );
 
       emit identifyProgress( i, mCanvas->layerCount() );
       emit identifyMessage( tr( "Identifying on %1..." ).arg( layer->name() ) );
@@ -126,69 +137,47 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent *e )
       if ( noIdentifyLayerIdList.contains( layer->id() ) )
         continue;
 
-      if ( identifyLayer( layer, e->x(), e->y() ) )
+      if ( identifyLayer( layer, x, y, layerType ) )
       {
         res = true;
-        if ( identifyMode == 1 )
+        if ( mode == TopDownStopAtFirst )
           break;
       }
     }
 
     emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
     emit identifyMessage( tr( "Identifying done." ) );
-
-    disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-    disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-
-    QApplication::restoreOverrideCursor();
   }
 
-  if ( res )
-  {
-    results()->show();
-  }
-  else
-  {
-    QSettings mySettings;
-    bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
-    if ( !myDockFlag )
-    {
-      results()->hide();
-    }
-    else
-    {
-      results()->clear();
-    }
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
-  }
+  QApplication::restoreOverrideCursor();
+
+  return res;
 }
 
 void QgsMapToolIdentify::activate()
 {
-  results()->activate();
   QgsMapTool::activate();
 }
 
 void QgsMapToolIdentify::deactivate()
 {
-  results()->deactivate();
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
+bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y, LayerType layerType )
 {
-  bool res = false;
-
-  if ( layer->type() == QgsMapLayer::RasterLayer )
+  if ( layer->type() == QgsMapLayer::RasterLayer && (layerType==AllLayers || layerType==RasterLayer))
   {
-    res = identifyRasterLayer( qobject_cast<QgsRasterLayer *>( layer ), x, y );
+    return identifyRasterLayer( qobject_cast<QgsRasterLayer *>( layer ), x, y );
+  }
+  else if ( layer->type() == QgsMapLayer::VectorLayer && (layerType==AllLayers || layerType==VectorLayer))
+  {
+    return identifyVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), x, y );
   }
   else
   {
-    res = identifyVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), x, y );
+    return false;
   }
-
-  return res;
 }
 
 
@@ -333,7 +322,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
-    results()->addFeature( layer, *f_it, derivedAttributes );
+    mResultData.mVectorResults.append( VectorResult(layer, *f_it, derivedAttributes));
   }
 
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
@@ -415,12 +404,11 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   if ( attributes.size() > 0 )
   {
     derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
-    results()->addFeature( layer, type, attributes, derivedAttributes );
+    mResultData.mRasterResults.append( RasterResult(layer, type, attributes, derivedAttributes));
   }
 
   return res;
 }
-
 
 void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea )
 {
@@ -430,10 +418,16 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   // Get the canvas units
   QGis::UnitType myUnits = mCanvas->mapUnits();
 
-  // Get the units for display
-  QSettings settings;
-  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
-
-  calc.convertMeasurement( measure, myUnits, displayUnits, isArea );
+  calc.convertMeasurement( measure, myUnits, displayUnits(), isArea );
   u = myUnits;
+}
+
+QGis::UnitType QgsMapToolIdentify::displayUnits()
+{
+    return mCanvas->mapUnits();
+}
+
+QgsMapToolIdentify::IdentifyResults &QgsMapToolIdentify::results()
+{
+    return mResultData;
 }
