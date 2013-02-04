@@ -52,6 +52,8 @@
 # saveDialog( QWidget *parent )
 # getFieldType( QgsVectorLayer, QgsField.name() )
 # getUniqueValuesCount( QgsVectorLayer, int fieldIndex, bool useSelection ):
+# getGeomType ( QgsGeometry.wkbType() )
+# fieldIterator ( QList *QgsField )
 #
 # -------------------------------------------------
 
@@ -352,6 +354,7 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
                 count += 1
     return count
 
+# Return a geometries type list
 def getGeomType(gT):
   if gT == 3 or gT == 6:
     gTypeListPoly = [ QGis.WKBPolygon, QGis.WKBMultiPolygon ]
@@ -362,6 +365,13 @@ def getGeomType(gT):
   elif gT == 1 or gT == 4:
     gTypeListPoint = [ QGis.WKBPoint, QGis.WKBMultiPoint ]
     return gTypeListPoint
+
+# Return a fields list
+def fieldIterator(fieldList):
+  qgsFields = QgsFields()
+  for field in fieldList:
+      qgsFields.append(field)
+  return qgsFields
 
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
   outShapes = QStringList()

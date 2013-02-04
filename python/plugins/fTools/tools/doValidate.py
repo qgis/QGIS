@@ -320,7 +320,8 @@ class validateThread( QThread ):
     if self.writeShape:
       fields = [ QgsField( "FEAT_ID", QVariant.Int ),
                  QgsField( "ERROR", QVariant.String ) ]
-      writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+      qgsFields = ftools_utils.fieldIterator(fields)
+      writer = QgsVectorFileWriter( self.myName, self.myEncoding, qgsFields, 
                                     QGis.WKBPoint, vlayer.crs() )
       for rec in lstErrors:
         if len(rec[1]) < 1:

@@ -618,7 +618,8 @@ class geometryThread( QThread ):
     fields = [ QgsField( "POINTA", QVariant.Double ),
                QgsField( "POINTB", QVariant.Double ),
                QgsField( "POINTC", QVariant.Double ) ]
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+    qgsFields = ftools_utils.fieldIterator(fields)
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, qgsFields,
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
     c = voronoi.Context()
