@@ -425,7 +425,9 @@ void QgsVectorLayerProperties::reset( void )
 void QgsVectorLayerProperties::apply()
 {
   if ( labelingDialog )
-    labelingDialog->apply();
+  {
+    labelingDialog->writeSettingsToLayer();
+  }
 
   //
   // Set up sql subset query if applicable

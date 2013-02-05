@@ -359,13 +359,18 @@ void QgsLabelingGui::collapseSample( QgsCollapsibleGroupBox* grpbx )
 
 void QgsLabelingGui::apply()
 {
-  QgsPalLayerSettings settings = layerSettings();
-  settings.writeToLayer( mLayer );
+  writeSettingsToLayer();
   // trigger refresh
   if ( mMapCanvas )
   {
     mMapCanvas->refresh();
   }
+}
+
+void QgsLabelingGui::writeSettingsToLayer()
+{
+  QgsPalLayerSettings settings = layerSettings();
+  settings.writeToLayer( mLayer );
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()

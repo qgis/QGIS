@@ -37,6 +37,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
+    void writeSettingsToLayer();
 
   public slots:
     void collapseSample( QgsCollapsibleGroupBox* grpbx );
