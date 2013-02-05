@@ -30,7 +30,8 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mEnabled( false ),
     mComposerMap( 0 ),
     mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
-    mCoverageLayer( 0 ), mSingleFile( false )
+    mCoverageLayer( 0 ), mSingleFile( false ),
+    mSortFeatures( false ), mSortAscending( true ), mFeatureFilter( "" )
 {
 
   // declare special columns with a default value
@@ -51,6 +52,33 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   // update the number of features
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 }
+
+//
+// Private class only used for the sorting of features
+class FieldSorter
+{
+public:
+	FieldSorter( QgsAtlasComposition::SorterKeys& keys, bool ascending = true ) : mKeys( keys ), mAscending( ascending ) {}
+
+	bool operator()( const QgsFeatureId& id1, const QgsFeatureId& id2 )
+	{
+		bool result;
+		if ( mKeys[ id1 ].type() == QVariant::Int ) {
+			result = mKeys[ id1 ].toInt() < mKeys[ id2 ].toInt();
+		}
+		else if ( mKeys[ id1 ].type() == QVariant::Double ) {
+			result = mKeys[ id1 ].toDouble() < mKeys[ id2 ].toDouble();
+		}
+		else if ( mKeys[ id1 ].type() == QVariant::String ) {
+			result = (QString::localeAwareCompare(mKeys[ id1 ].toString(), mKeys[ id2 ].toString()) < 0);
+		}
+
+		return mAscending ? result : !result;
+	}
+private:
+	QgsAtlasComposition::SorterKeys& mKeys;
+	bool mAscending;
+};
 
 void QgsAtlasComposition::beginRender()
 {
@@ -84,13 +112,45 @@ void QgsAtlasComposition::beginRender()
   // select all features with all attributes
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
+  std::auto_ptr<QgsExpression> filterExpression;
+  if ( mFeatureFilter.size() > 0 ) {
+	  filterExpression = std::auto_ptr<QgsExpression>(new QgsExpression( mFeatureFilter ));
+	  if ( filterExpression->hasParserError() )
+	  {
+		  throw std::runtime_error( "Feature filter parser error: " + filterExpression->parserErrorString().toStdString() );
+	  }
+  }
+
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
   mFeatureIds.clear();
+  mFeatureKeys.clear();
   while ( fit.nextFeature( feat ) )
   {
-    mFeatureIds.push_back( feat.id() );
+	  if ( mFeatureFilter.size() > 0 ) {
+		  QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
+		  if ( filterExpression->hasEvalError() )
+		  {
+			  throw std::runtime_error( "Feature filter eval error: " + filterExpression->evalErrorString().toStdString() );
+		  }
+
+		  // skip this feature if the filter evaluation if false
+		  if ( !result.toBool() ) {
+			  continue;
+		  }
+	  }
+	  mFeatureIds.push_back( feat.id() );
+
+	  if ( mSortFeatures ) {
+		  mFeatureKeys.insert( std::make_pair( feat.id(), feat.attributes()[ mSortKeyAttributeIdx ] ) );
+	  }
+  }
+
+  // sort features, if asked for
+  if ( mSortFeatures ) {
+	  FieldSorter sorter( mFeatureKeys, mSortAscending );
+	  std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
   }
 
   mOrigExtent = mComposerMap->extent();
@@ -159,10 +219,6 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
   {
     QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
     QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature );
-    if ( mFilenameExpr->hasEvalError() )
-    {
-      throw std::runtime_error( "Filename eval error: " + mFilenameExpr->evalErrorString().toStdString() );
-    }
 
     mCurrentFilename = filenameRes.toString();
   }
@@ -284,6 +340,13 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   atlasElem.setAttribute( "margin", QString::number( mMargin ) );
   atlasElem.setAttribute( "filenamePattern", mFilenamePattern );
 
+  atlasElem.setAttribute( "sortFeatures", mSortFeatures ? "true" : "false" );
+  if ( mSortFeatures ) {
+	  atlasElem.setAttribute( "sortKey", QString::number(mSortKeyAttributeIdx) );
+	  atlasElem.setAttribute( "sortAscending", mSortAscending ? "true" : "false" );
+  }
+  atlasElem.setAttribute( "featureFilter", mFeatureFilter );
+
   elem.appendChild( atlasElem );
 }
 
@@ -323,6 +386,13 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   mFixedScale = atlasElem.attribute( "fixedScale", "false" ) == "true" ? true : false;
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
   mFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
+
+  mSortFeatures = atlasElem.attribute( "sortFeatures", "false" ) == "true" ? true : false;
+  if ( mSortFeatures ) {
+	  mSortKeyAttributeIdx = atlasElem.attribute( "sortKey", "0" ).toInt();
+	  mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;
+  }
+  mFeatureFilter = atlasElem.attribute( "featureFilter", "" );
 
   emit parameterChanged();
 }
