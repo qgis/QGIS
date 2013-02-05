@@ -7684,7 +7684,7 @@ bool QgsGeometry::deletePart( int partNum )
   return true;
 }
 
-int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet<qint64> > ignoreFeatures )
+int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > > ignoreFeatures )
 {
   int returnValue = 0;
 
