@@ -93,23 +93,23 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-  bool res = QgsMapToolIdentify::identify( e->x(), e->y() );
+  IdentifyResults results = QgsMapToolIdentify::identify( e->x(), e->y() );
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
 
   QList<VectorResult>::const_iterator vresult;
-  for ( vresult = results().mVectorResults.begin(); vresult != results().mVectorResults.end(); ++vresult )
+  for ( vresult = results.mVectorResults.begin(); vresult != results.mVectorResults.end(); ++vresult )
   {
     resultsDialog()->addFeature( vresult->mLayer, vresult->mFeature, vresult->mDerivedAttributes );
   }
   QList<RasterResult>::const_iterator rresult;
-  for ( rresult = results().mRasterResults.begin(); rresult != results().mRasterResults.end(); ++rresult )
+  for ( rresult = results.mRasterResults.begin(); rresult != results.mRasterResults.end(); ++rresult )
   {
     resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
   }
 
-  if ( res )
+  if ( !results.mRasterResults.isEmpty() || !results.mVectorResults.isEmpty() )
   {
     resultsDialog()->show();
   }
