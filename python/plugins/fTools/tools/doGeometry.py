@@ -998,7 +998,7 @@ class geometryThread( QThread ):
         value = value + measure.measureLine( k )
     return value
 
-  def doubleFieldIndex( self, name, desc, fieldList, f ):
+  def doubleFieldIndex( self, name, desc, fieldList ):
     i = 0
     for f in fieldList:
       if name == f.name().toUpper():
@@ -1011,20 +1011,25 @@ class geometryThread( QThread ):
   def checkMeasurementFields( self, vlayer, add ):
     vprovider = vlayer.dataProvider()
     geomType = vlayer.geometryType()
+    fieldList = vprovider.fields()
+
+    idx = len(fieldList)
 
     if geomType == QGis.Polygon:
-      (index1, fieldList) = doubleFieldIndex( "AREA", self.tr( "Polygon area" ), fieldList )
-      (index2, fieldList) = doubleFieldIndex( "PERIMETER", self.tr( "Polygon perimeter" ), fieldList )
+      (index1, fieldList) = self.doubleFieldIndex( "AREA", self.tr( "Polygon area" ), fieldList )
+      (index2, fieldList) = self.doubleFieldIndex( "PERIMETER", self.tr( "Polygon perimeter" ), fieldList )
     elif geomType == QGis.Line:
-      (index1, fieldList) = doubleFieldIndex( "LENGTH", self.tr( "Line length" ), fieldList )
+      (index1, fieldList) = self.doubleFieldIndex( "LENGTH", self.tr( "Line length" ), fieldList )
       index2 = index1
     else:
-      (index1, fieldList) = doubleFieldIndex( "XCOORD", self.tr( "Point x ordinate" ), fieldList )
-      (index2, fieldList) = doubleFieldIndex( "YCOORD", self.tr( "Point y ordinate" ), fieldList )
+      (index1, fieldList) = self.doubleFieldIndex( "XCOORD", self.tr( "Point x ordinate" ), fieldList )
+      (index2, fieldList) = self.doubleFieldIndex( "YCOORD", self.tr( "Point y ordinate" ), fieldList )
 
-    if add:
+    if add and idx<len(fieldList):
+      newFields = []
+      for i in range(idx,len(fieldList)):
+        newFields.append(fieldList[i])
       vprovider.addAttributes( newFields )
-      vlayer.updateFieldMap()
 
     return ( fieldList, index1, index2 )
 
