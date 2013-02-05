@@ -566,7 +566,7 @@ void QgsOgrProvider::loadFields()
       }
 
       mAttributeFields.append(
-          QgsField(
+        QgsField(
           //TODO: fix this hack
 #ifdef ANDROID
           OGR_Fld_GetNameRef( fldDef ),
@@ -757,13 +757,15 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
-    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+    if ( wkb )
     {
-      pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
-      return false;
+      if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+      {
+        pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
+        return false;
+      }
+      OGR_F_SetGeometryDirectly( feature, geom );
     }
-
-    OGR_F_SetGeometryDirectly( feature, geom );
   }
 
   const QgsAttributes& attrs = f.attributes();
