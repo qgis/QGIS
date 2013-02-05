@@ -178,8 +178,8 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *layer )
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer,
-                                     const QgsFeature &f,
-                                     const QMap<QString, QString> &derivedAttributes )
+    const QgsFeature &f,
+    const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
 
@@ -291,9 +291,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer,
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
-                                     QString label,
-                                     const QMap<QString, QString> &attributes,
-                                     const QMap<QString, QString> &derivedAttributes )
+    QString label,
+    const QMap<QString, QString> &attributes,
+    const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( layer );
 

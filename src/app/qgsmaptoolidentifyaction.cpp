@@ -77,26 +77,26 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 {
-    if ( !mCanvas || mCanvas->isDrawing() )
-    {
-      return;
-    }
+  if ( !mCanvas || mCanvas->isDrawing() )
+  {
+    return;
+  }
 
-    resultsDialog()->clear();
+  resultsDialog()->clear();
 
-    connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-    connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-    bool res = QgsMapToolIdentify::identify(e->x(), e->y() );
-    disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-    disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+  connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+  connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+  bool res = QgsMapToolIdentify::identify( e->x(), e->y() );
+  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
 
-    QList<VectorResult>::const_iterator vresult;
-    for ( vresult = results().mVectorResults.begin(); vresult != results().mVectorResults.end(); ++vresult)
-        resultsDialog()->addFeature( vresult->mLayer, vresult->mFeature, vresult->mDerivedAttributes);
-    QList<RasterResult>::const_iterator rresult;
-    for ( rresult = results().mRasterResults.begin(); rresult != results().mRasterResults.end(); ++rresult)
-        resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes);
+  QList<VectorResult>::const_iterator vresult;
+  for ( vresult = results().mVectorResults.begin(); vresult != results().mVectorResults.end(); ++vresult )
+    resultsDialog()->addFeature( vresult->mLayer, vresult->mFeature, vresult->mDerivedAttributes );
+  QList<RasterResult>::const_iterator rresult;
+  for ( rresult = results().mRasterResults.begin(); rresult != results().mRasterResults.end(); ++rresult )
+    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes );
 
   if ( res )
   {
@@ -132,8 +132,8 @@ void QgsMapToolIdentifyAction::deactivate()
 
 QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
 {
-    // Get the units for display
-    QSettings settings;
-    return QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  // Get the units for display
+  QSettings settings;
+  return QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 }
 
