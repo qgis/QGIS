@@ -324,6 +324,5 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
   mFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
 
-  std::cout << "emit parameter changed this = " << this << std::endl;
   emit parameterChanged();
 }
