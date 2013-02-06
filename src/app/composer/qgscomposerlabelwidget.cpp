@@ -32,10 +32,40 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
+
   if ( mComposerLabel )
   {
     setGuiElementValues();
     connect( mComposerLabel, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+  }
+}
+
+void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
+{
+  if ( mComposerLabel )
+  {
+    if (state)
+    {
+      mFontButton->setEnabled( false );
+      mFontColorButton->setEnabled( false );
+      mHorizontalAlignementGroup->setEnabled( false );
+      mVerticalAlignementGroup->setEnabled( false );
+    }
+    else
+    {
+      mFontButton->setEnabled( true );
+      mFontColorButton->setEnabled( true );
+      mHorizontalAlignementGroup->setEnabled( true );
+      mVerticalAlignementGroup->setEnabled( true );
+    }
+
+    mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
+    mComposerLabel->blockSignals( true );
+    mComposerLabel->setHtmlSate(state);
+    mComposerLabel->setText( mTextEdit->toPlainText() );
+    mComposerLabel->update();
+    mComposerLabel->blockSignals( false );
+    mComposerLabel->endCommand();
   }
 }
 
@@ -223,9 +253,10 @@ void QgsComposerLabelWidget::on_mRotationSpinBox_valueChanged( double v )
 void QgsComposerLabelWidget::setGuiElementValues()
 {
   blockAllSignals( true );
-  mTextEdit->setText( mComposerLabel->text() );
+  mTextEdit->setPlainText( mComposerLabel->text() );
   mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
   mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+  mHtmlCheckBox->setChecked( mComposerLabel->htmlSate() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
   mBottomRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignBottom );
@@ -239,6 +270,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
 void QgsComposerLabelWidget::blockAllSignals( bool block )
 {
   mTextEdit->blockSignals( block );
+  mHtmlCheckBox->blockSignals( block );
   mMarginDoubleSpinBox->blockSignals( block );
   mTopRadioButton->blockSignals( block );
   mMiddleRadioButton->blockSignals( block );
