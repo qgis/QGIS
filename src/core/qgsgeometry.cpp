@@ -4569,9 +4569,9 @@ QString QgsGeometry::exportToWkt()
     exportGeosToWkb();
   }
 
-  if ( !mGeometry )
+  if ( !mGeometry || wkbSize() < 5 )
   {
-    QgsDebugMsg( "WKB geometry not available!" );
+    QgsDebugMsg( "WKB geometry not available or too short!" );
     return QString::null;
   }
 
