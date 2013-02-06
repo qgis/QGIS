@@ -58,7 +58,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   if( mHtmlState )
   {
-    painter->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
+    painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
 
     QWebPage* webPage = new QWebPage();
 
@@ -68,7 +68,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     webPage->setPalette(palette);
     //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
 
-    webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM) );
+    webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0) );
+    webPage->mainFrame()->setZoomFactor( 10.0 );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setHtml( displayText() );
