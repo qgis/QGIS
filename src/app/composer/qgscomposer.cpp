@@ -655,7 +655,16 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
     QPainter painter;
 
-    atlasMap->beginRender();
+    try {
+      atlasMap->beginRender();
+    }
+    catch ( std::exception& e )
+    {
+      QMessageBox::warning( this, tr( "Atlas processing error" ),
+			    e.what(),
+			    QMessageBox::Ok,
+			    QMessageBox::Ok );
+    }
     if ( atlasOnASingleFile )
     {
       mComposition->beginPrintAsPDF( printer, outputFileName );
@@ -755,7 +764,16 @@ void QgsComposer::on_mActionPrint_triggered()
 
     mComposition->beginPrint( mPrinter );
     QPainter painter( &mPrinter );
-    atlasMap->beginRender();
+    try {
+      atlasMap->beginRender();
+    }
+    catch ( std::exception& e )
+    {
+      QMessageBox::warning( this, tr( "Atlas processing error" ),
+			    e.what(),
+			    QMessageBox::Ok,
+			    QMessageBox::Ok );
+    }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
     for ( size_t i = 0; i < atlasMap->numFeatures(); ++i )
@@ -939,7 +957,16 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     mView->setPaintingEnabled( false );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    atlasMap->beginRender();
+    try {
+      atlasMap->beginRender();
+    }
+    catch ( std::exception& e )
+    {
+      QMessageBox::warning( this, tr( "Atlas processing error" ),
+			    e.what(),
+			    QMessageBox::Ok,
+			    QMessageBox::Ok );
+    }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
@@ -1096,7 +1123,16 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   size_t featureI = 0;
   if ( hasAnAtlas )
   {
-    atlasMap->beginRender();
+    try {
+      atlasMap->beginRender();
+    }
+    catch ( std::exception& e )
+    {
+      QMessageBox::warning( this, tr( "Atlas processing error" ),
+			    e.what(),
+			    QMessageBox::Ok,
+			    QMessageBox::Ok );
+    }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
