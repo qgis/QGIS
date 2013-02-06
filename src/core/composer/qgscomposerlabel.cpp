@@ -107,7 +107,7 @@ double QgsComposerLabel::htmlUnitsToMM()
   }
 
   //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
-  return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
+  return ( mComposition->printResolution() / 72.0 ); //webkit seems to assume a standard dpi of 72
 }
 
 void QgsComposerLabel::setText( const QString& text )
