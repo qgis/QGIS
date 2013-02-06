@@ -772,6 +772,7 @@ bool QgsPostgresProvider::loadFields()
 
     fields << fieldName;
 
+    mAttrPalIndexName.insert( i, fieldName );
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
   }
 

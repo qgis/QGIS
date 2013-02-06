@@ -73,11 +73,16 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     QgsMapRenderer* mMapRenderer;
 
     QgsAttributeMap mChangedProperties;
-    QMap< QgsPalLayerSettings::DataDefinedProperties, int > mDataDefinedProperties;
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QString > mDataDefinedProperties;
     QFont mLabelFont;
 
     /**Label field for the current layer (or -1 if none)*/
-    int mCurrentLabelField;
+    int mCurLabelField;
+
+    /** Current feature
+     * @note added in 1.9
+     */
+    QgsFeature mCurLabelFeat;
 };
 
 #endif // QGSLAYERPROPERTYDIALOG_H

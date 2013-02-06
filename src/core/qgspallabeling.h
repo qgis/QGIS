@@ -102,7 +102,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MultiRight
     };
 
-    // increment iterator in _writeDataDefinedPropertyMap() when adding more
+    // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
       Size = 0,
@@ -125,8 +125,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
-      AlwaysShow,
-      PropertyCount, // keep last entry
+      AlwaysShow
     };
 
     QString fieldName;
@@ -211,13 +210,13 @@ class CORE_EXPORT QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer* layer );
 
     /**Set a property as data defined*/
-    void setDataDefinedProperty( DataDefinedProperties p, int attributeIndex );
+    void setDataDefinedProperty( DataDefinedProperties p, QString attributeName );
     /**Set a property to static instead data defined*/
     void removeDataDefinedProperty( DataDefinedProperties p );
 
-    /**Stores field indices for data defined layer properties*/
+    /**Stores field names for data defined layer properties*/
     //! @note not available in python bindings
-    QMap< DataDefinedProperties, int > dataDefinedProperties;
+    QMap< DataDefinedProperties, QString > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
@@ -227,6 +226,11 @@ class CORE_EXPORT QgsPalLayerSettings
      @param buffer whether it buffer size being calculated
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+
+    /** List of data defined enum names
+     * @note adding in 1.9
+     */
+    QList<QString> dataDefinedNames() const { return mDataDefinedNames; }
 
     // temporary stuff: set when layer gets prepared or labeled
     pal::Layer* palLayer;
@@ -241,10 +245,23 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
   private:
+    void readDataDefinedPropertyMap( QgsVectorLayer* layer,
+                                     QMap < QgsPalLayerSettings::DataDefinedProperties,
+                                     QString > & propertyMap );
+    void writeDataDefinedPropertyMap( QgsVectorLayer* layer,
+                                      const QMap < QgsPalLayerSettings::DataDefinedProperties,
+                                      QString > & propertyMap );
+    void readDataDefinedProperty( QgsVectorLayer* layer,
+                                  QgsPalLayerSettings::DataDefinedProperties p,
+                                  QMap < QgsPalLayerSettings::DataDefinedProperties,
+                                  QString > & propertyMap );
+
     /**Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
+
     QgsExpression* expression;
+    QList<QString> mDataDefinedNames;
 
     QFontDatabase mFontDB;
     /**Updates layer font with one of its named styles */

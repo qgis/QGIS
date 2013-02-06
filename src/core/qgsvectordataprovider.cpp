@@ -31,6 +31,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
     , mFetchFeaturesWithoutGeom( true )
+    , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
 {
   QSettings settings;
   setEncoding( settings.value( "/UI/encoding", "System" ).toString() );

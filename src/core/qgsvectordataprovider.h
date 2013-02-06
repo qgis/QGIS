@@ -20,6 +20,7 @@ class QTextCodec;
 #include <QList>
 #include <QSet>
 #include <QMap>
+#include <QHash>
 
 //QGIS Includes
 #include "qgis.h"
@@ -30,6 +31,7 @@ class QTextCodec;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 class QgsFeatureIterator;
 
@@ -273,6 +275,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QgsAttributeList pkAttributeIndexes() { return QgsAttributeList(); }
 
     /**
+     * Return list of indexes to names for QgsPalLabeling fix
+     */
+    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const { return mAttrPalIndexName; }
+
+    /**
      * Set whether provider should also return features that don't have
      * associated geometry. false by default
      */
@@ -353,6 +360,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QList< NativeType > mNativeTypes;
 
     void pushError( QString msg );
+
+    /** Old-style mapping of index to name for QgsPalLabeling fix */
+    QgsAttrPalIndexNameHash mAttrPalIndexName;
 
   private:
     /** old notation **/

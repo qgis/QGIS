@@ -574,12 +574,7 @@ void QgsLabelingGui::setDataDefinedProperty( const QComboBox* c, QgsPalLayerSett
   {
     return;
   }
-
-  QVariant propertyField = c->itemData( c->currentIndex() );
-  if ( propertyField.isValid() )
-  {
-    lyr.setDataDefinedProperty( p, propertyField.toInt() );
-  }
+  lyr.setDataDefinedProperty( p, c->currentText() ); // "" value effectively clears setting
 }
 
 void QgsLabelingGui::setCurrentComboValue( QComboBox* c, const QgsPalLayerSettings& s, QgsPalLayerSettings::DataDefinedProperties p )
@@ -589,14 +584,14 @@ void QgsLabelingGui::setCurrentComboValue( QComboBox* c, const QgsPalLayerSettin
     return;
   }
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = s.dataDefinedProperties.find( p );
-  if ( it == s.dataDefinedProperties.constEnd() )
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator it = s.dataDefinedProperties.find( p );
+  if ( it == s.dataDefinedProperties.constEnd() || it.value().isEmpty() )
   {
     c->setCurrentIndex( 0 );
   }
   else
   {
-    c->setCurrentIndex( c->findData( it.value() ) );
+    c->setCurrentIndex( c->findText( it.value() ) );
   }
 }
 

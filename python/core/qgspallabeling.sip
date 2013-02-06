@@ -48,7 +48,7 @@ class QgsPalLayerSettings
       MultiRight
     };
 
-    // increment iterator in _writeDataDefinedPropertyMap() when adding more
+    // update mDataDefinedNames in constructor when adding new enum value
     enum DataDefinedProperties
     {
       Size = 0,
@@ -71,8 +71,7 @@ class QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
-      AlwaysShow,
-      PropertyCount, // keep last entry
+      AlwaysShow
     };
 
     QString fieldName;
@@ -157,11 +156,11 @@ class QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer* layer );
 
     /**Set a property as data defined*/
-    void setDataDefinedProperty( DataDefinedProperties p, int attributeIndex );
+    void setDataDefinedProperty( DataDefinedProperties p, QString attributeName );
     /**Set a property to static instead data defined*/
     void removeDataDefinedProperty( DataDefinedProperties p );
 
-    /**Stores field indices for data defined layer properties*/
+    /**Stores field names for data defined layer properties*/
     // QMap< DataDefinedProperties, int > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
@@ -172,6 +171,11 @@ class QgsPalLayerSettings
      @param buffer whether it buffer size being calculated
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+
+    /** List of data defined enum names
+     * @note adding in 1.9
+     */
+    QList<QString> dataDefinedNames() const;
 };
 
 class QgsLabelCandidate

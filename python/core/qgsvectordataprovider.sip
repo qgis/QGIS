@@ -216,6 +216,11 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual QList<int> pkAttributeIndexes();
 
     /**
+     * Return list of indexes to names for QgsPalLabeling fix
+     */
+    virtual QHash<int, QString> palAttributeIndexNames() const;
+
+    /**
      * Set whether provider should also return features that don't have
      * associated geometry. false by default
      */

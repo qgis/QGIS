@@ -244,6 +244,29 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   multilineHeight = 1.0;
   multilineAlign = MultiLeft;
   preserveRotation = true;
+
+  // data defined string values
+  mDataDefinedNames << "Size";
+  mDataDefinedNames << "Bold";
+  mDataDefinedNames << "Italic";
+  mDataDefinedNames << "Underline";
+  mDataDefinedNames << "Color";
+  mDataDefinedNames << "Strikeout";
+  mDataDefinedNames << "Family";
+  mDataDefinedNames << "BufferSize";
+  mDataDefinedNames << "BufferColor";
+  mDataDefinedNames << "PositionX";
+  mDataDefinedNames << "PositionY";
+  mDataDefinedNames << "Hali";
+  mDataDefinedNames << "Vali";
+  mDataDefinedNames << "LabelDistance";
+  mDataDefinedNames << "Rotation";
+  mDataDefinedNames << "Show";
+  mDataDefinedNames << "MinScale";
+  mDataDefinedNames << "MaxScale";
+  mDataDefinedNames << "FontTransp";
+  mDataDefinedNames << "BufferTransp";
+  mDataDefinedNames << "AlwaysShow";
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -307,6 +330,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   preserveRotation = s.preserveRotation;
 
   dataDefinedProperties = s.dataDefinedProperties;
+  mDataDefinedNames = s.mDataDefinedNames;
+
   ct = NULL;
   extentGeom = NULL;
   expression = NULL;
@@ -346,15 +371,33 @@ static void _writeColor( QgsVectorLayer* layer, QString property, QColor color )
   layer->setCustomProperty( property + "B", color.blue() );
 }
 
-static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
+void QgsPalLayerSettings::readDataDefinedPropertyMap( QgsVectorLayer* layer,
+    QMap < QgsPalLayerSettings::DataDefinedProperties, QString > & propertyMap )
 {
   if ( !layer )
   {
     return;
   }
-  for ( int i = 0; i < QgsPalLayerSettings::PropertyCount; ++i )
+
+  for ( int i = 0; i < mDataDefinedNames.size() ; ++i )
   {
-    QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
+    readDataDefinedProperty( layer, ( QgsPalLayerSettings::DataDefinedProperties )i, propertyMap );
+  }
+}
+
+void QgsPalLayerSettings::writeDataDefinedPropertyMap( QgsVectorLayer* layer,
+    const QMap < QgsPalLayerSettings::DataDefinedProperties, QString > & propertyMap )
+{
+  if ( !layer )
+  {
+    return;
+  }
+  for ( int i = 0; i < mDataDefinedNames.size() ; ++i )
+  {
+    QString newPropertyName = "labeling/dataDefined/" + mDataDefinedNames.at( i );
+    QString oldPropertyName = "labeling/dataDefinedProperty" + QString::number( i );
+
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
     if ( it == propertyMap.constEnd() )
     {
@@ -364,55 +407,76 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
     {
       propertyValue = *it;
     }
-    layer->setCustomProperty( "labeling/dataDefinedProperty" + QString::number( i ), propertyValue );
-  }
-}
+    layer->setCustomProperty( newPropertyName, propertyValue );
 
-static void _readDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::DataDefinedProperties p,
-                                      QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
-{
-  QVariant propertyField = layer->customProperty( "labeling/dataDefinedProperty" + QString::number( p ) );
-  bool conversionOk;
-  int fieldIndex;
-
-  if ( propertyField.isValid() )
-  {
-    fieldIndex = propertyField.toInt( &conversionOk );
-    if ( conversionOk )
+    if ( layer->customProperty( newPropertyName ).isValid() )
     {
-      propertyMap.insert( p, fieldIndex );
+      // remove old-style field index-based property, if still present
+      layer->removeCustomProperty( oldPropertyName );
     }
   }
 }
 
-static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
+void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
+    QgsPalLayerSettings::DataDefinedProperties p,
+    QMap < QgsPalLayerSettings::DataDefinedProperties, QString > & propertyMap )
 {
-  if ( !layer )
-  {
-    return;
-  }
+  QString newPropertyName = "labeling/dataDefined/" + mDataDefinedNames.at( p );
+  QString oldPropertyName = "labeling/dataDefinedProperty" + QString::number( p );
 
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Size, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Color, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Bold, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Italic, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Underline, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Strikeout, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Family, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferSize, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferColor, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::PositionX, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::PositionY, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Hali, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Vali, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::LabelDistance, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Rotation, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::Show, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::MinScale, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::MaxScale, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::FontTransp, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferTransp, propertyMap );
-  _readDataDefinedProperty( layer, QgsPalLayerSettings::AlwaysShow, propertyMap );
+  QVariant newPropertyField = layer->customProperty( newPropertyName );
+  QVariant oldPropertyField = layer->customProperty( oldPropertyName );
+
+  // Fix to migrate from old-style vector api, where returned QMap keys possibly
+  //   had 'holes' in sequence of field indecies, e.g. 0,2,3
+  // QgsAttrPalIndexNameHash provides a means of access field name in sequences from
+  //   providers that procuded holes (e.g. PostGIS skipped geom column), otherwise it is empty
+  QgsAttrPalIndexNameHash oldIndeciesToNames = layer->dataProvider()->palAttributeIndexNames();
+
+  QString name;
+  if ( newPropertyField.isValid() )
+  {
+    name = newPropertyField.toString();
+    if ( !name.isEmpty() )
+    {
+      propertyMap.insert( p, name );
+    }
+  }
+  else if ( oldPropertyField.isValid() )
+  {
+    // switch from old-style field index- to name-based properties
+    bool conversionOk;
+    int indx = oldPropertyField.toInt( &conversionOk );
+
+    if ( conversionOk )
+    {
+      if ( !oldIndeciesToNames.isEmpty() )
+      {
+        name = oldIndeciesToNames.value( indx );
+      }
+      else
+      {
+        QgsFields fields = layer->dataProvider()->fields();
+        if ( indx < fields.size() ) // in case field count has changed
+        {
+          name = fields.at( indx ).name();
+        }
+      }
+    }
+
+    QVariant upgradeValue = QVariant();
+    if ( !name.isEmpty() )
+    {
+      propertyMap.insert( p, name );
+      upgradeValue = QVariant( name );
+    }
+
+    //upgrade property to field name-based
+    layer->setCustomProperty( newPropertyName, upgradeValue );
+
+    // remove old-style field index-based property
+    layer->removeCustomProperty( oldPropertyName );
+  }
 }
 
 void QgsPalLayerSettings::updateFontViaStyle( const QString & fontstyle )
@@ -500,7 +564,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   multilineHeight = layer->customProperty( "labeling/multilineHeight", QVariant( 1.0 ) ).toDouble();
   multilineAlign = ( MultiLineAlign ) layer->customProperty( "labeling/multilineAlign", QVariant( MultiLeft ) ).toUInt();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
-  _readDataDefinedPropertyMap( layer, dataDefinedProperties );
+  readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
 void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
@@ -572,12 +636,12 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/multilineHeight", multilineHeight );
   layer->setCustomProperty( "labeling/multilineAlign", ( unsigned int )multilineAlign );
   layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
-  _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
+  writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
-void QgsPalLayerSettings::setDataDefinedProperty( DataDefinedProperties p, int attributeIndex )
+void QgsPalLayerSettings::setDataDefinedProperty( DataDefinedProperties p, QString attributeName )
 {
-  dataDefinedProperties.insert( p, attributeIndex );
+  dataDefinedProperties.insert( p, attributeName );
 }
 
 void QgsPalLayerSettings::removeDataDefinedProperty( DataDefinedProperties p )
@@ -678,7 +742,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
   // data defined show label? defaults to show label if not 0
-  QMap< DataDefinedProperties, int >::const_iterator showIt = dataDefinedProperties.find( QgsPalLayerSettings::Show );
+  QMap< DataDefinedProperties, QString >::const_iterator showIt = dataDefinedProperties.find( QgsPalLayerSettings::Show );
   if ( showIt != dataDefinedProperties.constEnd() )
   {
     QVariant showValue = f.attribute( *showIt );
@@ -694,7 +758,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   // data defined min scale?
-  QMap< DataDefinedProperties, int >::const_iterator minScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MinScale );
+  QMap< DataDefinedProperties, QString >::const_iterator minScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MinScale );
   if ( minScaleIt != dataDefinedProperties.constEnd() )
   {
     QVariant minScaleValue = f.attribute( *minScaleIt );
@@ -710,7 +774,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   // data defined max scale?
-  QMap< DataDefinedProperties, int >::const_iterator maxScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MaxScale );
+  QMap< DataDefinedProperties, QString >::const_iterator maxScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MaxScale );
   if ( maxScaleIt != dataDefinedProperties.constEnd() )
   {
     QVariant maxScaleValue = f.attribute( *maxScaleIt );
@@ -728,11 +792,11 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   QFont labelFont = textFont;
 
   //data defined label size?
-  QMap< DataDefinedProperties, int >::const_iterator it = dataDefinedProperties.find( QgsPalLayerSettings::Size );
+  QMap< DataDefinedProperties, QString >::const_iterator it = dataDefinedProperties.find( QgsPalLayerSettings::Size );
   if ( it != dataDefinedProperties.constEnd() )
   {
     //find out size
-    QVariant size = f.attributes()[*it];
+    QVariant size = f.attribute( *it );
     if ( size.isValid() )
     {
       double sizeDouble = size.toDouble();
@@ -920,17 +984,17 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   //data defined rotation?
-  QMap< DataDefinedProperties, int >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
+  QMap< DataDefinedProperties, QString >::const_iterator rotIt = dataDefinedProperties.find( QgsPalLayerSettings::Rotation );
   if ( rotIt != dataDefinedProperties.constEnd() )
   {
     dataDefinedRotation = true;
     angle = f.attribute( *rotIt ).toDouble() * M_PI / 180.0;
   }
 
-  QMap< DataDefinedProperties, int >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );
+  QMap< DataDefinedProperties, QString >::const_iterator dPosXIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionX );
   if ( dPosXIt != dataDefinedProperties.constEnd() )
   {
-    QMap< DataDefinedProperties, int >::const_iterator dPosYIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionY );
+    QMap< DataDefinedProperties, QString >::const_iterator dPosYIt = dataDefinedProperties.find( QgsPalLayerSettings::PositionY );
     if ( dPosYIt != dataDefinedProperties.constEnd() )
     {
       //data defined position. But field values could be NULL -> positions will be generated by PAL
@@ -952,7 +1016,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         double ydiff = 0.0;
 
         //horizontal alignment
-        QMap< DataDefinedProperties, int >::const_iterator haliIt = dataDefinedProperties.find( QgsPalLayerSettings::Hali );
+        QMap< DataDefinedProperties, QString >::const_iterator haliIt = dataDefinedProperties.find( QgsPalLayerSettings::Hali );
         if ( haliIt != dataDefinedProperties.constEnd() )
         {
           QString haliString = f.attribute( *haliIt ).toString();
@@ -967,7 +1031,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         }
 
         //vertical alignment
-        QMap< DataDefinedProperties, int >::const_iterator valiIt = dataDefinedProperties.find( QgsPalLayerSettings::Vali );
+        QMap< DataDefinedProperties, QString >::const_iterator valiIt = dataDefinedProperties.find( QgsPalLayerSettings::Vali );
         if ( valiIt != dataDefinedProperties.constEnd() )
         {
           QString valiString = f.attribute( *valiIt ).toString();
@@ -1026,10 +1090,10 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   // data defined always show?
   bool alwaysShow = false;
-  QMap< DataDefinedProperties, int >::const_iterator dAlwShowIt = dataDefinedProperties.find( QgsPalLayerSettings::AlwaysShow );
+  QMap< DataDefinedProperties, QString >::const_iterator dAlwShowIt = dataDefinedProperties.find( QgsPalLayerSettings::AlwaysShow );
   if ( dAlwShowIt != dataDefinedProperties.constEnd() )
   {
-    QVariant alwShow = f.attributes()[*dAlwShowIt];
+    QVariant alwShow = f.attribute( *dAlwShowIt );
     if ( alwShow.isValid() )
     {
       alwaysShow = alwShow.toBool();
@@ -1072,7 +1136,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   //data defined label-feature distance?
   double distance = dist;
-  QMap< DataDefinedProperties, int >::const_iterator dDistIt = dataDefinedProperties.find( QgsPalLayerSettings::LabelDistance );
+  QMap< DataDefinedProperties, QString >::const_iterator dDistIt = dataDefinedProperties.find( QgsPalLayerSettings::LabelDistance );
   if ( dDistIt != dataDefinedProperties.constEnd() )
   {
     distance = f.attribute( *dDistIt ).toDouble();
@@ -1092,7 +1156,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   //add parameters for data defined labeling to QgsPalGeometry
-  QMap< DataDefinedProperties, int >::const_iterator dIt = dataDefinedProperties.constBegin();
+  QMap< DataDefinedProperties, QString >::const_iterator dIt = dataDefinedProperties.constBegin();
   for ( ; dIt != dataDefinedProperties.constEnd(); ++dIt )
   {
     lbl->addDataDefinedValue( dIt.key(), f.attribute( dIt.value() ) );
@@ -1200,10 +1264,10 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   }
 
   //add indices of data defined fields
-  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator dIt = lyrTmp.dataDefinedProperties.constBegin();
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator dIt = lyrTmp.dataDefinedProperties.constBegin();
   for ( ; dIt != lyrTmp.dataDefinedProperties.constEnd(); ++dIt )
   {
-    attrIndices.insert( dIt.value() );
+    attrIndices.insert( layer->fieldNameIndex( dIt.value() ) );
   }
 
   // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, QgsPalLayerSettings>
