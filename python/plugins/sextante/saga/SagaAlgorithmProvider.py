@@ -97,6 +97,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]
+    
+    def getSupportedOutputTableLayerExtensions(self):
+        return ["dbf"]
+
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")

@@ -192,6 +192,12 @@ class ParametersPanel(QtGui.QWidget):
                 if button is not sender:
                     button.setChecked(False)
 
+    def getExtendedLayerName(self, layer):
+        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF):
+            return layer.name() + " [" + layer.crs().description() +"]"
+        else:
+            return layer.name()
+    
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             layers = QGisLayers.getRasterLayers()
@@ -199,16 +205,16 @@ class ParametersPanel(QtGui.QWidget):
             if (param.optional):
                 items.append((self.NOT_SELECTED, None))
             for layer in layers:
-                items.append((layer.name(), layer))
+                items.append((self.getExtendedLayerName(layer), layer))
             item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterVector):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
                 layers = QGisLayers.getVectorLayers(param.shapetype)
                 if (param.optional):
-                    item.addItem(self.NOT_SELECTED, None)
+                    item.addItem((self.NOT_SELECTED, None))
                 for layer in layers:
-                    item.addItem(layer.name(), layer)
+                    item.addItem((self.getExtendedLayerName(layer), layer))
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
@@ -217,16 +223,16 @@ class ParametersPanel(QtGui.QWidget):
                 if (param.optional):
                     items.append((self.NOT_SELECTED, None))
                 for layer in layers:
-                    items.append((layer.name(), layer))
+                    items.append((self.getExtendedLayerName(layer), layer))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
                 item = QtGui.QComboBox()
                 layers = QGisLayers.getTables()
                 if (param.optional):
-                    item.addItem(self.NOT_SELECTED, None)
+                    item.addItem((self.NOT_SELECTED, None))
                 for layer in layers:
-                    item.addItem(layer.name(), layer)
+                    item.addItem((layer.name(), layer))
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
@@ -279,7 +285,7 @@ class ParametersPanel(QtGui.QWidget):
                 options = QGisLayers.getVectorLayers(param.datatype)
             opts = []
             for opt in options:
-                opts.append(opt.name())
+                opts.append(self.getExtendedLayerName(opt))
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)

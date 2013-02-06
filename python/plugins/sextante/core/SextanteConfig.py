@@ -45,6 +45,8 @@ class SextanteConfig():
     RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
     PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
     POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"  
+    SHOW_CRS_DEF = "SHOW_CRS_DEF"
+    WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
 
     settings = {}
     settingIcons= {}
@@ -61,8 +63,9 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_CATEGORIES, "Use categories to classify algorithms, instead of providers", False))
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
-                                           "Output folder", SextanteUtils.tempFolder()))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER, "Output folder", SextanteUtils.tempFolder()))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_CRS_DEF, "Show layer CRS definition in selection boxes", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.WARN_UNMATCHING_CRS, "Warn before executing if layer CRS's do not match", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RASTER_STYLE,"Style for raster layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))

@@ -272,6 +272,24 @@ class GeoAlgorithm:
                                 return
         qgis = QGisLayers.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
+        
+    def checkInputCRS(self):
+        '''it checks that all input layers use the same CRS. If so, returns True. False otherwise'''            
+        crs = None;
+        layers = QGisLayers.getAllLayers()
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
+                if param.value:
+                    inputlayers = param.value.split(";")
+                    for inputlayer in inputlayers:
+                        for layer in layers:                            
+                            if layer.source() == inputlayer:
+                                if crs is None:
+                                    crs = layer.crs()
+                                else:
+                                    if crs != layer.crs():
+                                        return False        
+        return True
 
     def addOutput(self, output):
         #TODO: check that name does not exist

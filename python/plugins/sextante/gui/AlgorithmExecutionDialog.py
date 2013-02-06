@@ -47,7 +47,6 @@ from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.parameters.ParameterExtent import ParameterExtent
-from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
@@ -202,10 +201,19 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def accept(self):
+        checkCRS = SextanteConfig.getSetting(SextanteConfig.WARN_UNMATCHING_CRS)
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         useThread = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
         try:
             self.setParamValues()
+            if checkCRS and not self.alg.checkInputCRS():
+                reply = QMessageBox.question(self, "Unmatching CRS's",
+                        "Layers do not all use the same CRS.\n" +
+                        "This can cause unexpected results.\n" +
+                        "Do you want to continue?", 
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                if reply == QtGui.QMessageBox.No:
+                    return                            
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
                 if keepOpen or useThread:
