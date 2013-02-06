@@ -47,6 +47,10 @@ class TestQgsAtlasComposition: public QObject
     void fixedscale_render();
     // test rendering with a hidden coverage
     void hiding_render();
+    // test rendering with feature sorting
+    void sorting_render();
+    // test rendering with feature filtering
+    void filtering_render();
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mLabel1;
@@ -218,6 +222,58 @@ void TestQgsAtlasComposition::hiding_render()
                                    QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
                                    "expected_composermapatlas" + QDir::separator() +
                                    QString( "hiding_%1.png" ).arg(( int )fit ) );
+    QVERIFY( checker.testComposition( 0 ) );
+  }
+  mAtlas->endRender();
+}
+
+void TestQgsAtlasComposition::sorting_render()
+{
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlas->setFixedScale( true );
+  mAtlas->setHideCoverage( false );
+
+  mAtlas->setSortFeatures( true );
+  mAtlas->setSortKeyAttributeIndex( 4 ); // departement name
+  mAtlas->setSortAscending( false );
+
+  mAtlas->beginRender();
+
+  for ( size_t fit = 0; fit < 2; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( "Atlas sorting test", mComposition,
+                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+                                   "expected_composermapatlas" + QDir::separator() +
+                                   QString( "sorting_%1.png" ).arg(( int )fit ) );
+    QVERIFY( checker.testComposition( 0 ) );
+  }
+  mAtlas->endRender();
+}
+
+void TestQgsAtlasComposition::filtering_render()
+{
+  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+  mAtlas->setFixedScale( true );
+  mAtlas->setHideCoverage( false );
+
+  mAtlas->setSortFeatures( false );
+
+  mAtlas->setFeatureFilter( "substr(NAME_1,1,1)='P'" ); // select only 'Pays de la Loire'
+
+  mAtlas->beginRender();
+
+  for ( size_t fit = 0; fit < 1; ++fit )
+  {
+    mAtlas->prepareForFeature( fit );
+    mLabel1->adjustSizeToText();
+
+    QgsCompositionChecker checker( "Atlas filtering test", mComposition,
+                                   QString( TEST_DATA_DIR ) + QDir::separator() + "control_images" + QDir::separator() +
+                                   "expected_composermapatlas" + QDir::separator() +
+                                   QString( "filtering_%1.png" ).arg(( int )fit ) );
     QVERIFY( checker.testComposition( 0 ) );
   }
   mAtlas->endRender();
