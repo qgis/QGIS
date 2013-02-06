@@ -21,12 +21,10 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterString import ParameterString
-from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterVector import ParameterVector
-from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.mmqgisx.mmqgisx_library import *
+from sextante.core.QGisLayers import QGisLayers
 
 
 class mmqgisx_delete_columns_algorithm(GeoAlgorithm):

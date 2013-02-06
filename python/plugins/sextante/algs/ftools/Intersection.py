@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -46,25 +47,9 @@ class Intersection(GeoAlgorithm):
     def processAlgorithm(self, progress):
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
-        GEOS_EXCEPT = True
-        FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()       
-        vproviderB = vlayerB.dataProvider()        
         
-        # check for crs compatibility
-        crsA = vproviderA.crs()
-        crsB = vproviderB.crs()
-        if not crsA.isValid() or not crsB.isValid():
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Intersection. Invalid CRS. Results might be unexpected")
-        else:
-            if not crsA != crsB:
-                SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Intersection. Non-matching CRSs. Results might be unexpected")
         fields = utils.combineVectorFields(vlayerA, vlayerB)
-        #=======================================================================
-        # longNames = ftools_utils.checkFieldNameLength( fields )
-        # if not longNames.isEmpty():
-        #    raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
-        #=======================================================================
         writer = self.getOutputFromName(Intersection.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
@@ -92,20 +77,19 @@ class Intersection(GeoAlgorithm):
                             int_geom = QgsGeometry( int_com.difference( int_sym ) )
                     try:
                         outFeat.setGeometry( int_geom )
-                        outFeat.setAttributes( atMapA.extend( atMapB ) )
+                        attrs = []
+                        attrs.extend(atMapA)
+                        attrs.extend(atMapB)                        
+                        outFeat.setAttributes(attrs)
                         writer.addFeature( outFeat )
                     except:
-                        FEATURE_EXCEPT = False
-                        continue
+                        raise GeoAlgorithmExecutionException("Feature exception while computing intersection")                    
                 except:
-                    GEOS_EXCEPT = False
-                    break
+                    raise GeoAlgorithmExecutionException("Geometry exception while computing intersection")
+                    
 
         del writer
-        if not GEOS_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")
-        if not FEATURE_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing intersection")
+        
 
     def defineCharacteristics(self):
         self.name = "Intersection"

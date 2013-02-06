@@ -110,10 +110,11 @@ def getUniqueValuesCount(layer, fieldIndex):
 
 # From two input field maps, create single field map
 def combineVectorFields( layerA, layerB ):
-    fieldsA = layerA.fields()
-    fieldsB = layerB.fields()
+    fieldsA = layerA.dataProvider().fields()
+    fieldsB = layerB.dataProvider().fields()
     fieldsB = testForUniqueness( fieldsA, fieldsB )
-    fieldsA.extend( fieldsB )
+    for field in fieldsB:
+        fieldsA.append(field)    
     return fieldsA
 
 # Check if two input field maps are unique, and resolve name issues if they aren't

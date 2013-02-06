@@ -81,7 +81,7 @@ class SelectByLocation(GeoAlgorithm):
             geom = QgsGeometry(feat.geometry())
             intersects = index.intersects(geom.boundingBox())
             for i in intersects:
-                inputProvider.featureAtId(i, infeat, True)
+                inputLayer.featureAtId(i, infeat, True)
                 tmpGeom = QgsGeometry( infeat.geometry() )
                 if geom.intersects(tmpGeom):
                     selectedSet.append(infeat.id())
