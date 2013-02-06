@@ -46,6 +46,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
     , mFrame( false )
+    , mBackground( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -61,6 +62,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mHAlignSnapItem( 0 )
     , mVAlignSnapItem( 0 )
     , mFrame( false )
+    , mBackground( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -128,6 +130,16 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   else
   {
     composerItemElem.setAttribute( "frame", "false" );
+  }
+
+  //frame
+  if ( mBackground )
+  {
+    composerItemElem.setAttribute( "background", "true" );
+  }
+  else
+  {
+    composerItemElem.setAttribute( "background", "false" );
   }
 
   //scene rect
@@ -198,6 +210,17 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   else
   {
     mFrame = false;
+  }
+
+  //frame
+  QString background = itemElem.attribute( "background" );
+  if ( background.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    mBackground = true;
+  }
+  else
+  {
+    mBackground = false;
   }
 
   //position lock for mouse moves/resizes
@@ -799,9 +822,9 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
 void QgsComposerItem::drawBackground( QPainter* p )
 {
-  if ( p )
+  if ( mBackground && p )
   {
-    p->setBrush( brush() );
+    p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
