@@ -23,8 +23,8 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgsgml.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgswfsdata.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
 #include "qgsspatialindex.h"
@@ -754,7 +754,11 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
     thematicAttributes.insert( mFields.at( i ).name(), qMakePair( i, mFields.at( i ) ) );
   }
 
-  QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
+  QString typeName = parameterFromUrl( "typename" );
+  //QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
+  QgsGml dataReader( typeName, geometryAttribute, mFields );
+  //dataReader.setFeatureType( typeName, geometryAttribute, mFields );
+
   QObject::connect( &dataReader, SIGNAL( dataProgressAndSteps( int , int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
   //also connect to statusChanged signal of qgisapp (if it exists)
@@ -775,11 +779,14 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
     QObject::connect( this, SIGNAL( dataReadProgressMessage( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
   }
 
-  if ( dataReader.getWFSData() != 0 )
+  //if ( dataReader.getWFSData() != 0 )
+  if ( dataReader.getFeatures( uri, &mWKBType, &mExtent ) != 0 )
   {
     QgsDebugMsg( "getWFSData returned with error" );
     return 1;
   }
+  mFeatures = dataReader.featuresMap();
+  mIdMap = dataReader.idsMap();
 
   QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
   QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
@@ -792,7 +799,6 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
       mSpatialIndex->insertFeature( *( it.value() ) );
     }
   }
-
   mFeatureCount = mFeatures.size();
 
   return 0;

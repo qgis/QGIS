@@ -87,6 +87,7 @@ class QgsTileScaleWidget;
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
@@ -522,6 +523,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer * destinationLayer = 0 );
+
+    //! copies features to internal clipboard
+    void copyFeatures( QgsFeatureStore & featureStore );
+
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 

@@ -41,10 +41,11 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     enum IdentifyFormat
     {
-      IdentifyFormatValue,
-      IdentifyFormatText,
-      IdentifyFormatHtml,
-      IdentifyFormatFeature
+      IdentifyFormatUndefined = 0,
+      IdentifyFormatValue = 1,
+      IdentifyFormatText  = 2,
+      IdentifyFormatHtml  = 4,
+      IdentifyFormatFeature = 8
     };
 
     // Progress types

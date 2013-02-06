@@ -22,6 +22,9 @@
 #include "qgsattributeaction.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
+#include "qgsfield.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QWidget>
 #include <QList>
@@ -37,10 +40,53 @@ class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
+class QgsWebView;
 
 /**
  *@author Gary E.Sherman
  */
+
+class QgsWebView : public QWebView
+{
+    Q_OBJECT;
+  public:
+    QgsWebView( QWidget *parent = 0 );
+    QSize sizeHint() const;
+  public slots:
+    void print( void );
+  protected:
+    void contextMenuEvent( QContextMenuEvent* );
+};
+
+class QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
+{
+  public:
+    QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList & strings = QStringList() );
+    QgsFields fields() const { return mFields; }
+    QgsFeature feature() const { return mFeature; }
+    QgsCoordinateReferenceSystem crs() { return mCrs; }
+
+  private:
+    QgsFields mFields;
+    QgsFeature mFeature;
+    QgsCoordinateReferenceSystem mCrs;
+};
+
+class QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
+{
+    Q_OBJECT
+
+  public:
+    QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget = 0 );
+    QgsWebView *webView() { return mWebView; }
+    void setHtml( const QString &html );
+
+  public slots:
+    void loadFinished( bool ok );
+
+  private:
+    QgsWebView *mWebView;
+};
 
 class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
 {
@@ -60,9 +106,12 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
                      const QMap< QString, QString > &derivedAttributes );
 
     /** Add add feature from other layer */
-    void addFeature( QgsRasterLayer *layer, QString label,
+    void addFeature( QgsRasterLayer *layer,
+                     QString label,
                      const QMap< QString, QString > &attributes,
-                     const QMap< QString, QString > &derivedAttributes );
+                     const QMap< QString, QString > &derivedAttributes,
+                     const QgsFields &fields = QgsFields(),
+                     const QgsFeature &feature = QgsFeature() );
 
     /** map tool was deactivated */
     void deactivate();
@@ -74,6 +123,11 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
 
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
+
+    // Emited when raster identify format of a layer changed
+    void formatChanged( QgsRasterLayer *layer );
+
+    void copyToClipboard( QgsFeatureStore& featureStore );
 
   public slots:
     /** Remove results */
@@ -106,7 +160,6 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
 
     //! sends signal if current feature id has changed
     void handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
-
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
@@ -119,16 +172,22 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
     void on_mExpandToolButton_clicked( bool checked ) { Q_UNUSED( checked ); expandAll(); }
     void on_mCollapseToolButton_clicked( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
 
+    void on_mCopyToolButton_clicked( bool checked );
+
+    void formatChanged( int index );
+
     void openUrl( const QUrl &url );
     void printCurrentItem();
 
   private:
+
     QMenu *mActionPopup;
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
 
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
+    QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
@@ -147,17 +206,5 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
 
     QDockWidget *mDock;
 };
-
-class QgsWebView : public QWebView
-{
-    Q_OBJECT;
-  public:
-    QgsWebView( QWidget *parent = 0 );
-  public slots:
-    void print( void );
-  protected:
-    void contextMenuEvent( QContextMenuEvent* );
-};
-
 
 #endif

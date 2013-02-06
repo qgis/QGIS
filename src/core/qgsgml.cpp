@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgswfsdata.cpp
+     qgsgml.cpp
      --------------------------------------
     Date                 : Sun Sep 16 12:19:51 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsdata.h"
+#include "qgsgml.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -27,60 +27,44 @@
 #include <QSettings>
 #include <QUrl>
 
+#include <limits>
+
 const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsWFSData::QgsWFSData(
-  const QString& uri,
-  QgsRectangle* extent,
-  QMap<QgsFeatureId, QgsFeature*> &features,
-  QMap<QgsFeatureId, QString > &idMap,
+QgsGml::QgsGml(
+  const QString& typeName,
   const QString& geometryAttribute,
-  const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
-  QGis::WkbType* wkbType )
+  const QgsFields & fields )
     : QObject(),
-    mUri( uri ),
-    mExtent( extent ),
-    mFeatures( features ),
-    mIdMap( idMap ),
+    mTypeName( typeName ),
     mGeometryAttribute( geometryAttribute ),
-    mThematicAttributes( thematicAttributes ),
-    mWkbType( wkbType ),
     mFinished( false ),
     mFeatureCount( 0 )
 {
-  //find out mTypeName from uri
-  QStringList arguments = uri.split( "&" );
-  QStringList::const_iterator it;
-  for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it )
+  mThematicAttributes.clear();
+  for ( int i = 0; i < fields.size(); i++ )
   {
-    if ( it->startsWith( "TYPENAME", Qt::CaseInsensitive ) )
-    {
-      mTypeName = it->section( "=", 1, 1 );
-      //and strip away namespace prefix
-      QStringList splitList = mTypeName.split( ":" );
-      if ( splitList.size() > 1 )
-      {
-        mTypeName = splitList.at( 1 );
-      }
-      QgsDebugMsg( QString( "mTypeName is: %1" ).arg( mTypeName ) );
-    }
+    mThematicAttributes.insert( fields[i].name(), qMakePair( i, fields[i] ) );
   }
 
   mEndian = QgsApplication::endian();
 }
 
-QgsWFSData::~QgsWFSData()
+QgsGml::~QgsGml()
 {
-
 }
 
-int QgsWFSData::getWFSData()
+int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent )
 {
+  mUri = uri;
+  mWkbType = wkbType;
+  mExtent = extent;
+
   XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
   XML_SetUserData( p, this );
-  XML_SetElementHandler( p, QgsWFSData::start, QgsWFSData::end );
-  XML_SetCharacterDataHandler( p, QgsWFSData::chars );
+  XML_SetElementHandler( p, QgsGml::start, QgsGml::end );
+  XML_SetCharacterDataHandler( p, QgsGml::chars );
 
   //start with empty extent
   if ( mExtent )
@@ -88,7 +72,6 @@ int QgsWFSData::getWFSData()
     mExtent->set( 0, 0, 0, 0 );
   }
 
-  //QUrl requestUrl( mUri );
   QNetworkRequest request( mUri );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
@@ -140,12 +123,30 @@ int QgsWFSData::getWFSData()
   return 0;
 }
 
-void QgsWFSData::setFinished( )
+int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent )
+{
+  QgsDebugMsg( "Entered" );
+  mWkbType = wkbType;
+  mExtent = extent;
+  if ( mExtent )
+  {
+    mExtent->set( 0, 0, 0, 0 );
+  }
+  XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
+  XML_SetUserData( p, this );
+  XML_SetElementHandler( p, QgsGml::start, QgsGml::end );
+  XML_SetCharacterDataHandler( p, QgsGml::chars );
+  int atEnd = 1;
+  XML_Parse( p, data.constData(), data.size(), atEnd );
+  return 0;
+}
+
+void QgsGml::setFinished( )
 {
   mFinished = true;
 }
 
-void QgsWFSData::handleProgressEvent( qint64 progress, qint64 totalSteps )
+void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 {
   emit dataReadProgress( progress );
   if ( totalSteps < 0 )
@@ -156,13 +157,15 @@ void QgsWFSData::handleProgressEvent( qint64 progress, qint64 totalSteps )
   emit dataProgressAndSteps( progress, totalSteps );
 }
 
-void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
+void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
 {
   QString elementName( el );
-  QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
+  QStringList splitName =  elementName.split( NS_SEPARATOR );
+  QString localName = splitName.last();
+  QString ns = splitName.size() > 1 ? splitName.first() : "";
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
   {
-    mParseModeStack.push( QgsWFSData::coordinate );
+    mParseModeStack.push( QgsGml::coordinate );
     mStringCash.clear();
     mCoordinateSeparator = readAttribute( "cs", attr );
     if ( mCoordinateSeparator.isEmpty() )
@@ -177,24 +180,24 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( localName == mGeometryAttribute )
   {
-    mParseModeStack.push( QgsWFSData::geometry );
+    mParseModeStack.push( QgsGml::geometry );
   }
   else if ( mParseModeStack.size() == 0 && elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
   {
-    mParseModeStack.push( QgsWFSData::boundingBox );
+    mParseModeStack.push( QgsGml::boundingBox );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
+  {
+  }
+  else if ( localName == mTypeName )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
     QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
     mCurrentFeature->setAttributes( attributes );
-    mParseModeStack.push( QgsWFSData::featureMember );
-  }
-  else if ( localName == mTypeName )
-  {
+    mParseModeStack.push( QgsGml::feature );
     mCurrentFeatureId = readAttribute( "fid", attr );
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsWFSData::boundingBox )
+  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsGml::boundingBox )
   {
     //read attribute srsName="EPSG:26910"
     int epsgNr;
@@ -212,7 +215,7 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint" )
   {
-    mParseModeStack.push( QgsWFSData::multiPoint );
+    mParseModeStack.push( QgsGml::multiPoint );
     //we need one nested list for intermediate WKB
     std::list<unsigned char*> wkbList;
     std::list<int> wkbSizeList;
@@ -221,7 +224,7 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString" )
   {
-    mParseModeStack.push( QgsWFSData::multiLine );
+    mParseModeStack.push( QgsGml::multiLine );
     //we need one nested list for intermediate WKB
     std::list<unsigned char*> wkbList;
     std::list<int> wkbSizeList;
@@ -230,21 +233,23 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon" )
   {
-    mParseModeStack.push( QgsWFSData::multiPolygon );
+    mParseModeStack.push( QgsGml::multiPolygon );
   }
 
-  else if ( mParseModeStack.size() == 1 && mParseModeStack.top() == QgsWFSData::featureMember && mThematicAttributes.find( localName ) != mThematicAttributes.end() )
+  else if ( mParseModeStack.size() == 1 && mParseModeStack.top() == QgsGml::feature && mThematicAttributes.find( localName ) != mThematicAttributes.end() )
   {
-    mParseModeStack.push( QgsWFSData::attribute );
+    mParseModeStack.push( QgsGml::attribute );
     mAttributeName = localName;
     mStringCash.clear();
   }
 }
 
-void QgsWFSData::endElement( const XML_Char* el )
+void QgsGml::endElement( const XML_Char* el )
 {
   QString elementName( el );
-  QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
+  QStringList splitName =  elementName.split( NS_SEPARATOR );
+  QString localName = splitName.last();
+  QString ns = splitName.size() > 1 ? splitName.first() : "";
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
   {
     if ( !mParseModeStack.empty() )
@@ -279,7 +284,6 @@ void QgsWFSData::endElement( const XML_Char* el )
           var = QVariant( mStringCash );
           break;
       }
-
       mCurrentFeature->setAttribute( att_it.value().first, QVariant( mStringCash ) );
     }
   }
@@ -290,7 +294,7 @@ void QgsWFSData::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" && mParseModeStack.top() == QgsWFSData::boundingBox )
+  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" && mParseModeStack.top() == QgsGml::boundingBox )
   {
     //create bounding box from mStringCash
     if ( createBBoxFromCoordinateString( mExtent, mStringCash ) != 0 )
@@ -303,12 +307,14 @@ void QgsWFSData::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
+  //else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
+  else if ( localName == mTypeName )
   {
-
     if ( mCurrentWKBSize > 0 )
     {
       mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+      // TODO: what QgsFfeature.isValid() really means? Feature could be valid even without geometry?
+      mCurrentFeature->setValid( true );
     }
     mFeatures.insert( mCurrentFeature->id(), mCurrentFeature );
     if ( !mCurrentFeatureId.isEmpty() )
@@ -326,7 +332,7 @@ void QgsWFSData::endElement( const XML_Char* el )
       //error
     }
 
-    if ( mParseModeStack.top() != QgsWFSData::multiPoint )
+    if ( mParseModeStack.top() != QgsGml::multiPoint )
     {
       //directly add WKB point to the feature
       if ( getPointWKB( &mCurrentWKB, &mCurrentWKBSize, *( pointList.begin() ) ) != 0 )
@@ -366,7 +372,7 @@ void QgsWFSData::endElement( const XML_Char* el )
     {
       //error
     }
-    if ( mParseModeStack.top() != QgsWFSData::multiLine )
+    if ( mParseModeStack.top() != QgsGml::multiLine )
     {
       if ( getLineWKB( &mCurrentWKB, &mCurrentWKBSize, pointList ) != 0 )
       {
@@ -418,7 +424,7 @@ void QgsWFSData::endElement( const XML_Char* el )
     {
       *mWkbType = QGis::WKBPolygon;
     }
-    if ( mParseModeStack.top() != QgsWFSData::multiPolygon )
+    if ( mParseModeStack.top() != QgsGml::multiPolygon )
     {
       createPolygonFromFragments();
     }
@@ -452,7 +458,7 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
 }
 
-void QgsWFSData::characters( const XML_Char* chars, int len )
+void QgsGml::characters( const XML_Char* chars, int len )
 {
   //save chars in mStringCash attribute mode or coordinate mode
   if ( mParseModeStack.size() == 0 )
@@ -460,15 +466,14 @@ void QgsWFSData::characters( const XML_Char* chars, int len )
     return;
   }
 
-  QgsWFSData::parseMode theParseMode = mParseModeStack.top();
-  if ( theParseMode == QgsWFSData::attribute || theParseMode == QgsWFSData::coordinate )
+  QgsGml::ParseMode theParseMode = mParseModeStack.top();
+  if ( theParseMode == QgsGml::attribute || theParseMode == QgsGml::coordinate )
   {
     mStringCash.append( QString::fromUtf8( chars, len ) );
   }
 }
 
-
-int QgsWFSData::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
+int QgsGml::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) const
 {
   int i = 0;
   while ( attr[i] != NULL )
@@ -499,7 +504,7 @@ int QgsWFSData::readEpsgFromAttribute( int& epsgNr, const XML_Char** attr ) cons
   return 2;
 }
 
-QString QgsWFSData::readAttribute( const QString& attributeName, const XML_Char** attr ) const
+QString QgsGml::readAttribute( const QString& attributeName, const XML_Char** attr ) const
 {
   int i = 0;
   while ( attr[i] != NULL )
@@ -513,7 +518,7 @@ QString QgsWFSData::readAttribute( const QString& attributeName, const XML_Char*
   return QString();
 }
 
-int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const
+int QgsGml::createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const
 {
   if ( !bb )
   {
@@ -537,7 +542,7 @@ int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString&
   return 0;
 }
 
-int QgsWFSData::pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const
+int QgsGml::pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const
 {
   //tuples are separated by space, x/y by ','
   QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
@@ -568,7 +573,7 @@ int QgsWFSData::pointsFromCoordinateString( std::list<QgsPoint>& points, const Q
   return 0;
 }
 
-int QgsWFSData::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& point ) const
+int QgsGml::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& point ) const
 {
   int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
   *size = wkbSize;
@@ -588,7 +593,7 @@ int QgsWFSData::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& poi
   return 0;
 }
 
-int QgsWFSData::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates ) const
+int QgsGml::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates ) const
 {
   int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
   *size = wkbSize;
@@ -619,7 +624,7 @@ int QgsWFSData::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsP
   return 0;
 }
 
-int QgsWFSData::getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates ) const
+int QgsGml::getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates ) const
 {
   int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
   *size = wkbSize;
@@ -643,7 +648,7 @@ int QgsWFSData::getRingWKB( unsigned char** wkb, int* size, const std::list<QgsP
   return 0;
 }
 
-int QgsWFSData::createMultiLineFromFragments()
+int QgsGml::createMultiLineFromFragments()
 {
   mCurrentWKBSize = 0;
   mCurrentWKBSize += 1 + 2 * sizeof( int );
@@ -677,7 +682,7 @@ int QgsWFSData::createMultiLineFromFragments()
   return 0;
 }
 
-int QgsWFSData::createMultiPointFromFragments()
+int QgsGml::createMultiPointFromFragments()
 {
   mCurrentWKBSize = 0;
   mCurrentWKBSize += 1 + 2 * sizeof( int );
@@ -712,7 +717,7 @@ int QgsWFSData::createMultiPointFromFragments()
 }
 
 
-int QgsWFSData::createPolygonFromFragments()
+int QgsGml::createPolygonFromFragments()
 {
   mCurrentWKBSize = 0;
   mCurrentWKBSize += 1 + 2 * sizeof( int );
@@ -744,7 +749,7 @@ int QgsWFSData::createPolygonFromFragments()
   return 0;
 }
 
-int QgsWFSData::createMultiPolygonFromFragments()
+int QgsGml::createMultiPolygonFromFragments()
 {
   mCurrentWKBSize = 0;
   mCurrentWKBSize += 1 + 2 * sizeof( int );
@@ -800,7 +805,7 @@ int QgsWFSData::createMultiPolygonFromFragments()
   return 0;
 }
 
-int QgsWFSData::totalWKBFragmentSize() const
+int QgsGml::totalWKBFragmentSize() const
 {
   int result = 0;
   for ( std::list<std::list<int> >::const_iterator it = mCurrentWKBFragmentSizes.begin(); it != mCurrentWKBFragmentSizes.end(); ++it )
@@ -813,7 +818,7 @@ int QgsWFSData::totalWKBFragmentSize() const
   return result;
 }
 
-QWidget* QgsWFSData::findMainWindow() const
+QWidget* QgsGml::findMainWindow() const
 {
   QWidget* mainWindow = 0;
 
@@ -830,7 +835,7 @@ QWidget* QgsWFSData::findMainWindow() const
   return mainWindow;
 }
 
-void QgsWFSData::calculateExtentFromFeatures() const
+void QgsGml::calculateExtentFromFeatures() const
 {
   if ( mFeatures.size() < 1 )
   {

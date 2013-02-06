@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
 #include "qgserror.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsrasterinterface.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
@@ -84,13 +86,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     enum IdentifyFormat
     {
-      IdentifyFormatValue = 0,
-      IdentifyFormatText  = 1,
-      IdentifyFormatHtml  = 1 << 1,
+      IdentifyFormatUndefined = 0,
+      IdentifyFormatValue = 1,
+      IdentifyFormatText  = 1 << 1,
+      IdentifyFormatHtml  = 1 << 2,
       // In future it should be possible to get from GetFeatureInfo (WMS) in GML
       // vector features. It is possible to use a user type with QVariant if
       // a class is declared with Q_DECLARE_METATYPE
-      IdentifyFormatFeature = 1 << 2
+      IdentifyFormatFeature = 1 << 3
     };
 
     // Progress types
@@ -334,8 +337,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @param theExtent context extent
      * @param theWidth context width
      * @param theHeight context height
-     * @return map of values for all bands, keys are band numbers (from 1), empty
-     *         if failed
+     * @return IdentifyFormatValue: map of values for each band, keys are band numbers
+     *         (from 1).
+     *         IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
+     *         (WMS) - TODO: it is not consistent with IdentifyFormatValue.
+     *         IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+     *         Empty if failed or there are no results (TODO: better error reporting).
      */
     virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
@@ -461,6 +468,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat )
     { Q_UNUSED( pyramidsFormat ); Q_UNUSED( theConfigOptions ); Q_UNUSED( fileFormat ); return QString(); }
+
+    static QString identifyFormatName( IdentifyFormat format );
+    static IdentifyFormat identifyFormatFromName( QString formatName );
+    static QString identifyFormatLabel( IdentifyFormat format );
+    static Capability identifyFormatToCapability( IdentifyFormat format );
 
   signals:
     /** Emit a signal to notify of the progress event.

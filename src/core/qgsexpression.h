@@ -358,7 +358,7 @@ class CORE_EXPORT QgsExpression
         static const int HOUR = 60 * 60;
         static const int MINUTE = 60;
       public:
-        Interval( double seconds = 0 ): mSeconds(seconds), mValid(true) { }
+        Interval( double seconds = 0 ): mSeconds( seconds ), mValid( true ) { }
         ~Interval();
         double years() { return mSeconds / YEARS;}
         double months() { return mSeconds / MONTHS; }
@@ -610,6 +610,5 @@ class CORE_EXPORT QgsExpression
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
-Q_DECLARE_METATYPE( QgsGeometry );
 
 #endif // QGSEXPRESSION_H

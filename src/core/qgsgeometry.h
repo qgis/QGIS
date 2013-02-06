@@ -624,4 +624,6 @@ class CORE_EXPORT QgsGeometry
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
 }; // class QgsGeometry
 
+Q_DECLARE_METATYPE( QgsGeometry );
+
 #endif

@@ -47,9 +47,6 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   if ( !src )
     return;
 
-  QSettings settings;
-  bool copyWKT = settings.value( "qgis/copyGeometryAsWKT", true ).toBool();
-
   // Replace the QGis clipboard.
   mFeatureFields = src->pendingFields();
   mFeatureClipboard = src->selectedFeatures();
@@ -57,7 +54,24 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
 
   QgsDebugMsg( "replaced QGis clipboard." );
 
+  setSystemClipboard();
+}
+
+void QgsClipboard::replaceWithCopyOf( QgsFeatureStore & featureStore )
+{
+  QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
+  mFeatureFields = featureStore.fields();
+  mFeatureClipboard = featureStore.features();
+  mCRS = featureStore.crs();
+  setSystemClipboard();
+}
+
+void QgsClipboard::setSystemClipboard()
+{
   // Replace the system clipboard.
+  QSettings settings;
+  bool copyWKT = settings.value( "qgis/copyGeometryAsWKT", true ).toBool();
+
   QStringList textLines;
   QStringList textFields;
 

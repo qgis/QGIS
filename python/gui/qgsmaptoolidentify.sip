@@ -32,12 +32,14 @@ class QgsMapToolIdentify : QgsMapTool
     
     struct RasterResult
     {
-        RasterResult();
-        RasterResult( QgsRasterLayer* layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes);
-        QgsRasterLayer* mLayer;
-        QString mLabel;
-        QMap< QString, QString > mAttributes;
-        QMap< QString, QString > mDerivedAttributes;
+      RasterResult();
+      RasterResult( QgsRasterLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes );
+      QgsRasterLayer* mLayer;
+      QString mLabel;
+      QgsFields mFields;
+      QgsFeature mFeature;
+      QMap< QString, QString > mAttributes;
+      QMap< QString, QString > mDerivedAttributes;
     };
 
     struct IdentifyResults

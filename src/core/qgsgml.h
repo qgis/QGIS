@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgswfsdata.h
+     qgsgml.h
      --------------------------------------
     Date                 : Sun Sep 16 12:19:55 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSDATA_H
-#define QGSWFSDATA_H
+#ifndef QGSGML_H
+#define QGSGML_H
 
 #include <expat.h>
 #include "qgis.h"
@@ -21,43 +21,48 @@
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include <list>
 #include <set>
 #include <stack>
 #include <QPair>
+#include <QByteArray>
+#include <QDomElement>
+#include <QStringList>
+#include <QStack>
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
-
 /**This class reads data from a WFS server or alternatively from a GML file. It uses the expat XML parser and an event based model to keep performance high. The parsing starts when the first data arrives, it does not wait until the request is finished*/
-class CORE_EXPORT QgsWFSData: public QObject
+class CORE_EXPORT QgsGml: public QObject
 {
     Q_OBJECT
   public:
-    /** Constructor.
-       @param uri request uri
-       @param extent the extent of the WFS layer
-       @param features the features of the layer
-       @param idMap
-       @param geometryAttribute
-       @param thematicAttributes
-       @param wkbType */
-    QgsWFSData(
-      const QString& uri,
-      QgsRectangle* extent,
-      QMap<QgsFeatureId, QgsFeature* > &features,
-      QMap<QgsFeatureId, QString > &idMap,
+    QgsGml(
+      const QString& typeName,
       const QString& geometryAttribute,
-      const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
-      QGis::WkbType* wkbType );
-    ~QgsWFSData();
+      const QgsFields & fields );
 
-    /**Does the Http GET request to the wfs server
-       @return 0 in case of success */
-    int getWFSData();
+    ~QgsGml();
+
+    /** Does the Http GET request to the wfs server
+     *  @param uri GML URL
+     *  @return 0 in case of success
+     */
+    int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0 );
+
+    /** Read from GML data. Constructor uri param is ignored */
+    int getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRectangle* extent = 0 );
+
+    /** Get parsed features for given type name */
+    QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }
+
+    /** Get feature ids map */
+    QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
   private slots:
+
     void setFinished();
 
     /**Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
@@ -71,10 +76,12 @@ class CORE_EXPORT QgsWFSData: public QObject
 
   private:
 
-    enum parseMode
+    enum ParseMode
     {
+      none,
       boundingBox,
-      featureMember,
+      //featureMember, // gml:featureMember
+      feature,  // feature element containint attrs and geo (inside gml:featureMember)
       attribute,
       geometry,
       coordinate,
@@ -86,26 +93,25 @@ class CORE_EXPORT QgsWFSData: public QObject
       multiPolygon
     };
 
-    QgsWFSData();
-
     /**XML handler methods*/
     void startElement( const XML_Char* el, const XML_Char** attr );
     void endElement( const XML_Char* el );
     void characters( const XML_Char* chars, int len );
     static void start( void* data, const XML_Char* el, const XML_Char** attr )
     {
-      static_cast<QgsWFSData*>( data )->startElement( el, attr );
+      static_cast<QgsGml*>( data )->startElement( el, attr );
     }
     static void end( void* data, const XML_Char* el )
     {
-      static_cast<QgsWFSData*>( data )->endElement( el );
+      static_cast<QgsGml*>( data )->endElement( el );
     }
     static void chars( void* data, const XML_Char* chars, int len )
     {
-      static_cast<QgsWFSData*>( data )->characters( chars, len );
+      static_cast<QgsGml*>( data )->characters( chars, len );
     }
 
     //helper routines
+
     /**Reads attribute srsName="EpsgCrsId:..."
        @param epsgNr result
        @param attr attribute strings
@@ -143,22 +149,36 @@ class CORE_EXPORT QgsWFSData: public QObject
     does not provider extent information.*/
     void calculateExtentFromFeatures() const;
 
+    /** Get safely (if empty) top from mode stack */
+    ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
+
+    /** Safely (if empty) pop from mode stack */
+    ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.pop(); }
+
+    QString mTypeName;
     QString mUri;
     //results are members such that handler routines are able to manipulate them
     /**Bounding box of the layer*/
     QgsRectangle* mExtent;
-    /**The features of the layer*/
-    QMap<QgsFeatureId, QgsFeature* > &mFeatures;
+    /**The features of the layer, map of feature maps for each feature type*/
+    //QMap<QgsFeatureId, QgsFeature* > &mFeatures;
+    QMap<QgsFeatureId, QgsFeature* > mFeatures;
+    //QMap<QString, QMap<QgsFeatureId, QgsFeature* > > mFeatures;
+
     /**Stores the relation between provider ids and WFS server ids*/
-    QMap<QgsFeatureId, QString > &mIdMap;
+    //QMap<QgsFeatureId, QString > &mIdMap;
+    QMap<QgsFeatureId, QString > mIdMap;
+    //QMap<QString, QMap<QgsFeatureId, QString > > mIdMap;
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
-    const QMap<QString, QPair<int, QgsField> > &mThematicAttributes;
+    //const QMap<QString, QPair<int, QgsField> > &mThematicAttributes;
+    QMap<QString, QPair<int, QgsField> > mThematicAttributes;
     QGis::WkbType* mWkbType;
     /**True if the request is finished*/
     bool mFinished;
     /**Keep track about the most important nested elements*/
-    std::stack<parseMode> mParseModeStack;
+    //std::stack<ParseMode> mParseModeStack;
+    QStack<ParseMode> mParseModeStack;
     /**This contains the character data if an important element has been encountered*/
     QString mStringCash;
     QgsFeature* mCurrentFeature;
@@ -174,7 +194,6 @@ class CORE_EXPORT QgsWFSData: public QObject
     /**Similar to mCurrentWKB, but only the size*/
     std::list< std::list<int> > mCurrentWKBFragmentSizes;
     QString mAttributeName;
-    QString mTypeName;
     QgsApplication::endian_t mEndian;
     /**Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;

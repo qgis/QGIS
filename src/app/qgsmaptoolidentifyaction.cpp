@@ -47,6 +47,8 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas* canvas )
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+
+  connect( this, SIGNAL( changedRasterResults( QList<RasterResult>& ) ), this, SLOT( handleChangedRasterResults( QList<RasterResult>& ) ) );
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -60,7 +62,12 @@ QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
 QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 {
   if ( !mResultsDialog )
+  {
     mResultsDialog = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
+
+    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
+    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
+  }
 
   return mResultsDialog;
 }
@@ -93,10 +100,14 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
   QList<VectorResult>::const_iterator vresult;
   for ( vresult = results().mVectorResults.begin(); vresult != results().mVectorResults.end(); ++vresult )
+  {
     resultsDialog()->addFeature( vresult->mLayer, vresult->mFeature, vresult->mDerivedAttributes );
+  }
   QList<RasterResult>::const_iterator rresult;
   for ( rresult = results().mRasterResults.begin(); rresult != results().mRasterResults.end(); ++rresult )
-    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes );
+  {
+    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+  }
 
   if ( res )
   {
@@ -118,6 +129,17 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   }
 }
 
+void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<RasterResult>& rasterResults )
+{
+  // Add new result after raster format change
+  QgsDebugMsg( QString( "%1 raster results" ).arg( rasterResults.size() ) );
+  QList<RasterResult>::const_iterator rresult;
+  for ( rresult = rasterResults.begin(); rresult != rasterResults.end(); ++rresult )
+  {
+    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+  }
+}
+
 void QgsMapToolIdentifyAction::activate()
 {
   resultsDialog()->activate();
@@ -135,5 +157,11 @@ QGis::UnitType QgsMapToolIdentifyAction::displayUnits()
   // Get the units for display
   QSettings settings;
   return QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+}
+
+void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )
+{
+  QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
+  emit copyToClipboard( featureStore );
 }
 

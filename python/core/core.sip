@@ -31,6 +31,8 @@
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
+%Include qgsgml.sip
+%Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
 %Include qgslabel.sip
 %Include qgslabelattributes.sip

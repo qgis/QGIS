@@ -20,6 +20,8 @@
 #include "qgsmaptoolidentify.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
+#include "qgsfield.h"
 #include "qgsdistancearea.h"
 
 #include <QObject>
@@ -61,14 +63,20 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     virtual void deactivate();
 
+  public slots:
+    void handleCopyToClipboard( QgsFeatureStore & );
+    void handleChangedRasterResults( QList<RasterResult>& rasterResults );
+
   signals:
     void identifyProgress( int, int );
     void identifyMessage( QString );
+    void copyToClipboard( QgsFeatureStore & );
 
   private:
-    bool identifyLayer( QgsMapLayer *layer, int x, int y );
-    bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
-    bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
+    void identify( QgsPoint point,  QgsRectangle viewExtent, double mapUnitsPerPixel );
+    bool identifyLayer( QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
+    bool identifyRasterLayer( QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QgsVectorLayer *layer, QgsPoint point );
 
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;

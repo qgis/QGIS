@@ -18,6 +18,7 @@ which are not wrapped by PyQt:
 - QMap<qint64, QgsOverlayObject*>
 - QList< QPair< QString, QList<QString> > >
 - QVector<TYPE*>
+- QMap<qint64, QgsFeature*>
 */
 
 %Feature QSETINT_CONVERSION
@@ -1386,7 +1387,8 @@ template<double, TYPE2>
     while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
     {
         int state;
-        int t1 = (int)(PyFloat_AsDouble(t1obj));
+        //int t1 = (int)(PyFloat_AsDouble(t1obj));
+        qint64 t1 = PyLong_AsLongLong(t1obj);
         QgsOverlayObject* t2 = reinterpret_cast<QgsOverlayObject*>(sipConvertToInstance(t2obj, sipClass_QgsOverlayObject, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
         if (*sipIsErr)
@@ -1577,6 +1579,89 @@ template <TYPE>
     }
 
     *sipCppPtr = v;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QMap<qint64, QgsFeature*>
+{
+%TypeHeaderCode
+#include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#endif
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
+%End
+
+%ConvertFromTypeCode
+
+//convert map to a python dictionary
+    PyObject *d;
+
+    if ((d = PyDict_New()) == NULL)
+      return NULL;
+
+    for (QMap<qint64, QgsFeature*>::iterator it = sipCpp->begin(); it != sipCpp->end(); ++it)
+    {
+        QgsFeature* oobj = new QgsFeature(*it.value());
+
+        PyObject* keyobj = PyInt_FromLong(it.key());
+        PyObject* pyOobj = sipConvertFromInstance(oobj, sipClass_QgsFeature, sipTransferObj);
+        PyDict_SetItem(d, keyobj, pyOobj);
+
+        if(pyOobj == NULL || keyobj == NULL || PyDict_SetItem(d, keyobj, pyOobj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (pyOobj)
+            {
+                Py_DECREF(pyOobj);
+            }
+
+            if (keyobj)
+            {
+                Py_DECREF(keyobj);
+            }
+            return NULL;
+          }
+        Py_DECREF(pyOobj);
+        Py_DECREF(keyobj);
+        }
+    return d;
+
+%End
+%ConvertToTypeCode
+ PyObject *t1obj, *t2obj;
+#if PY_VERSION_HEX >= 0x02050000
+    Py_ssize_t i = 0;
+#else
+    int i = 0;
+#endif
+
+    QMap<qint64, QgsFeature*> *qm = new QMap<qint64, QgsFeature*>;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+        qint64 t1 = PyLong_AsLongLong(t1obj);
+        QgsFeature* t2 = reinterpret_cast<QgsFeature*>(sipConvertToInstance(t2obj, sipClass_QgsFeature, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            sipReleaseInstance(t2, sipClass_QgsFeature, state);
+            delete qm;
+            return 0;
+        }
+
+        qm->insert(t1, t2);
+
+        sipReleaseInstance(t2, sipClass_QgsFeature, state);
+    }
+
+    *sipCppPtr = qm;
 
     return sipGetState(sipTransferObj);
 %End

@@ -1706,6 +1706,27 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QgsRasterProjector * projector = new QgsRasterProjector;
   mPipe.set( projector );
 
+  // Set default identify format - use the richest format available
+  int capabilities = mDataProvider->capabilities();
+  QgsRasterDataProvider::IdentifyFormat identifyFormat = QgsRasterDataProvider::IdentifyFormatUndefined;
+  if ( capabilities & QgsRasterInterface::IdentifyFeature )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatFeature;
+  }
+  else if ( capabilities & QgsRasterInterface::IdentifyValue )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
+  }
+  else if ( capabilities & QgsRasterInterface::IdentifyHtml )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
+  }
+  else if ( capabilities & QgsRasterInterface::IdentifyText )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatText;
+  }
+  setCustomProperty( "identify/format", QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
+
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );

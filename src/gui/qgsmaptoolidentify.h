@@ -20,6 +20,7 @@
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsdistancearea.h"
 #include "qgsmaplayer.h"
 
@@ -74,8 +75,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       RasterResult() {}
       RasterResult( QgsRasterLayer * layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes ):
           mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes )  {}
+
+      RasterResult( QgsRasterLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes ):
+          mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes )  {}
       QgsRasterLayer* mLayer;
       QString mLabel;
+      QgsFields mFields;
+      QgsFeature mFeature;
       QMap< QString, QString > mAttributes;
       QMap< QString, QString > mDerivedAttributes;
     };
@@ -130,9 +136,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Access to results */
     IdentifyResults &results();
 
+  public slots:
+    void formatChanged( QgsRasterLayer *layer );
+
   signals:
     void identifyProgress( int, int );
     void identifyMessage( QString );
+    void changedRasterResults( QList<RasterResult>& );
 
   private:
     /** Performs the identification.
@@ -145,9 +155,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param layerType Only performs identification in a certain type of layers (raster, vector).
     @return true if identification succeeded and a feature has been found, false otherwise.*/
     bool identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
-    bool identifyLayer( QgsMapLayer *layer, int x, int y, LayerType layerType = AllLayers );
-    bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
-    bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
+
+    bool identify( QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
+
+    bool identifyLayer( QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
+    bool identifyRasterLayer( QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, QList<RasterResult>& rasterResults );
+    bool identifyVectorLayer( QgsVectorLayer *layer, QgsPoint point );
 
     //! Private helper
     virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
@@ -155,7 +168,16 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     /** Transforms the measurements of derived attributes in the desired units*/
     virtual QGis::UnitType displayUnits();
 
+    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer );
+
     IdentifyResults mResultData;
+
+    // Last point in canvas CRS
+    QgsPoint mLastPoint;
+
+    double mLastMapUnitsPerPixel;
+
+    QgsRectangle mLastExtent;
 };
 
 #endif
