@@ -80,8 +80,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     if inputLayer != "":
       changedLayer = ftools_utils.getVectorLayerByName( inputLayer )
       changedField = changedLayer.dataProvider().fields()
-      for i in changedField:
-        self.attrib.addItem( unicode( changedField[i].name() ) )
+      for f in changedField:
+        self.attrib.addItem( unicode( unicode( f.name() ) ) )
       if self.myFunction == 4:
         self.attrib.addItem( "--- " + self.tr( "Dissolve all" ) + " ---" )
 
@@ -464,7 +464,11 @@ class geoprocessingThread( QThread ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
     vproviderA = self.vlayerA.dataProvider()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
+    fields = [ QgsField( "ID", QVariant.Int ),
+               QgsField( "Area", QVariant.Double ),
+               QgsField( "Perim", QVariant.Double ) ]
+    qgsFields = ftools_utils.fieldIterator(fields)
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, qgsFields,
                                   QGis.WKBPolygon, vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, True, writer.errorMessage()
@@ -507,9 +511,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, QVariant( outID ) )
-              outFeat.setAttribute( 1, QVariant( area ) )
-              outFeat.setAttribute( 2, QVariant( perim ) )
+              outFeat.setAttributes( [ QVariant( outID ),
+                                       QVariant( area ),
+                                       QVariant( perim ) ] )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
@@ -563,9 +567,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, QVariant( outID ) )
-              outFeat.setAttribute( 1, QVariant( area ) )
-              outFeat.setAttribute( 2, QVariant( perim ) )
+              outFeat.setAttributes( [ QVariant( outID ),
+                                       QVariant( area ),
+                                       QVariant( perim ) ] )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False

@@ -66,9 +66,9 @@ class Dialog(QDialog, Ui_Dialog):
             self.label_4.setEnabled(True)
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
-            for i in changedFields:
-              if changedFields[i].typeName() == "Integer":
-                self.cmbField.addItem(unicode(changedFields[i].name()))
+            for f in changedFields:
+              if f.typeName() == "Integer":
+                self.cmbField.addItem(unicode(f.name()))
         else:
             self.rdoUnstratified.setChecked(True)
             self.rdoStratified.setEnabled(False)
@@ -178,7 +178,6 @@ class Dialog(QDialog, Ui_Dialog):
 
     def vectorRandom(self, n, layer, xmin, xmax, ymin, ymax):
         provider = layer.dataProvider()
-        provider.select([])
         index = ftools_utils.createIndex(provider)
         seed()
         points = []
@@ -214,18 +213,19 @@ class Dialog(QDialog, Ui_Dialog):
         else: points = self.loopThruPolygons(inLayer, value, design)
         crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         if not crs.isValid(): crs = None
-        fields = { 0 : QgsField("ID", QVariant.Int) }
+        fields = [ QgsField("ID", QVariant.Int) ]
+        qgsFields = ftools_utils.fieldIterator(fields)
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
-        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
+        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, qgsFields, QGis.WKBPoint, crs)
         idVar = 0
         count = 70.00
         add = ( 100.00 - 70.00 ) / len(points)
         for i in points:
             outFeat.setGeometry(i)
-            outFeat.setAttribute(0, QVariant(idVar))
+            outFeat.setAttributes( [ QVariant(idVar) ] )
             writer.addFeature(outFeat)
             idVar = idVar + 1
             count = count + add
