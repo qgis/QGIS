@@ -269,6 +269,14 @@ void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int st
   {
     return;
   }
+  if ( state == Qt::Checked ) {
+    mAtlasFilenamePatternEdit->setEnabled( false );
+    mAtlasFilenameExpressionButton->setEnabled( false );
+  }
+  else {
+    mAtlasFilenamePatternEdit->setEnabled( true );
+    mAtlasFilenameExpressionButton->setEnabled( true );
+  }
   atlasMap->setSingleFile( state == Qt::Checked );
 }
 
