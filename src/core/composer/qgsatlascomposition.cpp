@@ -95,14 +95,14 @@ void QgsAtlasComposition::beginRender()
 
   const QgsFields& fields = mCoverageLayer->pendingFields();
 
-  if ( mFilenamePattern.size() > 0 )
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
   {
     mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
     // expression used to evaluate each filename
     // test for evaluation errors
     if ( mFilenameExpr->hasParserError() )
     {
-      throw std::runtime_error( "Filename parsing error: " + mFilenameExpr->parserErrorString().toStdString() );
+      throw std::runtime_error( tr("Filename parsing error: %1").arg(mFilenameExpr->parserErrorString()).toLocal8Bit().data() );
     }
 
     // prepare the filename expression
@@ -117,7 +117,7 @@ void QgsAtlasComposition::beginRender()
 	  filterExpression = std::auto_ptr<QgsExpression>(new QgsExpression( mFeatureFilter ));
 	  if ( filterExpression->hasParserError() )
 	  {
-		  throw std::runtime_error( "Feature filter parser error: " + filterExpression->parserErrorString().toStdString() );
+	    throw std::runtime_error( tr("Feature filter parser error: %1").arg( filterExpression->parserErrorString() ).toLocal8Bit().data() );
 	  }
   }
 
@@ -132,7 +132,7 @@ void QgsAtlasComposition::beginRender()
 		  QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
 		  if ( filterExpression->hasEvalError() )
 		  {
-			  throw std::runtime_error( "Feature filter eval error: " + filterExpression->evalErrorString().toStdString() );
+		    throw std::runtime_error( tr("Feature filter eval error: %1").arg( filterExpression->evalErrorString()).toLocal8Bit().data() );
 		  }
 
 		  // skip this feature if the filter evaluation if false
@@ -215,10 +215,14 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
   // retrieve the next feature, based on its id
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
-  if ( mFilenamePattern.size() > 0 )
+  if ( !mSingleFile && mFilenamePattern.size() > 0 )
   {
     QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
     QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature );
+    if ( mFilenameExpr->hasEvalError() )
+    {
+      throw std::runtime_error( tr("Filename eval error: %1").arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
+    }
 
     mCurrentFilename = filenameRes.toString();
   }
