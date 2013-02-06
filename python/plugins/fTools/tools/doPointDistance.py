@@ -93,19 +93,17 @@ class Dialog(QDialog, Ui_Dialog):
         self.inField1.clear()
         changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            if changedField[i].type() == QVariant.Int or \
-            changedField[i].type() == QVariant.String:
-                self.inField1.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            if f.type() == QVariant.Int or f.type() == QVariant.String:
+                self.inField1.addItem(unicode(f.name()))
 
     def update2(self, inputLayer):
         self.inField2.clear()
         changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            if changedField[i].type() == QVariant.Int or \
-            changedField[i].type() == QVariant.String:
-                self.inField2.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            if f.type() == QVariant.Int or f.type() == QVariant.String:
+                self.inField2.addItem(unicode(f.name()))
 
     def accept(self):
         self.buttonOk.setEnabled( False )

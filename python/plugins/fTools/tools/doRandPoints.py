@@ -66,9 +66,9 @@ class Dialog(QDialog, Ui_Dialog):
             self.label_4.setEnabled(True)
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
-            for i in changedFields:
-              if changedFields[i].typeName() == "Integer":
-                self.cmbField.addItem(unicode(changedFields[i].name()))
+            for f in changedFields:
+              if f.typeName() == "Integer":
+                self.cmbField.addItem(unicode(f.name()))
         else:
             self.rdoUnstratified.setChecked(True)
             self.rdoStratified.setEnabled(False)
@@ -178,7 +178,6 @@ class Dialog(QDialog, Ui_Dialog):
 
     def vectorRandom(self, n, layer, xmin, xmax, ymin, ymax):
         provider = layer.dataProvider()
-        provider.select([])
         index = ftools_utils.createIndex(provider)
         seed()
         points = []

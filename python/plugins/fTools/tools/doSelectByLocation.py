@@ -103,8 +103,7 @@ class Dialog(QDialog, Ui_Dialog):
         geom = QgsGeometry()
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
-        inputProvider.rewind()
-        inputProvider.select(inputProvider.attributeIndexes())
+
         if selection:
             features = selectLayer.selectedFeatures()
             self.progressBar.setMaximum(len(features))

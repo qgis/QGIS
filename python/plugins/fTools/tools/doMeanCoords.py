@@ -71,10 +71,10 @@ class Dialog(QDialog, Ui_Dialog):
         self.uniqueField.addItem( self.tr("(Optional) Unique ID field") )
         self.changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(self.changedLayer)
-        for i in changedField:
-            if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
-                self.weightField.addItem(unicode(changedField[i].name()))
-            self.uniqueField.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            if f.type() == QVariant.Int or f.type() == QVariant.Double:
+                self.weightField.addItem(unicode(f.name()))
+            self.uniqueField.addItem(unicode(f.name()))
 
     def accept(self):
         self.buttonOk.setEnabled( False )

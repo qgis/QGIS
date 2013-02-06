@@ -59,8 +59,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.inField.clear()
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            self.inField.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            self.inField.addItem(unicode(f.name()))
 
     def outFile(self):
         self.outShape.clear()

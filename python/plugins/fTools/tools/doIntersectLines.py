@@ -64,15 +64,15 @@ class Dialog(QDialog, Ui_Dialog):
         self.inField1.clear()
         changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            self.inField1.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            self.inField1.addItem(unicode(f.name()))
 
     def update2(self, inputLayer):
         self.inField2.clear()
         changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            self.inField2.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            self.inField2.addItem(unicode(f.name()))
 
     def accept(self):
         self.buttonOk.setEnabled( False )
@@ -126,7 +126,9 @@ class Dialog(QDialog, Ui_Dialog):
         field2 = fieldList[index2]
         field2.setName(unicode(field2.name()) + "_2")
 
-        fieldList = {0:field1, 1:field2}
+        fieldList = QgsFields()
+        fieldList.append( field1 )
+        fieldList.append( field2 )
         sRs = provider1.crs()
         check = QFile(self.shapefileName)
         if check.exists():
@@ -134,7 +136,6 @@ class Dialog(QDialog, Ui_Dialog):
                 return
 
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPoint, sRs)
-        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, QGis.WKBPoint, sRs)
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

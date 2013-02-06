@@ -62,8 +62,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     if inputLayer != "":
       changedLayer = ftools_utils.getVectorLayerByName( inputLayer )
       changedField = ftools_utils.getFieldList( changedLayer )
-      for i in changedField:
-        self.cmbField.addItem( unicode( changedField[ i ].name() ) )
+      for f in changedField:
+        self.cmbField.addItem( unicode( f.name() ) )
       self.cmbField.addItem( "--- " + self.tr( "Merge all" ) + " ---" )
 
   def accept( self ):
@@ -615,9 +615,12 @@ class geometryThread( QThread ):
     import voronoi
     from sets import Set
     vprovider = self.vlayer.dataProvider()
-    fields = [ QgsField( "POINTA", QVariant.Double ),
-               QgsField( "POINTB", QVariant.Double ),
-               QgsField( "POINTC", QVariant.Double ) ]
+
+    fields = QgsFields()
+    fields.append( QgsField( "POINTA", QVariant.Double ) )
+    fields.append( QgsField( "POINTB", QVariant.Double ) )
+    fields.append( QgsField( "POINTC", QVariant.Double ) )
+
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
@@ -812,16 +815,18 @@ class geometryThread( QThread ):
   def layer_extent( self ):
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, 0 ) )
-    fields = [ QgsField( "MINX", QVariant.Double ),
-               QgsField( "MINY", QVariant.Double ),
-               QgsField( "MAXX", QVariant.Double ),
-               QgsField( "MAXY", QVariant.Double ),
-               QgsField( "CNTX", QVariant.Double ),
-               QgsField( "CNTY", QVariant.Double ),
-               QgsField( "AREA", QVariant.Double ),
-               QgsField( "PERIM", QVariant.Double ),
-               QgsField( "HEIGHT", QVariant.Double ),
-               QgsField( "WIDTH", QVariant.Double ) ]
+
+    fields = QgsFields()
+    fields.append( QgsField( "MINX", QVariant.Double ) )
+    fields.append( QgsField( "MINY", QVariant.Double ) )
+    fields.append( QgsField( "MAXX", QVariant.Double ) )
+    fields.append( QgsField( "MAXY", QVariant.Double ) )
+    fields.append( QgsField( "CNTX", QVariant.Double ) )
+    fields.append( QgsField( "CNTY", QVariant.Double ) )
+    fields.append( QgsField( "AREA", QVariant.Double ) )
+    fields.append( QgsField( "PERIM", QVariant.Double ) )
+    fields.append( QgsField( "HEIGHT", QVariant.Double ) )
+    fields.append( QgsField( "WIDTH", QVariant.Double ) )
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                   QGis.WKBPolygon, self.vlayer.crs() )
@@ -862,21 +867,19 @@ class geometryThread( QThread ):
     return True
 
   def feature_extent( self, ):
-    vprovider = self.vlayer.dataProvider()
-    vprovider.select( [] )
-
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
 
-    fields = [ QgsField( "MINX", QVariant.Double ),
-               QgsField( "MINY", QVariant.Double ),
-               QgsField( "MAXX", QVariant.Double ),
-               QgsField( "MAXY", QVariant.Double ),
-               QgsField( "CNTX", QVariant.Double ),
-               QgsField( "CNTY", QVariant.Double ),
-               QgsField( "AREA", QVariant.Double ),
-               QgsField( "PERIM", QVariant.Double ),
-               QgsField( "HEIGHT", QVariant.Double ),
-               QgsField( "WIDTH", QVariant.Double ) ]
+    fields = QgsFields()
+    fields.append( QgsField( "MINX", QVariant.Double ) )
+    fields.append( QgsField( "MINY", QVariant.Double ) )
+    fields.append( QgsField( "MAXX", QVariant.Double ) )
+    fields.append( QgsField( "MAXY", QVariant.Double ) )
+    fields.append( QgsField( "CNTX", QVariant.Double ) )
+    fields.append( QgsField( "CNTY", QVariant.Double ) )
+    fields.append( QgsField( "AREA", QVariant.Double ) )
+    fields.append( QgsField( "PERIM", QVariant.Double ) )
+    fields.append( QgsField( "HEIGHT", QVariant.Double ) )
+    fields.append( QgsField( "WIDTH", QVariant.Double ) )
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                   QGis.WKBPolygon, self.vlayer.crs() )

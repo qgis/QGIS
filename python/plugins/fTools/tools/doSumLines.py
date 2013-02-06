@@ -104,8 +104,7 @@ class Dialog(QDialog, Ui_Dialog):
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
             index = polyProvider.fieldCount()
-            field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field"))
-            fieldList[index] = field
+            fieldList.append( QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field")) )
         sRs = polyProvider.crs()
         inFeat = QgsFeature()
         inFeatB = QgsFeature()

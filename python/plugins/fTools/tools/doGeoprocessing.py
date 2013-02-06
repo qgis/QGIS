@@ -80,8 +80,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     if inputLayer != "":
       changedLayer = ftools_utils.getVectorLayerByName( inputLayer )
       changedField = changedLayer.dataProvider().fields()
-      for i in changedField:
-        self.attrib.addItem( unicode( changedField[i].name() ) )
+      for f in changedField:
+        self.attrib.addItem( unicode( f.name() ) )
       if self.myFunction == 4:
         self.attrib.addItem( "--- " + self.tr( "Dissolve all" ) + " ---" )
 

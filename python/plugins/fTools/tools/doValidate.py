@@ -294,13 +294,11 @@ class validateThread( QThread ):
       layer = vlayer.selectedFeatures()
       nFeat = len(layer)
     else:
-      #layer = vlayer # requires SIP >= 4.9
       layer = []
-      vlayer.select([]) # select all features, and ignore attributes
       ft = QgsFeature()
-      fit = vlayer.getFeatures()
+      fit = vlayer.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([]) )
       while fit.nextFeature(ft):
-        layer.append(QgsFeature(ft))
+        layer.append( QgsFeature(ft) )
       nFeat = len(layer)
     nElement = 0
     if nFeat > 0:
@@ -318,8 +316,10 @@ class validateThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
 
     if self.writeShape:
-      fields = [ QgsField( "FEAT_ID", QVariant.Int ),
-                 QgsField( "ERROR", QVariant.String ) ]
+      fields = QgsFields()
+      fields.append( QgsField( "FEAT_ID", QVariant.Int ) )
+      fields.append( QgsField( "ERROR", QVariant.String ) )
+
       writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                     QGis.WKBPoint, vlayer.crs() )
       for rec in lstErrors:

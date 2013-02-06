@@ -67,8 +67,6 @@ class FieldsPyculator(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = layer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields.append(QgsField(fieldname, QVariant.Double))
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
