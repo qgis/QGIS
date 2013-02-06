@@ -664,6 +664,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 			    e.what(),
 			    QMessageBox::Ok,
 			    QMessageBox::Ok );
+      mView->setPaintingEnabled( true );
+      return;
     }
     if ( atlasOnASingleFile )
     {
@@ -696,7 +698,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-        break;
+	mView->setPaintingEnabled( true );
+	return;
       }
       if ( !atlasOnASingleFile )
       {
@@ -773,6 +776,8 @@ void QgsComposer::on_mActionPrint_triggered()
 			    e.what(),
 			    QMessageBox::Ok,
 			    QMessageBox::Ok );
+      mView->setPaintingEnabled( true );
+      return;
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
 
@@ -797,7 +802,8 @@ void QgsComposer::on_mActionPrint_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-        break;
+	mView->setPaintingEnabled( true );
+	return;
       }
 
 
@@ -966,6 +972,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
 			    e.what(),
 			    QMessageBox::Ok,
 			    QMessageBox::Ok );
+      mView->setPaintingEnabled( true );
+      return;
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
@@ -991,7 +999,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-        break;
+	mView->setPaintingEnabled( true );
+	return;
       }
 
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
@@ -1132,6 +1141,8 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 			    e.what(),
 			    QMessageBox::Ok,
 			    QMessageBox::Ok );
+      mView->setPaintingEnabled( true );
+      return;
     }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
@@ -1161,7 +1172,8 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-        break;
+	mView->setPaintingEnabled( true );
+	return;
       }
       outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
