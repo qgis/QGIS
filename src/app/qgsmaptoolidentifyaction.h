@@ -73,18 +73,8 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void copyToClipboard( QgsFeatureStore & );
 
   private:
-    void identify( QgsPoint point,  QgsRectangle viewExtent, double mapUnitsPerPixel );
-    bool identifyLayer( QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
-    bool identifyRasterLayer( QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QgsVectorLayer *layer, QgsPoint point );
-
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
-
-    void addFeature( QgsMapLayer *layer, int fid,
-                     QString displayField, QString displayValue,
-                     const QMap< QString, QString > &attributes,
-                     const QMap< QString, QString > &derivedAttributes );
 
     QgsIdentifyResultsDialog *resultsDialog();
 
