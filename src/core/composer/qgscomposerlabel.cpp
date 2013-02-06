@@ -61,6 +61,13 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     painter->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
 
     QWebPage* webPage = new QWebPage();
+
+    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    QPalette palette = webPage->palette();
+    palette.setBrush(QPalette::Base, Qt::transparent);
+    webPage->setPalette(palette);
+    //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
+
     webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM, painterRect.height() * mHtmlUnitsToMM) );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
