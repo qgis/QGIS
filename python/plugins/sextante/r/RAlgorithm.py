@@ -134,15 +134,31 @@ class RAlgorithm(GeoAlgorithm):
         if tokens[1].lower().strip() == "group":
             self.group = tokens[0]
             return
-        if tokens[1].lower().strip() == "raster":
+        if tokens[1].lower().strip().startswith("raster"):
             param = ParameterRaster(tokens[0], desc, False)
+            try:
+                lib = tokens[1].strip()[len("raster")+1:]
+                if lib == "R.raster":
+                    self.useRraster = True
+                else:
+                    self.useRraster = False
+            except:
+                self.useRraster = False
         elif tokens[1].lower().strip() == "vector":
             param = ParameterVector(tokens[0],  desc,ParameterVector.VECTOR_TYPE_ANY)
         elif tokens[1].lower().strip() == "table":
             param = ParameterTable(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == "multiple raster":
+        elif tokens[1].lower().strip().startswith("multiple raster"):
             param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
+            try:
+                lib = tokens[1].strip()[len("multiple raster")+1:]
+                if lib == "R.raster":
+                    self.useRraster = True
+                else:
+                    self.useRraster = False
+            except:
+                self.useRraster = False
         elif tokens[1].lower().strip() == "multiple vector":
             param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
@@ -233,7 +249,10 @@ class RAlgorithm(GeoAlgorithm):
                 if not value.endswith("tif"):
                     value = value + ".tif"
                 value = value.replace("\\", "/")
-                commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
+                if self.useRraster:
+                    commands.append("writeRaster(" + out.name + ",\"" + value + "\", datatype=dataType(" + out.name + "), overwrite=TRUE)")
+                else:
+                    commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
             if isinstance(out, OutputVector):
                 value = out.value
                 if not value.endswith("shp"):
@@ -260,11 +279,18 @@ class RAlgorithm(GeoAlgorithm):
         commands.append(
             'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
+        if self.useRraster:
+            commands.append(
+            'tryCatch(find.package("raster"), error=function(e) install.packages("raster", lib="%s"))' % rLibDir)
+            commands.append("library(\"raster\")");
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
                 value = value.replace("\\", "/")
-                commands.append(param.name + " = " + "readGDAL(\"" + value + "\")")
+                if self.useRraster:
+                    commands.append(param.name + " = " + "brick(\"" + value + "\")")
+                else:
+                    commands.append(param.name + " = " + "readGDAL(\"" + value + "\")")
             if isinstance(param, ParameterVector):
                 value = param.getSafeExportedLayer()
                 value = value.replace("\\", "/")
@@ -294,7 +320,10 @@ class RAlgorithm(GeoAlgorithm):
                         if not layer.lower().endswith("asc") and not layer.lower().endswith("tif"):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
-                        commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\"")
+                        if self.useRraster:
+                            commands.append("tempvar" + str(iLayer)+ " = " + "brick(\"" + layer + "\"")
+                        else:
+                            commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\"")
                         iLayer+=1
                 else:
                     exported = param.getSafeExportedLayers()
