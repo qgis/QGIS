@@ -88,7 +88,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
 
             current += 1
             progress.setPercentage(int(current * total))
-        
+
         do = float(sumDist) / count
         de = float(0.5 / math.sqrt(count / A))
         d = float(do / de)

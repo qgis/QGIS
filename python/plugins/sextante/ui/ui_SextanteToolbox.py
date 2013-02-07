@@ -29,9 +29,9 @@ class Ui_SextanteToolbox(object):
         self.verticalLayout.addWidget(self.externalAppsButton)
         try:
             from qgis.gui import QgsFilterLineEdit
-            self.searchBox = QgsFilterLineEdit(self.dockWidgetContents)            
+            self.searchBox = QgsFilterLineEdit(self.dockWidgetContents)
         except ImportError:
-            self.searchBox = QtGui.QLineEdit(self.dockWidgetContents)         
+            self.searchBox = QtGui.QLineEdit(self.dockWidgetContents)
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.verticalLayout.addWidget(self.searchBox)
         self.algorithmTree = QtGui.QTreeWidget(self.dockWidgetContents)

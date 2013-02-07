@@ -44,7 +44,7 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
 {
   if ( mComposerLabel )
   {
-    if (state)
+    if ( state )
     {
       mFontButton->setEnabled( false );
       mFontColorButton->setEnabled( false );
@@ -61,7 +61,7 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
     mComposerLabel->blockSignals( true );
-    mComposerLabel->setHtmlSate(state);
+    mComposerLabel->setHtmlSate( state );
     mComposerLabel->setText( mTextEdit->toPlainText() );
     mComposerLabel->update();
     mComposerLabel->blockSignals( false );

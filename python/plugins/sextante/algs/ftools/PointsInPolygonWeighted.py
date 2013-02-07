@@ -116,7 +116,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                             weight = 1
                         count += weight
 
-            outFeat.setGeometry(geom)            
+            outFeat.setGeometry(geom)
             if idxCount == len(atMap):
                 atMap.append(QVariant(count))
             else:

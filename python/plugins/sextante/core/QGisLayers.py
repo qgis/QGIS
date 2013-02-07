@@ -48,21 +48,21 @@ class QGisLayers:
             if extension.lower() != "shp":
                 exts.append(extension)
         return exts
-    
+
     @staticmethod
-    def getSupportedOutputRasterLayerExtensions():   
+    def getSupportedOutputRasterLayerExtensions():
         allexts = ["tif"]
         for exts in GdalUtils.getSupportedRasters().values():
             for ext in exts:
                 if ext not in allexts:
                     allexts.append(ext)
-        return allexts             
-    
+        return allexts
+
     @staticmethod
-    def getSupportedOutputTableExtensions():        
-        exts = ["csv"]        
+    def getSupportedOutputTableExtensions():
+        exts = ["csv"]
         return exts
-                
+
     @staticmethod
     def getRasterLayers():
         layers = QGisLayers.iface.legendInterface().layers()
@@ -179,7 +179,7 @@ class QGisLayers:
         tables = QGisLayers.getTables()
         for table in tables:
             if table.source() == uri:
-                return table            
+                return table
         if forceLoad:
             settings = QSettings()
             prjSetting = settings.value("/Projections/defaultBehaviour")

@@ -33,7 +33,7 @@ from osgeo import osr
 class SextanteRasterWriter:
 
     NODATA = -99999.0
-    
+
     def __init__(self, fileName, minx, miny, maxx, maxy, cellsize, nbands, crs):
         self.fileName = fileName
         self.nx = int((maxx - minx) / float(cellsize))
@@ -42,27 +42,27 @@ class SextanteRasterWriter:
         self.matrix = numpy.ones(shape=(self.ny, self.nx), dtype=numpy.float32)
         self.matrix[:] = self.NODATA
         self.cellsize = cellsize
-        self.crs = crs   
+        self.crs = crs
         self.minx = minx
-        self.maxy = maxy 
-        
+        self.maxy = maxy
+
     def setValue(self, value, x, y, band = 0):
         try:
             self.matrix[y, x] = value
         except IndexError:
             pass
-        
-    def getValue(self, x, y, band = 0):        
+
+    def getValue(self, x, y, band = 0):
         try:
             return self.matrix[y, x]
         except IndexError:
-            return self.NODATA        
-        
+            return self.NODATA
+
     def close(self):
         format = "GTiff"
         driver = gdal.GetDriverByName( format )
-        dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1, gdal.GDT_Float32)  
+        dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1, gdal.GDT_Float32)
         dst_ds.SetProjection(str(self.crs.toWkt()))
-        dst_ds.SetGeoTransform( [self.minx, self.cellsize, 0, self.maxy, self.cellsize, 0] )                   
+        dst_ds.SetGeoTransform( [self.minx, self.cellsize, 0, self.maxy, self.cellsize, 0] )
         dst_ds.GetRasterBand(1).WriteArray(self.matrix)
         dst_ds = None

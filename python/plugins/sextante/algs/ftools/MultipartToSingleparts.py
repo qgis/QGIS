@@ -55,7 +55,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()        
+        provider = layer.dataProvider()
 
         geomType = self.multiToSingleGeom(provider.geometryType())
 

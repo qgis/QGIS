@@ -302,7 +302,7 @@ bool QgsStyleV2::load( QString filename )
   // Make sure there are no Null fields in parenting symbols ang groups
   char *query = sqlite3_mprintf( "UPDATE symbol SET groupid=0 WHERE groupid IS NULL;"
                                  "UPDATE colorramp SET groupid=0 WHERE groupid IS NULL;"
-                                 "UPDATE symgroup SET parent=0 WHERE parent IS NULL;");
+                                 "UPDATE symgroup SET parent=0 WHERE parent IS NULL;" );
   runEmptyQuery( query );
 
   // First create all the main symbols

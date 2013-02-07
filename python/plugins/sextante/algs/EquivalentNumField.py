@@ -47,12 +47,12 @@ class EquivalentNumField(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
-        fieldindex = vlayer.fieldNameIndex(fieldname)        
+        fieldindex = vlayer.fieldNameIndex(fieldname)
         fields = vprovider.fields()
         fields.append(QgsField("NUM_FIELD", QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )        
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()        
+        inGeom = QgsGeometry()
         nElement = 0
         classes = {}
         features = QGisLayers.features(vlayer)
@@ -67,7 +67,7 @@ class EquivalentNumField(GeoAlgorithm):
             if clazz not in classes:
                 classes[clazz] = len(classes.keys())
             atMap.append(QVariant(classes[clazz]))
-            outFeat.setAttributes(atMap)                        
+            outFeat.setAttributes(atMap)
             writer.addFeature( outFeat )
         del writer
 

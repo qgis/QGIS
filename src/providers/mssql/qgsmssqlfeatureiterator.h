@@ -29,7 +29,7 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIterator
 {
   public:
-    QgsMssqlFeatureIterator( QgsMssqlProvider* provider, const QgsFeatureRequest& request);
+    QgsMssqlFeatureIterator( QgsMssqlProvider* provider, const QgsFeatureRequest& request );
 
     ~QgsMssqlFeatureIterator();
 
@@ -67,7 +67,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIterator
     long mFidCol;
 
     // Field index of geometry column
-    long mGeometryCol; 
+    long mGeometryCol;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;

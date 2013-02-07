@@ -37,7 +37,7 @@ class SelectByLocation(GeoAlgorithm):
 
     INPUT = "INPUT"
     INTERSECT = "INTERSECT"
-    METHOD = "METHOD"    
+    METHOD = "METHOD"
     OUTPUT = "OUTPUT"
 
     METHODS = ["creating new selection",
@@ -54,7 +54,7 @@ class SelectByLocation(GeoAlgorithm):
         self.group = "Vector selection tools"
         self.addParameter(ParameterVector(self.INPUT, "Layer to select from", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterVector(self.INTERSECT, "Additional layer (intersection layer)", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))        
+        self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))
         self.addOutput(OutputVector(self.OUTPUT, "Selection", True))
 
     def processAlgorithm(self, progress):
@@ -65,15 +65,15 @@ class SelectByLocation(GeoAlgorithm):
         selectLayer = QGisLayers.getObjectFromUri(filename)
         inputProvider = inputLayer.dataProvider()
 
-        oldSelection = set(inputLayer.selectedFeaturesIds())                
+        oldSelection = set(inputLayer.selectedFeaturesIds())
         index = QgsSpatialIndex()
         feat = QgsFeature()
-        while inputProvider.nextFeature(feat):        
+        while inputProvider.nextFeature(feat):
             index.insertFeature(feat)
-     
+
         infeat = QgsFeature()
         geom = QgsGeometry()
-        selectedSet = []        
+        selectedSet = []
         current = 0
         features = QGisLayers.features(selectLayer)
         total = 100.0 / float(len(features))

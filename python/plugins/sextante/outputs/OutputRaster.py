@@ -29,9 +29,9 @@ from sextante.outputs.Output import Output
 from sextante.core.SextanteUtils import SextanteUtils
 
 class OutputRaster(Output):
-    
+
     compatible = None
-    
+
     def getFileFilter(self, alg):
         exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
@@ -40,16 +40,16 @@ class OutputRaster(Output):
 
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputRasterLayerExtensions()[0]
-    
+
     def getCompatibleFileName(self, alg):
         '''Returns a filename that is compatible with the algorithm that is going to generate this output.
-        If the algorithm supports the file format of the current output value, it returns that value. If not, 
+        If the algorithm supports the file format of the current output value, it returns that value. If not,
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
         ext = self.value[self.value.rfind(".") + 1:]
         if ext in alg.provider.getSupportedOutputRasterLayerExtensions():
             return self.value
         else:
-            if self.compatible is None:                            
+            if self.compatible is None:
                 self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
             return self.compatible;
 

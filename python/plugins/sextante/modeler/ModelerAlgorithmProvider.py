@@ -62,7 +62,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
 
-    def _loadAlgorithms(self):        
+    def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()
         self.loadFromFolder(folder)
         folder = os.path.join(os.path.dirname(__file__), "models")

@@ -127,14 +127,14 @@ class ModelerParametersDialog(QtGui.QDialog):
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(item)
                 self.valueItems[output.name] = item
-        
+
         label = QtGui.QLabel(" ")
         self.verticalLayout.addWidget(label)
         label = QtGui.QLabel("Parent algorithms")
-        self.dependenciesPanel = self.getDependenciesPanel()            
+        self.dependenciesPanel = self.getDependenciesPanel()
         self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.dependenciesPanel)
-        
+
         self.verticalLayout.addStretch(1000)
         self.setLayout(self.verticalLayout)
 
@@ -178,12 +178,12 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
 
-    def getAvailableDependencies(self):        
+    def getAvailableDependencies(self):
         if self.algIndex is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self.algIndex)       
-        opts = []        
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+        opts = []
         i=0
         for alg in self.model.algs:
             if i not in dependent:
@@ -193,8 +193,8 @@ class ModelerParametersDialog(QtGui.QDialog):
 
     def getDependenciesPanel(self):
         return MultipleInputPanel(self.getAvailableDependencies())
-        
-            
+
+
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
@@ -420,7 +420,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.setText(str(param.default))
             else:
                 item = QtGui.QComboBox()
-                item.setEditable(True)                
+                item.setEditable(True)
                 for s in strings:
                     item.addItem(s.name(), s)
                 item.setEditText(str(param.default))
@@ -452,7 +452,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             item.setEditable(True)
             files = self.getFiles()
             for f in files:
-                item.addItem(f.name(), f)            
+                item.addItem(f.name(), f)
         else:
             item = QtGui.QLineEdit()
             try:
@@ -545,8 +545,8 @@ class ModelerParametersDialog(QtGui.QDialog):
                     if param.multiline:
                         widget.setValue(value)
                     else:
-                        self.setComboBoxValue(widget, value, param)                        
-                elif isinstance(param, ParameterCrs):                    
+                        self.setComboBoxValue(widget, value, param)
+                elif isinstance(param, ParameterCrs):
                     value = self.model.getValueFromAlgorithmAndParameter(value)
                     widget.setText(unicode(value))
                 elif isinstance(param, ParameterFixedTable):
@@ -573,16 +573,16 @@ class ModelerParametersDialog(QtGui.QDialog):
                     value = self.model.algOutputs[self.algIndex][out.name]
                     if value is not None:
                         widget = self.valueItems[out.name].setText(unicode(value))
-            
+
             selected = []
             dependencies = self.getAvailableDependencies()
-            index = -1            
+            index = -1
             for dependency in dependencies:
                 index += 1
                 n = int(dependency[:dependency.find(":")]) - 1
                 if n in self.model.dependencies[self.algIndex]:
-                    selected.append(index)                                        
-                
+                    selected.append(index)
+
             self.dependenciesPanel.setSelectedItems(selected)
 
 
@@ -607,18 +607,18 @@ class ModelerParametersDialog(QtGui.QDialog):
                     self.outputs[output.name]=name
                 else:
                     self.outputs[output.name] = None
-        
+
         selectedOptions = self.dependenciesPanel.selectedoptions
-        #this index are based on the list of available dependencies. 
+        #this index are based on the list of available dependencies.
         #we translate them into indices based on the whole set of algorithm in the model
         #We just take the values in the begining of the string representing the algorithm
         availableDependencies = self.getAvailableDependencies()
-        self.dependencies = [] 
+        self.dependencies = []
         for selected in selectedOptions:
             s = availableDependencies[selected]
             n = int(s[:s.find(":")]) - 1
             self.dependencies.append(n);
-        
+
         return True
 
 
@@ -673,8 +673,8 @@ class ModelerParametersDialog(QtGui.QDialog):
                 name =  self.getSafeNameForHarcodedParameter(param)
                 self.values[name] = value
                 paramValue = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-                self.params[param.name] = paramValue                
-            else:                
+                self.params[param.name] = paramValue
+            else:
                 self.params[param.name] = value
         else:
             if widget.currentText() == "":

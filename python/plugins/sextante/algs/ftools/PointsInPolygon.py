@@ -107,7 +107,7 @@ class PointsInPolygon(GeoAlgorithm):
                 atMap.append(QVariant(count))
             else:
                 atMap[idxCount] = QVariant(count)
-            outFeat.setAttributes(atMap)            
+            outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
             current += 1

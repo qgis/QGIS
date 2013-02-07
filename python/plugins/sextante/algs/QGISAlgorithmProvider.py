@@ -63,7 +63,7 @@ from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_alg
     mmqgisx_geometry_convert_algorithm,
     mmqgisx_grid_algorithm, mmqgisx_gridify_algorithm,
     mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,
-    mmqgisx_merge_algorithm, mmqgisx_select_algorithm, 
+    mmqgisx_merge_algorithm, mmqgisx_select_algorithm,
     mmqgisx_text_to_float_algorithm)
 from sextante.algs.EquivalentNumField import EquivalentNumField
 from sextante.core.AlgorithmProvider import AlgorithmProvider
@@ -116,7 +116,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_hub_distance_algorithm(),
                         mmqgisx_hub_lines_algorithm(),
                         mmqgisx_merge_algorithm(),
-                        mmqgisx_select_algorithm(),                        
+                        mmqgisx_select_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
                         #raster
                         CreateConstantRaster()]

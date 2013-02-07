@@ -56,7 +56,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->rotate( mRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
-  if( mHtmlState )
+  if ( mHtmlState )
   {
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
 
@@ -64,11 +64,11 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
     //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
     QPalette palette = webPage->palette();
-    palette.setBrush(QPalette::Base, Qt::transparent);
-    webPage->setPalette(palette);
+    palette.setBrush( QPalette::Base, Qt::transparent );
+    webPage->setPalette( palette );
     //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
 
-    webPage->setViewportSize( QSize(painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0) );
+    webPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
     webPage->mainFrame()->setZoomFactor( 10.0 );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );

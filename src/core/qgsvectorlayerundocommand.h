@@ -33,104 +33,104 @@ class QgsGeometry;
 
 class QgsVectorLayerUndoCommand : public QUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommand(QgsVectorLayerEditBuffer* buffer) : mBuffer(buffer) {}
-  inline QgsVectorLayer* layer() { return mBuffer->L; }
-  inline QgsVectorLayerCache* cache() { return mBuffer->L->cache(); }
+  public:
+    QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer* buffer ) : mBuffer( buffer ) {}
+    inline QgsVectorLayer* layer() { return mBuffer->L; }
+    inline QgsVectorLayerCache* cache() { return mBuffer->L->cache(); }
 
-protected:
-  QgsVectorLayerEditBuffer* mBuffer;
+  protected:
+    QgsVectorLayerEditBuffer* mBuffer;
 };
 
 
 class QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f );
+  public:
+    QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer* buffer, QgsFeature& f );
 
-  virtual void undo();
-  virtual void redo();
+    virtual void undo();
+    virtual void redo();
 
-private:
-  QgsFeature mFeature;
+  private:
+    QgsFeature mFeature;
 };
 
 
 class QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid );
+  public:
+    QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid );
 
-  virtual void undo();
-  virtual void redo();
+    virtual void undo();
+    virtual void redo();
 
-private:
-  QgsFeatureId mFid;
-  QgsFeature mOldAddedFeature;
+  private:
+    QgsFeatureId mFid;
+    QgsFeature mOldAddedFeature;
 };
 
 
 class QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry* newGeom );
-  ~QgsVectorLayerUndoCommandChangeGeometry();
+  public:
+    QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry* newGeom );
+    ~QgsVectorLayerUndoCommandChangeGeometry();
 
-  virtual void undo();
-  virtual void redo();
+    virtual void undo();
+    virtual void redo();
 
-private:
-  QgsFeatureId mFid;
-  QgsGeometry* mOldGeom;
-  QgsGeometry* mNewGeom;
+  private:
+    QgsFeatureId mFid;
+    QgsGeometry* mOldGeom;
+    QgsGeometry* mNewGeom;
 };
 
 
 class QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue );
-  virtual void undo();
-  virtual void redo();
+  public:
+    QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, int fieldIndex, const QVariant& newValue );
+    virtual void undo();
+    virtual void redo();
 
-private:
-  QgsFeatureId mFid;
-  int mFieldIndex;
-  QVariant mOldValue;
-  QVariant mNewValue;
-  bool mFirstChange;
+  private:
+    QgsFeatureId mFid;
+    int mFieldIndex;
+    QVariant mOldValue;
+    QVariant mNewValue;
+    bool mFirstChange;
 };
 
 
 class QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer, const QgsField& field );
+  public:
+    QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer* buffer, const QgsField& field );
 
-  virtual void undo();
-  virtual void redo();
+    virtual void undo();
+    virtual void redo();
 
-private:
-  QgsField mField;
-  int mFieldIndex;
+  private:
+    QgsField mField;
+    int mFieldIndex;
 };
 
 
 class QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLayerUndoCommand
 {
-public:
-  QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex );
+  public:
+    QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer* buffer, int fieldIndex );
 
-  virtual void undo();
-  virtual void redo();
+    virtual void undo();
+    virtual void redo();
 
-private:
-  int mFieldIndex;
-  bool mProviderField;
-  int mOriginIndex;
-  QgsField mOldField;
+  private:
+    int mFieldIndex;
+    bool mProviderField;
+    int mOriginIndex;
+    QgsField mOldField;
 
-  QMap<QgsFeatureId, QVariant> mDeletedValues;
+    QMap<QgsFeatureId, QVariant> mDeletedValues;
 };
 
 

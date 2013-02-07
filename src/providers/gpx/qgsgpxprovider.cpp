@@ -50,14 +50,17 @@ const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
                                        "url", "url name"
                                      };
 QVariant::Type QgsGPXProvider::attrType[] = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
-                                              QVariant::String, QVariant::String, QVariant::String,
-                                              QVariant::String, QVariant::String };
-QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] = {
+    QVariant::String, QVariant::String, QVariant::String,
+    QVariant::String, QVariant::String
+                                            };
+QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
+{
   QgsGPXProvider::AllType, QgsGPXProvider::WaypointType, QgsGPXProvider::TrkRteType, QgsGPXProvider::TrkRteType,
   QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType,
-  QgsGPXProvider::AllType, QgsGPXProvider::AllType };
+  QgsGPXProvider::AllType, QgsGPXProvider::AllType
+};
 
-const int QgsGPXProvider::attrCount = sizeof(QgsGPXProvider::attr)/sizeof(const char*);
+const int QgsGPXProvider::attrCount = sizeof( QgsGPXProvider::attr ) / sizeof( const char* );
 
 const QString GPX_KEY = "gpx";
 
@@ -66,7 +69,7 @@ const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 QgsGPXProvider::QgsGPXProvider( QString uri ) :
     QgsVectorDataProvider( uri )
-  , mActiveIterator( 0 )
+    , mActiveIterator( 0 )
 {
   // assume that it won't work
   mValid = false;
@@ -90,8 +93,8 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
   {
     if ( attrUsed[i] & mFeatureType )
     {
-      QString attrTypeName = (attrType[i] == QVariant::Int ? "int" : (attrType[i] == QVariant::Double ? "double" : "text"));
-      attributeFields.append( QgsField( attr[i], attrType[i], attrTypeName) );
+      QString attrTypeName = ( attrType[i] == QVariant::Int ? "int" : ( attrType[i] == QVariant::Double ? "double" : "text" ) );
+      attributeFields.append( QgsField( attr[i], attrType[i], attrTypeName ) );
       indexToAttr.append( i );
     }
   }

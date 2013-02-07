@@ -71,7 +71,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /** Set the size of the point icons
       *  Added in 1.9 */
-    void setIconSize ( int iconSize );
+    void setIconSize( int iconSize );
 
     /**
      * Clears all the geometries in this rubberband.

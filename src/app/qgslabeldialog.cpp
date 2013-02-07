@@ -66,7 +66,7 @@ void QgsLabelDialog::init( )
   myFieldStringList.append( "" );
   for ( int i = 0; i < myFields.count(); ++i )
   {
-      myFieldStringList.append( myFields[i].name() );
+    myFieldStringList.append( myFields[i].name() );
   }
   //
   //now set all the combos that need field lists using the string list

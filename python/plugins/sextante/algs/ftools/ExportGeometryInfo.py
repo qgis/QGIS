@@ -70,9 +70,9 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         if geometryType == QGis.Polygon:
             fields.append(QgsField(QString("area"), QVariant.Double))
-            fields.append(QgsField(QString("perimeter"), QVariant.Double))            
+            fields.append(QgsField(QString("perimeter"), QVariant.Double))
         elif geometryType == QGis.Line:
-            fields.append(QgsField(QString("length"), QVariant.Double))            
+            fields.append(QgsField(QString("length"), QVariant.Double))
         else:
             fields.append(QgsField(QString("xcoords"), QVariant.Double))
             fields.append(QgsField(QString("ycoords"), QVariant.Double))
@@ -113,10 +113,10 @@ class ExportGeometryInfo(GeoAlgorithm):
 
             outFeat.setGeometry(inGeom)
             atMap = inFeat.attributes()
-            atMap.append(QVariant(attr1))                        
+            atMap.append(QVariant(attr1))
             if attr2 is not None:
                 atMap.append(QVariant(attr2))
-            outFeat.setAttributes(atMap)                
+            outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
             current += 1

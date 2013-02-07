@@ -84,7 +84,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
     return;
   }
 
-  // Create a query for default connection 
+  // Create a query for default connection
   mQuery = QSqlQuery( mDatabase );
 
   // Database successfully opened; we can now issue SQL commands.
@@ -173,7 +173,7 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& reque
     QgsDebugMsg( "Read attempt on an invalid mssql data source" );
     return QgsFeatureIterator();
   }
-  
+
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( this, request ) );
 }
 
@@ -340,7 +340,7 @@ void QgsMssqlProvider::loadFields()
   mAttributeFields.clear();
   mDefaultValues.clear();
   // get field spec
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   if ( !query.exec( QString( "exec sp_columns N'%1', NULL, NULL, NULL, NULL" ).arg( mTableName ) ) )
   {
@@ -407,9 +407,9 @@ void QgsMssqlProvider::loadFields()
         query.clear();
         query.setForwardOnly( true );
         if ( !query.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
-                           .arg( pk )
-                           .arg( mSchemaName )
-                           .arg( mTableName ) ) )
+                          .arg( pk )
+                          .arg( mSchemaName )
+                          .arg( mTableName ) ) )
         {
           QString msg = query.lastError().text();
           QgsDebugMsg( msg );
@@ -461,7 +461,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
     sql += QString( " where (%1)" ).arg( mSqlWhereClause );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
   if ( !query.exec( sql ) )
@@ -497,7 +497,7 @@ QVariant QgsMssqlProvider::maximumValue( int index )
     sql += QString( " where (%1)" ).arg( mSqlWhereClause );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
   if ( !query.exec( sql ) )
@@ -542,7 +542,7 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
     sql += QString( " where (%1)" ).arg( mSqlWhereClause );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
   if ( !query.exec( sql ) )
@@ -597,7 +597,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
     statement += " where (" + mSqlWhereClause + ")";
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
   if ( !query.exec( statement ) )
@@ -702,7 +702,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       statement = QString( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
 
     bool first = true;
-    QSqlQuery query = QSqlQuery(mDatabase);
+    QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
     const QgsAttributes& attrs = it->attributes();
@@ -886,7 +886,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
     statement += QString( "[%1] %2" ).arg( it->name(), type );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   if ( !query.exec( statement ) )
   {
@@ -917,7 +917,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
     statement += QString( "[%1]" ).arg( mAttributeFields[*it].name() );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
   if ( !query.exec( statement ) )
@@ -953,7 +953,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
       statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
-    QSqlQuery query = QSqlQuery(mDatabase);
+    QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
     const QgsAttributeMap& attrs = it.value();
@@ -1059,7 +1059,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     else
       statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
-    QSqlQuery query = QSqlQuery(mDatabase);
+    QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
     if ( mGeometryColType == "geometry" )
@@ -1125,7 +1125,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
       featureIds += "," + FID_TO_STRING( *it );
   }
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
   if ( mSchemaName.isEmpty() )
@@ -1135,7 +1135,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
     statement = QString( "DELETE FROM [%1].[%2] WHERE [%3] IN (%4)" ).arg( mSchemaName,
                 mTableName, mFidColName, featureIds );
 
-  if ( !query.exec(statement) )
+  if ( !query.exec( statement ) )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
@@ -1157,7 +1157,7 @@ bool QgsMssqlProvider::createSpatialIndex()
   if ( mUseEstimatedMetadata )
     UpdateStatistics( false );
 
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
   if ( mSchemaName.isEmpty() )
@@ -1178,7 +1178,7 @@ bool QgsMssqlProvider::createSpatialIndex()
     statement += " USING GEOGRAPHY_GRID";
   }
 
-  if ( !query.exec(statement) )
+  if ( !query.exec( statement ) )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
@@ -1190,7 +1190,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
 bool QgsMssqlProvider::createAttributeIndex( int field )
 {
-  QSqlQuery query = QSqlQuery(mDatabase);
+  QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
 
@@ -1207,7 +1207,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
     statement = QString( "CREATE NONCLUSTERED INDEX [qgs_%1_idx] ON [%2].[%3] ( [%4] )" ).arg(
                   mGeometryColName, mSchemaName, mTableName, mAttributeFields[field].name() );
 
-  if ( !query.exec(statement) )
+  if ( !query.exec( statement ) )
   {
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
@@ -1222,7 +1222,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
   if ( !mCrs.isValid() && mSRId > 0 )
   {
     // try to load crs
-    QSqlQuery query = QSqlQuery(mDatabase);
+    QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
     query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
     if ( query.isActive() )

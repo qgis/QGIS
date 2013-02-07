@@ -126,7 +126,7 @@ class FieldsPyculator(GeoAlgorithm):
                 new_ns['__geom'] = geom
 
             if need_attrs:
-                pyattrs = [self.Qvar2py(a) for a in attrMap]                
+                pyattrs = [self.Qvar2py(a) for a in attrMap]
                 new_ns['__attr'] = pyattrs
 
             #clear old result
@@ -158,7 +158,7 @@ class FieldsPyculator(GeoAlgorithm):
             nElement += 1
             outFeat.setGeometry( feat.geometry() )
             attrMap.append(QVariant(new_ns[self.RESULT_VAR_NAME]))
-            outFeat.setAttributeMap( attrMap )            
+            outFeat.setAttributeMap( attrMap )
             writer.addFeature(outFeat)
 
         del writer

@@ -55,7 +55,7 @@ class Delaunay(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        
+
 
         fields = [ QgsField("POINTA", QVariant.Double, "", 24, 15),
                    QgsField("POINTB", QVariant.Double, "", 24, 15),
@@ -105,7 +105,7 @@ class Delaunay(GeoAlgorithm):
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
-                    attrs.append(QVariant(ids[index]))                    
+                    attrs.append(QVariant(ids[index]))
                 step += 1
             feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygon([polygon])

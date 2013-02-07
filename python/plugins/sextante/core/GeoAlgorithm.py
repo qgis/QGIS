@@ -201,7 +201,7 @@ class GeoAlgorithm:
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
-            elif isinstance(out, OutputRaster):                
+            elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = QGisLayers.getObjectFromUri(out.compatible)
                     provider = layer.dataProvider()
@@ -216,7 +216,7 @@ class GeoAlgorithm:
                     writer = out.getTableWriter(provider.fields())
                     features = QGisLayers.features(layer)
                     for feature in features:
-                        writer.addRecord(feature)                                    
+                        writer.addRecord(feature)
             progress.setPercentage(100 * i / float(len(self.outputs)))
 
     def getFormatShortNameFromFilename(self, filename):
@@ -272,9 +272,9 @@ class GeoAlgorithm:
                                 return
         qgis = QGisLayers.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
-        
+
     def checkInputCRS(self):
-        '''it checks that all input layers use the same CRS. If so, returns True. False otherwise'''            
+        '''it checks that all input layers use the same CRS. If so, returns True. False otherwise'''
         crs = None;
         layers = QGisLayers.getAllLayers()
         for param in self.parameters:
@@ -282,13 +282,13 @@ class GeoAlgorithm:
                 if param.value:
                     inputlayers = param.value.split(";")
                     for inputlayer in inputlayers:
-                        for layer in layers:                            
+                        for layer in layers:
                             if layer.source() == inputlayer:
                                 if crs is None:
                                     crs = layer.crs()
                                 else:
                                     if crs != layer.crs():
-                                        return False        
+                                        return False
         return True
 
     def addOutput(self, output):

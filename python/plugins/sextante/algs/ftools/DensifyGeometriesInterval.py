@@ -56,7 +56,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
-        isPolygon = layer.geometryType() == QGis.Polygon               
+        isPolygon = layer.geometryType() == QGis.Polygon
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
                      layer.wkbType(), layer.crs())

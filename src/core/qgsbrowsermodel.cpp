@@ -45,7 +45,7 @@ void QgsBrowserModel::addRootItems()
 
   QString home = QgsProject::instance()->homePath();
 
-  if( !home.isNull() )
+  if ( !home.isNull() )
   {
     item = new QgsDirectoryItem( NULL, tr( "Project home" ), home );
     mRootItems << item;

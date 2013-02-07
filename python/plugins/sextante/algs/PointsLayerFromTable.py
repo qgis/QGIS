@@ -53,15 +53,15 @@ class PointsLayerFromTable(GeoAlgorithm):
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
         xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
-        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))         
-        
-        outFeat = QgsFeature()       
+        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
+
+        outFeat = QgsFeature()
         nElement = 0
         features = QGisLayers.features(vlayer)
         nFeat = len(features)
         for feature in features:
             nElement += 1
-            progress.setPercentage((nElement*100)/nFeat)            
+            progress.setPercentage((nElement*100)/nFeat)
             attrs = feature.attributes()
             try:
                 x =  float(attrs[xfieldindex].toString())
@@ -70,9 +70,9 @@ class PointsLayerFromTable(GeoAlgorithm):
                 continue
             pt = QgsPoint(x, y)
             outFeat.setGeometry(QgsGeometry.fromPoint(pt))
-            outFeat.setAttributes(attrs)                        
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-        
+
         del writer
 
 

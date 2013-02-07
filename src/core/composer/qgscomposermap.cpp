@@ -227,7 +227,7 @@ void QgsComposerMap::cache( void )
   double forcedWidthScaleFactor = w / requestExtent.width() / mapUnitsToMM();
 
   mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
-  mCacheImage.fill( QColor(255,255,255,0).rgba() ); // the background is drawn by composerItem, but we still need to start with that empty fill to avoid artifacts
+  mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() ); // the background is drawn by composerItem, but we still need to start with that empty fill to avoid artifacts
 
   double mapUnitsPerPixel = mExtent.width() / w;
 

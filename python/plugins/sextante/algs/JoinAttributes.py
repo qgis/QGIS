@@ -83,16 +83,16 @@ class JoinAttributes(GeoAlgorithm):
         for inFeat in features:
             inGeom = inFeat.geometry()
             atMap = inFeat.attributes()
-            join_value1 = atMap[join_field1_index].toString()            
+            join_value1 = atMap[join_field1_index].toString()
             while provider2.nextFeature(inFeat2):
                 ## Maybe it should cache this entries...
                 atMap2 = inFeat2.attributeMap()
                 join_value2 = atMap2[join_field2_index].toString()
                 if join_value1 == join_value2:
                     # create the new feature
-                    outFeat.setGeometry(inGeom)                    
+                    outFeat.setGeometry(inGeom)
                     atMap.extend(atMap2)
-                    break;                    
+                    break;
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 

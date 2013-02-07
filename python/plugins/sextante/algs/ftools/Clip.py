@@ -58,7 +58,7 @@ class Clip(GeoAlgorithm):
         vproviderB = vlayerB.dataProvider()
         #allAttrsB = vproviderB.attributeIndexes()
         #vproviderB.select( allAttrsB )
-        
+
         # check for crs compatibility
         crsA = vproviderA.crs()
         crsB = vproviderB.crs()
@@ -75,9 +75,9 @@ class Clip(GeoAlgorithm):
         outFeat = QgsFeature()
         index = utils.createSpatialIndex(vlayerB)
         #vproviderA.rewind()
-        nElement = 0        
+        nElement = 0
         selectionA = QGisLayers.features(vlayerA)
-        nFeat = len(selectionA)        
+        nFeat = len(selectionA)
         for inFeatA in selectionA:
             nElement += 1
             progress.setPercentage(nElement/float(nFeat) * 100)

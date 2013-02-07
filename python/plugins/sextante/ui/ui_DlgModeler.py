@@ -47,10 +47,10 @@ class Ui_DlgModeler(object):
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         try:
             from qgis.gui import QgsFilterLineEdit
-            self.searchBox = QgsFilterLineEdit(self.tab_2)            
+            self.searchBox = QgsFilterLineEdit(self.tab_2)
         except ImportError:
-            self.searchBox = QtGui.QLineEdit(self.tab_2)   
-        self.searchBox.setObjectName(_fromUtf8("searchBox"))            
+            self.searchBox = QtGui.QLineEdit(self.tab_2)
+        self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.verticalLayout_3.addWidget(self.searchBox)
         self.algorithmTree = QtGui.QTreeWidget(self.tab_2)
         self.algorithmTree.setAlternatingRowColors(True)

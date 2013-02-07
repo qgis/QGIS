@@ -613,7 +613,7 @@ int main( int argc, char *argv[] )
         else
         {
 #ifdef Q_WS_WIN
-	  if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
+          if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
             putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
 #else
           setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined" ? 0 : 1 );

@@ -103,7 +103,7 @@ class PointDistance(GeoAlgorithm):
             self.writer.writerow(["InputID", "TargetID", "Distance"])
         else:
             self.writer.writerow(["InputID", "MEAN", "STDDEV", "MIN", "MAX"])
-        
+
         index = utils.createSpatialIndex(targetLayer);
 
         inIdx = inLayer.fieldNameIndex(inField)
@@ -114,7 +114,7 @@ class PointDistance(GeoAlgorithm):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
-        
+
         features = QGisLayers.features(inLayer)
         current = 0
         total = 100.0 / float(len(features))
@@ -144,12 +144,12 @@ class PointDistance(GeoAlgorithm):
             current += 1
             progress.setPercentage(int(current * total))
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):        
+    def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
 
         index = utils.createSpatialIndex(targetLayer)
-        
-        inIdx = inLayer.fieldNameIndex(inField)        
-        outIdx = targetLayer.fieldNameIndex(inField)        
+
+        inIdx = inLayer.fieldNameIndex(inField)
+        outIdx = targetLayer.fieldNameIndex(inField)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

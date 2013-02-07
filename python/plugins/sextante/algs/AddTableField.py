@@ -67,7 +67,7 @@ class AddTableField(GeoAlgorithm):
         fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()        
+        inGeom = QgsGeometry()
         nElement = 0
         features = QGisLayers.features(vlayer)
         nFeat = len(features)
@@ -77,7 +77,7 @@ class AddTableField(GeoAlgorithm):
             inGeom = inFeat.geometry()
             outFeat.setGeometry( inGeom )
             atMap = inFeat.attributeMap()
-            atMap.append(QVariant())            
+            atMap.append(QVariant())
             outFeat.addAttribute( len(vprovider.fields()), QVariant() )
             writer.addFeature( outFeat )
         del writer

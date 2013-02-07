@@ -23,7 +23,7 @@
 #include <QTextStream>
 
 
-QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, const QgsFeatureRequest& request)
+QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), mProvider( provider )
 {
   mIsOpen = false;
@@ -38,9 +38,9 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, co
     QgsDebugMsg( "Creating a separate database connection" );
     QString id;
     // QString::sprintf adds 0x prefix
-    id.sprintf("%08p", this);
-    mDatabase = mProvider->mDatabase.cloneDatabase(mProvider->mDatabase, id);
-    if (!mDatabase.open())
+    id.sprintf( "%08p", this );
+    mDatabase = mProvider->mDatabase.cloneDatabase( mProvider->mDatabase, id );
+    if ( !mDatabase.open() )
     {
       QgsDebugMsg( "Failed to open database" );
       QString msg = mDatabase.lastError().text();
@@ -53,7 +53,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, co
   else
   {
     mUseProviderQuery = true;
-    mQuery = &mProvider->mQuery;   
+    mQuery = &mProvider->mQuery;
   }
   // start selection
   rewind();
@@ -62,14 +62,14 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, co
 
 QgsMssqlFeatureIterator::~QgsMssqlFeatureIterator()
 {
-  if (!mUseProviderQuery)
+  if ( !mUseProviderQuery )
   {
-    if (mQuery)
+    if ( mQuery )
       delete mQuery;
     mDatabase.close();
   }
-  else if (mIsOpen)
-      close();
+  else if ( mIsOpen )
+    close();
 }
 
 void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
@@ -79,8 +79,8 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   int fieldCount = 0;
   mFidCol = -1;
   mGeometryCol = -1;
-  
-  if (!request.subsetOfAttributes().empty())
+
+  if ( !request.subsetOfAttributes().empty() )
   {
     // subset of attributes has been specified
     for ( QgsAttributeList::const_iterator it = request.subsetOfAttributes().begin(); it != request.subsetOfAttributes().end(); ++it )
@@ -90,26 +90,26 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
       mStatement += "[" + mProvider->mAttributeFields[*it].name() + "]";
 
       if ( !mProvider->mFidColName.isEmpty() && mProvider->mFidColName == mProvider->mAttributeFields[*it].name() )
-          mFidCol = fieldCount;
+        mFidCol = fieldCount;
 
       ++fieldCount;
-      mAttributesToFetch.append(*it);
+      mAttributesToFetch.append( *it );
     }
   }
   else
   {
     // get all attributes
-    for (int i = 0; i < mProvider->mAttributeFields.count(); i++)
+    for ( int i = 0; i < mProvider->mAttributeFields.count(); i++ )
     {
       if ( fieldCount != 0 )
         mStatement += ",";
       mStatement += "[" + mProvider->mAttributeFields[i].name() + "]";
 
       if ( !mProvider->mFidColName.isEmpty() && mProvider->mFidColName == mProvider->mAttributeFields[i].name() )
-          mFidCol = fieldCount;
+        mFidCol = fieldCount;
 
       ++fieldCount;
-      mAttributesToFetch.append(i);
+      mAttributesToFetch.append( i );
     }
   }
   // get fid col if not yet required
@@ -139,7 +139,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( request.filterType() & QgsFeatureRequest::FilterRect)
+  if ( request.filterType() & QgsFeatureRequest::FilterRect )
   {
     // polygons should be CCW for SqlGeography
     QString r;
@@ -159,13 +159,13 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   }
 
   // set fid filter
-  if ( (request.filterType() & QgsFeatureRequest::FilterFid) && !mProvider->mFidColName.isEmpty() )
+  if (( request.filterType() & QgsFeatureRequest::FilterFid ) && !mProvider->mFidColName.isEmpty() )
   {
     // set attribute filter
     if ( !filterAdded )
       mStatement += QString( " where [%1] = %2" ).arg( mProvider->mFidColName, QString::number( request.filterFid() ) );
     else
-      mStatement +=QString( " and [%1] = %2" ).arg( mProvider->mFidColName, QString::number( request.filterFid() ) );
+      mStatement += QString( " and [%1] = %2" ).arg( mProvider->mFidColName, QString::number( request.filterFid() ) );
     filterAdded = true;
   }
 
@@ -190,7 +190,7 @@ bool QgsMssqlFeatureIterator::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
-  if (!mQuery)
+  if ( !mQuery )
     return false;
 
   if ( !mQuery->isActive() )
@@ -204,7 +204,7 @@ bool QgsMssqlFeatureIterator::nextFeature( QgsFeature& feature )
     feature.initAttributes( mProvider->mAttributeFields.count() );
     feature.setFields( &mProvider->mAttributeFields ); // allow name-based attribute lookups
 
-    for (int i = 0; i < mAttributesToFetch.count(); i++)
+    for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {
       QVariant v = mQuery->value( i );
       feature.setAttribute( mAttributesToFetch[i], mQuery->value( i ) );
@@ -240,9 +240,9 @@ bool QgsMssqlFeatureIterator::rewind()
     return false;
   }
 
-  if (!mQuery)
+  if ( !mQuery )
     return false;
-    
+
   mQuery->clear();
   mQuery->setForwardOnly( true );
   if ( !mQuery->exec( mStatement ) )
@@ -251,15 +251,15 @@ bool QgsMssqlFeatureIterator::rewind()
     QgsDebugMsg( msg );
   }
   else
-      mIsOpen = true;
-  
+    mIsOpen = true;
+
   return true;
 }
 
 bool QgsMssqlFeatureIterator::close()
 {
   mIsOpen = false;
-  if (!mQuery)
+  if ( !mQuery )
     return false;
 
   if ( !mQuery->isActive() )

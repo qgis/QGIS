@@ -48,7 +48,7 @@ class Explode(GeoAlgorithm):
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBLineString, vprovider.crs() )
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()        
+        inGeom = QgsGeometry()
         nElement = 0
         features = QGisLayers.features(layer)
         nFeat = len(features)

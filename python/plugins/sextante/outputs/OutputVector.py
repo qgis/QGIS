@@ -36,29 +36,29 @@ class OutputVector(Output):
     encoding = None
     compatible = None
 
-    def getFileFilter(self,alg):        
+    def getFileFilter(self,alg):
         exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
-        
+
 
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputVectorLayerExtensions()[0]
-    
+
     def getCompatibleFileName(self, alg):
         '''Returns a filename that is compatible with the algorithm that is going to generate this output.
-        If the algorithm supports the file format of the current output value, it returns that value. If not, 
+        If the algorithm supports the file format of the current output value, it returns that value. If not,
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
         ext = self.value[self.value.rfind(".") + 1:]
         if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
             return self.value
         else:
-            if self.compatible is None:                            
+            if self.compatible is None:
                 self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
             return self.compatible;
-                
-        
+
+
     def getVectorWriter(self, fields, geomType, crs, options=None):
         '''Returns a suitable writer to which features can be added as a
         result of the algorithm. Use this to transparently handle output

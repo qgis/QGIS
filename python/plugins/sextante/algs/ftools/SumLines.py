@@ -122,8 +122,8 @@ class SumLines(GeoAlgorithm):
             if idxCount == len(atMap):
                 atMap.append(QVariant(count))
             else:
-                atMap[idxCount] = QVariant(count)                
-            outFeat.setAttributes(atMap)            
+                atMap[idxCount] = QVariant(count)
+            outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
             current += 1

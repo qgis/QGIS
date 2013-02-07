@@ -94,13 +94,13 @@ class   Union(GeoAlgorithm):
                 if geom.intersects( tmpGeom ):
                   found = True
                   int_geom = geom.intersection( tmpGeom )
-    
+
                   if int_geom is None:
                     # There was a problem creating the intersection
                     raise GeoAlgorithmExecutionException("Geometry exception while computing intersection")
                   else:
                     int_geom = QgsGeometry(int_geom)
-    
+
                   if diff_geom.intersects( tmpGeom ):
                     diff_geom = diff_geom.difference( tmpGeom )
                     if diff_geom is None:
@@ -108,7 +108,7 @@ class   Union(GeoAlgorithm):
                       diff_geom = QgsGeometry()
                     else:
                       diff_geom = QgsGeometry(diff_geom)
-    
+
                   if int_geom.wkbType() == 0:
                     # intersection produced different geomety types
                     temp_list = int_geom.asGeometryCollection()
@@ -119,7 +119,7 @@ class   Union(GeoAlgorithm):
                     outFeat.setGeometry( int_geom )
                     attrs = []
                     attrs.extend(atMapA)
-                    attrs.extend(atMapB)                    
+                    attrs.extend(atMapB)
                     outFeat.setAttributes(attrs)
                     writer.addFeature( outFeat )
                   except Exception, err:
@@ -149,17 +149,17 @@ class   Union(GeoAlgorithm):
               except Exception, err:
                 raise GeoAlgorithmExecutionException("Feature exception while computing union")
 
-        length = len(vproviderA.fields())        
+        length = len(vproviderA.fields())
 
-        featuresA = QGisLayers.features(vlayerB)        
+        featuresA = QGisLayers.features(vlayerB)
         nFeat = len(featuresA)
         for inFeatA in featuresA:
-            progress.setPercentage(nElement/float(nFeat) * 100)        
+            progress.setPercentage(nElement/float(nFeat) * 100)
             add = False
             geom = QgsGeometry( inFeatA.geometry() )
             diff_geom = QgsGeometry( geom )
             atMap = [None] * length
-            atMap.extend(inFeatA.attributes())            
+            atMap.extend(inFeatA.attributes())
             #atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
             intersects = indexB.intersects( geom.boundingBox() )
 
@@ -193,12 +193,12 @@ class   Union(GeoAlgorithm):
                     outFeat.setGeometry( diff_geom )
                     outFeat.setAttributes( atMapB )
                     writer.addFeature( outFeat )
-                except Exception, err:  
-                    raise err                  
-                    FEATURE_EXCEPT = False   
-            nElement += 1       
+                except Exception, err:
+                    raise err
+                    FEATURE_EXCEPT = False
+            nElement += 1
 
-          
+
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing intersection")

@@ -44,7 +44,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   p->save();
 
   p->setFont( mScaleBar->font() );
-  p->setPen( QPen(mScaleBar->fontColor()) );
+  p->setPen( QPen( mScaleBar->fontColor() ) );
 
   QString firstLabel = mScaleBar->firstLabelString();
   double xOffset =  mScaleBar->textWidthMillimeters( mScaleBar->font(), firstLabel ) / 2;

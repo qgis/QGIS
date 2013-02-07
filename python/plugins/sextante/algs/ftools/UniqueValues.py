@@ -54,7 +54,7 @@ class UniqueValues(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.FIELD_NAME, "Target field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
         self.addOutput(OutputHTML(self.OUTPUT, "Unique values"))
         self.addOutput(OutputNumber(self.TOTAL_VALUES, "Total unique values"))
-        self.addOutput(OutputString(self.UNIQUE_VALUES, "Unique values"))       
+        self.addOutput(OutputString(self.UNIQUE_VALUES, "Unique values"))
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))

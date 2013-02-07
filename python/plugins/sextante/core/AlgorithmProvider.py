@@ -101,7 +101,7 @@ class AlgorithmProvider():
             extension = extension[:extension.find(" ")]
             if extension.lower() != "shp":
                 extensions.append(extension)
-        return extensions        
+        return extensions
 
     def getSupportedOutputTableExtensions(self):
         return ["csv"]

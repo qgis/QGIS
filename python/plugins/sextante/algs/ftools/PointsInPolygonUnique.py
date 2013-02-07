@@ -113,7 +113,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                         if not clazz in classes:
                             classes.append(clazz)
 
-            outFeat.setGeometry(geom)        
+            outFeat.setGeometry(geom)
             if idxCount == len(atMap):
                 atMap.append(QVariant(len(classes)))
             else:

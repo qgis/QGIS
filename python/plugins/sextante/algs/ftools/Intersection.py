@@ -47,8 +47,8 @@ class Intersection(GeoAlgorithm):
     def processAlgorithm(self, progress):
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT2))
-        vproviderA = vlayerA.dataProvider()       
-        
+        vproviderA = vlayerA.dataProvider()
+
         fields = utils.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(Intersection.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
@@ -57,7 +57,7 @@ class Intersection(GeoAlgorithm):
         index = utils.createSpatialIndex(vlayerB)
         nElement = 0
         selectionA = QGisLayers.features(vlayerA)
-        nFeat = len(selectionA)        
+        nFeat = len(selectionA)
         for inFeatA in selectionA:
             nElement += 1
             progress.setPercentage(nElement/float(nFeat) * 100)
@@ -79,17 +79,17 @@ class Intersection(GeoAlgorithm):
                         outFeat.setGeometry( int_geom )
                         attrs = []
                         attrs.extend(atMapA)
-                        attrs.extend(atMapB)                        
+                        attrs.extend(atMapB)
                         outFeat.setAttributes(attrs)
                         writer.addFeature( outFeat )
                     except:
-                        raise GeoAlgorithmExecutionException("Feature exception while computing intersection")                    
+                        raise GeoAlgorithmExecutionException("Feature exception while computing intersection")
                 except:
                     raise GeoAlgorithmExecutionException("Geometry exception while computing intersection")
-                    
+
 
         del writer
-        
+
 
     def defineCharacteristics(self):
         self.name = "Intersection"

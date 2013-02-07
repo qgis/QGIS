@@ -82,15 +82,15 @@ class MeanCoords(GeoAlgorithm):
 
         current = 0
         total = 100.0 / float(provider.featureCount() * len(uniqueValues))
-        
+
         outFeat = QgsFeature()
 
-        for j in uniqueValues:                    
+        for j in uniqueValues:
             cx = 0.00
             cy = 0.00
             points = []
             weights = []
-            features = QGisLayers.features(layer)            
+            features = QGisLayers.features(layer)
             for feat in features:
                 current += 1
                 progress.setPercentage(current * total)
@@ -132,7 +132,7 @@ class MeanCoords(GeoAlgorithm):
             meanPoint = QgsPoint(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([QVariant(cx), QVariant(cy), QVariant(j)])            
+            outFeat.setAttributes([QVariant(cx), QVariant(cy), QVariant(j)])
             writer.addFeature(outFeat)
 
             if single:

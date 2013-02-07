@@ -64,7 +64,7 @@ class LayerExporter():
             except UnicodeEncodeError:
                 isASCII=False
             if (not unicode(layer.source()).endswith("shp") or not isASCII):
-                writer = QgsVectorFileWriter( output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs() )                
+                writer = QgsVectorFileWriter( output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs() )
                 for feat in layer.getFeatures():
                     writer.addFeature(feat)
                 del writer

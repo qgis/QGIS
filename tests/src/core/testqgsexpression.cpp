@@ -383,8 +383,8 @@ class TestQgsExpression: public QObject
     void eval_columns()
     {
       QgsFields fields;
-      fields.append( QgsField("x1") );
-      fields.append( QgsField("x2") );
+      fields.append( QgsField( "x1" ) );
+      fields.append( QgsField( "x2" ) );
       fields.append( QgsField( "foo", QVariant::Int ) );
 
       QgsFeature f;

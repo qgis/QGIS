@@ -32,7 +32,7 @@ from PyQt4.QtCore import *
 class OutputTable(Output):
 
     compatible = None
-    
+
     def getFileFilter(self,alg):
         exts = ['csv']
         for i in range(len(exts)):
@@ -44,13 +44,13 @@ class OutputTable(Output):
 
     def getCompatibleFileName(self, alg):
         '''Returns a filename that is compatible with the algorithm that is going to generate this output.
-        If the algorithm supports the file format of the current output value, it returns that value. If not, 
+        If the algorithm supports the file format of the current output value, it returns that value. If not,
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
         ext = self.value[self.value.rfind(".") + 1:]
         if ext in alg.provider.getSupportedOutputTableExtensions:
             return self.value
         else:
-            if self.compatible is None:                            
+            if self.compatible is None:
                 self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
             return self.compatible;
 
@@ -68,4 +68,4 @@ class OutputTable(Output):
             settings = QSettings()
             self.encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
 
-        return SextanteTableWriter(self.value, self.encoding, fields)        
+        return SextanteTableWriter(self.value, self.encoding, fields)

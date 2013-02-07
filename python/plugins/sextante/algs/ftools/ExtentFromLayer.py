@@ -76,10 +76,10 @@ class ExtentFromLayer(GeoAlgorithm):
             self.featureExtent(layer, writer, progress)
         else:
             self.layerExtent(layer, writer, progress)
-        
-        del writer        
 
-    def layerExtent(self, layer, writer, progress):        
+        del writer
+
+    def layerExtent(self, layer, writer, progress):
         rect = layer.extent()
         minx = rect.xMinimum()
         miny = rect.yMinimum()
@@ -97,10 +97,10 @@ class ExtentFromLayer(GeoAlgorithm):
                 QgsPoint(maxx, maxy),
                 QgsPoint(maxx, miny),
                 QgsPoint(minx, miny)
-               ]        
+               ]
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
-        feat.setGeometry(geometry)        
+        feat.setGeometry(geometry)
         attrs = [QVariant(minx),
             QVariant(miny),
             QVariant(maxx),
@@ -153,7 +153,7 @@ class ExtentFromLayer(GeoAlgorithm):
                 QVariant(height),
                 QVariant(width) ]
             feat.setAttributes(attrs)
-                                    
+
             writer.addFeature(feat)
             current += 1
             progress.setPercentage(int(current * total))

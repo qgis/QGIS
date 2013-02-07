@@ -33,35 +33,35 @@ except AttributeError:
 class MultilineTextPanel(QtGui.QWidget):
 
     USE_TEXT = 0
-    
+
     def __init__(self, options, parent = None):
         super(MultilineTextPanel, self).__init__(parent)
-        self.options = options                
+        self.options = options
         self.verticalLayout = QtGui.QVBoxLayout(self)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.combo = QtGui.QComboBox()
-        self.combo.addItem("[Use text below]")    
+        self.combo.addItem("[Use text below]")
         for option in options:
-            self.combo.addItem(option.name(), option)    
+            self.combo.addItem(option.name(), option)
         self.combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addWidget(self.combo)
-        self.textBox = QtGui.QPlainTextEdit()        
+        self.textBox = QtGui.QPlainTextEdit()
         self.verticalLayout.addWidget(self.textBox)
         self.setLayout(self.verticalLayout)
-    
+
     def setText(self, text):
         self.textBox.setPlainText(text)
-        
+
     def getOption(self):
         return self.combo.currentIndex()
-        
+
     def getValue(self):
         if self.combo.currentIndex() == 0:
             return unicode(self.textBox.toPlainText())
         else:
             return self.combo.itemData(self.combo.currentIndex()).toPyObject()
-        
+
     def setValue(self, value):
         items = [self.combo.itemData(i).toPyObject() for i in range(1,self.combo.count())]
         idx = 0
@@ -71,8 +71,7 @@ class MultilineTextPanel(QtGui.QWidget):
                 if item.alg == value.alg and item.param == value.param:
                     self.combo.setCurrentIndex(idx)
                     return
-        self.combo.setCurrentIndex(idx)                
+        self.combo.setCurrentIndex(idx)
         value = self.model.getValueFromAlgorithmAndParameter(value)
         if value:
             self.textBox.setPlainText(str(value))
-            

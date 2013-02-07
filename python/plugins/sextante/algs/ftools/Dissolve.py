@@ -53,11 +53,11 @@ class Dissolve(GeoAlgorithm):
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
         field = vlayerA.fieldNameIndex(fieldname)
         GEOS_EXCEPT = True
-        vproviderA = vlayerA.dataProvider()        
+        vproviderA = vlayerA.dataProvider()
         fields = vproviderA.fields()
         writer = self.getOutputFromName(Dissolve.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         #inFeat = QgsFeature()
-        outFeat = QgsFeature()        
+        outFeat = QgsFeature()
         nElement = 0
         nFeat = vproviderA.featureCount()
         if not useField:

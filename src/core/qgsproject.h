@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProject : public QObject
     bool topologicalEditing() const;
 
     /** Return project's home path
-	@return home path of project (or QString::null if not set)
+    @return home path of project (or QString::null if not set)
         @note added in version 2.0 */
     QString homePath() const;
 

@@ -539,7 +539,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
               break;
           }
           layer.fields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
-                                      db_get_column_length( column ), db_get_column_precision( column ) ) );
+                                         db_get_column_length( column ), db_get_column_precision( column ) ) );
 
           if ( G_strcasecmp( db_get_column_name( column ), layer.fieldInfo->key ) == 0 )
           {

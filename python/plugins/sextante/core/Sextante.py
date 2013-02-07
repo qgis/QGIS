@@ -142,14 +142,14 @@ class Sextante:
         Sextante.fireAlgsListHasChanged()
 
     @staticmethod
-    def loadFromProviders():        
+    def loadFromProviders():
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
 
     @staticmethod
     def updateProviders():
-        
+
         for provider in Sextante.providers:
             provider.loadAlgorithms()
 
@@ -174,7 +174,7 @@ class Sextante:
             for alg in providerAlgs:
                 algs[alg.commandLineName()] = alg
             Sextante.algs[provider.getName()] = algs
-            
+
         #this is a special provider, since it depends on others
         #TODO Fix circular imports, so this provider can be incorporated
         #as a normal one
@@ -291,9 +291,9 @@ class Sextante:
             return
 
         if not alg.checkInputCRS():
-            print ("Warning: Not all input layers use the same CRS.\n" + 
+            print ("Warning: Not all input layers use the same CRS.\n" +
                    "This can cause unexpected results.")
-            
+
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         # don't set the wait cursor twice, because then when you restore it
@@ -305,10 +305,10 @@ class Sextante:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         useThreads = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
-        
+
         #this is doing strange things, so temporarily the thread execution is disabled from the console
-        useThreads = False        
-                                  
+        useThreads = False
+
         if useThreads:
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()

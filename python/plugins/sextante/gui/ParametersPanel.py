@@ -197,7 +197,7 @@ class ParametersPanel(QtGui.QWidget):
             return layer.name() + " [" + layer.crs().description() +"]"
         else:
             return layer.name()
-    
+
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             layers = QGisLayers.getRasterLayers()

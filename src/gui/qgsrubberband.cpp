@@ -414,8 +414,8 @@ void QgsRubberBand::paint( QPainter* p )
           QVector<QPointF>::const_iterator ptIt = pts.constBegin();
           for ( ; ptIt != pts.constEnd(); ++ptIt )
           {
-            double x = (*ptIt).x();
-            double y = (*ptIt).y();
+            double x = ( *ptIt ).x();
+            double y = ( *ptIt ).y();
 
             qreal s = ( mIconSize - 1 ) / 2;
 
@@ -481,7 +481,7 @@ void QgsRubberBand::updateRect()
         qreal s = ( mIconSize - 1 ) / 2;
         qreal p = mWidth;
         QgsRectangle rect = QgsRectangle( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
-                                          it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p);
+                                          it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
         r.combineExtentWith( &rect );
       }
     }

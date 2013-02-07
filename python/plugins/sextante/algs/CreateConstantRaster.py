@@ -51,7 +51,7 @@ class CreateConstantRaster(GeoAlgorithm):
         value = self.getOutputValue(self.NUMBER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
-        w = SextanteRasterWriter(output.getCompatibleFileName(self), layer.extent().xMinimum(), layer.extent().yMinimum(), layer.extent().xMaximum(), 
+        w = SextanteRasterWriter(output.getCompatibleFileName(self), layer.extent().xMinimum(), layer.extent().yMinimum(), layer.extent().xMaximum(),
                                  layer.extent().yMaximum(), cellsize, 1, self.crs)
         w.matrix[:] = value
         w.close()

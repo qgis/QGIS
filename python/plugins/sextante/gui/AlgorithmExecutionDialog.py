@@ -210,10 +210,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 reply = QMessageBox.question(self, "Unmatching CRS's",
                         "Layers do not all use the same CRS.\n" +
                         "This can cause unexpected results.\n" +
-                        "Do you want to continue?", 
+                        "Do you want to continue?",
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                 if reply == QtGui.QMessageBox.No:
-                    return                            
+                    return
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
                 if keepOpen or useThread:
@@ -294,7 +294,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def finish(self):
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)        
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         SextantePostprocessing.handleAlgorithmResults(self.alg, self, not keepOpen)
         self.executed = True
         self.setInfo("Algorithm %s finished" % self.alg.name)

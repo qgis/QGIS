@@ -34,7 +34,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     Q_OBJECT
 
   public:
-    enum ProgressMode {
+    enum ProgressMode
+    {
       CopyFeatures = 0,
       ProcessFeatures,
       AddFields,

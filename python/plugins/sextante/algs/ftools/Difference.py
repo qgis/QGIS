@@ -47,11 +47,11 @@ class Difference(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT))
-        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT2))        
+        vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT2))
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
-        vproviderB = vlayerB.dataProvider()        
+        vproviderB = vlayerB.dataProvider()
         fields = vproviderA.fields()
         # check for crs compatibility
         crsA = vproviderA.crs()
@@ -67,8 +67,8 @@ class Difference(GeoAlgorithm):
         outFeat = QgsFeature()
         index = utils.createSpatialIndex(vlayerB)
         nElement = 0
-        selectionA = QGisLayers.features(vlayerA)   
-        nFeat = len(selectionA)         
+        selectionA = QGisLayers.features(vlayerA)
+        nFeat = len(selectionA)
         for inFeatA in selectionA:
             nElement += 1
             progress.setPercentage(nElement/float(nFeat) * 100)
@@ -77,7 +77,7 @@ class Difference(GeoAlgorithm):
             diff_geom = QgsGeometry( geom )
             atMap = inFeatA.attributes()
             intersects = index.intersects( geom.boundingBox() )
-            for id in intersects:                
+            for id in intersects:
                 vlayerB.featureAtId( int( id ), inFeatB , True, allAttrsB )
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
@@ -96,7 +96,7 @@ class Difference(GeoAlgorithm):
                     FEATURE_EXCEPT = False
                     continue
 
-              
+
         del writer
         if not GEOS_EXCEPT:
             SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing difference")

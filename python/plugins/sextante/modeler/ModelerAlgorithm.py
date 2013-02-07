@@ -72,7 +72,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         #Each entry is a map with (paramname, paramvalue) values for algs[i].
         #paramvalues are instances of AlgorithmAndParameter
         self.algParameters = []
-        
+
         #algorithms that each algorithm depends on.
         #This is just a list of dependencies not set by outputs and inputs
         #but explicitely entered instead, meaning that an algorithm must ''wait''
@@ -146,7 +146,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         self.algs.append(alg)
                         dependenceline = lines.readline().strip("\n")
                         dependencies = [];
-                        if dependenceline != str(None):                        
+                        if dependenceline != str(None):
                             for index in dependenceline.split(","):
                                 dependencies.append(int(index))
                         for param in alg.parameters:
@@ -198,7 +198,7 @@ class ModelerAlgorithm(GeoAlgorithm):
     def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap, dependencies):
         self.algParameters[algIndex] = parametersMap
         self.algOutputs[algIndex] = outputsMap
-        self.dependencies[algIndex] =  dependencies       
+        self.dependencies[algIndex] =  dependencies
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.updateModelerView()
@@ -216,11 +216,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         del self.algParameters[index]
         del self.algOutputs[index]
         del self.algPos[index]
-        
+
         index = -1
         for paramValues in self.algParameters:
             index += 1
-            newValues = []                            
+            newValues = []
             for name, value in paramValues:
                 if value:
                     if value.alg > index:
@@ -229,7 +229,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         newValues[name] = value
                 else:
                     newValues[name] = value
-                        
+
         self.updateModelerView()
         return True
 
@@ -269,8 +269,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         return False
 
     def deactivateAlgorithm(self, algIndex, update = False):
-        if algIndex not in self.deactivated:            
-            dependent = self.getDependentAlgorithms(algIndex)            
+        if algIndex not in self.deactivated:
+            dependent = self.getDependentAlgorithms(algIndex)
             self.deactivated.extend(dependent)
         if update:
             self.updateModelerView()
@@ -297,8 +297,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         for aap in self.algParameters[algIndex].values():
             index += 1
             if aap is not None:
-                if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:   
-                    algs.append(index)                                             
+                if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
+                    algs.append(index)
                     dep = self.getDependsOnAlgorithms(index)
                     for alg in dep:
                         if alg not in algs:
@@ -315,7 +315,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 continue
             for aap in alg.values():
                 if aap is not None:
-                    if aap.alg == algIndex:                        
+                    if aap.alg == algIndex:
                         dep = self.getDependentAlgorithms(index)
                         for alg in dep:
                             if alg not in dependent:
@@ -324,12 +324,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         index = -1
         for dep in self.dependencies:
             index += 1
-            if algIndex in dep:               
+            if algIndex in dep:
                 dep = self.getDependentAlgorithms(index)
                 for alg in dep:
                     if alg not in dependent:
                         dependent.append(alg)
-                
+
         return dependent
 
     def getPositionForAlgorithmItem(self):
@@ -377,7 +377,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             if len(self.dependencies[i]) != 0:
                 s += ",".join([str(index) for index in self.dependencies[i]]) + "\n"
             else:
-                s += str(None) + "\n" 
+                s += str(None) + "\n"
             for param in alg.parameters:
                 value = self.algParameters[i][param.name]
                 if value:

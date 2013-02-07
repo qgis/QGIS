@@ -129,7 +129,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     if isinstance(parameter, ParameterVector):
                        hasVectorOutput = True
                     if isinstance(parameter, ParameterMultipleInput) and parameter.datatype < 3:
-                       hasVectorOutput = True                        
+                       hasVectorOutput = True
                 elif line.startswith("*Parameter"):
                     param = ParameterFactory.getFromString(line[1:])
                     param.isAdvanced = True
@@ -265,7 +265,7 @@ class GrassAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value == None or param.value == "":
                 continue
-            if (param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER 
+            if (param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER
                     or param.name == self.GRASS_MIN_AREA_PARAMETER or param.name == self.GRASS_SNAP_TOLERANCE_PARAMETER):
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):

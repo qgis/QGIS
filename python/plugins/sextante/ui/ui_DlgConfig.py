@@ -22,12 +22,12 @@ class Ui_DlgConfig(object):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        
+
         try:
             from qgis.gui import QgsFilterLineEdit
-            self.searchBox = QgsFilterLineEdit(DlgConfig)            
+            self.searchBox = QgsFilterLineEdit(DlgConfig)
         except ImportError:
-            self.searchBox = QtGui.QLineEdit(DlgConfig)  
+            self.searchBox = QtGui.QLineEdit(DlgConfig)
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.verticalLayout.addWidget(self.searchBox)
         self.tree = QtGui.QTreeWidget(DlgConfig)

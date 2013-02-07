@@ -43,9 +43,9 @@ class ParameterTable(ParameterDataObject):
             else:
                 return False
         if isinstance(obj, QgsVectorLayer):
-            source = unicode(obj.source())           
+            source = unicode(obj.source())
             self.value = source
-            return True            
+            return True
         else:
             layers = QGisLayers.getVectorLayers()
             for layer in layers:
@@ -55,7 +55,7 @@ class ParameterTable(ParameterDataObject):
                     return True
             val = unicode(obj)
             self.value = val
-            return os.path.exists(self.value)            
+            return os.path.exists(self.value)
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

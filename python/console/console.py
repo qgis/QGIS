@@ -352,7 +352,7 @@ class PythonConsoleWidget(QWidget):
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()
-        
+
     def callWidgetMessageBar(self, text):
         self.textEditOut.widgetMessageBar(iface, text)
 

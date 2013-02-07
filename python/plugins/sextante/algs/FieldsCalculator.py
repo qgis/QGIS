@@ -86,7 +86,7 @@ class FieldsCalculator(GeoAlgorithm):
             outFeat.setGeometry(inGeom)
             atMap = inFeat.attributeMap()
             atMap.append(QVariant(result))
-            outFeat.setAttributeMap(atMap)            
+            outFeat.setAttributeMap(atMap)
             writer.addFeature(outFeat)
         del writer
 

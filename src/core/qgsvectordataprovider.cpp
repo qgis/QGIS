@@ -228,7 +228,7 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 
 QgsAttributeList QgsVectorDataProvider::attributeIndexes()
 {
-    int count = fields().count();
+  int count = fields().count();
   QgsAttributeList list;
 
   for ( int i = 0; i < count; i++ )

@@ -44,7 +44,7 @@ class SextanteConfig():
     SHOW_DEBUG_IN_DIALOG = "SHOW_DEBUG_IN_DIALOG"
     RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
     PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
-    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"  
+    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"
     SHOW_CRS_DEF = "SHOW_CRS_DEF"
     WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
 
@@ -74,7 +74,7 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.PRE_EXECUTION_SCRIPT,"Pre-execution script",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.POST_EXECUTION_SCRIPT,"Post-execution script",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RECENT_ALGORITHMS,"Recent algs","", hidden=True))
-        
+
 
     @staticmethod
     def setGroupIcon(group, icon):

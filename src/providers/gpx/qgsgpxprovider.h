@@ -129,13 +129,14 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
   private:
 
-    enum DataType {
+    enum DataType
+    {
       WaypointType = 1,
       RouteType = 2,
       TrackType = 4,
 
-      TrkRteType = RouteType|TrackType,
-      AllType = WaypointType|RouteType|TrackType
+      TrkRteType = RouteType | TrackType,
+      AllType = WaypointType | RouteType | TrackType
 
     };
 

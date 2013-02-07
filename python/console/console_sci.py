@@ -41,7 +41,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         code.InteractiveInterpreter.__init__(self, locals=None)
 
         self.parent = parent
-        
+
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 

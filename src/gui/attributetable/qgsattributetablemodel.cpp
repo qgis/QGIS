@@ -592,14 +592,14 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( mFeatureMap.contains( fid ) )
   {
     QgsFeature &f = mFeatureMap[ fid ];
-    if( idx >= f.attributes().size() )
+    if ( idx >= f.attributes().size() )
       f.attributes().resize( mFieldCount );
     f.setAttribute( idx, value );
   }
 
   if ( mFeat.id() == fid || featureAtId( fid ) )
   {
-    if( idx >= mFeat.attributes().size() )
+    if ( idx >= mFeat.attributes().size() )
       mFeat.attributes().resize( mFieldCount );
     mFeat.setAttribute( idx, value );
   }
