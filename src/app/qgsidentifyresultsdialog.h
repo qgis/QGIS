@@ -24,6 +24,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
+#include "qgsmaptoolidentify.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include <QWidget>
@@ -101,17 +102,20 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
     ~QgsIdentifyResultsDialog();
 
     /** Add add feature from vector layer */
-    void addFeature( QgsVectorLayer *layer,
+    void addFeature( QgsVectorLayer * layer,
                      const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
 
     /** Add add feature from other layer */
-    void addFeature( QgsRasterLayer *layer,
+    void addFeature( QgsRasterLayer * layer,
                      QString label,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes,
                      const QgsFields &fields = QgsFields(),
                      const QgsFeature &feature = QgsFeature() );
+
+    /** Add feature from identify results */
+    void addFeature( QgsMapToolIdentify::IdentifyResult result );
 
     /** map tool was deactivated */
     void deactivate();
