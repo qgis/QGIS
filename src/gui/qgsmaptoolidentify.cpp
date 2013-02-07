@@ -439,6 +439,25 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     foreach ( int i, values.keys() )
     {
+      QVariant value = values.value( i );
+      if ( value.type() == QVariant::Bool && !value.toBool() )
+      {
+        // sublayer not visible or not queryable
+        continue;
+      }
+
+      if ( value.type() == QVariant::String )
+      {
+        // error
+        // TODO: better error reporting
+        QString label = layer->subLayers().value( i );
+        attributes.clear();
+        attributes.insert( tr( "Error" ), value.toString() );
+
+        results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+        continue;
+      }
+
       // list of feature stores for a single sublayer
       QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
 
