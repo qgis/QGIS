@@ -341,8 +341,7 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
   {
     const FetchJoinInfo& info = joinIt.value();
-    QgsVectorLayer* joinLayer = joinIt.key();
-    Q_ASSERT( joinLayer );
+    Q_ASSERT( joinIt.key() );
 
     QVariant targetFieldValue = f.attribute( info.targetField );
     if ( !targetFieldValue.isValid() )
