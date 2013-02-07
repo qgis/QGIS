@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -53,6 +52,7 @@ from sextante.core.WrongHelpFileException import WrongHelpFileException
 from sextante.outputs.OutputFile import OutputFile
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterString import ParameterString
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -286,8 +286,8 @@ class GrassAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
                 command+=(" " + param.name + "=" + str(param.options[idx]));
-            elif isinstance(param, ParameterSelection):
-                command+=(" " + param.name + "=" + str(param.value));
+            elif isinstance(param, ParameterString):
+                command+=(" " + param.name + "=\"" + str(param.value) + "\"");
             else:
                 command+=(" " + param.name + "=" + str(param.value));
 
