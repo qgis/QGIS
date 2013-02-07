@@ -48,7 +48,7 @@ class QgsPalLayerSettings
       MultiRight
     };
 
-    // update mDataDefinedNames in constructor when adding new enum value
+    // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
       Size = 0,

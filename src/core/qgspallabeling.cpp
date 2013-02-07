@@ -428,10 +428,10 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
   QVariant oldPropertyField = layer->customProperty( oldPropertyName );
 
   // Fix to migrate from old-style vector api, where returned QMap keys possibly
-  //   had 'holes' in sequence of field indecies, e.g. 0,2,3
+  //   had 'holes' in sequence of field indices, e.g. 0,2,3
   // QgsAttrPalIndexNameHash provides a means of access field name in sequences from
   //   providers that procuded holes (e.g. PostGIS skipped geom column), otherwise it is empty
-  QgsAttrPalIndexNameHash oldIndeciesToNames = layer->dataProvider()->palAttributeIndexNames();
+  QgsAttrPalIndexNameHash oldIndicesToNames = layer->dataProvider()->palAttributeIndexNames();
 
   QString name;
   if ( newPropertyField.isValid() )
@@ -450,9 +450,9 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
 
     if ( conversionOk )
     {
-      if ( !oldIndeciesToNames.isEmpty() )
+      if ( !oldIndicesToNames.isEmpty() )
       {
-        name = oldIndeciesToNames.value( indx );
+        name = oldIndicesToNames.value( indx );
       }
       else
       {
