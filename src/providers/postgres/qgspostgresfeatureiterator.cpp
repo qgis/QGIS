@@ -50,7 +50,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
     P->mActiveIterator->close();
-  P->mActiveIterator = this;
 
   mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
 
@@ -78,6 +77,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     mClosed = true;
     return;
   }
+
+  P->mActiveIterator = this;
 
   mFetched = 0;
 }

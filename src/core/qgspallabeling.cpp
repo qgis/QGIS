@@ -1165,7 +1165,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  QgsDebugMsg( "PREPARE LAYER" );
+  QgsDebugMsg( "PREPARE LAYER " + layer->id() );
   Q_ASSERT( mMapRenderer != NULL );
 
   // start with a temporary settings class, find out labeling info

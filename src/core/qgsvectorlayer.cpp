@@ -1057,7 +1057,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     bool labeling = false;
     prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
-
     try
     {
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
