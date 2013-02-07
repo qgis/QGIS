@@ -292,9 +292,19 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *layer )
   return 0;
 }
 
-void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer,
-    const QgsFeature &f,
-    const QMap<QString, QString> &derivedAttributes )
+void QgsIdentifyResultsDialog::addFeature( QgsMapToolIdentify::IdentifyResult result )
+{
+  if ( result.mLayer->type() == QgsMapLayer::VectorLayer )
+  {
+    addFeature( qobject_cast<QgsVectorLayer *>( result.mLayer ), result.mFeature, result.mDerivedAttributes );
+  }
+  else if ( result.mLayer->type() == QgsMapLayer::RasterLayer )
+  {
+    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields,  result.mFeature );
+  }
+}
+
+void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
 

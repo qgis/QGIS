@@ -23,7 +23,7 @@
 #include <QPair>
 #include <QAction>
 
-class QgsIdentifyResults;
+class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
