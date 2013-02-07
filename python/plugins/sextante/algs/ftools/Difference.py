@@ -78,7 +78,7 @@ class Difference(GeoAlgorithm):
             atMap = inFeatA.attributes()
             intersects = index.intersects( geom.boundingBox() )
             for id in intersects:
-                vlayerB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+                vlayerB.featureAtId( int( id ), inFeatB , True)
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
                 try:
                     if diff_geom.intersects( tmpGeom ):

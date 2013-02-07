@@ -27,7 +27,7 @@ from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
 
 def createSpatialIndex(layer):
-    idx = QgsSpatialIndex()
+    idx = QgsSpatialIndex()    
     features = QGisLayers.features(layer)
     for ft in features:
         idx.insertFeature(ft)
@@ -61,12 +61,12 @@ def createUniqueFieldName(fieldName, fieldList):
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
-    if idx == -1:
+    if idx == -1:            
         fn = createUniqueFieldName(fieldName, fieldList)
         field =  QgsField(fn, QVariant.Double, "", fieldLen, fieldPrec)
         idx = len(fieldList)
         fieldList.append(field)
-
+        
     return idx, fieldList
 
 def extractPoints( geom ):
@@ -80,7 +80,7 @@ def extractPoints( geom ):
         if geom.isMultipart():
             lines = geom.asMultiPolyline()
             for line in lines:
-              points.extend(line)
+                points.extend(line)
         else:
             points = geom.asPolyline()
     elif geom.type() == QGis.Polygon:
@@ -96,13 +96,13 @@ def extractPoints( geom ):
 
     return points
 
-def getUniqueValues(layer, fieldIndex):
+def getUniqueValues(layer, fieldIndex):    
     values = []
     layer.select([fieldIndex], QgsRectangle(), False)
     features = QGisLayers.features(layer)
     for feat in features:
         if feat.attributes()[fieldIndex] not in values:
-            values.append(feat.attributes()[fieldIndex])
+            values.append(feat.attributes()[fieldIndex])            
     return values
 
 def getUniqueValuesCount(layer, fieldIndex):
@@ -110,24 +110,23 @@ def getUniqueValuesCount(layer, fieldIndex):
 
 # From two input field maps, create single field map
 def combineVectorFields( layerA, layerB ):
+    fields = []
     fieldsA = layerA.dataProvider().fields()
+    fields.extend(fieldsA)
+    namesA = [unicode(f.name()).lower() for f in fieldsA]
     fieldsB = layerB.dataProvider().fields()
-    fieldsB = testForUniqueness( fieldsA, fieldsB )
     for field in fieldsB:
-        fieldsA.append(field)
-    return fieldsA
-
-# Check if two input field maps are unique, and resolve name issues if they aren't
-def testForUniqueness( fieldList1, fieldList2 ):
-    changed = True
-    while changed:
-        changed = False
-        for i in fieldList1:
-            for j in fieldList2:
-                if j.name() == i.name():
-                    j = createUniqueFieldNameFromName( j )
-                    changed = True
-    return fieldList2
+        name = unicode(field.name()).lower()        
+        if name in namesA:
+            idx=2
+            newName = name + "_" + unicode(idx)
+            while newName in namesA:
+                idx += 1
+                newName = name + "_" + unicode(idx)
+            field = QgsField(newName, field.type(), field.typeName())
+        fields.append(field)
+        
+    return fields
 
 # Create a unique field name based on input field name
 def createUniqueFieldNameFromName( field ):

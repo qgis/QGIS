@@ -212,9 +212,9 @@ class ParametersPanel(QtGui.QWidget):
                 item = QtGui.QComboBox()
                 layers = QGisLayers.getVectorLayers(param.shapetype)
                 if (param.optional):
-                    item.addItem((self.NOT_SELECTED, None))
+                    item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
-                    item.addItem((self.getExtendedLayerName(layer), layer))
+                    item.addItem(self.getExtendedLayerName(layer), layer)
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
@@ -230,9 +230,9 @@ class ParametersPanel(QtGui.QWidget):
                 item = QtGui.QComboBox()
                 layers = QGisLayers.getTables()
                 if (param.optional):
-                    item.addItem((self.NOT_SELECTED, None))
+                    item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
-                    item.addItem((layer.name(), layer))
+                    item.addItem(layer.name(), layer)
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:

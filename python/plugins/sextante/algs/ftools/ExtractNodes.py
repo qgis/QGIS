@@ -67,10 +67,10 @@ class ExtractNodes(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
 
             points = utils.extractPoints(inGeom)
-            outFeat.setAttributeMap(atMap)
+            outFeat.setAttributes(atMap)
 
             for i in points:
                 outFeat.setGeometry(outGeom.fromPoint(i))

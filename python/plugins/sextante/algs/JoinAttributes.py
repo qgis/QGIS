@@ -60,17 +60,17 @@ class JoinAttributes(GeoAlgorithm):
         # Layer 1
         layer = QGisLayers.getObjectFromUri(input)
         provider = layer.dataProvider()
-        join_field1_index = layer.fieldNameIndex(field)
+        joinField1Index = layer.fieldNameIndex(field)
         # Layer 2
         layer2 = QGisLayers.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
-        fields2 = provider2.fields()
-        join_field2_index = layer2.fieldNameIndex(field2)
+        
+        joinField2Index = layer2.fieldNameIndex(field2)
 
         # Output
-        outFields = input.fields()
-        for f in fields2:
-            outFields.append(f)
+        outFields = []
+        outFields.extend(provider.fields())
+        outFields.extend(provider2.fields())        
 
         writer = output.getVectorWriter(outFields, provider.geometryType(), provider.crs())
 
@@ -82,18 +82,19 @@ class JoinAttributes(GeoAlgorithm):
         features = QGisLayers.features(layer);
         for inFeat in features:
             inGeom = inFeat.geometry()
-            atMap = inFeat.attributes()
-            join_value1 = atMap[join_field1_index].toString()
-            while provider2.nextFeature(inFeat2):
+            attrs = inFeat.attributes()
+            joinValue1 = attrs[joinField1Index].toString()  
+            features2 = QGisLayers.features(layer2);
+            for inFeat2 in features2:                              
                 ## Maybe it should cache this entries...
-                atMap2 = inFeat2.attributeMap()
-                join_value2 = atMap2[join_field2_index].toString()
-                if join_value1 == join_value2:
+                attrs2 = inFeat2.attributes()
+                joinValue2 = attrs2[joinField2Index].toString()
+                if joinValue1 == joinValue2:
                     # create the new feature
-                    outFeat.setGeometry(inGeom)
-                    atMap.extend(atMap2)
-                    break;
-            outFeat.setAttributes(atMap)
+                    outFeat.setGeometry(inGeom)                    
+                    attrs.extend(attrs2)                                        
+                    break;                    
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
         del writer

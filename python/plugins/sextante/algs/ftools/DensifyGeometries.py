@@ -52,7 +52,7 @@ class DensifyGeometries(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
         self.addParameter(ParameterNumber(self.VERTICES, "Vertices to add", 1, 10000000, 1))
 
-        self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))
+        self.addOutput(OutputVector(self.OUTPUT, "Densified layer"))
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))

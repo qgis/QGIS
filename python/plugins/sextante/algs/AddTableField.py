@@ -32,7 +32,6 @@ from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.QGisLayers import QGisLayers
-from PyQt4 import QtGui
 
 
 class AddTableField(GeoAlgorithm):
@@ -64,7 +63,7 @@ class AddTableField(GeoAlgorithm):
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
+        fields.append(QgsField(fieldname, self.TYPES[fieldtype]))
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -76,9 +75,9 @@ class AddTableField(GeoAlgorithm):
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry( inGeom )
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
             atMap.append(QVariant())
-            outFeat.addAttribute( len(vprovider.fields()), QVariant() )
+            outFeat.setAttributes(atMap)
             writer.addFeature( outFeat )
         del writer
 

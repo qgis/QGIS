@@ -53,6 +53,8 @@ class   Union(GeoAlgorithm):
         vproviderA = vlayerA.dataProvider()
 
         fields = utils.combineVectorFields(vlayerA, vlayerB )
+        names = [field.name() for field in fields]
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, str(names))
         #longNames = ftools_utils.checkFieldNameLength( fields )
         #if not longNames.isEmpty():
             #raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
@@ -83,7 +85,7 @@ class   Union(GeoAlgorithm):
             except:
               # this really shouldn't happen, as we
               # haven't edited the input geom at all
-              FEATURE_EXCEPT = False
+              raise GeoAlgorithmExecutionException("Feature exception while computing union")
           else:
             for id in intersects:
                 count += 1
