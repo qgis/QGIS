@@ -45,7 +45,7 @@ class QgsAtlasCompositionWidget:
 
     void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
     void on_mAtlasSortFeatureKeyComboBox_currentIndexChanged( int index );
-    void on_mAtlasSortFeatureDirectionComboBox_currentIndexChanged( int index );
+    void on_mAtlasSortFeatureDirectionButton_clicked();
     void on_mAtlasFeatureFilterEdit_textChanged( const QString& text );
     void on_mAtlasFeatureFilterButton_clicked();
 

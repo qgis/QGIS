@@ -75,8 +75,8 @@
            <number>0</number>
           </property>
           <item>
-           <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0">
-            <item row="5" column="0">
+           <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0">
+            <item row="4" column="0">
              <widget class="QLabel" name="mAtlasFeatureFilterLabel">
               <property name="text">
                <string>Feature filter</string>
@@ -93,21 +93,21 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
                <string>Margin around coverage</string>
               </property>
              </widget>
             </item>
-            <item row="9" column="0">
+            <item row="8" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>Output filename expression</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="5" column="1">
              <widget class="QSpinBox" name="mAtlasMarginSpinBox">
               <property name="suffix">
                <string> %</string>
@@ -120,14 +120,14 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="2">
+            <item row="8" column="2">
              <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
               <property name="text">
                <string>...</string>
               </property>
              </widget>
             </item>
-            <item row="9" column="1">
+            <item row="8" column="1">
              <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
             </item>
             <item row="1" column="0">
@@ -144,14 +144,14 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="0" colspan="2">
+            <item row="6" column="0" colspan="2">
              <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
               <property name="text">
                <string>Fixed scale</string>
               </property>
              </widget>
             </item>
-            <item row="10" column="0" colspan="2">
+            <item row="9" column="0" colspan="2">
              <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
               <property name="text">
                <string>Single file export when possible</string>
@@ -169,7 +169,18 @@
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QComboBox" name="mAtlasSortFeatureKeyComboBox"/>
+             <widget class="QComboBox" name="mAtlasSortFeatureKeyComboBox">
+              <property name="toolTip">
+               <string>Sort key</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="mAtlasFeatureFilterEdit">
+              <property name="toolTip">
+               <string>Feature filter</string>
+              </property>
+             </widget>
             </item>
             <item row="3" column="0">
              <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
@@ -178,18 +189,28 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="2">
+            <item row="4" column="2">
              <widget class="QToolButton" name="mAtlasFeatureFilterButton">
+              <property name="toolTip">
+               <string>Open expression builder</string>
+              </property>
               <property name="text">
                <string>...</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
-            </item>
-            <item row="4" column="1">
-             <widget class="QComboBox" name="mAtlasSortFeatureDirectionComboBox"/>
+            <item row="3" column="2">
+             <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
+              <property name="toolTip">
+               <string>Sort direction</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::UpArrow</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

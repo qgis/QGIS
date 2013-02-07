@@ -61,9 +61,7 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
   }
 
   // Sort direction
-  mAtlasSortFeatureDirectionComboBox->insertItem( 0, tr("Ascending") );
-  mAtlasSortFeatureDirectionComboBox->insertItem( 1, tr("Descending") );
-  mAtlasSortFeatureDirectionComboBox->setEnabled( false );
+  mAtlasSortFeatureDirectionButton->setEnabled( false );
 
   mAtlasSortFeatureKeyComboBox->setEnabled( false );
 
@@ -289,11 +287,11 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int s
   }
   
   if ( state == Qt::Checked ) {
-    mAtlasSortFeatureDirectionComboBox->setEnabled( true );
+    mAtlasSortFeatureDirectionButton->setEnabled( true );
     mAtlasSortFeatureKeyComboBox->setEnabled( true );
   }
   else {
-    mAtlasSortFeatureDirectionComboBox->setEnabled( false );
+    mAtlasSortFeatureDirectionButton->setEnabled( false );
     mAtlasSortFeatureKeyComboBox->setEnabled( false );
   }
   atlasMap->setSortFeatures( state == Qt::Checked );
@@ -310,19 +308,6 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChan
   if ( index != -1 ) {
     atlasMap->setSortKeyAttributeIndex( index );
   }
-}
-
-void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionComboBox_currentIndexChanged( int index )
-{
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap )
-  {
-    return;
-  }
-
-  if ( index != -1 ) {
-    atlasMap->setSortAscending( index == 0 ? true : false );
-  }  
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QString& text )
@@ -355,6 +340,20 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
       mAtlasFeatureFilterEdit->setText( expression );
     }
   }
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
+{
+  Qt::ArrowType at = mAtlasSortFeatureDirectionButton->arrowType();
+  at = (at == Qt::UpArrow) ? Qt::DownArrow : Qt::UpArrow;
+  mAtlasSortFeatureDirectionButton->setArrowType( at );
+
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap ) {
+    return;
+  }
+
+  atlasMap->setSortAscending( at == Qt::UpArrow );
 }
 
 void QgsAtlasCompositionWidget::fillSortColumns()
@@ -403,7 +402,7 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureCheckBox->setCheckState( atlasMap->sortFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureKeyComboBox->setCurrentIndex( atlasMap->sortKeyAttributeIndex() );
-  mAtlasSortFeatureDirectionComboBox->setCurrentIndex( atlasMap->sortAscending() ? 0 : 1 );
+  mAtlasSortFeatureDirectionButton->setArrowType( atlasMap->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
   mAtlasFeatureFilterEdit->setText( atlasMap->featureFilter() );
 }
 
