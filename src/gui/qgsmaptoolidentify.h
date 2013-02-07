@@ -29,6 +29,7 @@
 
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsMapLayer;
 class QgsMapCanvas;
 
 /**
@@ -60,25 +61,20 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       RasterLayer
     };
 
-    struct VectorResult
+    struct IdentifyResult
     {
-      VectorResult() {}
-      VectorResult( QgsVectorLayer * layer, QgsFeature feature, QMap< QString, QString > derivedAttributes ):
-          mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes )  {}
-      QgsVectorLayer* mLayer;
-      QgsFeature mFeature;
-      QMap< QString, QString > mDerivedAttributes;
-    };
+      IdentifyResult() {}
 
-    struct RasterResult
-    {
-      RasterResult() {}
-      RasterResult( QgsRasterLayer * layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes ):
+      IdentifyResult( QgsMapLayer * layer, QgsFeature feature, QMap< QString, QString > derivedAttributes ):
+          mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes )  {}
+
+      IdentifyResult( QgsMapLayer * layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes ):
           mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes )  {}
 
-      RasterResult( QgsRasterLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes ):
+      IdentifyResult( QgsMapLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes ):
           mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes )  {}
-      QgsRasterLayer* mLayer;
+
+      QgsMapLayer* mLayer;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
@@ -86,19 +82,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       QMap< QString, QString > mDerivedAttributes;
     };
 
-    struct IdentifyResults
-    {
-      IdentifyResults() {}
-      IdentifyResults( QList<VectorResult> vectorResults , QList<RasterResult> rasterResults ) :
-          mVectorResults( vectorResults ),
-          mRasterResults( rasterResults )
-      {}
-      QList<VectorResult> mVectorResults;
-      QList<RasterResult> mRasterResults;
-    };
-
     //! constructor
-    QgsMapToolIdentify( QgsMapCanvas* canvas );
+    QgsMapToolIdentify( QgsMapCanvas * canvas );
 
     virtual ~QgsMapToolIdentify();
 
@@ -120,8 +105,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param y y coordinates of mouseEvent
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
-    IdentifyResults identify( int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
+    @return a list of IdentifyResult*/
+    QList<IdentifyResult> identify( int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
@@ -130,8 +115,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param y y coordinates of mouseEvent
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
-    IdentifyResults identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
+    @return a list of IdentifyResult*/
+    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );
@@ -139,7 +124,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
   signals:
     void identifyProgress( int, int );
     void identifyMessage( QString );
-    void changedRasterResults( QList<RasterResult>& );
+    void changedRasterResults( QList<IdentifyResult>& );
 
   private:
     /** Performs the identification.
@@ -151,13 +136,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
     @return true if identification succeeded and a feature has been found, false otherwise.*/
-    IdentifyResults identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
+    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
 
     /** call the right method depending on layer type */
-    bool identifyLayer( IdentifyResults *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
+    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( IdentifyResults *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( IdentifyResults *results, QgsVectorLayer *layer, QgsPoint point );
+    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, QgsRectangle viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, QgsPoint point );
 
     //! Private helper
     virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );

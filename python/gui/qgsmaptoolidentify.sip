@@ -20,34 +20,24 @@ class QgsMapToolIdentify : QgsMapTool
         VectorLayer,
         RasterLayer,
     };
-
-    struct VectorResult
-    {
-        VectorResult();
-        VectorResult(QgsVectorLayer* layer, QgsFeature feature, QMap< QString, QString > derivedAttributes);
-        QgsVectorLayer* mLayer;
-        QgsFeature mFeature;
-        QMap< QString, QString > mDerivedAttributes;
-    };
     
-    struct RasterResult
+
+    struct IdentifyResult
     {
-      RasterResult();
-      RasterResult( QgsRasterLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes );
-      QgsRasterLayer* mLayer;
+      IdentifyResult();
+
+      IdentifyResult( QgsMapLayer * layer, QgsFeature feature, QMap< QString, QString > derivedAttributes );
+
+      IdentifyResult( QgsMapLayer * layer, QString label, QMap< QString, QString > attributes, QMap< QString, QString > derivedAttributes );
+
+      IdentifyResult( QgsMapLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes );
+
+     QgsMapLayer* mLayer;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
       QMap< QString, QString > mAttributes;
       QMap< QString, QString > mDerivedAttributes;
-    };
-
-    struct IdentifyResults
-    {
-        IdentifyResults();
-        IdentifyResults ( QList<QgsMapToolIdentify::VectorResult> vectorResults , QList<QgsMapToolIdentify::RasterResult> rasterResults); 
-        QList<QgsMapToolIdentify::VectorResult> mVectorResults;
-        QList<QgsMapToolIdentify::RasterResult> mRasterResults;
     };
 
 	//! constructor
@@ -73,8 +63,8 @@ class QgsMapToolIdentify : QgsMapTool
     @param y y coordinates of mouseEvent
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
-    IdentifyResults identify(int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting);
+    @return a list of IdentifyResult*/
+    QList<QgsMapToolIdentify::IdentifyResult> identify(int x, int y, QList<QgsMapLayer*> layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting);
 
     /** Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
@@ -83,8 +73,8 @@ class QgsMapToolIdentify : QgsMapTool
     @param y y coordinates of mouseEvent
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
-    IdentifyResults identify(int x, int y, IdentifyMode mode, LayerType layerType = AllLayers);
+    @return a list of IdentifyResult*/
+    QList<QgsMapToolIdentify::IdentifyResult> identify(int x, int y, IdentifyMode mode, LayerType layerType = AllLayers);
 
   signals:
     void identifyProgress( int, int );

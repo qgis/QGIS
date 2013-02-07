@@ -41,14 +41,14 @@
 #include <QStatusBar>
 #include <QVariant>
 
-QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas* canvas )
+QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
     : QgsMapToolIdentify( canvas )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
-  connect( this, SIGNAL( changedRasterResults( QList<RasterResult>& ) ), this, SLOT( handleChangedRasterResults( QList<RasterResult>& ) ) );
+  connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult>& ) ), this, SLOT( handleChangedRasterResults( QList<RasterResult>& ) ) );
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -93,23 +93,18 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
 
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-  IdentifyResults results = QgsMapToolIdentify::identify( e->x(), e->y() );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y() );
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
 
-  QList<VectorResult>::const_iterator vresult;
-  for ( vresult = results.mVectorResults.begin(); vresult != results.mVectorResults.end(); ++vresult )
+  QList<IdentifyResult>::const_iterator result;
+  for ( result = results.begin(); result != results.end(); ++result )
   {
-    resultsDialog()->addFeature( vresult->mLayer, vresult->mFeature, vresult->mDerivedAttributes );
-  }
-  QList<RasterResult>::const_iterator rresult;
-  for ( rresult = results.mRasterResults.begin(); rresult != results.mRasterResults.end(); ++rresult )
-  {
-    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+    resultsDialog()->addFeature( *result );
   }
 
-  if ( !results.mRasterResults.isEmpty() || !results.mVectorResults.isEmpty() )
+  if ( !results.isEmpty() )
   {
     resultsDialog()->show();
   }
@@ -129,14 +124,17 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   }
 }
 
-void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<RasterResult>& rasterResults )
+void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
 {
   // Add new result after raster format change
-  QgsDebugMsg( QString( "%1 raster results" ).arg( rasterResults.size() ) );
-  QList<RasterResult>::const_iterator rresult;
-  for ( rresult = rasterResults.begin(); rresult != rasterResults.end(); ++rresult )
+  QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
+  QList<IdentifyResult>::const_iterator rresult;
+  for ( rresult = results.begin(); rresult != results.end(); ++rresult )
   {
-    resultsDialog()->addFeature( rresult->mLayer, rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+    if ( rresult->mLayer->type() == QgsMapLayer::RasterLayer )
+    {
+      resultsDialog()->addFeature( qobject_cast<QgsRasterLayer *>( rresult->mLayer ), rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+    }
   }
 }
 

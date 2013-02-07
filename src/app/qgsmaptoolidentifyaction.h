@@ -46,7 +46,7 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyAction( QgsMapCanvas* canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas * canvas );
 
     ~QgsMapToolIdentifyAction();
 
@@ -65,7 +65,7 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
-    void handleChangedRasterResults( QList<RasterResult>& rasterResults );
+    void handleChangedRasterResults( QList<IdentifyResult>& results );
 
   signals:
     void identifyProgress( int, int );
