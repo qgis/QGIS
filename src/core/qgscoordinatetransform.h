@@ -27,6 +27,7 @@
 #include "qgscoordinatereferencesystem.h"
 class QDomNode;
 class QDomDocument;
+class QPolygonF;
 
 //non qt includes
 #include <iostream>
@@ -157,6 +158,8 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     //! @note not available in python bindings
     void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
                            TransformDirection direction = ForwardTransform ) const;
+
+    void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
 
 #ifdef ANDROID
     void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;

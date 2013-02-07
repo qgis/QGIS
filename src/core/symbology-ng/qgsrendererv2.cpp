@@ -68,11 +68,6 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
   double x, y;
-#ifdef ANDROID
-  qreal z;
-#else
-  double z;
-#endif //ANDROID
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -104,14 +99,14 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   }
 
   //transform the QPolygonF to screen coordinates
+  if ( ct )
+  {
+    ct->transformPolygon( pts );
+  }
+
   QPointF* ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )
   {
-    if ( ct )
-    {
-      z = 0;
-      ct->transformInPlace( ptr->rx(), ptr->ry(), z );
-    }
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
@@ -136,11 +131,6 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-#ifdef ANDROID
-  qreal z = 0; // dummy variable for coordiante transform
-#else
-  double z = 0; // dummy variable for coordiante transform
-#endif
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
@@ -172,14 +162,15 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
     QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
+    if ( ct )
+    {
+      ct->transformPolygon( poly );
+    }
+
+
     ptr = poly.data();
     for ( int i = 0; i < poly.size(); ++i, ++ptr )
     {
-      if ( ct )
-      {
-        z = 0;
-        ct->transformInPlace( ptr->rx(), ptr->ry(), z );
-      }
       mtp.transformInPlace( ptr->rx(), ptr->ry() );
     }
 

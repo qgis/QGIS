@@ -23,6 +23,7 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
+#include <QPolygonF>
 #include <QVector>
 
 extern "C"
@@ -315,6 +316,41 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
     throw cse;
+  }
+}
+
+void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
+{
+  //create x, y arrays
+  int nVertices = poly.size();
+  qreal x[nVertices];
+  qreal y[nVertices];
+  qreal z[nVertices];
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    const QPointF& pt = poly.at( i );
+    x[i] = pt.x();
+    y[i] = pt.y();
+    z[i] = 0;
+  }
+
+  try
+  {
+    transformCoords( nVertices, x, y, z, direction );
+  }
+  catch ( QgsCsException &cse )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw cse;
+  }
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    QPointF& pt = poly[i];
+    pt.rx() = x[i];
+    pt.ry() = y[i];
   }
 }
 
