@@ -6494,6 +6494,10 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
         <translation>Errore di connessione: </translation>
     </message>
     <message>
+        <source>The pygrass module was not found.</source>
+        <translation>Il modulo pygrass non è stato trovato.</translation>
+    </message>
+    <message>
         <source>## To access Quantum GIS environment from this console
 ## use iface object (instance of QgisInterface class).
 ## Type help(iface) for more info and list of methods.

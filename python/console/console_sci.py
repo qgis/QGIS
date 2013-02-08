@@ -139,6 +139,30 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         elif command == "qtGui":
             # import QtGui class
             self.append('from PyQt4.QtGui import *')
+        elif command == "grass":
+            # import GRASS modules
+            try:
+                import grass.pygrass.modules
+                pygrass_loaded = True
+            except ImportError:
+                pygrass_loaded = False 
+                
+            if pygrass_loaded:
+                pygrassModules = ["from grass.pygrass.modules import display as d",
+                                "from grass.pygrass.modules import database as db",
+                                "from grass.pygrass.modules import imagery as i",
+                                "from grass.pygrass.modules import general as g",
+                                "from grass.pygrass.modules import postscript as ps",
+                                "from grass.pygrass.modules import raster as r",
+                                "from grass.pygrass.modules import raster3D as r3",
+                                "from grass.pygrass.modules import temporal as t",
+                                "from grass.pygrass.modules import vector as v"]
+                for module in pygrassModules:
+                    self.append(module)
+                    self.entered()
+            else:
+                msgText = QCoreApplication.translate('PythonConsole', 'The pygrass module was not found.')
+                self.parent.callWidgetMessageBar(msgText)
         self.entered()
         self.move_cursor_to_end()
         self.setFocus()
