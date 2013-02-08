@@ -323,9 +323,9 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
 {
   //create x, y arrays
   int nVertices = poly.size();
-  qreal x[nVertices];
-  qreal y[nVertices];
-  qreal z[nVertices];
+  QVector<qreal> x( nVertices );
+  QVector<qreal> y( nVertices );
+  QVector<qreal> z( nVertices );
 
   for ( int i = 0; i < nVertices; ++i )
   {
@@ -337,7 +337,7 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
 
   try
   {
-    transformCoords( nVertices, x, y, z, direction );
+    transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
   }
   catch ( QgsCsException &cse )
   {
