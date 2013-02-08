@@ -6225,45 +6225,45 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
     return 1;
   }
 
-  //first union all the polygon rings together (to get them noded, see JTS developer guide)
-  GEOSGeometry* nodedGeometry = nodeGeometries( splitLine, mGeos );
-  if ( !nodedGeometry )
+  //check that split line has no linear intersection
+  int linearIntersect = GEOSRelatePattern( mGeos, splitLine, "1********" );
+  if ( linearIntersect > 0 )
   {
-    return 3; //an error occured during noding
+    return 3;
   }
 
-  GEOSGeometry *mergedLines = GEOSLineMerge( nodedGeometry );
-  if ( !mergedLines )
-  {
-    GEOSGeom_destroy( nodedGeometry );
-    return 4;
-  }
+  GEOSGeometry* splitGeom = GEOSDifference( mGeos, splitLine );
+  QVector<GEOSGeometry*> lineGeoms;
 
-  QVector<GEOSGeometry*> testedGeometries;
-
-  for ( int i = 0; i < GEOSGetNumGeometries( mergedLines ); i++ )
+  int splitType = GEOSGeomTypeId( splitGeom );
+  if ( splitType == GEOS_MULTILINESTRING )
   {
-    const GEOSGeometry *testing = GEOSGetGeometryN( mergedLines, i );
-    if ( lineContainedInLine( testing, mGeos ) == 1 )
+    int nGeoms = GEOSGetNumGeometries( splitGeom );
+    for ( int i = 0; i < nGeoms; ++i )
     {
-      testedGeometries << GEOSGeom_clone( testing );
+      lineGeoms << GEOSGeom_clone( GEOSGetGeometryN( splitGeom, i ) );
     }
   }
+  else
+  {
+    lineGeoms << GEOSGeom_clone( splitGeom );
+  }
 
-  mergeGeometriesMultiTypeSplit( testedGeometries );
+  mergeGeometriesMultiTypeSplit( lineGeoms );
 
-  if ( testedGeometries.size() > 0 )
+  if ( lineGeoms.size() > 0 )
   {
     GEOSGeom_destroy( mGeos );
-    mGeos = testedGeometries[0];
+    mGeos = lineGeoms[0];
     mDirtyWkb = true;
   }
 
-  for ( int i = 1; i < testedGeometries.size(); ++i )
-    newGeometries << fromGeosGeom( testedGeometries[i] );
+  for ( int i = 1; i < lineGeoms.size(); ++i )
+  {
+    newGeometries << fromGeosGeom( lineGeoms[i] );
+  }
 
-  GEOSGeom_destroy( nodedGeometry );
-  GEOSGeom_destroy( mergedLines );
+  GEOSGeom_destroy( splitGeom );
   return 0;
 }
 
