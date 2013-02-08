@@ -210,16 +210,14 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
   QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
 
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
+                           .setFilterRect( selectGeomTrans.boundingBox() )
+                           .setFlags( QgsFeatureRequest::ExactIntersect )
+                           .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QgsGeometry* g = f.geometry();
-
-    if ( !selectGeomTrans.intersects( g ) )
-      continue;
-
     selectedFeatIds.insert( f.id() );
   }
 
