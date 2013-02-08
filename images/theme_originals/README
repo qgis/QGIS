@@ -1,0 +1,28 @@
+Theme Originals
+---------------
+
+As of QGIS 2.0, all newly submitted or updated interface graphics need to be in
+SVG format, or at least have SVG originals. Inkscape files are preferred; export
+to SVG version 1.0 if using Adobe Illustrator.
+
+There is an effort to switch current interface raster graphics to SVG. In the
+meantime, any updated graphics to the theme directory that are not in SVG
+format (e.g. PNG icon, because the code associated with it has not been updated
+to work with SVGs yet, or may never) should have their SVG originals placed in
+this directory.
+
+Periodically, this directory will be cleared out when the SVGs here can be moved
+into the themes directory. This directory will probably be removed when migration
+to SVG-only has been completed.
+
+Submissions here, the theme directory, or to the QGIS project will all probably
+end up on the OSGeo graphics server: http://wiki.osgeo.org/wiki/OSGeo_Graphics.
+Contact Robert Szczepanek for more info on contributing to OSGeo graphics.
+If looking to work on a new graphic for QGIS consider looking there first.
+
+All submissions need to be based on work uninhibited by intellectual property
+restrictions and compatible with QGIS's licensing structure.
+
+
+
+2013-02-07 Larry Shaffer - larrys [@] dakotacarto.com
