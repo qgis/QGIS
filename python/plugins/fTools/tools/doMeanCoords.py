@@ -128,10 +128,15 @@ class Dialog(QDialog, Ui_Dialog):
             uniqueValues = [QVariant(1)]
             single = True
         if self.function == 2:
-            fieldList = { 0 : QgsField("STD_DIST", QVariant.Double), 1 : QgsField("UID", QVariant.String) }
+            fieldList = QgsFields()
+            fieldList.append( QgsField("STD_DIST", QVariant.Double) )
+            fieldList.append( QgsField("UID", QVariant.String) )
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPolygon, sRs)
         else:
-            fieldList = { 0 : QgsField("MEAN_X", QVariant.Double), 1 : QgsField("MEAN_Y", QVariant.Double), 2 : QgsField("UID", QVariant.String)  }
+            fieldList = QgsFields()
+            fieldList.append( QgsField("MEAN_X", QVariant.Double) )
+            fieldList.append( QgsField("MEAN_Y", QVariant.Double) )
+            fieldList.append( QgsField("UID", QVariant.String) )
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPoint, sRs)
         outfeat = QgsFeature()
         points = []

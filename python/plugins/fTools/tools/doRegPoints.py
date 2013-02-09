@@ -126,7 +126,8 @@ class Dialog(QDialog, Ui_Dialog):
             # Calculate grid spacing
             pointSpacing = sqrt(area / value)
         outFeat = QgsFeature()
-        fields = { 0 : QgsField("ID", QVariant.Int) }
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):

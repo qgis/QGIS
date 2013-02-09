@@ -213,7 +213,8 @@ class Dialog(QDialog, Ui_Dialog):
         else: points = self.loopThruPolygons(inLayer, value, design)
         crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         if not crs.isValid(): crs = None
-        fields = { 0 : QgsField("ID", QVariant.Int) }
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):

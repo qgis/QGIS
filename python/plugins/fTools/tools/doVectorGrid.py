@@ -163,16 +163,22 @@ class Dialog(QDialog, Ui_Dialog):
         else:
           crs = layer.crs()
         if not crs.isValid(): crs = None
+
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+
         if polygon:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
-            3:QgsField("YMIN", QVariant.Double), 4:QgsField("YMAX", QVariant.Double)}
+            fields.append( QgsField("XMIN", QVariant.Double) )
+            fields.append( QgsField("XMAX", QVariant.Double) )
+            fields.append( QgsField("YMIN", QVariant.Double) )
+            fields.append( QgsField("YMAX", QVariant.Double) )
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                     return
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPolygon, crs)
         else:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("COORD", QVariant.Double)}
+            fields.append( QgsField("COORD", QVariant.Double) )
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
