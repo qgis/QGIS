@@ -47,6 +47,7 @@ email                : sherman at mrcc.com
 #include "qgsmaptopixel.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -368,6 +369,13 @@ void QgsMapCanvas::refresh()
     return;
 
   QSettings settings;
+  bool logRefresh = settings.value( "/Map/logCanvasRefreshEvent", false ).toBool();
+  QTime t;
+  if ( logRefresh )
+  {
+    t.start();
+  }
+
 #ifdef Q_WS_X11
   bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
 #endif
@@ -427,6 +435,17 @@ void QgsMapCanvas::refresh()
 
   // Done refreshing
   emit mapCanvasRefreshed();
+
+  if ( logRefresh )
+  {
+    QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( t.elapsed() );
+    QObject* senderObj = QObject::sender();
+    if ( senderObj )
+    {
+      logMsg += tr( ", sender '%1'" ).arg( senderObj->metaObject()->className() );
+    }
+    QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
+  }
 
 } // refresh
 

@@ -358,6 +358,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
+
+  // log rendering events, for userspace debugging
+  mLogCanvasRefreshChkBx->setChecked( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() );
+
   //set the default projection behaviour radio buttongs
   if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
   {
@@ -1140,6 +1144,10 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
+
+  // log rendering events, for userspace debugging
+  settings.setValue( "/Map/logCanvasRefreshEvent", mLogCanvasRefreshChkBx->isChecked() );
+
   //check behaviour so default projection when new layer is added with no
   //projection defined...
   if ( radPromptForProjection->isChecked() )
