@@ -120,9 +120,13 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
     switch ( propIt.key() )
     {
       case QgsPalLayerSettings::Show:
+      { // new scope to assign variables
         mShowLabelChkbx->setEnabled( true );
-        mShowLabelChkbx->setChecked( mCurLabelFeat.attribute( propIt.value() ).toInt() != 0 );
+        bool showSuccess;
+        int showLabel = mCurLabelFeat.attribute( propIt.value() ).toInt( &showSuccess );
+        mShowLabelChkbx->setChecked( !showSuccess || showLabel != 0 );
         break;
+      }
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setEnabled( true );
         mAlwaysShowChkbx->setChecked( mCurLabelFeat.attribute( propIt.value() ).toBool() );

@@ -271,35 +271,32 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
   // verify attribute table has proper field setup
   bool showSuccess;
   int showCol;
-  int show;
+  int showVal;
 
-  if ( !dataDefinedShowHide( vlayer, fid, show, showSuccess, showCol ) )
+  if ( !dataDefinedShowHide( vlayer, fid, showVal, showSuccess, showCol ) )
   {
     return false;
   }
+
+  int curVal = hide ? 0 : 1;
 
   // check if attribute value is already the same
-  QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( showSuccess && showVal == curVal )
   {
     return false;
   }
 
-  int colVal = hide ? 0 : 1;
-  QVariant fQVal = f.attributes()[showCol];
-  bool convToInt;
-  int fVal = fQVal.toInt( &convToInt );
-
-  if ( !convToInt || fVal == colVal )
+  // allow NULL (maybe default) value to stand for show label (i.e. 1)
+  // skip NULL attributes if trying to show label
+  if ( !showSuccess && curVal == 1 )
   {
     return false;
   }
 
   // different attribute value, edit table
-  QString labelText = currentLabelText( 24 );
   QString editTxt = hide ? tr( "Hid label" ) : tr( "Showed label" );
-  vlayer->beginEditCommand( editTxt + QString( " '%1'" ).arg( labelText ) );
-  if ( !vlayer->changeAttributeValue( fid, showCol, colVal, true ) )
+  vlayer->beginEditCommand( editTxt );
+  if ( !vlayer->changeAttributeValue( fid, showCol, curVal, false ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     vlayer->endEditCommand();
