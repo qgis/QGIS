@@ -42,13 +42,10 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
 
     void ensureRelevantFields();
 
-    void readFeature( OGRFeatureH fet, QgsFeature& feature );
+    bool readFeature( OGRFeatureH fet, QgsFeature& feature );
 
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
-
-    //! Selection rectangle
-    OGRGeometryH mSelectionRectangle;
 
     bool mFeatureFetched;
 };

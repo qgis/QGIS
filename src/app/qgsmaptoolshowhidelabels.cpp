@@ -212,7 +212,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( selectGeomTrans.boundingBox() )
-                           .setFlags( QgsFeatureRequest::ExactIntersect )
+                           .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
                            .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;

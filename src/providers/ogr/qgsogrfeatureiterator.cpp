@@ -38,9 +38,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
     P->mActiveIterator->close();
   P->mActiveIterator = this;
 
-  // set the selection rectangle pointer to 0
-  mSelectionRectangle = 0;
-
   mFeatureFetched = false;
 
   ensureRelevantFields();
@@ -52,17 +49,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
     QString wktExtent = QString( "POLYGON((%1))" ).arg( mRequest.filterRect().asPolygon() );
     QByteArray ba = wktExtent.toAscii();
     const char *wktText = ba;
-
-    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
-    {
-      // store the selection rectangle for use in filtering features during
-      // an identify and display attributes
-      if ( mSelectionRectangle )
-        OGR_G_DestroyGeometry( mSelectionRectangle );
-
-      OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &mSelectionRectangle );
-      wktText = ba;
-    }
 
     OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
     QgsDebugMsg( "Setting spatial filter using " + wktExtent );
@@ -120,13 +106,13 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
     }
 
     readFeature( fet, feature );
+
     feature.setValid( true );
     close(); // the feature has been read: we have finished here
     return true;
   }
 
   OGRFeatureH fet;
-  QgsRectangle selectionRect;
 
   while (( fet = OGR_L_GetNextFeature( P->ogrLayer ) ) )
   {
@@ -137,26 +123,8 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
       continue;
     }
 
-    readFeature( fet, feature );
-
-    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
-    {
-      //precise test for intersection with search rectangle
-      //first make QgsRectangle from OGRPolygon
-      OGREnvelope env;
-      memset( &env, 0, sizeof( env ) );
-      if ( mSelectionRectangle )
-        OGR_G_GetEnvelope( mSelectionRectangle, &env );
-      if ( env.MinX != 0 || env.MinY != 0 || env.MaxX != 0 || env.MaxY != 0 ) //if envelope is invalid, skip the precise intersection test
-      {
-        selectionRect.set( env.MinX, env.MinY, env.MaxX, env.MaxY );
-        if ( !feature.geometry() || !feature.geometry()->intersects( selectionRect ) )
-        {
-          OGR_F_Destroy( fet );
-          continue;
-        }
-      }
-    }
+    if ( !readFeature( fet, feature ) )
+      continue;
 
     // we have a feature, end this cycle
     feature.setValid( true );
@@ -187,12 +155,6 @@ bool QgsOgrFeatureIterator::close()
 {
   if ( mClosed )
     return false;
-
-  if ( mSelectionRectangle )
-  {
-    OGR_G_DestroyGeometry( mSelectionRectangle );
-    mSelectionRectangle = 0;
-  }
 
   // tell provider that this iterator is not active anymore
   P->mActiveIterator = 0;
@@ -234,15 +196,15 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 }
 
 
-
-void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
+bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
   feature.initAttributes( P->fields().count() );
   feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
 
-  // fetch geometry
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  bool fetchGeom    = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
+  if ( fetchGeom || useIntersect )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
 
@@ -254,10 +216,17 @@ void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
       feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
     }
-    else
+
+    if ( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
     {
-      feature.setGeometry( 0 );
+      OGR_F_Destroy( fet );
+      return false;
     }
+  }
+
+  if ( !fetchGeom )
+  {
+    feature.setGeometry( 0 );
   }
 
   // fetch attributes
@@ -277,4 +246,6 @@ void QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       getFeatureAttribute( fet, feature, idx );
     }
   }
+
+  return true;
 }
