@@ -4081,25 +4081,37 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
 
       int gmlPart = -1;
       int xsdPart = -1;
-      if ( mIdentifyResultBodies.size() == 1 )
+      for ( int i = 0; i < mIdentifyResultHeaders.size(); i++ )
       {
-        QgsDebugMsg( "Simple GML" );
-        gmlPart = 0;
+        if ( xsdPart == -1 && mIdentifyResultHeaders[i].value( "Content-Disposition" ).contains( ".xsd" ) )
+        {
+          xsdPart = i;
+        }
+        else if ( gmlPart == -1 && mIdentifyResultHeaders[i].value( "Content-Disposition" ).contains( ".dat" ) )
+        {
+          gmlPart = i;
+        }
+
+        if ( gmlPart != -1 && xsdPart != -1 )
+          break;
       }
-      else if ( mIdentifyResultBodies.size() == 2 ) // GML+XSD
+
+      if ( xsdPart == -1 && gmlPart == -1 )
       {
-        QgsDebugMsg( "Multipart with 2 parts - expected GML + XSD" );
-        // How to find which part is GML and which XSD? Both have
-        // Content-Type: application/binary
-        // different are Content-Disposition but it is not reliable.
-        // We could analyze beginning of bodies...
-        gmlPart = 0;
-        xsdPart = 1;
-      }
-      else
-      {
-        QgsDebugMsg( QString( "%1 parts in multipart response not supported" ).arg( mIdentifyResultBodies.size() ) );
-        continue;
+        if ( mIdentifyResultBodies.size() == 1 ) // GML
+        {
+          gmlPart = 0;
+        }
+        if ( mIdentifyResultBodies.size() == 2 ) // GML+XSD
+        {
+          QgsDebugMsg( "Multipart with 2 parts - expected GML + XSD" );
+          // How to find which part is GML and which XSD? Both have
+          // Content-Type: application/binary
+          // different are Content-Disposition but it is not reliable.
+          // We could analyze beginning of bodies...
+          gmlPart = 0;
+          xsdPart = 1;
+        }
       }
 
       QgsDebugMsg( "GML (first 2000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( gmlPart ).left( 2000 ) ) );
