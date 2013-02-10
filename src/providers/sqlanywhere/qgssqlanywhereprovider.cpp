@@ -281,7 +281,7 @@ QgsSqlAnywhereProvider::getFeatures( const QgsFeatureRequest& request )
 {
   if ( !mValid )
   {
-    QgsMessageLog::logMessage( tr( "Read attemt on an invalid SqlAnywhere data source" ), tr( "SQLAnywhere" ) );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid SqlAnywhere data source" ), tr( "SQLAnywhere" ) );
     return QgsFeatureIterator();
   }
   return QgsFeatureIterator( new QgsSqlAnywhereFeatureIterator( this, request ) );
