@@ -145,9 +145,5 @@ bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
   // Multipart content type examples:
   //   multipart/mixed; boundary=wcs
   //   multipart/mixed; boundary="wcs"\n
-  if ( contentType.startsWith( "multipart/", Qt::CaseInsensitive ) )
-  {
-    return true;
-  }
-  return false;
+  return contentType.startsWith( "multipart/", Qt::CaseInsensitive );
 }

@@ -288,7 +288,15 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->crs().srsid() );
 
-  QGis::GeometryType geometryType = feature->geometry()->type();
+  QGis::WkbType wkbType = QGis::WKBNoGeometry;
+  QGis::GeometryType geometryType = QGis::NoGeometry;
+
+  if ( feature->geometry() )
+  {
+    geometryType = feature->geometry()->type();
+    wkbType = feature->geometry()->wkbType();
+  }
+
   if ( geometryType == QGis::Line )
   {
     double dist = calc.measure( feature->geometry() );
@@ -296,8 +304,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     convertMeasurement( calc, dist, myDisplayUnits, false );
     QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
     derivedAttributes.insert( tr( "Length" ), str );
-    if ( feature->geometry()->wkbType() == QGis::WKBLineString ||
-         feature->geometry()->wkbType() == QGis::WKBLineString25D )
+    if ( wkbType == QGis::WKBLineString || wkbType == QGis::WKBLineString25D )
     {
       // Add the start and end points in as derived attributes
       QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feature->geometry()->asPolyline().first() );
@@ -325,8 +332,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     derivedAttributes.insert( tr( "Perimeter" ), str );
   }
   else if ( geometryType == QGis::Point &&
-            ( feature->geometry()->wkbType() == QGis::WKBPoint ||
-              feature->geometry()->wkbType() == QGis::WKBPoint25D ) )
+            ( wkbType == QGis::WKBPoint || wkbType == QGis::WKBPoint25D ) )
   {
     // Include the x and y coordinates of the point as a derived attribute
     QgsPoint pnt = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feature->geometry()->asPoint() );

@@ -89,35 +89,37 @@ void QgsWebView::contextMenuEvent( QContextMenuEvent *e )
 // QgsWebView size:
 // ---------------
 //
-// 1) QTreeWidget is not able to scroll continuously through the content of large widgets// iserted into items via setItemWidget, it always jumps to the top of next item
-// and it is not able to scroll to the bottom of an inserted large widget (until
-// the QTreeWidget itself is large enough to show the whole inserted widget).
-// => We have to keep the height of QgsWebView smaller than the height of QTreeWidget
-// so that a user can see it entire, even if this height is smaller than QgsWebView
-// content (i.e. QgsWebView scroolbar is added). We make it even a bit smaller so
-// that a user can see a bit of context (items above/below) when scrolling which
-// is more pleasant.
+// 1) QTreeWidget is not able to scroll continuously through the content of large widgets
+//    inserted into items via setItemWidget, it always jumps to the top of next
+//    item and it is not able to scroll to the bottom of an inserted large
+//    widget (until the QTreeWidget itself is large enough to show the whole
+//    inserted widget).  => We have to keep the height of QgsWebView smaller
+//    than the height of QTreeWidget so that a user can see it entire, even if
+//    this height is smaller than QgsWebView content (i.e. QgsWebView scroolbar
+//    is added). We make it even a bit smaller so that a user can see a bit of
+//    context (items above/below) when scrolling which is more pleasant.
 //
-// 2) contentsSize() is 0,0 until a page is loaded. If there are no external resources
-// (like images) used, contentsSize() is available immediately after setHtml(),
-// otherwise the contentSize() is 0,0 until the page is loaded and contentsSizeChanged ()
-// is emited.
+// 2) contentsSize() is 0,0 until a page is loaded. If there are no external
+//    resources (like images) used, contentsSize() is available immediately
+//    after setHtml(), otherwise the contentSize() is 0,0 until the page is
+//    loaded and contentsSizeChanged () is emited.
 //
-// 3) If QgsWebView is resized (on page load) after it was inserted into QTreeWidget,
-// the row does not reflect that change automaticaly and consecutive resize
-// of QTreeWidget will cause to shrink QgsWebView to the original row height.
-// That is expected, Qt: "setItemWidget() should only be used to display static
-// content...
-// => we must not change QgsWebView size after it was inserted to QTreeWidget
+// 3) If QgsWebView is resized (on page load) after it was inserted into
+//    QTreeWidget, the row does not reflect that change automaticaly and
+//    consecutive resize of QTreeWidget will cause to shrink QgsWebView to the
+//    original row height.  That is expected, Qt: "setItemWidget() should only
+//    be used to display static content...  => we must not change QgsWebView
+//    size after it was inserted to QTreeWidget
 
 // TODO(?): Sometimes it may happen that if multiple QgsWebView are inserted to
-// QTreeWidget for the first time, and both share the same external source (image)
-// the layout gets somehow confused - wrong positions, overlapped (Qt bug?)
-// until next QTreeWidget resize.
+// QTreeWidget for the first time, and both share the same external source
+// (image) the layout gets somehow confused - wrong positions, overlapped (Qt
+// bug?) until next QTreeWidget resize.
 
-// TODO(?): if the results dialog is resized to smaller heigh, existing QgsWebView
-// are not (and must not be!) resized and scrolling becomes a bit unpleasant
-// until next identify. AFAIK it could only be solved using QItemDelegate.
+// TODO(?): if the results dialog is resized to smaller heigh, existing
+// QgsWebView are not (and must not be!) resized and scrolling becomes a bit
+// unpleasant until next identify. AFAIK it could only be solved using
+// QItemDelegate.
 
 // size hint according to content
 QSize QgsWebView::sizeHint() const

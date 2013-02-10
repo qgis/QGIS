@@ -1,9 +1,9 @@
 /***************************************************************************
-     qgsgml.cpp
-     --------------------------------------
-    Date                 : Sun Sep 16 12:19:51 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+    qgsgml.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Radim Blazek
+    email                : radim dot blazek at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,11 +36,12 @@ QgsGml::QgsGml(
   const QString& typeName,
   const QString& geometryAttribute,
   const QgsFields & fields )
-    : QObject(),
-    mTypeName( typeName ),
-    mGeometryAttribute( geometryAttribute ),
-    mFinished( false ),
-    mFeatureCount( 0 )
+    : QObject()
+    , mTypeName( typeName )
+    , mGeometryAttribute( geometryAttribute )
+    , mFinished( false )
+    , mFeatureCount( 0 )
+    , mCurrentWKBSize( 0 )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
@@ -59,7 +60,6 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
 {
   mUri = uri;
   mWkbType = wkbType;
-  mExtent = extent;
 
   XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
   XML_SetUserData( p, this );
@@ -67,10 +67,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   XML_SetCharacterDataHandler( p, QgsGml::chars );
 
   //start with empty extent
-  if ( mExtent )
-  {
-    mExtent->set( 0, 0, 0, 0 );
-  }
+  mExtent.setMinimal();
 
   QNetworkRequest request( mUri );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
@@ -80,11 +77,10 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
 
   //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog* progressDialog = 0;
-  QWidget* mainWindow = findMainWindow();
-
+  QWidget* mainWindow = qApp->activeWindow();
   if ( mainWindow )
   {
-    progressDialog = new QProgressDialog( tr( "Loading WFS data\n%1" ).arg( mTypeName ), tr( "Abort" ), 0, 0, mainWindow );
+    progressDialog = new QProgressDialog( tr( "Loading GML data\n%1" ).arg( mTypeName ), tr( "Abort" ), 0, 0, mainWindow );
     progressDialog->setWindowModality( Qt::ApplicationModal );
     connect( this, SIGNAL( dataReadProgress( int ) ), progressDialog, SLOT( setValue( int ) ) );
     connect( this, SIGNAL( totalStepsUpdate( int ) ), progressDialog, SLOT( setMaximum( int ) ) );
@@ -110,9 +106,9 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   delete reply;
   delete progressDialog;
 
-  if ( mExtent && *mWkbType != QGis::WKBNoGeometry )
+  if ( *mWkbType != QGis::WKBNoGeometry )
   {
-    if ( mExtent->isEmpty() )
+    if ( mExtent.isEmpty() )
     {
       //reading of bbox from the server failed, so we calculate it less efficiently by evaluating the features
       calculateExtentFromFeatures();
@@ -120,6 +116,10 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   }
 
   XML_ParserFree( p );
+
+  if ( extent )
+    *extent = mExtent;
+
   return 0;
 }
 
@@ -127,17 +127,18 @@ int QgsGml::getFeatures( const QByteArray &data, QGis::WkbType* wkbType, QgsRect
 {
   QgsDebugMsg( "Entered" );
   mWkbType = wkbType;
-  mExtent = extent;
-  if ( mExtent )
-  {
-    mExtent->set( 0, 0, 0, 0 );
-  }
+  mExtent.setMinimal();
+
   XML_Parser p = XML_ParserCreateNS( NULL, NS_SEPARATOR );
   XML_SetUserData( p, this );
   XML_SetElementHandler( p, QgsGml::start, QgsGml::end );
   XML_SetCharacterDataHandler( p, QgsGml::chars );
   int atEnd = 1;
   XML_Parse( p, data.constData(), data.size(), atEnd );
+
+  if ( extent )
+    *extent = mExtent;
+
   return 0;
 }
 
@@ -197,6 +198,7 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     mParseModeStack.push( QgsGml::feature );
     mCurrentFeatureId = readAttribute( "fid", attr );
   }
+
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsGml::boundingBox )
   {
     //read attribute srsName="EPSG:26910"
@@ -208,8 +210,8 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
-    std::list<unsigned char*> wkbList;
-    std::list<int> wkbSizeList;
+    QList<unsigned char*> wkbList;
+    QList<int> wkbSizeList;
     mCurrentWKBFragments.push_back( wkbList );
     mCurrentWKBFragmentSizes.push_back( wkbSizeList );
   }
@@ -217,8 +219,8 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::multiPoint );
     //we need one nested list for intermediate WKB
-    std::list<unsigned char*> wkbList;
-    std::list<int> wkbSizeList;
+    QList<unsigned char*> wkbList;
+    QList<int> wkbSizeList;
     mCurrentWKBFragments.push_back( wkbList );
     mCurrentWKBFragmentSizes.push_back( wkbSizeList );
   }
@@ -226,8 +228,8 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::multiLine );
     //we need one nested list for intermediate WKB
-    std::list<unsigned char*> wkbList;
-    std::list<int> wkbSizeList;
+    QList<unsigned char*> wkbList;
+    QList<int> wkbSizeList;
     mCurrentWKBFragments.push_back( wkbList );
     mCurrentWKBFragmentSizes.push_back( wkbSizeList );
   }
@@ -235,7 +237,6 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::multiPolygon );
   }
-
   else if ( mParseModeStack.size() == 1 && mParseModeStack.top() == QgsGml::feature && mThematicAttributes.find( localName ) != mThematicAttributes.end() )
   {
     mParseModeStack.push( QgsGml::attribute );
@@ -294,10 +295,10 @@ void QgsGml::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" && mParseModeStack.top() == QgsGml::boundingBox )
+  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
   {
     //create bounding box from mStringCash
-    if ( createBBoxFromCoordinateString( mExtent, mStringCash ) != 0 )
+    if ( createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) != 0 )
     {
       QgsDebugMsg( "creation of bounding box failed" );
     }
@@ -313,20 +314,31 @@ void QgsGml::endElement( const XML_Char* el )
     if ( mCurrentWKBSize > 0 )
     {
       mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
-      // TODO: what QgsFfeature.isValid() really means? Feature could be valid even without geometry?
-      mCurrentFeature->setValid( true );
     }
+    else if ( !mCurrentExtent.isEmpty() )
+    {
+      mCurrentFeature->setGeometry( QgsGeometry::fromRect( mCurrentExtent ) );
+    }
+    else
+    {
+      mCurrentFeature->setGeometry( 0 );
+    }
+    mCurrentFeature->setValid( true );
+
     mFeatures.insert( mCurrentFeature->id(), mCurrentFeature );
     if ( !mCurrentFeatureId.isEmpty() )
     {
       mIdMap.insert( mCurrentFeature->id(), mCurrentFeatureId );
     }
     ++mFeatureCount;
-    mParseModeStack.pop();
+    if ( !mParseModeStack.empty() )
+    {
+      mParseModeStack.pop();
+    }
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Point" )
   {
-    std::list<QgsPoint> pointList;
+    QList<QgsPoint> pointList;
     if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
@@ -349,14 +361,14 @@ void QgsGml::endElement( const XML_Char* el )
     {
       unsigned char* wkb = 0;
       int wkbSize = 0;
-      std::list<unsigned char*> wkbList;
-      std::list<int> wkbSizeList;
+      QList<unsigned char*> wkbList;
+      QList<int> wkbSizeList;
       if ( getPointWKB( &wkb, &wkbSize, *( pointList.begin() ) ) != 0 )
       {
         //error
       }
-      mCurrentWKBFragments.rbegin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.rbegin()->push_back( wkbSize );
+      mCurrentWKBFragments.begin()->push_back( wkb );
+      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -367,7 +379,7 @@ void QgsGml::endElement( const XML_Char* el )
   {
     //add WKB point to the feature
 
-    std::list<QgsPoint> pointList;
+    QList<QgsPoint> pointList;
     if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
@@ -388,14 +400,14 @@ void QgsGml::endElement( const XML_Char* el )
     {
       unsigned char* wkb = 0;
       int wkbSize = 0;
-      std::list<unsigned char*> wkbList;
-      std::list<int> wkbSizeList;
+      QList<unsigned char*> wkbList;
+      QList<int> wkbSizeList;
       if ( getLineWKB( &wkb, &wkbSize, pointList ) != 0 )
       {
         //error
       }
-      mCurrentWKBFragments.rbegin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.rbegin()->push_back( wkbSize );
+      mCurrentWKBFragments.begin()->push_back( wkb );
+      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -404,7 +416,7 @@ void QgsGml::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "LinearRing" )
   {
-    std::list<QgsPoint> pointList;
+    QList<QgsPoint> pointList;
     if ( pointsFromCoordinateString( pointList, mStringCash ) != 0 )
     {
       //error
@@ -415,8 +427,8 @@ void QgsGml::endElement( const XML_Char* el )
     {
       //error
     }
-    mCurrentWKBFragments.rbegin()->push_back( wkb );
-    mCurrentWKBFragmentSizes.rbegin()->push_back( wkbSize );
+    mCurrentWKBFragments.begin()->push_back( wkb );
+    mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
@@ -518,31 +530,25 @@ QString QgsGml::readAttribute( const QString& attributeName, const XML_Char** at
   return QString();
 }
 
-int QgsGml::createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const
+int QgsGml::createBBoxFromCoordinateString( QgsRectangle &r, const QString& coordString ) const
 {
-  if ( !bb )
-  {
-    return 1;
-  }
-
-  std::list<QgsPoint> points;
+  QList<QgsPoint> points;
   if ( pointsFromCoordinateString( points, coordString ) != 0 )
   {
     return 2;
   }
+
   if ( points.size() < 2 )
   {
     return 3;
   }
 
-  std::list<QgsPoint>::const_iterator firstPointIt = points.begin();
-  std::list<QgsPoint>::const_iterator secondPointIt = points.begin();
-  ++secondPointIt;
-  bb->set( *firstPointIt, *secondPointIt );
+  r.set( points[0], points[1] );
+
   return 0;
 }
 
-int QgsGml::pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const
+int QgsGml::pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const
 {
   //tuples are separated by space, x/y by ','
   QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
@@ -593,7 +599,7 @@ int QgsGml::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& point )
   return 0;
 }
 
-int QgsGml::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates ) const
+int QgsGml::getLineWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& lineCoordinates ) const
 {
   int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
   *size = wkbSize;
@@ -611,7 +617,7 @@ int QgsGml::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint
   memcpy( &( *wkb )[wkbPosition], &nPoints, sizeof( int ) );
   wkbPosition += sizeof( int );
 
-  std::list<QgsPoint>::const_iterator iter;
+  QList<QgsPoint>::const_iterator iter;
   for ( iter = lineCoordinates.begin(); iter != lineCoordinates.end(); ++iter )
   {
     x = iter->x();
@@ -624,7 +630,7 @@ int QgsGml::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint
   return 0;
 }
 
-int QgsGml::getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates ) const
+int QgsGml::getRingWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& ringCoordinates ) const
 {
   int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
   *size = wkbSize;
@@ -635,7 +641,7 @@ int QgsGml::getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint
   memcpy( &( *wkb )[wkbPosition], &nPoints, sizeof( int ) );
   wkbPosition += sizeof( int );
 
-  std::list<QgsPoint>::const_iterator iter;
+  QList<QgsPoint>::const_iterator iter;
   for ( iter = ringCoordinates.begin(); iter != ringCoordinates.end(); ++iter )
   {
     x = iter->x();
@@ -665,8 +671,8 @@ int QgsGml::createMultiLineFromFragments()
   pos += sizeof( int );
   memcpy( &( mCurrentWKB[pos] ), &numLines, sizeof( int ) );
   pos += sizeof( int );
-  std::list<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  std::list<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
+  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
+  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
 
   //copy (and delete) all the wkb fragments
   for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
@@ -700,8 +706,8 @@ int QgsGml::createMultiPointFromFragments()
   memcpy( &( mCurrentWKB[pos] ), &numPoints, sizeof( int ) );
   pos += sizeof( int );
 
-  std::list<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  std::list<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
+  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
+  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
 
   for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
   {
@@ -734,8 +740,8 @@ int QgsGml::createPolygonFromFragments()
   memcpy( &( mCurrentWKB[pos] ), &numRings, sizeof( int ) );
   pos += sizeof( int );
 
-  std::list<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
-  std::list<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
+  QList<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
+  QList<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
   for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
   {
     memcpy( &( mCurrentWKB[pos] ), *wkbIt, *sizeIt );
@@ -770,10 +776,10 @@ int QgsGml::createMultiPolygonFromFragments()
   pos += sizeof( int );
 
   //have outer and inner iterators
-  std::list<std::list<unsigned char*> >::iterator outerWkbIt;
-  std::list<std::list<int> >::iterator outerSizeIt;
-  std::list<unsigned char*>::iterator innerWkbIt;
-  std::list<int>::iterator innerSizeIt;
+  QList< QList<unsigned char*> >::iterator outerWkbIt;
+  QList< QList<int> >::iterator outerSizeIt;
+  QList< unsigned char* >::iterator innerWkbIt;
+  QList< int >::iterator innerSizeIt;
 
   outerWkbIt = mCurrentWKBFragments.begin();
   outerSizeIt = mCurrentWKBFragmentSizes.begin();
@@ -808,41 +814,22 @@ int QgsGml::createMultiPolygonFromFragments()
 int QgsGml::totalWKBFragmentSize() const
 {
   int result = 0;
-  for ( std::list<std::list<int> >::const_iterator it = mCurrentWKBFragmentSizes.begin(); it != mCurrentWKBFragmentSizes.end(); ++it )
+  foreach ( const QList<int> &list, mCurrentWKBFragmentSizes )
   {
-    for ( std::list<int>::const_iterator iter = it->begin(); iter != it->end(); ++iter )
+    foreach ( int i, list )
     {
-      result += *iter;
+      result += i;
     }
   }
   return result;
 }
 
-QWidget* QgsGml::findMainWindow() const
-{
-  QWidget* mainWindow = 0;
-
-  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-  QWidgetList::iterator it = topLevelWidgets.begin();
-  for ( ; it != topLevelWidgets.end(); ++it )
-  {
-    if (( *it )->objectName() == "QgisApp" )
-    {
-      mainWindow = *it;
-      break;
-    }
-  }
-  return mainWindow;
-}
-
-void QgsGml::calculateExtentFromFeatures() const
+void QgsGml::calculateExtentFromFeatures()
 {
   if ( mFeatures.size() < 1 )
   {
     return;
   }
-
-  QgsRectangle bbox;
 
   QgsFeature* currentFeature = 0;
   QgsGeometry* currentGeometry = 0;
@@ -860,14 +847,13 @@ void QgsGml::calculateExtentFromFeatures() const
     {
       if ( !bboxInitialised )
       {
-        bbox = currentGeometry->boundingBox();
+        mExtent = currentGeometry->boundingBox();
         bboxInitialised = true;
       }
       else
       {
-        bbox.unionRect( currentGeometry->boundingBox() );
+        mExtent.unionRect( currentGeometry->boundingBox() );
       }
     }
   }
-  ( *mExtent ) = bbox;
 }

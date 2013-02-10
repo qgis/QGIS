@@ -1,9 +1,9 @@
 /***************************************************************************
-     qgsgml.h
-     --------------------------------------
-    Date                 : Sun Sep 16 12:19:55 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+    qgsgml.h
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Radim Blazek
+    email                : radim dot blazek at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,14 +23,14 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include <list>
-#include <set>
-#include <stack>
+#include "qgsrectangle.h"
+
 #include <QPair>
 #include <QByteArray>
 #include <QDomElement>
 #include <QStringList>
 #include <QStack>
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
@@ -124,16 +124,16 @@ class CORE_EXPORT QgsGml: public QObject
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
     /**Creates a rectangle from a coordinate string.
      @return 0 in case of success*/
-    int createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const;
+    int createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
     /**Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
        @return 0 in case of success*/
-    int pointsFromCoordinateString( std::list<QgsPoint>& points, const QString& coordString ) const;
+    int pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const;
 
     int getPointWKB( unsigned char** wkb, int* size, const QgsPoint& ) const;
-    int getLineWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& lineCoordinates ) const;
-    int getRingWKB( unsigned char** wkb, int* size, const std::list<QgsPoint>& ringCoordinates ) const;
+    int getLineWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& lineCoordinates ) const;
+    int getRingWKB( unsigned char** wkb, int* size, const QList<QgsPoint>& ringCoordinates ) const;
     /**Creates a multiline from the information in mCurrentWKBFragments and mCurrentWKBFragmentSizes. Assign the result. The multiline is in mCurrentWKB and mCurrentWKBSize. The function deletes the memory in mCurrentWKBFragments. Returns 0 in case of success.*/
     int createMultiLineFromFragments();
     int createMultiPointFromFragments();
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsGml: public QObject
     /**This function evaluates the layer bounding box from the features and sets it to mExtent.
     Less efficient compared to reading the bbox from the provider, so it is only done if the wfs server
     does not provider extent information.*/
-    void calculateExtentFromFeatures() const;
+    void calculateExtentFromFeatures();
 
     /** Get safely (if empty) top from mode stack */
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? none : mParseModeStack.top(); }
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsGml: public QObject
     QString mUri;
     //results are members such that handler routines are able to manipulate them
     /**Bounding box of the layer*/
-    QgsRectangle* mExtent;
+    QgsRectangle mExtent;
     /**The features of the layer, map of feature maps for each feature type*/
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;
     QMap<QgsFeatureId, QgsFeature* > mFeatures;
@@ -177,7 +177,6 @@ class CORE_EXPORT QgsGml: public QObject
     /**True if the request is finished*/
     bool mFinished;
     /**Keep track about the most important nested elements*/
-    //std::stack<ParseMode> mParseModeStack;
     QStack<ParseMode> mParseModeStack;
     /**This contains the character data if an important element has been encountered*/
     QString mStringCash;
@@ -189,10 +188,11 @@ class CORE_EXPORT QgsGml: public QObject
     unsigned char* mCurrentWKB;
     /**The total WKB size for a feature*/
     int mCurrentWKBSize;
+    QgsRectangle mCurrentExtent;
     /**WKB intermediate storage during parsing. For points and lines, no intermediate WKB is stored at all. For multipoins and multilines and polygons, only one nested list is used. For multipolygons, both nested lists are used*/
-    std::list< std::list<unsigned char*> > mCurrentWKBFragments;
+    QList< QList<unsigned char*> > mCurrentWKBFragments;
     /**Similar to mCurrentWKB, but only the size*/
-    std::list< std::list<int> > mCurrentWKBFragmentSizes;
+    QList< QList<int> > mCurrentWKBFragmentSizes;
     QString mAttributeName;
     QgsApplication::endian_t mEndian;
     /**Coordinate separator for coordinate strings. Usually "," */
