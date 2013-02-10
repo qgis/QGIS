@@ -22,6 +22,8 @@
 #include "qgsattributeaction.h"
 #include "qgsmapcanvas.h"
 #include "qgsrendererv2.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsexpression.h"
 
 #include <QtGui>
 #include <QVariant>
@@ -49,6 +51,18 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorL
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
 
   extentsChanged();
+}
+
+QgsAttributeTableModel::~QgsAttributeTableModel()
+{
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    if ( mLayer->editType( idx ) != QgsVectorLayer::ValueRelation )
+      continue;
+
+    delete mValueMaps.take( idx );
+  }
 }
 
 bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
@@ -215,6 +229,63 @@ void QgsAttributeTableModel::loadAttributes()
         mValueMaps.insert( idx, &mLayer->valueMap( idx ) );
         break;
 
+      case QgsVectorLayer::ValueRelation:
+      {
+        const QgsVectorLayer::ValueRelationData &data = mLayer->valueRelation( idx );
+
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( data.mLayer ) );
+        if ( !layer )
+          continue;
+
+        int ki = layer->fieldNameIndex( data.mKey );
+        int vi = layer->fieldNameIndex( data.mValue );
+
+        QgsExpression *e = 0;
+        if ( !data.mFilterExpression.isEmpty() )
+        {
+          e = new QgsExpression( data.mFilterExpression );
+          if ( e->hasParserError() || !e->prepare( layer->pendingFields() ) )
+            continue;
+        }
+
+        if ( ki >= 0 && vi >= 0 )
+        {
+          QSet<int> attributes;
+          attributes << ki << vi;
+
+          QgsFeatureRequest::Flag flags = QgsFeatureRequest::NoGeometry;
+
+          if ( e )
+          {
+            if ( e->needsGeometry() )
+              flags = QgsFeatureRequest::NoFlags;
+
+            foreach ( const QString &field, e->referencedColumns() )
+            {
+              int idx = layer->fieldNameIndex( field );
+              if ( idx < 0 )
+                continue;
+              attributes << idx;
+            }
+          }
+
+          QMap< QString, QVariant > *map = new QMap< QString, QVariant >();
+
+          QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( flags ).setSubsetOfAttributes( attributes.toList() ) );
+          QgsFeature f;
+          while ( fit.nextFeature( f ) )
+          {
+            if ( e && !e->evaluate( &f ).toBool() )
+              continue;
+
+            map->insert( f.attribute( vi ).toString(), f.attribute( ki ) );
+          }
+
+          mValueMaps.insert( idx, map );
+        }
+      }
+      break;
+
       default:
         break;
     }
@@ -235,7 +306,6 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
-  mValueMaps.clear();
 
   if ( ins )
   {

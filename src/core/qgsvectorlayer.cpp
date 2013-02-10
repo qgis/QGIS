@@ -2656,9 +2656,21 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
           bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
-          QString filterAttributeColumn = editTypeElement.attribute( "filterAttributeColumn", QString::null );
-          QString filterAttributeValue = editTypeElement.attribute( "filterAttributeValue", QString::null );
-          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterAttributeColumn, filterAttributeValue );
+
+          QString filterExpression;
+          if ( editTypeElement.hasAttribute( "filterAttributeColumn" ) &&
+               editTypeElement.hasAttribute( "filterAttributeValue" ) )
+          {
+            filterExpression = QString( "\"%1\"='%2'" )
+                               .arg( editTypeElement.attribute( "filterAttributeColumn" ) )
+                               .arg( editTypeElement.attribute( "filterAttributeValue" ) );
+          }
+          else
+          {
+            filterExpression  = editTypeElement.attribute( "filterExpression", QString::null );
+          }
+
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterExpression );
         }
         break;
 
@@ -2966,10 +2978,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
             editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
-            if ( !data.mFilterAttributeColumn.isNull() )
-              editTypeElement.setAttribute( "filterAttributeColumn", data.mFilterAttributeColumn );
-            if ( !data.mFilterAttributeValue.isNull() )
-              editTypeElement.setAttribute( "filterAttributeValue", data.mFilterAttributeValue );
+            if ( !data.mFilterExpression.isNull() )
+              editTypeElement.setAttribute( "filterExpression", data.mFilterExpression );
           }
           break;
 

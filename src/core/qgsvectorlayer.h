@@ -194,13 +194,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       ValueRelationData() {}
       ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
-                         QString filterAttributeColumn = QString::null,
-                         QString filterAttributeValue = QString::null )
+                         QString filterExpression = QString::null )
           : mLayer( layer )
           , mKey( key )
           , mValue( value )
-          , mFilterAttributeColumn( filterAttributeColumn )
-          , mFilterAttributeValue( filterAttributeValue )
+          , mFilterExpression( filterExpression )
           , mAllowNull( allowNull )
           , mOrderByValue( orderByValue )
           , mAllowMulti( allowMulti )
@@ -209,8 +207,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       QString mLayer;
       QString mKey;
       QString mValue;
-      QString mFilterAttributeColumn;
-      QString mFilterAttributeValue;
+      QString mFilterExpression;
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */

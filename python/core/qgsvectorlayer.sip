@@ -149,14 +149,12 @@ class QgsVectorLayer : QgsMapLayer
       ValueRelationData();
       ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
-                         QString filterAttributeColumn = QString::null,
-                         QString filterAttributeValue = QString::null );
+                         QString filterExpression = QString::null );
 
       QString mLayer;
       QString mKey;
       QString mValue;
-      QString mFilterAttributeColumn;
-      QString mFilterAttributeValue;
+      QString mFilterExpression;
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */

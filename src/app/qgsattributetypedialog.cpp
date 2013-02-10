@@ -19,7 +19,10 @@
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayerregistry.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
 #include "qgslogger.h"
 
 #include <QTableWidgetItem>
@@ -42,6 +45,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+  connect( valueRelationEditExpression, SIGNAL( clicked() ), this, SLOT( editValueRelationExpression() ) );
 
   valueRelationLayer->clear();
   foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
@@ -52,7 +56,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   }
 
   connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateLayerColumns( int ) ) );
-  connect( valueRelationFilterColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFilterColumn( int ) ) );
   valueRelationLayer->setCurrentIndex( -1 );
 }
 
@@ -122,6 +125,29 @@ void QgsAttributeTypeDialog::removeSelectedButtonPushed()
   {
     tableWidget->removeRow( rowsToRemove.values()[i] - removed );
     removed++;
+  }
+}
+
+void QgsAttributeTypeDialog::editValueRelationExpression()
+{
+  QString id = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  if ( !vl )
+    return;
+
+  QgsExpressionBuilderDialog dlg( vl, valueRelationFilterExpression->toPlainText(), this );
+  dlg.setWindowTitle( tr( "Edit filter expression" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( vl->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    valueRelationFilterExpression->setText( dlg.expressionBuilder()->expressionText() );
   }
 }
 
@@ -436,6 +462,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
       valueRelationOrderByValue->setChecked( mValueRelationData.mOrderByValue );
       valueRelationAllowMulti->setChecked( mValueRelationData.mAllowMulti );
+      valueRelationFilterExpression->setText( mValueRelationData.mFilterExpression );
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -609,16 +636,7 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
       mValueRelationData.mAllowMulti = valueRelationAllowMulti->isChecked();
-      if ( valueRelationFilterColumn->currentIndex() == 0 )
-      {
-        mValueRelationData.mFilterAttributeColumn = QString::null;
-        mValueRelationData.mFilterAttributeValue = QString::null;
-      }
-      else
-      {
-        mValueRelationData.mFilterAttributeColumn = valueRelationFilterColumn->currentText();
-        mValueRelationData.mFilterAttributeValue = valueRelationFilterValue->currentText();
-      }
+      mValueRelationData.mFilterExpression = valueRelationFilterExpression->toPlainText();
       break;
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;
@@ -644,52 +662,14 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   if ( !vl )
     return;
 
-  valueRelationFilterColumn->addItem( tr( "No filter" ), -1 );
-
   const QgsFields &fields = vl->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields[idx].name();
     valueRelationKeyColumn->addItem( fieldName );
     valueRelationValueColumn->addItem( fieldName );
-    valueRelationFilterColumn->addItem( fieldName, idx );
   }
 
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
   valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
-
-  if ( mValueRelationData.mFilterAttributeColumn.isNull() )
-  {
-    valueRelationFilterColumn->setCurrentIndex( 0 );
-  }
-  else
-  {
-    valueRelationFilterColumn->setCurrentIndex( valueRelationFilterColumn->findText( mValueRelationData.mFilterAttributeColumn ) );
-  }
-}
-
-void QgsAttributeTypeDialog::updateFilterColumn( int idx )
-{
-  valueRelationFilterValue->clear();
-  valueRelationFilterValue->setEnabled( idx > 0 );
-  if ( idx == 0 )
-    return;
-
-  QString id = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
-
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
-  if ( !vl )
-    return;
-
-  int fidx = valueRelationFilterColumn->itemData( idx ).toInt();
-
-  QList<QVariant> uniqueValues;
-  vl->uniqueValues( fidx, uniqueValues );
-
-  foreach ( const QVariant &v, uniqueValues )
-  {
-    valueRelationFilterValue->addItem( v.toString(), v );
-  }
-
-  valueRelationFilterValue->setCurrentIndex( valueRelationFilterValue->findText( mValueRelationData.mFilterAttributeValue ) );
 }

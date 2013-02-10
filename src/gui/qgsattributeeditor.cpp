@@ -25,6 +25,7 @@
 #include <qgsfieldvalidator.h>
 #include <qgsmaplayerregistry.h>
 #include <qgslogger.h>
+#include <qgsexpression.h>
 
 #include <QScrollArea>
 #include <QPushButton>
@@ -208,28 +209,45 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( data.mLayer ) );
       QMap< QString, QString > map;
 
-      int fi = -1;
       if ( layer )
       {
         int ki = layer->fieldNameIndex( data.mOrderByValue ? data.mValue : data.mKey );
         int vi = layer->fieldNameIndex( data.mOrderByValue ? data.mKey : data.mValue );
 
-        if ( !data.mFilterAttributeColumn.isNull() )
-          fi = layer->fieldNameIndex( data.mFilterAttributeColumn );
+        QgsExpression *e = 0;
+        if ( !data.mFilterExpression.isEmpty() )
+        {
+          e = new QgsExpression( data.mFilterExpression );
+          if ( e->hasParserError() || !e->prepare( layer->pendingFields() ) )
+            ki = -1;
+        }
 
         if ( ki >= 0 && vi >= 0 )
         {
-          QgsAttributeList attributes;
-          attributes << ki;
-          attributes << vi;
-          if ( fi >= 0 )
-            attributes << fi;
+          QSet<int> attributes;
+          attributes << ki << vi;
 
-          QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributes ) );
+          QgsFeatureRequest::Flag flags = QgsFeatureRequest::NoGeometry;
+
+          if ( e )
+          {
+            if ( e->needsGeometry() )
+              flags = QgsFeatureRequest::NoFlags;
+
+            foreach ( const QString &field, e->referencedColumns() )
+            {
+              int idx = layer->fieldNameIndex( field );
+              if ( idx < 0 )
+                continue;
+              attributes << idx;
+            }
+          }
+
+          QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( flags ).setSubsetOfAttributes( attributes.toList() ) );
           QgsFeature f;
           while ( fit.nextFeature( f ) )
           {
-            if ( fi >= 0 && f.attribute( fi ).toString() != data.mFilterAttributeValue )
+            if ( e && !e->evaluate( &f ).toBool() )
               continue;
 
             map.insert( f.attribute( ki ).toString(), f.attribute( vi ).toString() );

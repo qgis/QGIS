@@ -41,6 +41,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param parent parent pointer
      */
     QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent = 0 );
+
+    ~QgsAttributeTableModel();
+
     /**
      * Returns the number of rows
      * @param parent parent index
