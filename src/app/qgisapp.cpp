@@ -5449,7 +5449,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
     mSaveRollbackInProgress = true;
 
   mMapCanvas->freeze( true );
-  if ( !vlayer->rollBack() )
+  if ( !vlayer->rollBack( !leaveEditable ) )
   {
     mSaveRollbackInProgress = false;
     QMessageBox::information( 0,

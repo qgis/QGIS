@@ -3326,7 +3326,7 @@ const QStringList &QgsVectorLayer::commitErrors()
   return mCommitErrors;
 }
 
-bool QgsVectorLayer::rollBack()
+bool QgsVectorLayer::rollBack( bool deleteBuffer )
 {
   if ( !mEditBuffer )
   {
@@ -3344,8 +3344,12 @@ bool QgsVectorLayer::rollBack()
 
   updateFields();
 
-  delete mEditBuffer;
-  mEditBuffer = 0;
+  if ( deleteBuffer )
+  {
+    delete mEditBuffer;
+    mEditBuffer = 0;
+    undoStack()->clear();
+  }
   emit editingStopped();
 
   // invalidate the cache so the layer updates properly to show its original

@@ -713,8 +713,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool commitChanges();
     const QStringList &commitErrors();
 
-    /** Stop editing and discard the edits */
-    bool rollBack();
+    /** Stop editing and discard the edits
+     * @param deleteBuffer whether to delete editing buffer (added in 1.9)
+     */
+    bool rollBack( bool deleteBuffer = true );
 
     /**get edit type*/
     EditType editType( int idx );
