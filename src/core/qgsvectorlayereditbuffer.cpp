@@ -445,10 +445,9 @@ void QgsVectorLayerEditBuffer::rollBack()
   if ( !isModified() )
     return;
 
-  while ( L->undoStack()->canUndo() )
-  {
-    L->undoStack()->undo();
-  }
+  // limit canvas redraws to one by jumping to beginning of stack
+  // see QgsUndoWidget::indexChanged
+  L->undoStack()->setIndex( 0 );
 
   Q_ASSERT( mAddedAttributes.isEmpty() );
   Q_ASSERT( mDeletedAttributeIds.isEmpty() );

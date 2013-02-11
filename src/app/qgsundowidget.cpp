@@ -61,13 +61,15 @@ void QgsUndoWidget::destroyStack()
 {
   if ( mUndoStack != NULL )
   {
-    mUndoStack->clear();
+    // do not clear undo stack here, just null pointer
     mUndoStack = NULL;
   }
   if ( mUndoView != NULL )
   {
     mUndoView->close();
-    mUndoView = NULL;
+    delete mUndoView;
+    mUndoView = new QUndoView( dockWidgetContents );
+    gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   }
 }
 
@@ -99,23 +101,24 @@ void QgsUndoWidget::indexChanged( int curIndx )
   // when individually redoing, differentiate between last redo and a new command added to stack
   bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
 
-  bool debugThis = false;
-  if ( debugThis && offset != 0 )
+  if ( offset != 0 )
   {
-    // '= Rendering =' text is for filtering log results to also only show canvas rendering event
-    QgsDebugMsg( QString( "= Rendering = curIndx : %1" ).arg( curIndx ) );
-    QgsDebugMsg( QString( "= Rendering = offset  : %1" ).arg( offset ) );
-    QgsDebugMsg( QString( "= Rendering = curCount: %1" ).arg( curCount ) );
+    QgsDebugMsg( QString( "curIndx : %1" ).arg( curIndx ) );
+    QgsDebugMsg( QString( "offset  : %1" ).arg( offset ) );
+    QgsDebugMsg( QString( "curCount: %1" ).arg( curCount ) );
     if ( lastRedo )
-      QgsDebugMsg( QString( "= Rendering = lastRedo: true" ) );
+      QgsDebugMsg( QString( "lastRedo: true" ) );
   }
 
-  // avoid canvas refresh when only a command was added to stack (i.e. no user undo/redo action)
-  // or when user has clicked back in view history then added a new command to the stack
+  // avoid canvas redraws when only new command was added to stack (i.e. no user undo/redo action)
+  // or when user has clicked back in QUndoView history then added a new command to the stack
   if ( offset > 1 || ( offset == 1 && ( canRedo || lastRedo ) ) )
   {
     if ( mMapCanvas )
+    {
+      QgsDebugMsg( QString( "trigger redraw" ) );
       mMapCanvas->refresh();
+    }
   }
 
   mPreviousIndex = curIndx;
