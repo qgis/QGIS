@@ -801,7 +801,7 @@ class Version:
 def setProcessEnvironment(process):
     envvar_list = {
         "PATH" : getGdalBinPath(),
-        "PYTHONPATH" : getGdalPymodPath()
+        "PYTHONPATH" : getGdalPymodPath(),
         "GDAL_FILENAME_IS_UTF8" : "NO"
     }
 
