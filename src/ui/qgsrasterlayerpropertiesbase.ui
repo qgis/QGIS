@@ -158,7 +158,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mResamplingGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mResamplingGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="title">
           <string>Resampling</string>
          </property>

@@ -410,7 +410,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="creationOptionsGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="creationOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
      <property name="enabled">
       <bool>true</bool>
      </property>

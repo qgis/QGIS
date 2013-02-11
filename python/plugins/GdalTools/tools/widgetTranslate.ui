@@ -250,7 +250,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
     </layout>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="creationOptionsGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="creationOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
      <property name="title">
       <string>&amp;Creation Options</string>
      </property>

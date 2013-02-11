@@ -25,7 +25,7 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mFrameGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mFrameGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
      <property name="title">
       <string>Show frame</string>
      </property>
@@ -60,7 +60,7 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mBackgroundGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mBackgroundGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
      <property name="title">
       <string>Show background</string>
      </property>

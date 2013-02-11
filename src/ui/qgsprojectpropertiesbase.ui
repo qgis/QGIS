@@ -843,7 +843,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
            <item row="0" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
+            <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
              <property name="title">
               <string>Service Capabilitities</string>
              </property>
@@ -979,7 +979,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="0" column="0">
-               <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
+               <widget class="QgsCollapsibleGroupBox" name="grpWMSExt"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                 <property name="title">
                  <string>Advertised Extent</string>
                 </property>
@@ -1082,7 +1082,7 @@
                </widget>
               </item>
               <item row="0" column="1" colspan="2">
-               <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
+               <widget class="QgsCollapsibleGroupBox" name="grpWMSList"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                 <property name="title">
                  <string>Coordinate Systems Restrictions</string>
                 </property>
@@ -1121,7 +1121,7 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
+               <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                 <property name="title">
                  <string>Exclude composers</string>
                 </property>
@@ -1174,7 +1174,7 @@
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
+               <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                 <property name="title">
                  <string>Exclude layers</string>
                 </property>

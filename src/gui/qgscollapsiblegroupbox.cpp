@@ -26,57 +26,35 @@
 #include <QSettings>
 #include <QScrollArea>
 
-QIcon QgsCollapsibleGroupBox::mCollapseIcon;
-QIcon QgsCollapsibleGroupBox::mExpandIcon;
+QIcon QgsCollapsibleGroupBoxBasic::mCollapseIcon;
+QIcon QgsCollapsibleGroupBoxBasic::mExpandIcon;
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
-    : QGroupBox( parent ), mSettings( settings )
+QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
+    : QGroupBox( parent )
 {
   init();
 }
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
-    QWidget *parent, QSettings* settings )
-    : QGroupBox( title, parent ), mSettings( settings )
+QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( const QString &title,
+    QWidget *parent )
+    : QGroupBox( title, parent )
 {
   init();
 }
 
-QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
+QgsCollapsibleGroupBoxBasic::~QgsCollapsibleGroupBoxBasic()
 {
-  saveState();
-  if ( mDelSettings ) // local settings obj to delete
-    delete mSettings;
-  mSettings = 0; // null the pointer (in case of outside settings obj)
+  //QgsDebugMsg( "Entered" );
 }
 
 
-void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
+void QgsCollapsibleGroupBoxBasic::init()
 {
-  if ( mDelSettings ) // local settings obj to delete
-    delete mSettings;
-  mSettings = settings;
-  mDelSettings = false; // don't delete outside obj
-}
-
-void QgsCollapsibleGroupBox::init()
-{
-  // use pointer to app qsettings if no custom qsettings specified
-  // custom qsettings object may be from Python plugin
-  mDelSettings = false;
-  if ( !mSettings )
-  {
-    mSettings = new QSettings();
-    mDelSettings = true; // only delete obj created by class
-  }
+  //QgsDebugMsg( "Entered" );
   // variables
   mCollapsed = false;
-  mSaveCollapsedState = true;
-  // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
-  // in multiple places or used as options for different parent objects
-  mSaveCheckedState = false;
-  mSettingGroup = ""; // if not set, use window object name
   mInitFlat = false;
+  mInitFlatChecked = false;
   mScrollOnExpand = true;
   mShown = false;
   mParentScrollArea = 0;
@@ -101,8 +79,9 @@ void QgsCollapsibleGroupBox::init()
   connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
 }
 
-void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
+void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 {
+  //QgsDebugMsg( "Entered" );
   // initialise widget on first show event only
   if ( mShown )
   {
@@ -111,7 +90,11 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   }
 
   // check if groupbox was set to flat in Designer or in code
-  mInitFlat = isFlat();
+  if ( !mInitFlatChecked )
+  {
+    mInitFlat = isFlat();
+    mInitFlatChecked = true;
+  }
 
   // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
   if ( parent() && parent()->parent() )
@@ -127,8 +110,6 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
     QgsDebugMsg( "did not find a QScrollArea parent" );
   }
 
-  loadState();
-
   updateStyle();
 
   // expand if needed - any calls to setCollapsed() before only set mCollapsed, but have UI effect
@@ -138,8 +119,8 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   }
   else
   {
-    // emit signal for connections using expanded state
-    emit collapsedStateChanged( this );
+    // emit signal for connections using collapsed state
+    emit collapsedStateChanged( isCollapsed() );
   }
   // set mShown after first setCollapsed call or expanded groupboxes
   // will scroll scroll areas when first shown
@@ -147,7 +128,7 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   event->accept();
 }
 
-void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
+void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
 {
   // catch mouse release over title when non checkable, to collapse/expand
   if ( !isCheckable() && event->button() == Qt::LeftButton )
@@ -162,7 +143,7 @@ void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
   QGroupBox::mouseReleaseEvent( event );
 }
 
-void QgsCollapsibleGroupBox::changeEvent( QEvent *event )
+void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
 {
   // always re-enable mCollapseButton when groupbox was previously disabled
   // e.g. resulting from a disabled parent of groupbox, or a signal/slot connection
@@ -174,7 +155,7 @@ void QgsCollapsibleGroupBox::changeEvent( QEvent *event )
     mCollapseButton->setEnabled( true );
 }
 
-QRect QgsCollapsibleGroupBox::titleRect() const
+QRect QgsCollapsibleGroupBoxBasic::titleRect() const
 {
   QStyleOptionGroupBox box;
   initStyleOption( &box );
@@ -182,70 +163,7 @@ QRect QgsCollapsibleGroupBox::titleRect() const
                                   QStyle::SC_GroupBoxLabel, this );
 }
 
-QString QgsCollapsibleGroupBox::saveKey() const
-{
-  // save key for load/save state
-  // currently QgsCollapsibleGroupBox/window()/object
-  QString saveKey = "/" + objectName();
-  // QObject* parentWidget = parent();
-  // while ( parentWidget != NULL )
-  // {
-  //   saveKey = "/" + parentWidget->objectName() + saveKey;
-  //   parentWidget = parentWidget->parent();
-  // }
-  // if ( parent() != NULL )
-  //   saveKey = "/" + parent()->objectName() + saveKey;
-  QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
-  saveKey = "/" + setgrp + saveKey;
-  saveKey = "QgsCollapsibleGroupBox" + saveKey;
-  return saveKey;
-}
-
-void QgsCollapsibleGroupBox::loadState()
-{
-  if ( !mSettings )
-    return;
-
-  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
-    return;
-
-  setUpdatesEnabled( false );
-
-  QString key = saveKey();
-  QVariant val;
-  if ( mSaveCheckedState )
-  {
-    val = mSettings->value( key + "/checked" );
-    if ( ! val.isNull() )
-      setChecked( val.toBool() );
-  }
-  if ( mSaveCollapsedState )
-  {
-    val = mSettings->value( key + "/collapsed" );
-    if ( ! val.isNull() )
-      setCollapsed( val.toBool() );
-  }
-
-  setUpdatesEnabled( true );
-}
-
-void QgsCollapsibleGroupBox::saveState()
-{
-  if ( !mSettings )
-    return;
-
-  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
-    return;
-
-  QString key = saveKey();
-
-  if ( mSaveCheckedState )
-    mSettings->setValue( key + "/checked", isChecked() );
-  if ( mSaveCollapsedState )
-    mSettings->setValue( key + "/collapsed", isCollapsed() );
-}
-
-void QgsCollapsibleGroupBox::checkToggled( bool chkd )
+void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 {
   mCollapseButton->setEnabled( true ); // always keep enabled
   // expand/collapse when toggled
@@ -255,12 +173,12 @@ void QgsCollapsibleGroupBox::checkToggled( bool chkd )
     setCollapsed( true );
 }
 
-void QgsCollapsibleGroupBox::toggleCollapsed()
+void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
   setCollapsed( !mCollapsed );
 }
 
-void QgsCollapsibleGroupBox::updateStyle()
+void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );
 
@@ -314,7 +232,7 @@ void QgsCollapsibleGroupBox::updateStyle()
   // customize style sheet for collapse/expand button and force left-aligned title
   // TODO: move to app stylesheet system, when appropriate
   QString ss;
-  ss += "QgsCollapsibleGroupBox::title {";
+  ss += "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {";
   ss += "  subcontrol-origin: margin;";
   ss += "  subcontrol-position: top left;";
   ss += QString( "  margin-left: %1px;" ).arg( marginLeft );
@@ -326,7 +244,7 @@ void QgsCollapsibleGroupBox::updateStyle()
 
   // clear toolbutton default background and border and apply offset
   QString ssd;
-  ssd = QString( "QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
+  ssd = QString( "QgsCollapsibleGroupBoxBasic > QToolButton#%1, QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
   ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
   ssd += "}";
   mCollapseButton->setStyleSheet( ssd );
@@ -336,7 +254,7 @@ void QgsCollapsibleGroupBox::updateStyle()
   setUpdatesEnabled( true );
 }
 
-void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
+void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 {
   mCollapsed = collapse;
 
@@ -362,5 +280,146 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
     QApplication::processEvents();
     mParentScrollArea->ensureWidgetVisible( this );
   }
-  emit collapsedStateChanged( this );
+  // emit signal for connections using collapsed state
+  emit collapsedStateChanged( isCollapsed() );
 }
+
+// ----
+
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
+    : QgsCollapsibleGroupBoxBasic( parent ), mSettings( settings )
+{
+  init();
+}
+
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
+    QWidget *parent, QSettings* settings )
+    : QgsCollapsibleGroupBoxBasic( title, parent ), mSettings( settings )
+{
+  init();
+}
+
+QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
+{
+  //QgsDebugMsg( "Entered" );
+  saveState();
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = 0; // null the pointer (in case of outside settings obj)
+}
+
+void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
+{
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = settings;
+  mDelSettings = false; // don't delete outside obj
+}
+
+
+void QgsCollapsibleGroupBox::init()
+{
+  //QgsDebugMsg( "Entered" );
+  // use pointer to app qsettings if no custom qsettings specified
+  // custom qsettings object may be from Python plugin
+  mDelSettings = false;
+  if ( !mSettings )
+  {
+    mSettings = new QSettings();
+    mDelSettings = true; // only delete obj created by class
+  }
+  // variables
+  mSaveCollapsedState = true;
+  // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
+  // in multiple places or used as options for different parent objects
+  mSaveCheckedState = false;
+  mSettingGroup = ""; // if not set, use window object name
+}
+
+void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
+{
+  //QgsDebugMsg( "Entered" );
+  // initialise widget on first show event only
+  if ( mShown )
+  {
+    event->accept();
+    return;
+  }
+
+  // check if groupbox was set to flat in Designer or in code
+  if ( !mInitFlatChecked )
+  {
+    mInitFlat = isFlat();
+    mInitFlatChecked = true;
+  }
+
+  loadState();
+
+  QgsCollapsibleGroupBoxBasic::showEvent( event );
+}
+
+QString QgsCollapsibleGroupBox::saveKey() const
+{
+  // save key for load/save state
+  // currently QgsCollapsibleGroupBox/window()/object
+  QString saveKey = "/" + objectName();
+  // QObject* parentWidget = parent();
+  // while ( parentWidget != NULL )
+  // {
+  //   saveKey = "/" + parentWidget->objectName() + saveKey;
+  //   parentWidget = parentWidget->parent();
+  // }
+  // if ( parent() != NULL )
+  //   saveKey = "/" + parent()->objectName() + saveKey;
+  QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
+  saveKey = "/" + setgrp + saveKey;
+  saveKey = "QgsCollapsibleGroupBox" + saveKey;
+  return saveKey;
+}
+
+void QgsCollapsibleGroupBox::loadState()
+{
+  //QgsDebugMsg( "Entered" );
+  if ( !mSettings )
+    return;
+
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
+    return;
+
+  setUpdatesEnabled( false );
+
+  QString key = saveKey();
+  QVariant val;
+  if ( mSaveCheckedState )
+  {
+    val = mSettings->value( key + "/checked" );
+    if ( ! val.isNull() )
+      setChecked( val.toBool() );
+  }
+  if ( mSaveCollapsedState )
+  {
+    val = mSettings->value( key + "/collapsed" );
+    if ( ! val.isNull() )
+      setCollapsed( val.toBool() );
+  }
+
+  setUpdatesEnabled( true );
+}
+
+void QgsCollapsibleGroupBox::saveState()
+{
+  //QgsDebugMsg( "Entered" );
+  if ( !mSettings )
+    return;
+
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
+    return;
+
+  QString key = saveKey();
+
+  if ( mSaveCheckedState )
+    mSettings->setValue( key + "/checked", isChecked() );
+  if ( mSaveCollapsedState )
+    mSettings->setValue( key + "/collapsed", isCollapsed() );
+}
+

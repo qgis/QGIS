@@ -997,7 +997,7 @@
                    </widget>
                   </item>
                   <item row="2" column="0" colspan="4">
-                   <widget class="QgsCollapsibleGroupBox" name="mCurrentVariablesGrpBx">
+                   <widget class="QgsCollapsibleGroupBox" name="mCurrentVariablesGrpBx"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -3790,7 +3790,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpProxy">
+                <widget class="QgsCollapsibleGroupBox" name="grpProxy"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
                  <property name="title">
                   <string>Use proxy for web access</string>
                  </property>

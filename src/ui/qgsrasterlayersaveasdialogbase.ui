@@ -222,7 +222,7 @@ datasets with maximum width and height specified below.</string>
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -380,7 +380,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -465,7 +465,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -520,7 +520,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -544,7 +544,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -628,7 +628,7 @@ datasets with maximum width and height specified below.</string>
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>

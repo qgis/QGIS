@@ -333,23 +333,23 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   }
 
   connect( groupBox_mPreview,
-           SIGNAL( collapsedStateChanged( QgsCollapsibleGroupBox* ) ),
+           SIGNAL( collapsedStateChanged( bool ) ),
            this,
-           SLOT( collapseSample( QgsCollapsibleGroupBox* ) ) );
+           SLOT( collapseSample( bool ) ) );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
 }
 
-void QgsLabelingGui::collapseSample( QgsCollapsibleGroupBox* grpbx )
+void QgsLabelingGui::collapseSample( bool collapse )
 {
-  if ( grpbx->isCollapsed() )
+  if ( collapse )
   {
     QList<int> splitSizes = mFontPreviewSplitter->sizes();
-    if ( splitSizes[0] > grpbx->height() )
+    if ( splitSizes[0] > groupBox_mPreview->height() )
     {
-      int delta = splitSizes[0] - grpbx->height();
+      int delta = splitSizes[0] - groupBox_mPreview->height();
       splitSizes[0] -= delta;
       splitSizes[1] += delta;
       mFontPreviewSplitter->setSizes( splitSizes );
