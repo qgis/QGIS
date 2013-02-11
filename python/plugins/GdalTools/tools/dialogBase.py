@@ -199,15 +199,14 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         return
 
       if self.command.find( "gdalinfo" ) != -1 and exitCode == 0:
-        print "*** DEBUG ***"
         self.emit( SIGNAL("finished(bool)"), self.loadCheckBox.isChecked() )
         self.stop()
         return
 
       # show the error message if there's one, otherwise show the process output message
-      msg = QString(self.process.readAllStandardError())
+      msg = QString.fromLocal8Bit(self.process.readAllStandardError())
       if msg.isEmpty():
-        outMessages = QString(self.process.readAllStandardOutput()).split( "\n" )
+        outMessages = QString.fromLocal8Bit(self.process.readAllStandardOutput()).split( "\n" )
 
         # make sure to not show the help
         for m in outMessages:

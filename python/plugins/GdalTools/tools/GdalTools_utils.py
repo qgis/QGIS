@@ -802,6 +802,7 @@ def setProcessEnvironment(process):
     envvar_list = {
         "PATH" : getGdalBinPath(),
         "PYTHONPATH" : getGdalPymodPath()
+        "GDAL_FILENAME_IS_UTF8" : "NO"
     }
 
     sep = os.pathsep
