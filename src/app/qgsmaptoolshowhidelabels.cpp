@@ -156,9 +156,15 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
 
   QgsDebugMsg( "Number of selected labels or features: " + QString::number( selectedFeatIds.size() ) );
 
+  if ( selectedFeatIds.isEmpty() )
+  {
+    return;
+  }
 
   bool labelChanged = false;
+  QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
 
+  vlayer->beginEditCommand( editTxt );
   foreach ( const QgsFeatureId &fid, selectedFeatIds )
   {
     if ( showHideLabel( vlayer, fid, doHide ) )
@@ -167,10 +173,15 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
       labelChanged = true;
     }
   }
+  vlayer->endEditCommand();
 
   if ( labelChanged )
   {
     mCanvas->refresh();
+  }
+  else
+  {
+    vlayer->destroyEditCommand();
   }
 }
 
@@ -294,14 +305,10 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
   }
 
   // different attribute value, edit table
-  QString editTxt = hide ? tr( "Hid label" ) : tr( "Showed label" );
-  vlayer->beginEditCommand( editTxt );
   if ( !vlayer->changeAttributeValue( fid, showCol, curVal, false ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
-    vlayer->endEditCommand();
     return false;
   }
-  vlayer->endEditCommand();
   return true;
 }
