@@ -138,6 +138,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
 
+    /**Returns item's last used position mode.
+      @note: This property has no effect on actual's item position, which is always the top-left corner.
+      @note: this method was added in version 2.0*/
+    ItemPositionMode lastUsedPositionMode(){ return mLastUsedPositionMode; }
+
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
@@ -290,6 +295,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**True if item background needs to be painted*/
     bool mBackground;
 
+
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
     bool mItemPositionLocked;
@@ -299,6 +305,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Item rotation in degrees, clockwise*/
     double mRotation;
+
+    /**The item's position mode
+    @note: this member was added in version 2.0*/
+    ItemPositionMode mLastUsedPositionMode;
 
     //event handlers
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );

@@ -7,62 +7,276 @@
     <x>0</x>
     <y>0</y>
     <width>393</width>
-    <height>391</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Global Options</string>
   </property>
-  <layout class="QFormLayout" name="formLayout_2">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>7</number>
    </property>
-   <item row="0" column="0" colspan="2">
-    <widget class="QPushButton" name="mPositionButton">
-     <property name="text">
-      <string>Position and size...</string>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
+     <property name="title">
+      <string>Position and size</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mXLabel">
+            <property name="text">
+             <string>X</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mXLineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mYLabel">
+            <property name="text">
+             <string>Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mYLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mWidthLabel">
+            <property name="text">
+             <string>Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mWidthLineEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mHeightLabel">
+            <property name="text">
+             <string>Height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mHeightLineEdit"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="mReferencePointGroupBox">
+          <property name="title">
+           <string>Reference point</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="2">
+              <widget class="QCheckBox" name="mUpperRightCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="mMiddleCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QCheckBox" name="mMiddleRightCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="mMiddleLeftCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QCheckBox" name="mLowerMiddleCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="mUpperLeftCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="mLowerLeftCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QCheckBox" name="mLowerRightCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="mUpperMiddleCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mFrameGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mFrameGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
-      <string>Show frame</string>
+      <string>Frame</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0" colspan="2">
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
        <widget class="QPushButton" name="mFrameColorButton">
         <property name="text">
          <string>Frame color...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mOutlineWidthLabel">
-        <property name="text">
-         <string>Thickness</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-        <property name="buddy">
-         <cstring>mOutlineWidthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="mOutlineWidthLabel">
+          <property name="text">
+           <string>Thickness</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="buddy">
+           <cstring>mOutlineWidthSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mBackgroundGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mBackgroundGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
-      <string>Show background</string>
+      <string>Background</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -73,69 +287,94 @@
      <property name="checked">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" colspan="3">
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
        <widget class="QPushButton" name="mBackgroundColorButton">
         <property name="text">
          <string>Background color...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mOpacityLabel">
-        <property name="text">
-         <string>Opacity</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-        <property name="buddy">
-         <cstring>mOpacitySlider</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSlider" name="mOpacitySlider">
-        <property name="maximum">
-         <number>255</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QSpinBox" name="mOpacitySpinBox">
-        <property name="maximum">
-         <number>255</number>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QSpinBox" name="mOpacitySpinBox">
+          <property name="maximum">
+           <number>255</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="mOpacitySlider">
+          <property name="maximum">
+           <number>255</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="mOpacityLabel">
+          <property name="text">
+           <string>Opacity</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="buddy">
+           <cstring>mOpacitySlider</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mIdLabel">
-     <property name="text">
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
       <string>Item ID</string>
      </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mIdLabel">
+        <property name="text">
+         <string>Item ID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mItemIdLineEdit"/>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLineEdit" name="mItemIdLineEdit"/>
-   </item>
-   <item row="6" column="0" colspan="2">
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::MinimumExpanding</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>143</width>
-       <height>87</height>
+       <width>20</width>
+       <height>40</height>
       </size>
      </property>
     </spacer>
@@ -144,9 +383,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
+   <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

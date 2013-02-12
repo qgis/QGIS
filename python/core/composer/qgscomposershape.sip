@@ -36,16 +36,8 @@ class QgsComposerShape: QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     //setters and getters
-    void setLineWidth( double width );
-    double lineWidth() const;
-    void setOutlineColor( const QColor& color );
-    QColor outlineColor() const;
-    void setFillColor( const QColor& color );
-    QColor fillColor() const;
     QgsComposerShape::Shape shapeType() const;
     void setShapeType( QgsComposerShape::Shape s );
-    bool transparentFill() const;
-    void setTransparentFill( bool transparent );
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit. Also, the shape is scaled*/

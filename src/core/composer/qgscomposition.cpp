@@ -49,7 +49,7 @@
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
+    mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
     mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
@@ -61,7 +61,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ),
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ),
     mAlignmentSnapTolerance( 2 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   loadSettings();

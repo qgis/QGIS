@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>443</width>
-    <height>550</height>
+    <height>712</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,225 +19,303 @@
   <property name="windowTitle">
    <string>Label Options</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+  <layout class="QVBoxLayout" name="_2">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>400</width>
-        <height>503</height>
+        <width>441</width>
+        <height>710</height>
        </rect>
       </property>
-      <attribute name="label">
-       <string>Label</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="7" column="1">
-        <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
-         <property name="prefix">
-          <string/>
+      <layout class="QVBoxLayout" name="mainLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mTextGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
          </property>
-         <property name="suffix">
-          <string> mm</string>
+         <property name="title">
+          <string>Main properties</string>
          </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QPlainTextEdit" name="mTextEdit">
+            <property name="tabStopWidth">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="mHtmlCheckBox">
+              <property name="text">
+               <string>Render as HTML</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mInsertExpressionButton">
+              <property name="text">
+               <string>Insert an expression</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="mFontButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Font</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mFontColorButton">
+              <property name="text">
+               <string>Font color...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="mRotationLabel">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignementGroup">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text">
-          <string>Rotation</string>
+         <property name="title">
+          <string>Alignement</string>
          </property>
-         <property name="wordWrap">
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <property name="buddy">
-          <cstring>mRotationSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QDoubleSpinBox" name="mRotationSpinBox">
-         <property name="suffix">
-          <string> °</string>
-         </property>
-         <property name="maximum">
-          <double>360.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QPushButton" name="mInsertExpressionButton">
-         <property name="text">
-          <string>Insert an expression</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QCheckBox" name="mHtmlCheckBox">
-         <property name="text">
-          <string>Render as HTML</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="mMarginLabel">
-         <property name="text">
-          <string>Margin</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QGroupBox" name="mVerticalAlignementGroup">
-         <property name="title">
-          <string>Vertical Alignment:</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mTopRadioButton">
-            <property name="text">
-             <string>Top</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mMiddleRadioButton">
-            <property name="text">
-             <string>Middle</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mBottomRadioButton">
-            <property name="text">
-             <string>Bottom</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QGroupBox" name="mHorizontalAlignementGroup">
-         <property name="title">
-          <string>Horizontal Alignment:</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMinimumSize</enum>
+         <layout class="QFormLayout" name="formLayout_4">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mLeftRadioButton">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mVerticalAlignementLabel">
             <property name="text">
-             <string>Left</string>
+             <string>Vertical</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QRadioButton" name="mCenterRadioButton">
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mTopRadioButton">
+              <property name="text">
+               <string>Top</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mMiddleRadioButton">
+              <property name="text">
+               <string>Middle</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mBottomRadioButton">
+              <property name="text">
+               <string>Bottom</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mHorizontalAlignementLabel">
             <property name="text">
-             <string>Center</string>
+             <string>Horizontal</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QRadioButton" name="mRightRadioButton">
-            <property name="text">
-             <string>Right</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mLeftRadioButton">
+              <property name="text">
+               <string>Left</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mCenterRadioButton">
+              <property name="text">
+               <string>Center</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="mRightRadioButton">
+              <property name="text">
+               <string>Right</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="mFontColorButton">
-         <property name="text">
-          <string>Font color...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="mFontButton">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplayGroupBox">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text">
-          <string>Font</string>
+         <property name="title">
+          <string>Display</string>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QPlainTextEdit" name="mTextEdit">
-         <property name="tabStopWidth">
-          <number>10</number>
+         <property name="checkable">
+          <bool>false</bool>
          </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mMarginLabel">
+            <property name="text">
+             <string>Margin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mRotationLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Rotation</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mRotationSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+            <property name="suffix">
+             <string> °</string>
+            </property>
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -247,10 +325,14 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>mFontButton</tabstop>
-  <tabstop>mMarginDoubleSpinBox</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -26,7 +26,7 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
 
@@ -53,11 +53,7 @@ QgsComposerShapeWidget::~QgsComposerShapeWidget()
 void QgsComposerShapeWidget::blockAllSignals( bool block )
 {
   mShapeComboBox->blockSignals( block );
-  mOutlineColorButton->blockSignals( block );
-  mOutlineWidthSpinBox->blockSignals( block );
-  mFillColorButton->blockSignals( block );
   mRotationSpinBox->blockSignals( block );
-  mTransparentCheckBox->blockSignals( block );
 }
 
 void QgsComposerShapeWidget::setGuiElementValues()
@@ -68,7 +64,7 @@ void QgsComposerShapeWidget::setGuiElementValues()
   }
 
   blockAllSignals( true );
-  mOutlineWidthSpinBox->setValue( mComposerShape->lineWidth() );
+
   mRotationSpinBox->setValue( mComposerShape->rotation() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
   {
@@ -83,16 +79,6 @@ void QgsComposerShapeWidget::setGuiElementValues()
     mShapeComboBox->setCurrentIndex( mShapeComboBox->findText( tr( "Triangle" ) ) );
   }
 
-  if ( mComposerShape->transparentFill() )
-  {
-    mTransparentCheckBox->setCheckState( Qt::Checked );
-    mFillColorButton->setEnabled( false );
-  }
-  else
-  {
-    mTransparentCheckBox->setCheckState( Qt::Unchecked );
-    mFillColorButton->setEnabled( true );
-  }
   blockAllSignals( false );
 }
 
@@ -131,79 +117,5 @@ void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QStrin
   mComposerShape->endCommand();
 }
 
-void QgsComposerShapeWidget::on_mOutlineColorButton_clicked()
-{
-  if ( !mComposerShape )
-  {
-    return;
-  }
-  QColor existingColor = mComposerShape->outlineColor();
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( existingColor, 0, tr( "Select outline color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( existingColor );
-#endif
-  if ( newColor.isValid() )
-  {
-    mComposerShape->beginCommand( tr( "Shape outline color" ) );
-    mComposerShape->setOutlineColor( newColor );
-    mComposerShape->update();
-    mComposerShape->endCommand();
-  }
-}
-
-void QgsComposerShapeWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
-{
-  if ( !mComposerShape )
-  {
-    return;
-  }
-  mComposerShape->beginCommand( tr( "Shape outline width" ), QgsComposerMergeCommand::ShapeOutlineWidth );
-  mComposerShape->setLineWidth( d );
-  mComposerShape->update();
-  mComposerShape->endCommand();
-}
-
-void QgsComposerShapeWidget::on_mTransparentCheckBox_stateChanged( int state )
-{
-  if ( !mComposerShape )
-  {
-    return;
-  }
-
-  mComposerShape->beginCommand( tr( "Shape transparency toggled" ) );
-  if ( state == Qt::Checked )
-  {
-    mComposerShape->setTransparentFill( true );
-    mFillColorButton->setEnabled( false );
-  }
-  else
-  {
-    mComposerShape->setTransparentFill( false );
-    mFillColorButton->setEnabled( true );
-  }
-  mComposerShape->update();
-  mComposerShape->endCommand();
-}
 
 
-void QgsComposerShapeWidget::on_mFillColorButton_clicked()
-{
-  if ( !mComposerShape )
-  {
-    return;
-  }
-  QColor existingColor = mComposerShape->fillColor();
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( existingColor, 0, tr( "Select fill color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( existingColor );
-#endif
-  if ( newColor.isValid() )
-  {
-    mComposerShape->beginCommand( tr( "Shape fill color" ) );
-    mComposerShape->setFillColor( newColor );
-    mComposerShape->update();
-    mComposerShape->endCommand();
-  }
-}

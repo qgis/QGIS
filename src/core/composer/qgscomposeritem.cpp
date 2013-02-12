@@ -50,6 +50,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mLastUsedPositionMode( UpperLeft )
 {
   init( manageZValue );
 }
@@ -66,6 +67,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mLastUsedPositionMode( UpperLeft )
 {
   init( manageZValue );
   QTransform t;
@@ -147,6 +149,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "y", QString::number( transform().dy() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
+  composerItemElem.setAttribute( "positionMode", QString::number( (int) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
@@ -236,12 +239,17 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //position
   double x, y, width, height;
-  bool xOk, yOk, widthOk, heightOk;
+  bool xOk, yOk, widthOk, heightOk, positionModeOK;
 
   x = itemElem.attribute( "x" ).toDouble( &xOk );
   y = itemElem.attribute( "y" ).toDouble( &yOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
+  mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
+  if ( !positionModeOK )
+  {
+    mLastUsedPositionMode = UpperLeft;
+  }
 
   if ( !xOk || !yOk || !widthOk || !heightOk )
   {
@@ -770,6 +778,9 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
 {
   double upperLeftX = x;
   double upperLeftY = y;
+
+  //store the item position mode
+  mLastUsedPositionMode = itemPoint;
 
   //adjust x-coordinate if placement is not done to a left point
   if ( itemPoint == UpperMiddle || itemPoint == Middle || itemPoint == LowerMiddle )
