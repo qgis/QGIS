@@ -1735,7 +1735,7 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
     const QgsComposerItem* currentItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
     if ( excludeItem )
     {
-      if ( !currentItem || currentItem == excludeItem || currentItem->type() == QgsComposerItem::ComposerPaper )
+      if ( !currentItem || currentItem == excludeItem )
       {
         continue;
       }

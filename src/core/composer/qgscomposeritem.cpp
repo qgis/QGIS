@@ -639,7 +639,13 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
         if ( alignX != -1 )
         {
           QGraphicsLineItem* item = hAlignSnapItem();
-          item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
+          int numPages = mComposition->numPages();
+          double yLineCoord = 300; //default in case there is no single page
+          if ( numPages > 0 )
+          {
+            yLineCoord = mComposition->paperHeight() * numPages + mComposition->spaceBetweenPages() * ( numPages - 1 );
+          }
+          item->setLine( QLineF( alignX, 0, alignX,  yLineCoord ) );
           item->show();
         }
         else
