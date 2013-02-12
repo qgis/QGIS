@@ -44,7 +44,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
 
-  mDialog = new QgsMeasureDialog( this );
+  mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
   mSnapper.setMapCanvas( canvas );
 
   connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
