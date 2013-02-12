@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -354,6 +354,7 @@
    </attribute>
    <addaction name="mActionIdentify"/>
    <addaction name="mActionDeselectAll"/>
+   <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionMapTips"/>
    <addaction name="mActionNewBookmark"/>
@@ -1970,19 +1971,31 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
-  <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="icon">
-      <iconset resource="../../images/images.qrc">
-       <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
-     </property>
-     <property name="text">
-      <string>Rotate Feature(s)</string>
-     </property>
-     <property name="toolTip">
-      <string>Rotate Feature(s)</string>
-     </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionSelectByExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select By Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Select features using an expression</string>
+   </property>
   </action>
  </widget>
  <resources>

@@ -854,6 +854,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! deselect features from all layers
     void deselectAll();
 
+    //! select features by expression
+    void selectByExpression();
+
     //! refresh map canvas
     void refreshMapCanvas();
 
