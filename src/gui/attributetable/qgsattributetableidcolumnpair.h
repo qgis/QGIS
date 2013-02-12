@@ -28,7 +28,7 @@ class QgsAttributeTableIdColumnPair
   public:
     QgsAttributeTableIdColumnPair( QgsFeatureId anId, QVariant anItem ) : mId( anId ), mItem( anItem ) {}
     /**
-     * Returns true if this id-column pair is less the the tested one
+     * Returns true if this id-column pair is less than the tested one
      * @param b the tested id-column pair
      */
     bool operator<( const QgsAttributeTableIdColumnPair &b ) const;

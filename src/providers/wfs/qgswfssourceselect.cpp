@@ -420,7 +420,7 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
     QgsWFSCapabilities conn( connection.uri().encodedUri() );
     QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
 
-    QgsFieldMap fields;
+    QgsFields fields;
     QString geometryAttribute;
     QGis::WkbType geomType;
     if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )

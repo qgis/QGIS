@@ -89,7 +89,7 @@ class PostGisDBPlugin(DBPlugin):
 			uri.setConnection(service, database, username, password, sslmode)
 		else:
 			uri.setConnection(host, port, database, username, password, sslmode)
-			
+
 		uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
 		err = QString()
@@ -163,7 +163,7 @@ class PGDatabase(Database):
 		Database.registerDatabaseActions(self, mainWindow)
 
 		# add a separator
-		separator = QAction(self); 
+		separator = QAction(self);
 		separator.setSeparator(True)
 		mainWindow.registerAction( separator, "&Table" )
 
@@ -288,9 +288,9 @@ class PGRasterTable(PGTable, RasterTable):
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
 		return QString( uri )
-	
+
 	def toMapLayer(self):
-		from qgis.core import QgsRasterLayer 
+		from qgis.core import QgsRasterLayer
 		rl = QgsRasterLayer(self.gdalUri(), self.name)
 		if rl.isValid():
 			rl.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
@@ -302,16 +302,14 @@ class PGTableField(TableField):
 		self.num, self.name, self.dataType, self.charMaxLen, self.modifier, self.notNull, self.hasDefault, self.default, typeStr = row
 		self.primaryKey = False
 
-		# convert the modifier to string (e.g. "precision,scale")
-		if self.modifier != None and self.modifier != -1:
-			trimmedTypeStr = QString(typeStr).trimmed()
-			if trimmedTypeStr.startsWith(self.dataType):
-				regex = QRegExp( "%s\s*\((.+)\)$" % QRegExp.escape(self.dataType) )
-				startpos = regex.indexIn( trimmedTypeStr )
-				if startpos >= 0:
-					self.modifier = regex.cap(1).trimmed()
-				else:
-					self.modifier = None
+		# get modifier (e.g. "precision,scale") from formatted type string
+		trimmedTypeStr = QString(typeStr).trimmed()
+		regex = QRegExp( "\((.+)\)$" )
+		startpos = regex.indexIn( trimmedTypeStr )
+		if startpos >= 0:
+			self.modifier = regex.cap(1).trimmed()
+		else:
+			self.modifier = None
 
 		# find out whether fields are part of primary key
 		for con in self.table().constraints():

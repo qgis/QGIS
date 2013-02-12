@@ -30,6 +30,8 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
+class QgsLineSymbolV2;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -45,7 +47,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
     /** Constructor. Settings are read from project. */
     QgsComposerMap( QgsComposition *composition );
-    ~QgsComposerMap();
+    virtual ~QgsComposerMap();
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const { return ComposerMap; }
@@ -101,9 +103,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Top
     };
 
-    /**This function is deprecated*/
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
-
     /** \brief Draw to paint device
         @param painter painter
         @param extent map extent
@@ -117,7 +116,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
     /** \brief Create cache image */
-    void cache( void );
+    void cache();
 
     /** \brief Get identification number*/
     int id() const {return mId;}
@@ -143,7 +142,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setSceneRect( const QRectF& rectangle );
 
     /** \brief Scale */
-    double scale( void ) const;
+    double scale() const;
 
     /**Sets new scale and changes only mExtent*/
     void setNewScale( double scaleDenominator );
@@ -227,11 +226,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Sets the pen to draw composer grid
     @note this function was added in version 1.4*/
-    void setGridPen( const QPen& p ) { mGridPen = p; }
-    QPen gridPen() const { return mGridPen; }
+    void setGridPen( const QPen& p );
+    QPen gridPen() const;
+
     /**Sets with of grid pen
     @note this function was added in version 1.4*/
     void setGridPenWidth( double w );
+
     /**Sets the color of the grid pen
     @note this function was added in version 1.4*/
     void setGridPenColor( const QColor& c );
@@ -310,6 +311,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
     QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
 
+    void setGridLineSymbol( QgsLineSymbolV2* symbol );
+    QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
+
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
@@ -374,6 +378,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mOverviewFrameMapId;
     /**Drawing style for overview farme*/
     QgsFillSymbolV2* mOverviewFrameMapSymbol;
+    QgsLineSymbolV2* mGridLineSymbol;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -393,8 +398,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mGridOffsetX;
     /**Grid line offset in y-direction*/
     double mGridOffsetY;
-    /**Grid line pen*/
-    QPen mGridPen;
     /**Font for grid line annotation*/
     QFont mGridAnnotationFont;
     /**Digits after the dot*/
@@ -484,8 +487,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
+    void drawGridLine( const QLineF& line, QPainter* p );
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
+    void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 };
 

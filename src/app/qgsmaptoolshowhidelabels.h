@@ -23,7 +23,7 @@
 
 
 /**A map tool for showing or hidding a feature's label*/
-class QgsMapToolShowHideLabels: public QgsMapToolLabel
+class QgsMapToolShowHideLabels : public QgsMapToolLabel
 {
     Q_OBJECT
 

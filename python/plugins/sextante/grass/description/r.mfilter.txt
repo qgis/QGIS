@@ -1,0 +1,8 @@
+r.mfilter
+r.mfilter - Performs raster map matrix filter.
+Raster (r.*)
+ParameterRaster|input|Input layer|False
+ParameterFile|filter|Filter file|False
+ParameterNumber|repeat|Number of times to repeat the filter|1|None|1
+ParameterBoolean|-z|Apply filter only to zero data values|False
+OutputRaster|output|Output layer

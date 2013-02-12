@@ -38,8 +38,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mDraw = false;
-  mRubberBand = new QgsRubberBand( mCanvas, true );
-  mSrcRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   QString gisdbase = QgsGrass::getDefaultGisdbase();
   QString location = QgsGrass::getDefaultLocation();
   mCrs = QgsGrass::crs( gisdbase, location );

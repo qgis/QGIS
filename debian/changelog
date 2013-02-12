@@ -4,8 +4,16 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * include ows provider
   * include wcs provider
   * symbology-ng-style now in sqlite3
+  * include cpt-city files
+  * support DEB_BUILD_OPTIONS' parallel=n
+  * add python-unittest2 build dependency for maverick and squeeze
+  * disable PyQgsRectangle test on lucid (depends on unittest2)
+  * add python-psycopg2 and python-qscintilla2 dependency to python-qgis
+  * add support for ubuntu quantal and raring
+  * remove js files and add libjs-jquery/libjs-underscore dependency
+  * temporarily disable mssql provider until migrated to new vector api.
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 16 Aug 2012 09:47:52 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 31 Jan 2013 13:34:24 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

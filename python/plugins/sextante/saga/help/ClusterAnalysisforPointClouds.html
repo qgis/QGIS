@@ -1,0 +1,34 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Cluster Analysis for Point Clouds</h1>
+<div class='author'>Volker Wichmann (c) 2010, LASERDATA GmbH</div>
+<div class='description'>Cluster Analysis for Point Clouds.<br/>
+<br/>
+Module usage is different between SAGA GUI and SAGA CMD: With SAGA GUI you will get prompted to choose the attributes to use once you execute the module. With SAGA CMD you have to provide a string with the -ATTR_FIELDS parameter containing the field numbers of the attributes to use (separated by semicolon). Field numbers start with 1, e.g. -ATTR_FIELDS="4;5;7".<br/>
+<br/>
+References:<br/>
+<br/>
+This module is a port of the 'Cluster Analysis for Grids' module from the 'Imagery - Classification' module library, Copyright (C) 2003 by Olaf Conrad.<br/>
+<br/>
+Iterative Minimum Distance:<br/>
+- Forgy, E. (1965):<br/>
+  'Cluster Analysis of multivariate data: efficiency vs. interpretability of classifications',<br/>
+  Biometrics 21:768<br/>
+<br/>
+Hill-Climbing:- Rubin, J. (1967):<br/>
+  'Optimal Classification into Groups: An Approach for Solving the Taxonomy Problem',<br/>
+  J. Theoretical Biology, 15:103-144<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Point Cloud <div class='type'>Input Point Cloud</div></dt><dd>Input <div class='constraints'></div></dd>
+	<dt>Result <div class='type'>Output Point Cloud</div></dt><dd>Output <div class='constraints'></div></dd>
+	<dt>Statistics <div class='type'>Output Table</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Iterative Minimum Distance (Forgy 1965), Hill-Climbing (Rubin 1967), Combined Minimum Distance / Hillclimbing</div></dd>
+	<dt>Clusters <div class='type'>Integer</div></dt><dd>Number of clusters <div class='constraints'>Minimum: 2.0</div></dd>
+	<dt>Normalise <div class='type'>Boolean</div></dt><dd>Automatically normalise attributes by standard deviation before clustering. <div class='constraints'></div></dd>
+	<dt>Attribute Fields <div class='type'>Text</div></dt><dd>The numbers (starting from 1) of the fields to use for clustering, separated by semicolon, e.g. "4;5;7" <div class='constraints'></div></dd>
+</dl>
+</body></html>

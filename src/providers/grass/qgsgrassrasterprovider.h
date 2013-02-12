@@ -53,8 +53,9 @@ class QgsGrassRasterValue
     QgsGrassRasterValue( );
     ~QgsGrassRasterValue();
     void start( QString gisdbase, QString location, QString mapset, QString map );
-    // returns raster value as string or "null" or "error"
-    QString value( double x, double y );
+    // returns raster value, NaN for no data
+    // ok is set to true if ok or false on error
+    double value( double x, double y, bool *ok );
   private:
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
@@ -140,29 +141,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     bool isValid();
 
-    /** \brief Identify raster value(s) found on the point position */
-    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-    QMap<int, void *> identify( const QgsPoint & thePoint );
-
-    /**
-     * \brief Identify details from a GRASS layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GRASS layer
-     */
-    QString identifyAsText( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a GRASS layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GRASS layer
-     *
-     * \note  added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -192,8 +171,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
 
     int bandCount() const;
 
@@ -209,7 +188,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
-    double noDataValue() const;
+    //double noDataValue() const;
     double minimumValue( int bandNo )const;
     double maximumValue( int bandNo )const;
 
@@ -227,16 +206,6 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
      * into a subset of the GUI raster properties "Metadata" tab.
      */
     QString metadata();
-
-    // Following methods specific for are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
-    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
-    QStringList supportedImageEncodings() { return QStringList();}
-    QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const &mimeType )
-    { Q_UNUSED( mimeType ); }
-    void setImageCrs( QString const &crs )
-    { Q_UNUSED( crs ); }
 
     virtual QDateTime dataTimestamp() const;
   private:
@@ -263,7 +232,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsGrassRasterValue mRasterValue;
 
-    double mNoDataValue;
+    //double mNoDataValue;
 };
 
 #endif

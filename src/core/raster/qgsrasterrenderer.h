@@ -33,9 +33,31 @@ struct QgsRasterViewPort;
 
 class QDomElement;
 
+/** \ingroup core
+  * Raster renderer pipe that applies colours to a raster.
+  */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
   public:
+    // Origin of min / max values
+    enum MinMaxOrigin
+    {
+      MinMaxUnknown         = 0,
+      MinMaxUser            = 1, // entered by user
+      // method
+      MinMaxMinMax          = 1 << 1,
+      MinMaxCumulativeCut   = 1 << 2,
+      MinMaxStdDev          = 1 << 3,
+      // Extent
+      MinMaxFullExtent      = 1 << 4,
+      MinMaxSubExtent       = 1 << 5,
+      // Precision
+      MinMaxEstimated       = 1 << 6,
+      MinMaxExact           = 1 << 7
+    };
+
+    static const QRgb NODATA_COLOR;
+
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
@@ -43,17 +65,21 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input );
 
-    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+#if 0
+    virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
     {
       Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
       return 0;
     }
+#endif
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     bool usesTransparency() const;
 
@@ -66,8 +92,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    void setInvertColor( bool invert ) { mInvertColor = invert; }
-    bool invertColor() const { return mInvertColor; }
+    //void setInvertColor( bool invert ) { mInvertColor = invert; }
+    //bool invertColor() const { return mInvertColor; }
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
@@ -79,8 +105,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /**Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }
 
+    static QString minMaxOriginName( int theOrigin );
+    static QString minMaxOriginLabel( int theOrigin );
+    static int minMaxOriginFromName( QString theName );
+
   protected:
-    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
 
     /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
@@ -95,53 +124,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
         Default: -1 (not set)*/
     int mAlphaBand;
 
-    bool mInvertColor;
-
-    /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
-    double mMaxOversampling;
+    //bool mInvertColor;
 };
-
-inline double QgsRasterRenderer::readValue( void *data, QgsRasterInterface::DataType type, int index )
-{
-  if ( !mInput )
-  {
-    return 0;
-  }
-
-  if ( !data )
-  {
-    return mInput->noDataValue();
-  }
-
-  switch ( type )
-  {
-    case QgsRasterInterface::Byte:
-      return ( double )(( GByte * )data )[index];
-      break;
-    case QgsRasterInterface::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::Int16:
-      return ( double )(( GInt16 * )data )[index];
-      break;
-    case QgsRasterInterface::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Int32:
-      return ( double )(( GInt32 * )data )[index];
-      break;
-    case QgsRasterInterface::Float32:
-      return ( double )(( float * )data )[index];
-      break;
-    case QgsRasterInterface::Float64:
-      return ( double )(( double * )data )[index];
-      break;
-    default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
-      break;
-  }
-
-  return mInput->noDataValue();
-}
 
 #endif // QGSRASTERRENDERER_H

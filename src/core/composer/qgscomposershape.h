@@ -75,7 +75,6 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
     virtual void setRotation( double r );
 
-
   private:
     /**Ellipse, rectangle or triangle*/
     Shape mShape;

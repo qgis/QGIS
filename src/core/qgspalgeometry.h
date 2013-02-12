@@ -34,7 +34,9 @@ class CORE_EXPORT QgsPALGeometry: public pal::PalGeometry
     ~QgsPALGeometry();
 
     //methods inherited from PalGeometry
+    // @note available in python bindings
     GEOSGeometry* getGeosGeometry();
+    // @note available in python bindings
     void releaseGeosGeometry( GEOSGeometry *the_geom ) { Q_UNUSED( the_geom ); }
 
     /**Returns pointer to the overlay object this geometry referrs to. Don't delete the returned object!*/

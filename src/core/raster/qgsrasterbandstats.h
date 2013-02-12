@@ -78,7 +78,9 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The gdal band number (starts at 1)*/
     int bandNumber;
 
-    /** Color table */
+    /** Color table
+      * @note not available in python bindings
+      */
     QList<QgsColorRampShader::ColorRampItem> colorTable;
 
     /** \brief The number of cells in the band. Equivalent to height x width.

@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -63,6 +63,7 @@ typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
 {
   public:
+    //! not available in python bindings
     QgsSymbolLayerV2Metadata( QString name, QString visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -73,6 +74,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( NULL )
     {}
 
+    //! not available in python bindings
     QgsSymbolLayerV2Metadata( QString name, QString visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -84,10 +86,14 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
+    //! not available in python bindings
     QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
+    //! not available in python bindings
     QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    //! not available in python bindings
     QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
+    //! not available in python bindings
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }

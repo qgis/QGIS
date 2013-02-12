@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <limits>
 
 #include "qgslogger.h"
 #include "qgsgrass.h"
@@ -38,27 +38,32 @@
 #include <QFile>
 #include <QHash>
 
+#define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
+
 static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
-    : QgsRasterDataProvider( uri ), mValid( true )
+    : QgsRasterDataProvider( uri ), mValid( false )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
 
+  mValid = false;
   // Parse URI, it is the same like using GDAL, i.e. path to raster cellhd, i.e.
   // /path/to/gisdbase/location/mapset/cellhd/map
   QFileInfo fileInfo( uri );
-  mValid = fileInfo.exists(); // then we keep it valid forever
+  if ( !fileInfo.exists() ) // then we keep it valid forever
+  {
+    appendError( ERR( tr( "cellhd file %1 does not exist" ).arg( uri ) ) );
+    return;
+  }
+
   mMapName = fileInfo.fileName();
   QDir dir = fileInfo.dir();
   QString element = dir.dirName();
   if ( element != "cellhd" )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Groups not yet supported" ) + " (GRASS " + uri + ")" );
-
-    mValid = false;
+    appendError( ERR( tr( "Groups not yet supported" ) ) );
     return;
   }
   dir.cdUp(); // skip cellhd
@@ -76,7 +81,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mTimestamp = dataTimestamp();
 
   mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
-  mValidNoDataValue = true;
+  //mValidNoDataValue = true;
 
   mCrs = QgsGrass::crs( mGisdbase, mLocation );
   QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
@@ -92,10 +97,11 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
 
   // TODO: avoid showing these strange numbers in GUI
   // TODO: don't save no data values in project file, add a flag if value was defined by user
+
+  double myInternalNoDataValue;
   if ( mGrassDataType == CELL_TYPE )
   {
-    //limit: -2147483647;
-    mNoDataValue = -2000000000;
+    myInternalNoDataValue = -2147483648;
   }
   else if ( mGrassDataType == DCELL_TYPE )
   {
@@ -105,7 +111,8 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     // No data value is shown in GUI, use some nice number.
     // Choose values with small representation error.
     // limit: 1.7976931348623157e+308
-    mNoDataValue = -1e+300;
+    //myInternalNoDataValue = -1e+300;
+    myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
   }
   else
   {
@@ -115,20 +122,23 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     }
 
     // limit: 3.40282347e+38
-    mNoDataValue = -1e+30;
+    //myInternalNoDataValue = -1e+30;
+    myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
-  QgsDebugMsg( QString( "mNoDataValue = %1" ).arg( mNoDataValue ) );
+  mInternalNoDataValue.append( myInternalNoDataValue );
+  QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
   // We have to decide some reasonable block size, not to big to occupate too much
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
   // for statistics
   int cache_size = 10000000; // ~ 10 MB
-  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) / 8 ) / mCols;
+  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) ) / mCols;
   if ( mYBlockSize  > mRows )
   {
     mYBlockSize = mRows;
   }
+  mValid = true;
   QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
 }
 
@@ -156,8 +166,10 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   arguments.append( "map=" +  mMapName + "@" + mMapset );
 
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( viewExtent.xMinimum() ).arg( viewExtent.yMinimum() )
-                     .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.yMinimum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMaximum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   QProcess process( this );
   QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
@@ -206,8 +218,10 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 
   QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( ext.xMinimum() ).arg( yMinimum )
-                     .arg( ext.xMaximum() ).arg( yMaximum )
+                     .arg( QgsRasterBlock::printValue( ext.xMinimum() ) )
+                     .arg( QgsRasterBlock::printValue( yMinimum ) )
+                     .arg( QgsRasterBlock::printValue( ext.xMaximum() ) )
+                     .arg( QgsRasterBlock::printValue( yMaximum ) )
                      .arg( mCols ).arg( mYBlockSize ) ) );
 
   arguments.append( "format=value" );
@@ -228,7 +242,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = mCols * mYBlockSize * dataTypeSize( bandNo ) / 8;
+  int size = mCols * mYBlockSize * dataTypeSize( bandNo );
   QgsDebugMsg( QString( "mCols = %1 mYBlockSize = %2 dataTypeSize = %3" ).arg( mCols ).arg( mYBlockSize ).arg( dataTypeSize( bandNo ) ) );
   if ( size != data.size() )
   {
@@ -253,8 +267,10 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   arguments.append( "map=" +  mMapName + "@" + mMapset );
 
   arguments.append(( QString( "window=%1,%2,%3,%4,%5,%6" )
-                     .arg( viewExtent.xMinimum() ).arg( viewExtent.yMinimum() )
-                     .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.yMinimum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.xMaximum() ) )
+                     .arg( QgsRasterBlock::printValue( viewExtent.yMaximum() ) )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   arguments.append( "format=value" );
   QProcess process( this );
@@ -275,7 +291,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
-  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo ) / 8;
+  int size = pixelWidth * pixelHeight * dataTypeSize( bandNo );
   if ( size != data.size() )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
@@ -283,11 +299,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
     size = size < data.size() ? size : data.size();
   }
   memcpy( block, data.data(), size );
-}
-
-double  QgsGrassRasterProvider::noDataValue() const
-{
-  return mNoDataValue;
 }
 
 double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
@@ -399,10 +410,13 @@ QgsCoordinateReferenceSystem QgsGrassRasterProvider::crs()
 
 QgsRectangle QgsGrassRasterProvider::extent()
 {
+  QgsDebugMsg( "Entered" );
   // The extend can change of course so we get always fresh, to avoid running always the module
   // we should save mExtent and mLastModified and check if the map was modified
 
   mExtent = QgsGrass::extent( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster );
+
+  QgsDebugMsg( "Extent got" );
   return mExtent;
 }
 
@@ -418,33 +432,41 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
+QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
+  Q_UNUSED( theExtent );
+  Q_UNUSED( theWidth );
+  Q_UNUSED( theHeight );
   QgsDebugMsg( "Entered" );
-  QMap<int, void *> results;
+  QMap<int, QVariant> results;
+
+  if ( theFormat != IdentifyFormatValue ) return results;
+
+  if ( !extent().contains( thePoint ) )
+  {
+    results.insert( 1, noDataValue( 1 ) );
+    return results;
+  }
 
   // TODO: use doubles instead of strings
-  //theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
-  QString strValue = mRasterValue.value( thePoint.x(), thePoint.y() );
+
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
 
-  double value = noDataValue();
+  bool ok;
+  double value = mRasterValue.value( thePoint.x(), thePoint.y(), &ok );
 
-  if ( strValue != "out" && strValue != "null" )
+  if ( !ok ) return results;
+
+  if ( qIsNaN( value ) ) value = noDataValue( 1 );
+
+  // Apply user no data
+  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( 1 );
+  if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
   {
-    bool ok;
-    value = strValue.toDouble( & ok );
-    if ( !ok )
-    {
-      value = 999999999;
-      QgsDebugMsg( "Cannot convert string to double" );
-    }
+    value = noDataValue( 1 );
   }
-  void * data = malloc( dataTypeSize( 1 ) / 8 );
-  writeValue( data, dataType( 1 ), 0, value );
 
-  results.insert( 1, data );
-  QgsDebugMsg( "strValue = " + strValue );
+  results.insert( 1, value );
 
   return results;
 }
@@ -452,33 +474,34 @@ QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
 int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
+                   | QgsRasterDataProvider::IdentifyValue
                    | QgsRasterDataProvider::ExactResolution
                    | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
   return capability;
 }
 
-QgsRasterInterface::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
+QGis::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-QgsRasterInterface::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
-      return QgsRasterDataProvider::Int32;
+      return QGis::Int32;
       break;
     case FCELL_TYPE:
-      return QgsRasterDataProvider::Float32;
+      return QGis::Float32;
       break;
     case DCELL_TYPE:
-      return QgsRasterDataProvider::Float64;
+      return QGis::Float64;
       break;
   }
-  return QgsRasterDataProvider::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 int QgsGrassRasterProvider::bandCount() const
@@ -493,7 +516,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRasterDataProvider::PaletteIndex;
+    return QgsRasterDataProvider::ContinuousPalette;
   }
   return QgsRasterDataProvider::GrayIndex;
 }
@@ -521,18 +544,6 @@ QString QgsGrassRasterProvider::metadata()
 bool QgsGrassRasterProvider::isValid()
 {
   return mValid;
-}
-
-QString QgsGrassRasterProvider::identifyAsText( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return  QString( "Not implemented" );
-}
-
-QString QgsGrassRasterProvider::identifyAsHtml( const QgsPoint& point )
-{
-  Q_UNUSED( point );
-  return  QString( "Not implemented" );
 }
 
 QString QgsGrassRasterProvider::lastErrorTitle()
@@ -635,22 +646,28 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
   }
 }
 
-QString QgsGrassRasterValue::value( double x, double y )
+double QgsGrassRasterValue::value( double x, double y, bool *ok )
 {
-  QString value = "error";
-  if ( !mProcess )
-    return value; // throw some exception?
-  QString coor = QString( "%1 %2\n" ).arg( x ).arg( y );
+  *ok = false;
+  double value = std::numeric_limits<double>::quiet_NaN();
+
+  if ( !mProcess ) return value;
+
+  QString coor = QString( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ) )
+                 .arg( QgsRasterBlock::printValue( y ) );
   QgsDebugMsg( "coor : " + coor );
   mProcess->write( coor.toAscii() ); // how to flush, necessary?
   mProcess->waitForReadyRead();
   QString str = mProcess->readLine().trimmed();
   QgsDebugMsg( "read from stdout : " + str );
 
+  // TODO: use doubles instead of strings
+
   QStringList list = str.trimmed().split( ":" );
   if ( list.size() == 2 )
   {
-    value = list[1];
+    if ( list[1] == "error" ) return value;
+    value = list[1].toDouble( ok );
   }
   return value;
 }

@@ -34,6 +34,7 @@ class QgsComposerAttributeTable;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
+class QgsAtlasComposition;
 
 class QGridLayout;
 class QDomNode;
@@ -59,7 +60,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
 
     void setIconSizes( int size );
-    void setFontSize( int size );
 
     //! Open and show, set defaults if first time
     void open();
@@ -74,7 +74,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposerView *view( void );
 
     //! Return current composition
-    //QgsComposition *composition(void);
+    QgsComposition* composition( void ) { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -338,9 +338,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;
     QDockWidget* mGeneralDock;
+    QDockWidget* mAtlasDock;
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;
+
+    //! Save parent Project action
+    //! @note added in 1.9
+    QAction *mSaveProjectAction;
 };
 
 #endif

@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,6 +27,9 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   setCheckState( 0, Qt::Checked );
   QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
     : QgsLegendItem( theListView, theString )
@@ -36,6 +39,9 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
   setCheckState( 0, Qt::Checked );
   QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 
 QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
@@ -46,11 +52,22 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
   QIcon myIcon = QgsApplication::getThemeIcon( + "/mActionFolder.png" );
   setText( 0, name );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 
 QgsLegendGroup::~QgsLegendGroup()
 {}
 
+void QgsLegendGroup::setupFont()
+{
+  QSettings settings;
+  QFont myFont = font( 0 );
+  //visually differentiate group labels from the rest
+  myFont.setBold( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
+  setFont( 0, myFont );
+}
 
 bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {

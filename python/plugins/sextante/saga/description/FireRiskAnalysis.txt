@@ -1,0 +1,18 @@
+Fire Risk Analysis
+sim_fire_spreading
+ParameterRaster|DEM|DEM|False
+ParameterRaster|FUEL|Fuel Model|False
+ParameterRaster|WINDSPD|Wind Speed|False
+ParameterRaster|WINDDIR|Wind Direction|False
+ParameterRaster|M1H|Dead Fuel Moisture 1H|False
+ParameterRaster|M10H|Dead Fuel Moisture 10H|False
+ParameterRaster|M100H|Dead Fuel Moisture 100H|False
+ParameterRaster|MHERB|Herbaceous Fuel Moisture|False
+ParameterRaster|MWOOD|Wood Fuel Moisture|False
+ParameterRaster|VALUE|Value|True
+ParameterRaster|BASEPROB|Base Probability|True
+ParameterNumber|MONTECARLO|Number of Events|None|None|1000
+ParameterNumber|INTERVAL|Fire Length|None|None|100
+OutputRaster|DANGER|Danger
+OutputRaster|COMPPROB|Compound Probability
+OutputRaster|PRIORITY|Priority Index

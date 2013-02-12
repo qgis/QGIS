@@ -59,14 +59,15 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     /** tool for measuring */
     QgsDistanceArea mDa;
 
+  public slots:
+    /** recalculate angle if projection state changed*/
+    void updateSettings();
+
   private slots:
     /**Deletes the rubber band and the dialog*/
     void stopMeasuring();
 
-    /** recalculate angle if projection state changed*/
-    void changeProjectionEnabledState();
-
-    //! Configures distance area objects with ellipsoid / output crs
+    /** Configures distance area objects with ellipsoid / output crs*/
     void configureDistanceArea();
 
 };

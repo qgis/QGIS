@@ -1,0 +1,5 @@
+Merge Shapes Layers
+shapes_tools
+ParameterVector|MAIN|Main Layer|-1|False
+ParameterMultipleInput|LAYERS|Additional Layers|-1|True
+OutputVector|OUT|Merged Layer

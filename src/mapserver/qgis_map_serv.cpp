@@ -29,6 +29,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgswfsserver.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 #include <QDomDocument>
@@ -165,6 +166,8 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
   QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
@@ -196,6 +199,7 @@ int main( int argc, char * argv[] )
 
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
+  theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   while ( fcgi_accept() >= 0 )
   {
@@ -379,6 +383,26 @@ int main( int argc, char * argv[] )
           continue;
         }
       }
+      else if ( request == "Transaction" )
+      {
+        QDomDocument transactionDocument;
+        try
+        {
+          transactionDocument = theServer->transaction( parameterMap.value( "REQUEST_BODY" ) );
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending Transaction response" );
+        theRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
 
       return 0;
     }
@@ -409,17 +433,22 @@ int main( int argc, char * argv[] )
     }
 
     QString version = parameterMap.value( "VERSION", "1.3.0" );
-
-    if ( request == "GetCapabilities" )
+    bool getProjectSettings = ( request == "GetProjectSettings" );
+    if ( getProjectSettings )
     {
-      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+      version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
+    }
+
+    if ( request == "GetCapabilities" || getProjectSettings )
+    {
+      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
         QgsDebugMsg( "Capabilities document not found in cache" );
         QDomDocument doc;
         try
         {
-          doc = theServer->getCapabilities( version );
+          doc = theServer->getCapabilities( version, getProjectSettings );
         }
         catch ( QgsMapServiceException& ex )
         {
@@ -428,8 +457,8 @@ int main( int argc, char * argv[] )
           delete theServer;
           continue;
         }
-        capabilitiesCache.insertCapabilitiesDocument( configFilePath, version, &doc );
-        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+        capabilitiesCache.insertCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version, &doc );
+        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       }
       else
       {
@@ -496,8 +525,8 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      //info format for GetFeatureInfo
-      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, parameterMap.value( "INFO_FORMAT" ) );
+      QString infoFormat = parameterMap.value( "INFO_FORMAT" );
+      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
       delete theRequestHandler;
       delete theServer;
       continue;

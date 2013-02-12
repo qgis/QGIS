@@ -132,8 +132,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
-  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( !mManagerMode )
@@ -456,7 +456,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
         QString srid = layer.srid;
         if ( !layer.geometryColName.isNull() )
         {
-          if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
+          if ( QgsPostgresConn::wkbTypeFromPostgis( type ) == QGis::WKBUnknown || srid.isEmpty() )
           {
             addSearchGeometryColumn( layer );
             type = "";
@@ -518,6 +518,11 @@ void QgsPgSourceSelect::finishList()
 
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
+
+  if ( mTablesTreeView->model()->rowCount() == 0 )
+    QMessageBox::information( this,
+                              tr( "Postgres/PostGIS Provider" ),
+                              tr( "No accessible tables or views found.  Check the message log for possible errors." ) );
 
 }
 

@@ -20,6 +20,10 @@
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
 
+#include "qgsrasterdataprovider.h"
+
+class QgsRasterLayer;
+
 /** \ingroup gui
  * A widget to select format-specific raster saving options
  */
@@ -46,14 +50,18 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     void setFormat( QString format );
     void setProvider( QString provider );
+    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
+    void setRasterFileName( const QString& file ) { mRasterLayer = 0; mRasterFileName = file; }
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
+    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat format )
+    { mPyramids = true; mPyramidsFormat = format; }
 
   public slots:
 
     void apply();
     void helpOptions();
-    bool validateOptions( bool gui = true );
+    QString validateOptions( bool gui = true, bool reportOk = true );
     void updateProfiles();
 
   private slots:
@@ -68,13 +76,24 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void optionsTableEnableDeleteButton();
     void updateOptions();
     void swapOptionsUI( int newIndex = -1 );
+    void updateControls();
+
+  protected:
+    virtual void showEvent( QShowEvent * event );
+
+  signals:
+    void optionsChanged();
 
   private:
 
     QString mFormat;
     QString mProvider;
+    QgsRasterLayer* mRasterLayer;
+    QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
     static QMap< QString, QStringList > mBuiltinProfiles;
+    bool mPyramids;
+    QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
 
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;

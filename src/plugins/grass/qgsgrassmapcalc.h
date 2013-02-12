@@ -64,7 +64,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool requestsRegion() { return false; }
     bool usesRegion() { return true; }
     QStringList checkRegion();
-    bool inputRegion( struct Cell_head *window, bool all );
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all );
     QStringList output( int type );
     bool hasOutput( int type )
     { Q_UNUSED( type ); return true; }

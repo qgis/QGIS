@@ -140,9 +140,9 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void updateLayerColumns( int idx );
 
     /**
-     * update filter value list
+     * edit the filter expression
      */
-    void updateFilterColumn( int idx );
+    void editValueRelationExpression();
 
   private:
 

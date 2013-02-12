@@ -59,6 +59,15 @@ void TestQgsRectangle::regression6194()
   // 100 wide, 200 high
   QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
 
+  // Test conversion to QRectF and back
+  QRectF qRectF = rect1.toRectF();
+  QCOMPARE( qRectF.width(), 100.0 );
+  QCOMPARE( qRectF.height(), 200.0 );
+  QCOMPARE( qRectF.x(), 10.0 );
+  QCOMPARE( qRectF.y(), 20.0 );
+  QgsRectangle rect4 = QgsRectangle( qRectF );
+  QCOMPARE( rect4.toString( 2 ), QString( "10.00,20.00 : 110.00,220.00" ) );
+
   // 250 wide, 500 high
   QgsRectangle rect2;
   rect2.setXMinimum( 10.0 );

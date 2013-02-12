@@ -97,18 +97,13 @@ class Dialog(QDialog, Ui_Dialog):
         inputLayer = ftools_utils.getVectorLayerByName(inPoly)
         selectLayer = ftools_utils.getVectorLayerByName(inPts)
         inputProvider = inputLayer.dataProvider()
-        allAttrs = inputProvider.attributeIndexes()
-        inputProvider.select(allAttrs, QgsRectangle())
         selectProvider = selectLayer.dataProvider()
-        allAttrs = selectProvider.attributeIndexes()
-        selectProvider.select(allAttrs, QgsRectangle())
         feat = QgsFeature()
         infeat = QgsFeature()
         geom = QgsGeometry()
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
-        inputProvider.rewind()
-        inputProvider.select(inputProvider.attributeIndexes())
+
         if selection:
             features = selectLayer.selectedFeatures()
             self.progressBar.setMaximum(len(features))
@@ -116,18 +111,19 @@ class Dialog(QDialog, Ui_Dialog):
                 geom = QgsGeometry(feat.geometry())
                 intersects = index.intersects(geom.boundingBox())
                 for id in intersects:
-                    inputProvider.featureAtId(int(id), infeat, True)
+                    inputProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( infeat )
                     tmpGeom = QgsGeometry(infeat.geometry())
                     if geom.intersects(tmpGeom):
                         selectedSet.append(infeat.id())
                 self.progressBar.setValue(self.progressBar.value()+1)
         else:
             self.progressBar.setMaximum(selectProvider.featureCount())
-            while selectProvider.nextFeature(feat):
+	    selectFit = selectProvider.getFeatures()
+            while selectFit.nextFeature(feat):
                 geom = QgsGeometry(feat.geometry())
                 intersects = index.intersects(geom.boundingBox())
                 for id in intersects:
-                    inputProvider.featureAtId(int(id), infeat, True)
+                    inputProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( infeat )
                     tmpGeom = QgsGeometry( infeat.geometry() )
                     if geom.intersects(tmpGeom):
                         selectedSet.append(infeat.id())

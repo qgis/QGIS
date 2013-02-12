@@ -112,6 +112,16 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSAddSRS_clicked();
     void on_pbnWMSRemoveSRS_clicked();
     void on_pbnWMSSetUsedSRS_clicked();
+    void on_mAddWMSComposerButton_clicked();
+    void on_mRemoveWMSComposerButton_clicked();
+    void on_mAddLayerRestrictionButton_clicked();
+    void on_mRemoveLayerRestrictionButton_clicked();
+
+    /*!
+     * Slots to select/unselect all the WFS layers
+     */
+    void on_pbnWFSLayersSelectAll_clicked();
+    void on_pbnWFSLayersUnselectAll_clicked();
 
     /*!
      * Slots for Styles
@@ -131,9 +141,23 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_cbxProjectionEnabled_stateChanged( int state );
 
     /*!
+     * Slot to link WFS checkboxes
+     */
+    void on_cbxWFSPublied_stateChanged( int aIdx );
+    void on_cbxWFSUpdate_stateChanged( int aIdx );
+    void on_cbxWFSInsert_stateChanged( int aIdx );
+    void on_cbxWFSDelete_stateChanged( int aIdx );
+
+    /*!
       * If user changes the CRS, set the corresponding map units
       */
     void setMapUnitsToCurrentProjection();
+
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
@@ -170,4 +194,21 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     long mProjectSrsId;
     long mLayerSrsId;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
+
+    static const char * GEO_NONE_DESC;
+
 };

@@ -93,7 +93,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     /** Return associated button with map tool or NULL if no button is associated */
     QAbstractButton* button();
 
-
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
      * resume operations with the original / previously used tool.*/
@@ -124,7 +123,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! transformation from screen coordinates to layer's coordinates
     QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QPoint& point );
 
-    //! trasformation from map coordinates to layer's coordinates
+    //! transformation from map coordinates to layer's coordinates
     QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)

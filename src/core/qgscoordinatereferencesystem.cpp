@@ -47,17 +47,25 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 //--------------------------
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
-    : mMapUnits( QGis::UnknownUnit )
+    : mSrsId( 0 )
+    , mGeoFlag( false )
+    , mMapUnits( QGis::UnknownUnit )
+    , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theDefinition )
-    : mMapUnits( QGis::UnknownUnit )
+    : mSrsId( 0 )
+    , mGeoFlag( false )
+    , mMapUnits( QGis::UnknownUnit )
+    , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromString( theDefinition );
@@ -65,9 +73,13 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theDefinitio
 
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CrsType theType )
-    : mMapUnits( QGis::UnknownUnit )
+    : mSrsId( 0 )
+    , mGeoFlag( false )
+    , mMapUnits( QGis::UnknownUnit )
+    , mSRID( 0 )
     , mIsValidFlag( 0 )
     , mValidationHint( "" )
+    , mAxisInverted( false )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromId( theId, theType );
@@ -176,7 +188,9 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
     QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
   }
   else
+  {
     QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
+  }
 #endif
 }
 
@@ -269,21 +283,17 @@ void QgsCoordinateReferenceSystem::validate()
 
   // try to validate using custom validation routines
   if ( mCustomSrsValidation )
-    mCustomSrsValidation( this );
+    mCustomSrsValidation( *this );
 
   if ( !mIsValidFlag )
-    // set the default
-    createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  {
+    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
 {
   return loadFromDb( QgsApplication::srsDbFilePath(), "srid", QString::number( id ) );
-}
-
-bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
-{
-  return createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( id ) );
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
@@ -804,14 +814,6 @@ long QgsCoordinateReferenceSystem::postgisSrid() const
 
 }
 
-long QgsCoordinateReferenceSystem::epsg() const
-{
-  if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
-    return mAuthId.mid( 5 ).toLong();
-  else
-    return 0;
-}
-
 QString QgsCoordinateReferenceSystem::authid() const
 {
   return mAuthId;
@@ -900,7 +902,10 @@ void QgsCoordinateReferenceSystem::setDescription( QString theDescription )
 }
 void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 {
-  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+  char *oldlocale = setlocale( LC_NUMERIC, NULL );
+  /* the next setlocale() invalides the return of previous setlocale() */
+  if ( oldlocale )
+    oldlocale = strdup( oldlocale );
 
   setlocale( LC_NUMERIC, "C" );
   OSRDestroySpatialReference( mCRS );
@@ -916,6 +921,7 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 #endif
 
   setlocale( LC_NUMERIC, oldlocale );
+  free( oldlocale );
 }
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool theGeoFlag )
 {
@@ -1111,13 +1117,6 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs ) const
 {
   return  !( *this == theSrs );
-}
-
-bool QgsCoordinateReferenceSystem::equals( QString theProj4String )
-{
-  QgsCoordinateReferenceSystem r;
-  r.createFromProj4( theProj4String );
-  return *this == r;
 }
 
 QString QgsCoordinateReferenceSystem::toWkt() const

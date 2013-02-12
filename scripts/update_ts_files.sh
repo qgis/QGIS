@@ -1,11 +1,25 @@
 #!/bin/bash
+###########################################################################
+#    update_ts_files.sh
+#    ---------------------
+#    Date                 : July 2007
+#    Copyright            : (C) 2007 by Tim Sutton
+#    Email                : tim dot linfiniti at com
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 # Update the translation files with strings used in QGIS
 # 1. create a clean Qt .pro file for the project
 # 2. run lupdate using the .pro file from step 1
 # 3. remove the .pro
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
-# $Id$
 
 set -e
 
@@ -82,7 +96,7 @@ if [ -n "$exclude" -o -n "$add" ]; then
 fi
 echo Updating python translations
 cd python
-pylupdate4 console.py utils.py -ts python-i18n.ts
+pylupdate4 console/console.py utils.py -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..

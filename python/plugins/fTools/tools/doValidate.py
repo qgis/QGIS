@@ -60,7 +60,7 @@ class MarkerErrorGeometry():
 
   def reset(self):
     if not self.__marker is None:
-      self.__canvas.scene().removeItem(self.__marker) 
+      self.__canvas.scene().removeItem(self.__marker)
       del self.__marker
       self.__marker = None
 
@@ -83,9 +83,10 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.tblUnique.setSelectionBehavior(QAbstractItemView.SelectRows)
     # populate list of available layers
     myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
-    self.connect(self.tblUnique, SIGNAL("currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)" ), 
+    self.connect(self.tblUnique, SIGNAL("currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)" ),
     self.zoomToError)
     self.inShape.addItems( myList )
+    self.buttonBox_2.setOrientation(Qt.Horizontal)
     self.cancel_close = self.buttonBox_2.button(QDialogButtonBox.Close)
     self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
     self.progressBar.setValue(0)
@@ -96,12 +97,16 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     settings = QSettings()
     self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry").toByteArray() )
 
+    QObject.connect( self.browseShpError, SIGNAL( "clicked()" ), self.outFile )
+    QObject.connect( self.ckBoxShpError, SIGNAL( "stateChanged( int )" ), self.updateGui )
+    self.updateGui()
+
   def closeEvent(self, e):
     settings = QSettings()
     settings.setValue( "/fTools/ValidateDialog/geometry", QVariant(self.saveGeometry()) )
     QDialog.closeEvent(self, e)
     del self.marker
-    
+
   def keyPressEvent( self, e ):
     if ( e.modifiers() == Qt.ControlModifier or \
          e.modifiers() == Qt.MetaModifier ) and \
@@ -122,10 +127,37 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input vector layer" ) )
     elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
       QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input field" ) )
+    elif self.ckBoxShpError.isChecked() and self.lineEditShpError.text() == "":
+      QMessageBox.information( self, self.tr( "Error!" ), self.tr( "Please specify output shapefile" ) )
     else:
       self.vlayer = ftools_utils.getVectorLayerByName( self.inShape.currentText() )
       self.validate( self.useSelected.checkState() )
-      
+
+  def updateGui( self ):
+    if self.ckBoxShpError.isChecked():
+      self.lineEditShpError.setEnabled( True )
+      self.browseShpError.setEnabled( True )
+      self.tblUnique.setEnabled( False )
+      self.lstCount.setEnabled( False )
+      self.label_2.setEnabled( False )
+      self.label_4.setEnabled( False )
+      self.label_5.setEnabled( False )
+    else:
+      self.lineEditShpError.setEnabled( False )
+      self.browseShpError.setEnabled( False )
+      self.tblUnique.setEnabled( True )
+      self.lstCount.setEnabled( True )
+      self.label_2.setEnabled( True )
+      self.label_4.setEnabled( True )
+      self.label_5.setEnabled( True )
+
+  def outFile( self ):
+    self.lineEditShpError.clear()
+    (self.shapefileName, self.encoding) = ftools_utils.saveDialog( self )
+    if self.shapefileName is None or self.encoding is None:
+      return
+    self.lineEditShpError.setText( QString( self.shapefileName ) )
+
   def zoomToError(self, curr, prev):
       if curr is None:
         return
@@ -143,18 +175,18 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         self.marker.setGeom(e)
 
         rect = mc.extent()
-        rect.expand( 0.25, e )
+        rect.scale( 0.5, e )
 
       else:
         self.marker.reset()
 
         ft = QgsFeature()
         (fid,ok) = self.tblUnique.item(row, 0).text().toInt()
-        if not ok or not self.vlayer.featureAtId( fid, ft, True):
+        if not ok or not self.vlayer.getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( ft ):
           return
 
         rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
-        rect.expand(1.05)
+        rect.scale( 1.05 )
 
       # Set the extent to our new rectangle
       mc.setExtent(rect)
@@ -162,11 +194,16 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       mc.refresh()
 
   def validate( self, mySelection ):
-    self.tblUnique.clearContents()
-    self.tblUnique.setRowCount( 0 )
-    self.lstCount.clear()
+    if not self.ckBoxShpError.isChecked():
+      self.tblUnique.clearContents()
+      self.tblUnique.setRowCount( 0 )
+      self.lstCount.clear()
+      self.shapefileName = None
+      self.encoding = None
+
     self.buttonOk.setEnabled( False )
-    self.testThread = validateThread( self.iface.mainWindow(), self, self.vlayer, mySelection )
+
+    self.testThread = validateThread( self.iface.mainWindow(), self, self.vlayer, mySelection, self.shapefileName, self.encoding, self.ckBoxShpError.isChecked() )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
@@ -180,60 +217,73 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     # Remove Marker
     self.marker.reset()
     QDialog.reject(self)
-    
+
   def cancelThread( self ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
-    
-  def runFinishedFromThread( self, output ):
+
+  def runFinishedFromThread( self, success ):
     self.testThread.stop()
     QApplication.restoreOverrideCursor()
     self.buttonOk.setEnabled( True )
-    self.tblUnique.setColumnCount( 2 )
-    count = 0
-    for rec in output:
-      if len(rec[1]) < 1:
-        continue
-      where = None
-      for err in rec[1]: # for each error we find
-        self.tblUnique.insertRow(count)
-        fidItem = QTableWidgetItem( str(rec[0]) )
-        self.tblUnique.setItem( count, 0, fidItem )
-        message = err.what()
-        errItem = QTableWidgetItem( message )
-        if err.hasWhere(): # if there is a location associated with the error
-          errItem.setData(Qt.UserRole, QVariant(err.where()))
-        self.tblUnique.setItem( count, 1, errItem )
-        count += 1
-    self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Feature"), self.tr("Error(s)") ] )
-    self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.ResizeToContents )
-    self.tblUnique.horizontalHeader().show()
-    self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.Stretch )
-    self.tblUnique.resizeRowsToContents()
-    self.lstCount.insert(str(count))
+    if success == "writeShape":
+      extra = ""
+      addToTOC = QMessageBox.question( self, self.tr("Geometry"),
+                 self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
+                 QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+      if addToTOC == QMessageBox.Yes:
+        if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
+          QMessageBox.warning( self, self.tr( "Geometry"),
+                               self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
+    else:
+      self.tblUnique.setColumnCount( 2 )
+      count = 0
+      for rec in success:
+        if len(rec[1]) < 1:
+          continue
+        where = None
+        for err in rec[1]: # for each error we find
+          self.tblUnique.insertRow(count)
+          fidItem = QTableWidgetItem( str(rec[0]) )
+          self.tblUnique.setItem( count, 0, fidItem )
+          message = err.what()
+          errItem = QTableWidgetItem( message )
+          if err.hasWhere(): # if there is a location associated with the error
+            errItem.setData(Qt.UserRole, QVariant(err.where()))
+          self.tblUnique.setItem( count, 1, errItem )
+          count += 1
+      self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Feature"), self.tr("Error(s)") ] )
+      self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.ResizeToContents )
+      self.tblUnique.horizontalHeader().show()
+      self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.Stretch )
+      self.tblUnique.resizeRowsToContents()
+      self.lstCount.insert(str(count))
     self.cancel_close.setText( "Close" )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     return True
-    
+
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
-        
+
   def runRangeFromThread( self, range_vals ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
 
 class validateThread( QThread ):
-  def __init__( self, parentThread, parentObject, vlayer, mySelection ):
+  def __init__( self, parentThread, parentObject, vlayer, mySelection, myName, myEncoding, myNewShape ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
     self.vlayer = vlayer
     self.mySelection = mySelection
+    self.myName = myName
+    self.myEncoding = myEncoding
+    self.writeShape = myNewShape
 
   def run( self ):
     self.running = True
-    output = self.check_geometry( self.vlayer )
-    self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), output )
+    success = self.check_geometry( self.vlayer )
+    self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), success )
 
   def stop(self):
     self.running = False
@@ -244,12 +294,11 @@ class validateThread( QThread ):
       layer = vlayer.selectedFeatures()
       nFeat = len(layer)
     else:
-      #layer = vlayer # requires SIP >= 4.9
       layer = []
-      vlayer.select([]) # select all features, and ignore attributes
       ft = QgsFeature()
-      while vlayer.nextFeature(ft):
-        layer.append(QgsFeature(ft))
+      fit = vlayer.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([]) )
+      while fit.nextFeature(ft):
+        layer.append( QgsFeature(ft) )
       nFeat = len(layer)
     nElement = 0
     if nFeat > 0:
@@ -265,4 +314,31 @@ class validateThread( QThread ):
       if not geom.isGeosEmpty():
         lstErrors.append((feat.id(), list(geom.validateGeometry())))
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
-    return lstErrors
+
+    if self.writeShape:
+      fields = QgsFields()
+      fields.append( QgsField( "FEAT_ID", QVariant.Int ) )
+      fields.append( QgsField( "ERROR", QVariant.String ) )
+
+      writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                    QGis.WKBPoint, vlayer.crs() )
+      for rec in lstErrors:
+        if len(rec[1]) < 1:
+          continue
+        for err in rec[1]:
+          fidItem = str(rec[0])
+          message = err.what()
+          if err.hasWhere():
+            locErr = err.where()
+            xP = locErr.x()
+            yP = locErr.y()
+            myPoint = QgsPoint( xP, yP )
+            geometry = QgsGeometry().fromPoint( myPoint )
+            ft = QgsFeature()
+            ft.setGeometry( geometry )
+            ft.setAttributes( [ QVariant( fidItem ), QVariant( message ) ] )
+            writer.addFeature( ft )
+      del writer
+      return "writeShape"
+    else:
+      return lstErrors

@@ -56,6 +56,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
       mPrintAsRasterCheckBox->setCheckState( Qt::Unchecked );
     }
 
+    mAlignmentSnapCheckBox->setCheckState( mComposition->alignmentSnap() ? Qt::Checked : Qt::Unchecked );
+    mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
+
     //snap grid
     if ( mComposition->snapToGridEnabled() )
     {
@@ -524,6 +527,22 @@ void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d 
   }
 }
 
+void QgsCompositionWidget::on_mAlignmentSnapCheckBox_stateChanged( int state )
+{
+  if ( mComposition )
+  {
+    mComposition->setAlignmentSnap( state == Qt::Checked ? true : false );
+  }
+}
+
+void QgsCompositionWidget::on_mAlignmentToleranceSpinBox_valueChanged( double d )
+{
+  if ( mComposition )
+  {
+    mComposition->setAlignmentSnapTolerance( d );
+  }
+}
+
 void QgsCompositionWidget::blockSignals( bool block )
 {
   mPaperSizeComboBox->blockSignals( block );
@@ -542,4 +561,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
+  mAlignmentSnapCheckBox->blockSignals( block );
+  mAlignmentToleranceSpinBox->blockSignals( block );
 }

@@ -30,7 +30,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, int featureId, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     /**Returns properties changed by the user*/
@@ -38,6 +38,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 
   private slots:
     void on_mShowLabelChkbx_toggled( bool chkd );
+    void on_mAlwaysShowChkbx_toggled( bool chkd );
     void on_mMinScaleSpinBox_valueChanged( int i );
     void on_mMaxScaleSpinBox_valueChanged( int i );
     void on_mLabelDistanceSpinBox_valueChanged( double d );
@@ -55,7 +56,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 
   private:
     /**Sets activation / values to the gui elements depending on the label settings and feature values*/
-    void init( const QString& layerId, int featureId );
+    void init( const QString& layerId, int featureId, const QString& labelText );
     void disableGuiElements();
     /**Block / unblock all input element signals*/
     void blockElementSignals( bool block );
@@ -72,11 +73,16 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     QgsMapRenderer* mMapRenderer;
 
     QgsAttributeMap mChangedProperties;
-    QMap< QgsPalLayerSettings::DataDefinedProperties, int > mDataDefinedProperties;
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QString > mDataDefinedProperties;
     QFont mLabelFont;
 
     /**Label field for the current layer (or -1 if none)*/
-    int mCurrentLabelField;
+    int mCurLabelField;
+
+    /** Current feature
+     * @note added in 1.9
+     */
+    QgsFeature mCurLabelFeat;
 };
 
 #endif // QGSLAYERPROPERTYDIALOG_H

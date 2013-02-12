@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrasterlayersaveasdialog.h
+    ---------------------
+    begin                : May 2012
+    copyright            : (C) 2012 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSRASTERLAYERSAVEASDIALOG_H
 #define QGSRASTERLAYERSAVEASDIALOG_H
 
@@ -58,16 +72,19 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRectangle outputRectangle() const;
     QList<QgsRasterNuller::NoData> noData() const;
 
-    QList< int > overviewList() const { return mPyramidsOptionsWidget->overviewList(); }
-    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const
-    { return ( QgsRasterDataProvider::RasterBuildPyramids ) mPyramidsButtonGroup->checkedId(); }
-    QString pyramidsResampling() const { return mPyramidsOptionsWidget->resamplingMethod(); }
+    QList< int > pyramidsList() const;
+    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const;
+    QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
     QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const
     { return mPyramidsOptionsWidget->pyramidsFormat(); }
-
+    QStringList pyramidsConfigOptions() const
+    { return mPyramidsOptionsWidget->configOptions(); }
 
     void hideFormat();
     void hideOutput();
+
+  public slots:
+    virtual void accept() { if ( validate() ) return QDialog::accept(); }
 
   private slots:
     void on_mRawModeRadioButton_toggled( bool );
@@ -94,14 +111,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
-    void groupBoxExpanded( QWidget * widget ) { mScrollArea->ensureWidgetVisible( widget ); }
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
     void on_mRemoveSelectedNoDataToolButton_clicked();
     void on_mRemoveAllNoDataToolButton_clicked();
     void noDataCellTextEdited( const QString & text );
     void on_mTileModeCheckBox_toggled( bool toggled );
-    void on_mPyramidsButtonGroup_buttonClicked( int id );
+    void on_mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
 
   private:
@@ -135,6 +151,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void setNoDataToEdited( int row );
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
+    bool validate() const;
 };
 
 

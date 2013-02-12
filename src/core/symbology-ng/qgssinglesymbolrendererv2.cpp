@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -47,11 +47,11 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
   {
-    rotation = feature.attributeMap()[mRotationFieldIdx].toDouble();
+    rotation = feature.attribute( mRotationFieldIdx ).toDouble();
   }
   if ( mSizeScaleFieldIdx != -1 )
   {
-    sizeScale = feature.attributeMap()[mSizeScaleFieldIdx].toDouble();
+    sizeScale = feature.attribute( mSizeScaleFieldIdx ).toDouble();
   }
 
   if ( mTempSymbol->type() == QgsSymbolV2::Marker )
@@ -304,28 +304,28 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
     childElem = childElem.nextSiblingElement();
   }
 
+  if ( layers.size() == 0 )
+    return NULL;
+
   // now create the symbol
-  QgsSymbolV2 *symbol = 0;
-  if ( layers.size() > 0 )
+  QgsSymbolV2 *symbol;
+  switch ( geomType )
   {
-    switch ( geomType )
-    {
-      case QGis::Line:
-        symbol = new QgsLineSymbolV2( layers );
-        break;
+    case QGis::Line:
+      symbol = new QgsLineSymbolV2( layers );
+      break;
 
-      case QGis::Polygon:
-        symbol = new QgsFillSymbolV2( layers );
-        break;
+    case QGis::Polygon:
+      symbol = new QgsFillSymbolV2( layers );
+      break;
 
-      case QGis::Point:
-        symbol = new QgsMarkerSymbolV2( layers );
-        break;
+    case QGis::Point:
+      symbol = new QgsMarkerSymbolV2( layers );
+      break;
 
-      default:
-        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
-        return NULL;
-    }
+    default:
+      QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+      return NULL;
   }
 
   // and finally return the new renderer

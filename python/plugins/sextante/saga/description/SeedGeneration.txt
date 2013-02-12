@@ -1,0 +1,11 @@
+Seed Generation
+imagery_segmentation
+ParameterMultipleInput|GRIDS|Features|3|False
+ParameterNumber|FACTOR|Bandwidth (Cells)|0.0|None|2
+ParameterSelection|TYPE_SURFACE|Type of Surface|[0] smoothed surface;[1] variance (a);[2] variance (b)
+ParameterSelection|TYPE_SEEDS|Extraction of...|[0] minima;[1] maxima;[2] minima and maxima
+ParameterSelection|TYPE_MERGE|Feature Aggregation|[0] additive;[1] multiplicative
+ParameterBoolean|NORMALIZE         |Normalized|True
+OutputRaster|SURFACE|Surface
+OutputRaster|SEEDS_GRID|Seeds Grid
+OutputVector|SEEDS|Seeds

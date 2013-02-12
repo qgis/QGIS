@@ -39,7 +39,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
 {
   if ( mRubberBand == NULL )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, true );
+    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   }
   if ( e->button() == Qt::LeftButton )
   {
@@ -53,7 +53,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
       QgsMapToolSelectUtils::setSelectFeatures( mCanvas, polygonGeom, e );
       delete polygonGeom;
     }
-    mRubberBand->reset( true );
+    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
     mRubberBand = 0;
   }

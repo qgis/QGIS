@@ -86,7 +86,7 @@ class DBPlugin(QObject):
 
 	def connectToUri(self, uri):
 		self.db = self.databasesFactory( self, uri )
-		if self.db: 
+		if self.db:
 			return True
 		return False
 
@@ -135,7 +135,7 @@ class DBPlugin(QObject):
 
 
 	def databasesFactory(self, connection, uri):
-		return None 
+		return None
 
 
 class DbItemObject(QObject):
@@ -223,7 +223,7 @@ class Database(DbItemObject):
 	def registerDatabaseActions(self, mainWindow):
 		action = QAction("&Re-connect", self)
 		mainWindow.registerAction( action, "&Database", self.reconnectActionSlot )
-		
+
 		if self.schemas() != None:
 			action = QAction("&Create schema", self)
 			mainWindow.registerAction( action, "&Schema", self.createSchemaActionSlot )
@@ -365,7 +365,7 @@ class Database(DbItemObject):
 		menu.clear()
 		for schema in self.schemas():
 			action = menu.addAction(schema.name, slot(schema))
-		
+
 	def moveTableToSchemaActionSlot(self, item, action, parent, new_schema):
 		QApplication.restoreOverrideCursor()
 		try:
@@ -511,7 +511,7 @@ class Table(DbItemObject):
 			ret = self.database().connector.deleteView( (self.schemaName(), self.name) )
 		else:
 			ret = self.database().connector.deleteTable( (self.schemaName(), self.name) )
-		if ret != False: 
+		if ret != False:
 			self.emit( SIGNAL('deleted') )
 		return ret
 
@@ -566,7 +566,7 @@ class Table(DbItemObject):
 
 	def getValidQGisUniqueFields(self, onlyOne=False):
 		""" list of fields valid to load the table as layer in QGis canvas.
-			QGis automatically search for a valid unique field, so it's 
+			QGis automatically search for a valid unique field, so it's
 			needed only for queries and views """
 
 		ret = []
@@ -624,6 +624,8 @@ class Table(DbItemObject):
 		ret = self.database().connector.deleteTableColumn( (self.schemaName(), self.name), fld.name)
 		if ret != False:
 			self.refreshFields()
+			self.refreshConstraints()
+			self.refreshIndexes()
 		return ret
 
 	def addGeometryColumn(self, geomCol, geomType, srid, dim, createSpatialIndex=False):
@@ -973,10 +975,10 @@ class TableField(TableSubItemObject):
 
 class TableConstraint(TableSubItemObject):
 	""" class that represents a constraint of a table (relation) """
-	
+
 	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique = range(4)
 	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique }
-	
+
 	onAction = { "a" : "NO ACTION", "r" : "RESTRICT", "c" : "CASCADE", "n" : "SET NULL", "d" : "SET DEFAULT" }
 	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL" }
 
@@ -1033,7 +1035,7 @@ class TableIndex(TableSubItemObject):
 
 class TableTrigger(TableSubItemObject):
 	""" class that represents a trigger """
-	
+
 	# Bits within tgtype (pg_trigger.h)
 	TypeRow      = (1 << 0) # row or statement
 	TypeBefore   = (1 << 1) # before or after
@@ -1064,4 +1066,4 @@ class TableRule(TableSubItemObject):
 	def __init__(self, table):
 		TableSubItemObject.__init__(self, table)
 		self.name = self.definition = None
- 
+

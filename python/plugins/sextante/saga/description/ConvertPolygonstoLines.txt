@@ -1,0 +1,4 @@
+Convert Polygons to Lines
+shapes_lines
+ParameterVector|POLYGONS|Polygons|2|False
+OutputVector|LINES|Lines

@@ -60,7 +60,6 @@ class CORE_EXPORT QgsOWSConnection : public QObject
     static QString selectedConnection( const QString & theService );
     static void setSelectedConnection( const QString & theService, const QString & name );
 
-
   public:
     //QgsDataProvider *provider();
     QString connectionInfo();

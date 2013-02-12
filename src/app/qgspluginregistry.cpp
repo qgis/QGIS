@@ -23,6 +23,7 @@
 #include <QSettings>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgisinterface.h"
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
@@ -262,7 +263,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
   }
 }
 
@@ -414,27 +415,39 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QStringList pluginList = mPythonUtils->pluginList();
     QgsDebugMsg( "Loading python plugins" );
 
-    // make the plugin installer and the fTools enabled by default:
-    if ( !mySettings.contains( "/PythonPlugins/plugin_installer" ) )
+    QStringList corePlugins = QStringList();
+    corePlugins << "plugin_installer";
+    corePlugins << "fTools";
+    corePlugins << "GdalTools";
+    corePlugins << "db_manager";
+
+    // make the required core plugins enabled by default:
+    for ( int i = 0; i < corePlugins.size(); i++ )
     {
-      mySettings.setValue( "/PythonPlugins/plugin_installer", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/fTools" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/fTools", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/GdalTools" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/GdalTools", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/db_manager" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/db_manager", true );
+      if ( !mySettings.contains( "/PythonPlugins/" + corePlugins[i] ) )
+      {
+        mySettings.setValue( "/PythonPlugins/" + corePlugins[i], true );
+      }
     }
 
     for ( int i = 0; i < pluginList.size(); i++ )
     {
       QString packageName = pluginList[i];
+
+      // TODO: apply better solution for #5879
+      // start - temporary fix for issue #5879
+      if ( QgsApplication::isRunningFromBuildDir() )
+      {
+        if ( corePlugins.contains( packageName ) )
+        {
+          QgsApplication::setPkgDataPath( QString( "" ) );
+        }
+        else
+        {
+          QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+        }
+      }
+      // end - temporary fix for issue #5879, more below
 
       if ( checkPythonPlugin( packageName ) )
       {
@@ -446,6 +459,12 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
         }
       }
     }
+    // start - temporary fix for issue #5879, more above
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+    }
+    // end - temporary fix for issue #5879
   }
 
   QgsDebugMsg( "Plugin loading completed" );

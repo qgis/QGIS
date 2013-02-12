@@ -1,0 +1,6 @@
+MaximumAutocorrelationFactor
+otbcli_MaximumAutocorrelationFactor
+Maximum Auto-correlation Factor Decomposition
+Image Filtering
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|MAF output

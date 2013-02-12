@@ -21,7 +21,7 @@
 #include "qgsninecellfilter.h"
 
 /**Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect)*/
-class QgsDerivativeFilter: public QgsNineCellFilter
+class ANALYSIS_EXPORT QgsDerivativeFilter : public QgsNineCellFilter
 {
   public:
     QgsDerivativeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );

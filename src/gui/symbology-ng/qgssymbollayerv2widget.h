@@ -4,7 +4,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -198,6 +198,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void setOffset();
     void on_mFileToolButton_clicked();
     void on_mFileLineEdit_textEdited( const QString& text );
+    void on_mFileLineEdit_editingFinished();
     void on_mChangeColorButton_clicked();
     void on_mChangeBorderColorButton_clicked();
     void on_mBorderWidthSpinBox_valueChanged( double d );
@@ -260,19 +261,16 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
 
   protected:
     QgsSVGFillSymbolLayer* mLayer;
-    //sets new output unit. Is called on combo box or spin box change
-    void setOutputUnit();
     void insertIcons();
-    void updateOutlineIcon();
     void updateParamGui();
 
   private slots:
     void on_mBrowseToolButton_clicked();
     void on_mTextureWidthSpinBox_valueChanged( double d );
-    void on_mSVGLineEdit_textChanged( const QString & text );
+    void on_mSVGLineEdit_textEdited( const QString & text );
+    void on_mSVGLineEdit_editingFinished();
     void setFile( const QModelIndex& item );
     void populateIcons( const QModelIndex& item );
-    void on_mChangeOutlinePushButton_clicked();
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mChangeColorButton_clicked();
     void on_mChangeBorderColorButton_clicked();
@@ -306,7 +304,6 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mOffsetSpinBox_valueChanged( double d );
     void on_mColorPushButton_clicked();
-    void on_mOutlinePushButton_clicked();
 };
 
 //////////

@@ -226,6 +226,15 @@ const char* QgsExpression::UnaryOgcOperatorText[] =
   "Not", ""
 };
 
+const char* QgsExpression::SpatialOgcOperatorText[] =
+{
+  "BBOX", "Intersects",
+  "Contians", "Crosses",
+  "Equals", "Disjoint",
+  "Overlaps", "Touches",
+  "Within"
+};
+
 ///////////////////////////////////////////////
 // functions
 
@@ -319,6 +328,14 @@ static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
 
   return QgsExpression::Interval::invalidInterVal();
+}
+static QgsGeometry getGeometry( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<QgsGeometry>() )
+    return value.value<QgsGeometry>();
+
+  parent->setEvalErrorString( "Cannot convert to QgsGeometry" );
+  return QgsGeometry();
 }
 
 
@@ -552,6 +569,17 @@ static QVariant fcnLPad( const QVariantList& values, QgsFeature* , QgsExpression
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
+static QVariant fcnFormatString( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  for ( int n = 1; n < values.length(); n++ )
+  {
+    string = string.arg( getStringValue( values.at( n ), parent ) );
+  }
+  return string;
+}
+
+
 static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
 {
   return QVariant( QDateTime::currentDateTime() );
@@ -748,6 +776,46 @@ static QVariant fcnYat( const QVariantList& values, QgsFeature* f, QgsExpression
   else
     return QVariant();
 }
+static QVariant fcnGeometry( const QVariantList& , QgsFeature* f, QgsExpression* )
+{
+  QgsGeometry* geom = f->geometry();
+  if ( geom )
+    return  QVariant::fromValue( *geom );
+  else
+    return QVariant();
+}
+static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QString wkt = getStringValue( values.at( 0 ), parent );
+  QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  else
+    return QVariant();
+}
+static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QDomDocument doc;
+  QString errorMsg;
+  QString gml = getStringValue( values.at( 0 ), parent );
+  if ( !doc.setContent( gml, true, &errorMsg ) )
+    return QVariant();
+
+  QgsGeometry* geom = 0;
+  QDomElement elem = doc.documentElement();
+  if ( elem.tagName() == "Box" )
+  {
+    QgsRectangle* rect = new QgsRectangle( elem );
+    geom = QgsGeometry::fromRect( *rect );
+  }
+  else
+    geom = QgsGeometry::fromGML2( doc.documentElement() );
+
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  else
+    return QVariant();
+}
 
 static QVariant fcnGeomArea( const QVariantList& , QgsFeature* f, QgsExpression* parent )
 {
@@ -768,6 +836,135 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
   return QVariant( calc->measurePerimeter( f->geometry() ) );
 }
 
+static QVariant fcnBbox( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.intersects( sGeom.boundingBox() ) ? TVL_True : TVL_False;
+}
+static QVariant fcnDisjoint( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.disjoint( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnIntersects( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.intersects( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnTouches( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.touches( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnCrosses( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.crosses( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnContains( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.contains( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnOverlaps( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.overlaps( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnWithin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return fGeom.within( &sGeom ) ? TVL_True : TVL_False;
+}
+static QVariant fcnBuffer( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  if ( values.length() < 2 || values.length() > 3 )
+    return QVariant();
+
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double dist = getDoubleValue( values.at( 1 ), parent );
+  int seg = 8;
+  if ( values.length() == 3 )
+    seg = getIntValue( values.at( 2 ), parent );
+
+  QgsGeometry* geom = fGeom.buffer( dist, seg );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnCentroid( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geom = fGeom.centroid();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnConvexHull( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry* geom = fGeom.convexHull();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnDifference( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.difference( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnDistance( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  return QVariant( fGeom.distance( sGeom ) );
+}
+static QVariant fcnIntersection( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.intersection( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnSymDifference( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.symDifference( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnCombine( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
+  QgsGeometry* geom = fGeom.combine( &sGeom );
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+static QVariant fcnGeomToWKT( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QString wkt = fGeom.exportToWkt();
+  return QVariant( wkt );
+}
+
 static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
 {
   Q_UNUSED( f );
@@ -775,13 +972,13 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   {
     double number = getDoubleValue( values.at( 0 ), parent );
     double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
-    return QVariant( round( number * scaler ) / scaler );
+    return QVariant( qRound( number * scaler ) / scaler );
   }
 
   if ( values.length() == 1 )
   {
     double number = getIntValue( values.at( 0 ), parent );
-    return QVariant( round( number ) ).toInt();
+    return QVariant( qRound( number ) ).toInt();
   }
 
   return QVariant();
@@ -789,91 +986,218 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
 
 static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* parent )
 {
-    return QVariant( parent->scale() );
+  return QVariant( parent->scale() );
 }
 
 static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
-    double value = getDoubleValue( values.at(0), parent );
-    int places = getIntValue( values.at(1), parent );
-    return QString( "%L1" ).arg( value, 0, 'f', places );
+  double value = getDoubleValue( values.at( 0 ), parent );
+  int places = getIntValue( values.at( 1 ), parent );
+  return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 
-QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
+static QVariant fcnFormatDate( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  QDateTime dt = getDateTimeValue( values.at( 0 ), parent );
+  QString format = getStringValue( values.at( 1 ), parent );
+  return dt.toString( format );
+}
 
-const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
+static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
+{
+  QString varName = getStringValue( values.at( 0 ), parent );
+  return QgsExpression::specialColumn( varName );
+}
+
+bool QgsExpression::registerFunction( QgsExpression::Function* function )
+{
+  int fnIdx = functionIndex( function->name() );
+  if ( fnIdx != -1 )
+  {
+    return false;
+  }
+  QgsExpression::gmFunctions.append( function );
+  return true;
+}
+
+bool QgsExpression::unregisterFunction( QString name )
+{
+  // You can never override the built in functions.
+  if ( QgsExpression::BuiltinFunctions().contains( name ) )
+  {
+    return false;
+  }
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    QgsExpression::gmFunctions.removeAt( fnIdx );
+    return true;
+  }
+  return false;
+}
+
+QStringList QgsExpression::gmBuiltinFunctions;
+
+const QStringList &QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
-    // math
-    gmBuiltinFunctions
-    << FunctionDef( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
-    << FunctionDef( "sin", 1, fcnSin, QObject::tr( "Math" ) )
-    << FunctionDef( "cos", 1, fcnCos, QObject::tr( "Math" ) )
-    << FunctionDef( "tan", 1, fcnTan, QObject::tr( "Math" ) )
-    << FunctionDef( "asin", 1, fcnAsin, QObject::tr( "Math" ) )
-    << FunctionDef( "acos", 1, fcnAcos, QObject::tr( "Math" ) )
-    << FunctionDef( "atan", 1, fcnAtan, QObject::tr( "Math" ) )
-    << FunctionDef( "atan2", 2, fcnAtan2, QObject::tr( "Math" ) )
-    << FunctionDef( "exp", 1, fcnExp, QObject::tr( "Math" ) )
-    << FunctionDef( "ln", 1, fcnLn, QObject::tr( "Math" ) )
-    << FunctionDef( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
-    << FunctionDef( "log", 2, fcnLog, QObject::tr( "Math" ) )
-    << FunctionDef( "round", -1, fcnRound, QObject::tr( "Math" ) )
-    // casts
-    << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
-    << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
-    << FunctionDef( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
-    << FunctionDef( "todatetime", 1, fcnToDateTime, QObject::tr( "Conversions" ) )
-    << FunctionDef( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
-    << FunctionDef( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
-    << FunctionDef( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
-    // conditionals
-    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
-    // Date and Time
-    << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "month", 1, fcnMonth, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "week", 1, fcnWeek, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "day", 1, fcnDay, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "hour", 1, fcnHour, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "minute", 1, fcnMinute, QObject::tr( "Date and Time" ) )
-    << FunctionDef( "second", 1, fcnSeconds, QObject::tr( "Date and Time" ) )
-    // string manipulation
-    << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
-    << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
-    << FunctionDef( "title", 1, fcnTitle, QObject::tr( "String" ) )
-    << FunctionDef( "length", 1, fcnLength, QObject::tr( "String" ) )
-    << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
-    << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
-    << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
-    << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
-    << FunctionDef( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
-    << FunctionDef( "left", 2, fcnLeft, QObject::tr( "String" ) )
-    << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
-    << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
-    << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
-    << FunctionDef( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
-
-    // geometry accessors
-    << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$length", 0, fcnGeomLength, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
-    << FunctionDef( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
-    // special columns
-    << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
-    << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
-    << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
-    ;
+    gmBuiltinFunctions << "sqrt"
+    << "sqrt" << "cos" << "sin" << "tan"
+    << "asin" << "acos" << "atan" << "atan2"
+    << "exp" << "ln" << "log10" << "log"
+    << "round" << "toint" << "toreal" << "tostring"
+    << "todatetime" << "todate" << "totime" << "tointerval"
+    << "coalesce" << "$now" << "age" << "year"
+    << "month" << "week" << "day" << "hour"
+    << "minute" << "second" << "lower" << "upper"
+    << "title" << "length" << "replace" << "regexp_replace"
+    << "substr" << "concat" << "strpos" << "left"
+    << "right" << "rpad" << "lpad" << "format_number"
+    << "format_date" << "xat" << "yat" << "$area"
+    << "$length" << "$perimeter" << "$x" << "$y"
+    << "$rownum" << "$id" << "$scale" << "_specialcol_";
   }
-
   return gmBuiltinFunctions;
 }
 
+QList<QgsExpression::Function*> QgsExpression::gmFunctions;
+
+const QList<QgsExpression::Function*> &QgsExpression::Functions()
+{
+  if ( gmFunctions.isEmpty() )
+  {
+    gmFunctions
+    << new StaticFunction( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
+    << new StaticFunction( "cos", 1, fcnCos, QObject::tr( "Math" ) )
+    << new StaticFunction( "sin", 1, fcnSin, QObject::tr( "Math" ) )
+    << new StaticFunction( "tan", 1, fcnTan, QObject::tr( "Math" ) )
+    << new StaticFunction( "asin", 1, fcnAsin, QObject::tr( "Math" ) )
+    << new StaticFunction( "acos", 1, fcnAcos, QObject::tr( "Math" ) )
+    << new StaticFunction( "atan", 1, fcnAtan, QObject::tr( "Math" ) )
+    << new StaticFunction( "atan2", 2, fcnAtan2, QObject::tr( "Math" ) )
+    << new StaticFunction( "exp", 1, fcnExp, QObject::tr( "Math" ) )
+    << new StaticFunction( "ln", 1, fcnLn, QObject::tr( "Math" ) )
+    << new StaticFunction( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
+    << new StaticFunction( "log", 2, fcnLog, QObject::tr( "Math" ) )
+    << new StaticFunction( "round", -1, fcnRound, QObject::tr( "Math" ) )
+    << new StaticFunction( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "todatetime", 1, fcnToDateTime, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
+    << new StaticFunction( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
+    << new StaticFunction( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "month", 1, fcnMonth, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "week", 1, fcnWeek, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "day", 1, fcnDay, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "hour", 1, fcnHour, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "minute", 1, fcnMinute, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "second", 1, fcnSeconds, QObject::tr( "Date and Time" ) )
+    << new StaticFunction( "lower", 1, fcnLower, QObject::tr( "String" ) )
+    << new StaticFunction( "upper", 1, fcnUpper, QObject::tr( "String" ) )
+    << new StaticFunction( "title", 1, fcnTitle, QObject::tr( "String" ) )
+    << new StaticFunction( "length", 1, fcnLength, QObject::tr( "String" ) )
+    << new StaticFunction( "replace", 3, fcnReplace, QObject::tr( "String" ) )
+    << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
+    << new StaticFunction( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
+    << new StaticFunction( "concat", -1, fcnConcat, QObject::tr( "String" ) )
+    << new StaticFunction( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
+    << new StaticFunction( "left", 2, fcnLeft, QObject::tr( "String" ) )
+    << new StaticFunction( "right", 2, fcnRight, QObject::tr( "String" ) )
+    << new StaticFunction( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
+    << new StaticFunction( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+    << new StaticFunction( "format", -1, fcnFormatString, QObject::tr( "String" ) )
+    << new StaticFunction( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
+    << new StaticFunction( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
+    << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "$length", 0, fcnGeomLength, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
+    << new StaticFunction( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
+    << new StaticFunction( "$geometry", 0, fcnGeometry, QObject::tr( "Geometry" ), "" , true )
+    << new StaticFunction( "geomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "bbox", 2, fcnBbox, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "disjoint", 2, fcnDisjoint, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "intersects", 2, fcnIntersects, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "touches", 2, fcnTouches, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "crosses", 2, fcnCrosses, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "contains", 2, fcnContains, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "overlaps", 2, fcnOverlaps, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "within", 2, fcnWithin, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "buffer", -1, fcnBuffer, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "centroid", 1, fcnCentroid, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "convexHull", 1, fcnConvexHull, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "difference", 2, fcnDifference, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "distance", 2, fcnDistance, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "intersection", 2, fcnIntersection, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "symDifference", 2, fcnSymDifference, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "combine", 2, fcnCombine, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "union", 2, fcnCombine, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
+    << new StaticFunction( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
+    << new StaticFunction( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
+    << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, QObject::tr( "Special" ) )
+    ;
+  }
+  return gmFunctions;
+}
+
+QMap<QString, QVariant> QgsExpression::gmSpecialColumns;
+
+void QgsExpression::setSpecialColumn( const QString& name, QVariant variant )
+{
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    // function of the same name already exists
+    return;
+  }
+  gmSpecialColumns[ name ] = variant;
+}
+
+void QgsExpression::unsetSpecialColumn( const QString& name )
+{
+  QMap<QString, QVariant>::iterator fit = gmSpecialColumns.find( name );
+  if ( fit != gmSpecialColumns.end() )
+  {
+    gmSpecialColumns.erase( fit );
+  }
+}
+
+QVariant QgsExpression::specialColumn( const QString& name )
+{
+  int fnIdx = functionIndex( name );
+  if ( fnIdx != -1 )
+  {
+    // function of the same name already exists
+    return QVariant();
+  }
+  QMap<QString, QVariant>::iterator it = gmSpecialColumns.find( name );
+  if ( it == gmSpecialColumns.end() )
+  {
+    return QVariant();
+  }
+  return it.value();
+}
+
+QList<QgsExpression::Function*> QgsExpression::specialColumns()
+{
+  QList<Function*> defs;
+  for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
+  {
+    defs << new StaticFunction( it.key(), 0, 0, QObject::tr( "Record" ) );
+  }
+  return defs;
+}
 
 bool QgsExpression::isFunctionName( QString name )
 {
@@ -885,7 +1209,7 @@ int QgsExpression::functionIndex( QString name )
   int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    if ( QString::compare( name, BuiltinFunctions()[i].mName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( name, Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
@@ -893,7 +1217,7 @@ int QgsExpression::functionIndex( QString name )
 
 int QgsExpression::functionCount()
 {
-  return BuiltinFunctions().size();
+  return Functions().size();
 }
 
 
@@ -901,8 +1225,10 @@ QgsExpression::QgsExpression( const QString& expr )
     : mExpression( expr )
     , mRowNumber( 0 )
     , mScale( 0 )
-    , mCalc( NULL )
+
 {
+  initGeomCalculator();
+
   mRootNode = ::parseExpression( mExpression, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
@@ -914,7 +1240,6 @@ QgsExpression::QgsExpression( const QString& expr )
 QgsExpression::~QgsExpression()
 {
   delete mRootNode;
-  delete mCalc;
 }
 
 QStringList QgsExpression::referencedColumns()
@@ -949,14 +1274,19 @@ bool QgsExpression::needsGeometry()
 
 void QgsExpression::initGeomCalculator()
 {
-  mCalc = new QgsDistanceArea;
-  QSettings settings;
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
-  mCalc->setEllipsoid( ellipsoid );
-  mCalc->setEllipsoidalMode( false );
+  // Use planimetric as default
+  mCalc.setEllipsoidalMode( false );
 }
 
-bool QgsExpression::prepare( const QgsFieldMap& fields )
+void QgsExpression::setGeomCalculator( QgsDistanceArea& calc )
+{
+  // Copy from supplied calculator
+  mCalc.setEllipsoid( calc.ellipsoid() );
+  mCalc.setEllipsoidalMode( calc.ellipsoidalEnabled() );
+  mCalc.setSourceCrs( calc.sourceCrs() );
+}
+
+bool QgsExpression::prepare( const QgsFields& fields )
 {
   mEvalErrorString = QString();
   if ( !mRootNode )
@@ -980,7 +1310,7 @@ QVariant QgsExpression::evaluate( QgsFeature* f )
   return mRootNode->eval( this, f );
 }
 
-QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFieldMap& fields )
+QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFields& fields )
 {
   // first prepare
   bool res = prepare( fields );
@@ -998,7 +1328,6 @@ QString QgsExpression::dump() const
 
   return mRootNode->dump();
 }
-
 
 void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
@@ -1049,11 +1378,26 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
     mRootNode->accept( v );
 }
 
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
+QString QgsExpression::replaceExpressionText( QString action, QgsFeature* feat,
     QgsVectorLayer* layer,
     const QMap<QString, QVariant> *substitutionMap )
 {
   QString expr_action;
+
+  QMap<QString, QVariant> savedValues;
+  if ( substitutionMap )
+  {
+    // variables with a local scope (must be restored after evaluation)
+    for ( QMap<QString, QVariant>::const_iterator sit = substitutionMap->begin(); sit != substitutionMap->end(); ++sit )
+    {
+      QVariant oldValue = QgsExpression::specialColumn( sit.key() );
+      if ( !oldValue.isNull() )
+        savedValues.insert( sit.key(), oldValue );
+
+      // set the new value
+      QgsExpression::setSpecialColumn( sit.key(), sit.value() );
+    }
+  }
 
   int index = 0;
   while ( index < action.size() )
@@ -1066,15 +1410,8 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
 
     int start = index;
     index = pos + rx.matchedLength();
-
     QString to_replace = rx.cap( 1 ).trimmed();
     QgsDebugMsg( "Found expression: " + to_replace );
-
-    if ( substitutionMap && substitutionMap->contains( to_replace ) )
-    {
-      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
-      continue;
-    }
 
     QgsExpression exp( to_replace );
     if ( exp.hasParserError() )
@@ -1084,7 +1421,15 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
       continue;
     }
 
-    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
+    QVariant result;
+    if ( layer )
+    {
+      result = exp.evaluate( feat, layer->pendingFields() );
+    }
+    else
+    {
+      result = exp.evaluate( feat );
+    }
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
@@ -1097,9 +1442,23 @@ QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
   }
 
   expr_action += action.mid( index );
+
+  // restore overwritten local values
+  for ( QMap<QString, QVariant>::const_iterator sit = savedValues.begin(); sit != savedValues.end(); ++sit )
+  {
+    QgsExpression::setSpecialColumn( sit.key(), sit.value() );
+  }
+
   return expr_action;
 }
 
+
+QString QgsExpression::replaceExpressionText( QString action, QgsFeature& feat,
+    QgsVectorLayer* layer,
+    const QMap<QString, QVariant> *substitutionMap )
+{
+  return replaceExpressionText( action, &feat, layer, substitutionMap );
+}
 
 QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
@@ -1114,7 +1473,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() == ogcOperatorName )
+    if ( element.tagName() == ogcOperatorName )
     {
       QgsExpression::Node *node = QgsExpression::NodeUnaryOperator::createFromOgcFilter( element, errorMessage );
       if ( node )
@@ -1132,7 +1491,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() == ogcOperatorName )
+    if ( element.tagName() == ogcOperatorName )
     {
       QgsExpression::Node *node = QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
       if ( node )
@@ -1142,25 +1501,43 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     }
   }
 
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.tagName() == ogcOperatorName )
+    {
+      QgsExpression::Node *node = QgsExpression::NodeFunction::createFromOgcFilter( element, errorMessage );
+      if ( node )
+        return node;
+
+      return NULL;
+    }
+  }
+
   // check for other OGC operators, convert them to expressions
 
-  if ( element.localName() == "PropertyIsNull" )
+  if ( element.tagName() == "PropertyIsNull" )
   {
     return QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "Literal" )
+  else if ( element.tagName() == "Literal" )
   {
     return QgsExpression::NodeLiteral::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "Function" )
+  else if ( element.tagName() == "Function" )
   {
     return QgsExpression::NodeFunction::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "PropertyName" )
+  else if ( element.tagName() == "PropertyName" )
   {
     return QgsExpression::NodeColumnRef::createFromOgcFilter( element, errorMessage );
   }
-  else if ( element.localName() == "PropertyIsBetween" )
+  else if ( element.tagName() == "PropertyIsBetween" )
   {
     // <ogc:PropertyIsBetween> encode a Range check
     QgsExpression::Node *operand = 0, *lowerBound = 0;
@@ -1169,12 +1546,12 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     QDomElement operandElem = element.firstChildElement();
     while ( !operandElem.isNull() )
     {
-      if ( operandElem.localName() == "LowerBoundary" )
+      if ( operandElem.tagName() == "LowerBoundary" )
       {
         QDomElement lowerBoundElem = operandElem.firstChildElement();
         lowerBound = createFromOgcFilter( lowerBoundElem, errorMessage );
       }
-      else if ( operandElem.localName() ==  "UpperBoundary" )
+      else if ( operandElem.tagName() ==  "UpperBoundary" )
       {
         QDomElement upperBoundElem = operandElem.firstChildElement();
         upperBound = createFromOgcFilter( upperBoundElem, errorMessage );
@@ -1270,7 +1647,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression* parent, QgsFeatu
   return QVariant();
 }
 
-bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   return mOperand->prepare( parent, fields );
 }
@@ -1313,7 +1690,7 @@ QgsExpression::Node* QgsExpression::NodeUnaryOperator::createFromOgcFilter( QDom
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() != ogcOperatorName )
+    if ( element.tagName() != ogcOperatorName )
       continue;
 
     QDomElement operandElem = element.firstChildElement();
@@ -1556,7 +1933,7 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
 }
 
 
-bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool resL = mOpLeft->prepare( parent, fields );
   bool resR = mOpRight->prepare( parent, fields );
@@ -1675,7 +2052,7 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
   QgsExpression::Node* opRight = 0;
 
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
-  if ( element.localName() == "PropertyIsNull" )
+  if ( element.tagName() == "PropertyIsNull" )
   {
     QDomElement operandElem = element.firstChildElement();
     opLeft = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
@@ -1694,7 +2071,7 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
     if ( ogcOperatorName.isEmpty() )
       continue;
 
-    if ( element.localName() != ogcOperatorName )
+    if ( element.tagName() != ogcOperatorName )
       continue;
 
     QDomElement operandElem = element.firstChildElement();
@@ -1720,7 +2097,8 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
 
   if ( !opLeft && !opRight )
   {
-    errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
+    if ( errorMessage.isEmpty() )
+      errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
     return NULL;
   }
 
@@ -1732,7 +2110,6 @@ QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDo
 
   return NULL;
 }
-
 //
 
 QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature* f )
@@ -1781,7 +2158,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
     return mNotIn ? TVL_True : TVL_False;
 }
 
-bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res = mNode->prepare( parent, fields );
   foreach ( Node* n, mList->list() )
@@ -1825,7 +2202,7 @@ void QgsExpression::NodeInOperator::toOgcFilter( QDomDocument &doc, QDomElement 
 
 QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f )
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
+  Function* fd = Functions()[mFnIndex];
 
   // evaluate arguments
   QVariantList argValues;
@@ -1835,21 +2212,21 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
     {
       QVariant v = n->eval( parent, f );
       ENSURE_NO_EVAL_ERROR;
-      if ( isNull( v ) && fd.mFcn != fcnCoalesce )
+      if ( isNull( v ) && fd->name() != "coalesce" )
         return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
       argValues.append( v );
     }
   }
 
   // run the function
-  QVariant res = fd.mFcn( argValues, f, parent );
+  QVariant res = fd->func( argValues, f, parent );
   ENSURE_NO_EVAL_ERROR;
 
   // everything went fine
   return res;
 }
 
-bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res = true;
   if ( mArgs )
@@ -1864,23 +2241,75 @@ bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsField
 
 QString QgsExpression::NodeFunction::dump() const
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
-  if ( fd.mParams == 0 )
-    return fd.mName; // special column
+  Function* fd = Functions()[mFnIndex];
+  if ( fd->params() == 0 )
+    return fd->name(); // special column
   else
-    return QString( "%1(%2)" ).arg( fd.mName ).arg( mArgs ? mArgs->dump() : QString() ); // function
+    return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }
 
 void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
-  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
-  if ( fd.mParams == 0 )
+  Function* fd = Functions()[mFnIndex];
+  if ( fd->params() == 0 )
     return; // TODO: special column
 
-  QDomElement funcElem = doc.createElement( "ogc:Function" );
-  funcElem.setAttribute( "name", fd.mName );
-  mArgs->toOgcFilter( doc, funcElem );
-  element.appendChild( funcElem );
+  bool isSpatial = false;
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( fd->name() == ogcOperatorName.toLower() )
+    {
+      isSpatial = true;
+      QDomElement funcElem = doc.createElement( "ogc:" + ogcOperatorName );
+      QDomElement geomProperty = doc.createElement( "ogc:PropertyName" );
+      geomProperty.appendChild( doc.createTextNode( "geometry" ) );
+      funcElem.appendChild( geomProperty );
+
+      QDomDocument tmpDoc;
+      QDomElement tmpElem = tmpDoc.createElement( "tmp" );
+      mArgs->toOgcFilter( tmpDoc, tmpElem );
+      QDomElement childElem = funcElem.firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        if ( childElem.tagName() == "Function" )
+        {
+          if ( childElem.attribute( "name" ) == "geomFromWKT" )
+          {
+            QgsGeometry* geom = 0;
+            geom = QgsGeometry::fromWkt( childElem.firstChildElement().text() );
+            if ( geom )
+              funcElem.appendChild( geom->exportToGML2( doc ) );
+
+          }
+          else if ( childElem.attribute( "name" ) == "geomFromGML2" )
+          {
+            QDomDocument geomDoc;
+            QString errorMsg;
+            QString gml = childElem.firstChildElement().text();
+            if ( geomDoc.setContent( gml, true, &errorMsg ) )
+              funcElem.appendChild( doc.documentElement() );
+          }
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+
+      element.appendChild( funcElem );
+    }
+  }
+
+  if ( !isSpatial )
+  {
+    QDomElement funcElem = doc.createElement( "ogc:Function" );
+    funcElem.setAttribute( "name", fd->name() );
+    mArgs->toOgcFilter( doc, funcElem );
+    element.appendChild( funcElem );
+  }
 }
 
 QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomElement &element, QString &errorMessage )
@@ -1888,17 +2317,77 @@ QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomEleme
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "Function" )
+  // check for spatial operators
+  int spatialOpCount = sizeof( SpatialOgcOperatorText ) / sizeof( SpatialOgcOperatorText[0] );
+  for ( int i = 0; i < spatialOpCount; i++ )
+  {
+    QString ogcOperatorName = SpatialOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.tagName() == ogcOperatorName )
+    {
+      int geomIdx = 0;
+      int gml2Idx = 0;
+      int opeIdx = 0;
+      for ( int j = 0; j < Functions().size(); j++ )
+      {
+        QgsExpression::Function* funcDef = Functions()[j];
+        if ( funcDef->name() == "$geometry" )
+          geomIdx = j;
+        else if ( funcDef->name() == "geomFromGML2" )
+          gml2Idx = j;
+        else if ( funcDef->name() == ogcOperatorName.toLower() )
+          opeIdx = j;
+      }
+
+      if ( geomIdx == 0 || gml2Idx == 0 || opeIdx == 0 )
+      {
+        errorMessage = QString( "spatial functions not find %1, got %2, %3, %4" ).arg( ogcOperatorName ).arg( geomIdx ).arg( gml2Idx ).arg( opeIdx );
+        return NULL;
+      }
+
+      QgsExpression::NodeList *gml2Args = new QgsExpression::NodeList();
+      QDomElement childElem = element.firstChildElement();
+      QString gml2Str = "";
+      while ( !childElem.isNull() && gml2Str == "" )
+      {
+        if ( childElem.tagName() != "PropertyName" )
+        {
+          QTextStream gml2Stream( &gml2Str );
+          childElem.save( gml2Stream, 0 );
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      if ( gml2Str != "" )
+      {
+        gml2Args->append( new QgsExpression::NodeLiteral( QVariant( gml2Str.remove( "\n" ) ) ) );
+      }
+      else
+      {
+        errorMessage = QString( "No OGC Geometry found" );
+        return NULL;
+      }
+
+      QgsExpression::NodeList *opeArgs = new QgsExpression::NodeList();
+      opeArgs->append( new QgsExpression::NodeFunction( geomIdx, new QgsExpression::NodeList() ) );
+      opeArgs->append( new QgsExpression::NodeFunction( gml2Idx, gml2Args ) );
+
+      return new QgsExpression::NodeFunction( opeIdx, opeArgs );
+    }
+  }
+
+  if ( element.tagName() != "Function" )
   {
     errorMessage = QString( "ogc:Function expected, got %1" ).arg( element.tagName() );
     return NULL;
   }
 
-  for ( int i = 0; i < BuiltinFunctions().size(); i++ )
+  for ( int i = 0; i < Functions().size(); i++ )
   {
-    QgsExpression::FunctionDef funcDef = BuiltinFunctions()[i];
+    QgsExpression::Function* funcDef = Functions()[i];
 
-    if ( element.attribute( "name" ) != funcDef.mName )
+    if ( element.attribute( "name" ) != funcDef->name() )
       continue;
 
     QgsExpression::NodeList *args = new QgsExpression::NodeList();
@@ -1930,7 +2419,7 @@ QVariant QgsExpression::NodeLiteral::eval( QgsExpression* , QgsFeature* )
   return mValue;
 }
 
-bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFieldMap& /*fields*/ )
+bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFields& /*fields*/ )
 {
   return true;
 }
@@ -1980,7 +2469,7 @@ QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElemen
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "Literal" )
+  if ( element.tagName() != "Literal" )
   {
     errorMessage = QString( "ogc:Literal expected, got %1" ).arg( element.tagName() );
     return NULL;
@@ -2048,12 +2537,16 @@ QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElemen
 
 QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeature* f )
 {
-  return f->attributeMap()[mIndex];
+  if ( f )
+  {
+    return f->attribute( mIndex );
+  }
+  return QVariant( "[" + mName + "]" );
 }
 
-bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFields& fields )
 {
-  foreach ( int i, fields.keys() )
+  for ( int i = 0; i < fields.count(); ++i )
   {
     if ( QString::compare( fields[i].name(), mName, Qt::CaseInsensitive ) == 0 )
     {
@@ -2083,7 +2576,7 @@ QgsExpression::Node* QgsExpression::NodeColumnRef::createFromOgcFilter( QDomElem
   if ( element.isNull() )
     return NULL;
 
-  if ( element.localName() != "PropertyName" )
+  if ( element.tagName() != "PropertyName" )
   {
     errorMessage = QString( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
     return NULL;
@@ -2120,7 +2613,7 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* 
   return QVariant();
 }
 
-bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFields& fields )
 {
   bool res;
   foreach ( WhenThen* cond, mConditions )

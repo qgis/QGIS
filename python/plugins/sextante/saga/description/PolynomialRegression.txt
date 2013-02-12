@@ -1,0 +1,13 @@
+Polynomial Regression
+geostatistics_regression
+ParameterVector|POINTS|Points|-1|False
+ParameterTableField|ATTRIBUTE|Attribute|POINTS
+ParameterSelection|POLYNOM|Polynom|[0] simple planar surface;[1] bi-linear saddle;[2] quadratic surface;[3] cubic surface;[4] user defined
+ParameterNumber|XORDER|Maximum X Order|None|None|4
+ParameterNumber|YORDER|Maximum Y Order|None|None|4
+ParameterNumber|TORDER|Maximum Total Order|None|None|4
+ParameterSelection|TARGET|Trend Surface|[0] user defined
+Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
+ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+OutputVector|RESIDUALS|Residuals
+OutputRaster|USER_GRID|Grid

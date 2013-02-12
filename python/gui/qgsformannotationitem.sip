@@ -5,7 +5,7 @@ class QgsFormAnnotationItem: QObject, QgsAnnotationItem
 %End
 
   public:
-    QgsFormAnnotationItem( QgsMapCanvas* canvas /TransferThis/, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0);
+    QgsFormAnnotationItem( QgsMapCanvas* canvas /TransferThis/, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
     ~QgsFormAnnotationItem();
 
     void paint( QPainter * painter );
@@ -25,4 +25,6 @@ class QgsFormAnnotationItem: QObject, QgsAnnotationItem
 
     void writeXML( QDomDocument& doc ) const;
     void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+
+    QgsVectorLayer* vectorLayer() const;
 };

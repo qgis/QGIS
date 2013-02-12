@@ -21,6 +21,7 @@
 #include "HalfEdge.h"
 #include <QVector>
 #include <QList>
+#include <QSet>
 #include "MathUtils.h"
 #include "TriangleInterpolator.h"
 #include <QColor>
@@ -32,7 +33,6 @@
 #include <QStringList>
 #include <QProgressDialog>
 #include <QCursor>
-#include <set>
 
 /**DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
@@ -59,6 +59,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     int getOppositePoint( int p1, int p2 );
     /**Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
+    //! @note not available in python bindings
     virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
     /**Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
     virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
@@ -176,7 +177,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**Returns true, if a half edge is on the convex hull and false otherwise*/
     bool edgeOnConvexHull( int edge );
     /**Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge*/
-    void evaluateInfluenceRegion( Point3D* point, int edge, std::set<int>* set );
+    void evaluateInfluenceRegion( Point3D* point, int edge, QSet<int> &set );
 };
 
 inline DualEdgeTriangulation::DualEdgeTriangulation() : xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::DELETE_FIRST ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( this )

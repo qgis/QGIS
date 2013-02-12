@@ -77,7 +77,9 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void on_btnHistoMax_toggled();
     /** Called when a selection has been made using the plot picker. */
     void histoPickerSelected( const QPointF & );
-    /** Called when a selection has been made using the plot picker (for qwt5 only). */
+    /** Called when a selection has been made using the plot picker (for qwt5 only).
+      @note not available in python bindings
+      */
     void histoPickerSelectedQwt5( const QwtDoublePoint & );
     /** Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
@@ -85,8 +87,6 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     void updateHistoMarkers();
     /** Button to compute the histogram, appears when no cached histogram is available. */
     void on_btnHistoCompute_clicked();
-
-    //signals:
 
   private:
 

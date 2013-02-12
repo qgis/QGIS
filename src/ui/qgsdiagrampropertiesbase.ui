@@ -11,6 +11,9 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="mDisplayDiagramsGroupBox">
      <property name="title">
@@ -36,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>742</width>
-           <height>610</height>
+           <width>756</width>
+           <height>627</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -121,8 +124,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>708</width>
-               <height>278</height>
+               <width>723</width>
+               <height>356</height>
               </rect>
              </property>
              <attribute name="label">
@@ -331,8 +334,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>708</width>
-               <height>239</height>
+               <width>640</width>
+               <height>289</height>
               </rect>
              </property>
              <attribute name="label">
@@ -520,8 +523,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>165</width>
-               <height>220</height>
+               <width>216</width>
+               <height>284</height>
               </rect>
              </property>
              <attribute name="label">
@@ -671,7 +674,7 @@
               <item row="3" column="0">
                <widget class="QPushButton" name="mEngineSettingsButton">
                 <property name="text">
-                 <string>PAL engine settings</string>
+                 <string>Automated placement settings</string>
                 </property>
                </widget>
               </item>
@@ -682,8 +685,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>109</width>
-               <height>151</height>
+               <width>137</width>
+               <height>191</height>
               </rect>
              </property>
              <attribute name="label">
@@ -747,7 +750,7 @@
                     <bool>true</bool>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -757,7 +760,7 @@
                     <string>Down</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -767,7 +770,7 @@
                     <string>Right</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -777,7 +780,7 @@
                     <string>Left</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>

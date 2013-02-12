@@ -59,6 +59,9 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mRotationSpinBox->setValue( mLayer->angle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
+  btnChangeColorBorder->setColor( mLayer->outlineColor() );
+  btnChangeColorFill->setColor( mLayer->fillColor() );
+
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
   if ( symbolItemList.size() > 0 )
   {
@@ -188,10 +191,11 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_clicked()
 {
   if ( mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->outlineColor() );
+    QColor newColor = QColorDialog::getColor( mLayer->outlineColor(), this, "", QColorDialog::ShowAlphaChannel );
     if ( newColor.isValid() )
     {
       mLayer->setOutlineColor( newColor );
+      btnChangeColorBorder->setColor( newColor );
       emit changed();
     }
   }
@@ -201,10 +205,11 @@ void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_clicked()
 {
   if ( mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->fillColor() );
+    QColor newColor = QColorDialog::getColor( mLayer->fillColor(), this, "", QColorDialog::ShowAlphaChannel );
     if ( newColor.isValid() )
     {
       mLayer->setFillColor( newColor );
+      btnChangeColorFill->setColor( newColor );
       emit changed();
     }
   }
@@ -229,12 +234,10 @@ void QgsEllipseSymbolLayerV2Widget::fillDataDefinedComboBoxes()
 
   if ( mVectorLayer )
   {
-    const QgsFieldMap& fm = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fm.constBegin();
-    for ( ; fieldIt != fm.constEnd(); ++fieldIt )
+    const QgsFields& fm = mVectorLayer->pendingFields();
+    for ( int index = 0; index < fm.count(); ++index )
     {
-      QString fieldName = fieldIt.value().name();
-      int index = fieldIt.key();
+      QString fieldName = fm[index].name();
 
       mDDSymbolWidthComboBox->addItem( fieldName, index );
       mDDSymbolHeightComboBox->addItem( fieldName, index );

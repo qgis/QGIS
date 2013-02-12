@@ -57,9 +57,14 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     qApp->processEvents();
   }
-  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
-  mWebPage->setViewportSize( contentsSize );
 
+  if ( frameCount() < 1 )  return;
+
+  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
+  contentsSize.setWidth( mFrameItems.at( 0 )->boundingRect().width() * mHtmlUnitsToMM );
+  mWebPage->setViewportSize( contentsSize );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
   recalculateFrameSizes();
@@ -98,7 +103,7 @@ double QgsComposerHtml::htmlUnitsToMM()
     return 1.0;
   }
 
-  return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
+  return ( mComposition->printResolution() / 72.0 ); //webkit seems to assume a standard dpi of 96
 }
 
 void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )

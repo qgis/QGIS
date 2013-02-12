@@ -55,6 +55,8 @@ ENDIF (WITH_POSTGRESQL)
 
 SET (WITH_INTERNAL_QWTPOLAR TRUE CACHE BOOL "Use internal build of QwtPolar")
 
+SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
+
 SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built")
 IF (WITH_SPATIALITE)
   SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
@@ -68,6 +70,11 @@ IF (WITH_SPATIALITE)
   ENDIF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_SPATIALITE)
 
+SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+IF(WITH_ORACLE)
+  SET(HAVE_ORACLE TRUE)
+ENDIF(WITH_ORACLE)
+
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 IF (WITH_BINDINGS)
@@ -76,6 +83,14 @@ IF (WITH_BINDINGS)
   # as otherwise user has to use PYTHONPATH environemnt variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+  SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities, console and installer are always staged)")
+  SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+  # concatenate QScintilla2 API files
+  SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
+  # path to custom Python framework on Mac
+  IF (APPLE)
+    SET (PYTHON_CUSTOM_FRAMEWORK "" CACHE PATH "Path to custom Python.framework on Mac. (should not have to specify other Python options)")
+  ENDIF (APPLE)
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it
@@ -93,6 +108,10 @@ SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be buil
 IF (WITH_GLOBE)
   SET(QT_USE_QTOPENGL 1)
   FIND_PACKAGE(OSGEARTH REQUIRED)
+  IF (OSGEARTHQT_LIBRARY)
+    # following variable is used in qgsconfig.h
+    SET(HAVE_OSGEARTHQT TRUE)
+  ENDIF (OSGEARTHQT_LIBRARY)
 ENDIF (WITH_GLOBE)
 
 # Compile flag. Make it possible to turn it off.
@@ -147,13 +166,19 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 FIND_PACKAGE(Proj)
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
-FIND_PACKAGE(Expat)
+FIND_PACKAGE(Expat REQUIRED)
 FIND_PACKAGE(Spatialindex REQUIRED)
-
 FIND_PACKAGE(Qwt REQUIRED)
+
 IF (NOT WITH_INTERNAL_QWTPOLAR)
   FIND_PACKAGE(QwtPolar REQUIRED)
 ENDIF(NOT WITH_INTERNAL_QWTPOLAR)
+
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
+ELSE (WITH_INTERNAL_QEXTSERIALPORT)
+  FIND_PACKAGE(Qextserialport REQUIRED)
+ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   FIND_PACKAGE(Sqlite3)
@@ -223,6 +248,16 @@ ELSE (WITH_TOUCH)
   MESSAGE (STATUS "Touch support disabled")
 ENDIF (WITH_TOUCH)
 
+# search for QScintilla2 (C++ lib)
+IF (WITH_BINDINGS)
+  # TODO: make required after testing find paths on Windows platforms
+  #FIND_PACKAGE(QScintilla REQUIRED)
+  FIND_PACKAGE(QScintilla)
+ELSE (WITH_BINDINGS)
+  # for when library is used in .h/cpp
+  FIND_PACKAGE(QScintilla)
+ENDIF (WITH_BINDINGS)
+
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
@@ -264,17 +299,35 @@ IF (PEDANTIC)
     # disable warnings
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
     ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
+    ADD_DEFINITIONS( /wd4505 )  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
     ADD_DEFINITIONS( /wd4510 )  # default constructor could not be generated (sqlite3_index_info, QMap)
     ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Wextra  -Wno-long-long -Wformat-security -Wno-strict-aliasing )
+    # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
+    SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
+
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage")
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   ENDIF (MSVC)
+
 ENDIF (PEDANTIC)
+
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
@@ -371,12 +424,9 @@ ELSE (WIN32)
     SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
-    # path for framework references
-    IF (ENABLE_TESTS)
-      SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-    ELSE (ENABLE_TESTS)
-      SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
-    ENDIF (ENABLE_TESTS)
+    # path for framework references when running from build directory
+    # changed later to reference in-app resources upon install
+    SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
     IF (WITH_GLOBE)
         SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
     ENDIF (WITH_GLOBE)
@@ -463,16 +513,6 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # if run from the build directory QGIS will detect it and alter the paths
 FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/path.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
-# symlink extra provider plugin frameworks for Mac unit tests
-IF (APPLE AND ENABLE_TESTS)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgisgrass.framework"
-    "${CMAKE_BINARY_DIR}/output/lib/qgisgrass.framework")
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgissqlanyconnection.framework"
-    "${CMAKE_BINARY_DIR}/output/lib/qgissqlanyconnection.framework")
-ENDIF (APPLE AND ENABLE_TESTS)
-
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
   SET (DEFAULT_MANUAL_SUBDIR  man)
@@ -491,6 +531,7 @@ IF (WITH_BINDINGS)
   FIND_PACKAGE(PythonLibrary REQUIRED)
   FIND_PACKAGE(SIP REQUIRED)
   FIND_PACKAGE(PyQt4 REQUIRED)
+  FIND_PACKAGE(Qsci REQUIRED)
   INCLUDE(PythonMacros)
   INCLUDE(SIPMacros)
   INCLUDE(PyQt4Macros)
@@ -506,6 +547,11 @@ IF (WITH_BINDINGS)
   ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
 
 ENDIF (WITH_BINDINGS)
+
+# Set QSCINTILLA_VERSION_STR to that of module, if no headers found
+IF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
+  SET(QSCINTILLA_VERSION_STR ${QSCI_MOD_VERSION_STR})
+ENDIF (NOT EXISTS QSCINTILLA_VERSION_STR AND EXISTS QSCI_MOD_VERSION_STR)
 
 #############################################################
 # create qgsconfig.h
@@ -537,9 +583,26 @@ IF (GIT_MARKER)
         COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
       )
       STRING(STRIP "${REVISION}" REVISION)
+      # Get GIT remote and branch
+      EXECUTE_PROCESS(
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMAND ${GITCOMMAND} name-rev --name-only HEAD OUTPUT_VARIABLE GIT_LOCAL_BRANCH 
+      )
+      STRING(STRIP "${GIT_LOCAL_BRANCH}" GIT_LOCAL_BRANCH)
+      EXECUTE_PROCESS(
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMAND ${GITCOMMAND} config branch.${GIT_LOCAL_BRANCH}.remote OUTPUT_VARIABLE GIT_REMOTE 
+      )
+      STRING(STRIP "${GIT_REMOTE}" GIT_REMOTE)
+      EXECUTE_PROCESS(
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMAND ${GITCOMMAND} config remote.${GIT_REMOTE}.url OUTPUT_VARIABLE GIT_REMOTE_URL
+      )
+      STRING(STRIP "${GIT_REMOTE_URL}" GIT_REMOTE_URL)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND echo \\\#define QGS_GIT_REMOTE_URL \\\"${GIT_REMOTE_URL}\\\" >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
@@ -584,6 +647,17 @@ ENDIF (ENABLE_TESTS)
 IF (APPLE)
   # must be last for install, so install_name_tool can do its work
   ADD_SUBDIRECTORY(mac)
+
+  # allow QGIS to be run directly from build directory and to run unit tests
+  EXECUTE_PROCESS(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
+  EXECUTE_PROCESS(
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass.framework lib/
+    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
+  )
+  EXECUTE_PROCESS(
+    COMMAND /bin/ln -fs ../../Plugins/qgis/qgissqlanyconnection.framework lib/
+    WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
+  )
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems
@@ -592,6 +666,10 @@ IF (UNIX AND NOT APPLE)
 ENDIF (UNIX AND NOT APPLE)
 
 INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
+
+#############################################################
+# Post-install commands
+ADD_SUBDIRECTORY(postinstall)
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ

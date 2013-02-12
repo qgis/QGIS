@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2010
     copyright            : (C) 2010 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     /** return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
-    void setExtent( const QgsRectangle & extent );
+    void setExtent( const QgsRectangle &extent );
 
   protected:
     QString mPluginLayerType;

@@ -23,7 +23,7 @@
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
-    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
+    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( 0 )
 {
 }
 
@@ -35,6 +35,10 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
 QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
 {
   QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setGradient( mGradient );
   if ( mContrastEnhancement )
   {
     renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
@@ -53,6 +57,11 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( input, grayBand );
   r->readXML( elem );
 
+  if ( elem.attribute( "gradient" ) == "WhiteToBlack" )
+  {
+    r->setGradient( WhiteToBlack );  // BlackToWhite is default
+  }
+
   QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
   if ( !contrastEnhancementElem.isNull() )
   {
@@ -70,109 +79,103 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
   mContrastEnhancement = ce;
 }
 
-void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
+
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
-    return 0;
+    return outputBlock;
   }
 
-  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mGrayBand );
-  QgsRasterInterface::DataType alphaType = QgsRasterInterface::UnknownDataType;
-  if ( mAlphaBand > 0 )
+  QgsRasterBlock *inputBlock = mInput->block( mGrayBand, extent, width, height );
+  if ( !inputBlock || inputBlock->isEmpty() )
   {
-    alphaType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
+    QgsDebugMsg( "No raster data!" );
+    delete inputBlock;
+    return outputBlock;
   }
 
-  void* rasterData = mInput->block( mGrayBand, extent, width, height );
-  if ( !rasterData ) return 0;
-
-  void* alphaData = 0;
-  double currentAlpha = mOpacity;
-  double grayVal;
-  QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
+  QgsRasterBlock *alphaBlock = 0;
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
-    alphaData = mInput->block( mAlphaBand, extent, width, height );
-    if ( !alphaData )
+    alphaBlock = mInput->block( mAlphaBand, extent, width, height );
+    if ( !alphaBlock || alphaBlock->isEmpty() )
     {
-      free( rasterData );
-      return 0;
+      // TODO: better to render without alpha
+      delete inputBlock;
+      delete alphaBlock;
+      return outputBlock;
     }
   }
   else if ( mAlphaBand > 0 )
   {
-    alphaData = rasterData;
+    alphaBlock = inputBlock;
   }
 
-  QImage *img = createImage( width, height, QImage::Format_ARGB32_Premultiplied );
-  QRgb* imageScanLine = 0;
-  int currentRasterPos = 0;
-
-  for ( int i = 0; i < height; ++i )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
-    imageScanLine = ( QRgb* )( img->scanLine( i ) );
-    for ( int j = 0; j < width; ++j )
-    {
-      grayVal = readValue( rasterData, rasterType, currentRasterPos );
+    delete inputBlock;
+    delete alphaBlock;
+    return outputBlock;
+  }
 
-      if ( mInput->isNoDataValue( mGrayBand, grayVal ) )
+  QRgb myDefaultColor = NODATA_COLOR;
+  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  {
+    double grayVal = inputBlock->value( i );
+
+    if ( inputBlock->isNoDataValue( grayVal ) )
+    {
+      outputBlock->setColor( i, myDefaultColor );
+      continue;
+    }
+
+    double currentAlpha = mOpacity;
+    if ( mRasterTransparency )
+    {
+      currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
+    }
+    if ( mAlphaBand > 0 )
+    {
+      currentAlpha *= alphaBlock->value( i ) / 255.0;
+    }
+
+    if ( mContrastEnhancement )
+    {
+      if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
       {
-        imageScanLine[j] = myDefaultColor;
-        ++currentRasterPos;
+        outputBlock->setColor( i, myDefaultColor );
         continue;
       }
+      grayVal = mContrastEnhancement->enhanceContrast( grayVal );
+    }
 
-      //alpha
-      currentAlpha = mOpacity;
-      if ( mRasterTransparency )
-      {
-        currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
-      }
-      if ( mAlphaBand > 0 )
-      {
-        currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
-      }
+    if ( mGradient == WhiteToBlack )
+    {
+      grayVal = 255 - grayVal;
+    }
 
-      if ( mContrastEnhancement )
-      {
-        if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
-        {
-          imageScanLine[ j ] = myDefaultColor;
-          ++currentRasterPos;
-          continue;
-        }
-        grayVal = mContrastEnhancement->enhanceContrast( grayVal );
-      }
-
-      if ( mInvertColor )
-      {
-        grayVal = 255 - grayVal;
-      }
-
-      if ( doubleNear( currentAlpha, 1.0 ) )
-      {
-        imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
-      }
-      else
-      {
-        imageScanLine[j] = qRgba( currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * 255 );
-      }
-      ++currentRasterPos;
+    if ( doubleNear( currentAlpha, 1.0 ) )
+    {
+      outputBlock->setColor( i, qRgba( grayVal, grayVal, grayVal, 255 ) );
+    }
+    else
+    {
+      outputBlock->setColor( i, qRgba( currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * 255 ) );
     }
   }
 
-  free( rasterData );
+  delete inputBlock;
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
-    free( alphaData );
+    delete alphaBlock;
   }
 
-  void * data = ( void * )img->bits();
-  delete img;
-  return data; // OK, the image was created with extraneous data
+  return outputBlock;
 }
 
 void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
@@ -186,6 +189,18 @@ void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   _writeXML( doc, rasterRendererElem );
 
   rasterRendererElem.setAttribute( "grayBand", mGrayBand );
+
+  QString gradient;
+  if ( mGradient == BlackToWhite )
+  {
+    gradient = "BlackToWhite";
+  }
+  else
+  {
+    gradient = "WhiteToBlack";
+  }
+  rasterRendererElem.setAttribute( "gradient", gradient );
+
   if ( mContrastEnhancement )
   {
     QDomElement contrastElem = doc.createElement( "contrastEnhancement" );

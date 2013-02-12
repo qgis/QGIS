@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -202,6 +202,16 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   }
 
   mCaps.clear();
+
+  //test wfs version
+  QString version = capabilitiesDocument.documentElement().attribute( "version" );
+  if ( version != "1.0.0" && version != "1.0" )
+  {
+    mErrorCode = WFSVersionNotSupported;
+    mErrorMessage = tr( "Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong" );
+    emit gotCapabilities();
+    return;
+  }
 
   // get the <FeatureType> elements
   QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );

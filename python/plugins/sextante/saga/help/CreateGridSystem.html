@@ -1,0 +1,45 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Create Grid System</h1>
+<div class='author'>Copyrights (c) 2007 by Volker Wichmann</div>
+<div class='description'>This module creates a new user specified Grid System for use with other modules.<br/>
+<br/>
+First of all, please consider the following issues before using the module:<br/>
+(a) all calculations of the module refer to the lower left corner of the grid system, i.e. the xMin and yMin values. This coordinate is fixed unless you specify an offset.<br/>
+(b) the module follows the philosophy of SAGA in that the values describing the extent refer to the cell centers. If you like to match the extent with the border of a grid, use an offset.<br/>
+<br/>
+The module provides four possibilities to set/determine the extent of the grid system:<br/>
+(1) by specifying the coordinate of the lower left cell (xMin, yMin) and the number of cells in W-E (NX) and S-N (NY) direction<br/>
+(2) by specifying the coordinates the of lower left (xMin, yMin) and the upper right (xMax, yMax) cell<br/>
+(3) by the extent of the shape(s) provided in the Data Objects section<br/>
+(4) by the extent of the grid(s) provided in the Data Objects section<br/>
+<br/>
+After selecting the appropriate method to determine the extent, the next step is to specify the cellsize of the new grid system.<br/>
+For all methods supplied to determine the extent but number (1), three possibilities are provided to adjust cellsize and grid system extent (please remember, the lower left corner is fixed!):<br/>
+(I) adjust the extent to match the cellsize<br/>
+(II) adjust the cellsize to match the extent in E-W direction<br/>
+(III) adjust the cellsize to match the extent in S-N direction<br/>
+<br/>
+Finally it is possible to apply an offset to the lower left corner of the grid system. In this case check the Use Offset option and specify the offset in W-E and S-N direction. Positive values result in a shift in E/N, negative in W/S direction.<br/>
+In order to create the grid system the module needs to create a dummy grid.</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Dummy Grid <div class='type'>Output Data Object</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Set extent by <div class='type'>Choice</div></dt><dd>Please choose a method of module operation. <div class='constraints'>Available choices: xMin, yMin, NX, NY, xMin, yMin, xMax, yMax, Shape(s), Grid(s)</div></dd>
+	<dt>xMin <div class='type'>Floating point</div></dt><dd>minimum x value <div class='constraints'></div></dd>
+	<dt>yMin <div class='type'>Floating point</div></dt><dd>minimum y value <div class='constraints'></div></dd>
+	<dt>xMax <div class='type'>Floating point</div></dt><dd>maximum x value <div class='constraints'></div></dd>
+	<dt>yMax <div class='type'>Floating point</div></dt><dd>maximum y value <div class='constraints'></div></dd>
+	<dt>NX <div class='type'>Integer</div></dt><dd>number of cells in W-E direction <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>NY <div class='type'>Integer</div></dt><dd>number of cells in S-N direction <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Cellsize <div class='type'>Floating point</div></dt><dd>Cellsize <div class='constraints'></div></dd>
+	<dt>Adjust <div class='type'>Choice</div></dt><dd>Choose method how to adjust input values. <div class='constraints'>Available choices: Extent to CellSize, CellSize to W-E Extent, CellSize to S-N Extent</div></dd>
+	<dt>Use Offset <div class='type'>Boolean</div></dt><dd>Apply offset? <div class='constraints'></div></dd>
+	<dt>X offset <div class='type'>Floating point</div></dt><dd>Positive values result in a shift in E direction. <div class='constraints'></div></dd>
+	<dt>Y offset <div class='type'>Floating point</div></dt><dd>Positive values result in a shift in N direction. <div class='constraints'></div></dd>
+	<dt>Initialization Value <div class='type'>Floating point</div></dt><dd>Value which is assigned to the dummy grid. <div class='constraints'></div></dd>
+	<dt>Shape(s) <div class='type'>Input Shapes list</div></dt><dd>Shape(s) to fit extent to <div class='constraints'></div></dd>
+	<dt>Grid(s) <div class='type'>Input Grid list</div></dt><dd>Grid(s) to fit extent to <div class='constraints'></div></dd>
+</dl>
+</body></html>

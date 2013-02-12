@@ -6,6 +6,7 @@ SET(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
   qgspostgresdataitems.cpp
+  qgspostgresfeatureiterator.cpp
   qgspgsourceselect.cpp
   qgspgnewconnection.cpp
   qgspgtablemodel.cpp

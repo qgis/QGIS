@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     Q_OBJECT
 
   public:
-    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false );
+    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = 0, bool embedded = false );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -47,14 +47,14 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void keyPressEvent( QKeyEvent * event );
 
     void loadSymbol();
+    //! @note not available in python bindings
     void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
-
-    void populateLayerTypes( QgsSymbolV2* symbol );
 
     void updateUi();
 
     void updateLockButton();
 
+    //! @note not available in python bindings
     SymbolLayerItem* currentLayerItem();
     QgsSymbolLayerV2* currentLayer();
 

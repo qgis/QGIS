@@ -25,37 +25,171 @@
 #include <QTextEdit>
 #include <QTime>
 #include <QErrorMessage>
+#include <QSortFilterProxyModel>
 
 /////////
 
-/*
-TODO
+class TreeFilterProxyModel : public QSortFilterProxyModel
+{
+    //  Q_OBJECT
 
-- try to keep file reads at a minimum -> when selecting an item in the browser copy its ramp over to mRamp
-- collapse all button
-- when browsing by selections, remove dir from scheme name
-- show type when there are variants - based on the first file
+  public:
+    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel* model )
+        : QSortFilterProxyModel( parent ), mModel( model )
+    { setSourceModel( mModel ); }
 
-- selections:
-  - shorten child names
-  - when collection has only 1 item (e.g. es_skywalker), bring up one level
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+    {
+      QgsCptCityDataItem* item = mModel->dataItem( mModel->index( sourceRow, 0, sourceParent ) );
+      return ( item && ! item->type() == QgsCptCityDataItem::ColorRamp );
+    }
+    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
- */
+  private:
+    QgsCptCityBrowserModel* mModel;
+};
+
+
+// ----------------------
 
 QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( ramp )
+    : QDialog( parent ), mRamp( 0 )
 {
   setupUi( this );
-  mAuthorsModel = mSelectionsModel = 0;
+
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/CptCityColorRampV2Dialog/geometry" ).toByteArray() );
+  mSplitter->setSizes( QList<int>() << 250 << 550 );
+  mSplitter->restoreState( settings.value( "/Windows/CptCityColorRampV2Dialog/splitter" ).toByteArray() );
+
+  mModel = mAuthorsModel = mSelectionsModel = 0; //mListModel = 0;
+  mTreeFilter = 0;
+
+  QgsCptCityArchive::initDefaultArchive();
+  mArchive = QgsCptCityArchive::defaultArchive();
+
+  // show information on how to install cpt-city files if none are found
+  if ( ! mArchive || mArchive->isEmpty() )
+  {
+    // QgsDialog dlg( this );
+    // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
+    QTextEdit *edit = new QTextEdit( 0 );
+    edit->setReadOnly( true );
+    // not sure if we want this long string to be translated
+    QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
+                           "You have two means of installing them:\n\n"
+                           "1) Install the \"Color Ramp Manager\" python plugin "
+                           "(you must enable Experimental plugins in the plugin manager) "
+                           "and use it to download latest cpt-city package.\n"
+                           "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
+                           "2) Download the complete archive (in svg format) "
+                           "and unzip it to your QGis settings directory [%1] .\n\n"
+                           "This file can be found at [%2]\nand current file is [%3]"
+                         ).arg( QgsApplication::qgisSettingsDirPath()
+                              ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
+                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
+    edit->setText( helpText );
+    mStackedWidget->addWidget( edit );
+    mStackedWidget->setCurrentIndex( 1 );
+    tabBar->setVisible( false );
+    // dlg.layout()->addWidget( edit );
+    // dlg.resize(500,400);
+    // dlg.exec();
+    return;
+  }
+
+  if ( ! mArchive )
+    return;
+  QgsDebugMsg( "archive: " + mArchive->archiveName() );
+
+  if ( ramp )
+  {
+    mRamp = ramp;
+  }
+  else
+  {
+    mRamp = new QgsCptCityColorRampV2( "", "", false );
+    ramp = mRamp;
+  }
+  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( ramp->schemeName() ).arg( ramp->variantName() ).arg( ramp->variantList().count() ) );
+
+  // model / view
+  QgsDebugMsg( "loading model/view objects" );
+  if ( mAuthorsModel )
+    delete mAuthorsModel;
+  mAuthorsModel = new QgsCptCityBrowserModel( this, mArchive, QgsCptCityBrowserModel::Authors );
+  if ( mSelectionsModel )
+    delete mSelectionsModel;
+  mSelectionsModel = new QgsCptCityBrowserModel( this, mArchive, QgsCptCityBrowserModel::Selections );
+  setTreeModel( mSelectionsModel );
+
+  mTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mTreeView->setColumnHidden( 1, true );
+  QgsDebugMsg( "done loading model/view objects" );
+
+  // setup ui
+  tabBar->blockSignals( true );
+  tabBar->addTab( tr( "Selections by theme" ) );
+  tabBar->addTab( tr( "All by author" ) );
+  cboVariantName->setIconSize( QSize( 100, 15 ) );
+  lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
+
+  // look for item, if not found in selections archive, look for in authors
+  QgsDebugMsg( "looking for ramp " + mRamp->schemeName() );
+  if ( mRamp->schemeName() != "" )
+  {
+    bool found = false;
+    found = updateRamp();
+    if ( ! found )
+    {
+      tabBar->setCurrentIndex( 1 );
+      setTreeModel( mAuthorsModel );
+      found = updateRamp();
+      // if not found, go back to selections model
+      if ( ! found )
+      {
+        tabBar->setCurrentIndex( 0 );
+        setTreeModel( mSelectionsModel );
+      }
+    }
+    if ( found )
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+  }
+
+  tabBar->blockSignals( false );
+
+  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
+
+  // TODO - remove this when basic archive is complete
+  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
+    tabBar->setCurrentIndex( 1 );
+
+  // show error message to use color ramp manager to get more gradients
+  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE &&
+       QgsCptCityArchive::archiveRegistry().count() == 1 )
+  {
+    QString helpText = tr( "You can download a more complete set of cpt-city gradients "
+                           "by installing the \"Color Ramp Manager\" plugin "
+                           "(you must enable Experimental plugins in the plugin manager).\n\n"
+                         );
+    QErrorMessage* msg = new QErrorMessage( this );
+    msg->showMessage( helpText, "cpt-city" );
+  }
+
 }
 
-void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
+QgsCptCityColorRampV2Dialog::~QgsCptCityColorRampV2Dialog()
 {
-  QStringList variantList;
-  QgsCptCityColorRampItem *item =
-    dynamic_cast< QgsCptCityColorRampItem* >( mModel->dataItem( mBrowserView->currentIndex() ) );
-  if ( item )
-    variantList = item->ramp().variantList();
+}
+
+void QgsCptCityColorRampV2Dialog::populateVariants()
+{
+  QStringList variantList = mRamp->variantList();
+
+  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp->schemeName() ).arg( mRamp->variantName() ).arg( variantList.count() ) );
 
   cboVariantName->blockSignals( true );
   cboVariantName->clear();
@@ -68,6 +202,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
   }
   else
   {
+    // populate variant combobox
     QString oldVariant = cboVariantName->currentText();
     QgsCptCityColorRampV2 ramp( mRamp->schemeName(), mRamp->variantList(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
@@ -94,11 +229,11 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
     }
 
     cboVariantName->blockSignals( false );
-    cboVariantName->setEnabled( true );
-    cboVariantName->setVisible( true );
 
     // try to set the original variant again (if exists)
-    int idx;
+    int idx = -1;
+    QString newVariant = mRamp->variantName();
+    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
     if ( newVariant != QString() )
     {
       if ( newVariant.startsWith( "-" ) || newVariant.startsWith( "_" ) )
@@ -116,29 +251,81 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
     }
     cboVariantName->setCurrentIndex( idx );
     // updatePreview();
+
+    cboVariantName->setEnabled( true );
+    cboVariantName->setVisible( true );
   }
 
 }
 
-void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &index )
+void QgsCptCityColorRampV2Dialog::on_mTreeView_clicked( const QModelIndex &index )
 {
-  QgsCptCityDataItem *item = mModel->dataItem( index );
+  const QModelIndex &sourceIndex = mTreeFilter->mapToSource( index );
+  QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
   if ( ! item )
     return;
-  if ( item->type() == QgsCptCityDataItem::ColorRamp )
+  QgsDebugMsg( QString( "item %1 clicked" ).arg( item->name() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  updateTreeView( item );
+}
+
+void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool resetRamp )
+{
+  if ( ! item )
   {
-    lblSchemeName->setText( item->name() );
-    mRamp->setName( item->path() );
+    QgsDebugMsg( "invalid item" );
+    return;
+  }
+  if ( item->type() == QgsCptCityDataItem::Directory )
+  {
+    if ( resetRamp )
+    {
+      mRamp->setName( "", "" );
+      QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
+      lblSchemeName->setText( "" );
+      populateVariants();
+    }
+    lblSchemePath->setText( item->path() );
+    lblCollectionInfo->setText( item->info() );
+    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
+    updateListWidget( item );
+  }
+  else if ( item->type() == QgsCptCityDataItem::Selection )
+  {
+    lblSchemePath->setText( "" );
+    // lblCollectionName->setText( item->path() );
+    lblCollectionInfo->setText( item->info() );
+    clearCopyingInfo( );
+    updateListWidget( item );
+  }
+  else if ( item->type() == QgsCptCityDataItem::AllRamps )
+  {
+    lblSchemePath->setText( "" );
+    // lblCollectionName->setText( item->path() );
+    clearCopyingInfo( );
+    updateListWidget( item );
+    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->rowCount() ) );
+  }
+  else
+  {
+    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg(( int )item->type() ) );
+  }
+}
+
+void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * item )
+{
+  QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
+  if ( rampItem )
+  {
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+    lblSchemeName->setText( QFileInfo( rampItem->name() ).fileName() );
+    mRamp->copy( &rampItem->ramp() );
+    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
     populateVariants();
   }
-  else if ( item->type() == QgsCptCityDataItem::Directory )
+  else
   {
-    mRamp->setName( "", "" );
-    // lblSchemeName->setText( "" );
-    populateVariants();
-    lblSchemePath->setText( item->path() );
-    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
-    // updateCopyingInfo( item->copyingInfo() );
+    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( rampItem->path() ).arg(( int )rampItem->type() ) );
   }
 }
 
@@ -146,33 +333,22 @@ void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 {
   if ( index == 0 )
   {
-    mArchiveGroup = "selections";
-    mModel = mSelectionsModel;
+    setTreeModel( mSelectionsModel );
+    mArchiveViewType = QgsCptCityBrowserModel::Selections;
   }
   else if ( index == 1 )
   {
-    mModel = mAuthorsModel;
-    mArchiveGroup = "authors";
+    setTreeModel( mAuthorsModel );
+    mArchiveViewType = QgsCptCityBrowserModel::Authors;
   }
   else
   {
     QgsDebugMsg( QString( "invalid index %1" ).arg( index ) );
-    mModel = mAuthorsModel;
-    mArchiveGroup = "authors";
+    setTreeModel( mAuthorsModel );
+    mArchiveViewType = QgsCptCityBrowserModel::Authors;
   }
 
-  // set model
-  mBrowserView->setModel( mModel );
-
-  // try to apply selection to view
-  // TODO fix ssearching when item has variants (e.g. ds/rgi/rgi_15)
-  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
-  if ( modelIndex != QModelIndex() )
-  {
-    mBrowserView->setCurrentIndex( modelIndex );
-    mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
-    on_mBrowserView_clicked( modelIndex );
-  }
+  updateRamp();
 }
 
 
@@ -182,13 +358,16 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
 
   // get basic information, depending on if is color ramp or directory
   QgsCptCityDataItem *item =
-    dynamic_cast< QgsCptCityDataItem* >( mModel->dataItem( mBrowserView->currentIndex() ) );
+    dynamic_cast< QgsCptCityDataItem* >( mModel->dataItem( mTreeFilter->mapToSource( mTreeView->currentIndex() ) ) );
+  if ( ! item )
+    return;
+
   path = item->path();
-  if ( item && item->type() == QgsCptCityDataItem::Directory )
+  if ( item->type() == QgsCptCityDataItem::Directory )
   {
-    title = tr( "%1 directory details" ).arg( item->name() );
+    title = tr( "%1 directory details" ).arg( item->path() );
   }
-  else if ( item )
+  else if ( item->type() == QgsCptCityColorRampItem::Directory )
   {
     title = tr( "%1 gradient details" ).arg( path );
   }
@@ -244,14 +423,15 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   dlg.exec();
 }
 
-void QgsCptCityColorRampV2Dialog::updatePreview()
+void QgsCptCityColorRampV2Dialog::updatePreview( bool clear )
 {
-  QSize size( 300, 50 );
+  QSize size = lblPreview->size();
 
-  if ( mRamp->schemeName() == "" )
+  if ( clear || mRamp->schemeName() == "" )
   {
     lblSchemeName->setText( "" );
     lblSchemePath->setText( "" );
+    lblLicensePreview->setText( "" );
     QPixmap blankPixmap( size );
     blankPixmap.fill( Qt::transparent );
     lblPreview->setPixmap( blankPixmap );
@@ -272,6 +452,11 @@ void QgsCptCityColorRampV2Dialog::updatePreview()
   updateCopyingInfo( mRamp->copyingInfo() );
 }
 
+void QgsCptCityColorRampV2Dialog::clearCopyingInfo()
+{
+  updateCopyingInfo( QMap< QString, QString >() );
+}
+
 void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QString >& copyingMap )
 {
   QString authorStr = copyingMap.value( "authors" );
@@ -288,6 +473,9 @@ void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QStrin
   else
     licenseStr += "\n";
   lblLicenseName->setText( licenseStr );
+  licenseStr.replace( "\n", "  " );
+  lblLicensePreview->setText( licenseStr );
+  lblLicensePreview->setCursorPosition( 0 );
   if ( copyingMap.contains( "src/link" ) )
     lblSrcLink->setText( copyingMap.value( "src/link" ) );
   else
@@ -297,17 +485,68 @@ void QgsCptCityColorRampV2Dialog::updateCopyingInfo( const QMap< QString, QStrin
 void QgsCptCityColorRampV2Dialog::on_cboVariantName_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
-  mRamp->setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
+  if ( cboVariantName->currentIndex() != -1 )
+    mRamp->setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
+  QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
   updatePreview();
 }
 
+void QgsCptCityColorRampV2Dialog::onFinished()
+{
+  // save settings
+  QSettings settings;
+  settings.setValue( "/Windows/CptCityColorRampV2Dialog/geometry", saveGeometry() );
+  settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
+}
 
-// this function if for a svg preview, available if the svg files have been processed with svgx
+bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
+{
+  QgsDebugMsg( QString( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
+  // if "save as standard gradient" is checked, convert to QgsVectorGradientColorRampV2
+  return ( result() == Accepted && cboConvertStandard->isChecked() );
+}
+
+void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
+{
+  QgsCptCityCollectionItem* colItem = dynamic_cast<QgsCptCityCollectionItem*>( item );
+  if ( colItem )
+  {
+    QgsDebugMsg( "path= " + item->path() );
+    mListWidget->clear();
+    mListRamps.clear();
+    // recursively get children ramps
+    QVector<QgsCptCityDataItem*> childrenRamps = colItem->childrenRamps( true );
+    for ( int i = 0; i < childrenRamps.count(); i++ )
+    {
+      QgsCptCityColorRampItem* rampItem = dynamic_cast<QgsCptCityColorRampItem*>( childrenRamps[i] );
+      if ( ! rampItem )
+      {
+        QgsDebugMsg( "invalid item " + childrenRamps[i]->path() );
+        continue;
+      }
+      QListWidgetItem* listItem = new QListWidgetItem();
+      listItem->setText( rampItem->shortInfo() );
+      listItem->setIcon( rampItem->icon( QSize( 75, 50 ) ) );
+      listItem->setToolTip( rampItem->path() + "\n" + rampItem->info() );
+      listItem->setData( Qt::UserRole, QVariant( i ) );
+      mListWidget->addItem( listItem );
+      mListRamps << rampItem;
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "invalid item" );
+    mListWidget->clear();
+  }
+}
+
+// this function is for a svg preview, available if the svg files have been processed with svgx
 // e.g. for f in `ls */*/*/*/*.svg`; do echo $f ; svgx -p -t svg $f > tmp1.svg; mv tmp1.svg $f; done
 // perhaps a future version of the cpt-city svg gradients will have them by default
 bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
 {
-  QSize size( 300, 50 );
+  QSize size = lblPreview->size();
+
   if ( event->type() == QEvent::MouseButtonPress )
   {
     // create preview from svg file if supported - depends on file versions
@@ -330,129 +569,76 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
   }
 }
 
-// delay initialization and update archive if it has changed
-void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
+bool QgsCptCityColorRampV2Dialog::updateRamp()
 {
-  // setup archives
-  // if ( QgsCptCityArchive::archiveRegistry().isEmpty() )
-  // {
-  //   QgsCptCityArchive::initArchives( true );
-  // }
-  // mArchive = QgsCptCityArchive::defaultArchive();
-  // // if empty archive, try loading again - this may happen after installing new package
-  // if ( ! mArchive || mArchive->isEmpty() )
-  // {
-  //   QgsCptCityArchive::initArchives( true );
-  //   mArchive = QgsCptCityArchive::defaultArchive();
-  // }
+  mListWidget->clear();
+  mListRamps.clear();
+  cboVariantName->clear();
+  clearCopyingInfo( );
+  lblCollectionInfo->clear();
 
-  QgsCptCityArchive::initDefaultArchive();
-  mArchive = QgsCptCityArchive::defaultArchive();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  updatePreview( true );
 
-  // show information on how to install cpt-city files if none are found
-  if ( ! mArchive || mArchive->isEmpty() )
+  QgsDebugMsg( "schemeName= " + mRamp->schemeName() );
+  if ( mRamp->schemeName() == "" )
+    return false;
+
+  // search for item in model
+  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
+  if ( modelIndex == QModelIndex() )
+    return false;
+  QgsCptCityColorRampItem* childItem =
+    dynamic_cast<QgsCptCityColorRampItem*>( mModel->dataItem( modelIndex ) );
+  if ( ! childItem )
+    return false;
+  if ( mRamp->schemeName() != childItem->ramp().schemeName() )
+    return false;
+
+  // found child, set mRamp variantList
+  // mRamp->copy( &childItem->ramp() );
+  mRamp->setVariantList( childItem->ramp().variantList() );
+
+  // found child, update tree
+  QgsDebugMsg( QString( "found item %1" ).arg( mRamp->schemeName() ) );
+  lblSchemeName->setText( QFileInfo( mRamp->schemeName() ).fileName() );
+  QModelIndex parentIndex = modelIndex.parent();
+  QModelIndex selIndex = mTreeFilter->mapFromSource( parentIndex );
+
+  // QgsDebugMsg(QString("parent row=%1 path=%2 parentRow=%3").arg(parentIndex.row()).arg(mModel->dataItem( parentIndex )->path()).arg(parentIndex.parent().row()));
+  mTreeView->setCurrentIndex( selIndex );
+  mTreeView->setExpanded( selIndex, true );
+  mTreeView->scrollTo( selIndex, QAbstractItemView::PositionAtCenter );
+  updateTreeView( mModel->dataItem( parentIndex ), false );
+
+  // update listWidget, find appropriate item in mListRamps
+  for ( int i = 0; i < mListRamps.count(); i++ )
   {
-    // QgsDialog dlg( this );
-    // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
-    QTextEdit *edit = new QTextEdit( 0 );
-    edit->setReadOnly( true );
-    // not sure if we want this long string to be translated
-    QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "You have two means of installing them:\n\n"
-                           "1) Install the \"Color Ramp Manager\" python plugin "
-                           "(you must enable Experimental plugins in the plugin manager) "
-                           "and use it to download latest cpt-city package.\n"
-                           "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
-                           "2) Download the complete archive (in svg format) "
-                           "and unzip it to your QGis settings directory [%1] .\n\n"
-                           "This file can be found at [%2]\nand current file is [%3]"
-                         ).arg( QgsApplication::qgisSettingsDirPath()
-                              ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
-                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
-    edit->setText( helpText );
-    stackedWidget->addWidget( edit );
-    stackedWidget->setCurrentIndex( 1 );
-    tabBar->setVisible( false );
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-    // dlg.layout()->addWidget( edit );
-    // dlg.resize(500,400);
-    // dlg.exec();
-    return;
-  }
-
-  if ( ! mArchive )
-    return;
-  QgsDebugMsg( "archive: " + mArchive->archiveName() );
-
-  // model / view
-  QgsDebugMsg( "loading model/view objects" );
-  if ( mAuthorsModel )
-    delete mAuthorsModel;
-  mAuthorsModel = new QgsCptCityBrowserModel( mBrowserView, mArchive, "authors" );
-  if ( mSelectionsModel )
-    delete mSelectionsModel;
-  mSelectionsModel = new QgsCptCityBrowserModel( mBrowserView, mArchive, "selections" );
-  mModel = mSelectionsModel;
-  mBrowserView->setModel( mModel );
-  mBrowserView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mBrowserView->setIconSize( QSize( 100, 15 ) );
-  // provide a horizontal scroll bar instead of using ellipse (...) for longer items
-  // mBrowserView->setTextElideMode( Qt::ElideNone );
-  // mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-  mBrowserView->header()->resizeSection( 0, 250 );
-  mBrowserView->header()->setStretchLastSection( true );
-
-  // setup ui
-  tabBar->blockSignals( true );
-  tabBar->addTab( tr( "Selections by theme" ) );
-  tabBar->addTab( tr( "All by author" ) );
-  cboVariantName->setIconSize( QSize( 100, 15 ) );
-  lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
-
-  // look for item, if not found in selections archive, look for in authors
-  // TODO fix when ramp has a variant
-  if ( mRamp->schemeName() != "" )
-  {
-    QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
-    if ( modelIndex == QModelIndex() )
+    if ( mListRamps[i] == childItem )
     {
-      modelIndex = mAuthorsModel->findPath( mRamp->schemeName() );
-      if ( modelIndex != QModelIndex() )
-      {
-        tabBar->setCurrentIndex( 1 );
-        mModel = mAuthorsModel;
-        mBrowserView->setModel( mModel );
-    }
-    }
-    if ( modelIndex != QModelIndex() )
-    {
-      lblSchemeName->setText( mRamp->schemeName() );
-      mBrowserView->setCurrentIndex( modelIndex );
-      mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
-      populateVariants( mRamp->variantName() );
-      // updatePreview();
+      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps[i]->path() ).arg( childItem->path() ) );
+      QListWidgetItem* listItem = mListWidget->item( i );
+      mListWidget->setCurrentItem( listItem );
+      // on_mListWidget_itemClicked( listItem );
+      populateVariants();
+      mListWidget->scrollToItem( listItem, QAbstractItemView::EnsureVisible );
+      // mListView->selectionModel()->select( childIndex, QItemSelectionModel::Select );
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+      return true;
     }
   }
 
-  tabBar->blockSignals( false );
+  return false;
+}
 
-  // TODO - remove this when basic archive is complete
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
-    tabBar->setCurrentIndex( 1 );
+void QgsCptCityColorRampV2Dialog::setTreeModel( QgsCptCityBrowserModel* model )
+{
+  mModel = model;
 
-  QDialog::showEvent( e );
-
-  // show error message to use color ramp manager to get more gradients
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE &&
-       QgsCptCityArchive::archiveRegistry().count() == 1 )
-  {
-    QString helpText = tr( "You can download a more complete set of cpt-city gradients "
-                           "by installing the \"Color Ramp Manager\" plugin "
-                           "(you must enable Experimental plugins in the plugin manager).\n\n"
-                         );
-    QErrorMessage* msg = new QErrorMessage( this );
-    msg->showMessage( helpText, "cpt-city" );
-  }
+  if ( mTreeFilter )
+    delete mTreeFilter;
+  mTreeFilter = new TreeFilterProxyModel( this, mModel );
+  mTreeView->setModel( mTreeFilter );
 }
 
 #if 0
@@ -483,7 +669,7 @@ void QgsCptCityColorRampV2Dialog::refreshModel( const QModelIndex& index )
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
-    if ( mBrowserView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
+    if ( mTreeView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
     {
       refreshModel( idx );
     }

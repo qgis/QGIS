@@ -1,0 +1,15 @@
+Cut Shapes Layer
+shapes_tools
+ParameterMultipleInput|SHAPES|Shapes|-1|False
+ParameterSelection|METHOD|Method|[0] completely contained;[1] intersects;[2] center
+ParameterSelection|TARGET|Extent|[0] user defined;[1] grid project[do not use this option!];[2] shapes layer extent;[3] polygons
+ParameterNumber|CUT_AX|Left|None|None|0.0
+ParameterNumber|CUT_BX|Right|None|None|0.0
+ParameterNumber|CUT_AY|Bottom|None|None|0.0
+ParameterNumber|CUT_BY|Top|None|None|0.0
+ParameterNumber|CUT_DX|Horizontal Range|None|None|0.0
+ParameterNumber|CUT_DY|Vertical Range|None|None|0.0
+ParameterVector|SHAPES_SHAPES|Shapes|-1|False
+ParameterVector|POLYGONS_POLYGONS|Polygons|-1|False
+OutputVector|CUT|Cut
+OutputVector|EXTENT|Extent

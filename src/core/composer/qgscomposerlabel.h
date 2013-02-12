@@ -19,6 +19,9 @@
 
 #include "qgscomposeritem.h"
 
+class QgsVectorLayer;
+class QgsFeature;
+
 /** \ingroup MapComposer
  * A label that can be placed onto a map composition.
  */
@@ -38,12 +41,18 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
 
-    QString text() {return mText;}
+    QString text() { return mText; }
     void setText( const QString& text );
+
+    int htmlSate() { return mHtmlState; }
+    void setHtmlSate( int state ) {mHtmlState = state;}
 
     /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
     QString displayText() const;
+
+    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
+    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
 
     QFont font() const;
     void setFont( const QFont& f );
@@ -98,6 +107,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Text
     QString mText;
 
+    // Html state
+    int mHtmlState;
+    double mHtmlUnitsToMM;
+    double htmlUnitsToMM(); //calculate scale factor
+
     // Font
     QFont mFont;
 
@@ -120,6 +134,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double mTextBoxWidth;
     /**Height of the text box. This is different to rectangle().height() in case there is rotation*/
     double mTextBoxHeight;
+
+    QgsFeature* mExpressionFeature;
+    QgsVectorLayer* mExpressionLayer;
+    QMap<QString, QVariant> mSubstitutions;
 };
 
 #endif

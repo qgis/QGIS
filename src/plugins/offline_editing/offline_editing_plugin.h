@@ -20,11 +20,12 @@
 #define QGS_OFFLINE_EDITING_PLUGIN_H
 
 #include "../qgisplugin.h"
+#include <qgsofflineediting.h>
 #include <QObject>
 
 class QAction;
 class QgisInterface;
-class QgsOfflineEditing;
+class QgsOfflineEditingProgressDialog;
 
 class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
 {
@@ -54,9 +55,17 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
     QAction* mActionSynchronize;
 
     QgsOfflineEditing* mOfflineEditing;
+    QgsOfflineEditingProgressDialog* mProgressDialog;
 
   private slots:
     void updateActions();
+
+    //! update progress dialog
+    void showProgress();
+    void setLayerProgress( int layer, int numLayers );
+    void setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum );
+    void updateProgress( int progress );
+    void hideProgress();
 };
 
 #endif // QGS_OFFLINE_EDITING_PLUGIN_H

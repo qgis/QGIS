@@ -123,11 +123,15 @@ bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
 
 QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface ) const
 {
-  if ( dynamic_cast<QgsRasterDataProvider *>( interface ) ) return ProviderRole;
-  if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) return RendererRole;
-  if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) return ResamplerRole;
-  if ( dynamic_cast<QgsRasterProjector *>( interface ) ) return ProjectorRole;
-  return UnknownRole;
+  Role role = UnknownRole;
+  if ( dynamic_cast<QgsRasterDataProvider *>( interface ) ) role = ProviderRole;
+  else if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) role = RendererRole;
+  else if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) role = ResamplerRole;
+  else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
+  else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
+
+  QgsDebugMsg( QString( "%1 role = %2" ).arg( typeid( *interface ).name() ).arg( role ) );
+  return role;
 }
 
 void QgsRasterPipe::setRole( QgsRasterInterface * theInterface, int idx )
@@ -195,34 +199,39 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   return insert( idx, theInterface );  // insert may still fail and return false
 }
 
-QgsRasterInterface * QgsRasterPipe::iface( Role role ) const
-{
-  QgsDebugMsg( QString( "role = %1" ).arg( role ) );
-  if ( mRoleMap.contains( role ) )
+QgsRasterInterface * QgsRasterPipe::interface( Role role ) const
   {
-    return mInterfaces.value( mRoleMap.value( role ) );
+    QgsDebugMsg( QString( "role = %1" ).arg( role ) );
+    if ( mRoleMap.contains( role ) )
+    {
+      return mInterfaces.value( mRoleMap.value( role ) );
+    }
+    return 0;
   }
-  return 0;
-}
 
 QgsRasterDataProvider * QgsRasterPipe::provider() const
 {
-  return dynamic_cast<QgsRasterDataProvider *>( iface( ProviderRole ) );
+  return dynamic_cast<QgsRasterDataProvider *>( interface( ProviderRole ) );
 }
 
 QgsRasterRenderer * QgsRasterPipe::renderer() const
 {
-  return dynamic_cast<QgsRasterRenderer *>( iface( RendererRole ) );
+  return dynamic_cast<QgsRasterRenderer *>( interface( RendererRole ) );
 }
 
 QgsRasterResampleFilter * QgsRasterPipe::resampleFilter() const
 {
-  return dynamic_cast<QgsRasterResampleFilter *>( iface( ResamplerRole ) );
+  return dynamic_cast<QgsRasterResampleFilter *>( interface( ResamplerRole ) );
 }
 
 QgsRasterProjector * QgsRasterPipe::projector() const
 {
-  return dynamic_cast<QgsRasterProjector*>( iface( ProjectorRole ) );
+  return dynamic_cast<QgsRasterProjector*>( interface( ProjectorRole ) );
+}
+
+QgsRasterNuller * QgsRasterPipe::nuller() const
+{
+  return dynamic_cast<QgsRasterNuller*>( interface( NullerRole ) );
 }
 
 bool QgsRasterPipe::remove( int idx )

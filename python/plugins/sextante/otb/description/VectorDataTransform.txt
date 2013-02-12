@@ -1,0 +1,13 @@
+VectorDataTransform
+otbcli_VectorDataTransform
+Vector Data Transformation
+Vector Data Manipulation
+ParameterVector|-vd|Input Vector data|-1|False
+OutputVector|-out|Output Vector data
+ParameterRaster|-in|Support image|False
+ParameterNumber|-transform.tx|Translation X|None|None|0.0
+ParameterNumber|-transform.ty|Translation Y|None|None|0.0
+ParameterNumber|-transform.ro|Rotation Angle|None|None|0.0
+ParameterNumber|-transform.centerx|Center X|None|None|0.0
+ParameterNumber|-transform.centery|Center Y|None|None|0.0
+ParameterNumber|-transform.scale|Scale|None|None|1.0

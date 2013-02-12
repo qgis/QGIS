@@ -75,7 +75,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     void on_mLayersTreeWidget_itemSelectionChanged();
     void enableLayersForCrs( QTreeWidgetItem *item );
     void updateButtons();
-    QList<QgsOWSSupportedFormat> providerFormats();
+    QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
     QStringList selectedLayersFormats();
     QStringList selectedLayersCRSs();
     QStringList selectedLayersTimes();

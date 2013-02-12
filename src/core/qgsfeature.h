@@ -21,10 +21,12 @@ email                : sherman at mrcc.com
 #include <QVariant>
 #include <QList>
 #include <QHash>
+#include <QVector>
 
 class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
+class QgsFields;
 
 // feature id class (currently 64 bit)
 #if 0
@@ -94,6 +96,13 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+typedef QVector<QVariant> QgsAttributes;
+
+class QgsField;
+typedef QMap<int, QgsField> QgsFieldMap;
+
+
+
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
@@ -105,10 +114,10 @@ class CORE_EXPORT QgsFeature
 {
   public:
     //! Constructor
-    QgsFeature( QgsFeatureId id = QgsFeatureId(), QString typeName = "" );
+    QgsFeature( QgsFeatureId id = QgsFeatureId() );
 
     /** copy ctor needed due to internal pointer */
-    QgsFeature( QgsFeature const & rhs );
+    QgsFeature( const QgsFeature & rhs );
 
     /** assignment operator needed due to internal pointer */
     QgsFeature & operator=( QgsFeature const & rhs );
@@ -128,42 +137,14 @@ class CORE_EXPORT QgsFeature
      */
     void setFeatureId( QgsFeatureId id );
 
-
-    /** returns the feature's type name
-     */
-    QString typeName() const;
-
-
-    /** sets the feature's type name
-     */
-    void setTypeName( QString typeName );
-
-    /**
-     * Get the attributes for this feature.
-     * @return A std::map containing the field name/value mapping
-     */
-    const QgsAttributeMap& attributeMap() const;
-
-    /**Sets all the attributes in one go*/
-    void setAttributeMap( const QgsAttributeMap& attributeMap );
-
-    /** Clear attribute map
-     * added in 1.5
-     */
-    void clearAttributeMap();
-
-    /**
-     * Add an attribute to the map
-     */
-    void addAttribute( int field, QVariant attr );
+    const QgsAttributes& attributes() const { return mAttributes; }
+    QgsAttributes& attributes() { return mAttributes; }
+    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    bool setAttribute( int field, const QVariant& attr );
+    void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/
     void deleteAttribute( int field );
-
-    /**Changes an existing attribute value
-       @param field index of the field
-       @param attr attribute name and value to be set */
-    void changeAttribute( int field, QVariant attr );
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -178,21 +159,9 @@ class CORE_EXPORT QgsFeature
     void setValid( bool validity );
 
     /**
-     * Return the dirty state of this feature.
-     * Dirty is set if (e.g.) the feature's geometry has been modified in-memory.
-     */
-    bool isDirty() const;
-
-    /**
-     * Reset the dirtiness of the feature.  (i.e. make clean)
-     * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
-     */
-    void clean();
-
-    /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry *geometry();
+    QgsGeometry *geometry() const;
 
     /**
      * Get the geometry object associated with this feature
@@ -205,6 +174,7 @@ class CORE_EXPORT QgsFeature
     void setGeometry( const QgsGeometry& geom );
 
     /** Set this feature's geometry (takes geometry ownership)
+     * @note not available in python bindings
      */
     void setGeometry( QgsGeometry* geom );
 
@@ -215,13 +185,52 @@ class CORE_EXPORT QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom, size_t length );
 
+    /** Assign a field map with the feature to allow attribute access by attribute name
+     *  @note added in 2.0
+     */
+    void setFields( const QgsFields* fields ) { mFields = fields; }
+
+    /** Get associated field map. may be NULL
+     *  @note added in 2.0
+     */
+    const QgsFields* fields() const { return mFields; }
+
+    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool setAttribute( const QString& name, QVariant value );
+
+    /** Remove an attribute value. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool deleteAttribute( const QString& name );
+
+    /** Lookup attribute value from attribute name. Returns invalid variant if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    QVariant attribute( const QString& name ) const;
+
+    /** Lookup attribute value from its index. Returns invalid variant if the index does not exist.
+     *  @note added in 2.0
+     */
+    QVariant attribute( int fieldIdx ) const;
+
+    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
   private:
 
     //! feature id
     QgsFeatureId mFid;
 
-    /** map of attributes accessed by field index */
-    QgsAttributeMap mAttributes;
+    /** attributes accessed by field index */
+    QgsAttributes mAttributes;
 
     /** pointer to geometry in binary WKB format
 
@@ -235,16 +244,10 @@ class CORE_EXPORT QgsFeature
     bool mOwnsGeometry;
 
     //! Flag to indicate if this feature is valid
-    // TODO: still applies? [MD]
     bool mValid;
 
-    //! Flag to indicate if this feature is dirty (e.g. geometry has been modified in-memory)
-    // TODO: still applies? [MD]
-    bool mDirty;
-
-    /// feature type name
-    QString mTypeName;
-
+    //! Optional field map for name-based attribute lookups
+    const QgsFields* mFields;
 
 }; // class QgsFeature
 
@@ -260,5 +263,7 @@ typedef QSet<QgsFeatureId> QgsFeatureIds;
 typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
+
+Q_DECLARE_METATYPE( QgsFeatureList );
 
 #endif

@@ -14,7 +14,12 @@ typedef QVector< QVector<QgsPoint> > QgsMultiPolyline;
 /** a collection of QgsPolygons that share a common collection of attributes */
 typedef QVector< QVector< QVector<QgsPoint> > > QgsMultiPolygon;
 
+%If (WS_MACX)
+typedef unsigned long size_t;
+%End
+%If (WS_X11 || WS_WIN)
 typedef unsigned int size_t;
+%End
 
 class QgsGeometry
 {
@@ -52,20 +57,20 @@ class QgsGeometry
     static QgsGeometry* fromRect( const QgsRectangle& rect ) /Factory/;
 
 
-    
-    /** 
-       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
-       This class will take ownership of the buffer.
+
+    /**
+      Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
+      This class will take ownership of the buffer.
     */
-    void fromWkb(unsigned char * wkb /Array/, size_t length /ArraySize/);
+    void fromWkb( unsigned char * wkb /Array/, size_t length /ArraySize/ );
 %MethodCode
   // create copy of Python's string and pass it to fromWkb()
   unsigned char * copy = new unsigned char[a1];
   memcpy(copy, a0, a1);
   sipCpp->fromWkb(copy, a1);
 %End
-    
-    /** 
+
+    /**
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
@@ -73,8 +78,8 @@ class QgsGeometry
 %MethodCode
   sipRes = PyString_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
 %End
-    
-    /** 
+
+    /**
      * Returns the size of the WKB in asWkb().
      */
     size_t wkbSize();
@@ -119,7 +124,7 @@ class QgsGeometry
        Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
     and the indices of the vertices before/after. The vertices before/after are -1 if not present
     */
-    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/);
+    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ );
 
 
     /**
@@ -185,7 +190,7 @@ class QgsGeometry
     double sqrDistToVertexAt( QgsPoint& point /In/, int atVertex );
 
     /**
-     * Searches for the the closest vertex in this geometry to the given point.
+     * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
@@ -212,8 +217,7 @@ class QgsGeometry
     /**Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
-    int addPart( const QList<QgsPoint>& ring );
-    int addIsland( const QList<QgsPoint> &ring ) /Deprecated/;
+    int addPart( const QList<QgsPoint> &points );
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -300,7 +304,7 @@ class QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull() /Factory/;
 
-    /* Return interpolated point on line at distance 
+    /* Return interpolated point on line at distance
      * @note added in 1.9
      */
     QgsGeometry* interpolate( double distance ) /Factory/;
@@ -308,7 +312,7 @@ class QgsGeometry
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( QgsGeometry* geometry ) /Factory/;
 
-    /** Returns a geometry representing all the points in this geometry and other (a 
+    /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * @note this operation is not called union since its a reserved word in C++.*/
     QgsGeometry* combine( QgsGeometry* geometry ) /Factory/;
@@ -392,12 +396,14 @@ class QgsGeometry
       public:
         Error( QString m );
         Error( QString m, QgsPoint p );
+
         QString what();
         QgsPoint where();
         bool hasWhere();
     };
 
     /** Validate geometry and produce a list of geometry errors
+     * @note added in 1.5
      * @note python binding added in 1.6
      **/
     void validateGeometry( QList<QgsGeometry::Error> &errors /Out/ );

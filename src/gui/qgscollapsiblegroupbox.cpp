@@ -20,108 +20,457 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
+#include <QToolButton>
+#include <QMouseEvent>
 #include <QStyleOptionGroupBox>
-#include <QStylePainter>
-#include <QLayout>
+#include <QSettings>
+#include <QScrollArea>
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-    : QGroupBox( parent ), mCollapsed( false )
+QIcon QgsCollapsibleGroupBoxBasic::mCollapseIcon;
+QIcon QgsCollapsibleGroupBoxBasic::mExpandIcon;
+
+QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
+    : QGroupBox( parent )
 {
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( setToggled( bool ) ) );
+  init();
 }
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title, QWidget *parent )
-    : QGroupBox( title, parent ), mCollapsed( false )
-{}
-
-void QgsCollapsibleGroupBox::paintEvent( QPaintEvent * event )
+QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( const QString &title,
+    QWidget *parent )
+    : QGroupBox( title, parent )
 {
-  QGroupBox::paintEvent( event );
+  init();
+}
 
-  // paint expand/collapse icon only if groupbox is checkable as icon replaces check box
-  if ( ! isCheckable() )
+QgsCollapsibleGroupBoxBasic::~QgsCollapsibleGroupBoxBasic()
+{
+  //QgsDebugMsg( "Entered" );
+}
+
+
+void QgsCollapsibleGroupBoxBasic::init()
+{
+  //QgsDebugMsg( "Entered" );
+  // variables
+  mCollapsed = false;
+  mInitFlat = false;
+  mInitFlatChecked = false;
+  mScrollOnExpand = true;
+  mShown = false;
+  mParentScrollArea = 0;
+  mSyncParent = 0;
+  mSyncGroup = "";
+
+  // init icons
+  if ( mCollapseIcon.isNull() )
+  {
+    mCollapseIcon = QgsApplication::getThemeIcon( "/mIconCollapse.png" );
+    mExpandIcon = QgsApplication::getThemeIcon( "/mIconExpand.png" );
+  }
+
+  // collapse button
+  mCollapseButton = new QgsGroupBoxCollapseButton( this );
+  mCollapseButton->setObjectName( "collapseButton" );
+  mCollapseButton->setAutoRaise( true );
+  mCollapseButton->setFixedSize( 16, 16 );
+  // TODO set size (as well as margins) depending on theme, in updateStyle()
+  mCollapseButton->setIconSize( QSize( 12, 12 ) );
+  mCollapseButton->setIcon( mCollapseIcon );
+
+  connect( mCollapseButton, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
+  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
+}
+
+void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
+{
+  //QgsDebugMsg( "Entered" );
+  // initialise widget on first show event only
+  if ( mShown )
+  {
+    event->accept();
+    return;
+  }
+
+  // check if groupbox was set to flat in Designer or in code
+  if ( !mInitFlatChecked )
+  {
+    mInitFlat = isFlat();
+    mInitFlatChecked = true;
+  }
+
+  // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
+  if ( parent() && parent()->parent() )
+    mParentScrollArea = dynamic_cast<QScrollArea*>( parent()->parent()->parent() );
+  else
+    mParentScrollArea = 0;
+  if ( mParentScrollArea )
+  {
+    QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
+  }
+  else
+  {
+    QgsDebugMsg( "did not find a QScrollArea parent" );
+  }
+
+  updateStyle();
+
+  // expand if needed - any calls to setCollapsed() before only set mCollapsed, but have UI effect
+  if ( mCollapsed )
+  {
+    setCollapsed( mCollapsed );
+  }
+  else
+  {
+    // emit signal for connections using collapsed state
+    emit collapsedStateChanged( isCollapsed() );
+  }
+  // set mShown after first setCollapsed call or expanded groupboxes
+  // will scroll scroll areas when first shown
+  mShown = true;
+  event->accept();
+}
+
+void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
+{
+  // catch mouse release over title when non checkable, to collapse/expand
+  if ( !isCheckable() && event->button() == Qt::LeftButton )
+  {
+    if ( titleRect().contains( event->pos() ) )
+    {
+      toggleCollapsed();
+      return;
+    }
+  }
+  // default behaviour - pass to QGroupBox
+  QGroupBox::mouseReleaseEvent( event );
+}
+
+void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
+{
+  // always re-enable mCollapseButton when groupbox was previously disabled
+  // e.g. resulting from a disabled parent of groupbox, or a signal/slot connection
+
+  // default behaviour - pass to QGroupBox
+  QGroupBox::changeEvent( event );
+
+  if ( event->type() == QEvent::EnabledChange && isEnabled() )
+    mCollapseButton->setEnabled( true );
+}
+
+QRect QgsCollapsibleGroupBoxBasic::titleRect() const
+{
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  return style()->subControlRect( QStyle::CC_GroupBox, &box,
+                                  QStyle::SC_GroupBoxLabel, this );
+}
+
+void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
+{
+  mCollapseButton->setEnabled( true ); // always keep enabled
+  // expand/collapse when toggled
+  if ( chkd && isCollapsed() )
+    setCollapsed( false );
+  else if ( ! chkd && ! isCollapsed() )
+    setCollapsed( true );
+}
+
+void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
+{
+  // verify if sender is this group box's collapse button
+  bool senderCollBtn = false;
+  QgsGroupBoxCollapseButton* collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
+  senderCollBtn = ( collBtn && collBtn == mCollapseButton );
+
+  // find any sync group siblings and toggle them
+  if ( senderCollBtn && mCollapseButton->altDown() && !mSyncGroup.isEmpty() )
+  {
+    mCollapseButton->setAltDown( false );
+    QgsDebugMsg( "Alt key down, syncing group" );
+    // get pointer to parent or grandparent widget
+    if ( parentWidget() )
+    {
+      mSyncParent = parentWidget();
+      if ( mSyncParent->parentWidget() )
+      {
+        // don't use whole app for grandparent (common for dialogs that use main window for parent)
+        if ( mSyncParent->parentWidget()->objectName() != QString( "QgisApp" ) )
+        {
+          mSyncParent = mSyncParent->parentWidget();
+        }
+      }
+    }
+    else
+    {
+      mSyncParent = 0;
+    }
+
+    if ( mSyncParent )
+    {
+      QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
+
+      bool thisCollapsed = mCollapsed; // get state of current box before its changed
+      foreach ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic*>() )
+      {
+        if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
+        {
+          grpbox->setCollapsed( !thisCollapsed );
+        }
+      }
+
+      return;
+    }
+    else
+    {
+      QgsDebugMsg( "did not find a sync parent" );
+    }
+  }
+
+  setCollapsed( !mCollapsed );
+}
+
+void QgsCollapsibleGroupBoxBasic::updateStyle()
+{
+  setUpdatesEnabled( false );
+
+  // margin/offset defaults
+  int marginLeft = 20;  // title margin for disclosure triangle
+  int marginRight = 5;  // a little bit of space on the right, to match space on the left
+  int offsetLeft = 0;   // offset for oxygen theme
+  int offsetTop = 0;
+//  int offsetTop2 = 0;   // offset for triangle
+
+  // starting top offset for custom groupboxes in app stylesheet
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                       QStyle::SC_GroupBoxCheckBox, this );
+  int offsetTop2 = rectCheckBox.top();   // offset for triangle
+
+
+  // calculate offset if frame overlaps triangle (oxygen theme)
+  // using an offset of 6 pixels from frame border
+  if ( QApplication::style()->objectName().toLower() == "oxygen" )
+  {
+    QStyleOptionGroupBox box;
+    initStyleOption( &box );
+    QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                      QStyle::SC_GroupBoxFrame, this );
+    QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                         QStyle::SC_GroupBoxCheckBox, this );
+    if ( rectFrame.left() <= 0 )
+      offsetLeft = 6 + rectFrame.left();
+    if ( rectFrame.top() <= 0 )
+    {
+      if ( isCheckable() )
+      {
+        // if is checkable align with checkbox
+        offsetTop = ( rectCheckBox.height() / 2 ) -
+                    ( mCollapseButton->height() / 2 ) + rectCheckBox.top();
+        offsetTop2 = offsetTop + 1;
+      }
+      else
+      {
+        offsetTop = 6 + rectFrame.top();
+        offsetTop2 = offsetTop;
+      }
+    }
+  }
+
+  QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
+                 objectName() ).arg( QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTop2 ) );
+
+  // customize style sheet for collapse/expand button and force left-aligned title
+  // TODO: move to app stylesheet system, when appropriate
+  QString ss;
+  ss += "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {";
+  ss += "  subcontrol-origin: margin;";
+  ss += "  subcontrol-position: top left;";
+  ss += QString( "  margin-left: %1px;" ).arg( marginLeft );
+  ss += QString( "  margin-right: %1px;" ).arg( marginRight );
+  ss += QString( "  left: %1px;" ).arg( offsetLeft );
+  ss += QString( "  top: %1px;" ).arg( offsetTop );
+  ss += "}";
+  setStyleSheet( ss );
+
+  // clear toolbutton default background and border and apply offset
+  QString ssd;
+  ssd = QString( "QgsCollapsibleGroupBoxBasic > QToolButton#%1, QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
+  ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
+  ssd += "}";
+  mCollapseButton->setStyleSheet( ssd );
+  if ( offsetLeft != 0 || offsetTop2 != 0 )
+    mCollapseButton->move( offsetLeft, offsetTop2 );
+
+  setUpdatesEnabled( true );
+}
+
+void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
+{
+  mCollapsed = collapse;
+
+  if ( !isVisible() )
     return;
 
-  // create background mask + expand/collapse icon
-  // icons from http://www.iconfinder.com/search/?q=iconset%3AsplashyIcons
-  QPixmap icon( mCollapsed ?
-                QgsApplication::getThemePixmap( "/mIconExpand.png" ) :
-                QgsApplication::getThemePixmap( "/mIconCollapse.png" ) );
-  QPixmap background( icon.width() + 2, icon.height() + 2 );
-  background.fill( palette().color( backgroundRole() ) );
+  // for consistent look/spacing across platforms when collapsed
+  if ( ! mInitFlat ) // skip if initially set to flat in Designer
+    setFlat( collapse );
 
-  // paint on top of checkbox - does this work with all platforms/themes?
-  QStylePainter paint( this );
-  QStyleOptionGroupBox option;
-  initStyleOption( &option );
-  paint.drawComplexControl( QStyle::CC_GroupBox, option );
-  paint.drawItemPixmap( option.rect.adjusted( 4, -1, 0, 0 ),
-                        Qt::AlignTop | Qt::AlignLeft,
-                        background );
-  paint.drawItemPixmap( option.rect.adjusted( 6, 0, 0, 0 ),
-                        Qt::AlignTop | Qt::AlignLeft,
-                        icon );
+  // avoid flicker in X11
+  QApplication::processEvents();
+
+  // set maximum height to hide contents - does this work in all envs?
+  // setMaximumHeight( collapse ? 25 : 16777215 );
+  setMaximumHeight( collapse ? titleRect().bottom() + 6 : 16777215 );
+  mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
+
+  // if expanding and is in a QScrollArea, scroll down to make entire widget visible
+  if ( mShown && mScrollOnExpand && !collapse && mParentScrollArea )
+  {
+    // process events so entire widget is shown
+    QApplication::processEvents();
+    mParentScrollArea->ensureWidgetVisible( this );
+  }
+  // emit signal for connections using collapsed state
+  emit collapsedStateChanged( isCollapsed() );
+}
+
+// ----
+
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
+    : QgsCollapsibleGroupBoxBasic( parent ), mSettings( settings )
+{
+  init();
+}
+
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
+    QWidget *parent, QSettings* settings )
+    : QgsCollapsibleGroupBoxBasic( title, parent ), mSettings( settings )
+{
+  init();
+}
+
+QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
+{
+  //QgsDebugMsg( "Entered" );
+  saveState();
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = 0; // null the pointer (in case of outside settings obj)
+}
+
+void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
+{
+  if ( mDelSettings ) // local settings obj to delete
+    delete mSettings;
+  mSettings = settings;
+  mDelSettings = false; // don't delete outside obj
+}
+
+
+void QgsCollapsibleGroupBox::init()
+{
+  //QgsDebugMsg( "Entered" );
+  // use pointer to app qsettings if no custom qsettings specified
+  // custom qsettings object may be from Python plugin
+  mDelSettings = false;
+  if ( !mSettings )
+  {
+    mSettings = new QSettings();
+    mDelSettings = true; // only delete obj created by class
+  }
+  // variables
+  mSaveCollapsedState = true;
+  // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
+  // in multiple places or used as options for different parent objects
+  mSaveCheckedState = false;
+  mSettingGroup = ""; // if not set, use window object name
 }
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
-  QGroupBox::showEvent( event );
-  // collapse if needed - any calls to setCollapsed() before have no effect
-  if ( isCheckable() && ! isChecked() && ! isCollapsed() )
-    setCollapsed( true );
+  //QgsDebugMsg( "Entered" );
+  // initialise widget on first show event only
+  if ( mShown )
+  {
+    event->accept();
+    return;
+  }
+
+  // check if groupbox was set to flat in Designer or in code
+  if ( !mInitFlatChecked )
+  {
+    mInitFlat = isFlat();
+    mInitFlatChecked = true;
+  }
+
+  loadState();
+
+  QgsCollapsibleGroupBoxBasic::showEvent( event );
 }
 
-void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
+QString QgsCollapsibleGroupBox::saveKey() const
 {
-  if ( ! isVisible() )
+  // save key for load/save state
+  // currently QgsCollapsibleGroupBox/window()/object
+  QString saveKey = "/" + objectName();
+  // QObject* parentWidget = parent();
+  // while ( parentWidget != NULL )
+  // {
+  //   saveKey = "/" + parentWidget->objectName() + saveKey;
+  //   parentWidget = parentWidget->parent();
+  // }
+  // if ( parent() != NULL )
+  //   saveKey = "/" + parent()->objectName() + saveKey;
+  QString setgrp = mSettingGroup.isEmpty() ? window()->objectName() : mSettingGroup;
+  saveKey = "/" + setgrp + saveKey;
+  saveKey = "QgsCollapsibleGroupBox" + saveKey;
+  return saveKey;
+}
+
+void QgsCollapsibleGroupBox::loadState()
+{
+  //QgsDebugMsg( "Entered" );
+  if ( !mSettings )
     return;
 
-  mCollapsed = collapse;
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
+    return;
 
-  // minimize layout margins and save for subsequent restore
-  if ( collapse )
-  {
-    if ( layout() )
-    {
-      mMargins = layout()->contentsMargins();
-      layout()->setContentsMargins( 1, 1, 1, 1 );
-    }
-  }
-  else
-  {
-    if ( layout() )
-    {
-      layout()->setContentsMargins( mMargins );
-    }
-  }
+  setUpdatesEnabled( false );
 
-  // if we are collapsing, save hidden widgets in a list
-  if ( collapse )
+  QString key = saveKey();
+  QVariant val;
+  if ( mSaveCheckedState )
   {
-    mHiddenWidgets.clear();
-    foreach ( QWidget *widget, findChildren<QWidget*>() )
-    {
-      if ( widget->isHidden() )
-        mHiddenWidgets << widget;
-    }
+    val = mSettings->value( key + "/checked" );
+    if ( ! val.isNull() )
+      setChecked( val.toBool() );
+  }
+  if ( mSaveCollapsedState )
+  {
+    val = mSettings->value( key + "/collapsed" );
+    if ( ! val.isNull() )
+      setCollapsed( val.toBool() );
   }
 
-  // show/hide widgets
-  foreach ( QWidget *widget, findChildren<QWidget*>() )
-    widget->setHidden( collapse );
+  setUpdatesEnabled( true );
+}
 
-  // if we are expanding, re-hide saved hidden widgets
-  if ( ! collapse )
-  {
-    foreach ( QWidget *widget, mHiddenWidgets )
-    {
-      widget->setHidden( true );
-    }
-  }
+void QgsCollapsibleGroupBox::saveState()
+{
+  //QgsDebugMsg( "Entered" );
+  if ( !mSettings )
+    return;
 
-  if ( mCollapsed )
-    emit collapsed( this );
-  else
-    emit expanded( this );
+  if ( !isEnabled() || ( !mSaveCollapsedState && !mSaveCheckedState ) )
+    return;
+
+  QString key = saveKey();
+
+  if ( mSaveCheckedState )
+    mSettings->setValue( key + "/checked", isChecked() );
+  if ( mSaveCollapsedState )
+    mSettings->setValue( key + "/collapsed", isCollapsed() );
 }
 

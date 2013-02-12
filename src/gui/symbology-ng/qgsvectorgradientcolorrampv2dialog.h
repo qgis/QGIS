@@ -3,7 +3,7 @@
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -39,8 +39,13 @@ class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui
 
     void stopDoubleClicked( QTreeWidgetItem* item, int column );
 
+  protected slots:
+    void on_cboType_currentIndexChanged( int index );
+    void on_btnInformation_pressed();
+
   protected:
 
+    void updateStops();
     void updatePreview();
     void setStopColor( QTreeWidgetItem* item, QColor color );
 

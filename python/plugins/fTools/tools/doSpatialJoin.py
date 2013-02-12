@@ -109,7 +109,7 @@ class Dialog(QDialog, Ui_Dialog):
                       .arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
               if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -123,14 +123,11 @@ class Dialog(QDialog, Ui_Dialog):
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
         provider1 = layer1.dataProvider()
-        allAttrs = provider1.attributeIndexes()
-        provider1.select(allAttrs)
         fieldList1 = ftools_utils.getFieldList(layer1).values()
 
         layer2 = ftools_utils.getVectorLayerByName(joinName)
         provider2 = layer2.dataProvider()
-        allAttrs = provider2.attributeIndexes()
-        provider2.select(allAttrs)
+
         fieldList2 = ftools_utils.getFieldList(layer2)
         fieldList = []
         if provider1.crs() != provider2.crs():
@@ -180,11 +177,12 @@ class Dialog(QDialog, Ui_Dialog):
         progressBar.setValue(15)
         start = 15.00
         add = 85.00 / provider1.featureCount()
-        provider1.rewind()
+
         index = ftools_utils.createIndex(provider2)
-        while provider1.nextFeature(inFeat):
+	fit1 = provider1.getFeatures()
+        while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            atMap1 = inFeat.attributeMap()
+            atMap1 = inFeat.attributes()
             outFeat.setGeometry(inGeom)
             none = True
             joinList = []
@@ -206,12 +204,12 @@ class Dialog(QDialog, Ui_Dialog):
                 count = 0
                 for i in joinList:
                     #tempGeom = i.geometry()
-                    provider2.featureAtId(int(i), inFeatB , True, allAttrs)
+                    provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     if inGeom.intersects(tmpGeom):
                         count = count + 1
                         none = False
-                        atMap2 = inFeatB.attributeMap()
+                        atMap2 = inFeatB.attributes()
                         if not summary:
                             atMap = atMap1.values()
                             atMap2 = atMap2.values()
@@ -234,9 +232,9 @@ class Dialog(QDialog, Ui_Dialog):
                     atMap.append(QVariant(count))
                     atMap = dict(zip(seq, atMap))
             if none:
-                outFeat.setAttributeMap(atMap1)
+                outFeat.setAttributes(atMap1)
             else:
-                outFeat.setAttributeMap(atMap)
+                outFeat.setAttributes(atMap)
             if keep: # keep all records
                 writer.addFeature(outFeat)
             else: # keep only matching records

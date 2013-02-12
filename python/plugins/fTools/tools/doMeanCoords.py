@@ -71,10 +71,10 @@ class Dialog(QDialog, Ui_Dialog):
         self.uniqueField.addItem( self.tr("(Optional) Unique ID field") )
         self.changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(self.changedLayer)
-        for i in changedField:
-            if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
-                self.weightField.addItem(unicode(changedField[i].name()))
-            self.uniqueField.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            if f.type() == QVariant.Int or f.type() == QVariant.Double:
+                self.weightField.addItem(unicode(f.name()))
+            self.uniqueField.addItem(unicode(f.name()))
 
     def accept(self):
         self.buttonOk.setEnabled( False )
@@ -98,7 +98,7 @@ class Dialog(QDialog, Ui_Dialog):
             addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -116,8 +116,6 @@ class Dialog(QDialog, Ui_Dialog):
         weightIndex = provider.fieldNameIndex(weightField)
         uniqueIndex = provider.fieldNameIndex(uniqueField)
         feat = QgsFeature()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
         sRs = provider.crs()
         check = QFile(self.shapefileName)
         if check.exists():
@@ -130,10 +128,15 @@ class Dialog(QDialog, Ui_Dialog):
             uniqueValues = [QVariant(1)]
             single = True
         if self.function == 2:
-            fieldList = { 0 : QgsField("STD_DIST", QVariant.Double), 1 : QgsField("UID", QVariant.String) }
+            fieldList = QgsFields()
+            fieldList.append( QgsField("STD_DIST", QVariant.Double) )
+            fieldList.append( QgsField("UID", QVariant.String) )
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPolygon, sRs)
         else:
-            fieldList = { 0 : QgsField("MEAN_X", QVariant.Double), 1 : QgsField("MEAN_Y", QVariant.Double), 2 : QgsField("UID", QVariant.String)  }
+            fieldList = QgsFields()
+            fieldList.append( QgsField("MEAN_X", QVariant.Double) )
+            fieldList.append( QgsField("MEAN_Y", QVariant.Double) )
+            fieldList.append( QgsField("UID", QVariant.String) )
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPoint, sRs)
         outfeat = QgsFeature()
         points = []
@@ -143,26 +146,25 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, nFeat)
         for j in uniqueValues:
-            provider.rewind()
-            provider.select(allAttrs)
             cx = 0.00
             cy = 0.00
             points = []
             weights = []
-            while provider.nextFeature(feat):
+	    fit = provider.getFeatures()
+            while fit.nextFeature(feat):
                 nElement += 1
                 self.progressBar.setValue(nElement)
                 if single:
                     check = j.toString().trimmed()
                 else:
-                    check = feat.attributeMap()[uniqueIndex].toString().trimmed()
+                    check = feat.attributes()[uniqueIndex].toString().trimmed()
                 if check == j.toString().trimmed():
                     cx = 0.00
                     cy = 0.00
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
+                        weight = float(feat.attributes()[weightIndex].toDouble()[0])
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:
@@ -196,13 +198,13 @@ class Dialog(QDialog, Ui_Dialog):
                     sd += (i-md)*(i-md)
                 sd = sqrt(sd/item)
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint).buffer(sd * times, 10))
-                outfeat.addAttribute(0, QVariant(sd))
-                outfeat.addAttribute(1, QVariant(j))
+                outfeat.setAttribute(0, QVariant(sd))
+                outfeat.setAttribute(1, QVariant(j))
             else:
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-                outfeat.addAttribute(0, QVariant(cx))
-                outfeat.addAttribute(1, QVariant(cy))
-                outfeat.addAttribute(2, QVariant(j))
+                outfeat.setAttribute(0, QVariant(cx))
+                outfeat.setAttribute(1, QVariant(cy))
+                outfeat.setAttribute(2, QVariant(j))
             writer.addFeature(outfeat)
             if single:
                 break

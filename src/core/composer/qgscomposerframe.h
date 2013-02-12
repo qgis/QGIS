@@ -41,7 +41,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 
     int type() const { return ComposerFrame; }
 
-    QgsComposerMultiFrame* multiFrame() { return mMultiFrame; }
+    QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
 
   private:

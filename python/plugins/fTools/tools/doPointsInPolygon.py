@@ -120,7 +120,7 @@ class Dialog(QDialog, Ui_Dialog):
             fileInfo = QFileInfo( self.outShape.text() )
             layerName = fileInfo.completeBaseName()
             layer = QgsVectorLayer(self.outShape.text(), layerName, "ogr")
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            QgsMapLayerRegistry.instance().addMapLayers([layer])
             self.populateLayers()
 
         self.restoreGui()
@@ -166,15 +166,11 @@ class PointsInPolygonThread(QThread):
         polyProvider = self.layerPoly.dataProvider()
         pointProvider = self.layerPoints.dataProvider()
 
-        allAttrs = polyProvider.attributeIndexes()
-        polyProvider.select(allAttrs)
-
         fieldList = ftools_utils.getFieldList(self.layerPoly)
         index = polyProvider.fieldNameIndex(unicode(self.fieldName))
         if index == -1:
             index = polyProvider.fieldCount()
-            field = QgsField(unicode(self.fieldName), QVariant.Double, "real", 24, 15, self.tr("point count field"))
-            fieldList[index] = field
+            fieldList.append( QgsField(unicode(self.fieldName), QVariant.Double, "real", 24, 15, self.tr("point count field")) )
 
         sRs = polyProvider.crs()
         if QFile(self.outPath).exists():
@@ -185,8 +181,6 @@ class PointsInPolygonThread(QThread):
                                      polyProvider.geometryType(), sRs)
 
         spatialIndex = ftools_utils.createIndex( pointProvider )
-        pointProvider.rewind()
-        pointProvider.select()
 
         self.emit(SIGNAL("rangeChanged(int)"), polyProvider.featureCount() )
 
@@ -194,10 +188,11 @@ class PointsInPolygonThread(QThread):
         pntFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        while polyProvider.nextFeature(polyFeat):
+	polyFit = polyProvider.getFeatures()
+        while polyFit.nextFeature(polyFeat):
             inGeom = polyFeat.geometry()
-            atMap = polyFeat.attributeMap()
-            outFeat.setAttributeMap(atMap)
+            atMap = polyFeat.attributes()
+            outFeat.setAttributes(atMap)
             outFeat.setGeometry(inGeom)
 
             count = 0
@@ -211,7 +206,7 @@ class PointsInPolygonThread(QThread):
 
             if hasIntersection:
                 for p in pointList:
-                    pointProvider.featureAtId(p, pntFeat , True)
+                    pointProvider.getFeatures( QgsFeatureRequest().setFilterFid( p ) ).nextFeature( pntFeat )
                     tmpGeom = QgsGeometry(pntFeat.geometry())
                     if inGeom.intersects(tmpGeom):
                         count += 1
@@ -223,7 +218,7 @@ class PointsInPolygonThread(QThread):
                         interrupted = True
                         break
 
-            outFeat.addAttribute(index, QVariant(count))
+            outFeat.setAttribute(index, QVariant(count))
             writer.addFeature(outFeat)
 
             self.emit( SIGNAL( "updateProgress()" ) )

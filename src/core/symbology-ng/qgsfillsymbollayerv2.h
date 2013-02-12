@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -56,6 +56,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
     Qt::BrushStyle brushStyle() const { return mBrushStyle; }
     void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
@@ -152,6 +154,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QString mSvgFilePath;
     /**SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
+    /** SVG pattern image
+     * @note added in 1.9 */
+    QImage* mSvgPattern;
 
     //param(fill), param(outline), param(outline-width) are going
     //to be replaced in memory
@@ -185,6 +190,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
     void setLineAngle( double a ) { mLineAngle = a; }

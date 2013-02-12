@@ -1,0 +1,22 @@
+Catchment Area (Parallel)
+ta_hydrology
+ParameterRaster|ELEVATION|Elevation|False
+ParameterRaster|SINKROUTE|Sink Routes|True
+ParameterRaster|WEIGHT|Weight|True
+ParameterRaster|MATERIAL|Material|True
+ParameterRaster|TARGET|Target|True
+ParameterNumber|STEP|Step|None|None|1
+ParameterSelection|Method|Method|[0] Deterministic 8;[1] Rho 8;[2] Braunschweiger Reliefmodell;[3] Deterministic Infinity;[4] Multiple Flow Direction;[5] Multiple Triangular Flow Directon
+ParameterBoolean|DOLINEAR             |Linear Flow|True
+ParameterNumber|LINEARTHRS|Linear Flow Threshold|None|None|500.0
+ParameterRaster|LINEARTHRS_GRID|Linear Flow Threshold Grid|True
+ParameterRaster|CHDIR_GRID|Channel Direction|True
+ParameterNumber|CONVERGENCE|Convergence|None|None|1.0
+OutputRaster|CAREA|Catchment Area
+OutputRaster|CHEIGHT|Catchment Height
+OutputRaster|CSLOPE|Catchment Slope
+OutputRaster|ACCU_TOT|Total accumulated Material
+OutputRaster|ACCU_LEFT|Accumulated Material from _left_ side
+OutputRaster|ACCU_RIGHT|Accumulated Material from _right_ side
+OutputRaster|CASPECT|Catchment Aspect
+OutputRaster|FLWPATH|Flow Path Length

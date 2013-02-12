@@ -81,10 +81,10 @@ class CORE_EXPORT QgsProject : public QObject
        @todo However current dialogs don't allow setting of it yet
      */
     //@{
-    void title( QString const & title );
+    void title( const QString & title );
 
     /** returns title */
-    QString const & title() const;
+    const QString & title() const;
     //@}
 
     /**
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsProject : public QObject
        Every project has an associated file that contains its XML
      */
     //@{
-    void setFileName( QString const & name );
+    void setFileName( const QString & name );
 
     /** returns file name */
     QString fileName() const;
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsProject : public QObject
        @note it's presumed that the caller has already reset the map canvas, map registry, and legend
      */
     //@{
-    bool read( QFileInfo const & file );
+    bool read( const QFileInfo & file );
     bool read( );
     //@}
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsProject : public QObject
        @note dirty set to false after successful invocation
      */
     //@{
-    bool write( QFileInfo const & file );
+    bool write( const QFileInfo & file );
     bool write( );
     //@}
 
@@ -213,11 +213,13 @@ class CORE_EXPORT QgsProject : public QObject
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    bool writeEntry( QString const & scope, const QString & key, bool value );
-    bool writeEntry( QString const & scope, const QString & key, double value );
-    bool writeEntry( QString const & scope, const QString & key, int value );
-    bool writeEntry( QString const & scope, const QString & key, const QString & value );
-    bool writeEntry( QString const & scope, const QString & key, const QStringList & value );
+    //! @note available in python bindings as writeEntryBool
+    bool writeEntry( const QString & scope, const QString & key, bool value );
+    //! @note available in python bindings as writeEntryDouble
+    bool writeEntry( const QString & scope, const QString & key, double value );
+    bool writeEntry( const QString & scope, const QString & key, int value );
+    bool writeEntry( const QString & scope, const QString & key, const QString & value );
+    bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 
     /** key value accessors
@@ -229,30 +231,30 @@ class CORE_EXPORT QgsProject : public QObject
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( QString const & scope, const QString & key, bool * ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, bool * ok = 0 ) const;
 
-    QString readEntry( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( QString const & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
+    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
+    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
+    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
+    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
     //@}
 
 
     /** remove the given key */
-    bool removeEntry( QString const & scope, const QString & key );
+    bool removeEntry( const QString & scope, const QString & key );
 
 
     /** return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
-    QStringList entryList( QString const & scope, QString const & key ) const;
+    QStringList entryList( const QString & scope, const QString & key ) const;
 
     /** return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
-    QStringList subkeyList( QString const & scope, QString const & key ) const;
+    QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
     /** dump out current project properties to stderr
@@ -261,7 +263,6 @@ class CORE_EXPORT QgsProject : public QObject
                 and redundantly prints sub-keys.
     */
     void dumpProperties() const;
-
 
     /** prepare a filename to save it to the project file
       @note added in 1.3 */
@@ -285,8 +286,9 @@ class CORE_EXPORT QgsProject : public QObject
 
     /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
-      @note: added in version 1.8*/
-    //static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+      @note: added in version 1.8
+      @note not available in python bindings
+     */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
@@ -308,6 +310,11 @@ class CORE_EXPORT QgsProject : public QObject
         @note added in version 1.9*/
     bool topologicalEditing() const;
 
+    /** Return project's home path
+    @return home path of project (or QString::null if not set)
+        @note added in version 2.0 */
+    QString homePath() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -319,6 +326,7 @@ class CORE_EXPORT QgsProject : public QObject
     void clearError();
 
     //Creates layer and adds it to maplayer registry
+    //! @note not available in python bindings
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
@@ -328,6 +336,9 @@ class CORE_EXPORT QgsProject : public QObject
 
     //! emitted when project is being written
     void writeProject( QDomDocument & );
+
+    //! emitted when the project file has been written and closed
+    void projectSaved();
 
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );

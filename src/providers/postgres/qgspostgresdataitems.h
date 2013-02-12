@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -61,6 +61,8 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
     QgsPostgresConn *connection() const { return mConn; }
 
+    void refresh();
+
   signals:
     void addGeometryColumn( QgsPostgresLayerProperty );
 
@@ -71,8 +73,10 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void setLayerType( QgsPostgresLayerProperty layerProperty );
 
   private:
+    void stop();
     QgsPostgresConn *mConn;
     QMap<QString, QgsPGSchemaItem * > mSchemaMap;
+    QgsGeomColumnTypeThread *mColumnTypeThread;
 };
 
 class QgsPGSchemaItem : public QgsDataCollectionItem

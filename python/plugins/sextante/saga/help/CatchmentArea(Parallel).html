@@ -1,0 +1,72 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Catchment Area (Parallel)</h1>
+<div class='author'>O.Conrad (c) 2001-2010, T.Grabs portions (c) 2010</div>
+<div class='description'>Parallel processing of cells for calculation of flow accumulation and related parameters. This set of algorithms processes a DEM downwards from the highest to the lowest cell.<br/>
+<br/>
+References:<br/>
+<br/>
+Deterministic 8<br/>
+- O'Callaghan, J.F. / Mark, D.M. (1984):<br/>
+    'The extraction of drainage networks from digital elevation data',<br/>
+    Computer Vision, Graphics and Image Processing, 28:323-344<br/>
+<br/>
+Rho 8:<br/>
+- Fairfield, J. / Leymarie, P. (1991):<br/>
+    'Drainage networks from grid digital elevation models',<br/>
+    Water Resources Research, 27:709-717<br/>
+<br/>
+Braunschweiger Reliefmodell:<br/>
+- Bauer, J. / Rohdenburg, H. / Bork, H.-R. (1985):<br/>
+    'Ein Digitales Reliefmodell als Vorraussetzung fuer ein deterministisches Modell der Wasser- und Stoff-Fluesse',<br/>
+    Landschaftsgenese und Landschaftsoekologie, H.10, Parameteraufbereitung fuer deterministische Gebiets-Wassermodelle,<br/>
+    Grundlagenarbeiten zu Analyse von Agrar-Oekosystemen, (Eds.: Bork, H.-R. / Rohdenburg, H.), p.1-15<br/>
+<br/>
+Deterministic Infinity:<br/>
+- Tarboton, D.G. (1997):<br/>
+    'A new method for the determination of flow directions and upslope areas in grid digital elevation models',<br/>
+    Water Ressources Research, Vol.33, No.2, p.309-319<br/>
+<br/>
+Multiple Flow Direction:<br/>
+- Freeman, G.T. (1991):<br/>
+    'Calculating catchment area with divergent flow based on a regular grid',<br/>
+    Computers and Geosciences, 17:413-22<br/>
+<br/>
+- Quinn, P.F. / Beven, K.J. / Chevallier, P. / Planchon, O. (1991):<br/>
+    'The prediction of hillslope flow paths for distributed hydrological modelling using digital terrain models',<br/>
+    Hydrological Processes, 5:59-79<br/>
+<br/>
+Triangular Multiple Flow Direction<br/>
+- Seibert, J. / McGlynn, B. (2007):<br/>
+    'A new triangular multiple flow direction algorithm for computing upslope areas from gridded digital elevation models',<br/>
+    Water Ressources Research, Vol. 43, W04501<br/>
+    C++ Implementation into SAGA by Thomas Grabs, Copyrights (c) 2007<br/>
+    Contact: thomas.grabs@natgeo.su.se, jan.seibert@natgeo.su.se <br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Elevation <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Sink Routes <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Weight <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Material <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Target <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Area <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Height <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Slope <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Total accumulated Material <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Accumulated Material from _left_ side <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Accumulated Material from _right_ side <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Step <div class='type'>Integer</div></dt><dd> <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Catchment Aspect <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Flow Path Length <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Deterministic 8, Rho 8, Braunschweiger Reliefmodell, Deterministic Infinity, Multiple Flow Direction, Multiple Triangular Flow Directon</div></dd>
+	<dt>Linear Flow <div class='type'>Boolean</div></dt><dd>Use D8 if catchment area becomes higher than specified threshold. <div class='constraints'></div></dd>
+	<dt>Linear Flow Threshold <div class='type'>Floating point</div></dt><dd>Use D8 if catchment area becomes higher than specified threshold (Cells). <div class='constraints'></div></dd>
+	<dt>Linear Flow Threshold Grid <div class='type'>Input Grid</div></dt><dd>(optional) Linear Flow Threshold Grid <div class='constraints'></div></dd>
+	<dt>Channel Direction <div class='type'>Input Grid</div></dt><dd>(optional) Channel Direction Grid. Must contain direction values. For all non-missing grid cells all flow will be routed to the prescribed direction. <div class='constraints'></div></dd>
+	<dt>Convergence <div class='type'>Floating point</div></dt><dd>Convergence factor for Multiple Flow Direction Algorithm (Freeman 1991).
+Applies also to the Multiple Triangular Flow Directon Algorithm. <div class='constraints'></div></dd>
+</dl>
+</body></html>

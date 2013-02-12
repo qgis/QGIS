@@ -30,15 +30,18 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
-    QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
-  if ( attIt == attributes.constEnd() )
+  Q_UNUSED( c );
+
+  QVariant attrVal = attributes[is.classificationAttribute];
+
+  if ( !attrVal.isValid() )
   {
     return QSizeF(); //zero size if attribute is missing
   }
-  
-  double scaledValue = attIt.value().toDouble();
+
+  double scaledValue = attrVal.toDouble();
   double scaledLowerValue = is.lowerValue;
   double scaledUpperValue = is.upperValue;
   double scaledLowerSizeWidth = is.lowerSize.width();
@@ -73,12 +76,15 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
   return size;
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
+  Q_UNUSED( c );
+  Q_UNUSED( attributes );
+
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
   if ( !p )
@@ -212,11 +218,11 @@ void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext
     mPen.setColor( s.categoryColors.at( i ) );
     p->setPen( mPen );
     QPointF position = textPositions.at( i );
-    
+
     // Calculate vertical placement
     double xOffset = 0;
 
-    switch( s.labelPlacementMethod )
+    switch ( s.labelPlacementMethod )
     {
       case QgsDiagramSettings::Height:
         xOffset = textHeight / 2.0;

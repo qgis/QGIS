@@ -65,7 +65,7 @@ class TestQgsMapRenderer: public QObject
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
-    QgsFieldMap mFields;
+    QgsFields mFields;
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
@@ -83,7 +83,7 @@ void TestQgsMapRenderer::initTestCase()
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
   QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
-  mFields.insert( 0, myField1 );
+  mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
   // Create the test dataset if it doesnt exist
@@ -130,9 +130,9 @@ void TestQgsMapRenderer::initTestCase()
         // delete it in its dtor!
         QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
         QgsFeature myFeature;
-        myFeature.setTypeName( "WKBPolygon" );
         myFeature.setGeometry( mypPolygonGeometry );
-        myFeature.addAttribute( 0, i );
+        myFeature.initAttributes( 1 );
+        myFeature.setAttribute( 0, i );
         //
         // Write the feature to the filewriter
         // and check for errors

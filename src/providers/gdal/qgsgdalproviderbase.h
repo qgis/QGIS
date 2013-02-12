@@ -48,11 +48,13 @@ class QgsGdalProviderBase
     static void registerGdalDrivers();
   protected:
 
-    QgsRasterInterface::DataType dataTypeFromGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFromGdal( int theGdalDataType ) const;
 
     int colorInterpretationFromGdal( int gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
+
+    QgsRectangle extent( GDALDatasetH gdalDataset ) const;
 };
 
 #endif

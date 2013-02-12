@@ -177,6 +177,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   return theGlobalTransparency;
 }
 
+// TODO: nodata per band
 bool QgsRasterTransparency::isEmpty( double nodataValue ) const
 {
   return (
@@ -205,8 +206,8 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
     {
       QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
       //pixelListElement.setAttribute( "pixelValue", QString::number( it->pixelValue, 'f' ) );
-      pixelListElement.setAttribute( "min", QgsRasterInterface::printValue( it->min ) );
-      pixelListElement.setAttribute( "max", QgsRasterInterface::printValue( it->max ) );
+      pixelListElement.setAttribute( "min", QgsRasterBlock::printValue( it->min ) );
+      pixelListElement.setAttribute( "max", QgsRasterBlock::printValue( it->max ) );
       pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
       singleValuePixelListElement.appendChild( pixelListElement );
     }
@@ -220,9 +221,9 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
     for ( ; it != mTransparentThreeValuePixelList.constEnd(); ++it )
     {
       QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
-      pixelListElement.setAttribute( "red", QgsRasterInterface::printValue( it->red ) );
-      pixelListElement.setAttribute( "green", QgsRasterInterface::printValue( it->green ) );
-      pixelListElement.setAttribute( "blue", QgsRasterInterface::printValue( it->blue ) );
+      pixelListElement.setAttribute( "red", QgsRasterBlock::printValue( it->red ) );
+      pixelListElement.setAttribute( "green", QgsRasterBlock::printValue( it->green ) );
+      pixelListElement.setAttribute( "blue", QgsRasterBlock::printValue( it->blue ) );
       pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
       threeValuePixelListElement.appendChild( pixelListElement );
     }

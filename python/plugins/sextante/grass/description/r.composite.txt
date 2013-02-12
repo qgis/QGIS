@@ -1,0 +1,10 @@
+r.composite
+r.composite - Combines red, green and blue raster maps into a single composite raster map.
+Raster (r.*)
+ParameterRaster|red|Red|False
+ParameterRaster|green|Green|False
+ParameterRaster|blue|Blue|False
+ParameterNumber|levels|Number of levels to be used for each component|1.0|256.0|32
+ParameterBoolean|-d|Dither|False
+ParameterBoolean|-c|Use closest color|False
+OutputRaster|output|Output RGB image

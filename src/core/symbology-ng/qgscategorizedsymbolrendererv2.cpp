@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <algorithm>
 
 #include "qgscategorizedsymbolrendererv2.h"
 
@@ -27,21 +28,40 @@
 #include <QDomElement>
 #include <QSettings> // for legend
 
+QgsRendererCategoryV2::QgsRendererCategoryV2()
+    : mValue(), mSymbol( 0 ), mLabel()
+{
+}
+
 QgsRendererCategoryV2::QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label )
     : mValue( value ), mSymbol( symbol ), mLabel( label )
 {
 }
 
 QgsRendererCategoryV2::QgsRendererCategoryV2( const QgsRendererCategoryV2& cat )
-    : mValue( cat.mValue ), mLabel( cat.mLabel )
+    : mValue( cat.mValue ), mSymbol( 0 ), mLabel( cat.mLabel )
 {
-  mSymbol = cat.mSymbol->clone();
+  if ( cat.mSymbol )
+  {
+    mSymbol = cat.mSymbol->clone();
+  }
 }
-
 
 QgsRendererCategoryV2::~QgsRendererCategoryV2()
 {
-  delete mSymbol;
+  if ( mSymbol ) delete mSymbol;
+}
+
+QgsRendererCategoryV2& QgsRendererCategoryV2::operator=( const QgsRendererCategoryV2 & cat )
+{
+  mValue = cat.mValue;
+  mLabel = cat.mLabel;
+  mSymbol = 0;
+  if ( cat.mSymbol )
+  {
+    mSymbol = cat.mSymbol->clone();
+  }
+  return *this;
 }
 
 QVariant QgsRendererCategoryV2::value() const
@@ -159,7 +179,6 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 {
   // TODO: special case for int, double
-
   QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.toString() );
   if ( it == mSymbolHash.end() )
   {
@@ -169,7 +188,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
     }
     else
     {
-      //QgsDebugMsg( "attribute value not found: " + value.toString() );
+      QgsDebugMsg( "attribute value not found: " + value.toString() );
     }
     return NULL;
   }
@@ -179,20 +198,24 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributeMap& attrMap = feature.attributeMap();
-  QgsAttributeMap::const_iterator ita = attrMap.find( mAttrNum );
-  if ( ita == attrMap.end() )
+  const QgsAttributes& attrs = feature.attributes();
+  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
     QgsDebugMsg( "attribute '" + mAttrName + "' (index " + QString::number( mAttrNum ) + ") required by renderer not found" );
     return NULL;
   }
 
   // find the right symbol for the category
-  QgsSymbolV2* symbol = symbolForValue( *ita );
+  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum] );
   if ( symbol == NULL )
   {
     // if no symbol found use default one
-    return symbolForValue( QVariant( "" ) );
+    //return symbolForValue( QVariant( "" ) );
+    // What is default? Empty string may be a legal value, and features not found
+    // should not be rendered using empty string value category symbology.
+    // We also need to get NULL in that case so that willRenderFeature()
+    // may be used to count features.
+    return 0;
   }
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
@@ -202,12 +225,12 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   double rotation = 0;
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
-    rotation = attrMap[mRotationFieldIdx].toDouble();
+    rotation = attrs[mRotationFieldIdx].toDouble();
   if ( mSizeScaleFieldIdx != -1 )
-    sizeScale = attrMap[mSizeScaleFieldIdx].toDouble();
+    sizeScale = attrs[mSizeScaleFieldIdx].toDouble();
 
   // take a temporary symbol (or create it if doesn't exist)
-  QgsSymbolV2* tempSymbol = mTempSymbols[ita->toString()];
+  QgsSymbolV2* tempSymbol = mTempSymbols[attrs[mAttrNum].toString()];
 
   // modify the temporary symbol and return it
   if ( tempSymbol->type() == QgsSymbolV2::Marker )
@@ -287,6 +310,55 @@ bool QgsCategorizedSymbolRendererV2::deleteCategory( int catIndex )
 void QgsCategorizedSymbolRendererV2::deleteAllCategories()
 {
   mCategories.clear();
+}
+
+void QgsCategorizedSymbolRendererV2::moveCategory( int from, int to )
+{
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() ) return;
+  mCategories.move( from, to );
+}
+
+bool valueLessThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return qgsVariantLessThan( c1.value(), c2.value() );
+}
+bool valueGreaterThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return qgsVariantGreaterThan( c1.value(), c2.value() );
+}
+
+void QgsCategorizedSymbolRendererV2::sortByValue( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mCategories.begin(), mCategories.end(), valueLessThan );
+  }
+  else
+  {
+    qSort( mCategories.begin(), mCategories.end(), valueGreaterThan );
+  }
+}
+
+bool labelLessThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return QString::localeAwareCompare( c1.label(), c2.label() ) < 0;
+}
+
+bool labelGreaterThan( const QgsRendererCategoryV2 &c1, const QgsRendererCategoryV2 &c2 )
+{
+  return !labelLessThan( c1, c2 );
+}
+
+void QgsCategorizedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mCategories.begin(), mCategories.end(), labelLessThan );
+  }
+  else
+  {
+    qSort( mCategories.begin(), mCategories.end(), labelGreaterThan );
+  }
 }
 
 void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
@@ -595,4 +667,16 @@ void QgsCategorizedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* r
 {
   delete mSourceColorRamp;
   mSourceColorRamp = ramp;
+}
+
+void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
+{
+  int i = 0;
+  foreach ( QgsRendererCategoryV2 cat, mCategories )
+  {
+    QgsSymbolV2* symbol = sym->clone();
+    symbol->setColor( cat.symbol()->color() );
+    updateCategorySymbol( i, symbol );
+    ++i;
+  }
 }

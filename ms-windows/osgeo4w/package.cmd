@@ -1,5 +1,19 @@
+REM ***************************************************************************
+REM    package.cmd
+REM    ---------------------
+REM    begin                : July 2009
+REM    copyright            : (C) 2009 by Juergen E. Fischer
+REM    email                : jef at norbit dot de
+REM ***************************************************************************
+REM *                                                                         *
+REM *   This program is free software; you can redistribute it and/or modify  *
+REM *   it under the terms of the GNU General Public License as published by  *
+REM *   the Free Software Foundation; either version 2 of the License, or     *
+REM *   (at your option) any later version.                                   *
+REM *                                                                         *
+REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.2
+set GRASS_VERSION=6.4.3RC2
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -13,7 +27,7 @@ set PACKAGE=%2
 set PACKAGENAME=%3
 if "%VERSION%"=="" goto error
 if "%PACKAGE%"=="" goto error
-if "%PACKAGENAME%"=="" set PACKAGENAME=qgis-dev
+if "%PACKAGENAME%"=="" set PACKAGENAME=qgis
 
 path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin
 set PYTHONPATH=
@@ -86,6 +100,7 @@ if errorlevel 1 goto error
 
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 
 cmake -G "Visual Studio 9 2008" ^
 	-D PEDANTIC=TRUE ^
@@ -93,16 +108,16 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
+	-D WITH_ORACLE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
@@ -190,6 +205,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
 	"apps/%PACKAGENAME%/resources/symbology-ng-style.xml" ^
 	"apps/%PACKAGENAME%/svg/" ^
+	"apps/%PACKAGENAME%/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
 	"etc/postinstall/%PACKAGENAME%-common.bat" ^
 	>>%LOG% 2>&1
@@ -266,6 +282,12 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
+	"apps/%PACKAGENAME%/plugins/oracleprovider.dll" ^
+        apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
+	>>%LOG% 2>&1
+if errorlevel 1 goto error
+
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
@@ -286,6 +308,7 @@ if exist %PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-serv
 if exist %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2
+if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1

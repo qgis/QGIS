@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    OsmDatabaseManager.py
+    ---------------------
+    Date                 : August 2009
+    Copyright            : (C) 2009 by Martin Dobias
+    Email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Dobias'
+__date__ = 'August 2009'
+__copyright__ = '(C) 2009, Martin Dobias'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 """@package OsmDatabaseManager
 This module provides methods to manipulate with database where OSM data are stored.
 
@@ -59,8 +84,8 @@ class OsmDatabaseManager:
         # disconnect layer changes signals
         QObject.disconnect(self.plugin.iface,SIGNAL("currentLayerChanged(QgsMapLayer*)"),self.currLayerChanged)
         QObject.disconnect(QgsMapLayerRegistry.instance(),SIGNAL("layerWillBeRemoved(QString)"),self.layerRemoved)
-        
-        
+
+
     def currLayerChanged(self,layer):
         """Function is called after currentLayerChanged(QgsMapLayer*) signal is emitted.
 
@@ -143,7 +168,7 @@ class OsmDatabaseManager:
         key=dbFileName.toLatin1().data()
 
         # remove map layers that belong to dbFileName database
-        if key in self.lineLayers.keys() and layer.id()==self.lineLayers[key].getLayerID():
+        if key in self.lineLayers.keys() and layer.id()==self.lineLayers[key].id():
             del self.lineLayers[key]
 
         elif key in self.pointLayers.keys() and layer.id()==self.pointLayers[key].id():
@@ -151,14 +176,14 @@ class OsmDatabaseManager:
             if key in self.lineLayers.keys():
                 if self.lineLayers[key]:
                     lineLayID=self.lineLayers[key].id()
-                    self.mapReg.removeMapLayer(lineLayID,True)
+                    self.mapReg.removeMapLayers([lineLayID],True)
 
         elif key in self.polygonLayers.keys() and layer.id()==self.polygonLayers[key].id():
             del self.polygonLayers[key]
             if key in self.pointLayers.keys():
                 if self.pointLayers[key]:
                     pointLayID=self.pointLayers[key].id()
-                    self.mapReg.removeMapLayer(pointLayID,True)
+                    self.mapReg.removeMapLayers([pointLayID],True)
 
         if key in self.dbConns.keys():
             del self.dbConns[key]
@@ -177,7 +202,7 @@ class OsmDatabaseManager:
                 continue
 
             if layer.type()==QgsMapLayer.VectorLayer and layer.dataProvider().name()=="osm":
-                QgsMapLayerRegistry.instance().removeMapLayer(layer.id(),True)
+                QgsMapLayerRegistry.instance().removeMapLayers([layer.id()],True)
 
         self.dbConns={}    # map dbFileName->sqlite3ConnectionObject
         self.pointLayers={}
@@ -298,7 +323,6 @@ class OsmDatabaseManager:
         lay=self.pointLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             return (feat,'Point')
@@ -307,7 +331,6 @@ class OsmDatabaseManager:
         lay=self.lineLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             # line vertices
@@ -316,7 +339,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"lineId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 c.close()
@@ -329,7 +352,6 @@ class OsmDatabaseManager:
         lay=self.polygonLayers[self.currentKey]
         lay.select([],area,True,True)
         result=lay.nextFeature(feat)
-        lay.dataProvider().rewind()
 
         if result:
             # polygon vertices
@@ -338,7 +360,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"polygonId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 c.close()
@@ -391,7 +413,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"lineId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 featMap[feat2.id()]=feat2
@@ -414,7 +436,7 @@ class OsmDatabaseManager:
                     ,{"minLat":area.yMinimum(),"maxLat":area.yMaximum(),"minLon":area.xMinimum(),"maxLon":area.xMaximum(),"polygonId":str(feat.id())})
 
             for rec in c:
-                feat2=QgsFeature(rec[0],"Point")
+                feat2=QgsFeature(rec[0])
                 feat2.setGeometry(QgsGeometry.fromPoint(QgsPoint(rec[2],rec[1])))
                 # without features' attributes here! we don't need them...
                 featMap[feat2.id()]=feat2
@@ -446,7 +468,7 @@ class OsmDatabaseManager:
         nodeId=self.__getFreeFeatureId()
 
         affected=set()
-        feat=QgsFeature(nodeId,"Point")
+        feat=QgsFeature(nodeId)
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(mapPoint.x(),mapPoint.y())))
 
         # should snapping be done? if not, everything's easy
@@ -587,7 +609,7 @@ class OsmDatabaseManager:
 
         # finishing...
         c.close()
-        feat=QgsFeature(lineId,"Line")
+        feat=QgsFeature(lineId)
         feat.setGeometry(QgsGeometry.fromPolyline(pline))
 
         if doCommit:
@@ -666,7 +688,7 @@ class OsmDatabaseManager:
 
         # finish
         c.close()
-        feat=QgsFeature(polygonId,"Polygon")
+        feat=QgsFeature(polygonId)
         polygon=[]
         polygon.append(pline)
         feat.setGeometry(QgsGeometry.fromPolygon(polygon))

@@ -24,6 +24,7 @@
 #include "qgssingleboxscalebarstyle.h"
 #include "qgsticksscalebarstyle.h"
 #include "qgsrectangle.h"
+#include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
@@ -35,6 +36,7 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mComposerMap( 0 )
     , mNumUnitsPerSegment( 0 )
+    , mFontColor( QColor( 0, 0, 0 ) )
     , mStyle( 0 )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
@@ -59,7 +61,6 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 
   drawBackground( painter );
-  painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
@@ -189,8 +190,8 @@ double QgsComposerScaleBar::mapWidth() const
     QgsDistanceArea da;
     da.setEllipsoidalMode( mComposerMap->mapRenderer()->hasCrsTransformEnabled() );
     da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
-    QSettings s;
-    da.setEllipsoid( s.value( "/qgis/measure/ellipsoid", "WGS84" ).toString() );
+    da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
+
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     if ( mUnits == Feet )
     {
@@ -227,6 +228,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setStyle( Qt::SolidPattern );
 
   mFont.setPointSizeF( 12.0 );
+  mFontColor = QColor( 0, 0, 0 );
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
@@ -242,15 +244,15 @@ void QgsComposerScaleBar::applyDefaultSize()
     int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( nUnitsPerSegment );
 
-    if( nUnitsPerSegment > 1000 )
+    if ( nUnitsPerSegment > 1000 )
     {
-        setNumUnitsPerSegment( (int)( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
-        setUnitLabeling( tr("km") );
-        setNumMapUnitsPerScaleBarUnit( 1000 );
+      setNumUnitsPerSegment(( int )( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
+      setUnitLabeling( tr( "km" ) );
+      setNumMapUnitsPerScaleBarUnit( 1000 );
     }
     else
     {
-        setUnitLabeling( tr("m") );
+      setUnitLabeling( tr( "m" ) );
     }
 
     setNumSegments( 4 );
@@ -421,13 +423,10 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
     composerScaleBarElem.setAttribute( "mapId", mComposerMap->id() );
   }
 
-  //fill color
-  QColor brushColor = mBrush.color();
-  QDomElement colorElem = doc.createElement( "BrushColor" );
-  colorElem.setAttribute( "red", brushColor.red() );
-  colorElem.setAttribute( "green", brushColor.green() );
-  colorElem.setAttribute( "blue", brushColor.blue() );
-  composerScaleBarElem.appendChild( colorElem );
+  //colors
+  composerScaleBarElem.setAttribute( "brushColor", mBrush.color().name() );
+  composerScaleBarElem.setAttribute( "penColor", mPen.color().name() );
+  composerScaleBarElem.setAttribute( "fontColor", mFontColor.name() );
 
   //alignment
   composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
@@ -459,11 +458,20 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     mFont.fromString( fontString );
   }
 
+  //colors
+  //fill color
+  mBrush.setColor( QColor( itemElem.attribute( "brushColor", "#000000" ) ) );
+  mPen.setColor( QColor( itemElem.attribute( "penColor", "#000000" ) ) );
+  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
+
   //style
   delete mStyle;
   mStyle = 0;
   QString styleString = itemElem.attribute( "style", "" );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
+
+  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
+  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
 
   //map
   int mapId = itemElem.attribute( "mapId", "-1" ).toInt();
@@ -478,12 +486,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     }
   }
 
-  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
-
-  refreshSegmentMillimeters();
-
-  //alignment
-  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+  updateSegmentSize();
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );

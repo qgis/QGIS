@@ -41,16 +41,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 {
     Q_OBJECT
   public:
-    /*! Constructor which takes the table name.
-    * This constructor is used when adding layers to the map since
-    * the query builder connection as the layer selection dialog.
-    * @param tableName Name of the table being queried
-    * @param parent Parent widget
-    * @param fl dialog flags
-    */
-    QgsQueryBuilder( QString tableName, QWidget *parent = 0,
-                     Qt::WFlags fl = QgisGui::ModalDialogFlags );
-
     /*! This constructor is used when the query builder is called from the
      * vector layer properties dialog
      * @param layer existing vector layer
@@ -88,7 +78,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-
     /*! Test the constructed sql statement to see if the database likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
@@ -106,6 +95,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * are inserted into the values list box.
      */
     void on_btnSampleValues_clicked();
+
     void setDatasourceDescription( QString uri );
 
   private:

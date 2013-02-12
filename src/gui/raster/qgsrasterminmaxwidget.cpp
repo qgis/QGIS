@@ -44,6 +44,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 
   foreach ( int myBand, mBands )
   {
+    int origin = QgsRasterRenderer::MinMaxUnknown;
     QgsDebugMsg( QString( "myBand = %1" ).arg( myBand ) );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
     {
@@ -56,6 +57,11 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     if ( mCurrentExtentRadioButton->isChecked() )
     {
       myExtent = mExtent; // current
+      origin |= QgsRasterRenderer::MinMaxSubExtent;
+    }
+    else
+    {
+      origin |= QgsRasterRenderer::MinMaxFullExtent;
     }
     QgsDebugMsg( QString( "myExtent.isEmpty() = %1" ).arg( myExtent.isEmpty() ) );
 
@@ -63,6 +69,11 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     if ( mEstimateRadioButton->isChecked() )
     {
       mySampleSize = 250000;
+      origin |= QgsRasterRenderer::MinMaxEstimated;
+    }
+    else
+    {
+      origin |= QgsRasterRenderer::MinMaxExact;
     }
 
     if ( mCumulativeCutRadioButton->isChecked() )
@@ -70,6 +81,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
       double myLower = mCumulativeCutLowerDoubleSpinBox->value() / 100.0;
       double myUpper = mCumulativeCutUpperDoubleSpinBox->value() / 100.0;
       mLayer->dataProvider()->cumulativeCut( myBand, myLower, myUpper, myMin, myMax, myExtent, mySampleSize );
+      origin |= QgsRasterRenderer::MinMaxCumulativeCut;
     }
     else if ( mMinMaxRadioButton->isChecked() )
     {
@@ -77,6 +89,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
       QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, myExtent, mySampleSize );
       myMin = myRasterBandStats.minimumValue;
       myMax = myRasterBandStats.maximumValue;
+      origin |= QgsRasterRenderer::MinMaxMinMax;
     }
     else if ( mStdDevRadioButton->isChecked() )
     {
@@ -84,9 +97,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
       double myStdDev = mStdDevSpinBox->value();
       myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
       myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
-
+      origin |= QgsRasterRenderer::MinMaxStdDev;
     }
 
-    emit load( myBand, myMin, myMax );
+    emit load( myBand, myMin, myMax, origin );
   }
 }

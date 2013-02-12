@@ -1,4 +1,18 @@
 #!/usr/bin/perl
+###########################################################################
+#    tsstat.pl
+#    ---------------------
+#    begin                : March 2009
+#    copyright            : (C) 2009 by Juergen E. Fischer
+#    email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
 
 use strict;
 use Locale::Language;
@@ -23,13 +37,14 @@ my $translators= {
 	af => 'Hendrik Bosman',
 	ar => 'Assem Kamal, Latif Jalil',
 	bg => 'Захари Савов, Jordan Tzvetkov',
-	ca_ES => 'Xavi',
+	ca_ES => 'Xavier Roijals',
 	cs_CZ => 'Martin Landa, Peter Antolik, Martin Dzurov, Jan Helebrant',
 	da_DK => 'Preben Lisby',
 	de => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
-	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann',
+	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
 	el_GR => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et_EE => 'Veiko Viil',
+	eu_ES => 'Irantzu Alvarez',
 	fa => 'Mola Pahnadayan',
 	fi => 'Marko Jarvenpaa',
 	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
@@ -42,20 +57,23 @@ my $translators= {
 	ja => 'BABA Yoshihiko, Yoichi Kayama',
 	ka_GE => 'Shota Murtskhvaladze, George Machitidze',
 	ko_KR => 'BJ Jang',
-	lo => 'Anousak Souphavanh',
+	lo => 'Anousak Souphavanh, Soukanh Lathsavong',
 	lv => 'Maris Nartiss, Pēteris Brūns',
 	lt => 'Kestas M',
 	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk',
 	mn => 'Bayarmaa Enkhtur',
 	pl_PL => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Loskot, Tomasz Paul, Andrzej Swiader ',
 	pt_BR => 'Arthur Nanni',
-	pt_PT => 'Giovanni Manghi, Joana Simoes, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro',
-	ro => 'Lonut Losifescu-Enescu',
+	pt_PT => 'Giovanni Manghi, Joana Simoes, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva',
+	ro => 'Lonut Losifescu-Enescu, Bogdan Pacurar',
 	ru => 'Artem Popov',
 	sk => 'Lubos Balazovic',
 	sl_SI => 'Jože Detečnik, Dejan Gregor',
-	sv => 'Lars Luthman, Magnus Homann',
 	sq_AL => '',
+	sr_Cyrl => 'Goran Ivanković',
+	sr_Latn => 'Goran Ivanković',
+	sv => 'Lars Luthman, Magnus Homann, Victor Axbom',
+	sw => 'Yohana Mapala',
 	th => 'Man Chao',
 	tr => 'Osman Yilmaz',
 	uk => 'Сергей Якунин',

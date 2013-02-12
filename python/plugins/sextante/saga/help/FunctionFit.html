@@ -1,0 +1,40 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Function Fit</h1>
+<div class='author'></div>
+<div class='description'>CFit<br/>
+(created by SAGA Wizard).</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Source <div class='type'>Input Table</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>y - Values <div class='type'>Table field</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Use x -Values <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: No, Yes</div></dd>
+	<dt>x - Values <div class='type'>Table field</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Formula <div class='type'>Text</div></dt><dd>The following operators are available for the formula definition:
++ Addition
+- Subtraction
+* Multiplication
+/ Division
+^ power
+sin(x)
+cos(x)
+tan(x)
+asin(x)
+acos(x)
+atan(x)
+abs(x)
+sqrt(x)
+
+For Variogram - Fitting you can use the folowing Variogram - Models:
+NUG(x)
+SPH(x,a)
+EXP(x,a)
+LIN(x,a)
+The Fitting variables are single characters like a,b,m .. alphabetical order with the grid list order ('a'= first var, 'b' = second grid, ...)
+Example: m*x+a 
+ <div class='constraints'></div></dd>
+	<dt>Iterationen <div class='type'>Integer</div></dt><dd> <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Max Lamda <div class='type'>Floating point</div></dt><dd> <div class='constraints'>Minimum: 1.0</div></dd>
+</dl>
+</body></html>

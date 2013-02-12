@@ -119,21 +119,21 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   {
     if ( mOutlineWidthIndex != -1 )
     {
-      double width = context.outputLineWidth( f->attributeMap()[mOutlineWidthIndex].toDouble() );
+      double width = context.outputLineWidth( f->attribute( mOutlineWidthIndex ).toDouble() );
       mPen.setWidthF( width );
     }
     if ( mFillColorIndex != -1 )
     {
-      mBrush.setColor( QColor( f->attributeMap()[mFillColorIndex].toString() ) );
+      mBrush.setColor( QColor( f->attribute( mFillColorIndex ).toString() ) );
     }
     if ( mOutlineColorIndex != -1 )
     {
-      mPen.setColor( QColor( f->attributeMap()[mOutlineColorIndex].toString() ) );
+      mPen.setColor( QColor( f->attribute( mOutlineColorIndex ).toString() ) );
     }
 
     if ( mWidthIndex != -1 || mHeightIndex != -1 || mSymbolNameIndex != -1 )
     {
-      QString symbolName = ( mSymbolNameIndex == -1 ) ? mSymbolName : f->attributeMap()[mSymbolNameIndex].toString();
+      QString symbolName = ( mSymbolNameIndex == -1 ) ? mSymbolName : f->attribute( mSymbolNameIndex ).toString();
       preparePath( symbolName, context, f );
     }
   }
@@ -148,7 +148,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   double rotation = 0.0;
   if ( f && mRotationIndex != -1 )
   {
-    rotation = f->attributeMap()[mRotationIndex].toDouble();
+    rotation = f->attribute( mRotationIndex ).toDouble();
   }
   else if ( !doubleNear( mAngle, 0.0 ) )
   {
@@ -274,7 +274,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     return NULL;
 
   QString name = "circle";
-  QColor color, borderColor;
+  QColor fillColor, borderColor;
   double borderWidth, size;
   double widthHeightFactor = 1.0;
 
@@ -290,7 +290,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     }
   }
 
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, color, borderColor, borderWidth, size ) )
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
     return NULL;
 
   double angle = 0.0;
@@ -305,7 +305,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
 
   QgsEllipseSymbolLayerV2 *m = new QgsEllipseSymbolLayerV2();
   m->setSymbolName( name );
-  m->setColor( color );
+  m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );
   m->setOutlineWidth( borderWidth );
   m->setSymbolWidth( size );
@@ -348,7 +348,7 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
 
   if ( f && mWidthIndex != -1 ) //1. priority: data defined setting on symbol layer level
   {
-    width = context.outputLineWidth( f->attributeMap()[mWidthIndex].toDouble() );
+    width = context.outputLineWidth( f->attribute( mWidthIndex ).toDouble() );
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
@@ -362,7 +362,7 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   double height = 0;
   if ( f && mHeightIndex != -1 ) //1. priority: data defined setting on symbol layer level
   {
-    height = context.outputLineWidth( f->attributeMap()[mHeightIndex].toDouble() );
+    height = context.outputLineWidth( f->attribute( mHeightIndex ).toDouble() );
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {

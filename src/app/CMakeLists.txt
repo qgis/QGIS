@@ -2,9 +2,11 @@ SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
+  qgisappstylesheet.cpp
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
+  qgsaddtaborgroup.cpp
   qgsaddjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
@@ -28,15 +30,15 @@ SET(QGIS_APP_SRCS
   qgsdecorationscalebardialog.cpp
   qgsdecorationgrid.cpp
   qgsdecorationgriddialog.cpp
-  qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
+  qgsfieldsproperties.cpp
   qgsgraduatedsymboldialog.cpp
-  qgsidentifyresults.cpp
+  qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabeldialog.cpp
   qgslabelpropertydialog.cpp
@@ -60,7 +62,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolhtmlannotation.cpp
   qgsmaptoolpinlabels.cpp
   qgsmaptoolshowhidelabels.cpp
-  qgsmaptoolidentify.cpp
+  qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
@@ -68,6 +70,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovevertex.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
@@ -78,6 +81,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
+  qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp  
 
@@ -89,12 +93,13 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
   qgsoptions.cpp
-  qgspastetransformations.cpp
+  #qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginitem.cpp
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
+  qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
@@ -102,6 +107,7 @@ SET(QGIS_APP_SRCS
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
+  qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
@@ -126,6 +132,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlegendlayersdialog.cpp
   composer/qgscomposerlegendwidget.cpp
   composer/qgscompositionwidget.cpp
+  composer/qgsatlascompositionwidget.cpp
   composer/qgsitempositiondialog.cpp
 
   legend/qgslegendgroup.cpp
@@ -153,9 +160,11 @@ SET(QGIS_APP_SRCS
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
+  qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h
+  qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
@@ -180,13 +189,13 @@ SET (QGIS_APP_MOC_HDRS
   qgsdelattrdialog.h
   qgsdiagramproperties.h
   qgsdisplayangle.h
-  qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
+  qgsfieldsproperties.h
   qgsformannotationdialog.h
   qgshtmlannotationdialog.h
   qgsgraduatedsymboldialog.h
-  qgsidentifyresults.h
+  qgsidentifyresultsdialog.h
   qgslabeldialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
@@ -205,13 +214,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolfeatureaction.h
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
-  qgsmaptoolidentify.h
+  qgsmaptoolidentifyaction.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
   qgsmaptoolmovevertex.h
   qgsmaptooloffsetcurve.h
   qgsmaptoolreshape.h
+  qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselectfreehand.h
@@ -230,14 +240,16 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
   qgsoptions.h
-  qgspastetransformations.h
+  #qgspastetransformations.h
   qgspluginmanager.h
+  qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
   qgstipfactory.h
@@ -260,6 +272,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposertablewidget.h
   composer/qgscomposershapewidget.h
   composer/qgscompositionwidget.h
+  composer/qgsatlascompositionwidget.h
   composer/qgsitempositiondialog.h
 
   legend/qgslegend.h
@@ -399,9 +412,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
+  ${QEXTSERIALPORT_INCLUDE_DIR}
   ../analysis/raster
   ../core
-  ../core/gps ../core/gps/qextserialport
+  ../core/gps
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
   ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
@@ -410,7 +424,7 @@ INCLUDE_DIRECTORIES(
   )
 
 IF (ANDROID)
-    INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+  INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
 
 IF (HAVE_SPATIALITE)
@@ -480,10 +494,6 @@ ENDIF(APPLE)
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
-
-IF (SPATIALITE_FOUND)
-  TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
-ENDIF (SPATIALITE_FOUND)
 
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)

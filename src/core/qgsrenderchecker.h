@@ -26,7 +26,7 @@ class QImage;
  * write an image and compare it to an expected result
  * or render time.
  */
-class QgsRenderChecker
+class CORE_EXPORT QgsRenderChecker
 {
   public:
 
@@ -82,6 +82,7 @@ class QgsRenderChecker
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
+     * @param theRenderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );

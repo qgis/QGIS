@@ -1,3 +1,6 @@
+#ifndef OSMPROVIDER_H
+#define OSMPROVIDER_H
+
 /***************************************************************************
     osmprovider.h - provider for OSM; stores OSM data in sqlite3 DB
     ------------------
@@ -19,6 +22,8 @@
 
 class QgsVectorLayer;
 
+class QgsOSMFeatureIterator;
+
 /**
  * Quantum GIS provider for OpenStreetMap data.
  */
@@ -29,7 +34,8 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
   private:
 
     //! provider manages features with one of three geometry types; variable determines feature type of this provider
-    enum { PointType, LineType, PolygonType } mFeatureType;
+    enum OSMType { PointType, LineType, PolygonType };
+    OSMType mFeatureType;
 
     //! supported feature attributes
     enum Attribute { TimestampAttr = 0, UserAttr = 1, TagAttr, CustomTagAttr };
@@ -53,7 +59,7 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     QObject* mInitObserver;
 
     //! boundary of all OSM data that provider manages
-    double xMin, xMax, yMin, yMax;
+    QgsRectangle mExtent;
 
     //! list of feature tags for which feature attributes are created
     QStringList mCustomTagsList;
@@ -72,44 +78,11 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     //! pointer to sqlite3 database that keeps OSM data
     sqlite3 *mDatabase;
 
-    //! pointer to main sqlite3 database statement object; this statement serves to select OSM data
-    sqlite3_stmt *mDatabaseStmt;
-
-    //! pointer to main sqlite3 database statement object; this statement serves to select OSM data
-    sqlite3_stmt *mSelectFeatsStmt;
-
-    //! pointer to main sqlite3 db stmt object; this stmt serves to select OSM data from some boundary
-    sqlite3_stmt *mSelectFeatsInStmt;
-
-    //! sqlite3 database statement ready to select all feature tags
-    sqlite3_stmt *mTagsStmt;
-
-    //! sqlite3 database statement ready to select concrete feature tag
-    sqlite3_stmt *mCustomTagsStmt;
-
-    //! sqlite3 database statement for exact way selection
-    sqlite3_stmt *mWayStmt;
-
-    //! sqlite3 database statement for exact node selection
-    sqlite3_stmt *mNodeStmt;
-
-    // variables used to select OSM data; used mainly in select(), nextFeature() functions:
-
     //! list of supported attribute fields
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
 
-    //! which attributes should be fetched after calling of select() function
-    QgsAttributeList mAttributesToFetch;
-
-    //! features from which area should be fetched after calling of select() function?
-    QgsRectangle mSelectionRectangle;
-
-    //! geometry object of area from which features should be fetched after calling of select() function
-    QgsGeometry* mSelectionRectangleGeom;
-
-    //! determines if intersect should be used while selecting OSM data
-    bool mSelectUseIntersect;
-
+    friend class QgsOSMFeatureIterator;
+    QgsOSMFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
 
 
   public:
@@ -133,38 +106,6 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeometry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
-
     /**
      * Get feature type.
      * @return int representing the feature type
@@ -178,20 +119,10 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
-
-    /**
-     * Restart reading features from previous select operation.
-     */
-    virtual void rewind();
+    virtual const QgsFields & fields() const;
 
     /**
      * Returns a bitmask containing the supported capabilities
@@ -200,6 +131,8 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * be prudent to check this value per intended operation.
      */
     virtual int capabilities() const;
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
 
     // Implementation of QgsDataProvider functions
@@ -335,42 +268,6 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * @return number of way members
      */
     int wayMemberCount( int wayId );
-
-    /**
-     * Function fetches one node from current sqlite3 statement.
-     * @param feature output; feature representing fetched node
-     * @param stmt database statement to fetch node from
-     * @param fetchGeometry determines if node geometry should be fetched also
-     * @param fetchAttrs list of attributes to be fetched with node
-     * @return success of failure flag (true/false)
-     */
-    bool fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
-
-    /**
-     * Function fetches one way from current sqlite3 statement.
-     * @param feature output; feature representing fetched way
-     * @param stmt database statement to fetch way from
-     * @param fetchGeometry determines if way geometry should be fetched also
-     * @param fetchAttrs list of attributes to be fetched with way
-     * @return success of failure flag (true/false)
-     */
-    bool fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
-
-    /**
-     * Function returns string of concatenated tags of specified feature.
-     * @param type type of feature (one of "node","way","relation")
-     * @param id feature identifier
-     * @return string of tags concatenation
-     */
-    QString tagsForObject( const char* type, int id );
-
-    /**
-     * Function returns one tag value of specified feature and specified key.
-     * @param type type of feature (one of "node","way","relation")
-     * @param id feature identifier
-     * @param tagKey tag key
-     * @return tag value
-     */
-    QString tagForObject( const char* type, int id, QString tagKey );
 };
 
+#endif

@@ -10,6 +10,10 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
+** This program is free software; you can redistribute it and/or modify  
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; version 2 of the License
+**
 ** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
@@ -203,7 +207,7 @@ bool DL_Dxf::in( std::stringstream& stream,
  * the type of data.  The value is on the next line.\n
  *
  * This function reads a couplet, determines the type of data, and
- * passes the value to the the appropriate handler function of
+ * passes the value to the appropriate handler function of
  * \p creationInterface.\n
  *
  * \p fp is advanced so that the next call to \p readDXFGroups() reads

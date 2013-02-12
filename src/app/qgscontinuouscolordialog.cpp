@@ -38,16 +38,16 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   QObject::connect( btnMaxValue, SIGNAL( clicked() ), this, SLOT( selectMaximumColor() ) );
 
   //find out the numerical fields of mVectorLayer
-  const QgsFieldMap & fields = mVectorLayer->pendingFields();
+  const QgsFields & fields = mVectorLayer->pendingFields();
   QString displayName;
 
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QVariant::Type type = it->type();
+    QVariant::Type type = fields[idx].type();
     if ( type == QVariant::Int || type == QVariant::Double || type == QVariant::LongLong )
     {
-      displayName = mVectorLayer->attributeDisplayName( it.key() );
-      classificationComboBox->addItem( displayName, it.key() );
+      displayName = mVectorLayer->attributeDisplayName( idx );
+      classificationComboBox->addItem( displayName, idx );
     }
   }
 

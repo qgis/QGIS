@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    OsmLoadDlg.py
+    ---------------------
+    Date                 : August 2009
+    Copyright            : (C) 2009 by Martin Dobias
+    Email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Dobias'
+__date__ = 'August 2009'
+__copyright__ = '(C) 2009, Martin Dobias'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+# -*- coding: utf-8 -*-
 """@package OsmLoadDlg
 This module provides all structures and methods necessary for OSM data loading.
 
@@ -131,7 +156,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if replacing:
             # remove layers of current data first
-            QgsMapLayerRegistry.instance().removeMapLayer(self.canvas.currentLayer().id(),True)
+            QgsMapLayerRegistry.instance().removeMapLayers([self.canvas.currentLayer().id()],True)
 
         if self.chkCustomRenderer.isChecked():
             styleFile=self.styleFiles[self.styleCombo.currentIndex()]
@@ -167,7 +192,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(polygonLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(polygonLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([polygonLayer])
 
         # add line layer
         lineLayer = QgsVectorLayer(self.fname+"?type=line"+observer + tag + style, basename+" lines", "osm")
@@ -181,7 +206,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(lineLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(lineLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([lineLayer])
 
         # add point layer
         pointLayer = QgsVectorLayer(self.fname+"?type=point"+observer + tag + style, basename+" points", "osm")
@@ -195,7 +220,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         if self.chkCustomRenderer.isChecked():
             self.setCustomRenderer(pointLayer)
-        QgsMapLayerRegistry.instance().addMapLayer(pointLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([pointLayer])
 
         # remember layers
         self.polygonLayer=polygonLayer

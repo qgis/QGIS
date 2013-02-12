@@ -140,8 +140,10 @@ int QgsSLDParser::numberOfLayers() const
   return ( userLayerList.size() + namedLayerList.size() );
 }
 
-void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
+  Q_UNUSED( version );
+  Q_UNUSED( fullProjectSettings );
   //iterate over all <UserLayer> nodes
   if ( mXMLDoc )
   {
@@ -1542,6 +1544,32 @@ bool QgsSLDParser::featureInfoWithWktGeometry() const
     return mFallbackParser->featureInfoWithWktGeometry();
   }
   return false;
+}
+
+QHash<QString, QString> QgsSLDParser::featureInfoLayerAliasMap() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoLayerAliasMap();
+  }
+  return QHash<QString, QString>();
+}
+
+bool QgsSLDParser::featureInfoFormatSIA2045() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoFormatSIA2045();
+  }
+  return false;
+}
+
+void QgsSLDParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
 }
 
 #ifdef DIAGRAMSERVER

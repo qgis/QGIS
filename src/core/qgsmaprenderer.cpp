@@ -17,6 +17,7 @@
 #include <cfloat>
 
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaprenderer.h"
@@ -43,10 +44,9 @@
 
 QgsMapRenderer::QgsMapRenderer()
 {
+  mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
-  mCachedTrForLayer = 0;
-  mCachedTr = 0;
 
   mDrawing = false;
   mOverview = false;
@@ -70,7 +70,6 @@ QgsMapRenderer::~QgsMapRenderer()
   delete mDistArea;
   delete mDestCRS;
   delete mLabelingEngine;
-  delete mCachedTr;
 }
 
 QgsRectangle QgsMapRenderer::extent() const
@@ -163,7 +162,7 @@ void QgsMapRenderer::adjustExtentToSize()
 
   if ( !myWidth || !myHeight )
   {
-    mScale = 1;
+    mScale = 1.0;
     newCoordXForm.setParameters( 0, 0, 0, 0 );
     return;
   }
@@ -204,6 +203,10 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setXMaximum( dxmax );
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
+
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( mExtent.width() / myWidth, 0, 'f', 8 ).arg( mExtent.height() / myHeight, 0, 'f', 8 ) );
+
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( mExtent.width() / mMapUnitsPerPixel, 0, 'f', 8 ).arg( mExtent.height() / mMapUnitsPerPixel, 0, 'f', 8 ) );
 
   // update the scale
   updateScale();
@@ -261,7 +264,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   mDrawing = true;
 
-  QgsCoordinateTransform* ct;
+  const QgsCoordinateTransform* ct;
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
@@ -382,7 +385,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->extent().toString() )
                );
 
-    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) || mOverview )
+    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -397,7 +400,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
-        ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
+        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mDestCRS->authid() );
         mRenderContext.setExtent( r1 );
         QgsDebugMsg( "  extent 1: " + r1.toString() );
         QgsDebugMsg( "  extent 2: " + r2.toString() );
@@ -687,7 +690,6 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
       rect = transform.transformBoundingBox( mExtent );
     }
 
-    invalidateCachedLayerCrs();
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
@@ -729,7 +731,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       // extent separately.
       static const double splitCoord = 180.0;
 
-      if ( mCachedTr->sourceCrs().geographicFlag() )
+      if ( layer->crs().geographicFlag() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point
@@ -1133,35 +1135,13 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
   mLabelingEngine = iface;
 }
 
-QgsCoordinateTransform *QgsMapRenderer::tr( QgsMapLayer *layer )
+const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
 {
-  if ( mCachedTrForLayer != layer )
+  if ( !layer || !mDestCRS )
   {
-    invalidateCachedLayerCrs();
-
-    delete mCachedTr;
-    mCachedTr = new QgsCoordinateTransform( layer->crs(), *mDestCRS );
-    mCachedTrForLayer = layer;
-
-    connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
-    connect( layer, SIGNAL( destroyed() ), this, SLOT( cachedLayerDestroyed() ) );
+    return 0;
   }
-
-  return mCachedTr;
-}
-
-void QgsMapRenderer::cachedLayerDestroyed()
-{
-  if ( mCachedTrForLayer == sender() )
-    mCachedTrForLayer = 0;
-}
-
-void QgsMapRenderer::invalidateCachedLayerCrs()
-{
-  if ( mCachedTrForLayer )
-    disconnect( mCachedTrForLayer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
-
-  mCachedTrForLayer = 0;
+  return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
 }
 
 bool QgsMapRenderer::mDrawing = false;

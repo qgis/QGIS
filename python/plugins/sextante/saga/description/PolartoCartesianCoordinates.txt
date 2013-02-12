@@ -1,0 +1,8 @@
+Polar to Cartesian Coordinates
+shapes_tools
+ParameterVector|POLAR|Polar Coordinates|-1|False
+ParameterTableField|F_EXAGG|Exaggeration|POLAR
+ParameterNumber|D_EXAGG|Exaggeration Factor|None|None|1
+ParameterNumber|RADIUS|Radius|None|None|6371000.0
+ParameterBoolean|DEGREE       |Degree|True
+OutputVector|CARTES|Cartesian Coordinates

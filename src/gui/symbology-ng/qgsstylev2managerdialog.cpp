@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -41,7 +41,6 @@
 #include "qgslogger.h"
 
 
-
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
@@ -49,6 +48,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
+  mSplitter->setSizes( QList<int>() << 170 << 540 );
+  mSplitter->restoreState( settings.value( "/Windows/StyleV2Manager/splitter" ).toByteArray() );
 
 #if QT_VERSION >= 0x40500
   tabItemType->setDocumentMode( true );
@@ -63,6 +64,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnShare->setIcon( QIcon( QgsApplication::iconPath( "user.png" ) ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
@@ -111,12 +113,10 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
   connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
 
-  connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
-  populateList();
+  on_tabItemType_currentChanged( 0 );
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   tagsLineEdit->installEventFilter( this );
-
 
   // Context menu for groupTree
   groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -139,6 +139,7 @@ void QgsStyleV2ManagerDialog::onFinished()
 
   QSettings settings;
   settings.setValue( "/Windows/StyleV2Manager/geometry", saveGeometry() );
+  settings.setValue( "/Windows/StyleV2Manager/splitter", mSplitter->saveState() );
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()
@@ -179,6 +180,48 @@ void QgsStyleV2ManagerDialog::populateTypes()
   // update current index to previous selection
   cboItemType->setCurrentIndex( current );
 #endif
+}
+
+void QgsStyleV2ManagerDialog::on_tabItemType_currentChanged( int )
+{
+  // when in Color Ramp tab, add menu to add item button
+  if ( currentItemType() == 3 )
+  {
+    QStringList rampTypes;
+    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+    QMenu* menu = new QMenu( btnAddItem );
+    foreach ( QString rampType, rampTypes )
+    {
+      menu->addAction( rampType );
+    }
+    btnAddItem->setMenu( menu );
+    connect( menu, SIGNAL( triggered( QAction* ) ),
+             this, SLOT( addColorRamp( QAction* ) ) );
+  }
+  else
+  {
+    if ( btnAddItem->menu() )
+    {
+      disconnect( btnAddItem->menu(), SIGNAL( triggered( QAction* ) ),
+                  this, SLOT( addColorRamp( QAction* ) ) );
+      btnAddItem->setMenu( 0 );
+    }
+  }
+
+  // set icon and grid size, depending on type
+  if ( currentItemType() == 1 || currentItemType() == 3 )
+  {
+    listItems->setIconSize( QSize( 75, 50 ) );
+    listItems->setGridSize( QSize( 100, 80 ) );
+  }
+  else
+  {
+    listItems->setIconSize( QSize( 50, 50 ) );
+    listItems->setGridSize( QSize( 75, 80 ) );
+  }
+
+  populateList();
 }
 
 void QgsStyleV2ManagerDialog::populateList()
@@ -307,6 +350,10 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get symbol design
+  // NOTE : Set the parent widget as "this" to notify the Symbol selector
+  //        that, it is being called by Style Manager, so recursive calling
+  //        of style manger and symbol slector can be arrested
+  //        Look Also: editSymbol()
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
   if ( dlg.exec() == 0 )
   {
@@ -360,15 +407,18 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 }
 
 
-QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2* style )
+QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2* style, QString rampType )
 {
-  // let the user choose the color ramp type
-  QStringList rampTypes;
-  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
-  rampTypes << tr( "cpt-city" ); // todo, only for rasters?
-  bool ok;
-  QString rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
-                     tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+  // let the user choose the color ramp type if rampType is not given
+  bool ok = true;
+  if ( rampType.isEmpty() )
+  {
+    QStringList rampTypes;
+    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+    rampTypes << tr( "cpt-city" ); // todo, only for rasters?
+    rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
+                                      tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+  }
   if ( !ok || rampType.isEmpty() )
     return QString();
 
@@ -420,9 +470,17 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       delete cptCityRamp;
       return QString();
     }
-    ramp = cptCityRamp;
     // name = dlg.selectedName();
     name = QFileInfo( cptCityRamp->schemeName() ).baseName() + cptCityRamp->variantName();
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
+    }
+    else
+    {
+      ramp = cptCityRamp;
+    }
   }
   else
   {
@@ -479,16 +537,23 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
 
 bool QgsStyleV2ManagerDialog::addColorRamp()
 {
-  QString rampName = addColorRampStatic( this , mStyle );
+  return addColorRamp( 0 );
+}
+
+bool QgsStyleV2ManagerDialog::addColorRamp( QAction* action )
+{
+  // pass the action text, which is the color ramp type
+  QString rampName = addColorRampStatic( this , mStyle,
+                                         action ? action->text() : QString() );
   if ( !rampName.isEmpty() )
   {
     mModified = true;
+    populateList();
     return true;
   }
 
   return false;
 }
-
 
 void QgsStyleV2ManagerDialog::editItem()
 {
@@ -579,6 +644,11 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
       delete ramp;
       return false;
     }
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
+    }
   }
   else
   {
@@ -616,12 +686,14 @@ void QgsStyleV2ManagerDialog::removeItem()
 
 bool QgsStyleV2ManagerDialog::removeSymbol()
 {
-  QString symbolName = currentItemName();
-  if ( symbolName.isEmpty() )
-    return false;
-
-  // delete from style and update list
-  mStyle->removeSymbol( symbolName );
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  foreach ( QModelIndex index, indexes )
+  {
+    QString symbolName = index.data().toString();
+    // delete from style and update list
+    if ( !symbolName.isEmpty() )
+      mStyle->removeSymbol( symbolName );
+  }
   mModified = true;
   return true;
 }
@@ -746,7 +818,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
   QStringList symbolNames;
   QStringList groupSymbols;
 
-  StyleEntity type = currentItemType() < 3 ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = currentItemType() < 3 ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
     QgsDebugMsg( "Entity not implemented" );
@@ -883,11 +955,11 @@ void QgsStyleV2ManagerDialog::removeGroup()
   QStandardItem *parentItem = model->itemFromIndex( index.parent() );
   if ( parentItem->data( Qt::UserRole + 1 ).toString() == "smartgroups" )
   {
-    mStyle->remove( SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
+    mStyle->remove( QgsStyleV2::SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
   else
   {
-    mStyle->remove( GroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
+    mStyle->remove( QgsStyleV2::GroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
     QStandardItem *item = model->itemFromIndex( index );
     if ( item->hasChildren() )
     {
@@ -936,11 +1008,11 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
     QString name = item->text();
     if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
     {
-      mStyle->rename( SmartgroupEntity, id, name );
+      mStyle->rename( QgsStyleV2::SmartgroupEntity, id, name );
     }
     else
     {
-      mStyle->rename( GroupEntity, id, name );
+      mStyle->rename( QgsStyleV2::GroupEntity, id, name );
     }
   }
 }
@@ -1016,7 +1088,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
 void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
 {
-  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
     QgsDebugMsg( "Unknown style entity" );
@@ -1065,14 +1137,14 @@ void QgsStyleV2ManagerDialog::tagsChanged()
   QStringList oldtags = mTagList;
   QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
 
-  StyleEntity type;
+  QgsStyleV2::StyleEntity type;
   if ( currentItemType() < 3 )
   {
-    type = SymbolEntity;
+    type = QgsStyleV2::SymbolEntity;
   }
   else if ( currentItemType() == 3 )
   {
-    type = ColorrampEntity;
+    type = QgsStyleV2::ColorrampEntity;
   }
   else
   {
@@ -1112,7 +1184,7 @@ void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
   // Populate the tags for the symbol
   tagsLineEdit->clear();
   QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
-  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
   mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
   tagsLineEdit->setText( mTagList.join( "," ) );
 }
@@ -1230,7 +1302,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
 
   if ( selectedItem )
   {
-    StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+    QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
     if ( currentItemType() > 3 )
     {
       QgsDebugMsg( "unknow entity type" );
@@ -1241,7 +1313,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     {
       groupId = mStyle->groupId( selectedItem->text() );
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
     foreach ( QModelIndex index, indexes )
     {
       mStyle->group( type, index.data().toString(), groupId );
@@ -1275,7 +1347,7 @@ void QgsStyleV2ManagerDialog::editSmartgroupAction()
   if ( dlg.exec() == QDialog::Rejected )
     return;
 
-  mStyle->remove( SmartgroupEntity, item->data().toInt() );
+  mStyle->remove( QgsStyleV2::SmartgroupEntity, item->data().toInt() );
   int id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
   if ( !id )
   {

@@ -25,7 +25,7 @@ QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare(): mCurrentSo
 }
 
 
-bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
+bool QgsComposerAttributeTableCompare::operator()( const QgsAttributes& m1, const QgsAttributes& m2 )
 {
   QVariant v1 = m1[mCurrentSortColumn];
   QVariant v2 = m2[mCurrentSortColumn];
@@ -81,14 +81,13 @@ void QgsComposerAttributeTable::initializeAliasMap()
   mFieldAliasMap.clear();
   if ( mVectorLayer )
   {
-    QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator it = fieldMap.constBegin();
-    for ( ; it != fieldMap.constEnd(); ++it )
+    const QgsFields& fields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      QString currentAlias = mVectorLayer->attributeAlias( it.key() );
+      QString currentAlias = mVectorLayer->attributeAlias( idx );
       if ( !currentAlias.isEmpty() )
       {
-        mFieldAliasMap.insert( it.key(), currentAlias );
+        mFieldAliasMap.insert( idx, currentAlias );
       }
     }
   }
@@ -117,7 +116,7 @@ void QgsComposerAttributeTable::setComposerMap( const QgsComposerMap* map )
   }
 }
 
-bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
 {
   if ( !mVectorLayer )
   {
@@ -129,21 +128,35 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap>& at
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = mComposerMap->extent();
+    if ( mVectorLayer && mComposerMap->mapRenderer()
+         && mComposerMap->mapRenderer()->hasCrsTransformEnabled() )
+    {
+      //transform back to layer CRS
+      QgsCoordinateTransform coordTransform( mVectorLayer->crs(), mComposerMap->mapRenderer()->destinationCrs() );
+      try
+      {
+        selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+        return false;
+      }
+    }
   }
 
-  if ( mDisplayAttributes.size() < 1 )
-  {
-    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
-  }
-  else
-  {
-    mVectorLayer->select( mDisplayAttributes.toList(), selectionRect, mShowOnlyVisibleFeatures, mShowOnlyVisibleFeatures );
-  }
+  QgsFeatureRequest req;
+  req.setFilterRect( selectionRect );
+  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
+  if ( mDisplayAttributes.size() >= 0 )
+    req.setSubsetOfAttributes( mDisplayAttributes.toList() );
+
   QgsFeature f;
   int counter = 0;
-  while ( mVectorLayer->nextFeature( f ) && counter < mMaximumNumberOfFeatures )
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+  while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    attributes.push_back( f.attributeMap() );
+    attributes.push_back( f.attributes() );
     ++counter;
   }
 
@@ -163,15 +176,14 @@ QMap<int, QString> QgsComposerAttributeTable::getHeaderLabels() const
   QMap<int, QString> header;
   if ( mVectorLayer )
   {
-    QgsFieldMap vectorFields = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = vectorFields.constBegin();
-    for ( ; fieldIt != vectorFields.constEnd(); ++fieldIt )
+    const QgsFields& vectorFields = mVectorLayer->pendingFields();
+    for ( int idx = 0; idx < vectorFields.count(); ++idx )
     {
-      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( fieldIt.key() ) )
+      if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( idx ) )
       {
         continue;
       }
-      header.insert( fieldIt.key(), attributeDisplayName( fieldIt.key(), fieldIt.value().name() ) );
+      header.insert( idx, attributeDisplayName( idx, vectorFields[idx].name() ) );
     }
   }
   return header;
@@ -214,13 +226,14 @@ void QgsComposerAttributeTable::setSceneRect( const QRectF& rectangle )
     mMaximumNumberOfFeatures = 0;
   }
   QgsComposerItem::setSceneRect( rectangle );
-  emit maximumNumerOfFeaturesChanged( mMaximumNumberOfFeatures );
+  emit maximumNumberOfFeaturesChanged( mMaximumNumberOfFeatures );
 }
 
 bool QgsComposerAttributeTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTable" );
   composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
+  composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
 
   if ( mComposerMap )
   {
@@ -281,7 +294,6 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
     return false;
   }
 
-  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
   mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
 
   //composer map
@@ -364,6 +376,10 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
     }
   }
   bool success = tableReadXML( itemElem, doc );
+
+  //must be done here because tableReadXML->setSceneRect changes mMaximumNumberOfFeatures
+  mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
+
   emit itemChanged();
   return success;
 }

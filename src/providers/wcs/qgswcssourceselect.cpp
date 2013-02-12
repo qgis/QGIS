@@ -19,23 +19,13 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
 #include "qgsnumericsortlistviewitem.h"
 
 #include <QWidget>
-
-#define CPL_SUPRESS_CPLUSPLUS
-#include <gdal.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
     : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
@@ -61,7 +51,12 @@ void QgsWCSSourceSelect::populateLayerList( )
 
   mLayersTreeWidget->clear();
 
-  mCapabilities.setUri( mUri );
+
+  QgsDataSourceURI uri = mUri;
+  QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
+  uri.setParam( "cache", cache );
+
+  mCapabilities.setUri( uri );
 
   if ( !mCapabilities.lastError().isEmpty() )
   {
@@ -150,6 +145,11 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "time", selectedTime() );
   }
 
+  QString cache;
+  QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
+  cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
+  uri.setParam( "cache", cache );
+
   emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 
@@ -192,15 +192,15 @@ void QgsWCSSourceSelect::updateButtons()
   mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
 }
 
-QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
+QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QgsDebugMsg( "entered" );
-  QList<QgsOWSSupportedFormat> formats;
+  QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
   foreach ( QString mime, mimes.keys() )
   {
-    QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { mime, mimes.value( mime ) };
 
     // prefer tiff
     if ( mime == "image/tiff" )

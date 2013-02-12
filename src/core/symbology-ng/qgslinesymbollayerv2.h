@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -55,6 +55,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
     // new stuff
 
@@ -183,7 +185,6 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 

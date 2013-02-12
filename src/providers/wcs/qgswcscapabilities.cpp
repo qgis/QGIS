@@ -67,9 +67,12 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
     mUri( theUri ),
-    mCoverageCount( 0 )
+    mCoverageCount( 0 ),
+    mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
+
+  parseUri();
 
   retrieveServerCapabilities();
 }
@@ -84,12 +87,29 @@ QgsWcsCapabilities::~QgsWcsCapabilities()
   QgsDebugMsg( "deconstructing." );
 }
 
+void QgsWcsCapabilities::parseUri()
+{
+  mCacheLoadControl = QNetworkRequest::PreferNetwork;
+
+  QString cache = mUri.param( "cache" );
+  QgsDebugMsg( "cache = " + cache );
+
+  if ( !cache.isEmpty() )
+  {
+    mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
+  }
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+}
+
 // TODO: return if successful
 void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
 {
   mUri = theUri;
 
   clear();
+
+  parseUri();
+
   retrieveServerCapabilities( );
 }
 
@@ -116,12 +136,6 @@ bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &cov
 {
   QgsDebugMsg( "Entering." );
 
-  // Allow the provider to collect the capabilities first.
-  if ( !retrieveServerCapabilities() )
-  {
-    return false;
-  }
-
   coverageSummary = mCoveragesSupported;
 
   QgsDebugMsg( "Exiting." );
@@ -145,8 +159,9 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   mError = "";
   QNetworkRequest request( url );
   setAuthorization( request );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
@@ -181,40 +196,57 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
 
 void QgsWcsCapabilities::clear()
 {
+  QgsDebugMsg( "Entered" );
   mCoverageCount = 0;
   mCoveragesSupported.clear();
   QgsWcsCapabilitiesProperty c;
   mCapabilities = c;
 }
 
+QString QgsWcsCapabilities::getCapabilitiesUrl( const QString version ) const
+{
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
+
+  if ( !version.isEmpty() )
+  {
+    // 1.0.0 - VERSION
+    // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
+    if ( version.startsWith( "1.0" ) )
+    {
+      url += "&VERSION=" + version;
+    }
+    else if ( version.startsWith( "1.1" ) )
+    {
+      // Ignored by UMN Mapserver 6.0.3, see below
+      url += "&AcceptVersions=" + version;
+    }
+  }
+  return url;
+}
+
+QString QgsWcsCapabilities::getCapabilitiesUrl( ) const
+{
+  return getCapabilitiesUrl( mVersion );
+}
+
 bool QgsWcsCapabilities::retrieveServerCapabilities( )
 {
   clear();
+
   QStringList versions;
 
   QString preferredVersion = mUri.param( "version" );
 
   if ( !preferredVersion.isEmpty() )
   {
-    // This is not
-    if ( preferredVersion.startsWith( "1.0" ) )
-    {
-      versions << "VERSION=" + preferredVersion;
-    }
-    else if ( preferredVersion.startsWith( "1.1" ) )
-    {
-      // Ignored by UMN Mapserver 6.0.3, see below
-      versions << "AcceptVersions=" + preferredVersion;
-    }
+    versions << preferredVersion;
   }
   else
   {
-    // 1.0.0 - VERSION
-    // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
     // We prefer 1.0 because 1.1 has many issues, each server implements it in defferent
     // way with various particularities
     // It may happen that server supports 1.1.0 but gives error for 1.1
-    versions << "VERSION=1.0.0" << "AcceptVersions=1.1.0,1.0.0";
+    versions << "1.0.0" << "1.1.0,1.0.0";
   }
 
   foreach ( QString v, versions )
@@ -232,12 +264,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
 {
   clear();
 
-  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
-
-  if ( !preferredVersion.isEmpty() )
-  {
-    url += "&" + preferredVersion;
-  }
+  QString url = getCapabilitiesUrl( preferredVersion );
 
   if ( ! sendRequest( url ) ) { return false; }
 
@@ -261,6 +288,23 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
   return true;
 }
 
+QString QgsWcsCapabilities::getDescribeCoverageUrl( QString const &identifier ) const
+{
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
+
+  if ( mVersion.startsWith( "1.0" ) )
+  {
+    url += "&COVERAGE=" + identifier;
+  }
+  else if ( mVersion.startsWith( "1.1" ) )
+  {
+    // in 1.1.0, 1.1.1, 1.1.2 the name of param is 'identifier'
+    // but in KVP 'identifiers'
+    url += "&IDENTIFIERS=" + identifier;
+  }
+  return url;
+}
+
 bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool forceRefresh )
 {
   QgsDebugMsg( " identifier = " + identifier );
@@ -274,18 +318,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
   if ( coverage->described && ! forceRefresh ) return true;
 
-  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=" + mVersion;
-
-  if ( mVersion.startsWith( "1.0" ) )
-  {
-    url += "&COVERAGE=" + coverage->identifier;
-  }
-  else if ( mVersion.startsWith( "1.1" ) )
-  {
-    // in 1.1.0, 1.1.1, 1.1.2 the name of param is 'identifier'
-    // but in KVP 'identifiers'
-    url += "&IDENTIFIERS=" + coverage->identifier;
-  }
+  QString url = getDescribeCoverageUrl( coverage->identifier );
 
   if ( ! sendRequest( url ) ) { return false; }
 
@@ -349,6 +382,21 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   }
   else
   {
+    // Resend request if AlwaysCache
+    QNetworkRequest request = mCapabilitiesReply->request();
+    if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
+    {
+      QgsDebugMsg( "Resend request with PreferCache" );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+
+      mCapabilitiesReply->deleteLater();
+
+      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+      return;
+    }
+
     mErrorFormat = "text/plain";
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
     QgsMessageLog::logMessage( mError, tr( "WCS" ) );
@@ -738,7 +786,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // may be GTiff, GeoTIFF, TIFF, GIF, ....
   coverage->supportedFormat = domElementsTexts( coverageOfferingElement, "supportedFormats.formats" );
-  //QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
+  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
   // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
   // If missing, we cannot get native resolution and size.
@@ -762,6 +810,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QList<int> high = parseInts( domElementText( gridElement, "limits.GridEnvelope.high" ) );
     if ( low.size() == 2 && high.size() == 2 )
     {
+      // low/high are indexes in grid -> size is hight - low + 1
       double width = high[0] - low[0] + 1;
       double height = high[1] - low[1] + 1;
       if ( width > 0 && height > 0 )
@@ -902,8 +951,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     }
     else
     {
-      QgsRectangle box( low[0], low[1], high[0], high[1] ) ;
+      QgsRectangle box;
+      QgsCoordinateReferenceSystem crs;
+      if ( crs.createFromOgcWmsCrs( authid ) && crs.axisInverted() )
+      {
+        box = QgsRectangle( low[1], low[0], high[1], high[0] );
+      }
+      else
+      {
+        box = QgsRectangle( low[0], low[1], high[0], high[1] );
+      }
       coverage->boundingBoxes.insert( authid, box );
+      QgsDebugMsg( "crs: " + crs.authid() + " " + crs.description() + QString( " axisInverted = %1" ).arg( crs.axisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }

@@ -113,8 +113,10 @@ void QgsTINInterpolator::initialize()
       {
         attList.push_back( layerDataIt->interpolationAttribute );
       }
-      layerDataIt->vectorLayer->select( attList );
-      while ( layerDataIt->vectorLayer->nextFeature( f ) )
+
+      QgsFeatureIterator fit = layerDataIt->vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+
+      while ( fit.nextFeature( f ) )
       {
         if ( mShowProgressDialog )
         {
@@ -184,13 +186,12 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   bool attributeConversionOk = false;
   if ( !zCoord )
   {
-    QgsAttributeMap attMap = f->attributeMap();
-    QgsAttributeMap::const_iterator att_it = attMap.find( attr );
-    if ( att_it == attMap.end() ) //attribute not found, something must be wrong (e.g. NULL value)
+    QVariant attributeVariant = f->attribute( attr );
+    if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
     {
       return 3;
     }
-    attributeValue = att_it.value().toDouble( &attributeConversionOk );
+    attributeValue = attributeVariant.toDouble( &attributeConversionOk );
     if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
     {
       return 4;

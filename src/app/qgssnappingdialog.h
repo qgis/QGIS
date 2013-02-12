@@ -55,6 +55,8 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
 
     void on_cbxEnableTopologicalEditingCheckBox_stateChanged( int );
 
+    void on_cbxEnableIntersectionSnappingCheckBox_stateChanged( int );
+
   protected:
     /**Constructor
     @param canvas pointer to the map canvas (for detecting which vector layers are loaded
@@ -85,6 +87,9 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
 
     /**Set checkbox value based on project setting*/
     void setTopologicalEditingState();
+
+    /**Set checkbox value based on project setting*/
+    void setIntersectionSnappingState();
 };
 
 #endif

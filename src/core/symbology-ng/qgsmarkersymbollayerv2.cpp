@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,7 @@
 #include "qgssymbollayerv2utils.h"
 
 #include "qgsrendercontext.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgssvgcache.h"
 
 #include <QPainter>
@@ -97,11 +95,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 {
   QColor brushColor = mColor;
   QColor penColor = mBorderColor;
-  if ( context.alpha() < 1 )
-  {
-    penColor.setAlphaF( context.alpha() );
-    brushColor.setAlphaF( context.alpha() );
-  }
+
+  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( mBorderColor.alphaF() * context.alpha() );
+
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
@@ -412,6 +409,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
         case QgsSymbolV2::ScaleArea:
           scaledSize = sqrt( scaledSize );
           break;
+        case QgsSymbolV2::ScaleDiameter:
+          break;
       }
 
       double half = scaledSize / 2.0;
@@ -481,6 +480,68 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
 }
 
+QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
+{
+  Q_UNUSED( mmScaleFactor );
+  Q_UNUSED( mapUnitScaleFactor );
+#if 0
+  QString ogrType = "3"; //default is circle
+  if ( mName == "square" )
+  {
+    ogrType = "5";
+  }
+  else if ( mName == "triangle" )
+  {
+    ogrType = "7";
+  }
+  else if ( mName == "star" )
+  {
+    ogrType = "9";
+  }
+  else if ( mName == "circle" )
+  {
+    ogrType = "3";
+  }
+  else if ( mName == "cross" )
+  {
+    ogrType = "0";
+  }
+  else if ( mName == "x" || mName == "cross2" )
+  {
+    ogrType = "1";
+  }
+  else if ( mName == "line" )
+  {
+    ogrType = "10";
+  }
+
+  QString ogrString;
+  ogrString.append( "SYMBOL(" );
+  ogrString.append( "id:" );
+  ogrString.append( "\"" );
+  ogrString.append( "ogr-sym-" );
+  ogrString.append( ogrType );
+  ogrString.append( "\"" );
+  ogrString.append( ",c:" );
+  ogrString.append( mColor.name() );
+  ogrString.append( ",o:" );
+  ogrString.append( mBorderColor.name() );
+  ogrString.append( QString( ",s:%1mm" ).arg( mSize ) );
+  ogrString.append( ")" );
+  return ogrString;
+#endif //0
+
+  QString ogrString;
+  ogrString.append( "PEN(" );
+  ogrString.append( "c:" );
+  ogrString.append( mColor.name() );
+  ogrString.append( ",w:" );
+  ogrString.append( QString::number( mSize ) );
+  ogrString.append( "mm" );
+  ogrString.append( ")" );
+  return ogrString;
+}
+
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
@@ -535,7 +596,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
 
 QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle )
 {
-  mPath = symbolNameToPath( name );
+  mPath = QgsSymbolLayerV2Utils::symbolNameToPath( name );
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
@@ -638,55 +699,79 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     return;
   }
 
+  double size = context.outputLineWidth( mSize );
+  //don't render symbols with size below one or above 10,000 pixels
+  if (( int )size < 1 || 10000.0 < size )
+  {
+    return;
+  }
+
   p->save();
   QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
   if ( mAngle )
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
-  int size = ( int )( context.outputLineWidth( mSize ) );
-  if ( size < 1 ) //don't render symbols with size below one pixel
-  {
-    return;
-  }
-
   bool rotated = !doubleNear( mAngle, 0 );
   bool drawOnScreen = doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 );
   if ( rotated )
     p->rotate( mAngle );
 
+  bool fitsInCache = true;
+  bool usePict = true;
+  double hwRatio = 1.0;
   if ( drawOnScreen && !rotated )
   {
+    usePict = false;
     const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
-                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-    //consider transparency
-    if ( !doubleNear( context.alpha(), 1.0 ) )
+                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+    if ( fitsInCache && img.width() > 1 )
     {
-      QImage transparentImage = img.copy();
-      QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
-      p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
-    }
-    else
-    {
-      p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+      //consider transparency
+      if ( !doubleNear( context.alpha(), 1.0 ) )
+      {
+        QImage transparentImage = img.copy();
+        QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+        p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
+        hwRatio = ( double )transparentImage.height() / ( double )transparentImage.width();
+      }
+      else
+      {
+        p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+        hwRatio = ( double )img.height() / ( double )img.width();
+      }
     }
   }
-  else
+
+  if ( usePict || !fitsInCache )
   {
-    p->setOpacity( context.alpha( ) );
+    p->setOpacity( context.alpha() );
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-    p->drawPicture( 0, 0, pct );
+
+    if ( pct.width() > 1 )
+    {
+      p->drawPicture( 0, 0, pct );
+      hwRatio = ( double )pct.height() / ( double )pct.width();
+    }
   }
 
   if ( context.selected() )
   {
     QPen pen( context.selectionColor() );
-    pen.setWidth( context.outputLineWidth( 1.0 ) );
+    double penWidth = context.outputLineWidth( 1.0 );
+    if ( penWidth > size / 20 )
+    {
+      // keep the pen width from covering symbol
+      penWidth = size / 20;
+    }
+    double penOffset = penWidth / 2;
+    pen.setWidth( penWidth );
     p->setPen( pen );
     p->setBrush( Qt::NoBrush );
-    double sizePixel = context.outputLineWidth( mSize );
-    p->drawRect( QRectF( -sizePixel / 2.0, -sizePixel / 2.0, sizePixel, sizePixel ) );
+    double wSize = size + penOffset;
+    double hSize = size * hwRatio + penOffset;
+    p->drawRect( QRectF( -wSize / 2.0, -hSize / 2.0, wSize, hSize ) );
   }
 
   p->restore();
@@ -696,7 +781,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["name"] = symbolPathToName( mPath );
+  map["name"] = QgsSymbolLayerV2Utils::symbolPathToName( mPath );
   map["size"] = QString::number( mSize );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
@@ -782,131 +867,6 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   m->setOffset( offset );
   return m;
 }
-
-
-QStringList QgsSvgMarkerSymbolLayerV2::listSvgFiles()
-{
-  // copied from QgsMarkerCatalogue - TODO: unify
-  QStringList list;
-  QStringList svgPaths = QgsApplication::svgPaths();
-
-  for ( int i = 0; i < svgPaths.size(); i++ )
-  {
-    QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-    {
-      svgPaths.insert( i + 1, dir.path() + "/" + item );
-    }
-
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
-    {
-      // TODO test if it is correct SVG
-      list.append( dir.path() + "/" + item );
-    }
-  }
-  return list;
-}
-
-// Stripped down version of listSvgFiles() for specified directory
-QStringList QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( QString directory )
-{
-  // TODO anything that applies for the listSvgFiles() applies this also
-
-  QStringList list;
-  QStringList svgPaths;
-  svgPaths.append( directory );
-
-  for ( int i = 0; i < svgPaths.size(); i++ )
-  {
-    QDir dir( svgPaths[i] );
-    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-    {
-      svgPaths.insert( i + 1, dir.path() + "/" + item );
-    }
-
-    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
-    {
-      list.append( dir.path() + "/" + item );
-    }
-  }
-  return list;
-
-}
-
-QString QgsSvgMarkerSymbolLayerV2::symbolNameToPath( QString name )
-{
-  // copied from QgsSymbol::setNamedPointSymbol - TODO: unify
-
-  // we might have a full path...
-  if ( QFile( name ).exists() )
-    return QFileInfo( name ).canonicalFilePath();
-
-  // SVG symbol not found - probably a relative path was used
-
-  QStringList svgPaths = QgsApplication::svgPaths();
-  for ( int i = 0; i < svgPaths.size(); i++ )
-  {
-    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
-    QFileInfo myInfo( name );
-    QString myFileName = myInfo.fileName(); // foo.svg
-    QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
-
-    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
-    if ( QFile( myLocalPath ).exists() )
-    {
-      QgsDebugMsg( "Svg found in alternative path" );
-      return QFileInfo( myLocalPath ).canonicalFilePath();
-    }
-    else if ( myInfo.isRelative() )
-    {
-      QFileInfo pfi( QgsProject::instance()->fileName() );
-      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
-      if ( pfi.exists() && QFile( alternatePath ).exists() )
-      {
-        QgsDebugMsg( "Svg found in alternative path" );
-        return QFileInfo( alternatePath ).canonicalFilePath();
-      }
-      else
-      {
-        QgsDebugMsg( "Svg not found in project path" );
-      }
-    }
-    else
-    {
-      //couldnt find the file, no happy ending :-(
-      QgsDebugMsg( "Computed alternate path but no svg there either" );
-    }
-  }
-  return QString();
-}
-
-QString QgsSvgMarkerSymbolLayerV2::symbolPathToName( QString path )
-{
-  // copied from QgsSymbol::writeXML
-
-  QFileInfo fi( path );
-  if ( !fi.exists() )
-    return path;
-
-  path = fi.canonicalFilePath();
-
-  QStringList svgPaths = QgsApplication::svgPaths();
-
-  for ( int i = 0; i < svgPaths.size(); i++ )
-  {
-    QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
-
-    if ( !dir.isEmpty() && path.startsWith( dir ) )
-    {
-      path = path.mid( dir.size() );
-      break;
-    }
-  }
-
-  return path;
-}
-
 
 //////////
 

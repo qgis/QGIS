@@ -1,0 +1,4 @@
+Convert Polygon/Line Vertices to Points
+shapes_polygons
+ParameterVector|SHAPES|Shapes|-1|False
+OutputVector|POINTS|Points

@@ -4,6 +4,11 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
+** This library/program is free software; you can redistribute it
+** and/or modify it under the terms of the GNU Library General Public
+** License as published by the Free Software Foundation; either
+** version 2 of the License, or ( at your option ) any later version.
+**
 ** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
@@ -14,13 +19,12 @@
 ** a written agreement between you and Nokia.
 **
 ** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
+** Alternatively, this file may be used under the terms of the
+** GNU Lesser General Public License version 2.1 as published by the Free Software
 ** Foundation and appearing in the file LICENSE.LGPL included in the
 ** packaging of this file.  Please review the following information to
 ** ensure the GNU Lesser General Public License version 2.1 requirements
 ** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
 ** In addition, as a special exception, Nokia gives you certain additional
 ** rights.  These rights are described in the Nokia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
@@ -95,6 +99,15 @@ void CharacterWidget::updateFontMerging( bool enable )
   update();
 }
 
+void CharacterWidget::updateColumns( int cols )
+{
+  if ( columns == cols || cols < 1 )
+    return;
+  columns = cols;
+  adjustSize();
+  update();
+}
+
 //! [3]
 QSize CharacterWidget::sizeHint() const
 {
@@ -108,7 +121,7 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   uint key = ( widgetPosition.y() / squareSize ) * columns + widgetPosition.x() / squareSize;
 
-  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1%2</span><p>Value: 0x%3\">" )
+  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">%2</span><p>Value: 0x%3" )
                  .arg( displayFont.family() )
                  .arg( QChar( key ) )
                  .arg( key, 16 );

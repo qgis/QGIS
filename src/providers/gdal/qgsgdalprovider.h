@@ -65,7 +65,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     *                otherwise we contact the host directly.
     *
     */
-    QgsGdalProvider( QString const & uri = 0 );
+    QgsGdalProvider( QString const & uri = 0, bool update = false );
+
+    /** Create invalid provider with error */
+    QgsGdalProvider( QString const & uri, QgsError error );
 
     //! Destructor
     ~QgsGdalProvider();
@@ -121,33 +124,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     bool isValid();
 
-    /** \brief Identify raster value(s) found on the point position */
-    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    //bool identify( const QgsPoint & point, QMap<int, QString>& results );
-
-    QMap<int, void *> identify( const QgsPoint & point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     */
-    QString identifyAsText( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     * \note  added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -177,10 +154,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
       */
     int capabilities() const;
 
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
 
-    QgsRasterInterface::DataType dataTypeFormGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -192,14 +169,16 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
 
+    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
     //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
-    bool srcHasNoDataValue( int bandNo ) const;
-    double noDataValue() const;
+    //bool srcHasNoDataValue( int bandNo ) const;
+    //double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;
@@ -211,16 +190,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * into a subset of the GUI raster properties "Metadata" tab.
      */
     QString metadata();
-
-    // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
-    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
-    QStringList supportedImageEncodings() { return QStringList(); }
-    QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const &mimeType )
-    { Q_UNUSED( mimeType ); }
-    void setImageCrs( QString const &crs )
-    { Q_UNUSED( crs ); }
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
@@ -252,9 +221,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   int theSampleSize = 0,
                                   bool theIncludeOutOfRange = false );
 
-    QString buildPyramids( const QList<QgsRasterPyramid> &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           RasterPyramidsFormat theFormat = PyramidsGTiff );
+    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                           const QString & theResamplingMethod = "NEAREST",
+                           RasterPyramidsFormat theFormat = PyramidsGTiff,
+                           const QStringList & theCreateOptions = QStringList() );
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 
     /** \brief Close data set and release related data */
@@ -268,11 +238,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
+    /*
     bool create( const QString& format, int nBands,
-                 QgsRasterDataProvider::DataType type,
+                 QGis::DataType type,
                  int width, int height, double* geoTransform,
                  const QgsCoordinateReferenceSystem& crs,
                  QStringList createOptions = QStringList() );
+    */
 
     /**Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
@@ -285,10 +257,17 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**Remove dataset*/
     bool remove();
 
+    QString validateCreationOptions( const QStringList& createOptions, QString format );
+    QString validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
+
   signals:
     void statusChanged( QString );
 
   private:
+    // update mode
+    bool mUpdate;
+
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
@@ -338,6 +317,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** \brief sublayers list saved for subsequent access */
     QStringList mSubLayers;
+
 };
 
 #endif

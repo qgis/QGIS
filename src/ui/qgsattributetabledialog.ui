@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>763</width>
+    <width>775</width>
     <height>570</height>
    </rect>
   </property>
@@ -274,8 +274,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionToggleEditing.png</normaloff>../../images/themes/default/mActionToggleEditing.png</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -303,8 +303,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionSaveEdits.png</normaloff>../../images/themes/default/mActionSaveEdits.png</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionSaveEdits.svg</normaloff>:/images/themes/default/mActionSaveEdits.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -433,7 +433,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="query"/>
+      <widget class="QgsFilterLineEdit" name="query"/>
      </item>
      <item>
       <widget class="QLabel" name="searchIn">
@@ -465,6 +465,11 @@
    <extends>QTableView</extends>
    <header>qgsattributetableview.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mView</tabstop>
@@ -486,7 +491,9 @@
   <tabstop>mRemoveAttribute</tabstop>
   <tabstop>mOpenFieldCalculator</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mToggleEditingButton</sender>

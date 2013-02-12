@@ -25,6 +25,7 @@
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
+#include <QProcess>
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
@@ -50,6 +51,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
+QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
@@ -91,10 +93,11 @@ void QgsApplication::init( QString customConfigPath )
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
-  foreach( QString path, QStringList() << "" << "/.." << "/bin" )
+  // "/../../.." is for Mac bundled app in build directory
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/path.txt" );
-    if( f.exists() )
+    if ( f.exists() )
       break;
   }
   if ( f.exists() && f.open( QIODevice::ReadOnly ) )
@@ -150,6 +153,19 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+
+  // store system environment variables passed to application, before they are adjusted
+  QMap<QString, QString> systemEnvVarMap;
+  foreach ( const QString &varStr, QProcess::systemEnvironment() )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    systemEnvVarMap.insert( varStrName, varStrValue );
+  }
+  ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -427,11 +443,6 @@ const QString QgsApplication::translatorsFilePath()
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
-const QString QgsApplication::developerPath()
-{
-  return QString(); // developer images are no longer shipped!
-}
-
 /*!
   Returns the path to the help application.
 */
@@ -541,15 +552,6 @@ const QStringList QgsApplication::svgPaths()
   return myPathList;
 }
 
-/*!
-  Returns the path to the applications svg directories.
-*/
-const QString QgsApplication::svgPath()
-{
-  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
-  return ABISYM( mPkgDataPath ) + svgSubDir;
-}
-
 const QString QgsApplication::userStyleV2Path()
 {
   return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
@@ -592,15 +594,18 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::showSettings()
 {
+  QString myEnvironmentVar( getenv( "QGIS_PREFIX_PATH" ) );
   QString myState = tr( "Application state:\n"
-                        "Prefix:\t\t%1\n"
-                        "Plugin Path:\t\t%2\n"
-                        "Package Data Path:\t%3\n"
-                        "Active Theme Name:\t%4\n"
-                        "Active Theme Path:\t%5\n"
-                        "Default Theme Path:\t%6\n"
-                        "SVG Search Paths:\t%7\n"
-                        "User DB Path:\t%8\n" )
+                        "QGIS_PREFIX_PATH env var:\t\t%1\n"
+                        "Prefix:\t\t%2\n"
+                        "Plugin Path:\t\t%3\n"
+                        "Package Data Path:\t%4\n"
+                        "Active Theme Name:\t%5\n"
+                        "Active Theme Path:\t%6\n"
+                        "Default Theme Path:\t%7\n"
+                        "SVG Search Paths:\t%8\n"
+                        "User DB Path:\t%9\n" )
+                    .arg( myEnvironmentVar )
                     .arg( prefixPath() )
                     .arg( pluginPath() )
                     .arg( pkgDataPath() )
@@ -854,3 +859,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
+
+

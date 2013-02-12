@@ -24,6 +24,7 @@
 class QWidget;
 class QDomDocument;
 class QDomElement;
+class QGraphicsLineItem;
 
 class QqsComposition;
 
@@ -105,16 +106,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     virtual void setSelected( bool s );
 
     /** \brief Is selected */
-    virtual bool selected( void ) {return QGraphicsRectItem::isSelected();}
+    virtual bool selected() {return QGraphicsRectItem::isSelected();}
 
     /** stores state in project */
-    virtual bool writeSettings( void );
+    virtual bool writeSettings();
 
     /** read state from project */
-    virtual bool readSettings( void );
+    virtual bool readSettings();
 
     /** delete settings from project file  */
-    virtual bool removeSettings( void );
+    virtual bool removeSettings();
 
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
@@ -160,22 +161,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @return boolean - true if there is a frame around this item, otherwise false.
-     * @note deprecated since 1.8 don't use!
-     * @see hasFrame
-     */
-    Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
-    /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
+     * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
-    /** Set whether this item has a frame drawn around it or not.
-     * @returns void
-     * @note deprecated since 1.8 don't use!
-     * @see setFrameEnabled
-     */
-    Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
+
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @returns nothing
@@ -184,11 +175,28 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
 
+
+    /** Whether this item has a Background or not.
+     * @returns true if there is a Background around this item, otherwise false.
+     * @note introduced since 2.0
+     * @see hasBackground
+     */
+    bool hasBackground() const {return mBackground;}
+
+    /** Set whether this item has a Background drawn around it or not.
+     * @param drawBackground draw Background
+     * @returns nothing
+     * @note introduced in 2.0
+     * @see hasBackground
+     */
+    void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
     const QgsComposition* composition() const {return mComposition;}
+    QgsComposition* composition() {return mComposition;}
 
     virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
 
@@ -221,6 +229,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
+
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double fontDescentMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
@@ -271,9 +282,13 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Rectangle used during move and resize actions*/
     QGraphicsRectItem* mBoundingResizeRectangle;
+    QGraphicsLineItem* mHAlignSnapItem;
+    QGraphicsLineItem* mVAlignSnapItem;
 
     /**True if item fram needs to be painted*/
     bool mFrame;
+    /**True if item background needs to be painted*/
+    bool mBackground;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
@@ -350,6 +365,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
         @param x in/out: x coordinate before / after the rotation
         @param y in/out: y cooreinate before / after the rotation*/
     void rotate( double angle, double& x, double& y ) const;
+
+    /**Return horizontal align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* hAlignSnapItem();
+    void deleteHAlignSnapItem();
+    /**Return vertical align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* vAlignSnapItem();
+    void deleteVAlignSnapItem();
+    void deleteAlignItems();
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/

@@ -29,14 +29,15 @@ class QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBas
 
   public:
     QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent );
-
-    //void handleAttributeDoubleClicked( QTreeWidgetItem * item, int column );
+    /**Adds an attribute from the list of available attributes to the assigned attributes with a random color.*/
+    void addAttribute( QTreeWidgetItem * item );
 
   public slots:
     void apply();
     void on_mDiagramTypeComboBox_currentIndexChanged( int index );
     void on_mTransparencySlider_valueChanged( int value );
     void on_mAddCategoryPushButton_clicked();
+    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mBackgroundColorButton_clicked();
     void on_mFindMaximumValueButton_clicked();
     void on_mDiagramPenColorButton_clicked();

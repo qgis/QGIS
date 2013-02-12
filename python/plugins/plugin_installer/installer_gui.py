@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008-2010 Borys Jurgiel
@@ -12,17 +13,20 @@ Copyright (C) 2008-2010 Borys Jurgiel
  *                                                                         *
  ***************************************************************************/
 """
-
+import sys
+import time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import QgsApplication, QgsContextHelp
-import sys, time
+
 from ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 from ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
 from ui_qgsplugininstallerbase import Ui_QgsPluginInstallerDialogBase
+
 from installer_data import *
 
 try:
@@ -281,6 +285,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.radioPluginType0, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType1, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType2, SIGNAL("toggled (bool)"), self.changePluginPolicy)
+    # increase default icon size
+    self.treePlugins.setIconSize(QSize(22, 22))
     if repositories.checkingOnStart():
       self.checkUpdates.setChecked(Qt.Checked)
     else:
@@ -475,16 +481,24 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           repository = self.tr("only locally available")
         else:
           repository = p["repository"]
-        a = QTreeWidgetItem(self.treePlugins)
-        if p["error"]:
-          a.setText(0,statuses[p["error"]])
+        a = QgsPluginTreeItem(self.treePlugins)
+        if p["experimental"]:
+          a.setIcon(0, QIcon(":/plugins/installer/pluginExperimental.png"))
+          a.setToolTip(0, self.tr("Experimental plugin. Use at own risk"))
+          a.setData(0, Qt.UserRole, QVariant(0))
         else:
-          a.setText(0,statuses[p["status"]])
-        a.setToolTip(0,statusTip)
-        a.setText(1,p["name"])
-        a.setText(2,ver)
-        a.setToolTip(2,verTip)
-        a.setText(3,desc)
+          # set empty icon to keep row height same for all plugins
+          a.setIcon(0, QIcon(":/plugins/installer/pluginStable.png"))
+          a.setData(0, Qt.UserRole, QVariant(1))
+        if p["error"]:
+          a.setText(1,statuses[p["error"]])
+        else:
+          a.setText(1,statuses[p["status"]])
+        a.setToolTip(1,statusTip)
+        a.setText(2,p["name"])
+        a.setText(3,ver)
+        a.setToolTip(3,verTip)
+        a.setText(4,desc)
         # split the tooltip into multiple lines when they are too long
         tmp = ""
         splitTip = ""
@@ -494,16 +508,16 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             else:
                 splitTip += tmp + "\n"
                 tmp = word
-        a.setToolTip(3, splitTip+tmp)
-        a.setText(4,p["author"])
+        a.setToolTip(4, splitTip+tmp)
+        a.setText(5,p["author"])
         if p["homepage"]:
-          a.setToolTip(4,p["homepage"])
+          a.setToolTip(5,p["homepage"])
         else:
-          a.setToolTip(4,"")
-        a.setText(5,repository)
-        a.setToolTip(5,p["url"])
+          a.setToolTip(6,"")
+        a.setText(6,repository)
+        a.setToolTip(6,p["url"])
         # set fonts and colors
-        for i in [0,1,2,3,4,5]:
+        for i in [0,1,2,3,4,5,6]:
           if p["error"]:
             a.setForeground(i,QBrush(QColor(Qt.red)))
           if p["status"] in ["new","upgradeable"] or p["error"]:
@@ -559,7 +573,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     item = self.treePlugins.currentItem()
     if not item:
       return
-    key = plugins.keyByUrl(item.toolTip(5))
+    key = plugins.keyByUrl(item.toolTip(6))
     if not key:
       return
     plugin = plugins.all()[key]
@@ -582,7 +596,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def installPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.installPlugin(key)
 
 
@@ -590,7 +604,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def uninstallPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.uninstallPlugin(key)
 
 
@@ -922,3 +936,14 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     plugins.updateSeenPluginsList()
     QDialog.reject(self)
 # --- /class QgsPluginInstallerDialog ------------------------------------------------------------------------ #
+
+class QgsPluginTreeItem(QTreeWidgetItem):
+  def __init__(self, parent=None):
+    QTreeWidgetItem.__init__(self, parent)
+
+  def __lt__(self, otherItem):
+    column = self.treeWidget().sortColumn()
+    if column == 0:
+      return self.data(column, Qt.UserRole).toInt()[0] < otherItem.data(column, Qt.UserRole).toInt()[0]
+    else:
+      return self.text(column) < otherItem.text(column)

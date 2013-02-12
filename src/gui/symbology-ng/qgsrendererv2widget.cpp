@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -173,7 +173,7 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 #include "qgsfield.h"
 #include <QMenu>
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFieldMap& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
     : QObject( menu ), mFlds( flds )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
@@ -220,6 +220,7 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
 
 void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup )
 {
+  Q_UNUSED( slot );
   QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
   aNo->setCheckable( true );
   menu->addAction( aNo );
@@ -227,9 +228,9 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot,
 
   bool hasField = false;
   //const QgsFieldMap& flds = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = mFlds.begin(); it != mFlds.end(); ++it )
+  for ( int idx = 0; idx < mFlds.count(); ++idx )
   {
-    const QgsField& fld = it.value();
+    const QgsField& fld = mFlds[idx];
     if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
     {
       QAction* a = new QAction( fld.name(), actionGroup );

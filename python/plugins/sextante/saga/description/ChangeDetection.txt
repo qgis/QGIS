@@ -1,0 +1,16 @@
+Change Detection
+imagery_classification
+ParameterRaster|INITIAL|Initial State|False
+ParameterTable|INI_LUT|Look-up Table|True
+ParameterTableField|INI_LUT_MIN|Value|INI_LUT
+ParameterTableField|INI_LUT_MAX|Value (Maximum)|INI_LUT
+ParameterTableField|INI_LUT_NAM|Name|INI_LUT
+ParameterRaster|FINAL|Final State|False
+ParameterTable|FIN_LUT|Look-up Table|True
+ParameterTableField|FIN_LUT_MIN|Value|FIN_LUT
+ParameterTableField|FIN_LUT_MAX|Value (Maximum)|FIN_LUT
+ParameterTableField|FIN_LUT_NAM|Name|FIN_LUT
+ParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
+ParameterSelection|OUTPUT|Output as...|[0] cells;[1] percent;[2] area
+OutputRaster|CHANGE|Changes
+OutputTable|CHANGES|Changes

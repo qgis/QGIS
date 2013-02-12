@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import loaded vector" module="v.in.ogr"> 
-        <ogr key="dsn" layeroption="layer" whereoption="where" label="Loaded layer" /> 
-        <option key="output" /> 
+<qgisgrassmodule label="Import loaded vector" module="v.in.ogr">
+        <ogr key="dsn" layeroption="layer" whereoption="where" label="Loaded layer" />
+        <option key="output" />
 	<option key="type" advanced="yes"/>
         <flag key="z" answer="off" hidden="no" advanced="yes" />
         <flag key="e" answer="off" hidden="no" advanced="yes" />

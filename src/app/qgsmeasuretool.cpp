@@ -35,17 +35,20 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 {
   mMeasureArea = measureArea;
 
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea );
+  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QGis::Polygon : QGis::Line );
 
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
-  mDone = false;
+  mDone = true;
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
 
-  mDialog = new QgsMeasureDialog( this );
+  mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
@@ -99,15 +102,13 @@ void QgsMeasureTool::deactivate()
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
-  // Append point we will move
-  mPoints.append( QgsPoint( 0, 0 ) );
 
-  mRubberBand->reset( mMeasureArea );
+  mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
 
   // re-read settings
   updateSettings();
 
-  mDone = false;
+  mDone = true;
   mWrongProjectProjection = false;
 
 }
@@ -120,7 +121,7 @@ void QgsMeasureTool::updateSettings()
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
   int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
-
+  mDialog->updateSettings();
 }
 
 //////////////////////////
@@ -132,9 +133,10 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
     if ( mDone )
     {
       mDialog->restart();
+      QgsPoint point = snapPoint( e->pos() );
+      addPoint( point );
+      mDone = false;
     }
-    QgsPoint idPoint = snapPoint( e->pos() );
-    // mDialog->mousePress( idPoint );
   }
 }
 
@@ -175,6 +177,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::LeftButton )
   {
+    // Append point we will move
     addPoint( point );
     mDialog->show();
   }

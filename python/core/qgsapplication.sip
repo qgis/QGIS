@@ -61,10 +61,10 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     QgsApplication(SIP_PYLIST argv, bool GUIenabled, QString customConfigPath = QString() ) /PostHook=__pyQtQAppHook__/ [(int &argc, char **argv, bool GUIenabled, QString customConfigPath = QString() )];
 %MethodCode
         // The Python interface is a list of argument strings that is modified.
-        
+
         int argc;
         char **argv;
-        
+
         // Convert the list.
         if ((argv = qtgui_ArgvToC(a0, argc)) == NULL)
             sipIsErr = 1;
@@ -72,9 +72,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
         {
             // Create it now the arguments are right.
             static int nargc = argc;
-        
+
             sipCpp = new sipQgsApplication(nargc, argv, a1, *a2);
-        
+
             // Now modify the original list.
             qtgui_UpdatePyArgv(a0, argc, argv);
         }
@@ -124,10 +124,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static const QString translatorsFilePath();
 
-    //! Returns the path to the developer image directory.
-    //! @deprecated images are not provided anymore :-P
-    static const QString developerPath() /Deprecated/;
-
     //! Returns the path to the help application.
     static const QString helpAppPath();
 
@@ -156,9 +152,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! @note added in 1.4
     static const QStringList svgPaths();
 
-    //! Returns the paths to svg applications svg directory.
-    //! @deprecated since 1.4 - use svgPaths()
-    static const QString svgPath() /Deprecated/;
+    //! Returns the system environment variables passed to application.
+    //! @note added in 1.9
+    static const QMap<QString, QString> systemEnvVars();
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();
@@ -228,7 +224,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
       XDR = 0,  // network, or big-endian, byte order
       NDR = 1   // little-endian byte order
     };
-    
+
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
@@ -298,5 +294,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note added in 2.0 */
     static void applyGdalSkippedDrivers();
 
+  signals:
+    // void preNotify( QObject * receiver, QEvent * event, bool * done );
 };
-

@@ -16,9 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsdistancearea.h"
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgisappstylesheet.h"
+#include "qgslegend.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
@@ -31,13 +34,16 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
+#include "qgscomposer.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
+#include <QProcess>
 #include <QToolBar>
+#include <QScrollBar>
 #include <QSize>
 #include <QStyleFactory>
 #include <QMessageBox>
@@ -56,7 +62,6 @@
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
-const char * QgsOptions::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -67,6 +72,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 {
   setupUi( this );
 
+  // stylesheet setup
+  mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
+  mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
+  mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
+
+  connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
+
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -75,13 +87,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
-  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
-
 #ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
 #endif
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
+  connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
   foreach ( QString style, styles )
@@ -95,6 +106,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // read the current browser and set it
   QSettings settings;
+  // mOptionsListWidget width is fixed to takes up less space in QtDesigner
+  // revert it now unless the splitter's state hasn't been saved yet
+  mOptionsListWidget->setMaximumWidth(
+    settings.value( "/Windows/Options/splitState" ).isNull() ? 150 : 16777215 );
+
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
@@ -104,6 +120,97 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
   spinBoxIdentifyValue->setMinimum( 0.01 );
   spinBoxIdentifyValue->setValue( identifyValue );
+
+  // custom environment variables
+  bool useCustomVars = settings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  mCustomVariablesChkBx->setChecked( useCustomVars );
+  if ( !useCustomVars )
+  {
+    mAddCustomVarBtn->setEnabled( false );
+    mRemoveCustomVarBtn->setEnabled( false );
+    mCustomVariablesTable->setEnabled( false );
+  }
+  QStringList customVarsList = settings.value( "qgis/customEnvVars", "" ).toStringList();
+  foreach ( const QString &varStr, customVarsList )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '|' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrApply = varStr.left( pos );
+    QString varStrNameValue = varStr.mid( pos + 1 );
+    pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStrNameValue.left( pos );
+    QString varStrValue = varStrNameValue.mid( pos + 1 );
+
+    addCustomEnvVarRow( varStrName, varStrValue, varStrApply );
+  }
+  QFontMetrics fmCustomVar( mCustomVariablesTable->horizontalHeader()->font() );
+  int fmCustomVarH = fmCustomVar.height() + 8;
+  mCustomVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
+
+  mCustomVariablesTable->setColumnWidth( 0, 120 );
+  if ( mCustomVariablesTable->rowCount() > 0 )
+  {
+    mCustomVariablesTable->resizeColumnToContents( 1 );
+  }
+  else
+  {
+    mCustomVariablesTable->setColumnWidth( 1, 120 );
+  }
+
+  // current environment variables
+  mCurrentVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
+  QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
+  QStringList currentVarsList = QProcess::systemEnvironment();
+
+  foreach ( const QString &varStr, currentVarsList )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QStringList varStrItms;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    varStrItms << varStrName << varStrValue;
+
+    // check if different than system variable
+    QString sysVarVal = QString( "" );
+    bool sysVarMissing = !sysVarsMap.contains( varStrName );
+    if ( sysVarMissing )
+      sysVarVal = tr( "not present" );
+
+    if ( !sysVarMissing && sysVarsMap.value( varStrName ) != varStrValue )
+      sysVarVal = sysVarsMap.value( varStrName );
+
+    if ( !sysVarVal.isEmpty() )
+      sysVarVal = tr( "System value: %1" ).arg( sysVarVal );
+
+    int rowCnt = mCurrentVariablesTable->rowCount();
+    mCurrentVariablesTable->insertRow( rowCnt );
+
+    QFont fItm;
+    for ( int i = 0; i < varStrItms.size(); ++i )
+    {
+      QTableWidgetItem* varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
+      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                            | Qt::ItemIsEditable | Qt::ItemIsDragEnabled );
+      fItm = varNameItm->font();
+      if ( !sysVarVal.isEmpty() )
+      {
+        fItm.setBold( true );
+        varNameItm->setFont( fItm );
+        varNameItm->setToolTip( sysVarVal );
+      }
+      mCurrentVariablesTable->setItem( rowCnt, i, varNameItm );
+    }
+    fItm.setBold( true );
+    QFontMetrics fmRow( fItm );
+    mCurrentVariablesTable->setRowHeight( rowCnt, fmRow.height() + 6 );
+  }
+  if ( mCurrentVariablesTable->rowCount() > 0 )
+    mCurrentVariablesTable->resizeColumnToContents( 0 );
 
   //local directories to search when loading c++ plugins
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
@@ -208,7 +315,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // 0 = Always -> always ask (if there are existing sublayers)
   // 1 = If needed -> ask if layer has no bands, but has sublayers
   // 2 = Never -> never prompt, will not load anything
-  // 4 = Load all -> never prompt, but load all sublayers
+  // 3 = Load all -> never prompt, but load all sublayers
   cmbPromptRasterSublayers->clear();
   cmbPromptRasterSublayers->addItem( tr( "Always" ) );
   cmbPromptRasterSublayers->addItem( tr( "If needed" ) ); //this means, prompt if there are sublayers but no band in the main dataset
@@ -220,7 +327,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbScanItemsInBrowser->clear();
   cmbScanItemsInBrowser->addItem( tr( "Check file contents" ), "contents" ); // 0
   cmbScanItemsInBrowser->addItem( tr( "Check extension" ), "extension" );    // 1
-  int index = cmbScanItemsInBrowser->findData( settings.value( "/qgis/scanItemsInBrowser", "" ) );
+  int index = cmbScanItemsInBrowser->findData( settings.value( "/qgis/scanItemsInBrowser2", "" ) );
   if ( index == -1 ) index = 1;
   cmbScanItemsInBrowser->setCurrentIndex( index );
 
@@ -230,7 +337,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1 - removed
   cmbScanZipInBrowser->addItem( tr( "Basic scan" ), QVariant( "basic" ) );
   cmbScanZipInBrowser->addItem( tr( "Full scan" ), QVariant( "full" ) );
-  index = cmbScanZipInBrowser->findData( settings.value( "/qgis/scanZipInBrowser", "" ) );
+  index = cmbScanZipInBrowser->findData( settings.value( "/qgis/scanZipInBrowser2", "" ) );
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
@@ -251,6 +358,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
+
+  // log rendering events, for userspace debugging
+  mLogCanvasRefreshChkBx->setChecked( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() );
+
   //set the default projection behaviour radio buttongs
   if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
   {
@@ -278,24 +389,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //display the crs as friendly text rather than in wkt
   leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
-  // populate combo box with ellipsoids
-  QgsDebugMsg( "Setting upp ellipsoid" );
-
-  getEllipsoidList();
-  // Pre-select current ellipsoid
-  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
-  cmbEllipsoid->setCurrentIndex( cmbEllipsoid->findText( getEllipsoidName( myEllipsoidId ), Qt::MatchExactly ) );
-  // Check if CRS transformation is on, or else turn combobox off
-  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
-  {
-    cmbEllipsoid->setEnabled( true );
-    cmbEllipsoid->setToolTip( "" );
-  }
-  else
-  {
-    cmbEllipsoid->setEnabled( false );
-    cmbEllipsoid->setToolTip( "Can only use ellipsoidal calculations when CRS transformation is enabled" );
-  }
 
   // Set the units for measuring
   QGis::UnitType myDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
@@ -360,7 +453,41 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
-  spinFontSize->setValue( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
+
+  // set font size and family
+  spinFontSize->blockSignals( true );
+  mFontFamilyRadioQt->blockSignals( true );
+  mFontFamilyRadioCustom->blockSignals( true );
+  mFontFamilyComboBox->blockSignals( true );
+
+  spinFontSize->setValue( mStyleSheetOldOpts.value( "fontPointSize" ).toInt() );
+  QString fontFamily = mStyleSheetOldOpts.value( "fontFamily" ).toString();
+  bool isQtDefault = ( fontFamily == mStyleSheetBuilder->defaultFont().family() );
+  mFontFamilyRadioQt->setChecked( isQtDefault );
+  mFontFamilyRadioCustom->setChecked( !isQtDefault );
+  mFontFamilyComboBox->setEnabled( !isQtDefault );
+  if ( !isQtDefault )
+  {
+    QFont *tempFont = new QFont( fontFamily );
+    // is exact family match returned from system?
+    if ( tempFont->family() == fontFamily )
+    {
+      mFontFamilyComboBox->setCurrentFont( *tempFont );
+    }
+    delete tempFont;
+  }
+
+  spinFontSize->blockSignals( false );
+  mFontFamilyRadioQt->blockSignals( false );
+  mFontFamilyRadioCustom->blockSignals( false );
+  mFontFamilyComboBox->blockSignals( false );
+
+  // custom group boxes
+  mCustomGroupBoxChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxCustom" ).toBool() );
+  mBoldGroupBoxTitleChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxBoldTitle" ).toBool() );
+
+  mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
+
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
@@ -382,6 +509,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
   chkAddedVisibility->setChecked( settings.value( "/qgis/new_layers_visible", true ).toBool() );
   cbxLegendClassifiers->setChecked( settings.value( "/qgis/showLegendClassifiers", false ).toBool() );
+  mLegendLayersBoldChkBx->setChecked( settings.value( "/qgis/legendLayersBold", true ).toBool() );
+  mLegendGroupsBoldChkBx->setChecked( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
   cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
@@ -392,7 +521,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", true ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
-  cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() );
+  cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
@@ -440,7 +569,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
   pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
-  capitaliseCheckBox->setChecked( settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
+  capitaliseCheckBox->setChecked( settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
+
+  int projOpen = settings.value( "/qgis/projOpenAtLaunch", 0 ).toInt();
+  mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
+  mProjectOnLaunchLineEdit->setText( settings.value( "/qgis/projOpenAtLaunchPath" ).toString() );
+  mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
+  mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
@@ -605,15 +740,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
   } //default is central point
 
+  // restore window and widget geometry/state
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
+  mOptionsSplitter->restoreState( settings.value( "/Windows/Options/splitState" ).toByteArray() );
+
+  int currentIndx = settings.value( "/Windows/Options/row" ).toInt();
+  mOptionsListWidget->setCurrentRow( currentIndx );
+  mOptionsStackedWidget->setCurrentIndex( currentIndx );
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
-
-  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
-  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
-  tabWidget->setCurrentIndex( currentTab );
-  on_tabWidget_currentChanged( currentTab );
 }
 
 //! Destructor
@@ -621,7 +757,52 @@ QgsOptions::~QgsOptions()
 {
   QSettings settings;
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
+  settings.setValue( "/Windows/Options/splitState", mOptionsSplitter->saveState() );
+  settings.setValue( "/Windows/Options/row",  mOptionsListWidget->currentRow() );
+}
+
+void QgsOptions::showEvent( QShowEvent * e )
+{
+  Q_UNUSED( e );
+  on_mOptionsStackedWidget_currentChanged( -1 );
+  updateVerticalTabs();
+}
+
+void QgsOptions::paintEvent( QPaintEvent * e )
+{
+  Q_UNUSED( e );
+  QTimer::singleShot( 0, this, SLOT( updateVerticalTabs() ) );
+}
+
+void QgsOptions::updateVerticalTabs()
+{
+  if ( mOptionsListWidget->maximumWidth() != 16777215 )
+    mOptionsListWidget->setMaximumWidth( 16777215 );
+  // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
+  // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
+  // Note: called on splitter resize and dialog paint event, so only update when necessary
+  int iconWidth = mOptionsListWidget->iconSize().width();
+  int snapToIconWidth = iconWidth + 32;
+
+  QList<int> splitSizes = mOptionsSplitter->sizes();
+  bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
+
+  int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
+  bool diffWidth = mOptionsListWidget->minimumWidth() != newWidth;
+
+  if ( diffWidth )
+    mOptionsListWidget->setMinimumWidth( newWidth );
+
+  if ( iconOnly && ( diffWidth || mOptionsListWidget->width() != newWidth ) )
+  {
+    splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
+    splitSizes[0] = newWidth;
+    mOptionsSplitter->setSizes( splitSizes );
+  }
+  if ( mOptionsListWidget->wordWrap() && iconOnly )
+    mOptionsListWidget->setWordWrap( false );
+  if ( !mOptionsListWidget->wordWrap() && !iconOnly )
+    mOptionsListWidget->setWordWrap( true );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -728,9 +909,26 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
-void QgsOptions::fontSizeChanged( const QString &fontSize )
+void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
 {
-  QgisApp::instance()->setFontSize( fontSize.toInt() );
+  bool specific = ( indx == 2 );
+  mProjectOnLaunchLineEdit->setEnabled( specific );
+  mProjectOnLaunchPushBtn->setEnabled( specific );
+}
+
+void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
+{
+  // Retrieve last used project dir from persistent settings
+  QSettings settings;
+  QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
+  QString projPath = QFileDialog::getOpenFileName( this,
+                     tr( "Choose project file to open at launch" ),
+                     lastUsedDir,
+                     tr( "QGis files" ) + " (*.qgs *.QGS)" );
+  if ( !projPath.isNull() )
+  {
+    mProjectOnLaunchLineEdit->setText( projPath );
+  }
 }
 
 void QgsOptions::toggleEnableBackbuffer( int state )
@@ -760,6 +958,23 @@ QString QgsOptions::theme()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+
+  // custom environment variables
+  settings.setValue( "qgis/customEnvVarsUse", QVariant( mCustomVariablesChkBx->isChecked() ) );
+  QStringList customVars;
+  for ( int i = 0; i < mCustomVariablesTable->rowCount(); ++i )
+  {
+    if ( mCustomVariablesTable->item( i, 1 )->text().isEmpty() )
+      continue;
+    QComboBox* varApplyCmbBx = qobject_cast<QComboBox*>( mCustomVariablesTable->cellWidget( i, 0 ) );
+    QString customVar = varApplyCmbBx->itemData( varApplyCmbBx->currentIndex() ).toString();
+    customVar += "|";
+    customVar += mCustomVariablesTable->item( i, 1 )->text();
+    customVar += "=";
+    customVar += mCustomVariablesTable->item( i, 2 )->text();
+    customVars << customVar;
+  }
+  settings.setValue( "qgis/customEnvVars", QVariant( customVars ) );
 
   //search directories for user plugins
   QString myPaths;
@@ -823,22 +1038,28 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
+  bool showLegendClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
+  bool legendLayersBold = settings.value( "/qgis/legendLayersBold", true ).toBool();
+  settings.setValue( "/qgis/legendLayersBold", mLegendLayersBoldChkBx->isChecked() );
+  bool legendGroupsBold = settings.value( "/qgis/legendGroupsBold", false ).toBool();
+  settings.setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
-  settings.setValue( "/qgis/scanItemsInBrowser",
+  settings.setValue( "/qgis/scanItemsInBrowser2",
                      cmbScanItemsInBrowser->itemData( cmbScanItemsInBrowser->currentIndex() ).toString() );
-  settings.setValue( "/qgis/scanZipInBrowser",
+  settings.setValue( "/qgis/scanZipInBrowser2",
                      cmbScanZipInBrowser->itemData( cmbScanZipInBrowser->currentIndex() ).toString() );
   settings.setValue( "/qgis/ignoreShapeEncoding", cbxIgnoreShapeEncoding->isChecked() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addNewLayersToCurrentGroup", cbxAddNewLayersToCurrentGroup->isChecked() );
+  bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", true ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
   settings.setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
@@ -847,9 +1068,13 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
+  bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
 
   // project
+  settings.setValue( "/qgis/projOpenAtLaunch", mProjectOnLaunchCmbBx->currentIndex() );
+  settings.setValue( "/qgis/projOpenAtLaunchPath", mProjectOnLaunchLineEdit->text() );
+
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   if (( settings.value( "/qgis/projectTemplateDir" ).toString() != leTemplateFolder->text() ) ||
@@ -897,7 +1122,8 @@ void QgsOptions::saveOptions()
   }
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
-  settings.setValue( "/fontPointSize", spinFontSize->value() );
+
+  settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );
@@ -918,6 +1144,10 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
+
+  // log rendering events, for userspace debugging
+  settings.setValue( "/Map/logCanvasRefreshEvent", mLogCanvasRefreshChkBx->isChecked() );
+
   //check behaviour so default projection when new layer is added with no
   //projection defined...
   if ( radPromptForProjection->isChecked() )
@@ -939,8 +1169,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/otfTransformAutoEnable", chkOtfAuto->isChecked() );
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
-
-  settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
   if ( radFeet->isChecked() )
   {
@@ -1053,8 +1281,83 @@ void QgsOptions::saveOptions()
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
     saveGdalDriverList();
+
+  // refresh legend if any legend item's state is to be changed
+  if ( legendLayersBold != mLegendLayersBoldChkBx->isChecked()
+       || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
+       || legendLayersCapitalise != capitaliseCheckBox->isChecked() )
+  {
+    QgisApp::instance()->legend()->updateLegendItemStyles();
+  }
+
+  // refresh symbology for any legend items, only if needed
+  if ( showLegendClassifiers != cbxLegendClassifiers->isChecked()
+       || createRasterLegendIcons != cbxCreateRasterLegendIcons->isChecked() )
+  {
+    QgisApp::instance()->legend()->updateLegendItemSymbologies();
+  }
+
+  // save app stylesheet last (in case reset becomes necessary)
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
+  }
 }
 
+void QgsOptions::rejectOptions()
+{
+  // don't reset stylesheet if we don't have to
+  if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
+  {
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetOldOpts );
+  }
+}
+
+void QgsOptions::on_spinFontSize_valueChanged( int fontSize )
+{
+  mStyleSheetNewOpts.insert( "fontPointSize", QVariant( fontSize ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mFontFamilyRadioQt_released()
+{
+  if ( mStyleSheetNewOpts.value( "fontFamily" ).toString() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( mStyleSheetBuilder->defaultFont().family() ) );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyRadioCustom_released()
+{
+  if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( mFontFamilyComboBox->currentFont().family() ) );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
+{
+  if ( mFontFamilyRadioCustom->isChecked()
+       && mStyleSheetNewOpts.value( "fontFamily" ).toString() != font.family() )
+  {
+    mStyleSheetNewOpts.insert( "fontFamily", QVariant( font.family() ) );
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  }
+}
+
+void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
+{
+  mStyleSheetNewOpts.insert( "groupBoxCustom", QVariant( chkd ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
+
+void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
+{
+  mStyleSheetNewOpts.insert( "groupBoxBoldTitle", QVariant( chkd ) );
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+}
 
 void QgsOptions::on_pbnSelectProjection_clicked()
 {
@@ -1164,113 +1467,6 @@ bool QgsOptions::newVisible()
   return chkAddedVisibility->isChecked();
 }
 
-void QgsOptions::getEllipsoidList()
-{
-  // (copied from qgscustomprojectiondialog.cpp)
-
-  //
-  // Populate the ellipsoid combo
-  //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-
-
-  cmbEllipsoid->addItem( tr( GEO_NONE_DESC ) );
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select * from tbl_ellipsoid order by name";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      cmbEllipsoid->addItem(( const char * )sqlite3_column_text( myPreparedStatement, 1 ) );
-    }
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-}
-
-QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName = GEO_NONE;
-
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-
-QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-
-  myName = tr( GEO_NONE_DESC );
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-
 QStringList QgsOptions::i18nList()
 {
   QStringList myList;
@@ -1285,6 +1481,81 @@ QStringList QgsOptions::i18nList()
     myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
   }
   return myList;
+}
+
+void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
+{
+  mAddCustomVarBtn->setEnabled( chkd );
+  mRemoveCustomVarBtn->setEnabled( chkd );
+  mCustomVariablesTable->setEnabled( chkd );
+}
+
+void QgsOptions::addCustomEnvVarRow( QString varName, QString varVal, QString varApply )
+{
+  int rowCnt = mCustomVariablesTable->rowCount();
+  mCustomVariablesTable->insertRow( rowCnt );
+
+  QComboBox* varApplyCmbBx = new QComboBox( this );
+  varApplyCmbBx->addItem( tr( "Overwrite" ), QVariant( "overwrite" ) );
+  varApplyCmbBx->addItem( tr( "If Undefined" ), QVariant( "undefined" ) );
+  varApplyCmbBx->addItem( tr( "Unset" ), QVariant( "unset" ) );
+  varApplyCmbBx->addItem( tr( "Prepend" ), QVariant( "prepend" ) );
+  varApplyCmbBx->addItem( tr( "Append" ), QVariant( "append" ) );
+  varApplyCmbBx->setCurrentIndex( varApply.isEmpty() ? 0 : varApplyCmbBx->findData( QVariant( varApply ) ) );
+
+  QFont cbf = varApplyCmbBx->font();
+  QFontMetrics cbfm = QFontMetrics( cbf );
+  cbf.setPointSize( cbf.pointSize() - 2 );
+  varApplyCmbBx->setFont( cbf );
+  mCustomVariablesTable->setCellWidget( rowCnt, 0, varApplyCmbBx );
+
+  Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                           | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+
+  QTableWidgetItem* varNameItm = new QTableWidgetItem( varName );
+  varNameItm->setFlags( itmFlags );
+  mCustomVariablesTable->setItem( rowCnt, 1, varNameItm );
+
+  QTableWidgetItem* varValueItm = new QTableWidgetItem( varVal );
+  varNameItm->setFlags( itmFlags );
+  mCustomVariablesTable->setItem( rowCnt, 2, varValueItm );
+
+  mCustomVariablesTable->setRowHeight( rowCnt, cbfm.height() + 8 );
+}
+
+void QgsOptions::on_mAddCustomVarBtn_clicked()
+{
+  addCustomEnvVarRow( QString( "" ), QString( "" ) );
+  mCustomVariablesTable->setFocus();
+  mCustomVariablesTable->setCurrentCell( mCustomVariablesTable->rowCount() - 1, 1 );
+  mCustomVariablesTable->edit( mCustomVariablesTable->currentIndex() );
+}
+
+void QgsOptions::on_mRemoveCustomVarBtn_clicked()
+{
+  mCustomVariablesTable->removeRow( mCustomVariablesTable->currentRow() );
+}
+
+void QgsOptions::on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
+{
+  for ( int i = mCurrentVariablesTable->rowCount() - 1; i >= 0; --i )
+  {
+    if ( qgisSpecific )
+    {
+      QString itmTxt = mCurrentVariablesTable->item( i, 0 )->text();
+      if ( !itmTxt.startsWith( "QGIS", Qt::CaseInsensitive ) )
+        mCurrentVariablesTable->hideRow( i );
+    }
+    else
+    {
+      mCurrentVariablesTable->showRow( i );
+    }
+  }
+  if ( mCurrentVariablesTable->rowCount() > 0 )
+  {
+    mCurrentVariablesTable->sortByColumn( 0, Qt::AscendingOrder );
+    mCurrentVariablesTable->resizeColumnToContents( 0 );
+  }
 }
 
 void QgsOptions::on_mBtnAddPluginPath_clicked()
@@ -1378,10 +1649,12 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
-void QgsOptions::on_tabWidget_currentChanged( int theTab )
+void QgsOptions::on_mOptionsStackedWidget_currentChanged( int theIndx )
 {
+  Q_UNUSED( theIndx );
   // load gdal driver list when gdal tab is first opened
-  if ( theTab == 1 && ! mLoadedGdalDriverList )
+  if ( mOptionsStackedWidget->currentWidget()->objectName() == QString( "mOptionsPage_02" )
+       && ! mLoadedGdalDriverList )
   {
     loadGdalDriverList();
   }
@@ -1678,3 +1951,4 @@ void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
   QString value = cbox->itemData( cbox->currentIndex() ).toString();
   settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }
+

@@ -75,7 +75,7 @@ void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
   if ( !geom )
   {
     QgsFeature f;
-    mVlayer->featureAtId( mFeatureId, f );
+    mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f );
     mGeometry = new QgsGeometry( *f.geometry() );
   }
   else
@@ -253,6 +253,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       {
         // to avoid try to delete some vertex twice
         mVertexMap[ mVertexMap[i]->equals()]->setSelected( false );
+        nSelected--;
       }
 
       if ( topologicalEditing )

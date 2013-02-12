@@ -98,7 +98,7 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
                      .arg( theDiffImageFile )
                      .arg( myImageHash );
     //foo CDash
-    QString myMeasureMessage = "<DartMeasurement name=\"Anomoly check"
+    QString myMeasureMessage = "<DartMeasurement name=\"Anomaly check"
                                "\" type=\"text/text\">" +  myHashMessage +
                                "</DartMeasurement>";
     qDebug() << myMeasureMessage;

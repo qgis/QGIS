@@ -238,7 +238,7 @@ void QgsComposerMultiFrame::deleteFrames()
   mResizeMode = bkResizeMode;
 }
 
-QgsComposerFrame* QgsComposerMultiFrame::frame( int i )
+QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
 {
   if ( i >= mFrameItems.size() )
   {

@@ -33,7 +33,7 @@
 
 class QgsRasterLayer;
 
-class QgsProjectFileTransform
+class CORE_EXPORT QgsProjectFileTransform
 {
   public:
     //Default constructor

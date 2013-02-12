@@ -93,30 +93,55 @@ namespace pal
     if ( feature->getLayer()->getArrangement() != P_CURVED &&
          this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
     {
-      tx = x[0];
-      ty = y[0];
+      bool uprightLabel = false;
 
-      x[0] = x[2];
-      y[0] = y[2];
+      switch ( feature->getLayer()->getUpsidedownLabels() )
+      {
+        case Layer::Upright:
+          uprightLabel = true;
+          break;
+        case Layer::ShowDefined:
+          // upright only dynamic labels
+          if ( !feature->getFixedRotation() || ( !feature->getFixedPosition() && feature->getLabelAngle() == 0.0 ) )
+          {
+            uprightLabel = true;
+          }
+          break;
+        case Layer::ShowAll:
+          break;
+        default:
+          uprightLabel = true;
+      }
 
-      x[2] = tx;
-      y[2] = ty;
+      if ( uprightLabel )
+      {
+        tx = x[0];
+        ty = y[0];
 
-      tx = x[1];
-      ty = y[1];
+        x[0] = x[2];
+        y[0] = y[2];
 
-      x[1] = x[3];
-      y[1] = y[3];
+        x[2] = tx;
+        y[2] = ty;
 
-      x[3] = tx;
-      y[3] = ty;
+        tx = x[1];
+        ty = y[1];
 
-      upsideDown = true;
+        x[1] = x[3];
+        y[1] = y[3];
 
-      if ( this->alpha < M_PI )
-        this->alpha += M_PI;
-      else
-        this->alpha -= M_PI;
+        x[3] = tx;
+        y[3] = ty;
+
+        if ( this->alpha < M_PI )
+          this->alpha += M_PI;
+        else
+          this->alpha -= M_PI;
+
+        // labels with text shown upside down are not classified as upsideDown,
+        // only those whose boundary points have been inverted
+        upsideDown = true;
+      }
     }
   }
 

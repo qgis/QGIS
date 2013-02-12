@@ -250,17 +250,15 @@ void HeatmapGui::populateFields()
 
   // The fields
   QgsVectorDataProvider* provider = inputLayer->dataProvider();
-  QgsFieldMap fieldMap = provider->fields();
+  const QgsFields& fields = provider->fields();
   // Populate fields
   radiusFieldCombo->clear();
   weightFieldCombo->clear();
 
-  QMap<int, QgsField>::const_iterator i = fieldMap.constBegin();
-  while ( i != fieldMap.constEnd() )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    radiusFieldCombo->addItem( i.value().name(), QVariant( i.key() ) );
-    weightFieldCombo->addItem( i.value().name(), QVariant( i.key() ) );
-    ++i;
+    radiusFieldCombo->addItem( fields[idx].name(), QVariant( idx ) );
+    weightFieldCombo->addItem( fields[idx].name(), QVariant( idx ) );
   }
 
 }

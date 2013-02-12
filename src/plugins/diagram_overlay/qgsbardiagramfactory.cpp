@@ -33,7 +33,7 @@ QgsBarDiagramFactory::~QgsBarDiagramFactory()
 
 QImage* QgsBarDiagramFactory::createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
-  QgsAttributeMap dataValues = f.attributeMap();
+  QgsAttributes dataValues = f.attributes();
   double sizeScaleFactor = diagramSizeScaleFactor( renderContext );
 
   //for barcharts, the specified height is valid for the classification attribute
@@ -71,12 +71,12 @@ QImage* QgsBarDiagramFactory::createDiagram( int size, const QgsFeature& f, cons
 
   for ( ; category_it != mCategories.constEnd(); ++category_it )
   {
-    att_it = dataValues.find( category_it->propertyIndex() );
-    if ( att_it != dataValues.constEnd() )
+    int idx = category_it->propertyIndex();
+    if ( idx >= 0 && idx < dataValues.count() )
     {
       currentWidth += category_it->gap(); //first gap
       p.setPen( category_it->pen() );
-      currentValue = att_it->toDouble();
+      currentValue = dataValues[idx].toDouble();
       currentBarHeight = ( int )( currentValue * sizeValueRatio * sizeScaleFactor * renderContext.rasterScaleFactor() );
       p.setBrush( category_it->brush() );
       p.drawRect( QRect( currentWidth, h - currentBarHeight + mMaximumPenWidth, mBarWidth * sizeScaleFactor *renderContext.rasterScaleFactor(), currentBarHeight ) );
@@ -92,7 +92,7 @@ int QgsBarDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, c
 {
   double sizeScaleFactor = diagramSizeScaleFactor( context );
 
-  height = context.rasterScaleFactor() * ( getMaximumHeight( size, f.attributeMap() ) * sizeScaleFactor + 2 * mMaximumPenWidth );
+  height = context.rasterScaleFactor() * ( getMaximumHeight( size, f.attributes() ) * sizeScaleFactor + 2 * mMaximumPenWidth );
   width = context.rasterScaleFactor() * ( mBarWidth * sizeScaleFactor * mCategories.size() + 2 * mMaximumPenWidth );
   //consider the gaps
   QList<QgsDiagramCategory>::const_iterator c_it = mCategories.constBegin();
@@ -103,7 +103,7 @@ int QgsBarDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, c
   return 0;
 }
 
-int QgsBarDiagramFactory::getMaximumHeight( int size, const QgsAttributeMap& featureAttributes ) const
+int QgsBarDiagramFactory::getMaximumHeight( int size, const QgsAttributes& featureAttributes ) const
 {
   //calculate value/pixel ratio
   double pixelValueRatio = sizeValueRatioBarChart( size, featureAttributes );
@@ -117,10 +117,10 @@ int QgsBarDiagramFactory::getMaximumHeight( int size, const QgsAttributeMap& fea
 
   for ( ; category_it != mCategories.constEnd(); ++category_it )
   {
-    it = featureAttributes.find( category_it->propertyIndex() );
-    if ( it != featureAttributes.constEnd() )
+    int idx = category_it->propertyIndex();
+    if ( idx >= 0 && idx < featureAttributes.count() )
     {
-      currentValue = it->toDouble();
+      currentValue = featureAttributes[idx].toDouble();
       if ( currentValue > maximumAttValue )
       {
         maximumAttValue = currentValue;
@@ -133,7 +133,7 @@ int QgsBarDiagramFactory::getMaximumHeight( int size, const QgsAttributeMap& fea
   return height;
 }
 
-double QgsBarDiagramFactory::sizeValueRatioBarChart( int size, const QgsAttributeMap& featureAttributes ) const
+double QgsBarDiagramFactory::sizeValueRatioBarChart( int size, const QgsAttributes& featureAttributes ) const
 {
 //find value for scaling attribute
   QgsAttributeList::const_iterator scaling_it = mScalingAttributes.constBegin();
@@ -141,12 +141,12 @@ double QgsBarDiagramFactory::sizeValueRatioBarChart( int size, const QgsAttribut
 
   for ( ; scaling_it != mScalingAttributes.constEnd(); ++scaling_it )
   {
-    QgsAttributeMap::const_iterator it = featureAttributes.find( *scaling_it );
-    if ( it == featureAttributes.constEnd() )
+    int idx = *scaling_it;
+    if ( idx < 0 || idx >= featureAttributes.count() )
     {
       continue; //error, scaling attribute not contained in feature attributes
     }
-    scalingValue += ( it->toDouble() );
+    scalingValue += featureAttributes[idx].toDouble();
   }
 
   //calculate value/pixel ratio

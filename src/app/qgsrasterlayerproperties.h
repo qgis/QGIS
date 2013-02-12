@@ -56,6 +56,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     //TODO: Verify that these all need to be public
     /** \brief Applies the settings made in the dialog without closing the box */
     void apply();
+    /** \brief Slot to update layer display name as original is edited
+     * @note added in QGIS 1.9 */
+    void on_mLayerOrigNameLineEd_textEdited( const QString& text );
     /** \brief this slot asks the rasterlayer to construct pyramids */
     void on_buttonBuildPyramids_clicked();
     /** \brief slot executed when user presses "Add Values From Display" button on the transparency page */
@@ -76,7 +79,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnRemoveSelectedRow_clicked();
     /** \brief slot executed when the single band radio button is pressed. */
     /** \brief slot executed when the reset null value to file default icon is selected */
-    void on_btnResetNull_clicked( );
+    //void on_btnResetNull_clicked( );
 
     void pixelSelected( const QgsPoint& );
     /** \brief slot executed when the transparency level changes. */
@@ -94,6 +97,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mMinimumScaleSetCurrentPushButton_clicked();
+    void on_mMaximumScaleSetCurrentPushButton_clicked();
+
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 

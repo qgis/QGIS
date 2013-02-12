@@ -62,6 +62,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
+  if ( parent )
+  {
+    if ( dynamic_cast<QgsStyleV2ManagerDialog*>( parent->parentWidget() ) )
+    {
+      btnStyle->setVisible( false );
+    }
+  }
   // Set the Style Menu under btnStyle
   QMenu *styleMenu = new QMenu( btnStyle );
   QAction *styleMgrAction = new QAction( "Style Manager", styleMenu );
@@ -150,9 +157,14 @@ void QgsSymbolsListWidget::populateSymbols( QStringList names )
       continue;
     }
     QStandardItem* item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText( "" ); //set the text to nothing and show in label when clicked rather
+    item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
+    item->setText( names[i] );
+    item->setToolTip( names[i] );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    // Set font to 10points to show reasonable text
+    QFont itemFont = item->font();
+    itemFont.setPointSize( 10 );
+    item->setFont( itemFont );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
     item->setIcon( icon );
@@ -332,12 +344,12 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
     if ( groupsCombo->itemData( index ).toString() == "smart" )
     {
       groupid = mStyle->smartgroupId( text );
-      symbols = mStyle->symbolsOfSmartgroup( SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, groupid );
     }
     else
     {
       groupid = groupsCombo->itemData( index ).toInt();
-      symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, groupid );
     }
   }
   populateSymbols( symbols );

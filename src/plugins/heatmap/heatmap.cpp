@@ -155,12 +155,6 @@ void Heatmap::run()
     poBand = heatmapDS->GetRasterBand( 1 );
     // Start working on the input vector
     QgsVectorLayer* inputLayer = d.inputVectorLayer();
-    QgsVectorDataProvider* myVectorProvider = inputLayer->dataProvider();
-    if ( !myVectorProvider )
-    {
-      QMessageBox::information( 0, tr( "Point layer error" ), tr( "Could not identify the vector data provider." ) );
-      return;
-    }
 
     QgsAttributeList myAttrList;
     int rField = 0;
@@ -178,8 +172,8 @@ void Heatmap::run()
     }
     // This might have attributes or mightnot have attibutes at all
     // based on the variableRadius() and weighted()
-    myVectorProvider->select( myAttrList );
-    int totalFeatures = myVectorProvider->featureCount();
+    QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
+    int totalFeatures = inputLayer->featureCount();
     int counter = 0;
 
     QProgressDialog p( "Creating Heatmap ... ", "Abort", 0, totalFeatures );
@@ -187,7 +181,7 @@ void Heatmap::run()
 
     QgsFeature myFeature;
 
-    while ( myVectorProvider->nextFeature( myFeature ) )
+    while ( fit.nextFeature( myFeature ) )
     {
       counter++;
       p.setValue( counter );
@@ -210,8 +204,7 @@ void Heatmap::run()
       float radius;
       if ( d.variableRadius() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        radius = myAttrMap.value( rField ).toFloat();
+        radius = myFeature.attribute( rField ).toFloat();
       }
       else
       {
@@ -242,8 +235,7 @@ void Heatmap::run()
       float weight = 1.0;
       if ( d.weighted() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        weight = myAttrMap.value( wField ).toFloat();
+        weight = myFeature.attribute( wField ).toFloat();
       }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )

@@ -1,9 +1,18 @@
-;----------------------------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------
+;    QGIS-Installer.nsi - Quantum GIS Installer for Windows
+;    ---------------------
+;    Date                 : September 2008
+;    Copyright            : (C) 2008 by Marco Pasetti
+;    Email                : marco dot pasetti at alice dot it
+;--------------------------------------------------------------------------
+;                                                                         #
+;   This program is free software; you can redistribute it and/or modify  #
+;   it under the terms of the GNU General Public License as published by  #
+;   the Free Software Foundation; either version 2 of the License, or     #
+;   (at your option) any later version.                                   #
+;                                                                         #
+;--------------------------------------------------------------------------
 
-;Quantum GIS Installer for Windows
-;Written by Marco Pasetti
-;Mail to: marco.pasetti@alice.it 
-;
 ;Extended for creatensis.pl by Jürgen E. Fischer <jef@norbit.de>
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -336,6 +345,8 @@ Section "Quantum GIS" SecQGIS
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
@@ -346,11 +357,14 @@ RebootNecessary:
 	SetRebootFlag true
 
 NoRebootNecessary:
+        Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+
         Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
         CreateShortCut "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
-        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
         CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
@@ -478,6 +492,8 @@ Section "Uninstall"
 	GetFullPathName /SHORT $0 $INSTDIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
 	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\preremove.bat"'

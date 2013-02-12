@@ -3,7 +3,7 @@
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -92,6 +92,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();
         QgsSymbolV2List symbols();
+        //! @note not available in python bindings
         QgsLegendSymbolList legendSymbolItems();
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
@@ -113,7 +114,6 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
         void setDescription( QString description ) { mDescription = description; }
 
-        //Rule& operator=( const Rule& other );
         //! clone this rule, return new instance
         Rule* clone() const;
 
@@ -127,6 +127,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+        //! @note not available in python bindings
         void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
         bool renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
@@ -139,11 +140,15 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! @note added in 1.9
         QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
+        //! tell which rules will be used to render the feature
+        RuleList rulesForFeature( QgsFeature& feat );
+
         void stopRender( QgsRenderContext& context );
 
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
+        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->children(); } return l; }
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
@@ -160,7 +165,6 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         Rule* takeChildAt( int i ) { Rule* rule = mChildren.takeAt( i ); rule->mParent = NULL; return rule; }
 
       protected:
-
         void initFilter();
 
         Rule* mParent; // parent rule (NULL only for root rule)
@@ -215,6 +219,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems();
 
     //! for debugging
@@ -233,7 +238,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return MoreSymbolsPerFeature; }
+    virtual int capabilities() { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 

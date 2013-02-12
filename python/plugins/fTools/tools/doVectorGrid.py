@@ -163,16 +163,22 @@ class Dialog(QDialog, Ui_Dialog):
         else:
           crs = layer.crs()
         if not crs.isValid(): crs = None
+
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+
         if polygon:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
-            3:QgsField("YMIN", QVariant.Double), 4:QgsField("YMAX", QVariant.Double)}
+            fields.append( QgsField("XMIN", QVariant.Double) )
+            fields.append( QgsField("XMAX", QVariant.Double) )
+            fields.append( QgsField("YMIN", QVariant.Double) )
+            fields.append( QgsField("YMAX", QVariant.Double) )
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                     return
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPolygon, crs)
         else:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("COORD", QVariant.Double)}
+            fields.append( QgsField("COORD", QVariant.Double) )
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
@@ -193,8 +199,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(bound.xMaximum(), y)
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(y))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(y))
                 writer.addFeature(outFeat)
                 y = y - yOffset
                 idVar = idVar + 1
@@ -213,8 +219,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(x, bound.yMinimum())
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(x))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(x))
                 writer.addFeature(outFeat)
                 x = x + xOffset
                 idVar = idVar + 1
@@ -238,11 +244,11 @@ class Dialog(QDialog, Ui_Dialog):
                     pt5 = QgsPoint(x, y)
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
-                    outFeat.addAttribute(0, QVariant(idVar))
-                    outFeat.addAttribute(1, QVariant(x))
-                    outFeat.addAttribute(2, QVariant(x + xOffset))
-                    outFeat.addAttribute(3, QVariant(y - yOffset))
-                    outFeat.addAttribute(4, QVariant(y))
+                    outFeat.setAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(1, QVariant(x))
+                    outFeat.setAttribute(2, QVariant(x + xOffset))
+                    outFeat.setAttribute(3, QVariant(y - yOffset))
+                    outFeat.setAttribute(4, QVariant(y))
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + xOffset

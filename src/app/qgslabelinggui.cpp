@@ -4,7 +4,7 @@
   -------------------
          begin                : June 2009
          copyright            : (C) Martin Dobias
-         email                : wonder.sk at gmail.com
+         email                : wonder dot sk at gmail dot com
 
  ***************************************************************************
  *                                                                         *
@@ -25,7 +25,9 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
-#include "qgsmapcanvas.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgscharacterselectdialog.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -41,6 +43,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   if ( !layer ) return;
 
   setupUi( this );
+  mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
   mPreviewSize = 24;
@@ -69,13 +72,15 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     case QGis::Polygon:
       stackedPlacement->setCurrentWidget( pagePolygon );
       break;
+    case QGis::NoGeometry:
+      break;
     default:
       Q_ASSERT( 0 && "NOOOO!" );
   }
 
   //mTabWidget->setEnabled( chkEnableLabeling->isChecked() );
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
-  chkAddDirectionSymbol->setEnabled( layer->geometryType() == QGis::Line );
+  mDirectSymbGroupBox->setEnabled( layer->geometryType() == QGis::Line );
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
@@ -99,6 +104,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
   mXQuadOffset = lyr.xQuadOffset;
   mYQuadOffset = lyr.yQuadOffset;
+  mCentroidRadioWhole->setChecked( lyr.centroidWhole );
+  mCentroidFrame->setVisible( false );
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -106,6 +113,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       radAroundCentroid->setChecked( true );
       spinDistPoint->setValue( lyr.dist );
       mPointDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
+
       //spinAngle->setValue( lyr.angle );
       break;
     case QgsPalLayerSettings::OverPoint:
@@ -126,6 +135,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       mPointOffsetYOffsetSpinBox->setValue( lyr.yOffset );
       mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
       mPointOffsetAngleSpinBox->setValue( lyr.angleOffset );
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
 
       break;
     case QgsPalLayerSettings::Line:
@@ -165,8 +175,51 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
-  chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
+  mLimitLabelChkBox->setChecked( lyr.limitNumLabels );
+  mLimitLabelSpinBox->setValue( lyr.maxNumLabels );
+  mDirectSymbGroupBox->setChecked( lyr.addDirectionSymbol );
+  mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
+  mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
+  mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
+  switch ( lyr.placeDirectionSymbol )
+  {
+    case QgsPalLayerSettings::SymbolLeftRight:
+      mDirectSymbRadioBtnLR->setChecked( true );
+      break;
+    case QgsPalLayerSettings::SymbolAbove:
+      mDirectSymbRadioBtnAbove->setChecked( true );
+      break;
+    case QgsPalLayerSettings::SymbolBelow:
+      mDirectSymbRadioBtnBelow->setChecked( true );
+      break;
+    default:
+      mDirectSymbRadioBtnLR->setChecked( true );
+      break;
+  }
+
+  // upside-down labels
+  switch ( lyr.upsidedownLabels )
+  {
+    case QgsPalLayerSettings::Upright:
+      mUpsidedownRadioOff->setChecked( true );
+      break;
+    case QgsPalLayerSettings::ShowDefined:
+      mUpsidedownRadioDefined->setChecked( true );
+      break;
+    case QgsPalLayerSettings::ShowAll:
+      mUpsidedownRadioAll->setChecked( true );
+      break;
+    default:
+      mUpsidedownRadioOff->setChecked( true );
+      break;
+  }
+  mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
+  // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
+  mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
+
   wrapCharacterEdit->setText( lyr.wrapChar );
+  mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
+  mFontMultiLineComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
@@ -212,6 +265,12 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkPlusSign->setChecked( plusSign );
   }
 
+  // set pixel size limiting checked state before unit choice so limiting can be
+  // turned on as a default for map units, if minimum trigger value of 0 is used
+  mFontLimitPixelGroupBox->setChecked( lyr.fontLimitPixelSize );
+  mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
+  mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
+  mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
   if ( lyr.fontSizeInMapUnits )
   {
     mFontSizeUnitComboBox->setCurrentIndex( 1 );
@@ -225,6 +284,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
+
+  mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
 
   updateFontViaStyle( lyr.textNamedStyle );
   updateFont( mRefFont );
@@ -262,21 +324,53 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
   }
+
+  // Global settings group for groupboxes' saved/retored collapsed state
+  // maintains state across different dialogs
+  foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
+  {
+    grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
+  }
+
+  connect( groupBox_mPreview,
+           SIGNAL( collapsedStateChanged( bool ) ),
+           this,
+           SLOT( collapseSample( bool ) ) );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
 }
 
+void QgsLabelingGui::collapseSample( bool collapse )
+{
+  if ( collapse )
+  {
+    QList<int> splitSizes = mFontPreviewSplitter->sizes();
+    if ( splitSizes[0] > groupBox_mPreview->height() )
+    {
+      int delta = splitSizes[0] - groupBox_mPreview->height();
+      splitSizes[0] -= delta;
+      splitSizes[1] += delta;
+      mFontPreviewSplitter->setSizes( splitSizes );
+    }
+  }
+}
+
 void QgsLabelingGui::apply()
 {
-  QgsPalLayerSettings settings = layerSettings();
-  settings.writeToLayer( mLayer );
+  writeSettingsToLayer();
   // trigger refresh
   if ( mMapCanvas )
   {
     mMapCanvas->refresh();
   }
+}
+
+void QgsLabelingGui::writeSettingsToLayer()
+{
+  QgsPalLayerSettings settings = layerSettings();
+  settings.writeToLayer( mLayer );
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()
@@ -290,6 +384,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = 0;
   lyr.placementFlags = 0;
 
+  lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
@@ -385,17 +480,50 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.decimals = spinDecimals->value();
     lyr.plusSign = true;
   }
-  if ( chkAddDirectionSymbol->isChecked() )
+
+  lyr.addDirectionSymbol = mDirectSymbGroupBox->isChecked();
+  lyr.leftDirectionSymbol = mDirectSymbLeftLineEdit->text();
+  lyr.rightDirectionSymbol = mDirectSymbRightLineEdit->text();
+  lyr.reverseDirectionSymbol = mDirectSymbRevChkBx->isChecked();
+  if ( mDirectSymbRadioBtnLR->isChecked() )
   {
-    lyr.addDirectionSymbol = true;
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolLeftRight;
   }
-  else
+  else if ( mDirectSymbRadioBtnAbove->isChecked() )
   {
-    lyr.addDirectionSymbol = false;
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolAbove;
   }
+  else if ( mDirectSymbRadioBtnBelow->isChecked() )
+  {
+    lyr.placeDirectionSymbol = QgsPalLayerSettings::SymbolBelow;
+  }
+
+  if ( mUpsidedownRadioOff->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::Upright;
+  }
+  else if ( mUpsidedownRadioDefined->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::ShowDefined;
+  }
+  else if ( mUpsidedownRadioAll->isChecked() )
+  {
+    lyr.upsidedownLabels = QgsPalLayerSettings::ShowAll;
+  }
+  lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
+  // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
+  lyr.maxCurvedCharAngleOut = -mMaxCharAngleOutDSpinBox->value();
+
   lyr.minFeatureSize = mMinSizeSpinBox->value();
+  lyr.limitNumLabels = mLimitLabelChkBox->isChecked();
+  lyr.maxNumLabels = mLimitLabelSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
+  lyr.fontLimitPixelSize = mFontLimitPixelGroupBox->isChecked();
+  lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
+  lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();
   lyr.wrapChar = wrapCharacterEdit->text();
+  lyr.multilineHeight = mFontLineHeightSpinBox->value();
+  lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineComboBox->currentIndex();
   if ( chkPreserveRotation->isChecked() )
   {
     lyr.preserveRotation = true;
@@ -426,17 +554,17 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mMaxScaleAttributeComboBox, QgsPalLayerSettings::MaxScale, lyr );
   setDataDefinedProperty( mTranspAttributeComboBox, QgsPalLayerSettings::FontTransp, lyr );
   setDataDefinedProperty( mBufferTranspAttributeComboBox, QgsPalLayerSettings::BufferTransp, lyr );
+  setDataDefinedProperty( mAlwaysShowAttributeComboBox, QgsPalLayerSettings::AlwaysShow, lyr );
 
   return lyr;
 }
 
 void QgsLabelingGui::populateFieldNames()
 {
-  const QgsFieldMap& fields = mLayer->pendingFields();
-  QgsFieldMap::const_iterator it = fields.constBegin();
-  for ( ; it != fields.constEnd(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    cboFieldName->addItem( it->name() );
+    cboFieldName->addItem( fields[idx].name() );
   }
 }
 
@@ -446,12 +574,7 @@ void QgsLabelingGui::setDataDefinedProperty( const QComboBox* c, QgsPalLayerSett
   {
     return;
   }
-
-  QVariant propertyField = c->itemData( c->currentIndex() );
-  if ( propertyField.isValid() )
-  {
-    lyr.setDataDefinedProperty( p, propertyField.toInt() );
-  }
+  lyr.setDataDefinedProperty( p, c->currentText() ); // "" value effectively clears setting
 }
 
 void QgsLabelingGui::setCurrentComboValue( QComboBox* c, const QgsPalLayerSettings& s, QgsPalLayerSettings::DataDefinedProperties p )
@@ -461,14 +584,14 @@ void QgsLabelingGui::setCurrentComboValue( QComboBox* c, const QgsPalLayerSettin
     return;
   }
 
-  QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = s.dataDefinedProperties.find( p );
-  if ( it == s.dataDefinedProperties.constEnd() )
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator it = s.dataDefinedProperties.find( p );
+  if ( it == s.dataDefinedProperties.constEnd() || it.value().isEmpty() )
   {
     c->setCurrentIndex( 0 );
   }
   else
   {
-    c->setCurrentIndex( c->findData( it.value() ) );
+    c->setCurrentIndex( c->findText( it.value() ) );
   }
 }
 
@@ -495,6 +618,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mMaxScaleAttributeComboBox;
   comboList << mTranspAttributeComboBox;
   comboList << mBufferTranspAttributeComboBox;
+  comboList << mAlwaysShowAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -503,12 +627,12 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   }
 
   // TODO: don't add field that aren't of appropriate type for the data defined property
-  const QgsFieldMap& fields = mLayer->dataProvider()->fields();
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++ )
+  const QgsFields& fields = mLayer->dataProvider()->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
     for ( comboIt = comboList.begin(); comboIt != comboList.end(); ++comboIt )
     {
-      ( *comboIt )->addItem( it.value().name(), it.key() );
+      ( *comboIt )->addItem( fields[idx].name(), idx );
     }
 
   }
@@ -534,6 +658,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mMaxScaleAttributeComboBox, s, QgsPalLayerSettings::MaxScale );
   setCurrentComboValue( mTranspAttributeComboBox, s, QgsPalLayerSettings::FontTransp );
   setCurrentComboValue( mBufferTranspAttributeComboBox, s, QgsPalLayerSettings::BufferTransp );
+  setCurrentComboValue( mAlwaysShowAttributeComboBox, s, QgsPalLayerSettings::AlwaysShow );
 }
 
 void QgsLabelingGui::changeTextColor()
@@ -652,6 +777,8 @@ void QgsLabelingGui::updateFont( QFont font )
   }
 
   lblFontName->setText( QString( "%1%2" ).arg( mRefFont.family() ).arg( missingtxt ) );
+  mDirectSymbLeftLineEdit->setFont( mRefFont );
+  mDirectSymbRightLineEdit->setFont( mRefFont );
 
   blockFontChangeSignals( true );
   populateFontStyleComboBox();
@@ -659,8 +786,6 @@ void QgsLabelingGui::updateFont( QFont font )
   mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
-  mFontWordSpacingSpinBox->setValue( mRefFont.wordSpacing() );
-  mFontLetterSpacingSpinBox->setValue( mRefFont.letterSpacing() );
   blockFontChangeSignals( false );
 
   // update font name with font face
@@ -776,6 +901,13 @@ void QgsLabelingGui::showExpressionDialog()
 {
   QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
   dlg.setWindowTitle( tr( "Expression based label" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
   if ( dlg.exec() == QDialog::Accepted )
   {
     QString expression =  dlg.expressionText();
@@ -820,21 +952,28 @@ void QgsLabelingGui::changeBufferColor()
 
 void QgsLabelingGui::updateOptions()
 {
+  mCentroidFrame->setVisible( false );
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsPoint );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radAroundCentroid->isChecked() );
   }
   else if (( stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsPointOffset );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radOverCentroid->isChecked() );
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
            || ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsLine );
+    mMaxCharAngleFrame->setVisible(( stackedPlacement->currentWidget() == pageLine
+                                     && radLineCurved->isChecked() ) );
   }
   else
   {
@@ -929,25 +1068,43 @@ void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
-  double singleStep = ( index == 1 ) ? 10.0 : 1.0 ; //10 for map units, 1 for mm
-  mFontSizeSpinBox->setSingleStep( singleStep );
-  mFontWordSpacingSpinBox->setSingleStep( singleStep );
-  mFontLetterSpacingSpinBox->setSingleStep( singleStep / 10 );
+  // disable pixel size limiting for labels defined in points
+  if ( index == 0 )
+  {
+    mFontLimitPixelGroupBox->setChecked( false );
+  }
+  else if ( index == 1 && mMinPixelLimit == 0 )
+  {
+    // initial minimum trigger value set, turn on pixel size limiting by default
+    // for labels defined in map units (ignored after first settings save)
+    mFontLimitPixelGroupBox->setChecked( true );
+  }
   updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontMinPixelSpinBox_valueChanged( int px )
+{
+  // ensure max font pixel size for map unit labels can't be lower than min
+  mFontMaxPixelSpinBox->setMinimum( px );
+  mFontMaxPixelSpinBox->update();
+}
+
+void QgsLabelingGui::on_mFontMaxPixelSpinBox_valueChanged( int px )
+{
+  // ensure max font pixel size for map unit labels can't be lower than min
+  if ( px < mFontMinPixelSpinBox->value() )
+  {
+    mFontMaxPixelSpinBox->blockSignals( true );
+    mFontMaxPixelSpinBox->setValue( mFontMinPixelSpinBox->value() );
+    mFontMaxPixelSpinBox->blockSignals( false );
+  }
+  mFontMaxPixelSpinBox->setMinimum( mFontMinPixelSpinBox->value() );
 }
 
 void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )
 {
-  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
-  spinBufferSize->setSingleStep( singleStep );
+  Q_UNUSED( index );
   updateFont( mRefFont );
-}
-
-void QgsLabelingGui::on_mPointOffsetUnitsComboBox_currentIndexChanged( int index )
-{
-  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
-  mPointOffsetXOffsetSpinBox->setSingleStep( singleStep );
-  mPointOffsetYOffsetSpinBox->setSingleStep( singleStep );
 }
 
 void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )
@@ -996,21 +1153,44 @@ void QgsLabelingGui::on_mPreviewBackgroundBtn_clicked()
   setPreviewBackground( color );
 }
 
+void QgsLabelingGui::on_mDirectSymbLeftToolBtn_clicked()
+{
+  bool gotChar = false;
+  QChar dirSymb = QChar();
+
+  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  if ( !gotChar )
+    return;
+
+  if ( !dirSymb.isNull() )
+    mDirectSymbLeftLineEdit->setText( QString( dirSymb ) );
+}
+
+void QgsLabelingGui::on_mDirectSymbRightToolBtn_clicked()
+{
+  bool gotChar = false;
+  QChar dirSymb = QChar();
+
+  dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
+
+  if ( !gotChar )
+    return;
+
+  if ( !dirSymb.isNull() )
+    mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
+}
+
 void QgsLabelingGui::disableDataDefinedAlignment()
 {
   mHorizontalAlignmentComboBox->setCurrentIndex( mHorizontalAlignmentComboBox->findText( "" ) );
   mHorizontalAlignmentComboBox->setEnabled( false );
   mVerticalAlignmentComboBox->setCurrentIndex( mVerticalAlignmentComboBox->findText( "" ) );
   mVerticalAlignmentComboBox->setEnabled( false );
-  mRotationComboBox->setCurrentIndex( mRotationComboBox->findText( "" ) );
-  mRotationComboBox->setEnabled( false );
-  chkPreserveRotation->setEnabled( false );
 }
 
 void QgsLabelingGui::enableDataDefinedAlignment()
 {
   mHorizontalAlignmentComboBox->setEnabled( true );
   mVerticalAlignmentComboBox->setEnabled( true );
-  mRotationComboBox->setEnabled( true );
-  chkPreserveRotation->setEnabled( true );
 }

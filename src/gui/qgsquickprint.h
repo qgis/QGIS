@@ -40,7 +40,7 @@ class GUI_EXPORT QgsQuickPrint: public QObject
     QgsQuickPrint();
     //! Destructor
     virtual ~QgsQuickPrint();
-    enum SymbolScalingType {ScaleUp, ScaleDown};
+    enum SymbolScalingType { ScaleUp, ScaleDown };
     static QString pageSizeToString( QPrinter::PageSize theSize );
     static QPrinter::PageSize stringToPageSize( QString theSize );
 

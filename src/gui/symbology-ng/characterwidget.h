@@ -4,6 +4,11 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
+** This library/program is free software; you can redistribute it
+** and/or modify it under the terms of the GNU Library General Public
+** License as published by the Free Software Foundation; either
+** version 2 of the License, or ( at your option ) any later version.
+**
 ** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
@@ -62,11 +67,15 @@ class CharacterWidget : public QWidget
     CharacterWidget( QWidget *parent = 0 );
     QSize sizeHint() const;
 
+    int getColumns() const { return columns; }
+    int getSquareSize() const { return squareSize; }
+
   public slots:
     void updateFont( const QFont &font );
     void updateSize( double fontSize );
     void updateStyle( const QString &fontStyle );
     void updateFontMerging( bool enable );
+    void updateColumns( int cols );
 
   signals:
     void characterSelected( const QChar &character );

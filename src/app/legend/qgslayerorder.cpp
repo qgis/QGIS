@@ -20,6 +20,8 @@
 #include "qgsmaplayer.h"
 #include "qgslogger.h"
 #include "qgslegend.h"
+#include "qgslegendgroup.h"
+#include "qgslegendlayer.h"
 #include "qgslegendlayer.h"
 #include "qgsproject.h"
 
@@ -32,10 +34,6 @@ QgsLayerOrder::QgsLayerOrder( QgsLegend *legend, QWidget * parent, const char *n
     , mPressItem( 0 )
 {
   setObjectName( name );
-
-  // track visibility changed in legend
-  connect( mLegend, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
-           this, SLOT( legendItemChanged( QTreeWidgetItem *, int ) ) );
 
   // track if legend mode changes
   connect( mLegend, SIGNAL( updateDrawingOrderChecked( bool ) ),
@@ -85,13 +83,14 @@ void QgsLayerOrder::refreshLayerList()
 {
   clear();
 
-  foreach ( QgsLegendLayer *layer, mLegend->legendLayers() )
+  QList<DrawingOrderInfo> drawingOrderList = mLegend->drawingOrder();
+  QList<DrawingOrderInfo>::const_iterator it = drawingOrderList.constBegin();
+  for ( ; it != drawingOrderList.constEnd(); ++it )
   {
-    QListWidgetItem *item = new QListWidgetItem( layer->layer()->name() );
-    item->setData( 1, QString::number( layer->drawingOrder() ) );
-    item->setData( Qt::UserRole, qVariantFromValue( qobject_cast<QObject*>( layer->layer() ) ) );
-    item->setCheckState( layer->isVisible() ? Qt::Checked : Qt::Unchecked );
-    QgsDebugMsg( QString( "add item=%1 at %2" ).arg( item ? item->text() : "(null item)" ).arg( count() ) );
+    QListWidgetItem *item = new QListWidgetItem( it->name );
+    item->setCheckState( it->checked ? Qt::Checked : Qt::Unchecked );
+    item->setData( Qt::UserRole, it->id );
+    item->setData( Qt::UserRole + 1, it->embeddedGroup );
     addItem( item );
   }
 }
@@ -113,33 +112,26 @@ QListWidgetItem *QgsLayerOrder::layerItem( QgsMapLayer *layer ) const
 
 void QgsLayerOrder::itemChanged( QListWidgetItem *item )
 {
-  QgsDebugMsg( "Entering." );
-  QgsDebugMsg( QString( "item=%1" ).arg( item ? item->text() : "(null item)" ) );
-
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( item->data( Qt::UserRole ).value<QObject*>() );
-  mLegend->setLayerVisible( layer, item->checkState() == Qt::Checked );
-
+  QString name = item->text();
+  QString id = item->data( Qt::UserRole ).toString();
+  bool embeddedGroup = item->data( Qt::UserRole + 1 ).toBool();
+  if ( embeddedGroup )
+  {
+    QgsLegendGroup* grp = mLegend->findLegendGroup( name, id );
+    if ( grp )
+    {
+      grp->setCheckState( 0, item->checkState() );
+    }
+  }
+  else
+  {
+    QgsLegendLayer* ll = mLegend->findLegendLayer( id );
+    if ( ll )
+    {
+      ll->setCheckState( 0, item->checkState() );
+    }
+  }
   updateLayerOrder();
-}
-
-void QgsLayerOrder::legendItemChanged( QTreeWidgetItem *item, int col )
-{
-  QgsDebugMsg( "Entering." );
-
-  if ( col != 0 )
-    return;
-
-  QgsDebugMsg( QString( "legendItem changed=%1" ).arg( item ? item->text( 0 ) : "(null item)" ) );
-
-  QgsLegendLayer *ll = dynamic_cast< QgsLegendLayer * >( item );
-  if ( !ll )
-    return;
-
-  QListWidgetItem *lwi = layerItem( ll->layer() );
-  if ( !lwi )
-    return;
-
-  lwi->setCheckState( item->checkState( col ) );
 }
 
 void QgsLayerOrder::mousePressEvent( QMouseEvent * e )
@@ -261,14 +253,24 @@ void QgsLayerOrder::updateLayerOrder()
   if ( !isEnabled() )
     return;
 
-  QList<QgsMapLayer *> layers;
+  QList<DrawingOrderInfo> drawingOrder;
 
   for ( int i = 0; i < count(); i++ )
   {
-    layers << qobject_cast<QgsMapLayer *>( item( i )->data( Qt::UserRole ).value<QObject*>() );
+    QListWidgetItem* listItem = item( i );
+    if ( !listItem )
+    {
+      continue;
+    }
+    DrawingOrderInfo info;
+    info.name = listItem->text();
+    info.id = listItem->data( Qt::UserRole ).toString();
+    info.checked = listItem->checkState() == Qt::Checked;
+    info.embeddedGroup = listItem->data( Qt::UserRole + 1 ).toBool();
+    drawingOrder.push_back( info );
   }
 
-  mLegend->setDrawingOrder( layers );
+  mLegend->setDrawingOrder( drawingOrder );
 }
 
 void QgsLayerOrder::hideLine()

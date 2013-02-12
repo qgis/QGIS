@@ -23,8 +23,15 @@
 //#include "qgssymbolv2propertiesdialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsmaplayerregistry.h"
+#include "qgscomposershape.h"
+#include "qgspaperitem.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
@@ -74,6 +81,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   }
 
   updateOverviewSymbolMarker();
+  updateLineSymbolMarker();
 
   updateGuiElements();
   blockAllSignals( false );
@@ -405,10 +413,6 @@ void QgsComposerMapWidget::updateGuiElements()
 
     mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
 
-    QPen gridPen = mComposerMap->gridPen();
-    mLineWidthSpinBox->setValue( gridPen.widthF() );
-    mLineColorButton->setColor( gridPen.color() );
-
     blockAllSignals( false );
   }
 }
@@ -461,8 +465,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mKeepLayerListCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
-  mLineWidthSpinBox->blockSignals( b );
-  mLineColorButton->blockSignals( b );
+  mGridLineStyleButton->blockSignals( b );
   mDrawAnnotationCheckBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
   mAnnotationFormatComboBox->blockSignals( b );
@@ -689,20 +692,19 @@ void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mLineColorButton_clicked()
+void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
-  if ( newColor.isValid() )
+
+  QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  if ( d.exec() == QDialog::Accepted )
   {
-    mComposerMap->beginCommand( tr( "Grid pen changed" ) );
-    mLineColorButton->setColor( newColor );
-    mComposerMap->setGridPenColor( newColor );
-    mComposerMap->endCommand();
+    updateLineSymbolMarker();
   }
+
   mComposerMap->update();
 }
 
@@ -749,7 +751,7 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
   QFont newFont = QFontDialog::getFont( &ok, mComposerMap->gridAnnotationFont() );
 #endif
@@ -903,6 +905,11 @@ void QgsComposerMapWidget::showEvent( QShowEvent * event )
   QWidget::showEvent( event );
 }
 
+void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
+{
+  toolBox->addItem( widget, name );
+}
+
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )
 {
   c->insertItem( 0, tr( "Inside frame" ) );
@@ -1007,6 +1014,15 @@ void QgsComposerMapWidget::updateOverviewSymbolMarker()
   {
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::updateLineSymbolMarker()
+{
+  if ( mComposerMap )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->gridLineSymbol(), mGridLineStyleButton->iconSize() );
+    mGridLineStyleButton->setIcon( icon );
   }
 }
 

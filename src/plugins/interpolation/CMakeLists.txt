@@ -9,7 +9,7 @@ SET (INTERPOLATION_SRCS
      qgstininterpolatordialog.cpp
 )
 
-SET (INTERPOLATION_UIS 
+SET (INTERPOLATION_UIS
     qgsidwinterpolatordialogbase.ui
     qgsinterpolationdialogbase.ui
     qgstininterpolatordialogbase.ui
@@ -32,19 +32,19 @@ QT4_WRAP_CPP (INTERPOLATION_MOC_SRCS  ${INTERPOLATION_MOC_HDRS})
 
 QT4_ADD_RESOURCES(INTERPOLATION_RCC_SRCS ${INTERPOLATION_RCCS})
 
-ADD_LIBRARY (interpolationplugin MODULE 
+ADD_LIBRARY (interpolationplugin MODULE
   ${INTERPOLATION_SRCS}
-  ${INTERPOLATION_MOC_SRCS} 
-  ${INTERPOLATION_RCC_SRCS} 
+  ${INTERPOLATION_MOC_SRCS}
+  ${INTERPOLATION_RCC_SRCS}
   ${INTERPOLATION_UIS_H})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${GEOS_INCLUDE_DIR}
      ../../analysis/interpolation
-     ../../core 
-     ../../core/raster 
-     ../../core/renderer 
+     ../../core
+     ../../core/raster
+     ../../core/renderer
      ../../core/symbology
      ../../gui
      ..

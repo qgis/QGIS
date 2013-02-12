@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    doTranslate.py
+    ---------------------
+    Date                 : June 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'June 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -43,10 +67,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
           (self.selectTargetSRSButton, None, self.targetSRSCheck),
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox),
+          (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
           (self.outsizeSpin, SIGNAL("valueChanged(const QString &)"), self.outsizeCheck),
           (self.nodataSpin, SIGNAL("valueChanged(int)"), self.nodataCheck),
-          (self.expandCombo, SIGNAL("currentIndexChanged(int)"), self.expandCheck, "1.6.0"),
+          (self.expandCombo, SIGNAL("currentIndexChanged(int)"), self.expandCheck, 1600),
           (self.sdsCheck, SIGNAL("stateChanged(int)")),
           (self.srcwinEdit, SIGNAL("textChanged(const QString &)"), self.srcwinCheck),
           (self.prjwinEdit, SIGNAL("textChanged(const QString &)"), self.prjwinCheck)
@@ -164,10 +188,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if self.targetSRSCheck.isChecked() and not self.targetSRSEdit.text().isEmpty():
         arguments << "-a_srs"
         arguments << self.targetSRSEdit.text()
-      if self.creationGroupBox.isChecked():
-        for opt in self.creationOptionsTable.options():
-          arguments << "-co"
-          arguments << opt
+      if self.creationOptionsGroupBox.isChecked():
+        for opt in self.creationOptionsWidget.options():
+          arguments << "-co" << opt
       if self.outsizeCheck.isChecked() and self.outsizeSpin.value() != 100:
           arguments << "-outsize"
           arguments << self.outsizeSpin.text()
@@ -220,6 +243,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         arguments << self.outputFormat
       arguments << self.getInputFileName()
       arguments << outputFn
+
+      # set creation options filename/layer for validation
+      if self.inSelector.layer():
+        self.creationOptionsWidget.setRasterLayer(self.inSelector.layer())
+      else:
+        self.creationOptionsWidget.setRasterFileName(self.getInputFileName())
+
       return arguments
 
   def getInputFileName(self):

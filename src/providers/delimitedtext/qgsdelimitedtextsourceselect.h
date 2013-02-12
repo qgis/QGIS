@@ -38,7 +38,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     bool haveValidFileAndDelimiters();
     void updateFieldLists();
     void getOpenFileName();
-    QString selectedChars();
+    QStringList selectedChars();
 
   private slots:
     void on_buttonBox_accepted();

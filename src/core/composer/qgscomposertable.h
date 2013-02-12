@@ -74,14 +74,17 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     QColor mGridColor;
 
     /**Retrieves feature attributes*/
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+    //! @note not available in python bindings
+    virtual bool getFeatureAttributeMap( QList<QgsAttributeMap>& attributes )
     { Q_UNUSED( attributes ); return false; } //= 0;
     virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
     /**Calculate the maximum width values of the vector attributes*/
     virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const;
     /**Adapts the size of the item frame to match the content*/
+    //! @note not available in python bindings
     void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList );
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
+    //! @note not available in python bindings
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
 
     bool tableWriteXML( QDomElement& itemElem, QDomDocument& doc ) const;

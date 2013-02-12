@@ -50,6 +50,7 @@ class QgisAppInterface : public QgisInterface
     QgsLegendInterface* legendInterface();
 
     /* Exposed functions */
+
     //! Zoom map to full extent
     void zoomFull();
     //! Zoom map to previous extent
@@ -124,6 +125,27 @@ class QgisAppInterface : public QgisInterface
 
     QList<QgsComposerView*> activeComposers();
 
+    /** Return changeable options built from settings and/or defaults
+     * @note (added in 1.9)
+     */
+    QMap<QString, QVariant> defaultStyleSheetOptions();
+
+    /** Generate stylesheet
+     * @param opts generated default option values, or a changed copy of them
+     * @note added in 1.9
+     */
+    void buildStyleSheet( const QMap<QString, QVariant>& opts );
+
+    /** Save changed default option keys/values to user settings
+      * @note added in 1.9
+      */
+    void saveStyleSheetOptions( const QMap<QString, QVariant>& opts );
+
+    /** Get reference font for initial qApp (may not be same as QgisApp)
+     * @note added in 1.9
+     */
+    QFont defaultStyleSheetFont();
+
     /** Add action to the plugins menu */
     void addPluginToMenu( QString name, QAction* action );
     /** Remove action from the plugins menu */
@@ -159,8 +181,6 @@ class QgisAppInterface : public QgisInterface
 
     /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
     void removeDockWidget( QDockWidget * dockwidget );
-
-    virtual void refreshLegend( QgsMapLayer *l );
 
     /** show layer properties dialog for layer
      * @param l layer to show properties table for
@@ -225,40 +245,27 @@ class QgisAppInterface : public QgisInterface
     //! File menu actions
     virtual QAction *actionNewProject();
     virtual QAction *actionOpenProject();
-    virtual QAction *actionFileSeparator1();
     virtual QAction *actionSaveProject();
     virtual QAction *actionSaveProjectAs();
     virtual QAction *actionSaveMapAsImage();
-    virtual QAction *actionFileSeparator2();
     virtual QAction *actionProjectProperties();
-    virtual QAction *actionFileSeparator3();
     virtual QAction *actionPrintComposer();
-    virtual QAction *actionFileSeparator4();
     virtual QAction *actionExit();
 
     //! Edit menu actions
     virtual QAction *actionCutFeatures();
     virtual QAction *actionCopyFeatures();
     virtual QAction *actionPasteFeatures();
-    virtual QAction *actionEditSeparator1();
     virtual QAction *actionAddFeature();
-    Q_DECL_DEPRECATED virtual QAction *actionCapturePoint();
-    Q_DECL_DEPRECATED virtual QAction *actionCaptureLine();
-    Q_DECL_DEPRECATED virtual QAction *actionCapturePolygon();
     virtual QAction *actionDeleteSelected();
     virtual QAction *actionMoveFeature();
     virtual QAction *actionSplitFeatures();
-    virtual QAction *actionAddVertex();
-    virtual QAction *actionDeleteVertex();
-    virtual QAction *actionMoveVertex();
     virtual QAction *actionAddRing();
     virtual QAction *actionAddPart();
-    Q_DECL_DEPRECATED virtual QAction *actionAddIsland();
     virtual QAction *actionSimplifyFeature();
     virtual QAction *actionDeleteRing();
     virtual QAction *actionDeletePart();
     virtual QAction *actionNodeTool();
-    virtual QAction *actionEditSeparator2();
 
     //! View menu actions
     virtual QAction *actionPan();
@@ -275,19 +282,16 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionFeatureAction();
     virtual QAction *actionMeasure();
     virtual QAction *actionMeasureArea();
-    virtual QAction *actionViewSeparator1();
     virtual QAction *actionZoomFullExtent();
     virtual QAction *actionZoomToLayer();
     virtual QAction *actionZoomToSelected();
     virtual QAction *actionZoomLast();
     virtual QAction *actionZoomNext();
     virtual QAction *actionZoomActualSize();
-    virtual QAction *actionViewSeparator2();
     virtual QAction *actionMapTips();
     virtual QAction *actionNewBookmark();
     virtual QAction *actionShowBookmarks();
     virtual QAction *actionDraw();
-    virtual QAction *actionViewSeparator3();
 
     //! Layer menu actions
     virtual QAction *actionNewVectorLayer();
@@ -295,41 +299,54 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer();
     virtual QAction *actionAddPgLayer();
     virtual QAction *actionAddWmsLayer();
-    virtual QAction *actionLayerSeparator1();
+    /** @note added in 1.9 */
+    virtual QAction *actionCopyLayerStyle();
+    /** @note added in 1.9 */
+    virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
     virtual QAction *actionToggleEditing();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveActiveLayerEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelAllEdits();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
+    /** @note added in 1.9 */
+    virtual QAction *actionDuplicateLayer();
     virtual QAction *actionLayerProperties();
-    virtual QAction *actionLayerSeparator2();
     virtual QAction *actionAddToOverview();
     virtual QAction *actionAddAllToOverview();
     virtual QAction *actionRemoveAllFromOverview();
-    virtual QAction *actionLayerSeparator3();
     virtual QAction *actionHideAllLayers();
     virtual QAction *actionShowAllLayers();
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins();
-    virtual QAction *actionPluginSeparator1();
     virtual QAction *actionPluginListSeparator();
-    virtual QAction *actionPluginSeparator2();
-    virtual QAction *actionPluginPythonSeparator();
     virtual QAction *actionShowPythonDialog();
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen();
-    virtual QAction *actionSettingsSeparator1();
     virtual QAction *actionOptions();
     virtual QAction *actionCustomProjection();
 
     //! Help menu actions
     virtual QAction *actionHelpContents();
-    virtual QAction *actionHelpSeparator1();
     virtual QAction *actionQgisHomePage();
     virtual QAction *actionCheckQgisVersion();
-    virtual QAction *actionHelpSeparator2();
     virtual QAction *actionAbout();
 
     //! open feature form
@@ -339,6 +356,16 @@ class QgisAppInterface : public QgisInterface
     // @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
+
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout();
 
   signals:
     void currentThemeChanged( QString );

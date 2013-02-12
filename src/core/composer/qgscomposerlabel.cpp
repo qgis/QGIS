@@ -16,13 +16,20 @@
  ***************************************************************************/
 
 #include "qgscomposerlabel.h"
+#include "qgsexpression.h"
+#include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
+#include <QWebFrame>
+#include <QWebPage>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
-    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
+    QgsComposerItem( composition ), mMargin( 1.0 ), mHtmlState( 0 ), mFontColor( QColor( 0, 0, 0 ) ),
+    mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
+    mExpressionFeature( 0 ), mExpressionLayer( 0 ), mHtmlUnitsToMM( 1.0 )
 {
+  mHtmlUnitsToMM = htmlUnitsToMM();
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
 }
@@ -42,22 +49,46 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   drawBackground( painter );
   painter->save();
-  painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
-  painter->setFont( mFont );
 
-  QFontMetricsF fontSize( mFont );
-
-  //support multiline labels
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
   painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
   painter->rotate( mRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
-  //debug
-  //painter->setPen( QColor( Qt::red ) );
-  //painter->drawRect( painterRect );
-  drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+  if ( mHtmlState )
+  {
+    painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
+
+    QWebPage* webPage = new QWebPage();
+
+    //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
+    QPalette palette = webPage->palette();
+    palette.setBrush( QPalette::Base, Qt::transparent );
+    webPage->setPalette( palette );
+    //webPage->setAttribute(Qt::WA_OpaquePaintEvent, false); //this does not compile, why ?
+
+    webPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
+    webPage->mainFrame()->setZoomFactor( 10.0 );
+    webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    webPage->mainFrame()->setHtml( displayText() );
+    webPage->mainFrame()->render( painter );//DELETE WEBPAGE ?
+  }
+  else
+  {
+    painter->setPen( QPen( QColor( mFontColor ) ) );
+    painter->setFont( mFont );
+
+    QFontMetricsF fontSize( mFont );
+
+    //debug
+    //painter->setPen( QColor( Qt::red ) );
+    //painter->drawRect( painterRect );
+    drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+  }
+
+
 
 
   painter->restore();
@@ -69,29 +100,53 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
+double QgsComposerLabel::htmlUnitsToMM()
+{
+  if ( !mComposition )
+  {
+    return 1.0;
+  }
+
+  //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
+  return ( mComposition->printResolution() / 72.0 ); //webkit seems to assume a standard dpi of 72
+}
+
 void QgsComposerLabel::setText( const QString& text )
 {
   mText = text;
   emit itemChanged();
 }
 
+void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
+{
+  mExpressionFeature = feature;
+  mExpressionLayer = layer;
+  mSubstitutions = substitutions;
+}
+
 QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
   replaceDateText( displayText );
-  return displayText;
+  QMap<QString, QVariant> subs = mSubstitutions;
+  subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const
 {
-  int currentDatePos = text.indexOf( "$CURRENT_DATE" );
+  QString constant = "$CURRENT_DATE";
+  int currentDatePos = text.indexOf( constant );
   if ( currentDatePos != -1 )
   {
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
     int openingBracketPos = text.indexOf( "(", currentDatePos );
     int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
-    if ( openingBracketPos != -1 && closingBracketPos != -1 && ( closingBracketPos - openingBracketPos ) > 1 )
+    if ( openingBracketPos != -1 &&
+         closingBracketPos != -1 &&
+         ( closingBracketPos - openingBracketPos ) > 1 &&
+         openingBracketPos == currentDatePos + constant.size() )
     {
       formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
       text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );
@@ -165,6 +220,8 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
 
+  composerLabelElem.setAttribute( "htmlState", mHtmlState );
+
   composerLabelElem.setAttribute( "labelText", mText );
   composerLabelElem.setAttribute( "margin", QString::number( mMargin ) );
 
@@ -200,6 +257,9 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
 
   //text
   mText = itemElem.attribute( "labelText" );
+
+  //html state
+  mHtmlState = itemElem.attribute( "htmlState" ).toInt();
 
   //margin
   mMargin = itemElem.attribute( "margin" ).toDouble();

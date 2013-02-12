@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -69,8 +69,9 @@ QString QgsSimpleFillSymbolLayerV2::layerType() const
 
 void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mColor.setAlphaF( context.alpha() );
-  mBrush = QBrush( mColor, mBrushStyle );
+  QColor fillColor = mColor;
+  fillColor.setAlphaF( context.alpha() * mColor.alphaF() );
+  mBrush = QBrush( fillColor, mBrushStyle );
 
   // scale brush content for printout
   double rasterScaleFactor = context.renderContext().rasterScaleFactor();
@@ -83,12 +84,14 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
-  // N.B. unless a "selection line colour" is implemented in addition to the "selection colour" option
+  // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
   // this would mean symbols with "no fill" look the same whether or not they are selected
   if ( selectFillStyle )
     mSelBrush.setStyle( mBrushStyle );
-  mBorderColor.setAlphaF( context.alpha() );
-  mPen = QPen( mBorderColor );
+
+  QColor borderColor = mBorderColor;
+  borderColor.setAlphaF( context.alpha() * mBorderColor.alphaF() );
+  mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
@@ -170,6 +173,17 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
 
   // <se:Displacement>
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, mOffset );
+}
+
+QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
+{
+  //brush
+  QString symbolStyle;
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( mColor ) );
+  symbolStyle.append( ";" );
+  //pen
+  symbolStyle.append( QgsSymbolLayerV2Utils::ogrFeatureStylePen( mBorderWidth, mmScaleFactor, mapUnitScaleFactor, mBorderColor ) );
+  return symbolStyle;
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &element )
@@ -287,6 +301,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   mOutlineWidth = 0.3;
   mAngle = angle;
   setDefaultSvgParams();
+  mSvgPattern = 0;
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
@@ -297,22 +312,20 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   mAngle = angle;
   setSubSymbol( new QgsLineSymbolV2() );
   setDefaultSvgParams();
+  mSvgPattern = 0;
 }
 
 QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 {
   delete mOutline;
+  delete mSvgPattern;
 }
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
 {
-  QFile svgFile( svgPath );
-  if ( svgFile.open( QFile::ReadOnly ) )
-  {
-    mSvgData = svgFile.readAll();
+  mSvgData = QgsSvgCache::instance()->getImageData( svgPath );
+  storeViewBox();
 
-    storeViewBox();
-  }
   mSvgFilePath = svgPath;
   setDefaultSvgParams();
 }
@@ -331,7 +344,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   if ( properties.contains( "svgFile" ) )
   {
     QString svgName = properties["svgFile"];
-    QString savePath = QgsSvgMarkerSymbolLayerV2::symbolNameToPath( svgName );
+    QString savePath = QgsSymbolLayerV2Utils::symbolNameToPath( svgName );
     svgFilePath = ( savePath.isEmpty() ? svgName : savePath );
   }
   if ( properties.contains( "angle" ) )
@@ -383,22 +396,52 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
-  int size = context.outputPixelSize( mPatternWidth );
-  const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
-                               context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-  QTransform brushTransform;
-  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  if ( !doubleNear( context.alpha(), 1.0 ) )
+  delete mSvgPattern;
+  mSvgPattern = 0;
+  double size = context.outputPixelSize( mPatternWidth );
+
+  //don't render pattern if symbol size is below one or above 10,000 pixels
+  if (( int )size < 1.0 || 10000.0 < size )
   {
-    QImage transparentImage = patternImage.copy();
-    QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
-    mBrush.setTextureImage( transparentImage );
+    mSvgPattern = new QImage();
+    mBrush.setTextureImage( *mSvgPattern );
   }
   else
   {
-    mBrush.setTextureImage( patternImage );
+    bool fitsInCache = true;
+    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+                                 context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
+
+    if ( !fitsInCache )
+    {
+      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+                                    context.renderContext().scaleFactor(), 1.0 );
+      double hwRatio = 1.0;
+      if ( patternPict.width() > 0 )
+      {
+        hwRatio = ( double )patternPict.height() / ( double )patternPict.width();
+      }
+      mSvgPattern = new QImage(( int )size, ( int )( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
+      mSvgPattern->fill( 0 ); // transparent background
+
+      QPainter p( mSvgPattern );
+      p.drawPicture( QPointF( size / 2, size * hwRatio / 2 ), patternPict );
+    }
+
+    QTransform brushTransform;
+    brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
+    if ( !doubleNear( context.alpha(), 1.0 ) )
+    {
+      QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
+      QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+      mBrush.setTextureImage( transparentImage );
+    }
+    else
+    {
+      mBrush.setTextureImage( fitsInCache ? patternImage : *mSvgPattern );
+    }
+    mBrush.setTransform( brushTransform );
   }
-  mBrush.setTransform( brushTransform );
 
   if ( mOutline )
   {
@@ -419,7 +462,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   QgsStringMap map;
   if ( !mSvgFilePath.isEmpty() )
   {
-    map.insert( "svgFile", QgsSvgMarkerSymbolLayerV2::symbolPathToName( mSvgFilePath ) );
+    map.insert( "svgFile", QgsSymbolLayerV2Utils::symbolPathToName( mSvgFilePath ) );
   }
   else
   {
@@ -873,6 +916,21 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
     // have more than one layer
     mOutline->toSld( doc, element, props );
   }
+}
+
+QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFactor ) const
+{
+  QString featureStyle;
+  featureStyle.append( "Brush(" );
+  featureStyle.append( QString( "fc:%1" ).arg( mColor.name() ) );
+  featureStyle.append( QString( ",bc:%1" ).arg( "#00000000" ) ); //transparent background
+  featureStyle.append( ",id:\"ogr-brush-2\"" );
+  featureStyle.append( QString( ",a:%1" ).arg( mLineAngle ) );
+  featureStyle.append( QString( ",s:%1" ).arg( mLineWidth * widthScaleFactor ) );
+  featureStyle.append( ",dx:0mm" );
+  featureStyle.append( QString( ",dy:%1mm" ).arg( mDistance * widthScaleFactor ) );
+  featureStyle.append( ")" );
+  return featureStyle;
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &element )

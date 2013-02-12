@@ -1,0 +1,12 @@
+Points Filter
+shapes_points
+ParameterVector|POINTS|Points|0|False
+ParameterTableField|FIELD|Attribute|POINTS
+ParameterNumber|RADIUS|Radius|None|None|1
+ParameterNumber|MINNUM|Minimum Number of Points|None|None|0
+ParameterNumber|MAXNUM|Maximum Number of Points|None|None|0
+ParameterBoolean|QUADRANTS      |Quadrants|True
+ParameterSelection|METHOD|Filter Criterion|[0] keep maxima (with tolerance);[1] keep minima (with tolerance);[2] remove maxima (with tolerance);[3] remove minima (with tolerance);[4] remove below percentile;[5] remove above percentile
+ParameterNumber|TOLERANCE|Tolerance|None|None|0.0
+ParameterNumber|PERCENT|Percentile|None|None|50
+OutputVector|FILTER|Filtered Points

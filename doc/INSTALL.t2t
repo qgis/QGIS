@@ -61,6 +61,8 @@ Building QGIS from source - step by step
 % End of comments
 % -------------------
 
+% change to force build: Fri, 28 Sep 2012 11:08:01 +0200
+
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
@@ -113,7 +115,9 @@ source directory.
 %!include: osx.t2t
 
 %!include: wcs-test-server.t2t
+
 %!include: jenkins.t2t
 
+%!include: debug-tests.t2t
 
 %!include: iauthors.t2t

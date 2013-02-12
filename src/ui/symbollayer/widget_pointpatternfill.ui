@@ -17,23 +17,17 @@
    <property name="margin">
     <number>1</number>
    </property>
-   <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="mHorizontalDistanceSpinBox">
-     <property name="decimals">
-      <number>5</number>
-     </property>
-     <property name="maximum">
-      <double>99999999.989999994635582</double>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mHorizontalDistanceLabel">
+     <property name="text">
+      <string>Horizontal distance</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="mVerticalDisplacementSpinBox">
-     <property name="decimals">
-      <number>5</number>
-     </property>
-     <property name="maximum">
-      <double>999999999.990000009536743</double>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mVerticalDistanceLabel">
+     <property name="text">
+      <string>Vertical distance</string>
      </property>
     </widget>
    </item>
@@ -54,17 +48,20 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mHorizontalDistanceLabel">
-     <property name="text">
-      <string>Horizontal distance</string>
+   <item row="3" column="1">
+    <widget class="QDoubleSpinBox" name="mVerticalDisplacementSpinBox">
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="maximum">
+      <double>999999999.990000009536743</double>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mVerticalDistanceLabel">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mVerticalDisplacementLabel">
      <property name="text">
-      <string>Vertical distance</string>
+      <string>Vertical displacement</string>
      </property>
     </widget>
    </item>
@@ -78,12 +75,28 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mVerticalDisplacementLabel">
-     <property name="text">
-      <string>Vertical displacement</string>
+   <item row="0" column="1">
+    <widget class="QDoubleSpinBox" name="mHorizontalDistanceSpinBox">
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="maximum">
+      <double>99999999.989999994635582</double>
      </property>
     </widget>
+   </item>
+   <item row="4" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

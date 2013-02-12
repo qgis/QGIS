@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -97,6 +97,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
+    static void drawStippledBackround( QPainter* painter, QRect rect );
+
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
     static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
 
@@ -127,6 +129,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
+    //! @note not available in python bindings
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, QColor color, double width = -1,
                            const Qt::PenJoinStyle *penJoinStyle = 0, const Qt::PenCapStyle *penCapStyle = 0,
@@ -160,6 +163,16 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, QString label,
                                 QFont font, QColor color = QColor(), double size = -1 );
+
+    /**Create ogr feature style string for pen */
+    static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor& c,
+                                       Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+                                       Qt::PenCapStyle capStyle = Qt::FlatCap,
+                                       double offset = 0.0,
+                                       const QVector<qreal>* dashPattern = 0 );
+    /**Create ogr feature syle string for brush
+        @param fillColr fill color*/
+    static QString ogrFeatureStyleBrush( const QColor& fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, QString rotationFunc );
     static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
@@ -200,9 +213,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
@@ -213,6 +226,18 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
+
+    //! Return a list of all available svg files
+    static QStringList listSvgFiles();
+
+    //! Return a list of svg files at the specified directory
+    static QStringList listSvgFilesAt( QString directory );
+
+    //! Get symbol's path from its name
+    static QString symbolNameToPath( QString name );
+
+    //! Get symbols's name from its path
+    static QString symbolPathToName( QString path );
 };
 
 class QPolygonF;

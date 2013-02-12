@@ -1,0 +1,3 @@
+usr/lib/python*/*-packages/qgis/*.py
+usr/lib/python*/*-packages/qgis/*.so
+usr/lib/libqgispython.so.{QGIS_ABI}

@@ -250,7 +250,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="creationGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="creationOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
      <property name="title">
       <string>&amp;Creation Options</string>
      </property>
@@ -261,11 +261,14 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
       <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <item>
-       <widget class="GdalToolsOptionsTable" name="creationOptionsTable" native="true"/>
+       <widget class="QgsRasterFormatSaveOptionsWidget" name="creationOptionsWidget" native="true"/>
       </item>
      </layout>
     </widget>
@@ -283,9 +286,15 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>GdalToolsOptionsTable</class>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterFormatSaveOptionsWidget</class>
    <extends>QWidget</extends>
-   <header>optionsTable</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

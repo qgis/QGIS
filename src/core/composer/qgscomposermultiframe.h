@@ -69,8 +69,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     /**Removes and deletes all frames from mComposition*/
     void deleteFrames();
 
-    int nFrames() const { return mFrameItems.size(); }
-    QgsComposerFrame* frame( int i );
+    /** Return the number of frames associated with this multiframeset.
+    @note added in 2.0, replaces nFrames
+    **/
+    int frameCount() const { return mFrameItems.size(); }
+    QgsComposerFrame* frame( int i ) const;
 
   protected:
     QgsComposition* mComposition;

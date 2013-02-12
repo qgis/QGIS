@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -62,6 +62,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+
     QString name() const { return mName; }
     void setName( QString name ) { mName = name; }
 
@@ -108,18 +110,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
-    //! Return a list of all available svg files
-    static QStringList listSvgFiles();
-
-    //! Return a list of svg files at the specified directory
-    static QStringList listSvgFilesAt( QString directory );
-
-    //! Get symbol's path from its name
-    static QString symbolNameToPath( QString name );
-
-    //! Get symbols's name from its path
-    static QString symbolPathToName( QString path );
-
     // implemented from base classes
 
     QString layerType() const;
@@ -149,9 +139,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
   protected:
-
-    void loadSvg();
-
     QString mPath;
 
     //param(fill), param(outline), param(outline-width) are going

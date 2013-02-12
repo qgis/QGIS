@@ -36,7 +36,6 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QWidget, private Ui::LayerPro
   public:
     QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL );
 
-
   public slots:
     void layerTypeChanged();
     void emitSignalChanged();

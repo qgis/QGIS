@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,7 +36,6 @@ class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
 
-typedef QMap<QString, QString> QgsStringMap;
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
@@ -96,7 +95,6 @@ class CORE_EXPORT QgsSymbolV2
 
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
-
 
     void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
     void stopRender( QgsRenderContext& context );

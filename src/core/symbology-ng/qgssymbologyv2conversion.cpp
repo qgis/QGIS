@@ -3,7 +3,7 @@
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -185,9 +185,11 @@ void QgsSymbologyV2Conversion::rendererV1toV2( QgsVectorLayer* layer )
       return;
 
     QString attrName;
-    if ( layer->pendingFields().contains( gsr->classificationField() ) )
+    const QgsFields& fields = layer->pendingFields();
+    int fldIdx = gsr->classificationField();
+    if ( fldIdx >= 0 && fldIdx < fields.count() )
     {
-      attrName = layer->pendingFields()[ gsr->classificationField()].name();
+      attrName = fields[fldIdx].name();
     }
 
     QgsRangeList ranges;
@@ -227,9 +229,11 @@ void QgsSymbologyV2Conversion::rendererV1toV2( QgsVectorLayer* layer )
       return;
 
     QString attrName;
-    if ( layer->pendingFields().contains( uvr->classificationField() ) )
+    const QgsFields& fields = layer->pendingFields();
+    int fldIdx = uvr->classificationField();
+    if ( fldIdx >= 0 && fldIdx < fields.count() )
     {
-      attrName = layer->pendingFields()[ uvr->classificationField()].name();
+      attrName = fields[fldIdx].name();
     }
 
     QgsCategoryList cats;

@@ -1,0 +1,7 @@
+D-Infinity Reverse Accumulation
+dinfrevaccum
+Specialized Grid Analysis tools
+ParameterRaster|-ang|D-Infinity Flow Direction Grid|False
+ParameterRaster|-wg|Weight Grid|False
+OutputRaster|-racc|Reverse Accumulation Grid
+OutputRaster|-dmax|Maximum Downslope Grid

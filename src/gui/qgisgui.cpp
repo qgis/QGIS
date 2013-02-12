@@ -124,7 +124,7 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
-    //create a file dialog using the the filter list generated above
+    //create a file dialog using the filter list generated above
     std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file

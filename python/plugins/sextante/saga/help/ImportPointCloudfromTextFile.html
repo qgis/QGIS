@@ -1,0 +1,23 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Import Point Cloud from Text File</h1>
+<div class='author'>V. Wichmann, LASERDATA GmbH (c) 2009</div>
+<div class='description'>Creates a point cloud from a text file.<br/>
+The input file must have at least three columns holding the x, y, z coordinates of each point. You must specify the field numbers of these. In case you like to import additional attributes, you have to provide the number of attribute fields. After module execution, you will be prompted to provide their field numbers, names and datatypes.<br/>
+You have also to decide on which field separator to use and if the first line of the input file should be skipped (in case it contains column headings).<br/>
+The columns in the input file can be in any order, and you can omit columns, but you have to provide the correct field numbers of those you like to import.<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Point Cloud <div class='type'>Output Data Object</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Text File <div class='type'>File path</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>X is Column ... <div class='type'>Integer</div></dt><dd>The column holding the X-coordinate. <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Y is Column ... <div class='type'>Integer</div></dt><dd>The column holding the Y-coordinate. <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Z is Column ... <div class='type'>Integer</div></dt><dd>The column holding the Z-coordinate. <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Number of Attributes <div class='type'>Integer</div></dt><dd>Number of additional attributes to import. <div class='constraints'></div></dd>
+	<dt>Skip first line <div class='type'>Boolean</div></dt><dd>Skip first line as it contains column names. <div class='constraints'></div></dd>
+	<dt>Field Separator <div class='type'>Choice</div></dt><dd>Field Separator <div class='constraints'>Available choices: tabulator, space, comma</div></dd>
+</dl>
+</body></html>

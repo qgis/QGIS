@@ -71,7 +71,7 @@ class QgsMapToolLabel: public QgsMapTool
     /**Finds out rotation point of current label position
       @param ignoreUpsideDown treat label as right-side-up
       @return true in case of success*/
-    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false );
+    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
 
     /**Creates label / feature / fixpoint rubber bands for the current label position*/
     void createRubberBands();
@@ -85,7 +85,9 @@ class QgsMapToolLabel: public QgsMapTool
     /**Returns layer settings of current label position*/
     QgsPalLayerSettings& currentLabelSettings( bool* ok );
 
-    QString currentLabelText();
+    /**Returns current label's text
+      @param trunc number of chars to truncate to, with ... added (added in 1.9)*/
+    QString currentLabelText( int trunc = 0 );
 
     void currentAlignment( QString& hali, QString& vali );
 

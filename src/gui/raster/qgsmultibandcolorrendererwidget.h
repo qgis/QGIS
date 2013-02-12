@@ -45,12 +45,10 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     QString max( int index = 0 );
     void setMin( QString value, int index = 0 );
     void setMax( QString value, int index = 0 );
-    //QString stdDev( ) { return QString::number( mStdDevSpinBox->value() ); }
-    //void setStdDev( QString value ) { mStdDevSpinBox->setValue( value.toDouble() ); }
     int selectedBand( int index = 0 );
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
   private slots:
     //void on_mLoadPushButton_clicked();

@@ -44,7 +44,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   //getFeatureAttributes
   QList<QgsAttributeMap> attributeList;
-  if ( !getFeatureAttributes( attributeList ) )
+  if ( !getFeatureAttributeMap( attributeList ) )
   {
     return;
   }
@@ -119,7 +119,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 void QgsComposerTable::adjustFrameToSize()
 {
   QList<QgsAttributeMap> attributes;
-  if ( !getFeatureAttributes( attributes ) )
+  if ( !getFeatureAttributeMap( attributes ) )
   {
     return;
   }

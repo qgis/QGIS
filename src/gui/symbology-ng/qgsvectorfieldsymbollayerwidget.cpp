@@ -21,13 +21,12 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   setupUi( this );
   if ( mVectorLayer )
   {
-    const QgsFieldMap& fm = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fm.constBegin();
+    const QgsFields& fm = mVectorLayer->pendingFields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
-    for ( ; fieldIt != fm.constEnd(); ++fieldIt )
+    for ( int idx = 0; idx < fm.count(); ++idx )
     {
-      QString fieldName = fieldIt.value().name();
+      QString fieldName = fm[idx].name();
       mXAttributeComboBox->addItem( fieldName );
       mYAttributeComboBox->addItem( fieldName );
     }

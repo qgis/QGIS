@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,17 +16,20 @@
 #define QGSBROWSERDOCKWIDGET_H
 
 #include <QDockWidget>
+#include <ui_qgsbrowserdockwidgetbase.h>
 
 class QgsBrowserModel;
 class QModelIndex;
-class QTreeView;
+class QgsBrowserTreeView;
 class QgsLayerItem;
+class QgsDataItem;
+class QgsBrowserTreeFilterProxyModel;
 
-class QgsBrowserDockWidget : public QDockWidget
+class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
 
   signals:
 
@@ -35,16 +38,23 @@ class QgsBrowserDockWidget : public QDockWidget
     void showContextMenu( const QPoint & );
 
     void addFavourite();
+    void addFavouriteDirectory();
     void removeFavourite();
 
     void refresh();
+
+    void showFilterWidget( bool visible );
+    void setFilterSyntax( QAction * );
+    void setFilter();
 
     // layer menu items
     void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
+    void toggleFastScan();
 
   protected:
+    void addFavouriteDirectory( QString favDir );
 
     void refreshModel( const QModelIndex& index );
 
@@ -52,8 +62,11 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void addLayer( QgsLayerItem *layerItem );
 
-    QTreeView* mBrowserView;
+    // removed dataItem(), call mModel->dataItem directly (to avoid passing index from the wrong model)
+
+    QgsBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
+    QgsBrowserTreeFilterProxyModel* mProxyModel;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

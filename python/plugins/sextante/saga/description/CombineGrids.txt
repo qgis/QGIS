@@ -1,0 +1,6 @@
+Combine Grids
+grid_tools
+ParameterRaster|GRID1|Grid 1|False
+ParameterRaster|GRID2|Grid 2|False
+ParameterFixedTable|LOOKUP|LookUp Table|3|Value in Grid 1;Value in Grid 2;Resulting Value|False
+OutputRaster|RESULT|Result

@@ -3,6 +3,7 @@
 # Files
 
 SET (DTEXT_SRCS
+  qgsdelimitedtextfeatureiterator.cpp
   qgsdelimitedtextprovider.cpp
   qgsdelimitedtextsourceselect.cpp
 )

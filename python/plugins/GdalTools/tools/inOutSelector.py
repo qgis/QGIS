@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    inOutSelector.py
+    ---------------------
+    Date                 : April 2011
+    Copyright            : (C) 2011 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'April 2011'
+__copyright__ = '(C) 2011, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -119,7 +143,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
           fn = fn.join( "," )
         else:
           fn = QString()
-          
+
       else:
         fn = QString()
 
@@ -143,8 +167,8 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       prevFn, prevLayer = self.filename(), self.layer()
 
       if isinstance(layer, QgsMapLayer):
-        if self.combo.findData(layer.getLayerID()) >= 0:
-          index = self.combo.findData( layer.getLayerID() )
+        if self.combo.findData(layer.id()) >= 0:
+          index = self.combo.findData( layer.id() )
           self.combo.setCurrentIndex( index )
         else:
           self.combo.setCurrentIndex( -1 )
@@ -175,7 +199,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
 
       self.combo.clear()
       for l in layers:
-        self.combo.addItem( l.name(), l.getLayerID() )
+        self.combo.addItem( l.name(), l.id() )
 
       self.restoreComboState()
       self.blockSignals( False )
@@ -183,7 +207,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         self.filenameChanged()
       if self.layer() != prevLayer:
         self.layerChanged()
-      
+
 
   def clearComboState(self):
       self.prevState = None

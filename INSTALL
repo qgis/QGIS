@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Saturday August 04, 2012
+Friday January 04, 2013
 
 
-Last Updated: Saturday August 04, 2012
-Last Change : Saturday July 21, 2012
+Last Updated: Friday January 04, 2013
+Last Change : Friday January 04, 2013
 
 
   1. Introduction
@@ -28,10 +28,11 @@ Last Change : Saturday July 21, 2012
     5.2. Install Qt4 from disk image
     5.3. Install CMake for OSX
     5.4. Install development frameworks for QGIS dependencies
-    5.5. QGIS source
-    5.6. Configure the build
-    5.7. Building
-    5.8. Post-Install
+    5.5. API documentation
+    5.6. QGIS source
+    5.7. Configure the build
+    5.8. Building
+    5.9. Post-Install
   6. Setting up the WCS test server on GNU/Linux
     6.1. Preparation
     6.2. Setup mapserver
@@ -39,7 +40,8 @@ Last Change : Saturday July 21, 2012
     6.4. Now deploy it
     6.5. Debugging
   7. Setting up a Jenkins Build Server
-  8. Authors and Acknowledgments
+  8. Debug output and running tests
+  9. Authors and Acknowledgments
 
 
   1. Introduction
@@ -102,15 +104,16 @@ Required build deps:
 - Sqlite3 >= 3.0.0
 - GDAL/OGR >= 1.4.x
 - Qwt >= 5.0
+- expat >= 1.95
 
 Optional dependencies:
 
 - for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
-- for gps plugin - expat >= 1.95 and gpsbabel
+- for gps plugin - gpsbabel
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.8, PyQt >= must match Qt version
+- for python support - SIP >= 4.8, PyQt >= must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 
 
@@ -537,7 +540,7 @@ To run QGIS just use this command
   ==========================================
 
 This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also who the binary QGIS packages are made (earlier versions used
+is currently also how the binary QGIS packages are made (earlier versions used
 MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
@@ -593,6 +596,7 @@ Advanced Installation):
 - sip
 - spatialite
 - libspatialindex-devel
+- python-qscintilla
 
 This will also select packages the above packages depend on.
 
@@ -640,8 +644,8 @@ git to the source directory Quantum-GIS:
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
-Now run cmake-gui and in the Where is the source code: box, browse to
-the top level QGIS directory.
+Now run cmake-gui (still from cmd) and in the Where is the source code:
+box, browse to the top level QGIS directory.
 
 In the Where to build the binaries: box, browse to the 'build' directory you
 created.
@@ -1156,11 +1160,11 @@ of space and it's not necessary at all.
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-The base system here is Mac OS X 10.4 (Tiger), with a single, default,
-architecture build.  "Universal", SDK and non-default arch builds require
-more complex options and some fiddling with the system.
+"Universal", SDK and non-default arch builds require more complex options and
+some fiddling with the system. It is best to stick with a single, default,
+architecture build and follow these instructions for an initial build.
 Included are notes for building on Mac OS X 10.5 (Leopard), 10.6
-(Snow Leopard) and 10.7 (Lion).
+(Snow Leopard), 10.7 (Lion) and 10.8 (Mt. Lion).
 (These names will be used throughout the instructions.)
 Make sure to read each section completely before typing the first command you see.
 
@@ -1175,15 +1179,23 @@ Parallel Compilation: On multiprocessor/multicore Macs, it's possible to
 speed up compilation, but it's not automatic.  Whenever you type "make" (but
 NOT "make install"), instead type:
 
-  make -j [n]
+  make -j [#cpus]
 
-Replace [n] with the number of cores and/or processors your Mac has.  On recent
+Replace [#cpus] with the number of cores and/or processors your Mac has.  On recent
 models with hyperthreading processors this can be double the physical count of
 processors and cores.
 
 ie: Mac Pro "8 Core" model (2 quad core processors) = 8
 
 ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
+
+To find out how many CPUs you have available, run the following in Terminal:
+
+  /usr/sbin/sysctl -n hw.ncpu
+
+which can be used in build shell scripts like:
+
+  make -j $(/usr/sbin/sysctl -n hw.ncpu)
 
 
   5.1. Install Developer Tools
@@ -1209,6 +1221,24 @@ a good idea to uninstall the old version first with:
 
   sudo /Developer/Library/uninstall-devtools
 
+On Lion and Mt. Lion, using Xcode 4.4+, the developer command line tools can be
+installed via the Xcode preferences. The tools now appear to require an install
+of Xcode, regardless of using a separate DMG installer for just the tools.
+
+Xcode 4.4+ also introduces the clang frontend to the LLVM compiler as default.
+
+http://clang.llvm.org/
+
+The supplied clang version 4 can compile QGIS, but presents many warnings
+compared to just using LLVM. You can specifically use LLVM by exporting paths to
+the compilers in Terminal, or shell scripts, prior to building QGIS:
+
+  export CC=/usr/bin/llvm-gcc
+  export CXX=/usr/bin/llvm-g++
+
+If you have trouble building some of the dependencies listed below with clang
+(e.g. OSG & osgEarth), try using only the LLVM compilers.
+
 
   5.2. Install Qt4 from disk image
   ================================
@@ -1223,6 +1253,9 @@ support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
 Qt 4.6+ is recommended for Cocoa.
 Starting with Lion, Carbon may not work properly, if at all.
+
+Mt. Lion note: Any Qt version < 4.8.3 will cause a 'This version of Mac OS X
+is unsupported' error when building QGIS.
 
 PPC note: The readymade Qt Cocoa installers don't include PPC support, you'd
 have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
@@ -1266,11 +1299,11 @@ NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
 Double-click the source tarball, then cd to the source folder and:
 
   ./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
-  make
+  make -j [#cpus]
   sudo make install
 
 
-    5.3.1. Optional Setup: ccache
+    5.3.1. Optional setup: ccache
     =============================
 
 Setup ccache to significantly speed up compile times after initial build.
@@ -1305,6 +1338,9 @@ line and starting a new login session in Terminal.
 
   export PATH=/usr/local/bin/compilers:$PATH
 
+If you have trouble building some of the dependencies listed below (e.g. OSG &
+osgEarth), try bypassing ccache.
+
 
   5.4. Install development frameworks for QGIS dependencies
   =========================================================
@@ -1322,7 +1358,7 @@ support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
 
-http://www.kyngchaos.com/wiki/software/postgres 
+http://www.kyngchaos.com/wiki/software/postgres
 
 Also available is a GRASS application:
 
@@ -1332,12 +1368,12 @@ Old versions of these packages for older systems are available in the
 software archive section.
 
 
-    5.4.1. Additional Dependencies: General compatibility note
+    5.4.1. Additional dependencies: General compatibility note
     ==========================================================
 
 There are some additional dependencies that, at the time of writing, are not
 provided as frameworks or installers so we will need to build these from source.
-If you are wanting to build QGIS as a 64-bit application, you will need to 
+If you are wanting to build QGIS as a 64-bit application, you will need to
 provide the appropriate build commands to produce 64-bit support in dependencies.
 Likewise, for 32-bit support on Snow Leopard, you will need to override the
 default system architecture, which is 64-bit, according to instructions for
@@ -1347,25 +1383,25 @@ Stable release versions are preferred.  Beta and other development versions may
 have problems and you are on your own with those.
 
 
-    5.4.2. Additional Dependencies: Expat
+    5.4.2. Additional dependencies: Expat
     =====================================
 
-Snow Leopard+ note: Snow Leopard includes a usable expat, so this step is 
+Snow Leopard+ note: Snow Leopard includes a usable expat, so this step is
 not necessary on Snow Leopard or Lion.
 
 Get the expat sources:
 
-http://sourceforge.net/project/showfiles.php?group_id=10127 
+http://sourceforge.net/project/showfiles.php?group_id=10127
 
 Double-click the source tarball to unpack, then, in Terminal.app, cd to the
 source folder and:
 
   ./configure
-  make 
-  sudo make install 
+  make
+  sudo make install
 
 
-    5.4.3. Additional Dependencies: Spatialindex
+    5.4.3. Additional dependencies: Spatialindex
     ============================================
 
 Get the libspatialindex sources:
@@ -1376,20 +1412,20 @@ Double-click the source tarball to unpack, then, in Terminal.app, cd to the
 source folder and:
 
   ./configure
-  make 
-  sudo make install 
+  make
+  sudo make install
 
 
-    5.4.4. Additional Dependencies: Python
+    5.4.4. Additional dependencies: Python
     ======================================
 
 Leopard+ note: Starting with Leopard a usable Python is included
-in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion. 
+in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion.
 So there is no need to install Python on Leopard and newer.
 You can still install Python from python.org if preferred.
 
 If installing from python.org, make sure you install the latest Python
-2.x from 
+2.x from
 
 http://www.python.org/download/
 
@@ -1397,7 +1433,7 @@ Python 3 is a major change, and may have compatibility issues, so try it at
 your own risk.
 
 
-    5.4.5. Additional Dependencies: SIP
+    5.4.5. Additional dependencies: SIP
     ===================================
 
 Retrieve the python bindings toolkit SIP from
@@ -1409,9 +1445,9 @@ cd to the source folder.  Then for your chosen Python:
 
 python.org Python
 
-  python configure.py 
-  make 
-  sudo make install 
+  python configure.py
+  make
+  sudo make install
 
 Leopard system Python
 
@@ -1442,7 +1478,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 Lion system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
-There is no need for the SDK option (the CLI tools for Lion don't inlcude SDKs)
+There is no need for the SDK option (the CLI tools for Lion don't include SDKs)
 or arch option:
 
   python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
@@ -1452,11 +1488,66 @@ continue...
 
 Then continue with compilation and installation:
 
-  make 
-  sudo make install 
+  make
+  sudo make install
 
 
-    5.4.6. Additional Dependencies: PyQt
+    5.4.6. Additional dependencies: QScintilla2
+    ===========================================
+
+Retrieve the Qt version of the Scintilla-based text editor widget from
+
+http://www.riverbankcomputing.co.uk/software/qscintilla/download
+
+Note:The editor uses API files for code completion in the PyQGIS console. To
+have PyQt4's API automatically created, install QScintilla2 library first.
+
+Double-click the tarball to unpack it. Then, cd to the QScintilla2.x.x source
+folder in a Terminal.
+
+QScintilla2 wants to install in the system path -- with libraries going into
+/Library/Frameworks and headers into /usr/include/Qsci -- this is not a good
+idea, and it also basically breaks the QtDesigner plugin. More configuration
+is needed to install outside the system path, in /usr/local/:
+
+  cd Qt4Qt5
+
+Edit QScintilla-gpl-2.x.x/Qt4Qt5/qscintilla.pro in the following manner:
+
+  current line --> new line
+  
+  target.path = $$[QT_INSTALL_LIBS]  -->  target.path = /usr/local/lib
+  header.path = $$[QT_INSTALL_HEADERS]  -->  header.path = /usr/local/include
+
+Save the qscintilla.pro file and build the QScintilla2 C++ library:
+
+  qmake -spec macx-g++ qscintilla.pro
+  make -j [#cpus]
+  sudo make install
+  
+  sudo install_name_tool -id /usr/local/lib/libqscintilla2.8.dylib \
+    /usr/local/lib/libqscintilla2.8.dylib
+
+This installs QScintilla2's dylib in /usr/local/lib/ and the header files in
+/usr/local/include/Qsci/, both of which should be automatically found when
+building QGIS.
+
+
+      5.4.6.1. Optional setup: QScintilla2 QtDesigner plugin
+      ======================================================
+
+The plugin allows QScintilla2 widgets to be used within QtDesigner.
+
+  cd <QScintilla2 source directory>
+  cd designer-Qt4
+  qmake -spec macx-g++ designer.pro
+  make
+  sudo make install
+
+Installs in /Developer/Applications/Qt/plugins/designer/
+
+
+    5.4.7. Additional dependencies: PyQt
     ====================================
 
 Retrieve the python bindings toolkit for Qt from
@@ -1468,8 +1559,8 @@ cd to the source folder.  Then for your chosen Python:
 
 python.org Python
 
-  python configure.py 
-  yes 
+  python configure.py
+  yes
 
 Leopard system Python
 
@@ -1503,42 +1594,77 @@ But you don't need the arch option:
 
 continue...
 
-  make 
-  sudo make install 
+  make -j [#cpus]
+  sudo make install
 
 If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
 QtOpenGL/makefile and add -undefined dynamic_lookup to LFLAGS.
 Then make again.
 
 
-    5.4.7. Additional Dependencies: Qwt
+    5.4.8. Additional dependencies: QScintilla2 Python Module
+    =========================================================
+
+This will create the Qsci.so module in /Library/Python/2.x/site-packages/PyQt4.
+
+Snow Leopard: substitute '2.6' for Python version
+
+  cd <QScintilla2 source dir>
+  cd Python
+  python2.7 configure.py -o /usr/local/lib -n /usr/local/include
+  make -j [#cpus]
+  sudo make install
+
+The -o and -n options should match the QScintilla2 C++ dylib install options.
+
+
+    5.4.9. Additional dependencies: Qwt
     ===================================
 
 The GPS tracking feature uses Qwt.
 
 NOTE: PyQwt is not compatible with PyQt 4.9, so we will skip that.
 
-Download the latest Qwt 5.x source (6.x is untested) from:
+Download the latest Qwt 5.x or 6.x source from:
 
 http://sourceforge.net/projects/qwt
 
-Double-click the tarball to unpack it.
+Double-click the tarball to unpack it. Now, cd to the qwt source folder in a
+Terminal.
 
-Now, cd to the qwt source folder in a Terminal.  Type these commands to build
-and install (assumes v5.2.2, adjust commands for other version as needed):
+Type these commands to build and install 5.x.x (assumes v5.2.2, adjust commands
+for other version as needed):
 
   qmake -spec macx-g++
-  make
+  make -j [#cpus]
   sudo make install
+  
   sudo install_name_tool -id /usr/local/qwt-5.2.2/lib/libqwt.5.dylib \
-  /usr/local/qwt-5.2.2/lib/libqwt.5.dylib
+    /usr/local/qwt-5.2.2/lib/libqwt.5.dylib
 
 The Qwt shared library is now installed in /usr/local/qwt-5.x.x (x.x is
 the  minor.point version).  Remember this for QGIS configuration.
 
+Qwt 6.x.x is similarly built, but defaults to being installed as a framework:
 
-    5.4.8. Additional Dependencies: Bison
-    =====================================
+  cd <Qwt 6.x.x source directory>
+  qmake -spec macx-g++
+  make -j [#cpus]
+  sudo make install
+  
+  sudo install_name_tool -id /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt \
+    /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt
+
+This installs to the following location
+
+/usr/local/qwt-6.x.x/lib/qwt.framework/qwt
+/usr/local/qwt-6.x.x/lib/qwt.framework/Headers
+
+(x.x is the  minor.point version).  Remember these for QGIS configuration.
+
+
+    5.4.10. Additional dependencies: Bison
+    ======================================
 
 The version of bison available by default on Mac OS X is too old so you
 need to get a more recent one on your system. Download at least version 2.4 from:
@@ -1550,11 +1676,11 @@ tarball to unpack it, then cd to the source folder and:
 
   ./configure --disable-dependency-tracking CFLAGS=-Os
   make
-  sudo make install 
+  sudo make install
 
 
-    5.4.9. Additional Dependencies: gpsbabel
-    ========================================
+    5.4.11. Additional dependencies: gpsbabel
+    =========================================
 
 For integrated GPS Tools functions, a gpsbabel executable is required. You can
 find this at:
@@ -1562,10 +1688,10 @@ find this at:
 http://www.gpsbabel.org/
 
 Download the GPSBabel OS X package, and copy GPSBabelFE.app from the disk image to
-/Applications.  
+/Applications.
 
 
-    5.4.10. Optional Dependencies: libfcgi
+    5.4.12. Optional dependencies: libfcgi
     ======================================
 
 If you want to use the QGIS Mapserver, you need libfcgi.  This is included on
@@ -1574,15 +1700,15 @@ to get the source from:
 
 http://www.fastcgi.com/dist/
 
-Grab the latest fcgi SNAP package there.  Double-click the source
+Grab the latest fcgi SNAP package there. Double-click the source
 tarball to unpack it, then cd to the source folder and:
 
   ./configure --disable-dependency-tracking CFLAGS=-Os
   make
-  sudo make install 
+  sudo make install
 
 
-    5.4.11. Optional Dependencies: OSG & osgEarth
+    5.4.13. Optional dependencies: OSG & osgEarth
     =============================================
 
 If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
@@ -1665,11 +1791,37 @@ Also enter the OSG staging path /bin folder in the export above.
 Move all the .frameworks from the lib/ folder to /Library/Frameworks.
 Move the files in the osgPlugins folder in the lib/ folder to
 /Library/Application Support/OpenSceneGraph/PlugIns.  Move the osgEarthDrivers
-folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.  And as for OSG, you can leave the bin/
-executables where they are.
+folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.
+And as for OSG, you can leave the bin/ executables where they are.
 
 
-  5.5. QGIS source
+  5.5. API documentation
+  ======================
+
+If you want to build a local copy of the API docs (like those at
+http://doc.qgis.org/api) you will need Graphviz and Doxygen installed:
+
+http://www.graphviz.org/Download_macos.php
+
+http://www.stack.nl/~dimitri/doxygen/download.html
+
+Graphviz is simply installed via a regular Mac package installer. Install it
+first. It will place some of its binaries in /usr/local/bin/.
+
+For Doxygen, compiling the source is recommended over installing the app.
+Double-click the source tarball to unpack it, then cd to the source folder and:
+
+  ./configure
+  make -j [#cpus]
+  sudo make install
+
+The documentation will be output to the build directory, and if using more complete
+QGIS.app bundling on install, inside the app in:
+
+QGIS.app/Contents/Resources/doc
+
+
+  5.6. QGIS source
   ================
 
 Unzip the QGIS source tarball to a working folder of your choice
@@ -1683,12 +1835,20 @@ QGIS project page:
 http://github.com/qgis/Quantum-GIS
 
 It should default to the master branch.  Click the Downloads button and
-select Download .tar.gz.
+select Download .tar.gz. Double-click the tarball to unzip it.
 
-Double-click the tarball to unzip it.
+Alternatively, install git from http://git-scm.com and do the following.
+
+Make a specific repository directory somewhere, e.g. ~/QGIS/Quantum-GIS, and cd
+into it. The following will read-only clone the master branch to the directory:
+
+  git init
+  git remote add -f -t master -m master qgisupstream git://github.com/qgis/Quantum-GIS.git
+  git merge qgisupstream
+  
 
 
-  5.6. Configure the build
+  5.7. Configure the build
   ========================
 
 CMake supports out of source build so we will create a 'build' dir for the
@@ -1696,12 +1856,18 @@ build process. OS X uses ${HOME}/Applications as a standard user app folder (it
 gives it the system app folder icon).  If you have the correct permissions you
 may want to build straight into your /Applications folder. The instructions
 below assume you are building into a ${HOME}/Applications directory.
+
+You have two interactive options for configuring the build: ccmake or run
+Terminal commands. ccmake is a curses interface inside Terminal for CMake and
+allows a tabular layout for viewing and editing ALL available QGIS source CMake
+options. To get started initially run the Terminal method.
+
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
   mkdir build
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
-  -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+  -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
@@ -1710,9 +1876,30 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   -D BISON_EXECUTABLE=/usr/local/bin/bison \
   ..
 
+Note: Don't forget the .. on the last line, which tells CMake to look for the
+source files in one directory up.
+
+After the initial Terminal configure, you can use ccmake to make further changes:
+
+  cd build
+  ccmake ..
+
 This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.  Remember to change the Qwt version if a
-different version was installed.
+different version was installed, and possibly paths, e.g. for Qwt 6.0.1, which
+installs as a framework, use:
+
+  -D QWT_LIBRARY=/usr/local/qwt-6.0.1/lib/qwt.framework/qwt \
+  -D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.1/lib/qwt.framework/Headers \
+
+If you want to use a newer PostgreSQL client than the default Mac OS X version,
+e.g. install from kyngchaos.com, set the following option to pg_config's path:
+
+  -D POSTGRES_CONFIG=/usr/local/pgsql/bin/pg_config \
+
+To build a local copy of the API docs (see API documentation section above):
+
+  -D WITH_APIDOC=TRUE \
 
 Snow Leopard note: To handle 32-bit Qt (Carbon), create a 32bit python wrapper
 script and add arch flags to the configuration:
@@ -1725,7 +1912,7 @@ script and add arch flags to the configuration:
   sudo chmod +x /usr/local/bin/python32
   
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
-  -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+  -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
@@ -1735,9 +1922,9 @@ script and add arch flags to the configuration:
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
   ..
 
-Mapserver note:: The QGIS Mapserver feature requires fastcgi support.  This is included in
+Mapserver note: The QGIS Mapserver feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
-component on Leopard and Snow, add the followling line before the last line in
+component on Leopard and Snow, add the following line before the last line in
 the above configuration:
 
   -D WITH_MAPSERVER=TRUE \
@@ -1762,24 +1949,24 @@ non-standard, libs (ie postgres' libpq) set the bundle value to 2:
   -D QGIS_MACAPP_BUNDLE=2 \
 
 
-  5.7. Building
+  5.8. Building
   =============
 
 Now we can start the build process (remember the parallel compilation note at
 the beginning, this is a good place to use it, if you can):
 
-  make 
+  make -j [#cpus]
 
 If all built without errors you can then install it:
 
-  make install 
+  make install
 
 or, for an /Applications build:
 
   sudo make install
 
 
-  5.8. Post-Install
+  5.9. Post-Install
   =================
 
 A couple things to take care of.
@@ -1997,10 +2184,52 @@ described elsewhere in this doc.
 
 I based some of the set up from this nice blog article here:
 
-* http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html
+http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html
 
 
-  8. Authors and Acknowledgments
+  8. Debug output and running tests
+  =================================
+
+If you are interested in seeing embedded debug output, change the following
+CMake option:
+
+  -D CMAKE_BUILD_TYPE=DEBUG (or RELWITHDEBINFO)
+
+This will flood your terminal or system log with lots of useful output from
+QgsDebugMsg() calls in source code.
+
+If you would like to run the test suite, you will need to do so from the build
+directory, as it will not work with the installed/bundled app. First set the
+CMake option to enable tests:
+
+  -D ENABLE_TESTS=TRUE
+
+Then run all tests from build directory:
+
+  cd build
+  make test
+
+To run all tests and report to http://dash.orfeo-toolbox.org/index.php?project=QGIS
+
+  cd build
+  make Experimental
+
+You can define the host name reported via 'make Experimental' by setting a CMake
+option:
+
+  -D SITE="my.domain.org"
+
+To run specific test(s) (see 'man ctest'):
+
+  cd build
+  # show listing of tests, without running them
+  ctest --show-only
+  
+  # run specific C++ or Python test(s) matching a regular expression
+  ctest --verbose --tests-regex SomeTestName
+
+
+  9. Authors and Acknowledgments
   ==============================
 
 The following people have contributed to this document:
@@ -2024,6 +2253,7 @@ The following people have contributed to this document:
 - OSX Section
  - Tim Sutton 2007
  - With special thanks to Tom Elwertowski and William Kyngesburye
+ - Larry Shaffer 2012
 
 - GNU/Linux Section
  - Tim Sutton 2006
@@ -2037,4 +2267,7 @@ The following people have contributed to this document:
 
 - Latex Generator
  - Tim Sutton 2011
+
+- Debug Output/Tests Section
+ - Larry Shaffer 2012, by way of 'Test Friday' Tim Sutton
 

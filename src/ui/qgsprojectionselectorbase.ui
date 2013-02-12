@@ -35,7 +35,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="leSearch"/>
+      <widget class="QgsFilterLineEdit" name="leSearch"/>
      </item>
     </layout>
    </item>
@@ -220,6 +220,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>lstCoordinateSystems</tabstop>
   <tabstop>teProjection</tabstop>

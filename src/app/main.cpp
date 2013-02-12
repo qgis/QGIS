@@ -35,6 +35,7 @@
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
+#include "qgspythonrunner.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -104,8 +105,10 @@ void usage( std::string const & appName )
             << "\t[--nologo]\thide splash screen\n"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
+            << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
+            << "\t[--code path]\tRun the given python file on load. \n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -197,8 +200,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(linux) && ! defined(ANDROID)
-      fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+#if defined(linux) && !defined(ANDROID)
+      write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
@@ -266,6 +269,10 @@ int main( int argc, char *argv[] )
   QString configpath;
   QString optionpath;
 
+  QString pythonfile;
+
+  QString customizationfile;
+
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
@@ -325,6 +332,14 @@ int main( int argc, char *argv[] )
     {
       configpath = argv[++i];
     }
+    else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
+    {
+      pythonfile = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
+    {
+      customizationfile = argv[++i];
+    }
     else
     {
       myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
@@ -358,6 +373,8 @@ int main( int argc, char *argv[] )
         {"extent",   required_argument, 0, 'e'},
         {"optionspath", required_argument, 0, 'o'},
         {"configpath", required_argument, 0, 'c'},
+        {"customizationfile", required_argument, 0, 'z'},
+        {"code", required_argument, 0, 'f'},
         {"android", required_argument, 0, 'a'},
         {0, 0, 0, 0}
       };
@@ -428,6 +445,14 @@ int main( int argc, char *argv[] )
           configpath = optarg;
           break;
 
+        case 'f':
+          pythonfile = optarg;
+          break;
+
+        case 'z':
+          customizationfile = optarg;
+          break;
+
         case '?':
           usage( argv[0] );
           return 2;   // XXX need standard exit codes
@@ -487,8 +512,12 @@ int main( int argc, char *argv[] )
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
   }
 
-  // GUI customization is enabled by default unless --nocustomization argument is used
-  QgsCustomization::instance()->setEnabled( myCustomization );
+  // GUI customization is enabled according to settings (loaded when instance is created)
+  // we force disabled here if --nocustomization argument is used
+  if ( !myCustomization )
+  {
+    QgsCustomization::instance()->setEnabled( false );
+  }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
@@ -504,14 +533,28 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "QGIS" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
+  QSettings* customizationsettings;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
+    QString path = optionpath.isEmpty() ? configpath : optionpath;
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION" );
+  }
+  else
+  {
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+  }
+
+  // Using the customizationfile option always overrides the option and config path options.
+  if ( !customizationfile.isEmpty() )
+  {
+    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
+  QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
@@ -525,6 +568,60 @@ int main( int argc, char *argv[] )
 #endif
 
   QSettings mySettings;
+
+  // custom environment variables
+  QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
+  bool useCustomVars = mySettings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  if ( useCustomVars )
+  {
+    QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
+    if ( !customVarsList.isEmpty() )
+    {
+      foreach ( const QString &varStr, customVarsList )
+      {
+        int pos = varStr.indexOf( QLatin1Char( '|' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarApply = varStr.left( pos );
+        QString varStrNameValue = varStr.mid( pos + 1 );
+        pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarName = varStrNameValue.left( pos );
+        QString envVarValue = varStrNameValue.mid( pos + 1 );
+
+        if ( systemEnvVars.contains( envVarName ) )
+        {
+          if ( envVarApply == "prepend" )
+          {
+            envVarValue += systemEnvVars.value( envVarName );
+          }
+          else if ( envVarApply == "append" )
+          {
+            envVarValue = systemEnvVars.value( envVarName ) + envVarValue;
+          }
+        }
+
+        if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset" )
+        {
+#ifdef Q_WS_WIN
+          putenv( envVarName.toUtf8().constData() );
+#else
+          unsetenv( envVarName.toUtf8().constData() );
+#endif
+        }
+        else
+        {
+#ifdef Q_WS_WIN
+          if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
+            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+#else
+          setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined" ? 0 : 1 );
+#endif
+        }
+      }
+    }
+  }
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
@@ -641,8 +738,12 @@ int main( int argc, char *argv[] )
     QStringList myPathList;
     QCoreApplication::setLibraryPaths( myPathList );
     // Now set the paths inside the bundle
-    myPath += "/Contents/plugins";
+    myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+    }
     //next two lines should not be needed, testing only
     //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
@@ -761,7 +862,16 @@ int main( int argc, char *argv[] )
     }
   }
 
-  /////////////////////////////////////////////////////////////////////
+  if ( !pythonfile.isEmpty() )
+  {
+#ifdef Q_WS_WIN
+    //replace backslashes with forward slashes
+    pythonfile.replace( "\\", "/" );
+#endif
+    QgsPythonRunner::run( QString( "execfile('%1')" ).arg( pythonfile ) );
+  }
+
+  /////////////////////////////////`////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
   if ( mySnapshotFileName != "" )
@@ -788,7 +898,6 @@ int main( int argc, char *argv[] )
 
     return 1;
   }
-
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

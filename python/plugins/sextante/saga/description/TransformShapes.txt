@@ -1,0 +1,11 @@
+Transform Shapes
+shapes_tools
+ParameterVector|IN|Shapes|-1|False
+ParameterNumber|DX|dX|None|None|0.0
+ParameterNumber|DY|dY|None|None|0.0
+ParameterNumber|ANGLE|Angle|None|None|0.0
+ParameterNumber|SCALEX|Scale Factor X|None|None|0.0
+ParameterNumber|SCALEY|Scale Factor Y|None|None|0.0
+ParameterNumber|ANCHORX|X|None|None|0.0
+ParameterNumber|ANCHORY|Y|None|None|0.0
+OutputVector|OUT|Output

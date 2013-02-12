@@ -165,8 +165,8 @@ expression:
             exp_error("Function is not known");
             YYERROR;
           }
-          if ( QgsExpression::BuiltinFunctions()[fnIndex].mParams != -1
-               && QgsExpression::BuiltinFunctions()[fnIndex].mParams != $3->count() )
+          if ( QgsExpression::Functions()[fnIndex]->params() != -1
+               && QgsExpression::Functions()[fnIndex]->params() != $3->count() )
           {
             exp_error("Function is called with wrong number of arguments");
             YYERROR;
@@ -193,11 +193,23 @@ expression:
           int fnIndex = QgsExpression::functionIndex(*$1);
           if (fnIndex == -1)
           {
-            exp_error("Special column is not known");
-            YYERROR;
+	    QVariant userVar = QgsExpression::specialColumn( *$1 );
+	    if ( userVar.isNull() )
+	    {
+	      exp_error("Special column is not known");
+	      YYERROR;
+	    }
+	    // $var is equivalent to _specialcol_( "$var" )
+	    QgsExpression::NodeList* args = new QgsExpression::NodeList();
+	    QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( *$1 );
+	    args->append( literal );
+	    $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "_specialcol_" ), args );
           }
-          $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
-          delete $1;
+	  else
+	  {
+	    $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
+	    delete $1;
+	  }
         }
 
     //  literals

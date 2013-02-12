@@ -375,6 +375,19 @@ void QgsBrowser::keyPressEvent( QKeyEvent * e )
   }
 }
 
+void QgsBrowser::keyReleaseEvent( QKeyEvent * e )
+{
+  QgsDebugMsg( "Entered" );
+  if ( treeView->hasFocus() && ( e->key() == Qt::Key_Up || e->key() == Qt::Key_Down ) )
+  {
+    itemClicked( treeView->selectionModel()->currentIndex() );
+  }
+  else
+  {
+    e->ignore();
+  }
+}
+
 void QgsBrowser::stopRendering()
 {
   // you might have seen this already in QgisApp

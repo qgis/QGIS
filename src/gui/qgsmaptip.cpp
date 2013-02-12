@@ -95,13 +95,12 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   QgsFeature feature;
 
-  vlayer->select( vlayer->pendingAllAttributesList() , r, true, true );
-  if ( !vlayer->nextFeature( feature ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
     return "";
 
   int idx = vlayer->fieldNameIndex( vlayer->displayField() );
   if ( idx < 0 )
     return QgsExpression::replaceExpressionText( vlayer->displayField(), feature, vlayer );
   else
-    return feature.attributeMap().value( idx, "" ).toString();
+    return feature.attribute( idx ).toString();
 }

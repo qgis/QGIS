@@ -1685,7 +1685,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //data structures
   std::map<int, double> edge_angle;//search tree with the edge number as key
   std::multimap<double, int> angle_edge;//multimap (map with not unique keys) with angle as key
-  std::set<int> dontexamine;//search tree containing the edges which do not have to be examined (because of numerical problems)
+  QSet<int> dontexamine;//search tree containing the edges which do not have to be examined (because of numerical problems)
 
 
   //first, go through all the forced edges and subdivide if they are encroached by a point
@@ -1881,7 +1881,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             }
 
             //update the settings related to ed1
-            std::set<int>::iterator ed1iter = dontexamine.find( ed1 );
+            QSet<int>::iterator ed1iter = dontexamine.find( ed1 );
             if ( ed1iter != dontexamine.end() )
             {
               //edge number is on dontexamine list
@@ -1913,7 +1913,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             }
 
             //update the settings related to ed2
-            std::set<int>::iterator ed2iter = dontexamine.find( ed2 );
+            QSet<int>::iterator ed2iter = dontexamine.find( ed2 );
             if ( ed2iter != dontexamine.end() )
             {
               //edge number is on dontexamine list
@@ -1945,7 +1945,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             }
 
             //update the settings related to ed3
-            std::set<int>::iterator ed3iter = dontexamine.find( ed3 );
+            QSet<int>::iterator ed3iter = dontexamine.find( ed3 );
             if ( ed3iter != dontexamine.end() )
             {
               //edge number is on dontexamine list
@@ -1986,7 +1986,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
     //fast version. Maybe this does not work
-    std::set<int> influenceedges;//begin fast method
+    QSet<int> influenceedges;//begin fast method
     int baseedge = baseEdgeOfTriangle( &circumcenter );
     if ( baseedge == -5 )//a numerical instability occured or the circumcenter already exists in the triangulation
     {
@@ -2017,11 +2017,11 @@ void DualEdgeTriangulation::ruppertRefinement()
       baseedge = mEdgeWithPoint;
     }
 
-    evaluateInfluenceRegion( &circumcenter, baseedge, &influenceedges );
-    evaluateInfluenceRegion( &circumcenter, mHalfEdge[baseedge]->getNext(), &influenceedges );
-    evaluateInfluenceRegion( &circumcenter, mHalfEdge[mHalfEdge[baseedge]->getNext()]->getNext(), &influenceedges );
+    evaluateInfluenceRegion( &circumcenter, baseedge, influenceedges );
+    evaluateInfluenceRegion( &circumcenter, mHalfEdge[baseedge]->getNext(), influenceedges );
+    evaluateInfluenceRegion( &circumcenter, mHalfEdge[mHalfEdge[baseedge]->getNext()]->getNext(), influenceedges );
 
-    for ( std::set<int>::iterator it = influenceedges.begin(); it != influenceedges.end(); ++it )
+    for ( QSet<int>::iterator it = influenceedges.begin(); it != influenceedges.end(); ++it )
     {
       if (( mHalfEdge[*it]->getForced() || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
       {
@@ -2091,7 +2091,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
           //update the settings related to ed1
-          std::set<int>::iterator ed1iter = dontexamine.find( ed1 );
+          QSet<int>::iterator ed1iter = dontexamine.find( ed1 );
           if ( ed1iter != dontexamine.end() )
           {
             //edge number is on dontexamine list
@@ -2123,7 +2123,7 @@ void DualEdgeTriangulation::ruppertRefinement()
           }
 
           //update the settings related to ed2
-          std::set<int>::iterator ed2iter = dontexamine.find( ed2 );
+          QSet<int>::iterator ed2iter = dontexamine.find( ed2 );
           if ( ed2iter != dontexamine.end() )
           {
             //edge number is on dontexamine list
@@ -2155,7 +2155,7 @@ void DualEdgeTriangulation::ruppertRefinement()
           }
 
           //update the settings related to ed3
-          std::set<int>::iterator ed3iter = dontexamine.find( ed3 );
+          QSet<int>::iterator ed3iter = dontexamine.find( ed3 );
           if ( ed3iter != dontexamine.end() )
           {
             //edge number is on dontexamine list
@@ -2304,7 +2304,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
         //update the settings related to ed1
-        std::set<int>::iterator ed1iter = dontexamine.find( ed1 );
+        QSet<int>::iterator ed1iter = dontexamine.find( ed1 );
         if ( ed1iter != dontexamine.end() )
         {
           //edge number is on dontexamine list
@@ -2337,7 +2337,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
         //update the settings related to ed2
-        std::set<int>::iterator ed2iter = dontexamine.find( ed2 );
+        QSet<int>::iterator ed2iter = dontexamine.find( ed2 );
         if ( ed2iter != dontexamine.end() )
         {
           //edge number is on dontexamine list
@@ -2369,7 +2369,7 @@ void DualEdgeTriangulation::ruppertRefinement()
         }
 
         //update the settings related to ed3
-        std::set<int>::iterator ed3iter = dontexamine.find( ed3 );
+        QSet<int>::iterator ed3iter = dontexamine.find( ed3 );
         if ( ed3iter != dontexamine.end() )
         {
           //edge number is on dontexamine list
@@ -2408,7 +2408,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 #if 0
   //debugging: print out all edge of dontexamine
-  for ( std::set<int>::iterator it = dontexamine.begin(); it != dontexamine.end(); ++it )
+  for ( QSet<int>::iterator it = dontexamine.begin(); it != dontexamine.end(); ++it )
   {
     QgsDebugMsg( QString( "edge nr. %1 is in dontexamine" ).arg( *it ) );
   }
@@ -3083,8 +3083,8 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
 {
   QString shapeFileName = fileName;
 
-  QgsFieldMap fields;
-  fields.insert( 0, QgsField( "type", QVariant::String, "String" ) );
+  QgsFields fields;
+  fields.append( QgsField( "type", QVariant::String, "String" ) );
 
   // add the extension if not present
   if ( shapeFileName.indexOf( ".shp" ) == -1 )
@@ -3134,6 +3134,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
       QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
       edgeLineFeature.setGeometry( geom );
+      edgeLineFeature.initAttributes( 1 );
 
       //attributes
       QString attributeString;
@@ -3148,7 +3149,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
           attributeString = "structure line";
         }
       }
-      edgeLineFeature.addAttribute( 0, attributeString );
+      edgeLineFeature.setAttribute( 0, attributeString );
 
       writer.addFeature( edgeLineFeature );
     }
@@ -3260,11 +3261,11 @@ bool DualEdgeTriangulation::edgeOnConvexHull( int edge )
   return ( mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint() == -1 || mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint() == -1 );
 }
 
-void DualEdgeTriangulation::evaluateInfluenceRegion( Point3D* point, int edge, std::set<int>* set )
+void DualEdgeTriangulation::evaluateInfluenceRegion( Point3D* point, int edge, QSet<int> &set )
 {
-  if ( set->find( edge ) == set->end() )
+  if ( set.find( edge ) == set.end() )
   {
-    set->insert( edge );
+    set.insert( edge );
   }
   else//prevent endless loops
   {

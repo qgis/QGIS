@@ -14,9 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <stdlib.h>
 #include "qgspostrequesthandler.h"
 #include "qgslogger.h"
+#include <QDomDocument>
 
 QgsPostRequestHandler::QgsPostRequestHandler()
 {
@@ -32,6 +33,38 @@ QMap<QString, QString> QgsPostRequestHandler::parseInput()
   QMap<QString, QString> parameters;
   QString inputString = readPostBody();
   QgsDebugMsg( inputString );
-  requestStringToParameterMap( inputString, parameters );
+
+  QDomDocument doc;
+  QString errorMsg;
+  if ( !doc.setContent( inputString, true, &errorMsg ) )
+  {
+    requestStringToParameterMap( inputString, parameters );
+  }
+  else
+  {
+    QString queryString;
+    const char* qs = getenv( "QUERY_STRING" );
+    if ( qs )
+    {
+      queryString = QString( qs );
+      QgsDebugMsg( "query string is: " + queryString );
+    }
+    else
+    {
+      QgsDebugMsg( "error, no query string found but a QDomDocument" );
+      return parameters; //no query string? something must be wrong...
+    }
+
+    requestStringToParameterMap( queryString, parameters );
+
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.hasAttribute( "version" ) )
+      parameters.insert( "VERSION", docElem.attribute( "version" ) );
+    if ( docElem.hasAttribute( "service" ) )
+      parameters.insert( "SERVICE", docElem.attribute( "service" ) );
+    parameters.insert( "REQUEST", docElem.tagName() );
+    parameters.insert( "REQUEST_BODY", inputString );
+  }
+
   return parameters;
 }

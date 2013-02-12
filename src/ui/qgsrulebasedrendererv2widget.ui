@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>643</width>
     <height>401</height>
    </rect>
   </property>
@@ -37,6 +37,12 @@
      <property name="allColumnsShowFocus">
       <bool>true</bool>
      </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>100</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <attribute name="headerMinimumSectionSize">
       <number>100</number>
      </attribute>
@@ -87,6 +93,13 @@
        </property>
        <property name="flat">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCountFeatures">
+       <property name="text">
+        <string>Count features</string>
        </property>
       </widget>
      </item>

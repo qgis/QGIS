@@ -22,6 +22,7 @@
 #ifndef QGSWCSPROVIDER_H
 #define QGSWCSPROVIDER_H
 
+#include "qgserror.h"
 #include "qgswcscapabilities.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
@@ -43,14 +44,6 @@ class QNetworkRequest;
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 /**
 
@@ -144,19 +137,16 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // Reimplemented QgsRasterDataProvider virtual methods
     int capabilities() const;
-    QgsRasterInterface::DataType dataType( int bandNo ) const;
-    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
-    double noDataValue() const;
+    //double noDataValue() const;
     int xBlockSize() const;
     int yBlockSize() const;
     int xSize() const;
     int ySize() const;
     QString metadata();
-    //bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
-    QMap<int, void *> identify( const QgsPoint & thePoint );
-    QString identifyAsHtml( const QgsPoint& point );
-    QString identifyAsText( const QgsPoint& point );
+    QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
     QString lastErrorTitle();
     QString lastError();
     QString lastErrorFormat();
@@ -164,13 +154,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString description() const;
     void reloadData();
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
-
-    // WMS specific, maybe to be removed from QgsRasterDataProvider
-    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() ) { Q_UNUSED( layers ); Q_UNUSED( styles ); }
-    QStringList supportedImageEncodings() { return QStringList(); }
-    QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const &mimeType ) { Q_UNUSED( mimeType ); }
-    void setImageCrs( QString const &crs ) { Q_UNUSED( crs ); }
 
     static QMap<QString, QString> supportedMimes();
 
@@ -303,7 +286,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QList<int>mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
-    QList<double> mNoDataValue;
+    //QList<double> mNoDataValue;
 
     /** Color tables indexed from 0 */
     QList< QList<QgsColorRampShader::ColorRampItem> > mColorTables;
@@ -351,16 +334,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Pointer to cached GDAL dataset */
     GDALDatasetH mCachedGdalDataset;
 
-    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
-    //double mGeoTransform[6];
-
-    /**
-     * The previously retrieved image from the WCS server.
-     * This can be reused if draw() is called consecutively
-     * with the same parameters.
-     */
-    //QImage *mCachedImage;
-
+    /** Current cache error last getCache() error. */
+    QgsError mCachedError;
 
     /** The previous parameters to draw(). */
     QgsRectangle mCachedViewExtent;
@@ -422,7 +397,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // Fix for rasters rotated by GeoServer
     bool mFixRotate;
 
-    QNetworkRequest::CacheLoadControl mGetCoverageCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl;
 };
 
 

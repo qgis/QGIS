@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    prepare-commit.sh
+#    ---------------------
+#    Date                 : August 2008
+#    Copyright            : (C) 2008 by Juergen E. Fischer
+#    Email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 PATH=$PATH:$(dirname $0)
 
@@ -12,6 +27,11 @@ if ! type -p colordiff >/dev/null; then
 	{
 		cat "$@"
 	}
+fi
+
+if [ "$1" = "-c" ]; then
+	echo "Cleaning..."
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
 fi
 
 set -e
@@ -46,13 +66,22 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
                 echo $f skipped
 		continue
 		;;
 
         *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
                 ;;
+
+	*.py)
+		perl -i.prepare -pe "s/[\t ]+$//;" $f
+		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
+			# no difference found
+			rm $f.prepare
+		fi
+		continue
+		;;
 
         *)
                 continue

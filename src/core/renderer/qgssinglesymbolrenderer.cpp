@@ -117,8 +117,7 @@ void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, Qg
 
     if ( mSymbol0->symbolField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      QString name = attrs[ mSymbol0->symbolField()].toString();
+      QString name = f.attribute( mSymbol0->symbolField() ).toString();
       QgsDebugMsgLevel( QString( "Feature has name %1" ).arg( name ), 3 );
 
       if ( !mSymbols.contains( name ) )
@@ -139,14 +138,12 @@ void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, Qg
     if ( mSymbol0->scaleClassificationField() >= 0 )
     {
       //first find out the value for the scale classification attribute
-      const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( qAbs( attrs[ mSymbol0->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( qAbs( f.attribute( mSymbol0->scaleClassificationField() ).toDouble() ) );
       QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
     if ( mSymbol0->rotationClassificationField() >= 0 )
     {
-      const QgsAttributeMap& attrs = f.attributeMap();
-      rotation = attrs[ mSymbol0->rotationClassificationField()].toDouble();
+      rotation = f.attribute( mSymbol0->rotationClassificationField() ).toDouble();
       QgsDebugMsgLevel( QString( "Feature has rotation factor %1" ).arg( rotation ), 3 );
     }
 

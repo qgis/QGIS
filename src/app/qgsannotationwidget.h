@@ -37,6 +37,7 @@ class QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
   private slots:
     void on_mMapMarkerButton_clicked();
     void on_mFrameColorButton_clicked();
+    void on_mBackgroundColorButton_clicked();
 
   private:
     QgsAnnotationItem* mItem;

@@ -1,0 +1,31 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Multi Direction Lee Filter</h1>
+<div class='author'>Copyrights (c) 2003 by Andre Ringeler</div>
+<div class='description'>This Multi Direction Lee Filter is a enhanced Lee Filter<br/>
+It looks into 16 directions for the direction with the minium variance<br/>
+and applied a Lee Filter on this direction.<br/>
+<br/>
+Uses this filter for remove speckle noise in SAR images or DTMs.<br/>
+On DTMs this filter will preserves the slope and  narrow valleys. <br/>
+<br/>
+For details on the Lee Filter, see the article by Jong-Sen Lee:<br/>
+"Digital Image Enhancement and Noise Filtering by Use of Local Statistics",<br/>
+IEEE Transactions on Pattern Analysis and Machine Intelligence,<br/>
+Volume PAMI-2, Number 2, pages 165-168, March 1980.<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Grid <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Filtered Grid <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Minimum Standard Deviation <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Direction of Minimum Standard Deviation <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Estimated Noise (absolute) <div class='type'>Floating point</div></dt><dd>Estimated noise in units of input data <div class='constraints'></div></dd>
+	<dt>Estimated Noise (relative) <div class='type'>Floating point</div></dt><dd>Estimated noise relative to mean standard deviation <div class='constraints'></div></dd>
+	<dt>Weighted <div class='type'>Boolean</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: noise variance given as absolute value, noise variance given relative to mean standard deviation, original calculation (Ringeler)</div></dd>
+</dl>
+</body></html>

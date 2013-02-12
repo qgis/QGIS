@@ -449,6 +449,7 @@ void * QgsProviderRegistry::function( QString const & providerKey,
     delete myLib;
     return ptr;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
 }
@@ -467,6 +468,7 @@ QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) co
   {
     return myLib;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
 }
@@ -524,10 +526,10 @@ const QgsProviderMetadata* QgsProviderRegistry::providerMetadata( const QString&
 }
 
 
-/*
+#if 0
 QgsDataProvider *
 QgsProviderRegistry::openVector( QString const & dataSource, QString const & providerKey )
 {
-    return getProvider( providerKey, dataSource );
+  return getProvider( providerKey, dataSource );
 } // QgsProviderRegistry::openVector
-*/
+#endif

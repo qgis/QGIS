@@ -1071,6 +1071,40 @@ void GRASS_LIB_EXPORT QgsGrass::extendRegion( struct Cell_head *source,
     target->bottom = source->bottom;
 }
 
+void GRASS_LIB_EXPORT QgsGrass::initRegion( struct Cell_head *window )
+{
+  window->format = 0;
+  window->rows = 0;
+  window->rows3 = 0;
+  window->cols = 0;
+  window->cols3 = 0;
+  window->depths = 1;
+  window->proj = -1;
+  window->zone = -1;
+  window->compressed = -1;
+  window->ew_res = 0.0;
+  window->ew_res3 = 1.0;
+  window->ns_res = 0.0;
+  window->ns_res3 = 1.0;
+  window->tb_res = 1.0;
+  window->top = 1.0;
+  window->bottom = 0.0;
+  window->west = 0;
+  window->south = 0;
+  window->east = 1;
+  window->north = 1;
+  window->rows = 1;
+  window->cols = 1;
+}
+
+void GRASS_LIB_EXPORT QgsGrass::setRegion( struct Cell_head *window, QgsRectangle rect )
+{
+  window->west = rect.xMinimum();
+  window->south = rect.yMinimum();
+  window->east = rect.xMaximum();
+  window->north = rect.yMaximum();
+}
+
 bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
     QString location, QString mapset, QString map,
     struct Cell_head *window )
@@ -1234,7 +1268,7 @@ QString GRASS_LIB_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QStr
         opt = "vect";
         break;
       default:
-        QgsDebugMsg( "unexpected type:" + type );
+        QgsDebugMsg( QString( "unexpected type:%1" ).arg( type ) );
         return "";
     }
     arguments.append( opt + "=" +  map + "@" + mapset );

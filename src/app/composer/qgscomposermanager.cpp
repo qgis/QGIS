@@ -172,11 +172,16 @@ void QgsComposerManager::show_clicked()
       c = it.value();
       if ( c )
       {
+        bool shown = isVisible();
         c->show();
         c->activate();
         c->stackUnder( this );
         raise();
         activateWindow();
+        if ( !shown )
+        {
+          c->on_mActionZoomAll_triggered();
+        }
       }
     }
   }

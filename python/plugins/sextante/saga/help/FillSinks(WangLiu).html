@@ -1,0 +1,23 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Fill Sinks (Wang & Liu)</h1>
+<div class='author'>Copyrights (c) 2007 by Volker Wichmann</div>
+<div class='description'>This module uses an algorithm proposed by Wang & Liu to identify and fill surface depressions in digital elevation models.<br/>
+The method was enhanced to allow the creation of hydrologic sound elevation models, i.e. not only to fill the depression(s) but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope gradient (and thus elevation difference) between cells.<br/>
+This is the fully featured version of the module creating a depression less DEM, a flow path grid and a grid with watershed basins. If you encounter problems processing large data sets (e.g. LIDAR data) with this module try the basic version (Fill Sinks XXL).<br/>
+<br/>
+<br/>
+References:<br/>
+Wang, L. & H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>DEM <div class='type'>Input Grid</div></dt><dd>Digital elevation model <div class='constraints'></div></dd>
+	<dt>Filled DEM <div class='type'>Output Grid</div></dt><dd>Depression-free digital elevation model <div class='constraints'></div></dd>
+	<dt>Flow Directions <div class='type'>Output Grid</div></dt><dd>Computed flow directions, 0=N, 1=NE, 2=E, ... 7=NW <div class='constraints'></div></dd>
+	<dt>Watershed Basins <div class='type'>Output Grid</div></dt><dd>Delineated watershed basins <div class='constraints'></div></dd>
+	<dt>Minimum Slope [Degree] <div class='type'>Floating point</div></dt><dd>Minimum slope gradient to preserve from cell to cell; with a value of zero sinks are filled up to the spill elevation (which results in flat areas). Unit [Degree] <div class='constraints'></div></dd>
+</dl>
+</body></html>

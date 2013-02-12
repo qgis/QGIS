@@ -38,7 +38,9 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 0, 8, 1 ), PFV( 0, 9, 0 ), &QgsProjectFileTransform::transform081to090},
   {PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transform091to0100},
-  {PFV( 0, 9, 2 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transformNull},
+  // Following line is a hack that takes us straight from 0.9.2 to 0.11.0
+  // due to an unknown bug in migrating 0.9.2 files which we didnt pursue (TS & GS)
+  {PFV( 0, 9, 2 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110},
   {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &QgsProjectFileTransform::transform0110to1000},
   {PFV( 1, 0, 0 ), PFV( 1, 1, 0 ), &QgsProjectFileTransform::transformNull},
@@ -339,7 +341,7 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         return;
       }
-      QgsFieldMap theFieldMap = theProvider->fields();
+      QgsFields theFields = theProvider->fields();
 
       //read classificationfield
       QDomNodeList classificationFieldList = layerElem.elementsByTagName( "classificationfield" );
@@ -347,10 +349,9 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
         int fieldNumber = classificationFieldElem.text().toInt();
-        QgsFieldMap::const_iterator field_it = theFieldMap.find( fieldNumber );
-        if ( field_it != theFieldMap.constEnd() )
+        if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( field_it.value().name() );
+          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
@@ -531,12 +532,59 @@ void QgsProjectFileTransform::transform1800to1900()
     }
   }
 
+  // SimpleFill symbol layer v2: avoid double transparency
+  // replacing alpha value of symbol layer's color with 255 (the
+  // transparency value is already stored as symbol transparency).
+  QDomNodeList rendererList = mDom.elementsByTagName( "renderer-v2" );
+  for ( int i = 0; i < rendererList.size(); ++i )
+  {
+    QDomNodeList layerList = rendererList.at( i ).toElement().elementsByTagName( "layer" );
+    for ( int j = 0; j < layerList.size(); ++j )
+    {
+      QDomElement layerElem = layerList.at( j ).toElement();
+      if ( layerElem.attribute( "class" ) == "SimpleFill" )
+      {
+        QDomNodeList propList = layerElem.elementsByTagName( "prop" );
+        for ( int k = 0; k < propList.size(); ++k )
+        {
+          QDomElement propElem = propList.at( k ).toElement();
+          if ( propElem.attribute( "k" ) == "color" || propElem.attribute( "k" ) == "color_border" )
+          {
+            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ",", 0, 2 ) + ",255" );
+          }
+        }
+      }
+    }
+  }
+
   QgsDebugMsg( mDom.toString() );
 }
 
 void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
     QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
 {
+  //no data
+  //TODO: We would need to set no data on all bands, but we don't know number of bands here
+  QDomNode noDataNode = rasterPropertiesElem.namedItem( "mNoDataValue" );
+  QDomElement noDataElement = noDataNode.toElement();
+  if ( !noDataElement.text().isEmpty() )
+  {
+    QgsDebugMsg( "mNoDataValue = " + noDataElement.text() );
+    QDomElement noDataElem = doc.createElement( "noData" );
+
+    QDomElement noDataRangeList = doc.createElement( "noDataRangeList" );
+    noDataRangeList.setAttribute( "bandNo", 1 );
+
+    QDomElement noDataRange =  doc.createElement( "noDataRange" );
+    noDataRange.setAttribute( "min", noDataElement.text() );
+    noDataRange.setAttribute( "max", noDataElement.text() );
+    noDataRangeList.appendChild( noDataRange );
+
+    noDataElem.appendChild( noDataRangeList );
+
+    parentNode.appendChild( noDataElem );
+  }
+
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
   //convert general properties
 
@@ -568,6 +616,31 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
 
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
+
+  // While PalettedColor should normaly contain only integer values, usually
+  // color palette 0-255, it may happen (Tim, issue #7023) that it contains
+  // colormap classification with double values and text labels
+  // (which should normaly only appear in SingleBandPseudoColor drawingStyle)
+  // => we have to check first the values and change drawingStyle if necessary
+  if ( drawingStyle == "PalettedColor" )
+  {
+    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+
+    for ( int i = 0; i < colorRampEntryList.size(); ++i )
+    {
+      QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+      QString strValue = colorRampEntryElem.attribute( "value" );
+      double value = strValue.toDouble();
+      if ( value < 0 || value > 10000 || value != ( int )value )
+      {
+        QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
+        drawingStyle = "SingleBandPseudoColor";
+        break;
+      }
+    }
+  }
+
   if ( drawingStyle == "SingleBandGray" )
   {
     rasterRendererElem.setAttribute( "type", "singlebandgray" );

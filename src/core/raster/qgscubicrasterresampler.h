@@ -21,6 +21,9 @@
 #include "qgsrasterresampler.h"
 #include <QColor>
 
+/** \ingroup core
+    Cubic Raster Resampler
+*/
 class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
 {
   public:

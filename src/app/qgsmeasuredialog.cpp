@@ -22,6 +22,7 @@
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include <QCloseEvent>
@@ -48,11 +49,6 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   item->setTextAlignment( 0, Qt::AlignRight );
   mTable->addTopLevelItem( item );
 
-  // Update whenever the canvas has refreshed. Maybe more often than needed,
-  // but at least every time any canvas related settings changes
-  connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
-           this, SLOT( updateSettings() ) );
-
   updateSettings();
 }
 
@@ -65,7 +61,7 @@ void QgsMeasureDialog::updateSettings()
   mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
   // Configure QgsDistanceArea
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
-  mDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+  mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
   if ( mTool->canvas()->mapRenderer()->hasCrsTransformEnabled() )
   {
@@ -103,7 +99,6 @@ void QgsMeasureDialog::restart()
 
 void QgsMeasureDialog::mousePress( QgsPoint &point )
 {
-
   show();
   raise();
   if ( ! mTool->done() )
@@ -149,7 +144,6 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
 {
   Q_UNUSED( p );
 
-  QgsDebugMsg( "Entering" );
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {

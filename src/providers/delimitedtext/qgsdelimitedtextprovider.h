@@ -26,6 +26,8 @@ class QgsField;
 class QFile;
 class QTextStream;
 
+class QgsDelimitedTextFeatureIterator;
+
 
 /**
 \class QgsDelimitedTextProvider
@@ -57,27 +59,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     *
-     * mFile should be open with the file pointer at the record of the next
-     * feature, or EOF.  The feature found on the current line is parsed.
-     */
-    virtual bool nextFeature( QgsFeature& feature );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /**
      * Get feature type.
@@ -92,18 +74,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind();
+    virtual const QgsFields & fields() const;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -181,11 +155,11 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
   private:
 
+    void handleInvalidLines();
+
     //! Fields
     QList<int> attributeColumns;
-    QgsFieldMap attributeFields;
-
-    QgsAttributeList mAttributesToFetch;
+    QgsFields attributeFields;
 
     QString mFileName;
     QString mDelimiter;
@@ -209,17 +183,12 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     //! Layer extent
     QgsRectangle mExtent;
 
-    //! Current selection rectangle
-
-    QgsRectangle mSelectionRectangle;
-
     //! Text file
     QFile *mFile;
 
     QTextStream *mStream;
 
     bool mValid;
-    bool mUseIntersect;
 
     int mGeomType;
 
@@ -232,9 +201,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
-
-    //! Feature id
-    long mFid;
 
     struct wkbPoint
     {
@@ -251,4 +217,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QGis::WkbType mWkbType;
 
     QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
+
+    friend class QgsDelimitedTextFeatureIterator;
+    QgsDelimitedTextFeatureIterator* mActiveIterator;
 };

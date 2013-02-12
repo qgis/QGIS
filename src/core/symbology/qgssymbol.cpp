@@ -475,7 +475,9 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor, double opacity
 
 void QgsSymbol::appendField( QDomElement &symbol, QDomDocument &document, const QgsVectorLayer &vl, QString name, int idx ) const
 {
-  appendText( symbol, document, name, vl.pendingFields().contains( idx ) ? vl.pendingFields()[idx].name() : "" );
+  const QgsFields& fields = vl.pendingFields();
+  QString txt = ( idx >= 0 && idx < fields.count() ? fields[idx].name() : QString() );
+  appendText( symbol, document, name, txt );
 }
 
 void QgsSymbol::appendText( QDomElement &symbol, QDomDocument &document, QString name, QString value ) const
@@ -566,12 +568,12 @@ int QgsSymbol::readFieldName( QDomNode &synode, QString name, const QgsVectorLay
 
   if ( !node.isNull() )
   {
-    const QgsFieldMap &fields = vl.pendingFields();
+    const QgsFields &fields = vl.pendingFields();
     QString name = node.toElement().text();
 
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
-      if ( it->name() == name )
-        return it.key();
+    for ( int idx = 0; idx < fields.count(); ++idx )
+      if ( fields[idx].name() == name )
+        return idx;
 
     return -1;
   }

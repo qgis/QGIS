@@ -147,8 +147,8 @@ int main( int argc, char **argv )
       G_fatal_error(( "Unable to read range file" ) );
     }
     G_get_fp_range_min_max( &range, &zmin, &zmax );
-    fprintf( stdout, "MIN_VALUE:%f\n", zmin );
-    fprintf( stdout, "MAX_VALUE:%f\n", zmax );
+    fprintf( stdout, "MIN_VALUE:%.17e\n", zmin );
+    fprintf( stdout, "MAX_VALUE:%.17e\n", zmax );
   }
   else if ( strcmp( "colors", info_opt->answer ) == 0 )
   {
@@ -168,7 +168,7 @@ int main( int argc, char **argv )
         unsigned char r1, g1, b1, r2, g2, b2;
 
         G_get_f_color_rule( &val1, &r1, &g1, &b1, &val2, &r2, &g2, &b2, &colors, i );
-        fprintf( stdout, "%e %e %d %d %d %d %d %d\n", val1, val2, r1, g1, b1, r2, g2, b2 );
+        fprintf( stdout, "%.17e %.17e %d %d %d %d %d %d\n", val1, val2, r1, g1, b1, r2, g2, b2 );
       }
     }
   }
@@ -207,7 +207,8 @@ int main( int argc, char **argv )
 
           if ( col < 0 || col > window.cols || row < 0 || row > window.rows )
           {
-            fprintf( stdout, "value:out\n" );
+            //fprintf( stdout, "value:out\n" );
+            fprintf( stdout, "value:nan\n" );
           }
           else
           {
@@ -245,7 +246,7 @@ int main( int argc, char **argv )
             }
             if ( G_is_null_value( ptr, rast_type ) )
             {
-              fprintf( stdout, "value:null\n" );
+              fprintf( stdout, "value:nan\n" );
             }
             else
             {

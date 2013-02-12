@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>722</width>
-    <height>663</height>
+    <width>752</width>
+    <height>599</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Raster Layer Properties</string>
@@ -25,10 +31,48 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pbnSaveStyleAs">
+     <property name="text">
+      <string>Save Style ...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pbnLoadStyle">
+     <property name="text">
+      <string>Load Style ...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pbnSaveDefaultStyle">
+     <property name="text">
+      <string>Save As Default</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pbnLoadDefaultStyle">
+     <property name="text">
+      <string>Restore Default Style</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="4">
     <widget class="QTabWidget" name="tabBar">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="iconSize">
       <size>
@@ -44,8 +88,8 @@
       <attribute name="title">
        <string comment="mRendererTab">Style</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_10">
-       <item row="3" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="mRenderTypeLabel">
@@ -69,7 +113,7 @@
          <item>
           <widget class="QComboBox" name="mRenderTypeComboBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -95,7 +139,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>318</width>
+             <width>150</width>
              <height>20</height>
             </size>
            </property>
@@ -103,54 +147,96 @@
          </item>
         </layout>
        </item>
-       <item row="4" column="0">
-        <widget class="QStackedWidget" name="mRendererStackedWidget"/>
+       <item>
+        <widget class="QStackedWidget" name="mRendererStackedWidget">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>100</height>
+          </size>
+         </property>
+        </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="mResamplingGroupBox_2">
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mResamplingGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
          <property name="title">
           <string>Resampling</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="0">
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
            <widget class="QLabel" name="mZoomedInResamplingLabel">
             <property name="text">
              <string>Zoomed in</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item>
+           <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QLabel" name="mZoomedOutResamplingLabel">
             <property name="text">
              <string>Zoomed out</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item>
+           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QLabel" name="mMaximumOversamplingLabel">
             <property name="text">
-             <string>Maximum oversampling</string>
+             <string>Oversampling</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
-          </item>
-          <item row="1" column="2">
+          <item>
            <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="mInvertColorMapCheckBox">
-         <property name="text">
-          <string>Invert color map</string>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -162,294 +248,352 @@
       <attribute name="title">
        <string>Transparency</string>
       </attribute>
-      <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Global transparency</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0" colspan="5">
-           <widget class="QSlider" name="sliderTransparency">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximum">
-             <number>255</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="tickInterval">
-             <number>25</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="textLabel3">
-            <property name="text">
-             <string>None</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="lblTransparencyPercent">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> 00%</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="textLabel4">
-            <property name="text">
-             <string>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QGroupBox" name="groupBox_4">
+           <property name="title">
+            <string>Global transparency</string>
+           </property>
+           <layout class="QGridLayout" name="_3">
+            <item row="0" column="0" colspan="5">
+             <widget class="QSlider" name="sliderTransparency">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximum">
+               <number>255</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="tickInterval">
+               <number>25</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="textLabel3">
+              <property name="text">
+               <string>None</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="lblTransparencyPercent">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string> 00%</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="4">
+             <widget class="QLabel" name="textLabel4">
+              <property name="text">
+               <string>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="gboxNoDataValue">
+           <property name="title">
+            <string>No data value</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="leftMargin">
+               <number>1</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
+                <property name="toolTip">
+                 <string>Use original source no data value.</string>
+                </property>
+                <property name="text">
+                 <string>No data value:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblSrcNoDataValue">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Original data source no data value, if exists.</string>
+                </property>
+                <property name="text">
+                 <string>&lt;src no data value&gt;</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="lblUserNoDataValueLabel">
+                <property name="toolTip">
+                 <string>Additional user defined no data value.</string>
+                </property>
+                <property name="text">
+                 <string>Additional no data value</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="leNoDataValue">
+                <property name="toolTip">
+                 <string>Additional user defined no data value.</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item>
         <widget class="QGroupBox" name="gboxCustomTransparency">
          <property name="title">
           <string>Custom transparency options</string>
          </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="lblTransparent">
-            <property name="text">
-             <string>Transparency band</string>
-            </property>
-           </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="lblTransparent">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Transparency band</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cboxTransparencyBand">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cboxTransparencyBand">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_2">
+          <item>
+           <widget class="QLabel" name="mTransparentPixelListLabel">
             <property name="text">
              <string>Transparent pixel list</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableTransparency">
-            <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAsNeeded</enum>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <property name="showGrid">
-             <bool>false</bool>
-            </property>
-            <property name="rowCount">
-             <number>0</number>
-            </property>
-            <property name="columnCount">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <layout class="QVBoxLayout">
-            <property name="margin">
-             <number>11</number>
-            </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QToolButton" name="pbnAddValuesManually">
-              <property name="toolTip">
-               <string>Add values manually</string>
+             <widget class="QTableWidget" name="tableTransparency">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="text">
-               <string>...</string>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAsNeeded</enum>
               </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnAddValuesFromDisplay">
-              <property name="enabled">
+              <property name="alternatingRowColors">
                <bool>true</bool>
               </property>
-              <property name="toolTip">
-               <string>Add Values from display</string>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
               </property>
-              <property name="text">
-               <string>...</string>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
               </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionContextHelp.png</normaloff>../../images/themes/default/mActionContextHelp.png</iconset>
+              <property name="showGrid">
+               <bool>false</bool>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnRemoveSelectedRow">
-              <property name="toolTip">
-               <string>Remove selected row</string>
+              <property name="rowCount">
+               <number>0</number>
               </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+              <property name="columnCount">
+               <number>0</number>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="pbnDefaultValues">
-              <property name="toolTip">
-               <string>Default values</string>
+             <layout class="QVBoxLayout" name="_2">
+              <property name="margin">
+               <number>11</number>
               </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionRemove.png</normaloff>../../images/themes/default/mActionRemove.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer>
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>181</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnImportTransparentPixelValues">
-              <property name="toolTip">
-               <string>Import from file</string>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="pbnExportTransparentPixelValues">
-              <property name="toolTip">
-               <string>Export to file</string>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
-              </property>
-             </widget>
+              <item>
+               <widget class="QToolButton" name="pbnAddValuesManually">
+                <property name="toolTip">
+                 <string>Add values manually</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="pbnAddValuesFromDisplay">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Add Values from display</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionContextHelp.png</normaloff>../../images/themes/default/mActionContextHelp.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="pbnRemoveSelectedRow">
+                <property name="toolTip">
+                 <string>Remove selected row</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="pbnDefaultValues">
+                <property name="toolTip">
+                 <string>Default values</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionRemove.png</normaloff>../../images/themes/default/mActionRemove.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="pbnImportTransparentPixelValues">
+                <property name="toolTip">
+                 <string>Import from file</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="pbnExportTransparentPixelValues">
+                <property name="toolTip">
+                 <string>Export to file</string>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="gboxNoDataValue">
-         <property name="title">
-          <string>No data value</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="leNoDataValue"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QToolButton" name="btnResetNull">
-            <property name="toolTip">
-             <string>Reset to file defined null</string>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabBarPage4">
+     <widget class="QWidget" name="mGeneralTabBarPage">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
@@ -457,35 +601,54 @@
       <attribute name="title">
        <string>General</string>
       </attribute>
-      <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="lblDisplayName">
-         <property name="text">
-          <string>Display name</string>
-         </property>
-        </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QLabel" name="lblDisplayName">
+           <property name="text">
+            <string>Layer name</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mLayerOrigNameLineEd"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>displayed as</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leDisplayName">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="0" column="2" colspan="4">
-        <widget class="QLineEdit" name="leDisplayName"/>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QLabel" name="lblLayerSource">
+           <property name="text">
+            <string>Layer source</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leLayerSource">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QLabel" name="lblLayerSource">
-         <property name="text">
-          <string>Layer source</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2" colspan="4">
-        <widget class="QLineEdit" name="leLayerSource">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2" colspan="4">
+       <item>
         <layout class="QGridLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="lblColumns">
@@ -526,9 +689,22 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="3">
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
        </item>
-       <item row="3" column="0" colspan="6">
+       <item>
         <widget class="QGroupBox" name="chkUseScaleDependentRendering">
          <property name="title">
           <string>Scale dependent visibility</string>
@@ -540,36 +716,160 @@
           <property name="margin">
            <number>11</number>
           </property>
-          <item row="0" column="2">
-           <widget class="QLabel" name="textLabel1_2_2_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="textLabel1_3">
+            <property name="toolTip">
+             <string>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</string>
+            </property>
             <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
+             <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Maximum</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum scale&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(inclusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="textLabel1_3">
+          <item row="0" column="6">
+           <widget class="QgsScaleComboBox" name="cbMaximumScale" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsScaleComboBox" name="cbMinimumScale" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="textLabel1_2_2_2">
+            <property name="toolTip">
+             <string>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</string>
+            </property>
             <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
+             <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Minimum</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Minimum scale&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(exclusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QLineEdit" name="leMaximumScale"/>
+           <widget class="QPushButton" name="mMinimumScaleSetCurrentPushButton">
+            <property name="text">
+             <string>Current</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QPushButton" name="mMaximumScaleSetCurrentPushButton">
+            <property name="text">
+             <string>Current</string>
+            </property>
+           </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="leMinimumScale"/>
+           <widget class="QLabel" name="mMaximumScaleIconLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomIn.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QLabel" name="mMinimumScaleIconLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomOut.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="6">
+       <item>
         <widget class="QGroupBox" name="grpSRS">
          <property name="title">
           <string>Coordinate reference system</string>
@@ -601,142 +901,146 @@
          </layout>
         </widget>
        </item>
-       <item row="5" column="0">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>21</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="5" column="1" colspan="2">
-        <widget class="QGroupBox" name="groupBox10">
-         <property name="maximumSize">
-          <size>
-           <width>140</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Thumbnail</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="pixmapThumbnail">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="3">
-        <widget class="QGroupBox" name="groupBox9">
-         <property name="maximumSize">
-          <size>
-           <width>140</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Legend</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="pixmapLegend">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="4">
-        <widget class="QGroupBox" name="groupBox8">
-         <property name="maximumSize">
-          <size>
-           <width>140</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Palette</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="pixmapPalette">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>120</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::Box</enum>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="5">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>21</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <spacer name="spacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>21</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox10">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Thumbnail</string>
+           </property>
+           <layout class="QGridLayout" name="_6">
+            <item row="0" column="0">
+             <widget class="QLabel" name="pixmapThumbnail">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox9">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Legend</string>
+           </property>
+           <layout class="QGridLayout" name="_5">
+            <item row="0" column="0">
+             <widget class="QLabel" name="pixmapLegend">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox8">
+           <property name="maximumSize">
+            <size>
+             <width>140</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Palette</string>
+           </property>
+           <layout class="QGridLayout" name="_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="pixmapPalette">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="spacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>21</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -856,8 +1160,8 @@
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -959,56 +1263,29 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pbnSaveStyleAs">
-     <property name="text">
-      <string>Save Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="pbnLoadStyle">
-     <property name="text">
-      <string>Load Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="pbnLoadDefaultStyle">
-     <property name="text">
-      <string>Restore Default Style</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="pbnSaveDefaultStyle">
-     <property name="text">
-      <string>Save As Default</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabBar</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>leNoDataValue</tabstop>
-  <tabstop>tableTransparency</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
-  <tabstop>leMinimumScale</tabstop>
-  <tabstop>leMaximumScale</tabstop>
+  <tabstop>cbMinimumScale</tabstop>
+  <tabstop>cbMaximumScale</tabstop>
   <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnChangeSpatialRefSys</tabstop>
   <tabstop>tePyramidDescription</tabstop>

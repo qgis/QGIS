@@ -4,6 +4,7 @@
  * from http://www.superliminal.com/
  *
  * LICENSE : Entirely free for all uses. Enjoy!
+ * This File is in the public domain
  *
  * AUTORS
  *    - 1983 Original algorithm and test code by Antonin Guttman and Michael Stonebraker, UC Berkely
@@ -17,8 +18,11 @@
 #include <config.h>
 #endif
 
+#ifdef _MSC_VER
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE
-
+#endif
+#endif
 
 #ifndef RTREE_H
 #define RTREE_H

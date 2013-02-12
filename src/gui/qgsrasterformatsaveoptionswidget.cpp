@@ -18,11 +18,8 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgslogger.h"
 #include "qgsdialog.h"
-
-#include "gdal.h"
-#include "cpl_string.h"
-#include "cpl_conv.h"
-#include "cpl_minixml.h"
+#include "qgsrasterlayer.h"
+#include "qgsproviderregistry.h"
 
 #include <QSettings>
 #include <QInputDialog>
@@ -31,27 +28,17 @@
 #include <QMouseEvent>
 #include <QMenu>
 
-// todo put this somewhere else - how can we access gdal provider?
-char** papszFromStringList( const QStringList& list )
-{
-  char **papszRetList = NULL;
-  foreach ( QString elem, list )
-  {
-    papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
-  }
-  return papszRetList;
-}
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format,
-    QgsRasterFormatSaveOptionsWidget::Type type,
-    QString provider )
-    : QWidget( parent ), mFormat( format ), mProvider( provider )
+    QgsRasterFormatSaveOptionsWidget::Type type, QString provider )
+    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 ),
+    mRasterFileName( QString() ), mPyramids( false ),
+    mPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff )
 
 {
   setupUi( this );
-
 
   setType( type );
 
@@ -73,8 +60,8 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
       ( QStringList() << "GTiff" << tr( "High compression" )
         << "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" );
     mBuiltinProfiles[ "z_gtiff_4jpeg" ] =
-      ( QStringList() << "GTiff" << tr( "Lossy compression" )
-        << "COMPRESS=JPEG" );
+      ( QStringList() << "GTiff" << tr( "JPEG compression" )
+        << "COMPRESS=JPEG JPEG_QUALITY=75" );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
@@ -89,8 +76,8 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
       ( QStringList() << "_pyramids" << tr( "High compression" )
         << "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ); // how to set zlevel?
     mBuiltinProfiles[ "z__pyramids_gtiff_4jpeg" ] =
-      ( QStringList() << "_pyramids" << tr( "Lossy compression" )
-        << "COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" );
+      ( QStringList() << "_pyramids" << tr( "JPEG compression" )
+        << "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" );
   }
 
   connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -104,7 +91,10 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
   mOptionsLineEdit->installEventFilter( this );
   mOptionsStackedWidget->installEventFilter( this );
 
+  updateControls();
   updateProfiles();
+
+  QgsDebugMsg( "done" );
 }
 
 QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
@@ -114,12 +104,14 @@ QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
 void QgsRasterFormatSaveOptionsWidget::setFormat( QString format )
 {
   mFormat = format;
+  updateControls();
   updateProfiles();
 }
 
 void QgsRasterFormatSaveOptionsWidget::setProvider( QString provider )
 {
   mProvider = provider;
+  updateControls();
 }
 
 // show/hide widgets - we need this function if widget is used in creator
@@ -135,7 +127,7 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
     foreach ( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
       widget->setVisible( true );
 
-    // show elevant page
+    // show relevant page
     if ( type == Table )
       swapOptionsUI( 0 );
     else if ( type == LineEdit )
@@ -158,17 +150,20 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
 {
   // build profiles list = user + builtin(last)
+  QString format = mPyramids ? "_pyramids" : mFormat;
   QStringList profileKeys = profiles();
   QMapIterator<QString, QStringList> it( mBuiltinProfiles );
   while ( it.hasNext() )
   {
     it.next();
     QString profileKey = it.key();
-    if ( ! profileKeys.contains( profileKey ) )
+    if ( ! profileKeys.contains( profileKey ) && it.value().count() > 0 )
     {
       // insert key if is for all formats or this format (GTiff)
-      if ( it.value()[0] == "" ||  it.value()[0] == mFormat )
+      if ( it.value()[0] == "" ||  it.value()[0] == format )
+      {
         profileKeys.insert( 0, profileKey );
+      }
     }
   }
   qSort( profileKeys );
@@ -200,7 +195,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   // mProfileComboBox->setCurrentIndex( 0 );
   QSettings mySettings;
   mProfileComboBox->setCurrentIndex( mProfileComboBox->findData( mySettings.value(
-                                       mProvider + "/driverOptions/" + mFormat.toLower() + "/defaultProfile",
+                                       mProvider + "/driverOptions/" + format.toLower() + "/defaultProfile",
                                        "z_adefault" ) ) );
   updateOptions();
 }
@@ -229,6 +224,8 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
     mOptionsLineEdit->setText( myOptions );
     mOptionsLineEdit->setCursorPosition( 0 );
   }
+
+  emit optionsChanged();
 }
 
 void QgsRasterFormatSaveOptionsWidget::apply()
@@ -236,29 +233,42 @@ void QgsRasterFormatSaveOptionsWidget::apply()
   setCreateOptions();
 }
 
+// typedefs for gdal provider function pointers
+typedef QString validateCreationOptionsFormat_t( const QStringList& createOptions, QString format );
+typedef QString helpCreationOptionsFormat_t( QString format );
 
 void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
   QString message;
 
-  if ( mProvider == "gdal" && mFormat != "" && mFormat != "_pyramids" )
+  if ( mProvider == "gdal" && mFormat != "" && ! mPyramids )
   {
-    GDALDriverH myGdalDriver = GDALGetDriverByName( mFormat.toLocal8Bit().constData() );
-    if ( myGdalDriver )
+    // get helpCreationOptionsFormat() function ptr for provider
+    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+    if ( library )
     {
-      // need to serialize xml to get newlines
-      CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
-                                             GDAL_DMD_CREATIONOPTIONLIST, "" ) );
-      char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
-      if ( pszFormattedXML )
-        message = tr( "Create Options:\n\n%1" ).arg( pszFormattedXML );
-      if ( psCOL )
-        CPLDestroyXMLNode( psCOL );
-      if ( pszFormattedXML )
-        CPLFree( pszFormattedXML );
+      helpCreationOptionsFormat_t * helpCreationOptionsFormat =
+        ( helpCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
+      if ( helpCreationOptionsFormat )
+      {
+        message = helpCreationOptionsFormat( mFormat );
+      }
+      else
+      {
+        message = library->fileName() + " does not have helpCreationOptionsFormat";
+      }
     }
+    else
+      message = QString( "cannot load provider library %1" ).arg( mProvider );
+
+
     if ( message.isEmpty() )
       message = tr( "Cannot get create options for driver %1" ).arg( mFormat );
+  }
+  else if ( mProvider == "gdal" && mPyramids )
+  {
+    message = tr( "For details on pyramids options please see the following pages" );
+    message += "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html";
   }
   else
     message = tr( "No help available" );
@@ -267,36 +277,112 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   QgsDialog *dlg = new QgsDialog( this );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
+  // message = tr( "Create Options:\n\n%1" ).arg( message );
   textEdit->setText( message );
   dlg->layout()->addWidget( textEdit );
-  dlg->resize( 600, 600 );
+  dlg->resize( 600, 400 );
+#ifdef Q_WS_MAC
+  dlg->exec(); //modal
+#else
   dlg->show(); //non modal
+#endif
 }
 
-bool QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui )
+QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool reportOK )
 {
   QStringList createOptions = options();
-  bool ok = false;
+  QString message;
 
-  if ( !createOptions.isEmpty() && mProvider == "gdal" && mFormat != "" && mFormat != "_pyramids" )
+  QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none" ).arg( mRasterFileName ).arg( mFormat ) );
+  // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
+  // ideally we should keep it for future access, but this is trickier
+  QgsRasterLayer* rasterLayer = mRasterLayer;
+  bool tmpLayer = false;
+  if ( !( mRasterLayer && rasterLayer->dataProvider() ) && ! mRasterFileName.isNull() )
   {
-    GDALDriverH myGdalDriver = GDALGetDriverByName( mFormat.toLocal8Bit().constData() );
-    if ( myGdalDriver )
+    // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+    // this is taken from qgsbrowserdockwidget.cpp
+    // TODO - integrate this into qgis core
+    QSettings settings;
+    QString defaultProjectionOption = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
+    if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
     {
-      // print error string?
-      char** papszOptions = papszFromStringList( createOptions );
-      ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
-      CSLDestroy( papszOptions );
-      if ( gui )
-      {
-        if ( ok )
-          QMessageBox::information( this, "", tr( "Valid" ), QMessageBox::Close );
-        else
-          QMessageBox::warning( this, "", tr( "Invalid" ), QMessageBox::Close );
-      }
+      settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+    }
+    tmpLayer = true;
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), "gdal" );
+    // restore /Projections/defaultBehaviour
+    if ( defaultProjectionOption == "prompt" )
+    {
+      settings.setValue( "/Projections/defaultBehaviour", defaultProjectionOption );
     }
   }
-  return ok;
+
+  if ( mProvider == "gdal" && mPyramids )
+  {
+    if ( rasterLayer && rasterLayer->dataProvider() )
+    {
+      QgsDebugMsg( "calling validate pyramids on layer's data provider" );
+      message = rasterLayer->dataProvider()->validatePyramidsConfigOptions( mPyramidsFormat, createOptions, mFormat );
+    }
+    else
+    {
+      message = tr( "cannot validate pyramid options" );
+    }
+  }
+  else if ( !createOptions.isEmpty() && mProvider == "gdal" && mFormat != "" )
+  {
+    if ( rasterLayer && rasterLayer->dataProvider() )
+    {
+      QgsDebugMsg( "calling validate on layer's data provider" );
+      message = rasterLayer->dataProvider()->validateCreationOptions( createOptions, mFormat );
+    }
+    else
+    {
+      // get validateCreationOptionsFormat() function ptr for provider
+      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+      if ( library )
+      {
+        validateCreationOptionsFormat_t * validateCreationOptionsFormat =
+          ( validateCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
+        if ( validateCreationOptionsFormat )
+        {
+          message = validateCreationOptionsFormat( createOptions, mFormat );
+        }
+        else
+        {
+          message = library->fileName() + " does not have validateCreationOptionsFormat";
+        }
+      }
+      else
+        message = QString( "cannot load provider library %1" ).arg( mProvider );
+    }
+  }
+  else if ( ! createOptions.isEmpty() )
+  {
+    QMessageBox::information( this, "", tr( "Cannot validate creation options" ), QMessageBox::Close );
+    if ( tmpLayer )
+      delete rasterLayer;
+    return QString();
+  }
+
+  if ( gui )
+  {
+    if ( message.isNull() )
+    {
+      if ( reportOK )
+        QMessageBox::information( this, "", tr( "Valid" ), QMessageBox::Close );
+    }
+    else
+    {
+      QMessageBox::warning( this, "", tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ) ).arg( message ), QMessageBox::Close );
+    }
+  }
+
+  if ( tmpLayer )
+    delete rasterLayer;
+
+  return message;
 }
 
 void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
@@ -481,6 +567,13 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
   updateOptions();
 }
 
+void QgsRasterFormatSaveOptionsWidget::updateControls()
+{
+  bool valid = mProvider == "gdal" && mFormat != "";
+  mOptionsValidateButton->setEnabled( valid );
+  mOptionsHelpButton->setEnabled( valid );
+}
+
 // map options label left mouse click to optionsToggle()
 bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event )
 {
@@ -512,5 +605,12 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
   }
   // standard event processing
   return QObject::eventFilter( obj, event );
+}
+
+void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent * event )
+{
+  Q_UNUSED( event );
+  mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
+  QgsDebugMsg( "done" );
 }
 

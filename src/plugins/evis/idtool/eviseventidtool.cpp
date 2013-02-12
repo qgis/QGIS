@@ -108,11 +108,11 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   //Rather than add to the current selection, clear all selected features
   myLayer->removeSelection( false );
   //select features
-  myLayer->select( QgsAttributeList(), myRectangle, true, true );
+  QgsFeatureIterator fit = myLayer->getFeatures( QgsFeatureRequest().setFilterRect( myRectangle ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
   QgsFeatureIds newSelectedFeatures;
-  while ( myLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     newSelectedFeatures.insert( f.id() );
   }

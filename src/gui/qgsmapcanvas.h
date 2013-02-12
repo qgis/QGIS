@@ -122,10 +122,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsMapRenderer* mapRenderer();
 
-    //! Accessor for the canvas pixmap
-    //! @deprecated use canvasPaintDevice()
-    Q_DECL_DEPRECATED QPixmap& canvasPixmap();
-
     //! Accessor for the canvas paint device
     QPaintDevice &canvasPaintDevice();
 
@@ -144,7 +140,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
-    void setExtent( QgsRectangle const & r );
+    void setExtent( const QgsRectangle &r );
 
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
@@ -152,7 +148,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom to the previous extent (view)
     void zoomToPreviousExtent();
 
-    //! Zoom to the Next extent (view)
+    //! Zoom to the next extent (view)
     void zoomToNextExtent();
 
     // ! Clears the list of extents and sets current extent as first item
@@ -317,7 +313,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** emits current mouse position
         \note changed in 1.3 */
-    void xyCoordinates( const QgsPoint & p );
+    void xyCoordinates( const QgsPoint &p );
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
@@ -336,7 +332,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
-	\note Added in 2.0 */
+    \note Added in 2.0 */
     void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.
@@ -353,7 +349,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void keyReleased( QKeyEvent * e );
 
     //! Emit map tool changed event
-    void mapToolSet( QgsMapTool * tool );
+    void mapToolSet( QgsMapTool *tool );
 
     //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );

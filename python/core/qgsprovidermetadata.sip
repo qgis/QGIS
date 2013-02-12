@@ -16,9 +16,9 @@ class QgsProviderMetadata
 #include <qgsprovidermetadata.h>
 %End
 
-public:
+  public:
 
-    QgsProviderMetadata(const QString & _key, const QString & _description, const QString & _library);
+    QgsProviderMetadata( const QString & _key, const QString & _description, const QString & _library );
 
     /** this returns the unique key associated with the provider
 
@@ -40,5 +40,3 @@ public:
 
 
 }; // class QgsProviderMetadata
-
-

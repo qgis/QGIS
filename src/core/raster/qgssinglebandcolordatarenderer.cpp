@@ -34,6 +34,9 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
 {
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setRasterTransparency( mRasterTransparency );
   return renderer;
 }
 
@@ -50,48 +53,51 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
   return r;
 }
 
-void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
+
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
-    return 0;
+    return outputBlock;
   }
 
-  int currentRasterPos;
+  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height );
+  if ( !inputBlock || inputBlock->isEmpty() )
+  {
+    QgsDebugMsg( "No raster data!" );
+    delete inputBlock;
+    return outputBlock;
+  }
 
   bool hasTransparency = usesTransparency();
-
-  void* rasterData = mInput->block( bandNo, extent, width, height );
-
-  currentRasterPos = 0;
-  QImage img( width, height, QImage::Format_ARGB32 );
-  uchar* scanLine = 0;
-  for ( int i = 0; i < height; ++i )
+  if ( !hasTransparency )
   {
-    scanLine = img.scanLine( i );
-    if ( !hasTransparency )
-    {
-      memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), width * 4 );
-      currentRasterPos += width;
-    }
-    else
-    {
-      QRgb pixelColor;
-      double alpha = 255.0;
-      for ( int j = 0; j < width; ++j )
-      {
-        QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
-        alpha = qAlpha( c );
-        pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
-        memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
-        ++currentRasterPos;
-      }
-    }
+    // Nothing to do, just retype if necessary
+    inputBlock->convert( QGis::ARGB32_Premultiplied );
+    delete outputBlock;
+    return inputBlock;
   }
-  VSIFree( rasterData );
 
-  void * data = VSIMalloc( img.byteCount() );
-  return memcpy( data, img.bits(), img.byteCount() );
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  {
+    delete inputBlock;
+    return outputBlock;
+  }
+
+  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  {
+    QRgb pixelColor;
+    double alpha = 255.0;
+    QRgb c = inputBlock->color( i );
+    alpha = qAlpha( c );
+    pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
+    outputBlock->setColor( i,  pixelColor );
+  }
+
+  delete inputBlock;
+  return outputBlock;
 }
 
 void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
@@ -129,8 +135,8 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
     return true;
   }
 
-  if ( input->dataType( 1 ) == QgsRasterInterface::ARGB32 ||
-       input->dataType( 1 ) == QgsRasterInterface::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) == QGis::ARGB32 ||
+       input->dataType( 1 ) == QGis::ARGB32_Premultiplied )
   {
     mInput = input;
     return true;

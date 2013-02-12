@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,6 +30,11 @@
 #include <cmath> // for pretty classification
 #include <ctime>
 
+QgsRendererRangeV2::QgsRendererRangeV2()
+    : mLowerValue( 0 ), mUpperValue( 0 ), mSymbol( 0 ), mLabel()
+{
+}
+
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
     : mLowerValue( lowerValue )
     , mUpperValue( upperValue )
@@ -49,6 +54,19 @@ QgsRendererRangeV2::QgsRendererRangeV2( const QgsRendererRangeV2& range )
 QgsRendererRangeV2::~QgsRendererRangeV2()
 {
   delete mSymbol;
+}
+
+QgsRendererRangeV2& QgsRendererRangeV2::operator=( const QgsRendererRangeV2 & range )
+{
+  mLowerValue = range.mLowerValue;
+  mUpperValue = range.mUpperValue;
+  mLabel = range.mLabel;
+  mSymbol = 0;
+  if ( range.mSymbol )
+  {
+    mSymbol = range.mSymbol->clone();
+  }
+  return *this;
 }
 
 double QgsRendererRangeV2::lowerValue() const
@@ -167,16 +185,15 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForValue( double value )
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributeMap& attrMap = feature.attributeMap();
-  QgsAttributeMap::const_iterator ita = attrMap.find( mAttrNum );
-  if ( ita == attrMap.end() )
+  const QgsAttributes& attrs = feature.attributes();
+  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
     QgsDebugMsg( "attribute required by renderer not found: " + mAttrName + "(index " + QString::number( mAttrNum ) + ")" );
     return NULL;
   }
 
   // find the right category
-  QgsSymbolV2* symbol = symbolForValue( ita->toDouble() );
+  QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum].toDouble() );
   if ( symbol == NULL )
     return NULL;
 
@@ -187,9 +204,9 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   double rotation = 0;
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
-    rotation = attrMap[mRotationFieldIdx].toDouble();
+    rotation = attrs[mRotationFieldIdx].toDouble();
   if ( mSizeScaleFieldIdx != -1 )
-    sizeScale = attrMap[mSizeScaleFieldIdx].toDouble();
+    sizeScale = attrs[mSizeScaleFieldIdx].toDouble();
 
   // take a temporary symbol (or create it if doesn't exist)
   QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
@@ -553,8 +570,8 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     divisions = k;
   }
   double minimumBreak = start * unit;
-  double maximumBreak = end * unit;
-  int count = ceil( maximumBreak - minimumBreak ) / unit;
+  //double maximumBreak = end * unit;
+  int count = end - start;
 
   for ( int i = 1; i < count + 1; i++ )
   {
@@ -783,9 +800,10 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     QgsFeature f;
     QgsAttributeList lst;
     lst.append( attrNum );
-    vlayer->select( lst, QgsRectangle(), false );
-    while ( vlayer->nextFeature( f ) )
-      values.append( f.attributeMap()[attrNum].toDouble() );
+
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+    while ( fit.nextFeature( f ) )
+      values.append( f.attribute( attrNum ).toDouble() );
     // calculate the breaks
     if ( mode == Quantile )
     {
@@ -1117,3 +1135,60 @@ void QgsGraduatedSymbolRendererV2::deleteClass( int idx )
 {
   mRanges.removeAt( idx );
 }
+
+void QgsGraduatedSymbolRendererV2::deleteAllClasses()
+{
+  mRanges.clear();
+}
+
+void QgsGraduatedSymbolRendererV2::moveClass( int from, int to )
+{
+  if ( from < 0 || from >= mRanges.size() || to < 0 || to >= mRanges.size() ) return;
+  mRanges.move( from, to );
+}
+
+bool valueLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return r1.lowerValue() < r2.lowerValue();
+}
+
+bool valueGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return !valueLessThan( r1, r2 );
+}
+
+void QgsGraduatedSymbolRendererV2::sortByValue( Qt::SortOrder order )
+{
+  QgsDebugMsg( "Entered" );
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mRanges.begin(), mRanges.end(), valueLessThan );
+  }
+  else
+  {
+    qSort( mRanges.begin(), mRanges.end(), valueGreaterThan );
+  }
+}
+
+bool labelLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return QString::localeAwareCompare( r1.label(), r2.label() ) < 0;
+}
+
+bool labelGreaterThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
+{
+  return !labelLessThan( r1, r2 );
+}
+
+void QgsGraduatedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
+{
+  if ( order == Qt::AscendingOrder )
+  {
+    qSort( mRanges.begin(), mRanges.end(), labelLessThan );
+  }
+  else
+  {
+    qSort( mRanges.begin(), mRanges.end(), labelGreaterThan );
+  }
+}
+

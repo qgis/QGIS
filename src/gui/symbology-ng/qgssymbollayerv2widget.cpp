@@ -4,7 +4,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,6 +24,7 @@
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
+#include "qgssymbollayerv2utils.h"
 
 #include "qgsstylev2.h" //for symbol selector dialog
 
@@ -33,6 +34,7 @@
 
 #include <QAbstractButton>
 #include <QColorDialog>
+#include <QCursor>
 #include <QDir>
 #include <QFileDialog>
 #include <QPainter>
@@ -110,9 +112,9 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !color.isValid() )
     return;
@@ -259,9 +261,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this );
+  QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !borderColor.isValid() )
     return;
@@ -276,9 +278,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !color.isValid() )
     return;
@@ -357,9 +359,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setColor()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !color.isValid() )
     return;
@@ -374,9 +376,9 @@ void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
   // Native Mac dialog works only for Qt Carbon
   // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
   // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
+  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog | QColorDialog::ShowAlphaChannel );
 #else
-  QColor color = QColorDialog::getColor( mLayer->borderColor(), this );
+  QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::ShowAlphaChannel );
 #endif
   if ( !color.isValid() )
     return;
@@ -526,13 +528,13 @@ class QgsSvgListModel : public QAbstractListModel
   public:
     QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
     }
 
     // Constructor to create model for icons in a specific path
     QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
     {
-      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( path );
+      mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
     }
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const
@@ -556,7 +558,8 @@ class QgsSvgListModel : public QAbstractListModel
           bool fillParam, outlineParam, outlineWidthParam;
           QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
-          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
+          bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
           pixmap = QPixmap::fromImage( img );
           QPixmapCache::insert( entry, pixmap );
         }
@@ -671,6 +674,11 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 
+  if ( hasFillParam )
+    mChangeColorButton->setColor( defaultFill );
+  if ( hasOutlineParam )
+    mChangeBorderColorButton->setColor( defaultOutline );
+
   mFileLineEdit->blockSignals( true );
   mFileLineEdit->setText( layer->path() );
   mFileLineEdit->blockSignals( false );
@@ -678,12 +686,16 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mBorderWidthSpinBox->blockSignals( true );
   mBorderWidthSpinBox->setValue( layer->outlineWidth() );
   mBorderWidthSpinBox->blockSignals( false );
-
 }
 
 
 void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
+  if ( !layer )
+  {
+    return;
+  }
+
   if ( layer->layerType() != "SvgMarker" )
     return;
 
@@ -706,8 +718,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     }
   }
 
-
-
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
 
@@ -720,7 +730,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->blockSignals( false );
 
   setGuiForSvg( mLayer );
-
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -785,6 +794,25 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString
   emit changed();
 }
 
+void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_editingFinished()
+{
+  if ( !QFileInfo( mFileLineEdit->text() ).exists() )
+  {
+    QUrl url( mFileLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setPath( mFileLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
+  setGuiForSvg( mLayer );
+  emit changed();
+}
+
 void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
 {
   if ( !mLayer )
@@ -795,6 +823,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setFillColor( c );
+    mChangeColorButton->setColor( c );
     emit changed();
   }
 }
@@ -809,6 +838,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setOutlineColor( c );
+    mChangeBorderColorButton->setColor( c );
     emit changed();
   }
 }
@@ -886,7 +916,6 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
   setupUi( this );
   mSvgTreeView->setHeaderHidden( true );
   insertIcons();
-  updateOutlineIcon();
 
   connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
   connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
@@ -912,7 +941,6 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mSVGLineEdit->setText( mLayer->svgFilePath() );
     mRotationSpinBox->setValue( mLayer->angle() );
   }
-  updateOutlineIcon();
   updateParamGui();
 }
 
@@ -940,7 +968,7 @@ void QgsSVGFillSymbolLayerWidget::on_mTextureWidthSpinBox_valueChanged( double d
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & text )
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textEdited( const QString & text )
 {
   if ( !mLayer )
   {
@@ -953,14 +981,43 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & t
     return;
   }
   mLayer->setSvgFilePath( text );
-  emit changed();
   updateParamGui();
+  emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_editingFinished()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QFileInfo fi( mSVGLineEdit->text() );
+  if ( !fi.exists() )
+  {
+    QUrl url( mSVGLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setSvgFilePath( mSVGLineEdit->text() );
+  QApplication::restoreOverrideCursor();
+
+  updateParamGui();
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 {
-  mSVGLineEdit->setText( item.data( Qt::UserRole ).toString() );
+  QString file = item.data( Qt::UserRole ).toString();
+  mLayer->setSvgFilePath( file );
+  mSVGLineEdit->setText( file );
+
   updateParamGui();
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
@@ -989,33 +1046,13 @@ void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
-{
-  QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  updateOutlineIcon();
-  emit changed();
-}
 
 void QgsSVGFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
     mLayer->setAngle( d );
-  }
-  emit changed();
-}
-
-void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
-{
-  if ( mLayer )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeOutlinePushButton->iconSize() );
-    mChangeOutlinePushButton->setIcon( icon );
+    emit changed();
   }
 }
 
@@ -1026,7 +1063,11 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui()
   QColor defaultFill, defaultOutline;
   double defaultOutlineWidth;
   QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
+  if ( hasFillParam )
+    mChangeColorButton->setColor( defaultFill );
   mChangeColorButton->setEnabled( hasFillParam );
+  if ( hasOutlineParam )
+    mChangeBorderColorButton->setColor( defaultOutline );
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 }
@@ -1041,6 +1082,7 @@ void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setSvgFillColor( c );
+    mChangeColorButton->setColor( c );
     emit changed();
   }
 }
@@ -1055,6 +1097,7 @@ void QgsSVGFillSymbolLayerWidget::on_mChangeBorderColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setSvgOutlineColor( c );
+    mChangeBorderColorButton->setColor( c );
     emit changed();
   }
 }
@@ -1091,6 +1134,7 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mDistanceSpinBox->setValue( mLayer->distance() );
     mLineWidthSpinBox->setValue( mLayer->lineWidth() );
     mOffsetSpinBox->setValue( mLayer->offset() );
+    mColorPushButton->setColor( mLayer->color() );
   }
 }
 
@@ -1143,25 +1187,12 @@ void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
     if ( c.isValid() )
     {
       mLayer->setColor( c );
+      mColorPushButton->setColor( c );
       emit changed();
     }
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
-{
-  if ( mLayer )
-  {
-    QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
-    if ( dlg.exec() == QDialog::Rejected )
-    {
-      return;
-    }
-
-    //updateOutlineIcon();
-    emit changed();
-  }
-}
 
 /////////////
 

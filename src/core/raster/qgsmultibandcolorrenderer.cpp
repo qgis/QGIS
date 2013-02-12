@@ -55,6 +55,10 @@ QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
   {
     renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
   }
+  renderer->setOpacity( mOpacity );
+  renderer->setAlphaBand( mAlphaBand );
+  renderer->setRasterTransparency( mRasterTransparency );
+
   return renderer;
 }
 
@@ -119,41 +123,19 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   return r;
 }
 
-void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
-    return 0;
+    return outputBlock;
   }
 
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
   bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
-                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
-                    && !mInvertColor );
-
-  QgsRasterInterface::DataType redType = QgsRasterInterface::UnknownDataType;
-
-  if ( mRedBand > 0 )
-  {
-    redType = ( QgsRasterInterface::DataType )mInput->dataType( mRedBand );
-  }
-  QgsRasterInterface::DataType greenType = QgsRasterInterface::UnknownDataType;
-  if ( mGreenBand > 0 )
-  {
-    greenType = ( QgsRasterInterface::DataType )mInput->dataType( mGreenBand );
-  }
-  QgsRasterInterface::DataType blueType = QgsRasterInterface::UnknownDataType;
-  if ( mBlueBand > 0 )
-  {
-    blueType = ( QgsRasterInterface::DataType )mInput->dataType( mBlueBand );
-  }
-  QgsRasterInterface::DataType transparencyType = QgsRasterInterface::UnknownDataType;
-  if ( mAlphaBand > 0 )
-  {
-    transparencyType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
-  }
+                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement );
 
   QSet<int> bands;
   if ( mRedBand > 0 )
@@ -170,7 +152,9 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
   if ( bands.size() < 1 )
   {
-    return 0; //no need to draw anything if no band is set
+    // no need to draw anything if no band is set
+    // TODO:: we should probably return default color block
+    return outputBlock;
   }
 
   if ( mAlphaBand > 0 )
@@ -178,163 +162,159 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
     bands << mAlphaBand;
   }
 
-  QMap<int, void*> bandData;
-  void* defaultPointer = 0;
+  QMap<int, QgsRasterBlock*> bandBlocks;
+  QgsRasterBlock* defaultPointer = 0;
   QSet<int>::const_iterator bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    bandData.insert( *bandIt, defaultPointer );
+    bandBlocks.insert( *bandIt, defaultPointer );
   }
 
-  void* redData = 0;
-  void* greenData = 0;
-  void* blueData = 0;
-  void* alphaData = 0;
+  QgsRasterBlock* redBlock = 0;
+  QgsRasterBlock* greenBlock = 0;
+  QgsRasterBlock* blueBlock = 0;
+  QgsRasterBlock* alphaBlock = 0;
 
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    bandData[*bandIt] =  mInput->block( *bandIt, extent, width, height );
-    if ( !bandData[*bandIt] ) return 0;
+    bandBlocks[*bandIt] =  mInput->block( *bandIt, extent, width, height );
+    if ( !bandBlocks[*bandIt] )
+    {
+      // We should free the alloced mem from block().
+      QgsDebugMsg( "No input band" );
+      bandIt--;
+      for ( ; bandIt != bands.constBegin(); bandIt-- )
+      {
+        delete bandBlocks[*bandIt];
+      }
+      return outputBlock;
+    }
   }
 
   if ( mRedBand > 0 )
   {
-    redData = bandData[mRedBand];
+    redBlock = bandBlocks[mRedBand];
   }
   if ( mGreenBand > 0 )
   {
-    greenData = bandData[mGreenBand];
+    greenBlock = bandBlocks[mGreenBand];
   }
   if ( mBlueBand > 0 )
   {
-    blueData = bandData[mBlueBand];
+    blueBlock = bandBlocks[mBlueBand];
   }
   if ( mAlphaBand > 0 )
   {
-    alphaData = bandData[mAlphaBand];
+    alphaBlock = bandBlocks[mAlphaBand];
   }
 
-  QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
-  QRgb* imageScanLine = 0;
-  int currentRasterPos = 0;
-  int redVal = 0;
-  int greenVal = 0;
-  int blueVal = 0;
-  QRgb defaultColor = qRgba( 255, 255, 255, 0 );
-  double currentOpacity = mOpacity; //opacity (between 0 and 1)
-
-  for ( int i = 0; i < height; ++i )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
-    imageScanLine = ( QRgb* )( img.scanLine( i ) );
-    for ( int j = 0; j < width; ++j )
+    for ( int i = 0; i < bandBlocks.size(); i++ )
     {
-      if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
-      {
-        redVal = readValue( redData, redType, currentRasterPos );
-        greenVal = readValue( greenData, greenType, currentRasterPos );
-        blueVal = readValue( blueData, blueType, currentRasterPos );
-        if ( mInput->isNoDataValue( mRedBand, redVal ) ||
-             mInput->isNoDataValue( mGreenBand, greenVal ) ||
-             mInput->isNoDataValue( mBlueBand, blueVal ) )
-        {
-          imageScanLine[j] = defaultColor;
-        }
-        else
-        {
-          imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
-        }
+      delete bandBlocks.value( i );
+    }
+    return outputBlock;
+  }
 
-        ++currentRasterPos;
-        continue;
-      }
+  QRgb myDefaultColor = NODATA_COLOR;
 
-      bool isNoData = false;
-      if ( mRedBand > 0 )
+  for ( size_t i = 0; i < ( size_t )width*height; i++ )
+  {
+    if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
+    {
+      int redVal = ( int )redBlock->value( i );
+      int greenVal = ( int )greenBlock->value( i );
+      int blueVal = ( int )blueBlock->value( i );
+      if ( redBlock->isNoDataValue( redVal ) ||
+           greenBlock->isNoDataValue( greenVal ) ||
+           blueBlock->isNoDataValue( blueVal ) )
       {
-        redVal = readValue( redData, redType, currentRasterPos );
-        if ( mInput->isNoDataValue( mRedBand, redVal ) ) isNoData = true;
-      }
-      if ( mGreenBand > 0 )
-      {
-        greenVal = readValue( greenData, greenType, currentRasterPos );
-        if ( mInput->isNoDataValue( mGreenBand, greenVal ) ) isNoData = true;
-      }
-      if ( mBlueBand > 0 )
-      {
-        blueVal = readValue( blueData, blueType, currentRasterPos );
-        if ( mInput->isNoDataValue( mBlueBand, blueVal ) ) isNoData = true;
-      }
-      if ( isNoData )
-      {
-        imageScanLine[j] = defaultColor;
-        ++currentRasterPos;
-        continue;
-      }
-
-      //apply default color if red, green or blue not in displayable range
-      if (( mRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( redVal ) )
-          || ( mGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( redVal ) )
-          || ( mBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( redVal ) ) )
-      {
-        imageScanLine[j] = defaultColor;
-        ++currentRasterPos;
-        continue;
-      }
-
-      //stretch color values
-      if ( mRedContrastEnhancement )
-      {
-        redVal = mRedContrastEnhancement->enhanceContrast( redVal );
-      }
-      if ( mGreenContrastEnhancement )
-      {
-        greenVal = mGreenContrastEnhancement->enhanceContrast( greenVal );
-      }
-      if ( mBlueContrastEnhancement )
-      {
-        blueVal = mBlueContrastEnhancement->enhanceContrast( blueVal );
-      }
-
-      if ( mInvertColor )
-      {
-        redVal = 255 - redVal;
-        greenVal = 255 - greenVal;
-        blueVal = 255 - blueVal;
-      }
-
-      //opacity
-      currentOpacity = mOpacity;
-      if ( mRasterTransparency )
-      {
-        currentOpacity = mRasterTransparency->alphaValue( redVal, greenVal, blueVal, mOpacity * 255 ) / 255.0;
-      }
-      if ( mAlphaBand > 0 )
-      {
-        currentOpacity *= ( readValue( alphaData, transparencyType, currentRasterPos ) / 255.0 );
-      }
-
-      if ( doubleNear( currentOpacity, 1.0 ) )
-      {
-        imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        outputBlock->setColor( i, myDefaultColor );
       }
       else
       {
-        imageScanLine[j] = qRgba( currentOpacity * redVal, currentOpacity * greenVal, currentOpacity * blueVal, currentOpacity * 255 );
+        outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
       }
+      continue;
+    }
 
-      ++currentRasterPos;
+    bool isNoData = false;
+    double redVal = 0;
+    double greenVal = 0;
+    double blueVal = 0;
+    if ( mRedBand > 0 )
+    {
+      redVal = redBlock->value( i );
+      if ( redBlock->isNoDataValue( redVal ) ) isNoData = true;
+    }
+    if ( !isNoData && mGreenBand > 0 )
+    {
+      greenVal = greenBlock->value( i );
+      if ( greenBlock->isNoDataValue( greenVal ) ) isNoData = true;
+    }
+    if ( !isNoData && mBlueBand > 0 )
+    {
+      blueVal = ( int )blueBlock->value( i );
+      if ( blueBlock->isNoDataValue( blueVal ) ) isNoData = true;
+    }
+    if ( isNoData )
+    {
+      outputBlock->setColor( i, myDefaultColor );
+      continue;
+    }
+
+    //apply default color if red, green or blue not in displayable range
+    if (( mRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( redVal ) )
+        || ( mGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( redVal ) )
+        || ( mBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( redVal ) ) )
+    {
+      outputBlock->setColor( i, myDefaultColor );
+      continue;
+    }
+
+    //stretch color values
+    if ( mRedContrastEnhancement )
+    {
+      redVal = mRedContrastEnhancement->enhanceContrast( redVal );
+    }
+    if ( mGreenContrastEnhancement )
+    {
+      greenVal = mGreenContrastEnhancement->enhanceContrast( greenVal );
+    }
+    if ( mBlueContrastEnhancement )
+    {
+      blueVal = mBlueContrastEnhancement->enhanceContrast( blueVal );
+    }
+
+    //opacity
+    double currentOpacity = mOpacity;
+    if ( mRasterTransparency )
+    {
+      currentOpacity = mRasterTransparency->alphaValue( redVal, greenVal, blueVal, mOpacity * 255 ) / 255.0;
+    }
+    if ( mAlphaBand > 0 )
+    {
+      currentOpacity *= alphaBlock->value( i ) / 255.0;
+    }
+
+    if ( doubleNear( currentOpacity, 1.0 ) )
+    {
+      outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
+    }
+    else
+    {
+      outputBlock->setColor( i, qRgba( currentOpacity * redVal, currentOpacity * greenVal, currentOpacity * blueVal, currentOpacity * 255 ) );
     }
   }
 
-  bandIt = bands.constBegin();
-  for ( ; bandIt != bands.constEnd(); ++bandIt )
+  for ( int i = 0; i < bandBlocks.size(); i++ )
   {
-    VSIFree( bandData[*bandIt] );
+    delete bandBlocks.value( i );
   }
 
-  void * data = VSIMalloc( img.byteCount() );
-  return memcpy( data, img.bits(), img.byteCount() );
+  return outputBlock;
 }
 
 void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

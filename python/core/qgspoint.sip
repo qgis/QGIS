@@ -1,6 +1,6 @@
 
 
-class QgsPoint 
+class QgsPoint
 {
 
 %TypeHeaderCode
@@ -11,9 +11,9 @@ class QgsPoint
   public:
     /// Default constructor
     QgsPoint();
-    
+
     /*! Create a point from another point */
-    QgsPoint(const QgsPoint& p);
+    QgsPoint( const QgsPoint& p );
 
     /*! Create a point from x,y coordinates
      * @param x x coordinate
@@ -32,7 +32,7 @@ class QgsPoint
      * @param y y coordinate
      */
     void setY( double y );
-    
+
     /*! Sets the x and y value of the point */
     void set( double x, double y );
 
@@ -96,6 +96,12 @@ class QgsPoint
     //! Multiply x and y by the given value
     void multiply( const double& scalar );
 
+    //! Test if this point is on the segment defined by points a, b
+    //! @return 0 if this point is not on the open ray through a and b,
+    //! 1 if point is on open ray a, 2 if point is within line segment,
+    //! 3 if point is on open ray b.
+    int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
+
   SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = "(" + QString::number(sipCpp->x()) + "," + QString::number(sipCpp->y()) + ")";
@@ -110,7 +116,7 @@ class QgsPoint
 
 
   SIP_PYOBJECT __getitem__(int);
-%MethodCode    
+%MethodCode
     if (a0 == 0) {
         sipRes = Py_BuildValue("d",sipCpp->x());
     } else if (a0 == 1) {
@@ -120,8 +126,4 @@ class QgsPoint
         PyErr_SetString(PyExc_IndexError, msg.toAscii().constData());
     }
 %End
-
-
-  
 }; // class QgsPoint
-

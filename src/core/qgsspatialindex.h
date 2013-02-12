@@ -45,12 +45,6 @@ class CORE_EXPORT QgsSpatialIndex
 
     /* creation of spatial index */
 
-    /** create new spatial index that will be stored in memory */
-    //static QgsSpatialIndex* createMemoryIndex();
-
-    /** create new spatial index that stores its data on disk */
-    //static QgsSpatialIndex* createDiskIndex(QString fileName);
-
     /** constructor - creates R-tree */
     QgsSpatialIndex();
 
@@ -77,11 +71,10 @@ class CORE_EXPORT QgsSpatialIndex
 
 
   protected:
-
+    // @note not available in python bindings
     SpatialIndex::Region rectToRegion( QgsRectangle rect );
-
+    // @note not available in python bindings
     bool featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
-
 
   private:
 

@@ -5,7 +5,6 @@
 SET (offline_editing_plugin_SRCS
   offline_editing_plugin.cpp
   offline_editing_plugin_gui.cpp
-  offline_editing.cpp
   offline_editing_progress_dialog.cpp
 )
 
@@ -17,7 +16,6 @@ SET (offline_editing_plugin_UIS
 SET (offline_editing_plugin_MOC_HDRS
   offline_editing_plugin.h
   offline_editing_plugin_gui.h
-  offline_editing.h
   offline_editing_progress_dialog.h
 )
 

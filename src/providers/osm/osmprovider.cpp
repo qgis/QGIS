@@ -15,6 +15,7 @@
 #include "osmprovider.h"
 #include "osmhandler.h"
 #include "osmrenderer.h"
+#include "osmfeatureiterator.h"
 
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -40,24 +41,19 @@ const char* QgsOSMDataProvider::attr[] = { "timestamp", "user", "tags" };
 
 QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mActiveIterator( 0 )
 {
   QgsDebugMsg( "Initializing provider: " + uri );
 
-  mDatabaseStmt = NULL;
   mValid = false;
 
   // set the selection rectangle to null
-  mSelectionRectangle = 0;
-  mSelectionRectangleGeom = NULL;
   mDatabase = NULL;
   mInitObserver = NULL;
   mFeatureType = PointType;    // default feature type ~ point
 
   // set default boundaries
-  xMin = -DEFAULT_EXTENT;
-  xMax = DEFAULT_EXTENT;
-  yMin = -DEFAULT_EXTENT;
-  yMax = DEFAULT_EXTENT;
+  mExtent = QgsRectangle( -DEFAULT_EXTENT, -DEFAULT_EXTENT, DEFAULT_EXTENT, DEFAULT_EXTENT );
 
   // get the filename and other parameters from the URI
   int fileNameEnd = uri.indexOf( '?' );
@@ -137,14 +133,14 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
   }
 
   // set up attributes depending on the feature type - same attributes for both point and way type so far
-  mAttributeFields[TimestampAttr] = QgsField( attr[TimestampAttr], QVariant::String, "string" );
-  mAttributeFields[UserAttr] = QgsField( attr[UserAttr], QVariant::String, "string" );
-  mAttributeFields[TagAttr] = QgsField( attr[TagAttr], QVariant::String, "string" );
+  mAttributeFields.append( QgsField( attr[TimestampAttr], QVariant::String, "string" ) );
+  mAttributeFields.append( QgsField( attr[UserAttr], QVariant::String, "string" ) );
+  mAttributeFields.append( QgsField( attr[TagAttr], QVariant::String, "string" ) );
 
   // add custom attributes - these were chosen by user through OSM plugin
   for ( int tagId = 0; tagId < mCustomTagsList.count(); ++tagId )
   {
-    mAttributeFields[CustomTagAttr+tagId] = QgsField( mCustomTagsList[tagId], QVariant::String, "string" );
+    mAttributeFields.append( QgsField( mCustomTagsList[tagId], QVariant::String, "string" ) );
   }
 
   // get source file name and database file name
@@ -226,10 +222,10 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
         QStringList parts = boundaries.split( QChar( ':' ) );
         if ( parts.count() == 4 )
         {
-          xMin = parts[0].toDouble();
-          yMin = parts[1].toDouble();
-          xMax = parts[2].toDouble();
-          yMax = parts[3].toDouble();
+          mExtent.setXMinimum( parts[0].toDouble() );
+          mExtent.setYMinimum( parts[1].toDouble() );
+          mExtent.setXMaximum( parts[2].toDouble() );
+          mExtent.setYMaximum( parts[3].toDouble() );
         }
         else
         {
@@ -243,94 +239,6 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
   }
 
 
-  // prepare statement for tag retrieval
-  char sqlSelectTags[] = "SELECT key, val FROM tag WHERE object_id=? AND object_type=?";
-  int rc = sqlite3_prepare_v2( mDatabase, sqlSelectTags, sizeof( sqlSelectTags ), &mTagsStmt, 0 );
-  if ( rc != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite3 statement for feature tags selection - prepare failed." );
-    return;
-  }
-
-  char sqlSelectTagValue[] = "SELECT val FROM tag WHERE object_id=? AND object_type=? AND key=?";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectTagValue, sizeof( sqlSelectTagValue ), &mCustomTagsStmt, 0 );
-  if ( rc != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite3 statement for tag value selection - prepare failed." );
-    return;
-  }
-
-  // prepare statements for feature retrieval
-  char sqlSelectWay[] = "SELECT id, wkb, timestamp, user FROM way WHERE id=? AND status<>'R' AND u=1";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectWay, sizeof( sqlSelectWay ), &mWayStmt, 0 );
-  if ( rc != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite3 statement for way retrieval - prepare failed." );
-    return;
-  }
-
-  char sqlSelectNode[] = "SELECT id, lat, lon, timestamp, user FROM node WHERE id=? AND usage=0 AND status<>'R' AND u=1";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectNode, sizeof( sqlSelectNode ), &mNodeStmt, 0 );
-  if ( rc != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite3 statement for node retrieval - prepare failed." );
-    return;
-  }
-
-  if ( mFeatureType == PointType )
-  {
-    char sqlSelectPoints[] = "SELECT id, lat, lon, timestamp, user FROM node WHERE usage=0 AND status<>'R' AND u=1";
-    char sqlSelectPointsIn[] = "SELECT id, lat, lon, timestamp, user FROM node WHERE usage=0 AND status<>'R' AND u=1 \
-                                AND lat>=? AND lat<=? AND lon>=? AND lon<=?";
-
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPoints, sizeof( sqlSelectPoints ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for points retrieval - prepare failed." );
-      return;
-    }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPointsIn, sizeof( sqlSelectPointsIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for points in boundary retrieval - prepare failed." );
-      return;
-    }
-  }
-  else if ( mFeatureType == LineType )
-  {
-    char sqlSelectLines[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1";
-    char sqlSelectLinesIn[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1 \
-                               AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) \
-                               AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
-
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLines, sizeof( sqlSelectLines ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for lines retrieval - prepare failed." );
-      return;
-    }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLinesIn, sizeof( sqlSelectLinesIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for lines in boundary retrieval - prepare failed." );
-      return;
-    }
-  }
-  else // mFeatureType == PolygonType
-  {
-    char sqlSelectPolys[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1";
-    char sqlSelectPolysIn[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1 \
-                               AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) \
-                               AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
-
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolys, sizeof( sqlSelectPolys ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for polygons retrieval - prepare failed." );
-      return;
-    }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolysIn, sizeof( sqlSelectPolysIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
-    {
-      QgsDebugMsg( "sqlite3 statement for polygons in boundary retrieval - prepare failed." );
-      return;
-    }
-  }
-
   // finally OSM provider is initialized and considered to be valid!
   mValid = true;
 }
@@ -338,16 +246,8 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
 
 QgsOSMDataProvider::~QgsOSMDataProvider()
 {
-  // destruct selected geometry
-  delete mSelectionRectangleGeom;
-
-  // finalize all created sqlite3 statements
-  sqlite3_finalize( mTagsStmt );
-  sqlite3_finalize( mCustomTagsStmt );
-  sqlite3_finalize( mWayStmt );
-  sqlite3_finalize( mNodeStmt );
-  sqlite3_finalize( mSelectFeatsStmt );
-  sqlite3_finalize( mSelectFeatsInStmt );
+  if ( mActiveIterator )
+    mActiveIterator->close();
 
   // close opened sqlite3 database
   if ( mDatabase )
@@ -422,82 +322,6 @@ QString QgsOSMDataProvider::storageType() const
 }
 
 
-void QgsOSMDataProvider::select( QgsAttributeList fetchAttributes,
-                                 QgsRectangle rect,
-                                 bool fetchGeometry,
-                                 bool useIntersect )
-{
-  // re-initialization
-  delete mSelectionRectangleGeom;
-  if ( mDatabaseStmt )
-    // we must reset sqlite3 statement after recent selection - make it ready for next features selection
-    sqlite3_reset( mDatabaseStmt );
-
-  // store list of attributes to fetch, rectangle of area, geometry, etc.
-  mSelectionRectangle = rect;
-  mSelectionRectangleGeom = QgsGeometry::fromRect( rect );
-  mAttributesToFetch = fetchAttributes;
-
-  // set flags
-  mFetchGeom = fetchGeometry;
-  mSelectUseIntersect = useIntersect;
-
-  if ( mSelectionRectangle.isEmpty() )
-  {
-    // we want to select all features from OSM data; we will use mSelectFeatsStmt
-    // sqlite3 statement that is well prepared for this purpose
-    mDatabaseStmt = mSelectFeatsStmt;
-    return;
-  }
-
-  // we want to select features from specified boundary; we will use mSelectFeatsInStmt
-  // sqlite3 statement that is well prepared for this purpose
-  mDatabaseStmt = mSelectFeatsInStmt;
-
-  if ( mFeatureType == PointType )
-  {
-    // binding variables (boundary) for points selection!
-    sqlite3_bind_double( mDatabaseStmt, 1, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 2, mSelectionRectangle.yMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 3, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 4, mSelectionRectangle.xMaximum() );
-  }
-  else if ( mFeatureType == LineType )
-  {
-    // binding variables (boundary) for lines selection!
-    sqlite3_bind_double( mDatabaseStmt, 1, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 2, mSelectionRectangle.yMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 3, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 4, mSelectionRectangle.yMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 5, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 6, mSelectionRectangle.yMaximum() );
-
-    sqlite3_bind_double( mDatabaseStmt, 7, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 8, mSelectionRectangle.xMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 9, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 10, mSelectionRectangle.xMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 11, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 12, mSelectionRectangle.xMaximum() );
-  }
-  else // mFeatureType == PolygonType
-  {
-    // binding variables (boundary) for polygons selection!
-    sqlite3_bind_double( mDatabaseStmt, 1, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 2, mSelectionRectangle.yMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 3, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 4, mSelectionRectangle.yMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 5, mSelectionRectangle.yMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 6, mSelectionRectangle.yMaximum() );
-
-    sqlite3_bind_double( mDatabaseStmt, 7, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 8, mSelectionRectangle.xMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 9, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 10, mSelectionRectangle.xMaximum() );
-    sqlite3_bind_double( mDatabaseStmt, 11, mSelectionRectangle.xMinimum() );
-    sqlite3_bind_double( mDatabaseStmt, 12, mSelectionRectangle.xMaximum() );
-  }
-}
-
 
 int QgsOSMDataProvider::wayMemberCount( int wayId )
 {
@@ -530,320 +354,9 @@ int QgsOSMDataProvider::wayMemberCount( int wayId )
 }
 
 
-bool QgsOSMDataProvider::nextFeature( QgsFeature& feature )
-{
-  // load next requested feature from sqlite3 database
-  switch ( sqlite3_step( mDatabaseStmt ) )
-  {
-    case SQLITE_DONE:  // no more features to return
-      feature.setValid( false );
-      return false;
-
-    case SQLITE_ROW:  // another feature to return
-      if ( mFeatureType == PointType )
-        return fetchNode( feature, mDatabaseStmt, mFetchGeom, mAttributesToFetch );
-      else if ( mFeatureType == LineType )
-        return fetchWay( feature, mDatabaseStmt, mFetchGeom, mAttributesToFetch );
-      else if ( mFeatureType == PolygonType )
-        return fetchWay( feature, mDatabaseStmt, mFetchGeom, mAttributesToFetch );
-
-    default:
-      if ( mFeatureType == PointType )
-      {
-        QgsDebugMsg( "Getting next feature of type <point> failed." );
-      }
-      else if ( mFeatureType == LineType )
-      {
-        QgsDebugMsg( "Getting next feature of type <line> failed." );
-      }
-      else if ( mFeatureType == PolygonType )
-      {
-        QgsDebugMsg( "Getting next feature of type <polygon> failed." );
-      }
-      feature.setValid( false );
-      return false;
-  }
-}
-
-
-bool QgsOSMDataProvider::featureAtId( QgsFeatureId featureId,
-                                      QgsFeature& feature,
-                                      bool fetchGeometry,
-                                      QgsAttributeList fetchAttributes )
-{
-  // load exact feature from sqlite3 database
-  if ( mFeatureType == PointType )
-  {
-    sqlite3_bind_int64( mNodeStmt, 1, featureId );
-
-    if ( sqlite3_step( mNodeStmt ) != SQLITE_ROW )
-    {
-      QgsDebugMsg( QString( "Getting information about point with id=%1 failed." ).arg( featureId ) );
-      sqlite3_reset( mNodeStmt );
-      return false;
-    }
-
-    fetchNode( feature, mNodeStmt, fetchGeometry, fetchAttributes );
-
-    // prepare statement for next call
-    sqlite3_reset( mNodeStmt );
-  }
-  else if (( mFeatureType == LineType ) || ( mFeatureType == PolygonType ) )
-  {
-    sqlite3_bind_int64( mWayStmt, 1, featureId );
-
-    if ( sqlite3_step( mWayStmt ) != SQLITE_ROW )
-    {
-      QgsDebugMsg( QString( "Getting information about way with id=%1 failed." ).arg( featureId ) );
-      sqlite3_reset( mWayStmt );
-      return false;
-    }
-
-    fetchWay( feature, mWayStmt, fetchGeometry, fetchAttributes );
-
-    // prepare statement for next call
-    sqlite3_reset( mWayStmt );
-  }
-  return true;
-}
-
-
-bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs )
-{
-  int selId = sqlite3_column_int( stmt, 0 );
-  double selLat = sqlite3_column_double( stmt, 1 );
-  double selLon = sqlite3_column_double( stmt, 2 );
-  const char* selTimestamp = ( const char* ) sqlite3_column_text( stmt, 3 );
-  const char* selUser = ( const char* ) sqlite3_column_text( stmt, 4 );
-
-  // fetch feature's geometry
-  if ( fetchGeometry )
-  {
-    char* geo = new char[21];
-    memset( geo, 0, 21 );
-    geo[0] = QgsApplication::endian();
-    geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
-    memcpy( geo + 5, &selLon, sizeof( double ) );
-    memcpy( geo + 13, &selLat, sizeof( double ) );
-    feature.setGeometryAndOwnership(( unsigned char * )geo, 24 );    // 24 is size of wkb point structure!
-  }
-
-  // fetch attributes
-  QgsAttributeList::const_iterator iter;
-  for ( iter = fetchAttrs.begin(); iter != fetchAttrs.end(); ++iter )
-  {
-    switch ( *iter )
-    {
-      case TimestampAttr:
-        feature.addAttribute( TimestampAttr, QString::fromUtf8( selTimestamp ) ); break;
-      case UserAttr:
-        feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) ); break;
-      case TagAttr:
-        feature.addAttribute( TagAttr, tagsForObject( "node", selId ) ); break;
-
-      default: // suppose it's a custom tag
-        if ( *iter >= CustomTagAttr && *iter < CustomTagAttr + mCustomTagsList.count() )
-        {
-          feature.addAttribute( *iter, tagForObject( "node", selId, mCustomTagsList[*iter-CustomTagAttr] ) );
-        }
-    }
-  }
-
-  feature.setFeatureId( selId );
-  feature.setValid( true );
-  return true;
-}
-
-
-bool QgsOSMDataProvider::fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs )
-{
-  int selId;
-  const char* selTimestamp;
-  const char* selUser;
-  QgsGeometry *theGeometry = NULL;
-  bool fetchMoreRows = true;
-  int rc = -1;
-
-  do
-  {
-    selId = sqlite3_column_int( stmt, 0 );
-    selTimestamp = ( const char* ) sqlite3_column_text( stmt, 2 );
-    selUser = ( const char* ) sqlite3_column_text( stmt, 3 );
-    unsigned char *pzBlob = 0;
-    int pnBlob = 0;
-
-    if ( fetchGeometry || mSelectUseIntersect || !mSelectionRectangle.isEmpty() )
-    {
-      pnBlob = sqlite3_column_bytes( stmt, 1 );
-      pzBlob = new unsigned char[pnBlob];
-      memcpy( pzBlob, sqlite3_column_blob( stmt, 1 ), pnBlob );
-
-      // create geometry
-      theGeometry = new QgsGeometry();
-      theGeometry->fromWkb(( unsigned char * ) pzBlob, pnBlob );
-    }
-
-    if ( theGeometry && ( theGeometry->type() == 3 ) && ( selId != 0 ) )
-    {
-      // line/polygon geometry is not cached!
-      char *geo;
-      int geolen;
-      updateWayWKB( selId, ( mFeatureType == LineType ) ? 0 : 1, &geo, &geolen );
-      theGeometry->fromWkb(( unsigned char * ) geo, ( size_t ) geolen );
-    }
-
-    if ( mSelectUseIntersect )
-    {
-      // when using intersect, some features might be ignored if they don't intersect the selection rect
-      // intersect is a costly operation, use rectangle converted to geos for less conversions
-      // (this is usually used during identification of an object)
-      if ( theGeometry->intersects( mSelectionRectangleGeom ) )
-        fetchMoreRows = false;
-    }
-    else if ( !mSelectionRectangle.isEmpty() )
-    {
-      // when using selection rectangle but without exact intersection, check only overlap of bounding box
-      // (usually used when drawing)
-      if ( mSelectionRectangle.intersects( theGeometry->boundingBox() ) )
-        fetchMoreRows = false;
-    }
-    else
-    {
-      // no filter => always accept the new feature
-      // (used in attribute table)
-      fetchMoreRows = false;
-    }
-
-    // delete the geometry (if any) in case we're not going to use it anyway
-    if ( fetchMoreRows )
-      delete theGeometry;
-  }
-  while ( fetchMoreRows && (( rc = sqlite3_step( stmt ) ) == SQLITE_ROW ) );
-
-  // no more features to return
-  if ( rc == SQLITE_DONE )
-  {
-    sqlite3_exec( mDatabase, "COMMIT;", 0, 0, 0 );
-    feature.setValid( false );
-    return false;
-  }
-
-  // fetch feature's geometry
-  if ( fetchGeometry )
-  {
-    feature.setGeometry( theGeometry );
-  }
-  else
-  {
-    delete theGeometry; // make sure it's deleted
-  }
-
-  // fetch attributes
-  QgsAttributeList::const_iterator iter;
-  for ( iter = fetchAttrs.begin(); iter != fetchAttrs.end(); ++iter )
-  {
-    switch ( *iter )
-    {
-      case TimestampAttr:
-        feature.addAttribute( TimestampAttr, QString::fromUtf8( selTimestamp ) );
-        break;
-      case UserAttr:
-        feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) );
-        break;
-      case TagAttr:
-        feature.addAttribute( TagAttr, tagsForObject( "way", selId ) );
-        break;
-      default: // suppose it's a custom tag
-        if ( *iter >= CustomTagAttr && *iter < CustomTagAttr + mCustomTagsList.count() )
-        {
-          feature.addAttribute( *iter, tagForObject( "way", selId, mCustomTagsList[*iter-CustomTagAttr] ) );
-        }
-    }
-  }
-  feature.setFeatureId( selId );
-  feature.setValid( true );
-  return true;
-}
-
-
-
-QString QgsOSMDataProvider::tagForObject( const char* type, int id, QString tagKey )
-{
-  sqlite3_bind_int( mCustomTagsStmt, 1, id );
-  sqlite3_bind_text( mCustomTagsStmt, 2, type, -1, 0 );
-  QByteArray tag = tagKey.toUtf8(); // must keep the byte array until the query is run
-  sqlite3_bind_text( mCustomTagsStmt, 3, tag.data(), -1, 0 );
-
-  QString value;
-  int rc;
-
-  if (( rc = sqlite3_step( mCustomTagsStmt ) ) == SQLITE_ROW )
-  {
-    const char* tagVal = ( const char* ) sqlite3_column_text( mCustomTagsStmt, 0 );
-    value = QString::fromUtf8( tagVal );
-  }
-  else
-  {
-    // tag wasn't found
-    sqlite3_reset( mCustomTagsStmt ); // make ready for next retrieval
-    return "";
-  }
-
-  sqlite3_reset( mCustomTagsStmt ); // make ready for next retrieval
-  return value;
-}
-
-
-QString QgsOSMDataProvider::tagsForObject( const char* type, int id )
-{
-  sqlite3_bind_int( mTagsStmt, 1, id );
-  sqlite3_bind_text( mTagsStmt, 2, type, -1, 0 );
-
-  QString tags;
-  int rc;
-
-  while (( rc = sqlite3_step( mTagsStmt ) ) == SQLITE_ROW )
-  {
-    const char* tagKey = ( const char* ) sqlite3_column_text( mTagsStmt, 0 );
-    const char* tagVal = ( const char* ) sqlite3_column_text( mTagsStmt, 1 );
-    QString key = QString::fromUtf8( tagKey );
-    QString val = QString::fromUtf8( tagVal );
-
-    // we concatenate tags this way: "key1"="val1","key2"="val2","key3"="val3"
-    // -all ; in keyX and valX are replaced by ;;
-    // -all , in keyX and valX are replaced by ;
-    // -all - in keyX and valX are replaced by --
-    // -all = in keyX and valX are replaced by -
-    key = key.replace( ';', ";;" );
-    val = val.replace( ';', ";;" );
-    key = key.replace( ',', ";" );
-    val = val.replace( ',', ";" );
-
-    key = key.replace( '-', "--" );
-    val = val.replace( '-', "--" );
-    key = key.replace( '=', "-" );
-    val = val.replace( '=', "-" );
-
-    if ( tags.count() > 0 )
-      tags += ",";
-
-    tags += QString( "\"%1\"=\"%2\"" ).arg( key ).arg( val );
-  }
-
-  if ( rc != SQLITE_DONE )
-  {
-    // no tags for object
-    //QgsDebugMsg(QString("tags for object failed: type %1 id %2").arg(type).arg(id));
-  }
-
-  sqlite3_reset( mTagsStmt ); // make ready for next retrieval
-  return tags;
-}
-
-
 QgsRectangle QgsOSMDataProvider::extent()
 {
-  return QgsRectangle( xMin, yMin, xMax, yMax );
+  return mExtent;
 }
 
 
@@ -881,9 +394,9 @@ long QgsOSMDataProvider::featureCount() const
 }
 
 
-uint QgsOSMDataProvider::fieldCount() const
+QgsFeatureIterator QgsOSMDataProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  return mAttributeFields.size();;
+  return QgsFeatureIterator( new QgsOSMFeatureIterator( this, request ) );
 }
 
 
@@ -944,7 +457,7 @@ QGISEXTERN bool isProvider()
 }
 
 
-const QgsFieldMap & QgsOSMDataProvider::fields() const
+const QgsFields & QgsOSMDataProvider::fields() const
 {
   return mAttributeFields;
 }
@@ -953,15 +466,6 @@ const QgsFieldMap & QgsOSMDataProvider::fields() const
 QgsCoordinateReferenceSystem QgsOSMDataProvider::crs()
 {
   return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
-}
-
-
-void QgsOSMDataProvider::rewind()
-{
-  // we have to reset precompiled database statement; thanx to this action the first feature
-  // (returned by the query) will be selected again with the next calling of sqlite3_step(mDatabaseStmt)
-  if ( mDatabaseStmt )
-    sqlite3_reset( mDatabaseStmt );
 }
 
 
@@ -1399,14 +903,13 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
   }
 
   // store information got with handler into provider member variables
-  xMin = handler->xMin;    // boundaries defining the area of all features
-  xMax = handler->xMax;
-  yMin = handler->yMin;
-  yMax = handler->yMax;
+  // boundaries defining the area of all features
+  mExtent = QgsRectangle( handler->xMin, handler->yMin, handler->xMax, handler->yMax );
 
   // storing boundary information into database
   QString cmd3 = QString( "INSERT INTO meta ( key, val ) VALUES ('default-area-boundaries','%1:%2:%3:%4');" )
-                 .arg( xMin, 0, 'f', 10 ).arg( yMin, 0, 'f', 10 ).arg( xMax, 0, 'f', 10 ).arg( yMax, 0, 'f', 10 );
+                 .arg( mExtent.xMinimum(), 0, 'f', 10 ).arg( mExtent.yMinimum(), 0, 'f', 10 )
+                 .arg( mExtent.xMaximum(), 0, 'f', 10 ).arg( mExtent.yMaximum(), 0, 'f', 10 );
   QByteArray cmd_bytes3  = cmd3.toAscii();
   const char *ptr3 = cmd_bytes3.data();
 

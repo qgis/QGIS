@@ -49,6 +49,7 @@ class CORE_EXPORT QgsScaleCalculator
      * @param dpi Dots per inch of monitor resolution
      */
     void setDpi( double dpi );
+
     /**
      * Accessor for dpi used in scale calculations
      * @return int the dpi used for scale calculations.
@@ -65,10 +66,10 @@ class CORE_EXPORT QgsScaleCalculator
     QGis::UnitType mapUnits() const;
 
     /**
-     * Calculate the scale
+     * Calculate the scale denominator
      * @param mapExtent QgsRectangle containing the current map extent
      * @param canvasWidth Width of the map canvas in pixel (physical) units
-     * @return scale of current map view
+     * @return scale denominator of current map view
      */
     double calculate( const QgsRectangle &mapExtent, int canvasWidth );
 

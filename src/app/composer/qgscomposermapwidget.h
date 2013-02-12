@@ -20,6 +20,7 @@
 
 #include "ui_qgscomposermapwidgetbase.h"
 #include "qgscomposermap.h"
+class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
@@ -31,7 +32,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   public:
 
     QgsComposerMapWidget( QgsComposerMap* composerMap );
-    ~QgsComposerMapWidget();
+    virtual ~QgsComposerMapWidget();
 
   public slots:
     void on_mWidthLineEdit_editingFinished();
@@ -57,7 +58,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mOffsetXSpinBox_editingFinished();
     void on_mOffsetYSpinBox_editingFinished();
     void on_mLineWidthSpinBox_valueChanged( double d );
-    void on_mLineColorButton_clicked();
+    void on_mGridLineStyleButton_clicked();
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
     void on_mCrossWidthSpinBox_valueChanged( double d );
     void on_mAnnotationFontButton_clicked();
@@ -86,6 +87,11 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   protected:
     void showEvent( QShowEvent * event );
 
+    void addPageToToolbox( QWidget * widget, const QString& name );
+
+    /**Sets the current composer map values to the GUI elements*/
+    virtual void updateGuiElements();
+
   private slots:
 
     /**Sets the GUI elements to the values of mPicture*/
@@ -93,9 +99,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
   private:
     QgsComposerMap* mComposerMap;
-
-    /**Sets the current composer map values to the GUI elements*/
-    void updateGuiElements();
 
     /**Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();
@@ -113,6 +116,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
 
     void updateOverviewSymbolMarker();
+    void updateLineSymbolMarker();
 
     /**Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();

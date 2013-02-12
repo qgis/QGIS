@@ -70,13 +70,13 @@ int QgsRasterResampleFilter::bandCount() const
   return 0;
 }
 
-QgsRasterInterface::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
+QGis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 {
-  if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
+  if ( mOn ) return QGis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterInterface::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
@@ -104,7 +104,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) != QGis::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != QGis::ARGB32 )
   {
     QgsDebugMsg( "Unknown input data type" );
     return false;
@@ -127,11 +128,12 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
   mZoomedOutResampler = r;
 }
 
-void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
-  if ( !mInput ) return 0;
+  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  if ( !mInput ) return outputBlock;
 
   double oversampling = 1.0; // approximate global oversampling factor
 
@@ -168,34 +170,54 @@ void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & ext
 
   // At moment we know that we read rendered image
   int bandNumber = 1;
-  void *rasterData = mInput->block( bandNumber, extent, resWidth, resHeight );
-
-  //resample image
-  if (( mZoomedInResampler || mZoomedOutResampler ) && !doubleNear( oversamplingX, 1.0 ) && !doubleNear( oversamplingY, 1.0 ) )
+  //void *rasterData = mInput->block( bandNumber, extent, resWidth, resHeight );
+  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight );
+  if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QImage img(( uchar * ) rasterData, resWidth, resHeight, QImage::Format_ARGB32_Premultiplied );
-
-    QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
-
-    if ( mZoomedInResampler && oversamplingX < 1.0 )
-    {
-      QgsDebugMsg( "zoomed in resampling" );
-      mZoomedInResampler->resample( img, dstImg );
-    }
-    else if ( mZoomedOutResampler && oversamplingX > 1.0 )
-    {
-      QgsDebugMsg( "zoomed out resampling" );
-      mZoomedOutResampler->resample( img, dstImg );
-    }
-
-    // QImage does not delete data block passed to constructor
-    free( rasterData );
-
-    void * data = VSIMalloc( dstImg.byteCount() );
-    return memcpy( data, dstImg.bits(), dstImg.byteCount() );
+    QgsDebugMsg( "No raster data!" );
+    delete inputBlock;
+    return outputBlock;
   }
 
-  return rasterData; // No resampling
+  if ( doubleNear( oversamplingX, 1.0 ) || doubleNear( oversamplingY, 1.0 ) )
+  {
+    QgsDebugMsg( "No oversampling." );
+    delete outputBlock;
+    return inputBlock;
+  }
+
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  {
+    delete inputBlock;
+    return outputBlock;
+  }
+
+  //resample image
+  QImage img = inputBlock->image();
+
+  QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+
+  if ( mZoomedInResampler && oversamplingX < 1.0 )
+  {
+    QgsDebugMsg( "zoomed in resampling" );
+    mZoomedInResampler->resample( img, dstImg );
+  }
+  else if ( mZoomedOutResampler && oversamplingX > 1.0 )
+  {
+    QgsDebugMsg( "zoomed out resampling" );
+    mZoomedOutResampler->resample( img, dstImg );
+  }
+  else
+  {
+    // Should not happen
+    QgsDebugMsg( "Unexpected resampling" );
+    dstImg = img.scaled( width, height );
+  }
+
+  outputBlock->setImage( &dstImg );
+
+  delete inputBlock;
+  return outputBlock; // No resampling
 }
 
 void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )

@@ -31,14 +31,6 @@ class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
       be converted to degrees / gon automatically if necessary*/
     void setValueInRadians( double value );
 
-  signals:
-    void changeProjectionEnabledState();
-
-  private slots:
-
-    //! When any external settings change
-    void updateSettings();
-
   private:
     //! pointer to tool which owns this dialog
     QgsMapToolMeasureAngle * mTool;

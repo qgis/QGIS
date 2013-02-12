@@ -23,6 +23,9 @@ back to QgsVectorLayer.
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
@@ -30,7 +33,7 @@ back to QgsVectorLayer.
 #include <QSettings>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
-    const QgsFieldMap& fields,
+    const QgsFields& fields,
     QWidget* parent ):
     QWidget( parent ), mActions( actions )
 {
@@ -62,8 +65,8 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   // Populate the combo box with the field names. Will the field names
   // change? If so, they need to be passed into the init() call, or
   // some access to them retained in this class.
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
-    fieldComboBox->addItem( it->name() );
+  for ( int idx = 0; idx < fields.count(); ++idx )
+    fieldComboBox->addItem( fields[idx].name() );
 }
 
 void QgsAttributeActionDialog::init()
@@ -173,6 +176,13 @@ void QgsAttributeActionDialog::insertExpression()
   // display the expression builder
   QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
   dlg.setWindowTitle( tr( "Insert expression" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mActions->layer()->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
   if ( dlg.exec() == QDialog::Accepted )
   {
     QString expression =  dlg.expressionBuilder()->expressionText();
@@ -330,7 +340,7 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", false );
   insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clickx %])\")", false );
   insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.it/?q=[% \"ATTRIBUTE\" %]", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", false );
 }
 
 void QgsAttributeActionDialog::itemSelectionChanged()

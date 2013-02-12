@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -117,9 +117,9 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case QgsSymbolV2::Marker : return "Symbol: Marker";
-            case QgsSymbolV2::Fill   : return "Symbol: Fill";
-            case QgsSymbolV2::Line   : return "Symbol: Line";
+            case QgsSymbolV2::Marker : return "Marker";
+            case QgsSymbolV2::Fill   : return "Fill";
+            case QgsSymbolV2::Line   : return "Line";
             default: return "Symbol";
           }
         }
@@ -332,7 +332,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   {
     // then it must be a symbol
     // Now populate symbols of that type using the symbols list widget:
-    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu );
+    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this );
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
   }

@@ -111,7 +111,9 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
 
     if ( png8Bit )
     {
-      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, Qt::ColorOnly | Qt::ThresholdDither |
+      QVector<QRgb> colorTable;
+      medianCut( colorTable, 256, *img );
+      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither |
                            Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       palettedImg.save( &buffer, "PNG", -1 );
     }
@@ -468,4 +470,293 @@ QString QgsHttpRequestHandler::readPostBody() const
     }
   }
   return inputString;
+}
+
+void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage )
+{
+  QHash<QRgb, int> inputColors;
+  imageColors( inputColors, inputImage );
+
+  if ( inputColors.size() <= nColors ) //all the colors in the image can be mapped to one palette color
+  {
+    colorTable.resize( inputColors.size() );
+    int index = 0;
+    QHash<QRgb, int>::const_iterator inputColorIt = inputColors.constBegin();
+    for ( ; inputColorIt != inputColors.constEnd(); ++inputColorIt )
+    {
+      colorTable[index] = inputColorIt.key();
+      ++index;
+    }
+    return;
+  }
+
+  //create first box
+  QgsColorBox firstBox; //QList< QPair<QRgb, int> >
+  int firstBoxPixelSum = 0;
+  QHash<QRgb, int>::const_iterator inputColorIt = inputColors.constBegin();
+  for ( ; inputColorIt != inputColors.constEnd(); ++inputColorIt )
+  {
+    firstBox.push_back( qMakePair( inputColorIt.key(), inputColorIt.value() ) );
+    firstBoxPixelSum += inputColorIt.value();
+  }
+
+  QgsColorBoxMap colorBoxMap; //QMultiMap< int, ColorBox >
+  colorBoxMap.insert( firstBoxPixelSum, firstBox );
+  QMap<int, QgsColorBox>::iterator colorBoxMapIt = colorBoxMap.end();
+
+  //split boxes until number of boxes == nColors or all the boxes have color count 1
+  bool allColorsMapped = false;
+  while ( colorBoxMap.size() < nColors )
+  {
+    //start at the end of colorBoxMap and pick the first entry with number of colors < 1
+    colorBoxMapIt = colorBoxMap.end();
+    while ( true )
+    {
+      --colorBoxMapIt;
+      if ( colorBoxMapIt.value().size() > 1 )
+      {
+        splitColorBox( colorBoxMapIt.value(), colorBoxMap, colorBoxMapIt );
+        break;
+      }
+      if ( colorBoxMapIt == colorBoxMap.begin() )
+      {
+        allColorsMapped = true;
+        break;
+      }
+    }
+
+    if ( allColorsMapped )
+    {
+      break;
+    }
+    else
+    {
+      continue;
+    }
+  }
+
+  //get representative colors for the boxes
+  int index = 0;
+  colorTable.resize( colorBoxMap.size() );
+  QgsColorBoxMap::const_iterator colorBoxIt = colorBoxMap.constBegin();
+  for ( ; colorBoxIt != colorBoxMap.constEnd(); ++colorBoxIt )
+  {
+    colorTable[index] = boxColor( colorBoxIt.value(), colorBoxIt.key() );
+    ++index;
+  }
+}
+
+void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage& image )
+{
+  colors.clear();
+  int width = image.width();
+  int height = image.height();
+
+  QRgb currentColor;
+  QHash<QRgb, int>::iterator colorIt;
+  for ( int i = 0; i < height; ++i )
+  {
+    for ( int j = 0; j < width; ++j )
+    {
+      currentColor = image.pixel( j, i );
+      colorIt = colors.find( currentColor );
+      if ( colorIt == colors.end() )
+      {
+        colors.insert( currentColor, 1 );
+      }
+      else
+      {
+        colorIt.value()++;
+      }
+    }
+  }
+}
+
+void QgsHttpRequestHandler::splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+    QMap<int, QgsColorBox>::iterator colorBoxMapIt )
+{
+
+  if ( colorBox.size() < 2 )
+  {
+    return; //need at least two colors for a split
+  }
+
+  //a,r,g,b ranges
+  int redRange = 0;
+  int greenRange = 0;
+  int blueRange = 0;
+  int alphaRange = 0;
+
+  if ( !minMaxRange( colorBox, redRange, greenRange, blueRange, alphaRange ) )
+  {
+    return;
+  }
+
+  //sort color box for a/r/g/b
+  if ( redRange >= greenRange && redRange >= blueRange && redRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), redCompare );
+  }
+  else if ( greenRange >= redRange && greenRange >= blueRange && greenRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), greenCompare );
+  }
+  else if ( blueRange >= redRange && blueRange >= greenRange && blueRange >= alphaRange )
+  {
+    qSort( colorBox.begin(), colorBox.end(), blueCompare );
+  }
+  else
+  {
+    qSort( colorBox.begin(), colorBox.end(), alphaCompare );
+  }
+
+  //get median
+  double halfSum = colorBoxMapIt.key() / 2.0;
+  int currentSum = 0;
+  int currentListIndex = 0;
+
+  QgsColorBox::iterator colorBoxIt = colorBox.begin();
+  for ( ; colorBoxIt != colorBox.end(); ++colorBoxIt )
+  {
+    currentSum += colorBoxIt->second;
+    if ( currentSum >= halfSum )
+    {
+      break;
+    }
+    ++currentListIndex;
+  }
+
+  if ( currentListIndex > ( colorBox.size() - 2 ) ) //if the median is contained in the last color, split one item before that
+  {
+    --currentListIndex;
+    currentSum -= colorBoxIt->second;
+  }
+  else
+  {
+    ++colorBoxIt; //the iterator needs to point behind the last item to remove
+  }
+
+  //do split: replace old color box, insert new one
+  QgsColorBox newColorBox1 = colorBox.mid( 0, currentListIndex + 1 );
+  colorBoxMap.insert( currentSum, newColorBox1 );
+
+  colorBox.erase( colorBox.begin(), colorBoxIt );
+  QgsColorBox newColorBox2 = colorBox;
+  colorBoxMap.erase( colorBoxMapIt );
+  colorBoxMap.insert( halfSum * 2.0 - currentSum, newColorBox2 );
+}
+
+bool QgsHttpRequestHandler::minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange )
+{
+  if ( colorBox.size() < 1 )
+  {
+    return false;
+  }
+
+  int rMin = INT_MAX;
+  int gMin = INT_MAX;
+  int bMin = INT_MAX;
+  int aMin = INT_MAX;
+  int rMax = INT_MIN;
+  int gMax = INT_MIN;
+  int bMax = INT_MIN;
+  int aMax = INT_MIN;
+
+  int currentRed = 0; int currentGreen = 0; int currentBlue = 0; int currentAlpha = 0;
+
+  QgsColorBox::const_iterator colorBoxIt = colorBox.constBegin();
+  for ( ; colorBoxIt != colorBox.constEnd(); ++colorBoxIt )
+  {
+    currentRed = qRed( colorBoxIt->first );
+    if ( currentRed > rMax )
+    {
+      rMax = currentRed;
+    }
+    if ( currentRed < rMin )
+    {
+      rMin = currentRed;
+    }
+
+    currentGreen = qGreen( colorBoxIt->first );
+    if ( currentGreen > gMax )
+    {
+      gMax = currentGreen;
+    }
+    if ( currentGreen < gMin )
+    {
+      gMin = currentGreen;
+    }
+
+    currentBlue = qBlue( colorBoxIt->first );
+    if ( currentBlue > bMax )
+    {
+      bMax = currentBlue;
+    }
+    if ( currentBlue < bMin )
+    {
+      bMin = currentBlue;
+    }
+
+    currentAlpha = qAlpha( colorBoxIt->first );
+    if ( currentAlpha > aMax )
+    {
+      aMax = currentAlpha;
+    }
+    if ( currentAlpha < aMin )
+    {
+      aMin = currentAlpha;
+    }
+  }
+
+  redRange = rMax - rMin;
+  greenRange = gMax - gMin;
+  blueRange = bMax - bMin;
+  alphaRange = aMax - aMin;
+  return true;
+}
+
+bool QgsHttpRequestHandler::redCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qRed( c1.first ) < qRed( c2.first );
+}
+
+bool QgsHttpRequestHandler::greenCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qGreen( c1.first ) < qGreen( c2.first );
+}
+
+bool QgsHttpRequestHandler::blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qBlue( c1.first ) < qBlue( c2.first );
+}
+
+bool QgsHttpRequestHandler::alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 )
+{
+  return qAlpha( c1.first ) < qAlpha( c2.first );
+}
+
+QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels )
+{
+  double avRed = 0;
+  double avGreen = 0;
+  double avBlue = 0;
+  double avAlpha = 0;
+  QRgb currentColor;
+  int currentPixel;
+
+  double weight;
+
+  QgsColorBox::const_iterator colorBoxIt = box.constBegin();
+  for ( ; colorBoxIt != box.constEnd(); ++colorBoxIt )
+  {
+    currentColor = colorBoxIt->first;
+    currentPixel = colorBoxIt->second;
+    weight = ( double )currentPixel / boxPixels;
+    avRed += ( qRed( currentColor ) * weight );
+    avGreen += ( qGreen( currentColor ) * weight );
+    avBlue += ( qBlue( currentColor ) * weight );
+    avAlpha += ( qAlpha( currentColor ) * weight );
+  }
+
+  return qRgba( avRed, avGreen, avBlue, avAlpha );
 }

@@ -11,6 +11,9 @@
 #    SPATIALITE_INCLUDE_DIR
 #    SPATIALITE_LIBRARY
 
+# This macro checks if the symbol exists
+include(CheckLibraryExists)
+
 
 # FIND_PATH and FIND_LIBRARY normally search standard locations
 # before the specified paths. To search non-standard paths first,
@@ -59,6 +62,9 @@ IF (SPATIALITE_FOUND)
    IF (NOT SPATIALITE_FIND_QUIETLY)
       MESSAGE(STATUS "Found SpatiaLite: ${SPATIALITE_LIBRARY}")
    ENDIF (NOT SPATIALITE_FIND_QUIETLY)
+
+   # Check for symbol gaiaDropTable
+   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
 
 ELSE (SPATIALITE_FOUND)
 

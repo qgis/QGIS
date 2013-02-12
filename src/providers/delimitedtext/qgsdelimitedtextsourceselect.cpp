@@ -166,7 +166,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
       settings.setValue( key + "/delimiterType", "plain" );
     else
       settings.setValue( key + "/delimiterType", "regexp" );
-    settings.setValue( key + "/delimiterChars", selectedChars() );
+    settings.setValue( key + "/delimiterChars", selectedChars().join( "" ) );
 
     accept();
   }
@@ -181,37 +181,50 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
   reject();
 }
 
-QString QgsDelimitedTextSourceSelect::selectedChars()
+QStringList QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = "";
+  QStringList chars;
   if ( cbxDelimSpace->isChecked() )
-    chars += " ";
+    chars << " ";
   if ( cbxDelimTab->isChecked() )
-    chars += "\\t";
+    chars << "\\t";
   if ( cbxDelimSemicolon->isChecked() )
-    chars += ";";
+    chars << ";";
   if ( cbxDelimComma->isChecked() )
-    chars += ",";
+    chars << ",";
   if ( cbxDelimColon->isChecked() )
-    chars += ":";
+    chars << ":";
   return chars;
 }
 
 QStringList QgsDelimitedTextSourceSelect::splitLine( QString line )
 {
-  QString delimiter = txtDelimiter->text();
+  QString delimiter;
+  if ( delimiterSelection->isChecked() )
+  {
+    if ( selectedChars().size() > 1 )
+    {
+      delimiter = "[" + selectedChars().join( "" ) + "]";
+    }
+    else
+    {
+      delimiter = selectedChars().join( "" );
+    }
+    txtDelimiter->setText( delimiter );
+  }
+  else
+  {
+    delimiter = txtDelimiter->text();
+  }
 
   if ( delimiterPlain->isChecked() )
   {
     return QgsDelimitedTextProvider::splitLine( line, "plain", delimiter );
   }
 
-  if ( delimiterSelection->isChecked() )
+  if ( delimiterSelection->isChecked() && selectedChars().size() <= 1 )
   {
-    delimiter = "[";
-    delimiter += selectedChars();
-    delimiter += "]";
-    txtDelimiter->setText( delimiter );
+    return QgsDelimitedTextProvider::splitLine( line, "plain", delimiter );
   }
 
   return QgsDelimitedTextProvider::splitLine( line, "regexp", delimiter );
@@ -290,8 +303,6 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   while ( !line.isEmpty() && skipLines-- > 0 );
 
   QgsDebugMsg( QString( "Attempting to split the input line: %1 using delimiter %2" ).arg( line ).arg( txtDelimiter->text() ) );
-
-  QString delimiter = txtDelimiter->text();
 
   QStringList fieldList = splitLine( line );
 

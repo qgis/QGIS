@@ -50,19 +50,16 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-109</y>
-            <width>370</width>
-            <height>523</height>
+            <y>0</y>
+            <width>362</width>
+            <height>647</height>
            </rect>
           </property>
           <attribute name="label">
            <string>General</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="mTitleLineEdit"/>
-           </item>
-           <item row="3" column="1">
+           <item row="7" column="1">
             <widget class="QPushButton" name="mTitleFontButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -75,28 +72,28 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
+           <item row="8" column="1">
             <widget class="QPushButton" name="mGroupFontButton">
              <property name="text">
               <string>Group Font...</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
+           <item row="9" column="1">
             <widget class="QPushButton" name="mLayerFontButton">
              <property name="text">
               <string>Layer Font...</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
+           <item row="10" column="1">
             <widget class="QPushButton" name="mItemFontButton">
              <property name="text">
               <string>Item Font...</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="1">
+           <item row="12" column="1">
             <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox">
              <property name="prefix">
               <string>Symbol width </string>
@@ -106,7 +103,7 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="1">
+           <item row="13" column="1">
             <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox">
              <property name="prefix">
               <string>Symbol height </string>
@@ -116,7 +113,7 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="1">
+           <item row="15" column="1">
             <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox">
              <property name="prefix">
               <string>Layer space </string>
@@ -126,7 +123,7 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="1">
+           <item row="17" column="1">
             <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox">
              <property name="prefix">
               <string>Symbol space </string>
@@ -136,7 +133,7 @@
              </property>
             </widget>
            </item>
-           <item row="13" column="1">
+           <item row="18" column="1">
             <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox">
              <property name="prefix">
               <string>Icon label space </string>
@@ -146,7 +143,7 @@
              </property>
             </widget>
            </item>
-           <item row="14" column="1">
+           <item row="19" column="1">
             <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
              <property name="prefix">
               <string>Box space </string>
@@ -156,7 +153,7 @@
              </property>
             </widget>
            </item>
-           <item row="20" column="1">
+           <item row="26" column="1">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -169,27 +166,17 @@
              </property>
             </spacer>
            </item>
-           <item row="16" column="1">
+           <item row="22" column="1">
             <widget class="QComboBox" name="mMapComboBox"/>
            </item>
-           <item row="15" column="1">
+           <item row="21" column="1">
             <widget class="QLabel" name="mMapLabel">
              <property name="text">
               <string>Map</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="mTitleLabel">
-             <property name="text">
-              <string>&amp;Title</string>
-             </property>
-             <property name="buddy">
-              <cstring>mTitleLineEdit</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="1">
+           <item row="14" column="1">
             <widget class="QDoubleSpinBox" name="mGroupSpaceSpinBox">
              <property name="prefix">
               <string>Group Space </string>
@@ -199,17 +186,81 @@
              </property>
             </widget>
            </item>
-           <item row="18" column="1">
+           <item row="24" column="1">
             <widget class="QLabel" name="label">
              <property name="text">
               <string>Wrap text on</string>
              </property>
             </widget>
            </item>
-           <item row="19" column="1">
+           <item row="25" column="1">
             <widget class="QLineEdit" name="mWrapCharLineEdit">
              <property name="frame">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="mTitleLabel">
+               <property name="text">
+                <string>&amp;Title</string>
+               </property>
+               <property name="buddy">
+                <cstring>mTitleLineEdit</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="mTitleLineEdit"/>
+             </item>
+            </layout>
+           </item>
+           <item row="4" column="1">
+            <widget class="QSpinBox" name="mColumnCountSpinBox">
+             <property name="prefix">
+              <string>Column count </string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QCheckBox" name="mSplitLayerCheckBox">
+             <property name="toolTip">
+              <string>Allow to split layer items into multiple columns.</string>
+             </property>
+             <property name="text">
+              <string>Split layers</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QCheckBox" name="mEqualColumnWidthCheckBox">
+             <property name="text">
+              <string>Equal column widths</string>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="1">
+            <widget class="QDoubleSpinBox" name="mColumnSpaceSpinBox">
+             <property name="prefix">
+              <string>Column space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QPushButton" name="mFontColorPushButton">
+             <property name="text">
+              <string>Font color...</string>
              </property>
             </widget>
            </item>
@@ -220,8 +271,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>367</width>
-            <height>170</height>
+            <width>429</width>
+            <height>385</height>
            </rect>
           </property>
           <attribute name="label">
@@ -244,7 +295,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="9">
+           <item row="1" column="0" colspan="10">
             <widget class="QTreeView" name="mItemTreeView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -277,6 +328,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -289,6 +344,10 @@
             <widget class="QToolButton" name="mMoveUpToolButton">
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -303,6 +362,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -315,6 +378,10 @@
             <widget class="QToolButton" name="mRemoveToolButton">
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -329,6 +396,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
+             </property>
              <property name="iconSize">
               <size>
                <width>24</width>
@@ -337,7 +408,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="5">
+           <item row="2" column="6">
             <widget class="QToolButton" name="mUpdatePushButton">
              <property name="text">
               <string>Update</string>
@@ -350,14 +421,14 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="6">
+           <item row="2" column="7">
             <widget class="QToolButton" name="mUpdateAllPushButton">
              <property name="text">
               <string>All</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="8">
+           <item row="2" column="9">
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -370,10 +441,36 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="7">
+           <item row="2" column="8">
             <widget class="QToolButton" name="mAddGroupButton">
              <property name="text">
               <string>Add group</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="5">
+            <widget class="QToolButton" name="mCountToolButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Show feature count for each class of vector layer.</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionSum.png</normaloff>:/images/themes/default/mActionSum.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -390,7 +487,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mTitleLineEdit</tabstop>
   <tabstop>mTitleFontButton</tabstop>
   <tabstop>mGroupFontButton</tabstop>
   <tabstop>mLayerFontButton</tabstop>
@@ -410,6 +506,8 @@
   <tabstop>mUpdateAllPushButton</tabstop>
   <tabstop>mAddGroupButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

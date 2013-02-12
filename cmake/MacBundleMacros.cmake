@@ -75,6 +75,7 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
             EXECUTE_PROCESS (COMMAND cp -Rfp "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
             EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
         ENDIF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
+        EXECUTE_PROCESS (COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         # debug variants
         SET (FWD "${FWNAME}_debug")
         IF ("${FWDEBUG}" STREQUAL "Debug" AND EXISTS "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/${FWD}")

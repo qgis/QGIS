@@ -1,4 +1,20 @@
 /*
+* Copyright Tim (xtimor@gmail.com)
+*
+* NMEA library is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>
+*/
+/*
  *
  * NMEA library
  * URL: http://nmea.sourceforge.net
@@ -18,6 +34,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
+#include <locale.h>
 
 #define NMEA_TOKS_COMPARE   (1)
 #define NMEA_TOKS_PERCENT   (2)
@@ -68,9 +85,13 @@ double nmea_atof( const char *str, int str_sz )
 
   if ( str_sz < NMEA_CONVSTR_BUF )
   {
+    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+
     memcpy( &buff[0], str, str_sz );
     buff[str_sz] = '\0';
+    setlocale( LC_NUMERIC, "C" );
     res = strtod( &buff[0], &tmp_ptr );
+    setlocale( LC_NUMERIC, oldlocale );
   }
 
   return res;

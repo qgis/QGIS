@@ -103,30 +103,24 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mScaleDependencyComboBox->addItem( tr( "Area" ), true );
   mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
 
+  mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
+  mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
+
   //insert all attributes into the combo boxes
-  const QgsFieldMap& layerFields = layer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
-  for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
+  const QgsFields& layerFields = layer->pendingFields();
+  for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    newItem->setText( 0, fieldIt.value().name() );
-    newItem->setData( 0, Qt::UserRole, fieldIt.key() );
+    newItem->setText( 0, layerFields[idx].name() );
+    newItem->setData( 0, Qt::UserRole, idx );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-    if ( fieldIt.value().type() != QVariant::String )
+    if ( layerFields[idx].type() != QVariant::String )
     {
-      mSizeAttributeComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+      mSizeAttributeComboBox->addItem( layerFields[idx].name(), idx );
     }
-  }
 
-  mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
-  for ( fieldIt = layerFields.constBegin(); fieldIt != layerFields.constEnd(); ++fieldIt )
-  {
-    mDataDefinedXComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
-  }
-  mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
-  for ( fieldIt = layerFields.constBegin(); fieldIt != layerFields.constEnd(); ++fieldIt )
-  {
-    mDataDefinedYComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+    mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
+    mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
   }
 
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
@@ -176,8 +170,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
-      mMinimumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).minScaleDenominator ) );
-      mMaximumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).maxScaleDenominator ) );
+      mMinimumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).minScaleDenominator, 'f' ) );
+      mMaximumDiagramScaleLineEdit->setText( QString::number( settingList.at( 0 ).maxScaleDenominator, 'f' ) );
       mVisibilityGroupBox->setChecked( settingList.at( 0 ).minScaleDenominator != -1 &&
                                        settingList.at( 0 ).maxScaleDenominator != -1 );
       if ( settingList.at( 0 ).sizeType == QgsDiagramSettings::MM )
@@ -257,7 +251,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       if ( lidr )
       {
         mDiagramSizeSpinBox->setEnabled( false );
-        mValueLineEdit->setText( QString::number( lidr->upperValue() ) );
+        mValueLineEdit->setText( QString::number( lidr->upperValue(), 'f' ) );
         mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
         mSizeAttributeComboBox->setCurrentIndex( mSizeAttributeComboBox->findData( lidr->classificationAttribute() ) );
       }
@@ -303,11 +297,15 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
+    mBackgroundColorLabel->show();
+    mBackgroundColorButton->show();
   }
   else
   {
     mLabelPlacementComboBox->hide();
     mLabelPlacementLabel->hide();
+    mBackgroundColorLabel->hide();
+    mBackgroundColorButton->hide();
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType )
@@ -343,6 +341,23 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mScaleDependencyLabel->hide();
   }
 }
+void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
+{
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
+
+  newItem->setText( 0, item->text( 0 ) );
+  newItem->setData( 0, Qt::UserRole, item->data( 0, Qt::UserRole ) );
+  newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+
+  //set initial color for diagram category
+  int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  QColor randomColor( red, green, blue );
+  newItem->setBackground( 1, QBrush( randomColor ) );
+  mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
+}
+
 
 void QgsDiagramProperties::on_mTransparencySlider_valueChanged( int value )
 {
@@ -353,22 +368,15 @@ void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 {
   foreach ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
   {
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
-
-    newItem->setText( 0, attributeItem->text( 0 ) );
-    newItem->setData( 0, Qt::UserRole, attributeItem->data( 0, Qt::UserRole ) );
-    newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-
-    //set initial color for diagram category
-    int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-    int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-    int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-    QColor randomColor( red, green, blue );
-    newItem->setBackground( 1, QBrush( randomColor ) );
-    mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
+    addAttribute( attributeItem );
   }
 }
 
+void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+{
+  Q_UNUSED( column );
+  addAttribute( item );
+}
 
 void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
 {
@@ -471,7 +479,7 @@ void QgsDiagramProperties::apply()
     if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueIsNumeric )
     {
       QMessageBox::warning( this, tr( "No attribute value specified" ),
-                            tr( "You did not specify a maximum value for the diagram size. Please specify the the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
+                            tr( "You did not specify a maximum value for the diagram size. Please specify the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
     }
 
     QgsDiagram* diagram = 0;
