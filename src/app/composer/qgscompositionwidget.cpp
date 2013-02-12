@@ -47,27 +47,13 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
     //print as raster
-    if ( mComposition->printAsRaster() )
-    {
-      mPrintAsRasterCheckBox->setCheckState( Qt::Checked );
-    }
-    else
-    {
-      mPrintAsRasterCheckBox->setCheckState( Qt::Unchecked );
-    }
+    mPrintAsRasterGroupCheckBox->setChecked( mComposition->printAsRaster() );
 
-    mAlignmentSnapCheckBox->setCheckState( mComposition->alignmentSnap() ? Qt::Checked : Qt::Unchecked );
+    mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
 
     //snap grid
-    if ( mComposition->snapToGridEnabled() )
-    {
-      mSnapToGridCheckBox->setCheckState( Qt::Checked );
-    }
-    else
-    {
-      mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
-    }
+    mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -396,15 +382,7 @@ void QgsCompositionWidget::displaySnapingSettings()
     return;
   }
 
-  if ( mComposition->snapToGridEnabled() )
-  {
-    mSnapToGridCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
-  }
-
+  mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
   mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -415,35 +393,21 @@ void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
   mComposition->setPrintResolution( value );
 }
 
-void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mPrintAsRasterGroupCheckBox_toggled( bool state )
 {
   if ( !mComposition )
   {
     return;
   }
 
-  if ( state == Qt::Checked )
-  {
-    mComposition->setPrintAsRaster( true );
-  }
-  else
-  {
-    mComposition->setPrintAsRaster( false );
-  }
+  mComposition->setPrintAsRaster( state );
 }
 
-void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mSnapToGridGroupCheckBox_toggled( bool state )
 {
   if ( mComposition )
   {
-    if ( state == Qt::Checked )
-    {
-      mComposition->setSnapToGridEnabled( true );
-    }
-    else
-    {
-      mComposition->setSnapToGridEnabled( false );
-    }
+    mComposition->setSnapToGridEnabled( state );
   }
 }
 
@@ -527,11 +491,11 @@ void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d 
   }
 }
 
-void QgsCompositionWidget::on_mAlignmentSnapCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mAlignmentSnapGroupCheckBox_toggled( bool state )
 {
   if ( mComposition )
   {
-    mComposition->setAlignmentSnap( state == Qt::Checked ? true : false );
+    mComposition->setAlignmentSnap( state );
   }
 }
 
@@ -552,8 +516,8 @@ void QgsCompositionWidget::blockSignals( bool block )
   mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
-  mPrintAsRasterCheckBox->blockSignals( block );
-  mSnapToGridCheckBox->blockSignals( block );
+  mPrintAsRasterGroupCheckBox->blockSignals( block );
+  mSnapToGridGroupCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
@@ -561,6 +525,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
-  mAlignmentSnapCheckBox->blockSignals( block );
+  mAlignmentSnapGroupCheckBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

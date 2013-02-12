@@ -72,18 +72,16 @@ QgsAtlasCompositionWidget::~QgsAtlasCompositionWidget()
 {
 }
 
-void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
+void QgsAtlasCompositionWidget::on_mUseAtlasGroupBox_toggled( bool state )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( state == Qt::Checked )
+  if ( state  )
   {
     atlasMap->setEnabled( true );
-    mAtlasFrame->setEnabled( true );
   }
   else
   {
     atlasMap->setEnabled( false );
-    mAtlasFrame->setEnabled( false );
   }
 }
 
@@ -262,11 +260,11 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( atlasMap->enabled() )
   {
-    mUseAtlasCheckBox->setCheckState( Qt::Checked );
+    mUseAtlasGroupBox->setChecked( true );
   }
   else
   {
-    mUseAtlasCheckBox->setCheckState( Qt::Unchecked );
+    mUseAtlasGroupBox->setChecked( false );
   }
 
   int idx = mAtlasCoverageLayerComboBox->findData( qVariantFromValue(( void* )atlasMap->coverageLayer() ) );
@@ -289,6 +287,5 @@ void QgsAtlasCompositionWidget::updateGuiElements()
 
 void QgsAtlasCompositionWidget::blockAllSignals( bool b )
 {
-  mUseAtlasCheckBox->blockSignals( b );
-  mAtlasFrame->blockSignals( b );
+  mUseAtlasGroupBox->blockSignals( b );
 }

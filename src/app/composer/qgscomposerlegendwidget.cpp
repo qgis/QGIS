@@ -49,7 +49,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
 
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
-  toolBox->addItem( itemPropertiesWidget, tr( "General Options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   if ( legend )
   {
