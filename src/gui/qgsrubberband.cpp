@@ -111,7 +111,7 @@ void QgsRubberBand::reset( bool isPolygon )
 /*!
   Add a point to the shape being created.
   */
-void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, int geometryIndex )
+void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, int geometryIndex )
 {
   if ( geometryIndex < 0 )
   {
@@ -139,7 +139,7 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, i
   }
 
 
-  if ( do_update )
+  if ( doUpdate )
   {
     updateRect();
     update();
