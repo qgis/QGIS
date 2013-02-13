@@ -134,7 +134,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       LowerLeft,
       LowerMiddle,
       LowerRight
-    };k
+    };
 
     /**Constructor
      @param composition parent composition
