@@ -310,14 +310,20 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QSpinBox" name="mOpacitySpinBox">
-          <property name="maximum">
-           <number>255</number>
+         <widget class="QLabel" name="mOpacityLabel">
+          <property name="text">
+           <string>Transparency</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="buddy">
+           <cstring>mTransparencySlider</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSlider" name="mOpacitySlider">
+         <widget class="QSlider" name="mTransparencySlider">
           <property name="maximum">
            <number>255</number>
           </property>
@@ -327,15 +333,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="mOpacityLabel">
-          <property name="text">
-           <string>Opacity</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-          <property name="buddy">
-           <cstring>mOpacitySlider</cstring>
+         <widget class="QSpinBox" name="mTransparencySpinBox">
+          <property name="maximum">
+           <number>255</number>
           </property>
          </widget>
         </item>
@@ -404,9 +404,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>mOpacitySlider</sender>
+   <sender>mTransparencySlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>mOpacitySpinBox</receiver>
+   <receiver>mTransparencySpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -420,9 +420,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>mOpacitySpinBox</sender>
+   <sender>mTransparencySpinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>mOpacitySlider</receiver>
+   <receiver>mTransparencySlider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
