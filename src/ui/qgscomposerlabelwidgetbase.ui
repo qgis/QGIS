@@ -52,6 +52,9 @@
          <property name="checkable">
           <bool>false</bool>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
@@ -121,6 +124,9 @@
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
@@ -261,6 +267,9 @@
          </property>
          <property name="checkable">
           <bool>false</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

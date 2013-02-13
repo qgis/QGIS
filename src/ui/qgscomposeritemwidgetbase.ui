@@ -31,6 +31,9 @@
      <property name="title">
       <string>Position and size</string>
      </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
      <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
@@ -233,6 +236,9 @@
      <property name="checkable">
       <bool>true</bool>
      </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
      <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
@@ -286,6 +292,9 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
      </property>
      <property name="collapsed" stdset="0">
       <bool>true</bool>
@@ -345,6 +354,9 @@
      </property>
      <property name="title">
       <string>Item ID</string>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
      </property>
      <property name="collapsed" stdset="0">
       <bool>true</bool>

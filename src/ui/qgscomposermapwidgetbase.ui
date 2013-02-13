@@ -32,7 +32,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-115</y>
+        <y>-93</y>
         <width>427</width>
         <height>1023</height>
        </rect>
@@ -48,6 +48,9 @@
          </property>
          <property name="title">
           <string>Main properties</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
@@ -167,6 +170,9 @@
          <property name="title">
           <string>Extents</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
@@ -270,6 +276,9 @@
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
@@ -448,14 +457,11 @@
             <property name="checkable">
              <bool>true</bool>
             </property>
+            <property name="syncGroup" stdset="0">
+             <string notr="true">composeritem</string>
+            </property>
             <property name="collapsed" stdset="0">
              <bool>true</bool>
-            </property>
-            <property name="saveCheckedState" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="saveCollapsedState" stdset="0">
-             <bool>false</bool>
             </property>
             <layout class="QFormLayout" name="formLayout_4">
              <property name="fieldGrowthPolicy">
@@ -625,6 +631,9 @@
          </property>
          <property name="title">
           <string>Overview</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

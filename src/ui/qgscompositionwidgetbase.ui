@@ -61,6 +61,9 @@
          <property name="title">
           <string>Paper and quality</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
@@ -228,6 +231,9 @@
          <property name="checked">
           <bool>false</bool>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
@@ -277,6 +283,9 @@
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
@@ -440,6 +449,9 @@
          </property>
          <property name="checkable">
           <bool>true</bool>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

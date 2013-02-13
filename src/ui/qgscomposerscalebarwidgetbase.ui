@@ -49,6 +49,9 @@
          <property name="title">
           <string>Main properties</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
@@ -115,6 +118,9 @@
          <property name="title">
           <string>Units</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
@@ -171,6 +177,9 @@
          </property>
          <property name="title">
           <string>Segments</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
@@ -266,6 +275,9 @@
          </property>
          <property name="title">
           <string>Display</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
@@ -364,14 +376,11 @@
          <property name="title">
           <string>Fonts and colors</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
-         </property>
-         <property name="saveCheckedState" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
-          <bool>false</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
