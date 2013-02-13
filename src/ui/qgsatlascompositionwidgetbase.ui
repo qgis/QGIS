@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>413</width>
-    <height>726</height>
+    <width>450</width>
+    <height>501</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Atlas generation</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mUseAtlasGroupBox">
      <property name="sizePolicy">
@@ -49,116 +49,188 @@
        <widget class="QComboBox" name="mComposerMapComboBox"/>
       </item>
       <item row="1" column="0" colspan="2">
-       <widget class="Line" name="mLine_1">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Coverage</string>
         </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="mCoverageLayerLabel">
+           <property name="text">
+            <string>Coverage layer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="mAtlasCoverageLayerComboBox">
+           <property name="contextMenuPolicy">
+            <enum>Qt::NoContextMenu</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
+             <property name="text">
+              <string>Fixed scale</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
+             <property name="toolTip">
+              <string>Hide the coverage layer when generating the output</string>
+             </property>
+             <property name="text">
+              <string>Hidden coverage layer</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="mMarginAroundCoverageLabel">
+           <property name="text">
+            <string>Margin around coverage</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="mAtlasMarginSpinBox">
+           <property name="suffix">
+            <string> %</string>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="mCoverageLayerLabel">
-        <property name="text">
-         <string>Coverage layer</string>
+      <item row="2" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Features</string>
         </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
+           <property name="text">
+            <string>Sort features</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QComboBox" name="mAtlasSortFeatureKeyComboBox">
+             <property name="toolTip">
+              <string>Sort key</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
+             <property name="toolTip">
+              <string>Sort direction</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="arrowType">
+              <enum>Qt::UpArrow</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="mAtlasFeatureFilterLabel">
+           <property name="text">
+            <string>Feature filter</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="mAtlasFeatureFilterEdit">
+             <property name="toolTip">
+              <string>Feature filter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAtlasFeatureFilterButton">
+             <property name="toolTip">
+              <string>Open expression builder</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="mAtlasCoverageLayerComboBox">
-        <property name="contextMenuPolicy">
-         <enum>Qt::NoContextMenu</enum>
+      <item row="3" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Output</string>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
-        <property name="toolTip">
-         <string>Hide the coverage layer when generating the output</string>
+        <property name="flat">
+         <bool>false</bool>
         </property>
-        <property name="text">
-         <string>Hidden coverage layer</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
-        <property name="text">
-         <string>Fixed scale</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="mMarginAroundCoverageLabel">
-        <property name="text">
-         <string>Margin around coverage</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QSpinBox" name="mAtlasMarginSpinBox">
-        <property name="suffix">
-         <string> %</string>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
-       <widget class="Line" name="mLine_2">
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="mOutputNameLabel">
-        <property name="text">
-         <string>Output filename expression</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="7" column="0" colspan="2">
-       <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
-        <property name="text">
-         <string>Single file export when possible</string>
-        </property>
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="mOutputNameLabel">
+           <property name="text">
+            <string>Filename expression</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
+           <property name="text">
+            <string>Single file when possible</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

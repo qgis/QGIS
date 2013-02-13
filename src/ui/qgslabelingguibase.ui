@@ -169,7 +169,7 @@
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QgsCollapsibleGroupBox" name="groupBox_mPreview"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+         <widget class="QgsCollapsibleGroupBox" name="groupBox_mPreview">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -186,6 +186,12 @@
            <string>Sample</string>
           </property>
           <property name="flat">
+           <bool>true</bool>
+          </property>
+          <property name="collapsed" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="saveCollapsedState" stdset="0">
            <bool>true</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -462,7 +468,7 @@
              <number>20</number>
             </property>
             <item row="9" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="chkFormattedNumbers"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="chkFormattedNumbers">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -480,6 +486,15 @@
               </property>
               <property name="checkable">
                <bool>true</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
                <item row="0" column="1">
@@ -529,7 +544,7 @@
              </widget>
             </item>
             <item row="7" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mFontMultiLineGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="mFontMultiLineGroupBox">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -541,6 +556,15 @@
               </property>
               <property name="checkable">
                <bool>false</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_14">
                <item row="0" column="0">
@@ -677,7 +701,7 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mFontStyleGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="mFontStyleGroupBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -692,6 +716,15 @@
               </property>
               <property name="title">
                <string>Text style</string>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
@@ -1161,7 +1194,7 @@
              </widget>
             </item>
             <item row="4" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="chkBuffer"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="chkBuffer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1179,6 +1212,15 @@
               </property>
               <property name="checkable">
                <bool>true</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_9">
                <item row="0" column="1">
@@ -1412,12 +1454,21 @@
              </spacer>
             </item>
             <item row="6" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mFontLimitPixelGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="mFontLimitPixelGroupBox">
               <property name="title">
                <string>Pixel size-based visibility</string>
               </property>
               <property name="checkable">
                <bool>true</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_10">
                <item row="0" column="5">
@@ -1550,7 +1601,7 @@
              </widget>
             </item>
             <item row="5" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="chkScaleBasedVisibility"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="chkScaleBasedVisibility">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -1574,6 +1625,15 @@
               </property>
               <property name="checkable">
                <bool>true</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_21">
                <item row="0" column="0">
@@ -1691,7 +1751,7 @@
              </widget>
             </item>
             <item row="8" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mDirectSymbGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+             <widget class="QgsCollapsibleGroupBox" name="mDirectSymbGroupBox">
               <property name="title">
                <string>Line direction symbols</string>
               </property>
@@ -1700,6 +1760,15 @@
               </property>
               <property name="checked">
                <bool>true</bool>
+              </property>
+              <property name="collapsed" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="saveCollapsedState" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="syncGroup" stdset="0">
+               <string>labelsettings</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
                <item>
@@ -1929,7 +1998,7 @@
             <number>6</number>
            </property>
            <item row="1" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mPriorityGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mPriorityGroupBox">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -1938,6 +2007,15 @@
              </property>
              <property name="title">
               <string>Priority</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>advanced</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_18">
               <item>
@@ -1977,7 +2055,7 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mPlacementGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mPlacementGroupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                <horstretch>0</horstretch>
@@ -1992,6 +2070,15 @@
              </property>
              <property name="title">
               <string>Placement</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>advanced</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_12">
               <property name="leftMargin">
@@ -2731,7 +2818,7 @@
             </spacer>
            </item>
            <item row="2" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mOptionsGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mOptionsGroupBox">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -2740,6 +2827,15 @@
              </property>
              <property name="title">
               <string>Options</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>advanced</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="2" column="0">
@@ -3003,9 +3099,18 @@
             <number>6</number>
            </property>
            <item row="3" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mBufferAttributesPropertiesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mBufferAttributesPropertiesGroupBox">
              <property name="title">
               <string>Buffer properties</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>datadefined</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
@@ -3049,9 +3154,18 @@
             </widget>
            </item>
            <item row="4" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mPositionAttributeGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mPositionAttributeGroupBox">
              <property name="title">
               <string>Position</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>datadefined</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="5" column="1">
@@ -3147,9 +3261,18 @@
             </spacer>
            </item>
            <item row="1" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mDisplayAttributesPropertiesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mDisplayAttributesPropertiesGroupBox">
              <property name="title">
               <string>Display properties</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>datadefined</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
               <item row="1" column="1">
@@ -3211,7 +3334,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mFontAttributePropertiesGroupBox"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+            <widget class="QgsCollapsibleGroupBox" name="mFontAttributePropertiesGroupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -3220,6 +3343,15 @@
              </property>
              <property name="title">
               <string>Font properties</string>
+             </property>
+             <property name="collapsed" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="saveCollapsedState" stdset="0">
+              <bool>true</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string>datadefined</string>
              </property>
              <layout class="QGridLayout" name="gridLayout">
               <item row="11" column="0">

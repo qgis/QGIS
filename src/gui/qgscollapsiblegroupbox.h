@@ -23,16 +23,43 @@
 #include <QGroupBox>
 #include <QSettings>
 #include <QPointer>
+#include <QToolButton>
+#include <QMouseEvent>
 
 class QToolButton;
 class QScrollArea;
+
+class QgsGroupBoxCollapseButton: public QToolButton
+{
+    Q_OBJECT
+
+  public:
+    QgsGroupBoxCollapseButton( QWidget *parent = 0 )
+        : QToolButton( parent ), mAltDown( false ) {}
+
+    ~QgsGroupBoxCollapseButton() {}
+
+    bool altDown() const { return mAltDown; }
+    void setAltDown( bool updown ) { mAltDown = updown; }
+
+  protected:
+    void mouseReleaseEvent( QMouseEvent *event )
+    {
+      mAltDown = ( event->modifiers() & Qt::AltModifier );
+      QToolButton::mouseReleaseEvent( event );
+    }
+
+  private:
+    bool mAltDown;
+};
 
 /** \ingroup gui
  * \class QgsCollapsibleGroupBoxBasic
  * A groupbox that collapses/expands when toggled.
  * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
+ * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed
+ * bool collapsed, QString syncGroup
  */
 
 class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
@@ -40,6 +67,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     Q_OBJECT
 
     Q_PROPERTY( bool collapsed READ isCollapsed WRITE setCollapsed USER true )
+    Q_PROPERTY( QString syncGroup READ syncGroup WRITE setSyncGroup )
 
   public:
     QgsCollapsibleGroupBoxBasic( QWidget *parent = 0 );
@@ -48,6 +76,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );
+
+    /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
+    QString syncGroup() const { return mSyncGroup; }
+    void setSyncGroup( QString grp ) { mSyncGroup = grp; }
 
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
@@ -75,7 +107,9 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool mScrollOnExpand;
     bool mShown;
     QScrollArea* mParentScrollArea;
-    QToolButton* mCollapseButton;
+    QgsGroupBoxCollapseButton* mCollapseButton;
+    QWidget* mSyncParent;
+    QString mSyncGroup;
 
     static QIcon mCollapseIcon;
     static QIcon mExpandIcon;
@@ -85,9 +119,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
  * \class QgsCollapsibleGroupBox
  * A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
+ * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * @see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
  * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed, bool saveCollapsedState, bool saveCheckedState
+ * bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
  */
 
 class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
@@ -95,8 +130,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     Q_OBJECT
 
     Q_PROPERTY( bool collapsed READ isCollapsed WRITE setCollapsed USER true )
-    Q_PROPERTY( bool saveCollapsedState READ saveCollapsedState WRITE setSaveCollapsedState USER true )
-    Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState USER true )
+    Q_PROPERTY( bool saveCollapsedState READ saveCollapsedState WRITE setSaveCollapsedState )
+    Q_PROPERTY( bool saveCheckedState READ saveCheckedState WRITE setSaveCheckedState )
+    Q_PROPERTY( QString syncGroup READ syncGroup WRITE setSyncGroup )
 
   public:
     QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );

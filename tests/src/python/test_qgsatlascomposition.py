@@ -164,6 +164,54 @@ class TestQgsAtlasComposition(unittest.TestCase):
             assert res[0] == True
         self.mAtlas.endRender()
 
+    def sorting_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
+        self.mAtlas.setHideCoverage( False )
+
+        self.mAtlas.setSortFeatures( True )
+        self.mAtlas.setSortKeyAttributeIndex( 4 ) # departement name
+        self.mAtlas.setSortAscending( False )
+
+        self.mAtlas.beginRender()
+
+        for i in range(0, 2):
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsCompositionChecker()
+            res = checker.testComposition( "Atlas sorting test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
+                                               "control_images" + QDir.separator() + \
+                                               "expected_composermapatlas" + QDir.separator() + \
+                                               QString( "sorting_%1.png" ).arg( i ) )
+            assert res[0] == True
+        self.mAtlas.endRender()
+
+    def filtering_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
+        self.mAtlas.setHideCoverage( False )
+
+        self.mAtlas.setSortFeatures( False )
+
+        self.mAtlas.setFeatureFilter( "substr(NAME_1,1,1)='P'" ) # select only 'Pays de la loire'
+
+        self.mAtlas.beginRender()
+
+        for i in range(0, 1):
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsCompositionChecker()
+            res = checker.testComposition( "Atlas filtering test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
+                                               "control_images" + QDir.separator() + \
+                                               "expected_composermapatlas" + QDir.separator() + \
+                                               QString( "filtering_%1.png" ).arg( i ) )
+            assert res[0] == True
+        self.mAtlas.endRender()
+
 if __name__ == '__main__':
     unittest.main()
 

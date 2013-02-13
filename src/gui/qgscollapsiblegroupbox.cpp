@@ -58,6 +58,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mScrollOnExpand = true;
   mShown = false;
   mParentScrollArea = 0;
+  mSyncParent = 0;
+  mSyncGroup = "";
 
   // init icons
   if ( mCollapseIcon.isNull() )
@@ -67,7 +69,7 @@ void QgsCollapsibleGroupBoxBasic::init()
   }
 
   // collapse button
-  mCollapseButton = new QToolButton( this );
+  mCollapseButton = new QgsGroupBoxCollapseButton( this );
   mCollapseButton->setObjectName( "collapseButton" );
   mCollapseButton->setAutoRaise( true );
   mCollapseButton->setFixedSize( 16, 16 );
@@ -175,6 +177,55 @@ void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 
 void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
+  // verify if sender is this group box's collapse button
+  bool senderCollBtn = false;
+  QgsGroupBoxCollapseButton* collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
+  senderCollBtn = ( collBtn && collBtn == mCollapseButton );
+
+  // find any sync group siblings and toggle them
+  if ( senderCollBtn && mCollapseButton->altDown() && !mSyncGroup.isEmpty() )
+  {
+    mCollapseButton->setAltDown( false );
+    QgsDebugMsg( "Alt key down, syncing group" );
+    // get pointer to parent or grandparent widget
+    if ( parentWidget() )
+    {
+      mSyncParent = parentWidget();
+      if ( mSyncParent->parentWidget() )
+      {
+        // don't use whole app for grandparent (common for dialogs that use main window for parent)
+        if ( mSyncParent->parentWidget()->objectName() != QString( "QgisApp" ) )
+        {
+          mSyncParent = mSyncParent->parentWidget();
+        }
+      }
+    }
+    else
+    {
+      mSyncParent = 0;
+    }
+
+    if ( mSyncParent )
+    {
+      QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
+
+      bool thisCollapsed = mCollapsed; // get state of current box before its changed
+      foreach ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic*>() )
+      {
+        if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
+        {
+          grpbox->setCollapsed( !thisCollapsed );
+        }
+      }
+
+      return;
+    }
+    else
+    {
+      QgsDebugMsg( "did not find a sync parent" );
+    }
+  }
+
   setCollapsed( !mCollapsed );
 }
 

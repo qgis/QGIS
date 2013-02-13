@@ -38,6 +38,18 @@ public:
     bool singleFile() const;
     void setSingleFile( bool single );
 
+    bool sortFeatures() const;
+    void setSortFeatures( bool doSort );
+
+    bool sortAscending() const;
+    void setSortAscending( bool ascending );
+
+    QString featureFilter() const;
+    void setFeatureFilter( const QString& expression );
+
+    size_t sortKeyAttributeIndex() const;
+    void setSortKeyAttributeIndex( size_t idx );
+
     /** Begins the rendering. */
     void beginRender();
     /** Ends the rendering. Restores original extent */
