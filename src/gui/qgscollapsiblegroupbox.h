@@ -95,6 +95,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
   protected:
     void init();
     void showEvent( QShowEvent *event );
+    void mousePressEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
     void changeEvent( QEvent *event );
 
@@ -110,6 +111,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     QgsGroupBoxCollapseButton* mCollapseButton;
     QWidget* mSyncParent;
     QString mSyncGroup;
+    bool mAltDown;
+    bool mTitleClicked;
 
     static QIcon mCollapseIcon;
     static QIcon mExpandIcon;

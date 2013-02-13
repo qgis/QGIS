@@ -60,6 +60,8 @@ void QgsCollapsibleGroupBoxBasic::init()
   mParentScrollArea = 0;
   mSyncParent = 0;
   mSyncGroup = "";
+  mAltDown = false;
+  mTitleClicked = false;
 
   // init icons
   if ( mCollapseIcon.isNull() )
@@ -130,17 +132,35 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
   event->accept();
 }
 
+void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
+{
+  // avoid leaving checkbox in pressed state if alt-clicking
+  if ( event->modifiers() & Qt::AltModifier
+       && titleRect().contains( event->pos() )
+       && isCheckable() )
+  {
+    event->ignore();
+    return;
+  }
+
+  // default behaviour - pass to QGroupBox
+  QGroupBox::mousePressEvent( event );
+}
+
 void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
 {
-  // catch mouse release over title when non checkable, to collapse/expand
-  if ( !isCheckable() && event->button() == Qt::LeftButton )
+  mAltDown = ( event->modifiers() & Qt::AltModifier );
+  mTitleClicked = ( titleRect().contains( event->pos() ) );
+
+  // sync group when title is alt-clicked
+  // collapse/expand when title is clicked and non-checkable
+  if ( event->button() == Qt::LeftButton && mTitleClicked &&
+       ( mAltDown || !isCheckable() ) )
   {
-    if ( titleRect().contains( event->pos() ) )
-    {
-      toggleCollapsed();
-      return;
-    }
+    toggleCollapsed();
+    return;
   }
+
   // default behaviour - pass to QGroupBox
   QGroupBox::mouseReleaseEvent( event );
 }
@@ -183,9 +203,11 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
   senderCollBtn = ( collBtn && collBtn == mCollapseButton );
 
   // find any sync group siblings and toggle them
-  if ( senderCollBtn && mCollapseButton->altDown() && !mSyncGroup.isEmpty() )
+  if ((( senderCollBtn && mCollapseButton->altDown() ) || ( mTitleClicked && mAltDown ) )
+      && !mSyncGroup.isEmpty() )
   {
     mCollapseButton->setAltDown( false );
+    mAltDown = false;
     QgsDebugMsg( "Alt key down, syncing group" );
     // get pointer to parent or grandparent widget
     if ( parentWidget() )
