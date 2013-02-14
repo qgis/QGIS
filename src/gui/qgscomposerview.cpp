@@ -368,6 +368,15 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->updateMarker( e->posF() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->updateMarker( e->posF() );
+  }
+
   if ( e->buttons() == Qt::NoButton )
   {
     if ( mCurrentTool == Select )

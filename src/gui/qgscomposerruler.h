@@ -19,6 +19,7 @@ class QgsComposerRuler: public QWidget
     QSize minimumSizeHint() const;
 
     void setSceneTransform( const QTransform& transform );
+    void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
 
   protected:
     void paintEvent( QPaintEvent* event );
@@ -26,6 +27,7 @@ class QgsComposerRuler: public QWidget
   private:
     Direction mDirection;
     QTransform mTransform;
+    QPointF mMarkerPos;
 };
 
 #endif // QGSCOMPOSERRULER_H

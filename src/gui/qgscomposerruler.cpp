@@ -48,8 +48,8 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       markerPos += 10.0;
     }
 
-    qWarning( QString::number( startX ).toLocal8Bit().data() );
-    qWarning( QString::number( endX ).toLocal8Bit().data() );
+    p.setPen( QColor( Qt::red ) );
+    p.drawLine( mMarkerPos.x(), 0, mMarkerPos.x(), RULER_MIN_SIZE );
   }
   else //vertical
   {
@@ -72,6 +72,9 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       }
       markerPos += 10.0;
     }
+
+    p.setPen( QColor( Qt::red ) );
+    p.drawLine( 0, mMarkerPos.y(), RULER_MIN_SIZE, mMarkerPos.y() );
   }
 }
 
