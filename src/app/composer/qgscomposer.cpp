@@ -247,23 +247,20 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mViewFrame->setMouseTracking( true );
 
   //create composer view and layout with rulers
-  mView = new QgsComposerView();
-  mView->setContentsMargins( 0, 0, 0, 0 );
-  QGridLayout* viewLayout = new QGridLayout();
-  viewLayout->setSpacing( 0 );
-  viewLayout->setMargin( 0 );
-  QgsComposerRuler* hRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
-  mView->setHorizontalRuler( hRuler );
-  QgsComposerRuler* vRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
-  mView->setVerticalRuler( vRuler );
+  mView = 0;
+  mViewLayout = new QGridLayout();
+  mViewLayout->setSpacing( 0 );
+  mViewLayout->setMargin( 0 );
+  mHorizontalRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
+  mVerticalRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
   QWidget* fake = new QWidget();
   fake->setBackgroundRole( QPalette::Window );
   fake->setFixedSize( 20, 20 );
-  viewLayout->addWidget( fake, 0, 0 );
-  viewLayout->addWidget( hRuler, 0, 1 );
-  viewLayout->addWidget( vRuler, 1, 0 );
-  viewLayout->addWidget( mView, 1, 1 );
-  mViewFrame->setLayout( viewLayout );
+  mViewLayout->addWidget( fake, 0, 0 );
+  mViewLayout->addWidget( mHorizontalRuler, 0, 1 );
+  mViewLayout->addWidget( mVerticalRuler, 1, 0 );
+  createComposerView();
+  mViewFrame->setLayout( mViewLayout );
 
   //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -327,10 +324,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   tabifyDockWidget( mGeneralDock, mItemDock );
 
   mGeneralDock->raise();
-
-  QGridLayout *l = new QGridLayout( mViewFrame );
-  l->setMargin( 0 );
-  l->addLayout( viewLayout, 0, 0 );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
@@ -438,6 +431,10 @@ void QgsComposer::open( void )
     mFirstTime = false;
     show();
     zoomFull(); // zoomFull() does not work properly until we have called show()
+    if ( mView )
+    {
+      mView->updateRulers();
+    }
   }
 
   else
@@ -1605,21 +1602,11 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     }
   }
 
-  //delete composer view and composition
-  delete mView;
-  mView = 0;
-  //delete every child of mViewFrame
-  QObjectList viewFrameChildren = mViewFrame->children();
-  QObjectList::iterator it = viewFrameChildren.begin();
-  for ( ; it != viewFrameChildren.end(); ++it )
-  {
-    delete( *it );
-  }
   //delete composition widget
   QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
 
-  mView = new QgsComposerView( mViewFrame );
+  createComposerView();
 
   //read composition settings
   mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -1631,10 +1618,6 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   }
 
   connectSlots();
-
-  QGridLayout *l = new QGridLayout( mViewFrame );
-  l->setMargin( 0 );
-  l->addWidget( mView, 0, 0 );
 
   //create compositionwidget
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
@@ -1947,4 +1930,19 @@ void QgsComposer::initialiseComposerPicturePreviews()
     ( *picIt )->addStandardDirectoriesToPreview();
   }
   mPicturePreviews.clear();
+}
+
+void QgsComposer::createComposerView()
+{
+  if ( !mViewLayout )
+  {
+    return;
+  }
+
+  delete mView;
+  mView = new QgsComposerView();
+  mView->setContentsMargins( 0, 0, 0, 0 );
+  mView->setHorizontalRuler( mHorizontalRuler );
+  mView->setVerticalRuler( mVerticalRuler );
+  mViewLayout->addWidget( mView, 1, 1 );
 }

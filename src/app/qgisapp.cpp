@@ -109,6 +109,7 @@
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
+#include "qgscomposerview.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscredentialdialog.h"
@@ -4496,6 +4497,11 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     composer->showMinimized();
 #endif
     composer->zoomFull();
+    QgsComposerView* composerView = composer->view();
+    if ( composerView )
+    {
+      composerView->updateRulers();
+    }
     if ( composerNodes.at( i ).toElement().attribute( "visible", "1" ).toInt() < 1 )
     {
       composer->close();

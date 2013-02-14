@@ -46,6 +46,8 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
     , mPaintingEnabled( true )
+    , mHorizontalRuler( 0 )
+    , mVerticalRuler( 0 )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
