@@ -68,7 +68,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       {
         double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
         p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
-        p.drawText( QPointF( RULER_MIN_SIZE / 2.0, pixelCoord + 2.0 ), QString::number( markerPos ) );
+        p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( markerPos ) );
       }
       markerPos += 10.0;
     }
