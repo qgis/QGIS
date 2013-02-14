@@ -27,10 +27,10 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
   if ( mDirection == Horizontal )
   {
-      if( doubleNear( width(), 0 ) )
-      {
-          return;
-      }
+    if ( doubleNear( width(), 0 ) )
+    {
+      return;
+    }
 
     //start x-coordinate
     double startX = t.map( QPointF( 0, 0 ) ).x();
@@ -43,7 +43,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       {
         double pixelCoord = mTransform.map( QPointF( markerPos, 0 ) ).x();
         p.drawLine( pixelCoord, 0, pixelCoord, RULER_MIN_SIZE );
-        p.drawText( QPointF( pixelCoord + 2, RULER_MIN_SIZE / 2.0 ), QString::number( (int)( markerPos ) ) );
+        p.drawText( QPointF( pixelCoord + 2, RULER_MIN_SIZE / 2.0 ), QString::number(( int )( markerPos ) ) );
       }
       markerPos += 10.0;
     }
@@ -53,25 +53,25 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
   }
   else //vertical
   {
-      if( doubleNear( height(), 0 ) )
-      {
-          return;
-      }
+    if ( doubleNear( height(), 0 ) )
+    {
+      return;
+    }
 
-      double startY = t.map( QPointF( 0, 0 ) ).y();
-      double endY = t.map( QPointF( 0, height() ) ).y();
+    double startY = t.map( QPointF( 0, 0 ) ).y();
+    double endY = t.map( QPointF( 0, height() ) ).y();
 
-      double markerPos = ( floor( startY / 10.0 ) + 1 ) + 10.0; //marker position in mm
-      while( markerPos <= endY )
+    double markerPos = ( floor( startY / 10.0 ) + 1 ) * 10.0; //marker position in mm
+    while ( markerPos <= endY )
+    {
+      if ( markerPos >= 0 && markerPos <= 210 )
       {
-          if( markerPos >= 0 && markerPos <= 210 )
-          {
-              double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
-              p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
-              p.drawText( QPointF( RULER_MIN_SIZE / 2.0, pixelCoord + 2.0 ), QString::number( markerPos ) );
-          }
-          markerPos += 10.0;
+        double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
+        p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+        p.drawText( QPointF( RULER_MIN_SIZE / 2.0, pixelCoord + 2.0 ), QString::number( markerPos ) );
       }
+      markerPos += 10.0;
+    }
   }
 }
 
