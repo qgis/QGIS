@@ -65,10 +65,6 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
-    #===========================================================================
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
