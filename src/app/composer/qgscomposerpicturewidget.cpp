@@ -314,7 +314,7 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mRotationFromComposerMapCheckBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
-    QRectF pictureRect = mPicture->rect();
+//    QRectF pictureRect = mPicture->rect();
     mRotationSpinBox->setValue( mPicture->rotation() );
 
     refreshMapComboBox();

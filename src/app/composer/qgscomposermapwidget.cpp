@@ -237,7 +237,7 @@ void QgsComposerMapWidget::updateGuiElements()
     blockAllSignals( true );
 
     //width, height, scale
-    QRectF composerMapRect = mComposerMap->rect();
+//    QRectF composerMapRect = mComposerMap->rect();
     mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0 ) );
 
     //preview mode
@@ -856,6 +856,7 @@ void QgsComposerMapWidget::showEvent( QShowEvent * event )
 
 void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
 {
+  Q_UNUSED( name );
   //TODO : wrap the widget in a collapsibleGroupBox to be more consistent with previous implementation
   mainLayout->addWidget( widget );
 }
