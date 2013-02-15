@@ -187,7 +187,7 @@ QStringList QgsDelimitedTextSourceSelect::selectedChars()
   if ( cbxDelimSpace->isChecked() )
     chars << " ";
   if ( cbxDelimTab->isChecked() )
-    chars << "\\t";
+    chars << "\t";
   if ( cbxDelimSemicolon->isChecked() )
     chars << ";";
   if ( cbxDelimComma->isChecked() )
