@@ -204,9 +204,12 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
-                value = param.value
-                if not value.endswith("dbf"):
-                    raise GeoAlgorithmExecutionException("Unsupported file format")
+                table = QGisLayers.getObjectFromUri(param.value, False)
+                if table:
+                    filename = LayerExporter.exportTable(table)
+                    self.exportedLayers[param.value]=filename
+                elif not param.value.endswith("shp"):
+                        raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
                 if param.value == None:
                     continue
@@ -237,7 +240,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")

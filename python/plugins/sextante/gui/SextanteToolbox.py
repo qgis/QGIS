@@ -74,17 +74,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         Sextante.updateAlgsList()
 
     def configureProviders(self):
-        webbrowser.open("http://docs.qgis.org/html/en/user_manual/sextante/3rdParty.html")
-        #=======================================================================
-        # #QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
-        # filename = os.path.join(os.path.dirname(__file__), "..", "help", "3rdParty.html")
-        # if os.name == "nt":
-        #    os.startfile(filename)
-        # elif sys.platform == "darwin":
-        #    subprocess.Popen(('open', filename))
-        # else:
-        #    subprocess.call(('xdg-open', filename))
-        #=======================================================================
+        webbrowser.open("http://sextantegis.com")
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)

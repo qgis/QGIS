@@ -31,6 +31,7 @@ from PyQt4.QtCore import *
 
 class OutputTable(Output):
 
+    encoding = None
     compatible = None
 
     def getFileFilter(self,alg):
@@ -47,7 +48,7 @@ class OutputTable(Output):
         If the algorithm supports the file format of the current output value, it returns that value. If not,
         it returns a temporary file with a supported file format, to be used to generate the output result.'''
         ext = self.value[self.value.rfind(".") + 1:]
-        if ext in alg.provider.getSupportedOutputTableExtensions:
+        if ext in alg.provider.getSupportedOutputTableExtensions():
             return self.value
         else:
             if self.compatible is None:
@@ -59,7 +60,7 @@ class OutputTable(Output):
         result of the algorithm. Use this to transparently handle output
         values instead of creating your own method.
 
-        @param fields   a dict of int-QgsField
+        @param fields   a list of QgsField
 
         @return writer  instance of the table writer class
         '''
