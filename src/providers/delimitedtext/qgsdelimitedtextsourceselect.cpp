@@ -68,7 +68,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
   QString delimiterChars = settings.value( key + "/delimiterChars", " " ).toString();
   cbxDelimSpace->setChecked( delimiterChars.contains( " " ) );
-  cbxDelimTab->setChecked( delimiterChars.contains( "\\t" ) );
+  cbxDelimTab->setChecked( delimiterChars.contains( "\t" ) );
   cbxDelimColon->setChecked( delimiterChars.contains( ":" ) );
   cbxDelimSemicolon->setChecked( delimiterChars.contains( ";" ) );
   cbxDelimComma->setChecked( delimiterChars.contains( "," ) );
