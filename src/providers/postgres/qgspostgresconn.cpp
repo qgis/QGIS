@@ -388,6 +388,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( srid )
                    .arg( relkind ) );
 
+      layerProperty.pkCols.clear();
       layerProperty.type = type;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -403,6 +404,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           continue;
         }
       }
+
       layerProperty.srid = srid;
       layerProperty.sql = "";
 
