@@ -49,6 +49,9 @@
          <property name="title">
           <string>Main properties</string>
          </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
@@ -96,6 +99,9 @@
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSearchDirectoriesGroupBox">
          <property name="title">
           <string>Search directories</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
@@ -169,6 +175,9 @@
          </property>
          <property name="title">
           <string>Rotation</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>
