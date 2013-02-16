@@ -45,7 +45,7 @@ class QgsGroupBoxCollapseButton: public QToolButton
   protected:
     void mouseReleaseEvent( QMouseEvent *event )
     {
-      mAltDown = ( event->modifiers() & Qt::AltModifier );
+      mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
       QToolButton::mouseReleaseEvent( event );
     }
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
     QString syncGroup() const { return mSyncGroup; }
-    void setSyncGroup( QString grp ) { mSyncGroup = grp; }
+    void setSyncGroup( QString grp );
 
     //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }

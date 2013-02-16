@@ -22,6 +22,7 @@
 
 #include <QToolButton>
 #include <QMouseEvent>
+#include <QPushButton>
 #include <QStyleOptionGroupBox>
 #include <QSettings>
 #include <QScrollArea>
@@ -46,7 +47,6 @@ QgsCollapsibleGroupBoxBasic::~QgsCollapsibleGroupBoxBasic()
 {
   //QgsDebugMsg( "Entered" );
 }
-
 
 void QgsCollapsibleGroupBoxBasic::init()
 {
@@ -126,6 +126,10 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
     // emit signal for connections using collapsed state
     emit collapsedStateChanged( isCollapsed() );
   }
+
+  // verify triangle mirrors groupbox's enabled state
+  mCollapseButton->setEnabled( isEnabled() );
+
   // set mShown after first setCollapsed call or expanded groupboxes
   // will scroll scroll areas when first shown
   mShown = true;
@@ -149,7 +153,7 @@ void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
 
 void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
 {
-  mAltDown = ( event->modifiers() & Qt::AltModifier );
+  mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
   mTitleClicked = ( titleRect().contains( event->pos() ) );
 
   // sync group when title is alt-clicked
@@ -175,6 +179,19 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
 
   if ( event->type() == QEvent::EnabledChange && isEnabled() )
     mCollapseButton->setEnabled( true );
+}
+
+void QgsCollapsibleGroupBoxBasic::setSyncGroup( QString grp )
+{
+  mSyncGroup = grp;
+  if ( !grp.isEmpty() )
+  {
+    mCollapseButton->setToolTip( tr( "Ctrl(or Alt)-click to toggle all" ) );
+  }
+  else
+  {
+    mCollapseButton->setToolTip( QString( "" ) );
+  }
 }
 
 QRect QgsCollapsibleGroupBoxBasic::titleRect() const
@@ -255,20 +272,34 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );
 
+  QSettings settings;
+  // NOTE: QGIS-Style groupbox styled in app stylesheet
+  bool usingQgsStyle = settings.value( "qgis/stylesheet/groupBoxCustom", QVariant( false ) ).toBool();
+
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                    QStyle::SC_GroupBoxFrame, this );
+  QRect rectTitle = titleRect();
+
   // margin/offset defaults
   int marginLeft = 20;  // title margin for disclosure triangle
   int marginRight = 5;  // a little bit of space on the right, to match space on the left
   int offsetLeft = 0;   // offset for oxygen theme
-  int offsetTop = 0;
-//  int offsetTop2 = 0;   // offset for triangle
+  int offsetStyle = QApplication::style()->objectName().contains( "macintosh" ) ? 1 : 0;
+  int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
+  int offsetTop =  topBuffer;
+  int offsetTopTri = topBuffer; // offset for triangle
 
-  // starting top offset for custom groupboxes in app stylesheet
-  QStyleOptionGroupBox box;
-  initStyleOption( &box );
-  QRect rectCheckBox = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                       QStyle::SC_GroupBoxCheckBox, this );
-  int offsetTop2 = rectCheckBox.top();   // offset for triangle
-
+  if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle
+  {
+    offsetTopTri += ( rectTitle.height() - mCollapseButton->height() ) / 2 ;
+//    offsetTopTri += rectTitle.top();
+  }
+  else if ( rectTitle.height() < mCollapseButton->height() ) // title text's height < triangle's, offset title
+  {
+    offsetTop += ( mCollapseButton->height() - rectTitle.height() ) / 2;
+  }
 
   // calculate offset if frame overlaps triangle (oxygen theme)
   // using an offset of 6 pixels from frame border
@@ -289,22 +320,27 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
         // if is checkable align with checkbox
         offsetTop = ( rectCheckBox.height() / 2 ) -
                     ( mCollapseButton->height() / 2 ) + rectCheckBox.top();
-        offsetTop2 = offsetTop + 1;
+        offsetTopTri = offsetTop + 1;
       }
       else
       {
         offsetTop = 6 + rectFrame.top();
-        offsetTop2 = offsetTop;
+        offsetTopTri = offsetTop;
       }
     }
   }
 
   QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
-                 objectName() ).arg( QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTop2 ) );
+                 objectName() ).arg( QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ) );
 
   // customize style sheet for collapse/expand button and force left-aligned title
-  // TODO: move to app stylesheet system, when appropriate
   QString ss;
+  if ( usingQgsStyle || QApplication::style()->objectName().contains( "macintosh" ) )
+  {
+    ss += "QgsCollapsibleGroupBoxBasic, QgsCollapsibleGroupBox {";
+    ss += QString( "  margin-top: %1px;" ).arg( topBuffer + ( usingQgsStyle ? rectTitle.height() + 5 : rectFrame.top() ) );
+    ss += "}";
+  }
   ss += "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {";
   ss += "  subcontrol-origin: margin;";
   ss += "  subcontrol-position: top left;";
@@ -321,8 +357,8 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
   ssd += "}";
   mCollapseButton->setStyleSheet( ssd );
-  if ( offsetLeft != 0 || offsetTop2 != 0 )
-    mCollapseButton->move( offsetLeft, offsetTop2 );
+  if ( offsetLeft != 0 || offsetTopTri != 0 )
+    mCollapseButton->move( offsetLeft, offsetTopTri );
 
   setUpdatesEnabled( true );
 }
@@ -340,6 +376,31 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 
   // avoid flicker in X11
   QApplication::processEvents();
+
+  // handle QPushButtons in form layouts that stay visible on collapse (Qt bug)
+  // set flat on collapse for fix, but preserve button's flat value when expanding
+  if ( collapse )
+  {
+    foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
+    {
+      if ( ! pBtn->isFlat() )
+      {
+        if ( ! pBtn->property( "PushButtonFlat" ).isValid() )
+          pBtn->setProperty( "PushButtonFlat", QVariant( false ) );
+
+        pBtn->setFlat( true );
+      }
+    }
+  }
+  else
+  {
+    foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
+    {
+      // restore any previous flat value
+      if ( pBtn->property( "PushButtonFlat" ).isValid() )
+        pBtn->setFlat( false );
+    }
+  }
 
   // set maximum height to hide contents - does this work in all envs?
   // setMaximumHeight( collapse ? 25 : 16777215 );
