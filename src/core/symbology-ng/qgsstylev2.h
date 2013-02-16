@@ -278,7 +278,12 @@ class CORE_EXPORT QgsStyleV2
     QString fileName() { return mFileName; }
 
     //! return the names of the symbols which have a matching 'substring' in its defintion
-    QStringList findSymbols( QString qword );
+    /*!
+     *  \param type is either SymbolEntity or ColorrampEntity
+     *  \param qword is the query string to search the symbols or colorramps.
+     *  \return A QStringList of the matched symbols or colorramps
+     * */
+    QStringList findSymbols( StyleEntity type, QString qword );
 
     //! return the tags associated with the symbol
     /*!
