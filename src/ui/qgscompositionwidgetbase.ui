@@ -20,9 +20,28 @@
    <string>Composition</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QLabel" name="label_10">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+     </property>
+     <property name="text">
+      <string>Composition</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="sizePolicy">
@@ -32,7 +51,7 @@
       </sizepolicy>
      </property>
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -45,19 +64,13 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>391</width>
-        <height>787</height>
+        <width>389</width>
+        <height>765</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Paper and quality</string>
          </property>
@@ -70,6 +83,9 @@
          <layout class="QFormLayout" name="formLayout">
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="textLabel3">
@@ -216,12 +232,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mPrintAsRasterGroupCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Print as raster</string>
          </property>
@@ -235,9 +245,15 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
@@ -269,12 +285,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Snap to grid</string>
          </property>
@@ -291,6 +301,12 @@
           <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
             <property name="sizePolicy">
@@ -388,6 +404,18 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -438,12 +466,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignmentSnapGroupCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Snap to alignements</string>
          </property>
@@ -457,6 +479,12 @@
           <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -499,15 +527,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

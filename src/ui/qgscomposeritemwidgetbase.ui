@@ -6,28 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
-    <height>729</height>
+    <width>376</width>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Global Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="spacing">
-    <number>7</number>
-   </property>
    <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
      <property name="title">
       <string>Position and size</string>
      </property>
@@ -39,59 +37,12 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mXLabel">
-            <property name="text">
-             <string>X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mXLineEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mYLabel">
-            <property name="text">
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mYLineEdit"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mWidthLabel">
-            <property name="text">
-             <string>Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="mWidthLineEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mHeightLabel">
-            <property name="text">
-             <string>Height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="mHeightLineEdit"/>
-          </item>
-         </layout>
-        </item>
-        <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="verticalSpacing">
+         <number>0</number>
+        </property>
+        <item row="1" column="1">
          <widget class="QGroupBox" name="mReferencePointGroupBox">
-          <property name="title">
-           <string>Reference point</string>
-          </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <layout class="QGridLayout" name="gridLayout">
@@ -217,6 +168,60 @@
           </layout>
          </widget>
         </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Reference point</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="2">
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mXLabel">
+            <property name="text">
+             <string>X</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mXLineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mYLabel">
+            <property name="text">
+             <string>Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mYLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mWidthLabel">
+            <property name="text">
+             <string>Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mWidthLineEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mHeightLabel">
+            <property name="text">
+             <string>Height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mHeightLineEdit"/>
+          </item>
+         </layout>
+        </item>
        </layout>
       </item>
      </layout>
@@ -224,12 +229,6 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mFrameGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="title">
       <string>Frame</string>
      </property>
@@ -251,8 +250,11 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
+       <layout class="QFormLayout" name="formLayout_3">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <item row="0" column="0">
          <widget class="QLabel" name="mOutlineWidthLabel">
           <property name="text">
            <string>Thickness</string>
@@ -265,7 +267,7 @@
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
         </item>
        </layout>
@@ -275,12 +277,6 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mBackgroundGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="title">
       <string>Background</string>
      </property>
@@ -346,12 +342,6 @@
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="title">
       <string>Item ID</string>
      </property>
@@ -362,6 +352,12 @@
       <bool>true</bool>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <property name="labelAlignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="mIdLabel">
         <property name="text">
@@ -410,12 +406,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>137</x>
-     <y>98</y>
+     <x>255</x>
+     <y>387</y>
     </hint>
     <hint type="destinationlabel">
-     <x>197</x>
-     <y>106</y>
+     <x>364</x>
+     <y>389</y>
     </hint>
    </hints>
   </connection>
@@ -426,12 +422,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>196</x>
-     <y>92</y>
+     <x>364</x>
+     <y>389</y>
     </hint>
     <hint type="destinationlabel">
-     <x>153</x>
-     <y>100</y>
+     <x>271</x>
+     <y>387</y>
     </hint>
    </hints>
   </connection>

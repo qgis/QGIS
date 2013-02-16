@@ -6,17 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>631</height>
+    <width>410</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+     </property>
+     <property name="text">
+      <string>Attribute table</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
@@ -27,21 +46,15 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>603</width>
-        <height>629</height>
+        <width>408</width>
+        <height>573</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
-          <string>Main attributes</string>
+          <string>Main properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -50,70 +63,88 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
-          <item row="1" column="0">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
            <widget class="QLabel" name="mLayerLabel">
             <property name="text">
              <string>Layer</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
             <property name="buddy">
              <cstring>mLayerComboBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <widget class="QComboBox" name="mLayerComboBox"/>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="1" column="1">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
              <string>Attributes...</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="mComposerMapLabel">
-            <property name="text">
-             <string>Composer map</string>
-            </property>
-            <property name="buddy">
-             <cstring>mComposerMapComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="mComposerMapComboBox"/>
-          </item>
-          <item row="3" column="0" colspan="2">
+          <item row="2" column="1">
            <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Show only visible features</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="3" column="0">
+           <widget class="QLabel" name="mComposerMapLabel">
+            <property name="text">
+             <string>Composer map</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mComposerMapComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="mComposerMapComboBox"/>
+          </item>
+          <item row="4" column="0">
            <widget class="QLabel" name="mMaxNumFeaturesLabel">
             <property name="text">
              <string>Maximum rows</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
             <property name="buddy">
              <cstring>mMaximumColumnsSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="4" column="1">
            <widget class="QSpinBox" name="mMaximumColumnsSpinBox"/>
           </item>
-          <item row="7" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="mMarginLabel">
             <property name="text">
              <string>Margin</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
             <property name="buddy">
              <cstring>mMarginSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="5" column="1">
            <widget class="QDoubleSpinBox" name="mMarginSpinBox"/>
           </item>
          </layout>
@@ -121,12 +152,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mShowGridGroupCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Show grid</string>
          </property>
@@ -137,16 +162,22 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="mGridStrokeWidthLabel">
             <property name="text">
              <string>Stroke width</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
             <property name="buddy">
              <cstring>mGridStrokeWidthSpinBox</cstring>
@@ -161,6 +192,9 @@
             <property name="text">
              <string>Color</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
             <property name="buddy">
              <cstring>mGridColorButton</cstring>
             </property>
@@ -174,6 +208,12 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -184,12 +224,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Fonts</string>
          </property>
@@ -197,7 +231,7 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -225,15 +259,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

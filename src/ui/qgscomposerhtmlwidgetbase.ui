@@ -13,11 +13,30 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+     </property>
+     <property name="text">
+      <string>HTML frame</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -28,18 +47,12 @@
         <x>0</x>
         <y>0</y>
         <width>407</width>
-        <height>368</height>
+        <height>348</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -50,15 +63,18 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
-          <item row="2" column="0">
-           <widget class="QLabel" name="mResizeModeLabel">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mUrlLabel">
             <property name="text">
-             <string>Resize mode</string>
+             <string>URL</string>
             </property>
            </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="mResizeModeComboBox"/>
           </item>
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
@@ -74,12 +90,15 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mUrlLabel">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mResizeModeLabel">
             <property name="text">
-             <string>URL</string>
+             <string>Resize mode</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mResizeModeComboBox"/>
           </item>
          </layout>
         </widget>

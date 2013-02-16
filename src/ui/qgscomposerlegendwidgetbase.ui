@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>839</height>
+    <width>393</width>
+    <height>995</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,16 +17,35 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Barscale Options</string>
+   <string>Legend Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
    <item>
+    <widget class="QLabel" name="label_11">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+     </property>
+     <property name="text">
+      <string>Legend</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -35,20 +54,14 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-101</y>
-        <width>386</width>
-        <height>940</height>
+        <y>0</y>
+        <width>376</width>
+        <height>990</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mMainPropertiesColGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -59,6 +72,12 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="mTitleLabel">
             <property name="text">
@@ -334,13 +353,69 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mColumnsColGroupBox">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mFontsColGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="title">
+          <string>Fonts</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="mTitleFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Title Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="mGroupFontButton">
+            <property name="text">
+             <string>Group Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="mLayerFontButton">
+            <property name="text">
+             <string>Layer Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mItemFontButton">
+            <property name="text">
+             <string>Item Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="mFontColorPushButton">
+            <property name="text">
+             <string>Font color...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mColumnsColGroupBox">
          <property name="title">
           <string>Columns</string>
          </property>
@@ -351,6 +426,12 @@
           <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -410,12 +491,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSymbolsColGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Symbol</string>
          </property>
@@ -428,6 +503,9 @@
          <layout class="QFormLayout" name="formLayout_3">
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
@@ -468,12 +546,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSpacingColGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Spacing</string>
          </property>
@@ -484,6 +556,12 @@
           <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
@@ -566,68 +644,6 @@
             </property>
             <property name="suffix">
              <string> mm</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mFontsColGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Fonts</string>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">composeritem</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="mTitleFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Title Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="mGroupFontButton">
-            <property name="text">
-             <string>Group Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="mLayerFontButton">
-            <property name="text">
-             <string>Layer Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="mItemFontButton">
-            <property name="text">
-             <string>Item Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QPushButton" name="mFontColorPushButton">
-            <property name="text">
-             <string>Font color...</string>
             </property>
            </widget>
           </item>

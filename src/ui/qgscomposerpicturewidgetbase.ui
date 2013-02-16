@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>614</height>
+    <width>312</width>
+    <height>572</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,9 +20,28 @@
    <string>Picture Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+     </property>
+     <property name="text">
+      <string>Picture</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
@@ -33,19 +52,13 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>329</width>
-        <height>612</height>
+        <width>310</width>
+        <height>550</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -56,6 +69,12 @@
           <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -97,6 +116,12 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSearchDirectoriesGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Search directories</string>
          </property>
@@ -167,12 +192,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Rotation</string>
          </property>
@@ -180,14 +199,14 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QFormLayout" name="formLayout">
           <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <property name="margin">
-           <number>3</number>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
           <item row="1" column="0">
            <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
