@@ -97,6 +97,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   // find driver in OGR
   OGRSFDriverH poDriver;
   QgsApplication::registerOgrDrivers();
+
+  QSettings settings;
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
+
   poDriver = OGRGetDriverByName( ogrDriverName.toLocal8Bit().data() );
 
   if ( poDriver == NULL )
@@ -216,7 +220,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   {
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
 
-    QSettings settings;
     QString enc = settings.value( "/UI/encoding", "System" ).toString();
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
