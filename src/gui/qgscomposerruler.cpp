@@ -64,18 +64,27 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       return;
     }
 
-    double startY = t.map( QPointF( 0, 0 ) ).y();
-    double endY = t.map( QPointF( 0, height() ) ).y();
+    double startY = t.map( QPointF( 0, 0 ) ).y(); //start position in mm (total including space between pages)
+    double endY = t.map( QPointF( 0, height() ) ).y(); //stop position in mm (total including space between pages)
 
     double markerPos = ( floor( startY / 10.0 ) + 1 ) * 10.0; //marker position in mm
     while ( markerPos <= endY )
     {
-      if ( markerPos >= 0 && markerPos <= mComposition->paperHeight() )
+      int page = ( int )( markerPos / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) );
+      double pageCoord = markerPos - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      if ( page >= mComposition->numPages() )
       {
-        double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
-        p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
-        p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( markerPos ) );
+        break;
       }
+
+      if ( pageCoord < 0 || pageCoord > mComposition->paperHeight() ) //marker is in a page gap
+      {
+        markerPos += 10.0;
+        continue;
+      }
+      double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
+      p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+      p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( pageCoord ) );
       markerPos += 10.0;
     }
 
