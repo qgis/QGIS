@@ -1245,6 +1245,8 @@ class geoprocessingThread( QThread ):
   def symetrical_difference( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
+    vproviderA = self.vlayerA.dataProvider()
+    vproviderB = self.vlayerB.dataProvider()
 
     # check for crs compatibility
     crsA = vproviderA.crs()
@@ -1340,6 +1342,8 @@ class geoprocessingThread( QThread ):
   def clip( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
+    vproviderA = self.vlayerA.dataProvider()
+    vproviderB = self.vlayerB.dataProvider()
 
     # check for crs compatibility
     crsA = vproviderA.crs()
