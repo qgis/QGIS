@@ -1,0 +1,301 @@
+saga:accumulatedcost(anisotropic),USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:accumulatedcost(isotropic),USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:gradientvectorfromcartesiantopolarcoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:gradientvectorfrompolartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:gradientvectorsfromdirectionandlength,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:gradientvectorsfromdirectionalcomponents,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:gradientvectorsfromsurface,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:leastcostpaths,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:polartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
+saga:globalmoran'siforgrids,USE_ORIGINAL_NAME,Domain specific/Geostatistics
+saga:representativeness(grid),USE_ORIGINAL_NAME,Domain specific/Geostatistics
+saga:variogramcloud,USE_ORIGINAL_NAME,Domain specific/Geostatistics
+saga:variogramsurface,USE_ORIGINAL_NAME,Domain specific/Geostatistics
+saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:catchmentarea(flowtracing),USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:catchmentarea(mass-fluxmethod),USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:catchmentarea(parallel),USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:catchmentarea(recursive),USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:cellbalance,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:channelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:channelnetworkanddrainagebasins,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:flowpathlength,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:flowwidthandspecificcatchmentarea,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:overlandflow-kinematicwaved8,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:overlandflowdistancetochannelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:sagawetnessindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:sinkdrainageroutedetection,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:sinkremoval,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:strahlerorder,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:streampowerindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:topmodel,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:topographicwetnessindex(twi),USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:upslopearea,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:verticaldistancetochannelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:waterretentioncapacity,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:watershedbasins,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:dailytohourlypet,USE_ORIGINAL_NAME,Domain specific/Miscellaneous
+saga:fireriskanalysis,USE_ORIGINAL_NAME,Domain specific/Miscellaneous
+saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:convergenceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:convergenceindex(searchradius),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:crossprofiles,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:curvatureclassification,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:dtmfilter(slope-based),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:diurnalanisotropicheating,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:downslopedistancegradient,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:edgecontamination,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:effectiveairflowheights,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:fillsinks(planchon/darboux2001),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:fillsinks(wang&liu),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:fillsinksxxl(wang&liu),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:flatdetection,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:hypsometry,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:lsfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:landsurfacetemperature,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:massbalanceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:morphometricprotectionindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:multiresolutionindexofvalleybottomflatness(mrvbf),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:realareacalculation,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:relativeheightsandslopepositions,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:skyviewfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:slopelength,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:slopeaspectcurvature,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:surfacespecificpoints,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:tpibasedlandformclassification,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:terrainruggednessindex(tri),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:topographicpositionindex(tpi),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:vectorruggednessmeasure(vrm),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:windeffect(windward/leewardindex),USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:analyticalhillshading,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
+saga:addgridvaluestopoints,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
+saga:addgridvaluestoshapes,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
+saga:clipgridwithpolygon,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
+saga:gridstatisticsforpolygons,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:multipleregressionanalysis(points/grids),USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:pointstatisticsforpolygons,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:profilefrompoints,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:profilesfromlines,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:regressionanalysis(points/grid),USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
+saga:b-splineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:contourlinesfromgrid,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:gridvaluestopoints,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:gridvaluestopoints(randomly),USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:localminimaandmaxima,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:vectorisinggridclasses,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+gdalogr:polygonize,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
+saga:cubicsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:inversedistanceweighted,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:modifedquadraticshepard,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:multilevelb-splineinterpolation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:multilevelb-splineinterpolation(fromgrid),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:naturalneighbour,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:nearestneighbour,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:ordinarykriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:ordinarykriging(global),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:ordinarykriging(vf),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:ordinarykriging(vfglobal),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:shapestogrid,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:thinplatespline(global),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:thinplatespline(local),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:thinplatespline(tin),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:triangulation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:universalkriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:universalkriging(global),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:universalkriging(vf),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:universalkriging(vfglobal),USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:changedetection,USE_ORIGINAL_NAME,Raster/Analysis
+saga:changevectoranalysis,USE_ORIGINAL_NAME,Raster/Analysis
+saga:clusteranalysisforgrids,USE_ORIGINAL_NAME,Raster/Analysis
+saga:covereddistance,USE_ORIGINAL_NAME,Raster/Analysis
+saga:fuzzify,USE_ORIGINAL_NAME,Raster/Analysis
+saga:fuzzyintersection(and),USE_ORIGINAL_NAME,Raster/Analysis
+saga:fuzzyunion(or),USE_ORIGINAL_NAME,Raster/Analysis
+saga:multi-bandvariation,USE_ORIGINAL_NAME,Raster/Analysis
+saga:orderedweightedaveraging(owa),USE_ORIGINAL_NAME,Raster/Analysis
+saga:principlecomponentsanalysis,USE_ORIGINAL_NAME,Raster/Analysis
+saga:supervisedclassification,USE_ORIGINAL_NAME,Raster/Analysis
+saga:thresholdbuffer,USE_ORIGINAL_NAME,Raster/Analysis
+gdalogr:nearblack,USE_ORIGINAL_NAME,Raster/Analysis
+saga:gaussianlandscapes,USE_ORIGINAL_NAME,Raster/Creation
+saga:gridsfromclassifiedgridandtable,USE_ORIGINAL_NAME,Raster/Creation
+saga:randomfield,USE_ORIGINAL_NAME,Raster/Creation
+saga:randomterraingeneration,USE_ORIGINAL_NAME,Raster/Creation
+gdalogr:buildpyramids(overviews),USE_ORIGINAL_NAME,Raster/Creation
+saga:function,USE_ORIGINAL_NAME,Raster/Edition
+saga:metricconversions,USE_ORIGINAL_NAME,Raster/Edition
+saga:reclassifygridvalues,USE_ORIGINAL_NAME,Raster/Edition
+saga:decisiontree,USE_ORIGINAL_NAME,Raster/Filters
+saga:directionalaverage1,USE_ORIGINAL_NAME,Raster/Filters
+saga:gaussianfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:laplacianfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:majorityfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:morphologicalfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:multidirectionleefilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:rankfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:simplefilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:userdefinedfilter,USE_ORIGINAL_NAME,Raster/Filters
+saga:averagewithmask1,USE_ORIGINAL_NAME,Raster/General tools
+saga:averagewithmask2,USE_ORIGINAL_NAME,Raster/General tools
+saga:averagewiththereshold1,USE_ORIGINAL_NAME,Raster/General tools
+saga:averagewiththereshold3,USE_ORIGINAL_NAME,Raster/General tools
+saga:averagewiththreshold2,USE_ORIGINAL_NAME,Raster/General tools
+saga:closegaps,USE_ORIGINAL_NAME,Raster/General tools
+saga:closegapswithspline,USE_ORIGINAL_NAME,Raster/General tools
+saga:closeonecellgaps,USE_ORIGINAL_NAME,Raster/General tools
+saga:combinegrids,USE_ORIGINAL_NAME,Raster/General tools
+saga:convertdatastoragetype,USE_ORIGINAL_NAME,Raster/General tools
+saga:coordinatetransformation(gridlist),USE_ORIGINAL_NAME,Raster/General tools
+saga:coordinatetransformation(grid),USE_ORIGINAL_NAME,Raster/General tools
+saga:croptodata,USE_ORIGINAL_NAME,Raster/General tools
+saga:filterclumps,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridbuffer,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridcalculator,USE_ORIGINAL_NAME,Raster/General tools
+saga:griddifference,USE_ORIGINAL_NAME,Raster/General tools
+saga:griddivision,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridmasking,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridnormalisation,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridorientation,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridproximitybuffer,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridshrink/expand,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridsproduct,USE_ORIGINAL_NAME,Raster/General tools
+saga:gridssum,USE_ORIGINAL_NAME,Raster/General tools
+saga:invertdata/no-data,USE_ORIGINAL_NAME,Raster/General tools
+saga:layerofextremevalue,USE_ORIGINAL_NAME,Raster/General tools
+saga:merging,USE_ORIGINAL_NAME,Raster/General tools
+saga:patching,USE_ORIGINAL_NAME,Raster/General tools
+saga:resampling,USE_ORIGINAL_NAME,Raster/General tools
+saga:sortgrid,USE_ORIGINAL_NAME,Raster/General tools
+gdalogr:fillnodata,USE_ORIGINAL_NAME,Raster/General tools
+gdalogr:merge,USE_ORIGINAL_NAME,Raster/General tools
+gdalogr:translate(convertformat),USE_ORIGINAL_NAME,Raster/General tools
+gdalogr:warp(reproject),USE_ORIGINAL_NAME,Raster/General tools
+ftools:reprojectlayer,USE_ORIGINAL_NAME,Raster/General tools
+saga:aggregationindex,USE_ORIGINAL_NAME,Raster/Miscellaneous
+saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
+saga:directionalstatisticsforsinglegrid,USE_ORIGINAL_NAME,Raster/Statistics
+saga:fractaldimensionofgridsurface,USE_ORIGINAL_NAME,Raster/Statistics
+saga:geographicallyweightedmultipleregression,USE_ORIGINAL_NAME,Raster/Statistics
+saga:geographicallyweightedmultipleregression(points),USE_ORIGINAL_NAME,Raster/Statistics
+saga:geographicallyweightedmultipleregression(points/grids),USE_ORIGINAL_NAME,Raster/Statistics
+saga:geographicallyweightedregression,USE_ORIGINAL_NAME,Raster/Statistics
+saga:geographicallyweightedregression(points/grid),USE_ORIGINAL_NAME,Raster/Statistics
+saga:kerneldensityestimation,USE_ORIGINAL_NAME,Raster/Statistics
+saga:multipleregressionanalysis(grid/grids),USE_ORIGINAL_NAME,Raster/Statistics
+saga:polynomialregression,USE_ORIGINAL_NAME,Raster/Statistics
+saga:polynomialtrendfromgrids,USE_ORIGINAL_NAME,Raster/Statistics
+saga:radiusofvariance(grid),USE_ORIGINAL_NAME,Raster/Statistics
+saga:residualanalysis(grid),USE_ORIGINAL_NAME,Raster/Statistics
+saga:statisticsforgrids,USE_ORIGINAL_NAME,Raster/Statistics
+saga:zonalgridstatistics,USE_ORIGINAL_NAME,Raster/Statistics
+gdalogr:information,USE_ORIGINAL_NAME,Raster/Statistics
+saga:cross-classificationandtabulation,USE_ORIGINAL_NAME,Raster/Tools for categorical rasters
+saga:patternanalysis,USE_ORIGINAL_NAME,Raster/Tools for categorical rasters
+ftools:countpointsinpolygon,USE_ORIGINAL_NAME,Vector/Analysis
+ftools:countpointsinpolygon(weighted),USE_ORIGINAL_NAME,Vector/Analysis
+ftools:countuniquepointsinpolygon,USE_ORIGINAL_NAME,Vector/Analysis
+ftools:distancematrix,USE_ORIGINAL_NAME,Vector/Analysis
+ftools:meancoordinate(s),USE_ORIGINAL_NAME,Vector/Analysis
+ftools:nearestneighbouranalysis,USE_ORIGINAL_NAME,Vector/Analysis
+ftools:sumlinelengths,USE_ORIGINAL_NAME,Vector/Analysis
+ftools:polygonfromlayerextent,USE_ORIGINAL_NAME,Vector/Creation
+mmqgisx:creategrid,USE_ORIGINAL_NAME,Vector/Creation
+sextante:addautoincrementalfield,USE_ORIGINAL_NAME,Vector/General tools
+sextante:createnewlayerwithselectedfeatures,USE_ORIGINAL_NAME,Vector/General tools
+saga:clusteranalysis,USE_ORIGINAL_NAME,Vector/General tools
+saga:coordinatetransformation(shapeslist),USE_ORIGINAL_NAME,Vector/General tools
+saga:coordinatetransformation(shapes),USE_ORIGINAL_NAME,Vector/General tools
+saga:getshapesextents,USE_ORIGINAL_NAME,Vector/General tools
+saga:mergeshapeslayers,USE_ORIGINAL_NAME,Vector/General tools
+saga:splitshapeslayer,USE_ORIGINAL_NAME,Vector/General tools
+saga:splitshapeslayercompletely,USE_ORIGINAL_NAME,Vector/General tools
+saga:splitshapeslayerrandomly,USE_ORIGINAL_NAME,Vector/General tools
+saga:splitshapesbyattribute,USE_ORIGINAL_NAME,Vector/General tools
+gdalogr:executesql,USE_ORIGINAL_NAME,Vector/General tools
+gdalogr:ogr2ogr,USE_ORIGINAL_NAME,Vector/General tools
+saga:convexhull,USE_ORIGINAL_NAME,Vector/Geometry operations
+saga:line-polygonintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
+saga:polygon-lineintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
+saga:shapesbuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
+saga:thiessenpolygons,USE_ORIGINAL_NAME,Vector/Geometry operations
+saga:transformshapes,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:convexhull,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:delaunaytriangulation,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:densifygeometries,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:dissolve,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:extractnodes,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:fixeddistancebuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:linestopolygons,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:multiparttosingleparts,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:polygoncentroids,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:polygonstolines,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:simplifygeometries,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:singlepartstomultipart,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:union,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:variabledistancebuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
+ftools:voronoipolygons,USE_ORIGINAL_NAME,Vector/Geometry operations
+mmqgisx:convertgeometrytype,USE_ORIGINAL_NAME,Vector/Geometry operations
+sextante:explodelines,USE_ORIGINAL_NAME,Vector/Lines
+saga:convertlinestopoints,USE_ORIGINAL_NAME,Vector/Lines
+saga:convertlinestopolygons,USE_ORIGINAL_NAME,Vector/Lines
+saga:linedissolve,USE_ORIGINAL_NAME,Vector/Lines
+saga:lineproperties,USE_ORIGINAL_NAME,Vector/Lines
+saga:linesimplification,USE_ORIGINAL_NAME,Vector/Lines
+saga:creategraticule,USE_ORIGINAL_NAME,Vector/Miscellaneous
+saga:geometricfigures,USE_ORIGINAL_NAME,Vector/Miscellaneous
+saga:pythagoras'tree,USE_ORIGINAL_NAME,Vector/Miscellaneous
+saga:quadtreestructuretoshapes,USE_ORIGINAL_NAME,Vector/Miscellaneous
+saga:clippointswithpolygons,USE_ORIGINAL_NAME,Vector/Overlay
+saga:cutshapeslayer,USE_ORIGINAL_NAME,Vector/Overlay
+saga:transectthroughpolygonshapefile,USE_ORIGINAL_NAME,Vector/Overlay
+ftools:clip,USE_ORIGINAL_NAME,Vector/Overlay
+ftools:difference,USE_ORIGINAL_NAME,Vector/Overlay
+ftools:intersection,USE_ORIGINAL_NAME,Vector/Overlay
+ftools:lineintersections,USE_ORIGINAL_NAME,Vector/Overlay
+saga:addcoordinatestopoints,USE_ORIGINAL_NAME,Vector/Points
+saga:addpolygonattributestopoints,USE_ORIGINAL_NAME,Vector/Points
+saga:aggregatepointobservations,USE_ORIGINAL_NAME,Vector/Points
+saga:convertmultipointstopoints,USE_ORIGINAL_NAME,Vector/Points
+saga:convertpointstoline(s),USE_ORIGINAL_NAME,Vector/Points
+saga:distancematrix,USE_ORIGINAL_NAME,Vector/Points
+saga:fitnpointstoshape,USE_ORIGINAL_NAME,Vector/Points
+saga:pointsfilter,USE_ORIGINAL_NAME,Vector/Points
+saga:pointsthinning,USE_ORIGINAL_NAME,Vector/Points
+saga:removeduplicatepoints,USE_ORIGINAL_NAME,Vector/Points
+saga:separatepointsbydirection,USE_ORIGINAL_NAME,Vector/Points
+saga:spatialpointpatternanalysis,USE_ORIGINAL_NAME,Vector/Points
+saga:convertpolygon/lineverticestopoints,USE_ORIGINAL_NAME,Vector/Polygons
+saga:convertpolygonstolines,USE_ORIGINAL_NAME,Vector/Polygons
+saga:countpointsinpolygons,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygondissolve,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygonintersection,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygonpartstoseparatepolygons,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygonproperties,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygonshapeindices,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygonstoedgesandnodes,USE_ORIGINAL_NAME,Vector/Polygons
+ftools:randomselection,USE_ORIGINAL_NAME,Vector/Selection
+ftools:randomselectionwithinsubsets,USE_ORIGINAL_NAME,Vector/Selection
+ftools:selectbylocation,USE_ORIGINAL_NAME,Vector/Selection
+gdalogr:ogrinfo,USE_ORIGINAL_NAME,Vector/Statistics
+sextante:addfieldtoattributestable,USE_ORIGINAL_NAME,Vector/Table tools
+sextante:createequivalentnumericalfield,USE_ORIGINAL_NAME,Vector/Table tools
+sextante:fieldpyculator,USE_ORIGINAL_NAME,Vector/Table tools
+sextante:fieldcalculator,USE_ORIGINAL_NAME,Vector/Table tools
+saga:changedateformat,USE_ORIGINAL_NAME,Vector/Table tools
+saga:changetimeformat,USE_ORIGINAL_NAME,Vector/Table tools
+saga:converttabletopoints,USE_ORIGINAL_NAME,Vector/Table tools
+saga:enumeratetablefield,USE_ORIGINAL_NAME,Vector/Table tools
+saga:fillgapsinrecords,USE_ORIGINAL_NAME,Vector/Table tools
+saga:joinattributesfromatable,USE_ORIGINAL_NAME,Vector/Table tools
+saga:joinattributesfromatable(shapes),USE_ORIGINAL_NAME,Vector/Table tools
+saga:runningaverage,USE_ORIGINAL_NAME,Vector/Table tools
+saga:tablecalculator,USE_ORIGINAL_NAME,Vector/Table tools
+saga:tablecalculator(shapes),USE_ORIGINAL_NAME,Vector/Table tools
+saga:transposetable,USE_ORIGINAL_NAME,Vector/Table tools
+ftools:basicstatisticsfornumericfields,USE_ORIGINAL_NAME,Vector/Table tools
+ftools:basicstatisticsfortextfields,USE_ORIGINAL_NAME,Vector/Table tools
+ftools:export/addgeometrycolumns,USE_ORIGINAL_NAME,Vector/Table tools
+ftools:listuniquevalues,USE_ORIGINAL_NAME,Vector/Table tools
+mmqgisx:attributeexport,USE_ORIGINAL_NAME,Vector/Table tools
+mmqgisx:attributejoin,USE_ORIGINAL_NAME,Vector/Table tools

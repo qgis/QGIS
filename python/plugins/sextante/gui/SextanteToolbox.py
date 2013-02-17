@@ -22,22 +22,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import sys
-import subprocess
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import webbrowser
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.modeler.Providers import Providers
-from sextante.core.AlgorithmClassification import AlgorithmDecorator
+from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
@@ -192,6 +187,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 if not alg.showInToolbox:
                     continue
                 altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
+                if altgroup is None:
+                    continue
                 if text =="" or text.lower() in altname.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}

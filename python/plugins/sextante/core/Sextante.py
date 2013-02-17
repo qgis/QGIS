@@ -30,7 +30,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteLog import SextanteLog
-from sextante.core.AlgorithmClassification import AlgorithmDecorator
+from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
@@ -127,11 +127,11 @@ class Sextante:
         Sextante.addProvider(AdminToolsAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
+        AlgorithmDecorator.loadClassification()
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
-        RenderingStyles.loadStyles()
-        AlgorithmDecorator.loadClassification()
+        RenderingStyles.loadStyles()        
         Sextante.loadFromProviders()
 
     @staticmethod
@@ -378,6 +378,7 @@ def alghelp(name):
     alg = Sextante.getAlgorithm(name)
     if alg != None:
         print(str(alg))
+        algoptions(name)
     else:
         print "Algorithm not found"
 
