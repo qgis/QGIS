@@ -251,6 +251,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
+        "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/context_help/" ^
 	"apps/%PACKAGENAME%/resources/function_help/" ^
