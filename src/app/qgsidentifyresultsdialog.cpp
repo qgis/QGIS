@@ -70,7 +70,9 @@ void QgsWebView::print( void )
   QPrinter printer;
   QPrintDialog *dialog = new QPrintDialog( &printer );
   if ( dialog->exec() == QDialog::Accepted )
+  {
     QWebView::print( &printer );
+  }
 }
 
 void QgsWebView::contextMenuEvent( QContextMenuEvent *e )
@@ -502,8 +504,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     featItem->addChild( attrItem ); // before setHtml()!
     attrItem->setHtml( attributes.begin().value() );
     connect( attrItem->webView(), SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
-
-    mPrintToolButton->setVisible( true );
   }
   else
   {
@@ -757,8 +757,9 @@ void QgsIdentifyResultsDialog::clear()
   lstResults->clear();
   clearHighlights();
 
+  // keep it visible but disabled, it can switch from disabled/enabled
+  // after raster format change
   mPrintToolButton->setDisabled( true );
-  mPrintToolButton->setHidden( true );
 }
 
 void QgsIdentifyResultsDialog::activate()
@@ -929,6 +930,8 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 {
   Q_UNUSED( previous );
 
+  mPrintToolButton->setEnabled( false );
+
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
   mCopyToolButton->setEnabled( featItem && featItem->feature().isValid() );
 
@@ -938,8 +941,16 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
     return;
   }
 
-  QWebView *wv = qobject_cast<QWebView*>( current->treeWidget()->itemWidget( current, 1 ) );
-  mPrintToolButton->setEnabled( wv != 0 );
+  // An item may be printed if a child is QgsIdentifyResultsWebViewItem
+  for ( int i = 0; i < current->childCount(); i++ )
+  {
+    QgsIdentifyResultsWebViewItem *wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( current->child( i ) );
+    if ( wv != 0 )
+    {
+      mPrintToolButton->setEnabled( true );
+      break;
+    }
+  }
 
   QTreeWidgetItem *layItem = layerItem( current );
   if ( current == layItem )
@@ -1264,17 +1275,22 @@ void QgsIdentifyResultsDialog::openUrl( const QUrl &url )
 void QgsIdentifyResultsDialog::printCurrentItem()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
-  if ( !item )
-    return;
+  if ( !item ) { return; }
 
-  QWebView *wv = qobject_cast<QWebView*>( item->treeWidget()->itemWidget( item, 1 ) );
-  if ( !wv )
+  // There should only be one HTML item / result
+  QgsIdentifyResultsWebViewItem *wv = 0;
+  for ( int i = 0; i < item->childCount(); i++ )
+  {
+    wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( item->child( i ) );
+    if ( wv != 0 ) { break; }
+  }
+  if ( wv == 0 )
+  {
+    QMessageBox::warning( this, tr( "Cannot not print" ), tr( "Cannot print this item" ) );
     return;
+  }
 
-  QPrinter printer;
-  QPrintDialog *dialog = new QPrintDialog( &printer );
-  if ( dialog->exec() == QDialog::Accepted )
-    wv->print( &printer );
+  wv->webView()->print();
 }
 
 void QgsIdentifyResultsDialog::on_mExpandNewToolButton_toggled( bool checked )
