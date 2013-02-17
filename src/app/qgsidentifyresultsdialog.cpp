@@ -440,15 +440,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
     QComboBox *formatCombo = new QComboBox();
 
-    // Add all supported formats, best first. Note that all providers should support
-    // IdentifyFormatHtml and IdentifyFormatText because other formats may be
-    // converted to them
+    // Add all supported formats, best first. HTML is considered the best because
+    // it usually holds most informations.
     int capabilities = layer->dataProvider()->capabilities();
     QList<QgsRasterDataProvider::IdentifyFormat> formats;
-    formats << QgsRasterDataProvider::IdentifyFormatFeature
-    << QgsRasterDataProvider::IdentifyFormatValue
-    << QgsRasterDataProvider::IdentifyFormatHtml
-    << QgsRasterDataProvider::IdentifyFormatText;
+    formats << QgsRasterDataProvider::IdentifyFormatHtml
+    << QgsRasterDataProvider::IdentifyFormatFeature
+    << QgsRasterDataProvider::IdentifyFormatText
+    << QgsRasterDataProvider::IdentifyFormatValue;
     foreach ( QgsRasterDataProvider::IdentifyFormat f, formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) ) continue;
