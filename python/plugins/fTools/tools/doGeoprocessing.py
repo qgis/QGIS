@@ -464,7 +464,7 @@ class geoprocessingThread( QThread ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
     vproviderA = self.vlayerA.dataProvider()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vprovider.fields(),
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, vproviderA.fields(),
                                   QGis.WKBPolygon, vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, True, writer.errorMessage()
