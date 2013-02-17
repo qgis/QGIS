@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gui import TestTools
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,10 +26,9 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from sextante.core.SextanteLog import SextanteLog
-
 from sextante.ui.ui_DlgHistory import Ui_DlgHistory
+
 
 class HistoryDialog(QDialog, Ui_DlgHistory):
     def __init__(self):
@@ -48,9 +48,11 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         self.clearButton.setToolTip(self.tr("Clear history and log"))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
-        self.tree.doubleClicked.connect(self.executeAlgorithm)
+        self.tree.doubleClicked.connect(self.executeAlgorithm)        
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
+                
+        self.tree.customContextMenuRequested.connect(self.showPopupMenu)
 
         self.fillTree()
 
@@ -83,6 +85,30 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
                 self.text.setText(item.entry.text.replace("|","\n"))
+                
+    
+    
+    def createTest(self):
+        item = self.tree.currentItem()
+        if isinstance(item, TreeLogEntryItem):
+            if item.isAlg:
+                TestTools.createTest(item)
+                
+
+
+
+
+    
+    
+    def showPopupMenu(self,point):
+        item = self.tree.currentItem()
+        if isinstance(item, TreeLogEntryItem):
+           if item.isAlg:
+                popupmenu = QMenu()
+                createTestAction = QAction(self.tr("Create test"), self.tree)
+                createTestAction.triggered.connect(self.createTest)
+                popupmenu.addAction(createTestAction)            
+                popupmenu.exec_(self.tree.mapToGlobal(point))                
 
 class TreeLogEntryItem(QTreeWidgetItem):
     def __init__(self, entry, isAlg):
