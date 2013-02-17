@@ -76,7 +76,8 @@ def combineVectorFields( layerA, layerB ):
     fieldsA = layerA.dataProvider().fields()
     fieldsB = layerB.dataProvider().fields()
     fieldsB = testForUniqueness( fieldsA, fieldsB )
-    fieldsA.extend( fieldsB )
+    for f in fieldsB:
+      fieldsA.append( f )
     return fieldsA
 
 # Check if two input CRSs are identical
@@ -155,10 +156,10 @@ def testForUniqueness( fieldList1, fieldList2 ):
     changed = True
     while changed:
         changed = False
-        for i in fieldList1:
-            for j in fieldList2:
-                if j.name() == i.name():
-                    j = createUniqueFieldName( j )
+        for i in range(0,len(fieldList1)):
+            for j in range(0,len(fieldList2)):
+                if fieldList1[i].name() == fieldList2[j].name():
+                    fieldList2[j] = createUniqueFieldName( fieldList2[j] )
                     changed = True
     return fieldList2
 
@@ -265,7 +266,6 @@ def addShapeToCanvas( shapefile_path ):
     else:
         return False
     vlayer_new = QgsVectorLayer( shapefile_path, layer_name, "ogr" )
-    print layer_name
     if vlayer_new.isValid():
         QgsMapLayerRegistry.instance().addMapLayers( [vlayer_new] )
         return True

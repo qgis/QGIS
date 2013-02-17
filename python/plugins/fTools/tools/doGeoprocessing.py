@@ -891,7 +891,6 @@ class geoprocessingThread( QThread ):
         crs_match = None
     else:
         crs_match = crsA == crsB
-
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
@@ -945,7 +944,8 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      outFeat.setAttributes( atMapA.extend( atMapB ) )
+                      atMapA.extend( atMapB )
+                      outFeat.setAttributes( atMapA )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -976,7 +976,8 @@ class geoprocessingThread( QThread ):
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    outFeat.setAttributes( atMapA.extend( atMapB ) )
+                    atMapA.extend( atMapB )
+                    outFeat.setAttributes( atMapA )
                     writer.addFeature( outFeat )
                 except:
                   EATURE_EXCEPT = False
@@ -1015,7 +1016,8 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      outFeat.setAttributes( atMapA.extend( atMapB ) )
+                      atMapA.extend( atMapB )
+                      outFeat.setAttributes( atMapA )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -1025,8 +1027,8 @@ class geoprocessingThread( QThread ):
                 break
       # we have no selection in overlay layer
       else:
-	fitA = vproviderA.getFeatures()
-        while fita.nextFeature( inFeatA ):
+        fitA = vproviderA.getFeatures()
+        while fitA.nextFeature( inFeatA ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           geom = QgsGeometry( inFeatA.geometry() )
@@ -1043,11 +1045,13 @@ class geoprocessingThread( QThread ):
                   int_com = geom.combine( tmpGeom )
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
+
                 try:
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    outFeat.setAttributes( atMapA.extend( atMapB ) )
+                    atMapA.extend( atMapB )
+                    outFeat.setAttributes( atMapA )
                     writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False
@@ -1148,7 +1152,8 @@ class geoprocessingThread( QThread ):
                     int_geom = QgsGeometry( i )
                     try:
                       outFeat.setGeometry( int_geom )
-                      outFeat.setAttributes( atMapA.extend( atMapB ) )
+                      atMapA.extend( atMapB )
+                      outFeat.setAttributes( atMapA )
                       writer.addFeature( outFeat )
                     except Exception, err:
                       FEATURE_EXCEPT = False
@@ -1161,7 +1166,8 @@ class geoprocessingThread( QThread ):
                 if int_geom.wkbType() in gList:
                   try:
                     outFeat.setGeometry( int_geom )
-                    outFeat.setAttributes( atMapA.extend( atMapB ) )
+                    atMapA.extend( atMapB )
+                    outFeat.setAttributes( atMapA )
                     writer.addFeature( outFeat )
                   except Exception, err:
                     FEATURE_EXCEPT = False
