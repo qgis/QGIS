@@ -1,0 +1,18 @@
+(dp0
+S'ALG_CREATOR'
+p1
+VFilipe S. Dias
+p2
+sS'field'
+p3
+VVector's field
+p4
+sS'ALG_DESC'
+p5
+VThis tools uses the "dotchart()" function to create a Cleveland dotplot of a given field.
+p6
+sS'layer'
+p7
+VVector layer
+p8
+s.

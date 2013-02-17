@@ -1,0 +1,18 @@
+(dp0
+S'ALG_CREATOR'
+p1
+VFilipe S. Dias
+p2
+sS'field'
+p3
+VVector's field
+p4
+sS'ALG_DESC'
+p5
+VThis tool computes the following summary statistics for the input field:\u000a\u000a- Minimum value, using "min()"\u000a\u000a- Maximum value, using "max()"\u000a\u000a- Range, which the difference between the maximum and the minimum value\u000a\u000a- Mean value, using "mean()"\u000a\u000a- Median value, using "median()"\u000a\u000a- Standard deviation, using "sd"\u000a\u000a\u000a
+p6
+sS'layer'
+p7
+VVector layer
+p8
+s.

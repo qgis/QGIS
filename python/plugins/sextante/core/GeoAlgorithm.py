@@ -346,7 +346,11 @@ class GeoAlgorithm:
 
 
     def commandLineName(self):
-        return self.provider.getName().lower().replace(" ", "") + ":" + self.name.lower().replace(" ", "").replace(",","")
+        name = self.provider.getName().lower() + ":" + self.name.lower()
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        name = ''.join(c for c in name if c in validChars)
+        return name
+        
 
     def removeOutputFromName(self, name):
         for out in self.outputs:

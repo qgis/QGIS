@@ -1,0 +1,22 @@
+(dp0
+S'ALG_CREATOR'
+p1
+VFilipe S. Dias
+p2
+sS'field'
+p3
+VVector's field
+p4
+sS'ALG_DESC'
+p5
+VThis tool uses the "hist()" function to create a histogram, using Sturges rule.
+p6
+sS'ALG_HELP_CREATOR'
+p7
+VFilipe S. Dias
+p8
+sS'layer'
+p9
+VVector layer
+p10
+s.
